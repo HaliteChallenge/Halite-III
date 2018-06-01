@@ -12,7 +12,7 @@
 
 #include <random>
 #include "../hlt.hpp"
-#include "../json.hpp"
+#include "../util/json.hpp"
 
 namespace mapgen {
     enum class PointOfInterestType {

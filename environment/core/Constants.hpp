@@ -5,7 +5,7 @@
 #ifndef ENVIRONMENT_CONSTANTS_HPP
 #define ENVIRONMENT_CONSTANTS_HPP
 
-#include "json.hpp"
+#include "util/json.hpp"
 
 namespace hlt {
     constexpr auto MAX_PLAYERS = 4;
