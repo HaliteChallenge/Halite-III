@@ -5,7 +5,9 @@ const GlowFilter = extraFilters.GlowFilter;
 const pako = require("pako");
 
 import {Ship} from "./ship";
+import {playerSprite} from "./sprite";
 import {Planet, holidaySprite} from "./planet";
+import {Factory} from "./factory";
 import * as statistics from "./statistics";
 import * as keyboard from "./keyboardControls";
 
@@ -63,10 +65,69 @@ export class HaliteVisualizer {
 
         this.container = new PIXI.Container();
 
-        // Background image
-        this.starfield = PIXI.Sprite.from(
-            assets.BACKGROUND_IMAGES[Math.floor(Math.random() * assets.BACKGROUND_IMAGES.length)]);
+        // // Background image
+        //this.starfield = PIXI.Sprite.from(
+            //assets.BACKGROUND_IMAGES[Math.floor(Math.random() * assets.BACKGROUND_IMAGES.length)]);
+
+        //this.starfield.width = replay.width * this.scale * assets.CELL_SIZE;
+        console.log(replay.width);
+        //this.starfield.height = replay.height * this.scale * assets.CELL_SIZE;
+        console.log(replay.height);
+        console.log(this.scale);
+        // draw a map, with color intensity dependent on production value
+        let rows = Math.ceil(assets.REPLAY_HEIGHT / assets.MAP_SQUARE_SIZE);
+        console.log(rows);
+        let cols = Math.ceil(replay.REPLAY_WIDTH / assets.MAP_SQUARE_SIZE);
+        console.log(cols);
+        let mapGraphics = new PIXI.Graphics();
+        this.productions = new Array(rows);
+        for (let row = 0; row < rows; row++) {
+            this.productions[row] = new Array(cols);
+            for (let col = 0; col < cols; col++) {
+                // TODO: get production values from new replay json file.
+                // For now: make a random production map, but save the production
+                // TODO: also get production max from replay file
+                let production = Math.floor(Math.random() * assets.MAX_PRODUCTION);
+                this.productions[row][col] = production;
+                if (production / assets.MAX_PRODUCTION < 0.33) {
+                    mapGraphics.beginFill(assets.MAP_COLOR_LIGHT, assets.MAP_ALPHA);
+                }
+                else if (production / assets.MAX_PRODUCTION < 0.66) {
+                    mapGraphics.beginFill(assets.MAP_COLOR_MEDIUM, assets.MAP_ALPHA);
+                }
+                else {
+                    mapGraphics.beginFill(assets.MAP_COLOR_DARK, assets.MAP_ALPHA);
+                }
+
+                mapGraphics.drawRect(col * assets.MAP_SQUARE_SIZE, row * assets.MAP_SQUARE_SIZE,
+                    this.scale * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE,
+                    this.scale * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE);
+                mapGraphics.endFill();
+            }
+        }
+        mapGraphics.lineStyle(assets.LINE_WIDTH, assets.LINE_COLOR);
+        //Draw the map lines
+        for (let row = 0; row <= rows + 2; row++) {
+            // move to start of row, draw line
+            // TODO: why are there 2 more columns and rows than I expect?
+            mapGraphics.moveTo(0, row * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE);
+            mapGraphics.lineTo((cols + 2) * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE,
+                row * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE);
+        }
+
+        for (let col = 0; col <= cols + 2; col++) {
+            // move to start of col, draw line
+            mapGraphics.moveTo(col * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE, 0);
+            mapGraphics.lineTo(col * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE,
+                (rows + 2)* assets.CELL_SIZE * assets.MAP_SQUARE_SIZE);
+        }
+
+        console.log(this.productions);
+        let mapTexture = this.application.renderer.generateTexture(mapGraphics);
+        this.starfield = new PIXI.Sprite(mapTexture);
         this.starfield.width = replay.width * this.scale * assets.CELL_SIZE;
+        this.starfield.height = replay.height * this.scale * assets.CELL_SIZE;
+
         this.starfield.interactive = true;
 
         this.starfield.on("pointerdown", (e) => {
@@ -75,7 +136,10 @@ export class HaliteVisualizer {
             const relativeY = localCoords.y;
             const coordX = (relativeX / assets.VISUALIZER_SIZE) * replay.width;
             const coordY = (relativeY / assets.VISUALIZER_HEIGHT) * replay.height;
-            this.onSelect("point", { x: coordX, y: coordY });
+            const cellX = Math.floor(coordX / (assets.MAP_SQUARE_SIZE * this.scale));
+            const cellY = Math.floor(coordY / (assets.MAP_SQUARE_SIZE * this.scale));
+            const production = this.productions[cellY][cellX];
+            this.onSelect("point", { x: coordX, y: coordY, production: production});
         });
 
         // Set up letterboxing in case replay aspect ratio does't match ours
@@ -113,8 +177,8 @@ export class HaliteVisualizer {
         this.planets = [];
         for (let i = 0; i < this.replay.planets.length; i++) {
             const planetBase = this.replay.planets[i];
-            const planet = new Planet(planetBase, this.replay.constants,
-                this.scale, (kind, args) => this.onSelect(kind, args));
+            const planet = new Factory(planetBase, this.replay.constants,
+                this.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
             this.planets.push(planet);
             planet.attach(this.planetContainer, this.overlay);
         }
@@ -518,8 +582,8 @@ export class HaliteVisualizer {
 
                 if (this.time < deathTime) {
                     if (typeof this.ships[ship.id] === "undefined") {
-                        this.ships[ship.id] = new Ship(this, ship);
-                        this.ships[ship.id].attach(this.shipContainer, this.dockingContainer);
+                        this.ships[ship.id] = new playerSprite(this, ship);
+                        this.ships[ship.id].attach(this.shipContainer);
                     }
                     this.ships[ship.id].update(ship);
                 }
