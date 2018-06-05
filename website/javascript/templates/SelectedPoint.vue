@@ -9,6 +9,10 @@
                     <td>Location:</td>
                     <td>{{info.location}}</td>
                 </tr>
+                <tr>
+                    <td>Cell Production:</td>
+                    <td>{{info.production}}</td>
+                </tr>
             </table>
         </div>
     </div>
@@ -21,7 +25,8 @@ export default {
    computed: {
      info: function () {
        const info = {
-         location: `${this.selectedPoint.x.toFixed(4)}, ${this.selectedPoint.y.toFixed(4)}`
+         location: `${this.selectedPoint.x.toFixed(4)}, ${this.selectedPoint.y.toFixed(4)}`,
+         production: this.selectedPoint.production
        }
 
        return info

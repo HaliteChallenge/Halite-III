@@ -469,6 +469,7 @@
         this.selected.owner = args.owner
         this.selected.x = args.x
         this.selected.y = args.y
+        this.selected.production = args.production
         this.showObjectPanel = true
         visualizer.onUpdate()
         this.$forceUpdate()

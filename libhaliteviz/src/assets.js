@@ -2,14 +2,30 @@ const PIXI = require("pixi.js");
 
 export let ASSET_ROOT = "dist/";
 
-export const VISUALIZER_SIZE = 690;
-export const VISUALIZER_HEIGHT = 460;
+export const VISUALIZER_SIZE = 700;
+export const VISUALIZER_HEIGHT = 700;
 export const STATS_SIZE = 20;
 export const CELL_SIZE = 1;
 export const PLAYER_COLORS = [0xbd00db, 0x63ceca, 0xffbe00, 0xc5ec98];
 export const PLANET_COLOR = 0xb7b7b7;
 export const HEALTH_BAR_COLOR = 0x990000;
 export const EXPLOSION_COLOR = 0xFF7607;
+
+export const SPRITE_COLOR = 0xFFFFFF;
+export const SPRITE_ALPHA = 0.8;
+export const HALO_COLOR = 0XD0D0D0;
+export const HALO_ALPHA = 0.8;
+export const MAX_PRODUCTION = 255;
+export const MAP_COLOR_LIGHT = 0x00FFFF;
+export const MAP_COLOR_MEDIUM = 0x0000FF;
+export const MAP_COLOR_DARK = 0x0000A0;
+export const MAP_ALPHA = 0.1;
+export const MAP_SQUARE_SIZE = 10;
+export const LINE_COLOR = 0x000000;
+export const LINE_WIDTH = 1;
+export const REPLAY_WIDTH = 128;
+export const REPLAY_HEIGHT = 128;
+
 
 export let BACKGROUND_IMAGES = [];
 export let PLANET_IMAGE = null;
