@@ -4,15 +4,16 @@
 
 std::mutex Logging::cerr_mutex;
 
+/** We default to the Info level of logging so that the user may see feedback. */
 Logging::Level Logging::level = Logging::Level::Info;
 
 void Logging::set_level(Logging::Level level) {
     Logging::level = level;
 }
 
-void Logging::log(Logging::Level level, const std::string &msg) {
+void Logging::log(const std::string &msg, Logging::Level level) {
     std::lock_guard<std::mutex> guard(Logging::cerr_mutex);
-    // Only log at sufficiently high levels
+    // Only log at sufficiently high levels, otherwise suppress.
     if (static_cast<int>(level) >= static_cast<int>(Logging::level)) {
         switch (Logging::level) {
         case Logging::Level::Debug:
