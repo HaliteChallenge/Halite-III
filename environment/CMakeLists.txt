@@ -15,6 +15,7 @@ set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
 include_directories(${CMAKE_SOURCE_DIR}/core)
 include_directories(${CMAKE_SOURCE_DIR}/core/mapgen)
+include_directories(${CMAKE_SOURCE_DIR}/logging)
 include_directories(${CMAKE_SOURCE_DIR}/networking)
 include_directories(${CMAKE_SOURCE_DIR}/tclap)
 include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib)
