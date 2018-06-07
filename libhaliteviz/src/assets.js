@@ -7,7 +7,8 @@ export const VISUALIZER_HEIGHT = 700;
 export const STATS_SIZE = 20;
 export const CELL_SIZE = 1;
 export const PLAYER_COLORS = [0xbd00db, 0x63ceca, 0xffbe00, 0xc5ec98];
-export const PLANET_COLOR = 0xb7b7b7;
+export const PLANET_COLOR = 0xb7b7b7
+export const FISH_COLOR = 0xFFA500;
 export const HEALTH_BAR_COLOR = 0x990000;
 export const EXPLOSION_COLOR = 0xFF7607;
 
@@ -20,11 +21,15 @@ export const MAP_COLOR_LIGHT = 0x00FFFF;
 export const MAP_COLOR_MEDIUM = 0x0000FF;
 export const MAP_COLOR_DARK = 0x0000A0;
 export const MAP_ALPHA = 0.1;
+export const OWNER_TINT_ALPHA = 0.03;
 export const MAP_SQUARE_SIZE = 10;
 export const LINE_COLOR = 0x000000;
 export const LINE_WIDTH = 1;
-export const REPLAY_WIDTH = 128;
-export const REPLAY_HEIGHT = 128;
+export const REPLAY_WIDTH = 64;
+export const REPLAY_HEIGHT = 64;
+export const MIN_FISH_SIZE = 1;
+export const MAX_FISH_SIZE = 15;
+export const MAX_FISH_SPEED = 5;
 
 
 export let BACKGROUND_IMAGES = [];
@@ -35,6 +40,7 @@ export let PLANET_HALO_IMAGE_SMALL = null;
 export let SHIP_IMAGE = "";
 export let HALO_IMAGE = "";
 export let EXHAUST_IMAGE = "";
+export let FISH_IMAGE = "";
 
 export let HALLOWEEN_PLANET_IMAGE = null;
 export let WINTER_PLANET_IMAGE = null;
@@ -88,6 +94,7 @@ export function setAssetRoot(path) {
         ASSET_ROOT + require("../assets/backgrounds/Space001.png"),
     ];
     HALO_IMAGE = ASSET_ROOT + require("../assets/halo.png");
+    FISH_IMAGE = ASSET_ROOT + require("../assets/fish.png");
     ATTACK_SHEET = loadSpritesheet(
         require("../assets/ship-battle.json"),
         ASSET_ROOT + require("../assets/ship-battle.png"),
