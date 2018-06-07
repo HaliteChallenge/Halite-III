@@ -38,7 +38,7 @@ export class Factory {
      */
     constructor(factoryBase, constants, scale, onSelect, renderer) {
         this.container = null;
-        this.overlay = null;
+        //this.overlay = null;
         this.factoryBase = factoryBase;
         this.scale = scale;
         this.constants = constants;
@@ -53,7 +53,6 @@ export class Factory {
         factoryShape.endFill();
         let factoryTexture = renderer.generateTexture(factoryShape);
         this.core = new PIXI.Sprite(factoryTexture);
-        //this.core = PIXI.Sprite.from(assets.PLANET_IMAGE);
         //this.halo = PIXI.Sprite.from(assets.PLANET_HALO_IMAGE);
         // Center of sprite != center of circle
         //this.halo.anchor.x = (18 + 36) / 104;
@@ -68,7 +67,7 @@ export class Factory {
         this.core.width = this.core.height = 2 * factoryBase.r * pixelsPerUnit;
         this.core.anchor.x = 0.5;
         this.core.anchor.y = 0.5;
-        this.core.alpha = 0.5;
+        this.core.alpha = 0.9;
 
         this.core.position.x = scale * assets.CELL_SIZE * factoryBase.x;
         this.core.position.y = scale * assets.CELL_SIZE * factoryBase.y;
@@ -94,10 +93,10 @@ export class Factory {
      * sprites.
      * @param overlay {PIXI.Graphics} A graphics object used to draw overlays.
      */
-    attach(container, overlay) {
+    attach(container) {
         container.addChild(this.core);
         this.container = container;
-        this.overlay = overlay;
+        //this.overlay = overlay;
     }
 
     get id() {
@@ -122,6 +121,18 @@ export class Factory {
             //this.halo.alpha = this.baseHaloAlpha;
             this.core.alpha = 0.5;
         }
+        // randomly rotate and move
+        // let rand = Math.random();
+        // if (rand > 0.5) {
+        //     this.core.rotation += dt / 400;
+        //     if (this.core.rotation > 2 * Math.PI)
+        //         this.core.rotation -= 2 * Math.PI;
+        // }
+        // // make planets moving fish.
+        // // TODO: double check this works, modify to just be random fish swarms
+        // let delta = (rand * 10) - 5;
+        // this.core.position.x += delta;
+        // this.core.position.y += delta;
 
         const side = assets.CELL_SIZE * this.scale;
         const color = factoryStatus.owner === null ?
