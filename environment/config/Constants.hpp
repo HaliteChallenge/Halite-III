@@ -1,9 +1,5 @@
-//
-// Created by David Li on 7/17/17.
-//
-
-#ifndef ENVIRONMENT_CONSTANTS_HPP
-#define ENVIRONMENT_CONSTANTS_HPP
+#ifndef CONSTANTS_HPP
+#define CONSTANTS_HPP
 
 #include "util/json.hpp"
 
@@ -61,4 +57,4 @@ namespace hlt {
     };
 }
 
-#endif //ENVIRONMENT_CONSTANTS_HPP
+#endif // CONSTANTS_HPP
