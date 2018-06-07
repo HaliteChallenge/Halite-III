@@ -6,7 +6,7 @@
 
 #include "version.hpp"
 #include "core/Halite.hpp"
-#include "core/util/distributions.hpp"
+#include "util/distributions.hpp"
 
 inline std::istream& operator>>(std::istream& i,
                                 std::pair<signed int, signed int>& p) {
