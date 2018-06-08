@@ -3,31 +3,70 @@
 namespace hlt {
 
 void to_json(nlohmann::json &json, const Command &command) {
-    json = {{"type",      static_cast<int>(command.type)},
-            {"entity_id", command.entity_id},
-            {"direction", static_cast<int>(command.direction)}};
+    command->to_json(json);
 }
 
 void from_json(const nlohmann::json &json, Command &command) {
-    command = {static_cast<Command::CommandType>(json.at("type").get<int>()),
-               json.at("entity_id").get<Entity::EntityID>(),
-               static_cast<Direction>(json.at("direction").get<int>())};
+    const auto &type = json.at("type").get<std::string>();
+    if (type == "move") {
+        command = std::make_shared<MoveCommand>(json);
+    } else {
+        // TODO: error case
+    }
 }
 
-std::istream &operator>>(std::istream &is, Command &command) {
-    char c;
-    is >> c;
-    switch (c) {
+std::istream &operator>>(std::istream &istream, Command &command) {
+    char command_type;
+    istream >> command_type;
+    std::string remainder;
+    istream >> remainder;
+    switch (command_type) {
     case 'm':
-        is >> command.entity_id >> command.direction;
+        command = std::make_shared<MoveCommand>(remainder);
+        break;
     default:
-        // TODO: implement
+        // TODO: error case
         break;
     }
-    return is;
+    return istream;
 }
 
-Command::Command(Command::CommandType type, Entity::EntityID entity_id, Direction direction) : type(type), entity_id(entity_id),
-                                                                                               direction(direction) {}
+void MoveCommand::to_json(nlohmann::json &json) const {
+    json = {{"type",      "move"},
+            {"entity_id", entity_id},
+            {"direction", static_cast<int>(direction)}};
+}
+
+MoveCommand::MoveCommand(const nlohmann::json &json) :
+        entity_id(json.at("entity_id").get<Entity::EntityID>()),
+        direction(static_cast<Direction>(json.at("direction").get<int>())) {}
+
+MoveCommand::MoveCommand(const std::string &bot_serial) {
+    std::istringstream bot_stream(bot_serial);
+    bot_stream >> entity_id;
+    char direction_type;
+    bot_stream >> direction_type;
+    switch (direction_type) {
+    case 'n':
+        direction = Direction::North;
+        break;
+    case 's':
+        direction = Direction::South;
+        break;
+    case 'e':
+        direction = Direction::East;
+        break;
+    case 'w':
+        direction = Direction::West;
+        break;
+    default:
+        // TODO: error case
+        break;
+    }
+}
+
+void MoveCommand::act_on_map(Map &map) const {
+    // TODO: implement
+}
 
 }

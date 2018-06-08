@@ -9,38 +9,72 @@ namespace hlt {
 struct Entity {
     friend class EntityFactory;
 
-    using EntityID = int;
+    /** Type of Entity IDs. */
+    using EntityID = long;
 
-    constexpr static unsigned char max_energy = 255;
+    EntityID entity_id{};   /**< ID of the entity. */
+    Location location{};    /**< Location of the entity. */
+    unsigned char energy{}; /**< Energy of the entity. */
 
-    EntityID entity_id{}; /**< ID of the entity. */
-    Location location; /**< Location of the entity. */
-    unsigned char energy{}; /**< Energy of the entity, from 1 to 255. */
-
+    /**
+     * Convert an Entity to JSON format.
+     * @param[out] json The output JSON.
+     * @param entity The entity to convert.
+     */
     friend void to_json(nlohmann::json &json, const Entity &entity);
 
+    /**
+     * Convert an encoded Entity from JSON format.
+     * @param json The JSON.
+     * @param[out] entity The converted entity.
+     */
     friend void from_json(const nlohmann::json &json, Entity &entity);
 
-    friend std::ostream &operator<<(std::ostream &os, const Entity &entity);
+    /** Test two Entity instances for equality. */
+    bool operator==(const Entity &other) { return entity_id == other.entity_id; }
 
+    /** Order two Entity instances by ID. */
+    bool operator<(const Entity &other) { return entity_id < other.entity_id; }
+
+    /**
+     * Write an Entity to bot serial format.
+     * @param ostream The output stream.
+     * @param entity The entity to write.
+     * @return The output stream.
+     */
+    friend std::ostream &operator<<(std::ostream &ostream, const Entity &entity);
+
+    /** Default constructor is required by JSON deserialization. */
     Entity() = default;
 
 private:
-    Entity(EntityID entity_id, const Location &location, unsigned char energy = max_energy);
+    /**
+     * Create Entity from ID, location, and energy.
+     * @param entity_id The entity ID.
+     * @param location The location.
+     * @param energy The energy.
+     */
+    Entity(Entity::EntityID entity_id, const Location &location, unsigned char energy) :
+            entity_id(entity_id), location(location), energy(energy) {}
 };
 
-bool operator==(const Entity &e1, const Entity &e2);
-
-bool operator<(const Entity &e1, const Entity &e2);
-
+/** Factory producing Entity instances. */
 class EntityFactory {
-    Entity::EntityID next_entity; /**< The next entity to allocate. */
+    /** The next Entity to allocate, starting at zero. */
+    Entity::EntityID next_entity{};
 
 public:
-    /** Get a new player. */
-    Entity new_entity(const Location &location);
+    /**
+     * Make a new entity.
+     * @param location The location of the entity.
+     * @param energy The energy of the entity.
+     * @return The new entity.
+     */
+    Entity new_entity(const Location &location, unsigned char energy) {
+        return {next_entity++, location, energy};
+    };
 
-    explicit EntityFactory(Entity::EntityID next_entity = 0);
+    EntityFactory() = default;
 };
 
 }
@@ -48,8 +82,8 @@ public:
 namespace std {
 template<>
 struct hash<hlt::Entity> {
-    size_t operator()(const hlt::Entity &e) const {
-        return (size_t) e.entity_id;
+    size_t operator()(const hlt::Entity &entity) const {
+        return (size_t) entity.entity_id;
     }
 };
 }

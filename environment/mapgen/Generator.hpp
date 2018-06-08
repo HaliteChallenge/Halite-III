@@ -23,21 +23,26 @@ enum class MapType {
 
 /** Parameters for map generation. */
 struct MapParameters {
-    MapType type; /**< Type of the map. */
-    unsigned int seed; /**< Random seed. */
-    unsigned int width; /**< Width of the map. */
-    unsigned int height; /**< Height of the map. */
-    unsigned int num_players; /**< Number of players for which to generate the map. */
+    MapType type;             /**< Type of the map. */
+    unsigned int seed;        /**< Random seed. */
+    unsigned long width;       /**< Width of the map. */
+    unsigned long height;      /**< Height of the map. */
+    unsigned long num_players; /**< Number of players for which to generate the map. */
 };
 
 /** Base class for Halite map generators. */
 class Generator {
 protected:
+    /** The random number generator. */
     std::mt19937 rng;
 
     /** Share the friend Map constructor with all Generator subclasses. */
-    hlt::Map Map(int width, int height) const;
+    hlt::Map Map(long width, long height) const;
 
+    /**
+     * Construct Generator from parameters.
+     * @param parameters The map generation parameters.
+     */
     explicit Generator(const MapParameters &parameters);
 
 public:

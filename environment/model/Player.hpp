@@ -3,9 +3,7 @@
 
 #include <list>
 #include <string>
-#include <utility>
 
-#include "Cell.hpp"
 #include "Entity.hpp"
 
 namespace hlt {
@@ -14,42 +12,88 @@ namespace hlt {
 struct Player {
     friend class PlayerFactory;
 
+    /** Type of the Entity list of a player. */
     using Entities = std::list<Entity>;
 
-    int player_id; /**< The unique ID of the player. */
-    std::string name; /**< The name of the player. */
-    int energy; /**< The amount of energy stockpiled by the player. */
-    Cell factory_cell; /**< The factory cell of the player. */
-    Entities entities; /**< The entities owned by the player. */
+    long player_id;               /**< The unique ID of the player. */
+    std::string name;            /**< The name of the player. */
+    long energy{};                /**< The amount of energy stockpiled by the player. */
+    Location factory_location{}; /**< The factory location of the player. */
+    Entities entities;           /**< The entities owned by the player. */
 
+    /**
+     * Convert a Player to JSON format.
+     * @param[out] json The output JSON.
+     * @param player The Player to convert.
+     */
     friend void to_json(nlohmann::json &json, const Player &player);
 
+    /**
+     * Convert an encoded Player from JSON format.
+     * @param json The JSON.
+     * @param[out] player The converted Player.
+     */
     friend void from_json(const nlohmann::json &json, Player &player);
 
-    friend std::ostream &operator<<(std::ostream &os, const Player &player);
+    /** Test two Player instances for equality. */
+    bool operator==(const Player &other) { return player_id == other.player_id; }
 
-    friend std::ostream &operator<<(std::ostream &os, const std::list<Player> &players);
+    /** Order two Entity instances by ID. */
+    bool operator<(const Player &other) { return player_id < other.player_id; }
+
+    /**
+     * Write a Player to bot serial format.
+     * @param ostream The output stream.
+     * @param player The Player to write.
+     * @return The output stream.
+     */
+    friend std::ostream &operator<<(std::ostream &ostream, const Player &player);
 
 private:
-    Player(int player_id, const std::string &name);
+    /**
+     * Construct Player from ID and name.
+     * @param player_id The player ID.
+     * @param name The player name.
+     */
+    Player(long player_id, std::string name) : player_id(player_id), name(std::move(name)) {}
 
-    Player(int player_id, const std::string &name, int energy, Cell factory_cell, Entities entities);
+    /**
+     * Construct Player from ID, name, energy, factory location, and entities.
+     * @param player_id The player ID.
+     * @param name The player name.
+     * @param energy The energy.
+     * @param factory_location The factory location.
+     * @param entities The entities.
+     */
+    Player(long player_id, std::string name, long energy, Location factory_location, Player::Entities entities)
+            : player_id(player_id), name(std::move(name)), energy(energy), factory_location(factory_location),
+              entities(std::move(entities)) {}
 };
 
-bool operator==(const Player &p1, const Player &p2);
-
-bool operator<(const Player &p1, const Player &p2);
+/**
+ * Write a list of Players to bot serial format.
+ * @param ostream The output stream.
+ * @param players The Players to write.
+ * @return The output stream.
+ */
+std::ostream &operator<<(std::ostream &ostream, const std::list<Player> &players);
 
 /** Factory which produces Players. */
 class PlayerFactory {
-    /** The next ID to allocate. */
-    int next_player;
+    /** The next player to allocate, starting from zero. */
+    long next_player{};
 
 public:
-    /** Get a new player. */
-    Player new_player(const std::string &name);
+    /**
+     * Make a new player.
+     * @param name The name of the player.
+     * @return The new player.
+     */
+    Player new_player(const std::string &name) {
+        return {next_player++, name};
+    }
 
-    explicit PlayerFactory(int next_player = 0);
+    PlayerFactory() = default;
 };
 
 }
@@ -57,8 +101,8 @@ public:
 namespace std {
 template<>
 struct hash<hlt::Player> {
-    size_t operator()(const hlt::Player &p) const {
-        return (size_t) p.player_id;
+    size_t operator()(const hlt::Player &player) const {
+        return (size_t) player.player_id;
     }
 };
 }

@@ -2,37 +2,64 @@
 #define MAP_H
 
 #include <iostream>
-#include <unordered_map>
 #include <vector>
 
 #include "Cell.hpp"
 #include "Entity.hpp"
 #include "Generator.hpp"
-#include "Player.hpp"
 
 namespace hlt {
 
 /** The map of cells. */
 class Map {
     friend class hlt::mapgen::Generator;
+
+    /** The type of the map grid. */
     using Grid = std::vector<std::vector<Cell>>;
 
 public:
-    int width, height;
+    long width;                   /**< The width of the map. */
+    long height;                  /**< The height of the map. */
+    EntityFactory entity_factory; /**< The factory producing entities on this map. */
+    Grid grid;                    /**< The map grid. */
 
-    EntityFactory entity_factory;
-    Grid grid;
-
+    /**
+     * Convert a Map to JSON format.
+     * @param[out] json The output JSON.
+     * @param map The Map to convert.
+     */
     friend void to_json(nlohmann::json &json, const Map &map);
 
+    /**
+     * Convert an encoded Map from JSON format.
+     * @param json The JSON.
+     * @param[out] map The converted Map.
+     */
     friend void from_json(const nlohmann::json &json, Map &map);
 
-    friend std::ostream &operator<<(std::ostream &os, const Map &map);
+    /**
+     * Write a Map to bot serial format.
+     * @param ostream The output stream.
+     * @param map The Map to write.
+     * @return The output stream.
+     */
+    friend std::ostream &operator<<(std::ostream &ostream, const Map &map);
 
 private:
-    Map(int width, int height);
+    /**
+     * Create a Map from dimensions.
+     * @param width The width.
+     * @param height The height.
+     */
+    Map(long width, long height);
 
-    Map(int width, int height, Grid grid);
+    /**
+     * Create a Map from dimensions and grid.
+     * @param width The width.
+     * @param height The height.
+     * @param grid The grid. Must be of correct dimensions.
+     */
+    Map(long width, long height, Map::Grid grid) : width(width), height(height), grid(std::move(grid)) {}
 };
 
 }

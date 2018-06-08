@@ -1,14 +1,12 @@
 #include "Location.hpp"
 #include "Map.hpp"
 
-#include "util/json.hpp"
-
 namespace hlt {
 
-std::istream &operator>>(std::istream &is, Direction &direction) {
-    char d;
-    is >> d;
-    switch (d) {
+std::istream &operator>>(std::istream &istream, Direction &direction) {
+    char direction_type;
+    istream >> direction_type;
+    switch (direction_type) {
     case 'N':
         direction = Direction::North;
         break;
@@ -22,9 +20,10 @@ std::istream &operator>>(std::istream &is, Direction &direction) {
         direction = Direction::West;
         break;
     default:
+        // TODO: error case
         break;
     }
-    return is;
+    return istream;
 }
 
 long Location::distance(const Location &other) const {
@@ -57,13 +56,5 @@ void from_json(const nlohmann::json &json, Location &location) {
     location = {json.at("pos_x").get<long>(),
                 json.at("pos_y").get<long>()};
 }
-
-bool operator==(const Location &l1, const Location &l2) {
-    return l1.pos_x == l2.pos_x && l1.pos_y == l2.pos_y;
-}
-
-Location::Location(long pos_x, long pos_y) : pos_x(pos_x), pos_y(pos_y) {}
-
-Location::Location() = default;
 
 }
