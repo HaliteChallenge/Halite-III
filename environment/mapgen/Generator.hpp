@@ -11,14 +11,15 @@
 
 #include "Player.hpp"
 
-#include "util/json.hpp"
+#include "../util/json.hpp"
 
 namespace hlt {
 namespace mapgen {
 
 /** Types of available maps to be generated. */
 enum class MapType {
-    Basic
+    Basic,
+    Tile
 };
 
 /** Parameters for map generation. */
@@ -33,7 +34,7 @@ struct MapParameters {
 /** Base class for Halite map generators. */
 class Generator {
 protected:
-    std::mt19937 rng;
+    mutable std::mt19937 rng;
 
     /** Share the friend Map constructor with all Generator subclasses. */
     hlt::Map Map(int width, int height) const;
@@ -48,7 +49,7 @@ public:
      * Generate a map based on a list of players.
      * @param players The players on the map.
      */
-    virtual hlt::Map generate(std::list<hlt::Player> &players) const = 0;
+    virtual hlt::Map generate(std::list<hlt::Player> &players) = 0;
 };
 
 }

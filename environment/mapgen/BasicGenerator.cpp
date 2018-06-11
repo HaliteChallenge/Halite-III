@@ -8,7 +8,7 @@ std::string BasicGenerator::name() const {
     return "Basic Generator";
 }
 
-hlt::Map BasicGenerator::generate(std::list<Player> &players) const {
+hlt::Map BasicGenerator::generate(std::list<Player> &players) {
     auto map = Map(width, height);
     for (auto &row : map.grid) {
         for (auto &cell : row) {
