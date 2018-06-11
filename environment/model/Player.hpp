@@ -16,10 +16,10 @@ struct Player {
     using Entities = std::list<Entity>;
 
     long player_id;               /**< The unique ID of the player. */
-    std::string name;            /**< The name of the player. */
+    std::string name;             /**< The name of the player. */
     long energy{};                /**< The amount of energy stockpiled by the player. */
-    Location factory_location{}; /**< The factory location of the player. */
-    Entities entities;           /**< The entities owned by the player. */
+    Location factory_location{};  /**< The factory location of the player. */
+    Entities entities;            /**< The entities owned by the player. */
 
     /**
      * Convert a Player to JSON format.

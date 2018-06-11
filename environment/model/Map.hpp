@@ -2,13 +2,17 @@
 #define MAP_H
 
 #include <iostream>
+#include <utility>
 #include <vector>
 
 #include "Cell.hpp"
 #include "Entity.hpp"
-#include "Generator.hpp"
 
 namespace hlt {
+
+namespace mapgen {
+class Generator;
+}
 
 /** The map of cells. */
 class Map {
@@ -18,8 +22,11 @@ class Map {
     using Grid = std::vector<std::vector<Cell>>;
 
 public:
-    long width;                   /**< The width of the map. */
-    long height;                  /**< The height of the map. */
+    /** The type of map dimension values. */
+    using dimension_type = long;
+
+    dimension_type width;         /**< The width of the map. */
+    dimension_type height;        /**< The height of the map. */
     EntityFactory entity_factory; /**< The factory producing entities on this map. */
     Grid grid;                    /**< The map grid. */
 
@@ -51,7 +58,7 @@ private:
      * @param width The width.
      * @param height The height.
      */
-    Map(long width, long height);
+    Map(dimension_type width, dimension_type height);
 
     /**
      * Create a Map from dimensions and grid.
@@ -59,7 +66,8 @@ private:
      * @param height The height.
      * @param grid The grid. Must be of correct dimensions.
      */
-    Map(long width, long height, Map::Grid grid) : width(width), height(height), grid(std::move(grid)) {}
+    Map(dimension_type width, dimension_type height, Map::Grid grid) :
+            width(width), height(height), grid(std::move(grid)) {}
 };
 
 }

@@ -12,7 +12,7 @@ namespace hlt {
 class BaseCommand;
 
 /** Container type for command, exposed to outside users. */
-using Command = std::shared_ptr<BaseCommand>;
+using Command = std::unique_ptr<BaseCommand>;
 
 /**
  * Convert a Command to JSON format.

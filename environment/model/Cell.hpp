@@ -12,7 +12,7 @@ namespace hlt {
 class BaseCell;
 
 /** Container type for cells, exposed to outside users like Map. */
-using Cell = std::shared_ptr<BaseCell>;
+using Cell = std::unique_ptr<BaseCell>;
 
 /**
  * Convert a Cell to JSON format.

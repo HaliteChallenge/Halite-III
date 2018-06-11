@@ -8,8 +8,8 @@ namespace mapgen {
 
 class BasicGenerator : public Generator {
 private:
-    unsigned long width;       /**< The width of the map. */
-    unsigned long height;      /**< The height of the map. */
+    Map::dimension_type width;       /**< The width of the map. */
+    Map::dimension_type height;      /**< The height of the map. */
 public:
     std::string name() const override { return "basic"; }
 

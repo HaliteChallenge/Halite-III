@@ -9,9 +9,9 @@ void to_json(nlohmann::json &json, const Entity &entity) {
 }
 
 void from_json(const nlohmann::json &json, Entity &entity) {
-    entity = {json.at("entity_id").get<Entity::EntityID>(),
-              json.at("location").get<Location>(),
-              json.at("energy").get<unsigned char>()};
+    entity = {json.at("entity_id").get<decltype(entity.entity_id)>(),
+              json.at("location").get<decltype(entity.location)>(),
+              json.at("energy").get<decltype(entity.energy)>()};
 }
 
 std::ostream &operator<<(std::ostream &ostream, const Entity &entity) {

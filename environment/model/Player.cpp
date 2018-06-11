@@ -11,11 +11,11 @@ void to_json(nlohmann::json &json, const Player &player) {
 }
 
 void from_json(const nlohmann::json &json, Player &player) {
-    player = {json.at("player_id").get<long>(),
-              json.at("name").get<std::string>(),
-              json.at("energy").get<long>(),
-              json.at("factory_location").get<Location>(),
-              json.at("entities").get<Player::Entities>()};
+    player = {json.at("player_id").get<decltype(player.player_id)>(),
+              json.at("name").get<decltype(player.name)>(),
+              json.at("energy").get<decltype(player.energy)>(),
+              json.at("factory_location").get<decltype(player.factory_location)>(),
+              json.at("entities").get<decltype(player.entities)>()};
 }
 
 std::ostream &operator<<(std::ostream &ostream, const Player &player) {

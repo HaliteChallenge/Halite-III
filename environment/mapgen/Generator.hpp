@@ -10,6 +10,7 @@
 #include <random>
 
 #include "Player.hpp"
+#include "Map.hpp"
 
 #include "util/json.hpp"
 
@@ -23,11 +24,11 @@ enum class MapType {
 
 /** Parameters for map generation. */
 struct MapParameters {
-    MapType type;             /**< Type of the map. */
-    unsigned int seed;        /**< Random seed. */
-    unsigned long width;       /**< Width of the map. */
-    unsigned long height;      /**< Height of the map. */
-    unsigned long num_players; /**< Number of players for which to generate the map. */
+    MapType type;               /**< Type of the map. */
+    unsigned int seed;          /**< Random seed. */
+    Map::dimension_type width;  /**< Width of the map. */
+    Map::dimension_type height; /**< Height of the map. */
+    unsigned long num_players;  /**< Number of players for which to generate the map. */
 };
 
 /** Base class for Halite map generators. */
@@ -37,7 +38,7 @@ protected:
     std::mt19937 rng;
 
     /** Share the friend Map constructor with all Generator subclasses. */
-    hlt::Map Map(long width, long height) const;
+    static hlt::Map Map(Map::dimension_type width, Map::dimension_type height);
 
     /**
      * Construct Generator from parameters.

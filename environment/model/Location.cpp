@@ -53,8 +53,8 @@ void to_json(nlohmann::json &json, const Location &location) {
 }
 
 void from_json(const nlohmann::json &json, Location &location) {
-    location = {json.at("pos_x").get<long>(),
-                json.at("pos_y").get<long>()};
+    location = {json.at("pos_x").get<decltype(location.pos_x)>(),
+                json.at("pos_y").get<decltype(location.pos_y)>()};
 }
 
 }

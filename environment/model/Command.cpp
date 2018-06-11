@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "Command.hpp"
 
 namespace hlt {
@@ -9,7 +11,7 @@ void to_json(nlohmann::json &json, const Command &command) {
 void from_json(const nlohmann::json &json, Command &command) {
     const auto &type = json.at("type").get<std::string>();
     if (type == "move") {
-        command = std::make_shared<MoveCommand>(json);
+        command = std::make_unique<MoveCommand>(json);
     } else {
         // TODO: error case
     }
@@ -22,7 +24,7 @@ std::istream &operator>>(std::istream &istream, Command &command) {
     istream >> remainder;
     switch (command_type) {
     case 'm':
-        command = std::make_shared<MoveCommand>(remainder);
+        command = std::make_unique<MoveCommand>(remainder);
         break;
     default:
         // TODO: error case
@@ -38,7 +40,7 @@ void MoveCommand::to_json(nlohmann::json &json) const {
 }
 
 MoveCommand::MoveCommand(const nlohmann::json &json) :
-        entity_id(json.at("entity_id").get<Entity::EntityID>()),
+        entity_id(json.at("entity_id").get<decltype(MoveCommand::entity_id)>()),
         direction(static_cast<Direction>(json.at("direction").get<int>())) {}
 
 MoveCommand::MoveCommand(const std::string &bot_serial) {
