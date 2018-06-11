@@ -1,32 +1,68 @@
 #include "Player.hpp"
 
+/** The JSON key for player ID. */
+constexpr auto JSON_PLAYER_ID = "player_id";
+/** The JSON key for name. */
+constexpr auto JSON_NAME = "name";
+/** The JSON key for energy. */
+constexpr auto JSON_ENERGY = "energy";
+/** The JSON key for factory location. */
+constexpr auto JSON_FACTORY_LOCATION = "factory_location";
+/** The JSON key for entities. */
+constexpr auto JSON_ENTITIES = "entities";
+
 namespace hlt {
 
+/**
+ * Convert a Player to JSON format.
+ * @param[out] json The output JSON.
+ * @param player The Player to convert.
+ */
 void to_json(nlohmann::json &json, const Player &player) {
-    json = {{"player_id",        player.player_id},
-            {"name",             player.name},
-            {"energy",           player.energy},
-            {"factory_location", player.factory_location},
-            {"entities",         player.entities}};
+    json = {{JSON_PLAYER_ID,        player.player_id},
+            {JSON_NAME,             player.name},
+            {JSON_ENERGY,           player.energy},
+            {JSON_FACTORY_LOCATION, player.factory_location},
+            {JSON_ENTITIES,         player.entities}};
 }
 
+/**
+ * Convert an encoded Player from JSON format.
+ * @param json The JSON.
+ * @param[out] player The converted Player.
+ */
 void from_json(const nlohmann::json &json, Player &player) {
-    player = {json.at("player_id").get<decltype(player.player_id)>(),
-              json.at("name").get<decltype(player.name)>(),
-              json.at("energy").get<decltype(player.energy)>(),
-              json.at("factory_location").get<decltype(player.factory_location)>(),
-              json.at("entities").get<decltype(player.entities)>()};
+    player = {json.at(JSON_PLAYER_ID).get<decltype(player.player_id)>(),
+              json.at(JSON_NAME).get<decltype(player.name)>(),
+              json.at(JSON_ENERGY).get<decltype(player.energy)>(),
+              json.at(JSON_FACTORY_LOCATION).get<decltype(player.factory_location)>(),
+              json.at(JSON_ENTITIES).get<decltype(player.entities)>()};
 }
 
+/**
+ * Write a Player to bot serial format.
+ * @param ostream The output stream.
+ * @param player The Player to write.
+ * @return The output stream.
+ */
 std::ostream &operator<<(std::ostream &ostream, const Player &player) {
+    // Output player ID, number of entities, and current energy.
     ostream << player.player_id << " " << player.entities.size() << " " << player.energy << std::endl;
+    // Output a list of entities.
     for (const auto &entity : player.entities) {
         ostream << entity;
     }
     return ostream;
 }
 
+/**
+ * Write a list of Players to bot serial format.
+ * @param ostream The output stream.
+ * @param players The Players to write.
+ * @return The output stream.
+ */
 std::ostream &operator<<(std::ostream &ostream, const std::list<Player> &players) {
+    // Output each player one after another.
     for (const auto &player : players) {
         ostream << player;
     }

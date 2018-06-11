@@ -6,11 +6,11 @@
 namespace hlt {
 
 /** The four cardinal directions. */
-enum class Direction {
-    North = 0,
-    South = 1,
-    East = 2,
-    West = 3,
+enum class Direction : char {
+    North = 'n',
+    South = 's',
+    East = 'e',
+    West = 'w',
 };
 
 /**

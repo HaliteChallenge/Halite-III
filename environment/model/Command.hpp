@@ -60,6 +60,12 @@ class MoveCommand : public BaseCommand {
     Direction direction;         /**< The direction in which to move the entity. */
 
 public:
+    /** The name of the move command. */
+    static constexpr auto COMMAND_TYPE_NAME = "move";
+
+    /** The short name of the move command. */
+    static constexpr auto COMMAND_TYPE_SHORT = 'm';
+
     void to_json(nlohmann::json &json) const override;
 
     void act_on_map(Map &map) const override;

@@ -37,14 +37,21 @@ protected:
     /** The random number generator. */
     std::mt19937 rng;
 
-    /** Share the friend Map constructor with all Generator subclasses. */
-    static hlt::Map Map(Map::dimension_type width, Map::dimension_type height);
+    /**
+     * Share the friend Map constructor with all Generator subclasses.
+     * @param width The width of the Map to construct.
+     * @param height The height of the Map to construct.
+     * @return The constructed Map.
+     */
+    static hlt::Map Map(Map::dimension_type width, Map::dimension_type height) {
+        return hlt::Map::Map(width, height);
+    }
 
     /**
      * Construct Generator from parameters.
      * @param parameters The map generation parameters.
      */
-    explicit Generator(const MapParameters &parameters);
+    explicit Generator(const MapParameters &parameters) : rng(std::mt19937(parameters.seed)) {}
 
 public:
     /**  Get the name of this map generator. */

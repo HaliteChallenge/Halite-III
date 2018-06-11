@@ -38,8 +38,11 @@ std::ostream &operator<<(std::ostream &ostream, const Cell &cell);
 
 /** Abstract cell data type. Subclasses are intended to be data-only, referenced by a Cell object. */
 class BaseCell {
+    /** The production of the base cell. */
     static constexpr auto BASE_PRODUCTION = 0;
+    /** The passability of the base cell. */
     static constexpr auto BASE_PASSABLE = true;
+    /** The energy factor of the base cell. */
     static constexpr auto BASE_ENERGY_FACTOR = 0;
 
 public:
@@ -88,6 +91,9 @@ public:
 
 class NormalCell : public ProductionCell {
 public:
+    /** The name of the normal cell. */
+    static constexpr auto CELL_TYPE_NAME = "normal";
+
     void to_json(nlohmann::json &json) const override;
 
     std::string to_bot_serial() const override;
@@ -108,6 +114,9 @@ public:
 /** An obstacle cell, with production but not passable. */
 class ObstacleCell : public ProductionCell {
 public:
+    /** The name of the obstacle cell. */
+    static constexpr auto CELL_TYPE_NAME = "obstacle";
+
     bool is_passable() const override { return false; };
 
     void to_json(nlohmann::json &json) const override;
@@ -129,8 +138,12 @@ public:
 
 /** A cell with an augmenting/diminishing energy factor. */
 class EnergyFactorCell : public ProductionCell {
+    /** The energy factor of the cell. */
     long _energy_factor;
 public:
+    /** The name of the energy factor cell. */
+    static constexpr auto CELL_TYPE_NAME = "energy_factor";
+
     long energy_factor() const override { return _energy_factor; };
 
     void to_json(nlohmann::json &json) const override;
@@ -155,6 +168,9 @@ public:
 /** A factory cell that has no production. */
 class FactoryCell : public BaseCell {
 public:
+    /** The name of the factory cell. */
+    static constexpr auto CELL_TYPE_NAME = "factory";
+
     void to_json(nlohmann::json &json) const override;
 
     std::string to_bot_serial() const override;

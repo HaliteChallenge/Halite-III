@@ -1,67 +1,133 @@
 #include "Cell.hpp"
 
+/** The JSON key for cell type. */
+constexpr auto JSON_TYPE_KEY = "type";
+/** The JSON key for production. */
+constexpr auto JSON_PRODUCTION_KEY = "production";
+/** The JSON key for energy factor. */
+constexpr auto JSON_ENERGY_FACTOR_KEY = "energy_factor";
+
 namespace hlt {
 
+/**
+ * Convert a Cell to JSON format.
+ * @param[out] json The output JSON.
+ * @param cell The cell to convert.
+ */
 void to_json(nlohmann::json &json, const Cell &cell) { cell->to_json(json); }
 
+/**
+ * Convert an encoded Cell from JSON format.
+ * @param json The JSON.
+ * @param[out] cell The converted cell.
+ */
 void from_json(const nlohmann::json &json, Cell &cell) {
-    const auto &type = json.at("type").get<std::string>();
-    if (type == "normal") {
+    // The type field determines the Cell subclass that will be instantiated.
+    const auto &type = json.at(JSON_TYPE_KEY).get<std::string>();
+    if (type == NormalCell::CELL_TYPE_NAME) {
         cell = std::make_unique<NormalCell>(json);
-    } else if (type == "obstacle") {
+    } else if (type == ObstacleCell::CELL_TYPE_NAME) {
         cell = std::make_unique<ObstacleCell>(json);
-    } else if (type == "energy_factor") {
+    } else if (type == EnergyFactorCell::CELL_TYPE_NAME) {
         cell = std::make_unique<EnergyFactorCell>(json);
-    } else if (type == "factory") {
+    } else if (type == FactoryCell::CELL_TYPE_NAME) {
         cell = std::make_unique<FactoryCell>(json);
     } else {
         // TODO: error case
     }
 }
 
+/**
+ * Write a Cell to bot serial format.
+ * @param ostream The output stream.
+ * @param cell The cell to write.
+ * @return The output stream.
+ */
 std::ostream &operator<<(std::ostream &ostream, const Cell &cell) {
     return ostream << cell->to_bot_serial() << std::endl;
 }
 
+/**
+ * Create ProductionCell from JSON.
+ * @param json The JSON.
+ */
 ProductionCell::ProductionCell(const nlohmann::json &json) :
-        _production(json.at("production").get<decltype(ProductionCell::_production)>()) {}
+        _production(json.at(JSON_PRODUCTION_KEY).get<decltype(ProductionCell::_production)>()) {}
 
+/**
+ * Convert a NormalCell to JSON format.
+ * @param[out] json The JSON output.
+ */
 void NormalCell::to_json(nlohmann::json &json) const {
-    json = {{"type",       "normal"},
-            {"production", production()}};
+    json = {{JSON_TYPE_KEY,       CELL_TYPE_NAME},
+            {JSON_PRODUCTION_KEY, production()}};
 }
 
+/**
+ * Convert a NormalCell to bot serial format.
+ * @return The formatted output.
+ */
 std::string NormalCell::to_bot_serial() const {
-    return "normal " + std::to_string(production());
+    return std::string(CELL_TYPE_NAME) + " " + std::to_string(production());
 }
 
+/**
+ * Convert an ObstacleCell to JSON format.
+ * @param[out] json The JSON output.
+ */
 void ObstacleCell::to_json(nlohmann::json &json) const {
-    json = {{"type",       "obstacle"},
-            {"production", production()}};
+    json = {{JSON_TYPE_KEY,       CELL_TYPE_NAME},
+            {JSON_PRODUCTION_KEY, production()}};
 }
 
+/**
+ * Convert a ObstacleCell to bot serial format.
+ * @return The formatted output.
+ */
 std::string ObstacleCell::to_bot_serial() const {
-    return "obstacle " + std::to_string(production());
+    return std::string(CELL_TYPE_NAME) + " " + std::to_string(production());
 }
 
+/**
+ * Convert an EnergyFactorCell to JSON format.
+ * @param[out] json The JSON output.
+ */
 void EnergyFactorCell::to_json(nlohmann::json &json) const {
-    json = {{"type",          "energy_factor"},
-            {"production",    production()},
-            {"energy_factor", _energy_factor}};
+    json = {{JSON_TYPE_KEY,          CELL_TYPE_NAME},
+            {JSON_PRODUCTION_KEY,    production()},
+            {JSON_ENERGY_FACTOR_KEY, _energy_factor}};
 }
 
+/**
+ * Convert a EnergyFactorCell to bot serial format.
+ * @return The formatted output.
+ */
 std::string EnergyFactorCell::to_bot_serial() const {
-    return "energy_factor " + std::to_string(production()) + " " + std::to_string(_energy_factor);
+    return std::string(JSON_ENERGY_FACTOR_KEY) + " " +
+           std::to_string(production()) + " " +
+           std::to_string(_energy_factor);
 }
 
+/**
+ * Create EnergyFactorCell from JSON.
+ * @param json The JSON.
+ */
 EnergyFactorCell::EnergyFactorCell(const nlohmann::json &json) :
         ProductionCell(json),
-        _energy_factor(json.at("energy_factor").get<decltype(EnergyFactorCell::_energy_factor)>()) {}
+        _energy_factor(json.at(CELL_TYPE_NAME).get<decltype(EnergyFactorCell::_energy_factor)>()) {}
 
+/**
+ * Convert a FactoryCell to JSON format.
+ * @param[out] json The JSON output.
+ */
 void FactoryCell::to_json(nlohmann::json &json) const {
-    json = {"type", "factory"};
+    json = {JSON_TYPE_KEY, CELL_TYPE_NAME};
 }
 
-std::string FactoryCell::to_bot_serial() const { return "factory"; }
+/**
+ * Convert a FactoryCell to bot serial format.
+ * @return The formatted output.
+ */
+std::string FactoryCell::to_bot_serial() const { return CELL_TYPE_NAME; }
 
 }
