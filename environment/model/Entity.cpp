@@ -1,38 +1,47 @@
 #include "Entity.hpp"
 
+using namespace std::literals::string_literals;
+
+/** The JSON key for entity ID. */
+constexpr auto JSON_ENTITY_ID_KEY = "entity_id";
+/** The JSON key for location. */
+constexpr auto JSON_LOCATION_KEY = "location";
+/** The JSON key for energy. */
+constexpr auto JSON_ENERGY_KEY = "energy";
+
 namespace hlt {
 
+/**
+ * Convert an Entity to JSON format.
+ * @param[out] json The output JSON.
+ * @param entity The entity to convert.
+ */
 void to_json(nlohmann::json &json, const Entity &entity) {
-    json = {{"entity_id", entity.entity_id},
-            {"location",  entity.location},
-            {"energy",    entity.energy}};
+    json = {{JSON_ENTITY_ID_KEY, entity.entity_id},
+            {JSON_LOCATION_KEY,  entity.location},
+            {JSON_ENERGY_KEY,    entity.energy}};
 }
 
+/**
+ * Convert an encoded Entity from JSON format.
+ * @param json The JSON.
+ * @param[out] entity The converted entity.
+ */
 void from_json(const nlohmann::json &json, Entity &entity) {
-    entity = {json.at("entity_id").get<Entity::EntityID>(),
-              json.at("location").get<Location>(),
-              json.at("energy").get<unsigned char>()};
+    entity = {json.at(JSON_ENTITY_ID_KEY).get<decltype(entity.entity_id)>(),
+              json.at(JSON_LOCATION_KEY).get<decltype(entity.location)>(),
+              json.at(JSON_ENERGY_KEY).get<decltype(entity.energy)>()};
 }
 
-std::ostream &operator<<(std::ostream &os, const Entity &entity) {
-    return os << entity.entity_id << " " << entity.energy << std::endl;
+/**
+ * Write an Entity to bot serial format.
+ * @param ostream The output stream.
+ * @param entity The entity to write.
+ * @return The output stream.
+ */
+std::ostream &operator<<(std::ostream &ostream, const Entity &entity) {
+    // Output the entity ID then its energy.
+    return ostream << entity.entity_id << " " << entity.energy << std::endl;
 }
-
-bool operator==(const Entity &e1, const Entity &e2) {
-    return e1.entity_id == e2.entity_id;
-}
-
-bool operator<(const Entity &e1, const Entity &e2) {
-    return e1.entity_id < e2.entity_id;
-}
-
-Entity::Entity(Entity::EntityID entity_id, const Location &location, unsigned char energy) :
-        entity_id(entity_id), location(location), energy(energy) {}
-
-Entity EntityFactory::new_entity(const Location &location) {
-    return {next_entity++, location};
-}
-
-EntityFactory::EntityFactory(Entity::EntityID next_entity) : next_entity(next_entity) {}
 
 }

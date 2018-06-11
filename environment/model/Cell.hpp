@@ -9,30 +9,179 @@
 
 namespace hlt {
 
-/** A cell on the grid. */
-struct Cell {
-    /** The types of cells. */
-    enum class CellType {
-        Normal = 0,
-        Factory = 1,
-    };
+class BaseCell;
 
-    CellType type;
-    long production;
-    bool impassable;
+/** Container type for cells, exposed to outside users like Map. */
+using Cell = std::unique_ptr<BaseCell>;
 
-    friend void to_json(nlohmann::json &json, const Cell &cell);
+/**
+ * Convert a Cell to JSON format.
+ * @param[out] json The output JSON.
+ * @param cell The cell to convert.
+ */
+void to_json(nlohmann::json &json, const Cell &cell);
 
-    friend void from_json(const nlohmann::json &json, Cell &cell);
+/**
+ * Convert an encoded Cell from JSON format.
+ * @param json The JSON.
+ * @param[out] cell The converted cell.
+ */
+void from_json(const nlohmann::json &json, Cell &cell);
 
-    friend std::ostream &operator<<(std::ostream &os, const Cell &cell);
+/**
+ * Write a Cell to bot serial format.
+ * @param ostream The output stream.
+ * @param cell The cell to write.
+ * @return The output stream.
+ */
+std::ostream &operator<<(std::ostream &ostream, const Cell &cell);
 
-    Cell(const CellType &type, long production, bool impassable = false);
+/** Abstract cell data type. Subclasses are intended to be data-only, referenced by a Cell object. */
+class BaseCell {
+    /** The production of the base cell. */
+    static constexpr auto BASE_PRODUCTION = 0;
+    /** The passability of the base cell. */
+    static constexpr auto BASE_PASSABLE = true;
+    /** The energy factor of the base cell. */
+    static constexpr auto BASE_ENERGY_FACTOR = 0;
 
-    Cell();
+public:
+    /** Get the production of this cell. */
+    virtual long production() const { return BASE_PRODUCTION; }
+
+    /** Get whether this cell is passable by an entity. */
+    virtual bool is_passable() const { return BASE_PASSABLE; }
+
+    /** Get the energy augmenting/dampening factor for the cell. */
+    virtual long energy_factor() const { return BASE_ENERGY_FACTOR; }
+
+    /**
+     * JSON encoding function, dispatched on cell subtypes.
+     * @param[out] json The JSON output.
+     */
+    virtual void to_json(nlohmann::json &json) const = 0;
+
+    /** Convert the Cell to bot serial format. Used by base class operator<<. */
+    virtual std::string to_bot_serial() const = 0;
+
+    virtual ~BaseCell() = default;
+};
+
+/** A cell on the grid with production. */
+class ProductionCell : public BaseCell {
+    /** The production of the cell. */
+    long _production;
+public:
+    long production() const override { return _production; }
+
+    /**
+     * Create ProductionCell from production amount.
+     * @param production The production amount.
+     */
+    explicit ProductionCell(long production) : _production(production) {}
+
+    /**
+     * Create ProductionCell from JSON.
+     * @param json The JSON.
+     */
+    explicit ProductionCell(const nlohmann::json &json);
+
+    ~ProductionCell() override = default;
+};
+
+class NormalCell : public ProductionCell {
+public:
+    /** The name of the normal cell. */
+    static constexpr auto CELL_TYPE_NAME = "normal";
+
+    void to_json(nlohmann::json &json) const override;
+
+    std::string to_bot_serial() const override;
+
+    /**
+     * Create NormalCell from production amount.
+     * @param production The production amount.
+     */
+    explicit NormalCell(long production) : ProductionCell(production) {}
+
+    /**
+     * Create NormalCell from JSON.
+     * @param json The JSON.
+     */
+    explicit NormalCell(const nlohmann::json &json) : ProductionCell(json) {}
+};
+
+/** An obstacle cell, with production but not passable. */
+class ObstacleCell : public ProductionCell {
+public:
+    /** The name of the obstacle cell. */
+    static constexpr auto CELL_TYPE_NAME = "obstacle";
+
+    bool is_passable() const override { return false; };
+
+    void to_json(nlohmann::json &json) const override;
+
+    std::string to_bot_serial() const override;
+
+    /**
+     * Create ObstacleCell from production amount.
+     * @param production The production amount.
+     */
+    explicit ObstacleCell(long production) : ProductionCell(production) {}
+
+    /**
+     * Create ObstacleCell from JSON.
+     * @param json The JSON.
+     */
+    explicit ObstacleCell(const nlohmann::json &json) : ProductionCell(json) {}
+};
+
+/** A cell with an augmenting/diminishing energy factor. */
+class EnergyFactorCell : public ProductionCell {
+    /** The energy factor of the cell. */
+    long _energy_factor;
+public:
+    /** The name of the energy factor cell. */
+    static constexpr auto CELL_TYPE_NAME = "energy_factor";
+
+    long energy_factor() const override { return _energy_factor; };
+
+    void to_json(nlohmann::json &json) const override;
+
+    std::string to_bot_serial() const override;
+
+    /**
+     * Create EnergyFactorCell from production amount and energy factor.
+     * @param production The production amount.
+     * @param energy_factor The energy factor.
+     */
+    EnergyFactorCell(long production, long energy_factor) :
+            ProductionCell(production), _energy_factor(energy_factor) {}
+
+    /**
+     * Create EnergyFactorCell from JSON.
+     * @param json The JSON.
+     */
+    explicit EnergyFactorCell(const nlohmann::json &json);
+};
+
+/** A factory cell that has no production. */
+class FactoryCell : public BaseCell {
+public:
+    /** The name of the factory cell. */
+    static constexpr auto CELL_TYPE_NAME = "factory";
+
+    void to_json(nlohmann::json &json) const override;
+
+    std::string to_bot_serial() const override;
+
+    /**
+     * Create FactoryCell from JSON.
+     * @param json The JSON.
+     */
+    explicit FactoryCell(const nlohmann::json &json) {}
 };
 
 }
-
 
 #endif // CELL_HPP

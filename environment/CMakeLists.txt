@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(environment)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -13,8 +13,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall -Wno-sign-compare -Wno-unus
 set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
+include_directories(${CMAKE_SOURCE_DIR}/config)
 include_directories(${CMAKE_SOURCE_DIR}/core)
 include_directories(${CMAKE_SOURCE_DIR}/core/mapgen)
+include_directories(${CMAKE_SOURCE_DIR}/logging)
 include_directories(${CMAKE_SOURCE_DIR}/networking)
 include_directories(${CMAKE_SOURCE_DIR}/tclap)
 include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib)

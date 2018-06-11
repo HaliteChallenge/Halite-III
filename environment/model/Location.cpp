@@ -1,36 +1,57 @@
 #include "Location.hpp"
 #include "Map.hpp"
 
-#include "util/json.hpp"
+/** The JSON key for x-coordinate. */
+constexpr auto JSON_POS_X = "pos_x";
+/** The JSON key for y-coordinate. */
+constexpr auto JSON_POS_Y = "pos_y";
 
 namespace hlt {
 
-std::istream &operator>>(std::istream &is, Direction &direction) {
-    char d;
-    is >> d;
-    switch (d) {
-    case 'N':
+/**
+ * Read a Direction from bot serial format.
+ * @param istream The input stream.
+ * @param[out] direction The direction to read.
+ * @return The input stream.
+ */
+std::istream &operator>>(std::istream &istream, Direction &direction) {
+    // Read one character corresponding to the type, and dispatch based on its value.
+    char direction_type;
+    istream >> direction_type;
+    switch (direction_type) {
+    case static_cast<char>(Direction::North):
         direction = Direction::North;
         break;
-    case 'S':
+    case static_cast<char>(Direction::South):
         direction = Direction::South;
         break;
-    case 'E':
+    case static_cast<char>(Direction::East):
         direction = Direction::East;
         break;
-    case 'W':
+    case static_cast<char>(Direction::West):
         direction = Direction::West;
         break;
     default:
+        // TODO: error case
         break;
     }
-    return is;
+    return istream;
 }
 
+/**
+ * Manhattan distance to another Location.
+ * @param other The other Location.
+ */
 long Location::distance(const Location &other) const {
+    // TODO: wrap around edges
     return abs(other.pos_x - pos_x) + abs(other.pos_y - pos_y);
 }
 
+/**
+ * Move this Location in one direction.
+ * @param direction The Direction in which to move.
+ * @param map The Map on which to move.
+ */
 void Location::move_toward(const Direction &direction, const Map &map) {
     switch (direction) {
     case Direction::North:
@@ -48,22 +69,24 @@ void Location::move_toward(const Direction &direction, const Map &map) {
     }
 }
 
+/**
+ * Convert a Location to JSON format.
+ * @param[out] json The output JSON.
+ * @param location The Location to convert.
+ */
 void to_json(nlohmann::json &json, const Location &location) {
-    json = {{"pos_x", location.pos_x},
-            {"pos_y", location.pos_y}};
+    json = {{JSON_POS_X, location.pos_x},
+            {JSON_POS_Y, location.pos_y}};
 }
 
+/**
+ * Convert an encoded Location from JSON format.
+ * @param json The JSON.
+ * @param[out] location The converted Location.
+ */
 void from_json(const nlohmann::json &json, Location &location) {
-    location = {json.at("pos_x").get<long>(),
-                json.at("pos_y").get<long>()};
+    location = {json.at(JSON_POS_X).get<decltype(location.pos_x)>(),
+                json.at(JSON_POS_Y).get<decltype(location.pos_y)>()};
 }
-
-bool operator==(const Location &l1, const Location &l2) {
-    return l1.pos_x == l2.pos_x && l1.pos_y == l2.pos_y;
-}
-
-Location::Location(long pos_x, long pos_y) : pos_x(pos_x), pos_y(pos_y) {}
-
-Location::Location() = default;
 
 }

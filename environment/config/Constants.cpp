@@ -1,7 +1,3 @@
-//
-// Created by David Li on 7/17/17.
-//
-
 #include "Constants.hpp"
 
 auto hlt::GameConstants::to_json() const -> nlohmann::json {

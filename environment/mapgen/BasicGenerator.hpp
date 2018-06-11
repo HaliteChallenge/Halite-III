@@ -6,17 +6,21 @@
 namespace hlt {
 namespace mapgen {
 
-class BasicGenerator : Generator {
+class BasicGenerator : public Generator {
 private:
-    unsigned int width;
-    unsigned int height;
-    unsigned int num_players;
+    Map::dimension_type width;       /**< The width of the map. */
+    Map::dimension_type height;      /**< The height of the map. */
 public:
-    std::string name() const override;
+    std::string name() const override { return "basic"; }
 
     hlt::Map generate(std::list<Player> &players) override;
 
-    explicit BasicGenerator(const MapParameters &parameters);
+    /**
+     * Construct BasicGenerator from parameters.
+     * @param parameters The map generation parameters.
+     */
+    explicit BasicGenerator(const MapParameters &parameters) :
+            Generator(parameters), width(parameters.width), height(parameters.height) {}
 };
 
 }

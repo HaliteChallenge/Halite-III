@@ -1,31 +1,25 @@
 #include "BasicGenerator.hpp"
-#include "Map.hpp"
+
+/** Base production of the map cells. */
+constexpr auto PRODUCTION = 10;
 
 namespace hlt {
 namespace mapgen {
 
-std::string BasicGenerator::name() const {
-    return "Basic Generator";
-}
-
-hlt::Map BasicGenerator::generate(std::list<Player> &players) {
+/**
+ * Generate a map based on a list of players.
+ * @param players The players on the map.
+ */
+hlt::Map BasicGenerator::generate(std::list<Player> &players) const {
     auto map = Map(width, height);
+    // Each cell in the map is simply NormalCell with a fixed production, for now.
     for (auto &row : map.grid) {
         for (auto &cell : row) {
-            cell.production = 10;
-            cell.type = Cell::CellType::Normal;
+            cell = std::make_unique<NormalCell>(PRODUCTION);
         }
-    }
-    unsigned long player_gap = width / players.size();
-    for (auto &player : players) {
-        map.grid[height / 2][player.player_id * player_gap] = player.factory_cell;
     }
     return map;
 }
-
-BasicGenerator::BasicGenerator(const MapParameters &parameters) : Generator(parameters), width(parameters.width),
-                                                                  height(parameters.height),
-                                                                  num_players(parameters.num_players) {}
 
 }
 }

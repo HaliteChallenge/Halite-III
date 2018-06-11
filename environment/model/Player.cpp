@@ -1,57 +1,72 @@
 #include "Player.hpp"
 
+/** The JSON key for player ID. */
+constexpr auto JSON_PLAYER_ID = "player_id";
+/** The JSON key for name. */
+constexpr auto JSON_NAME = "name";
+/** The JSON key for energy. */
+constexpr auto JSON_ENERGY = "energy";
+/** The JSON key for factory location. */
+constexpr auto JSON_FACTORY_LOCATION = "factory_location";
+/** The JSON key for entities. */
+constexpr auto JSON_ENTITIES = "entities";
+
 namespace hlt {
 
+/**
+ * Convert a Player to JSON format.
+ * @param[out] json The output JSON.
+ * @param player The Player to convert.
+ */
 void to_json(nlohmann::json &json, const Player &player) {
-    json = {{"player_id",    player.player_id},
-            {"name",         player.name},
-            {"energy",       player.energy},
-            {"factory_cell", player.factory_cell},
-            {"entities",     player.entities}};
+    json = {{JSON_PLAYER_ID,        player.player_id},
+            {JSON_NAME,             player.name},
+            {JSON_ENERGY,           player.energy},
+            {JSON_FACTORY_LOCATION, player.factory_location},
+            {JSON_ENTITIES,         player.entities}};
 }
 
+/**
+ * Convert an encoded Player from JSON format.
+ * @param json The JSON.
+ * @param[out] player The converted Player.
+ */
 void from_json(const nlohmann::json &json, Player &player) {
-    player = {json.at("player_id").get<int>(),
-              json.at("name").get<std::string>(),
-              json.at("energy").get<int>(),
-              json.at("factory_cell").get<Cell>(),
-              json.at("entities").get<Player::Entities>()};
+    player = {json.at(JSON_PLAYER_ID).get<decltype(player.player_id)>(),
+              json.at(JSON_NAME).get<decltype(player.name)>(),
+              json.at(JSON_ENERGY).get<decltype(player.energy)>(),
+              json.at(JSON_FACTORY_LOCATION).get<decltype(player.factory_location)>(),
+              json.at(JSON_ENTITIES).get<decltype(player.entities)>()};
 }
 
-std::ostream &operator<<(std::ostream &os, const Player &player) {
-    os << player.player_id << " " << player.entities.size() << " " << player.energy << std::endl;
+/**
+ * Write a Player to bot serial format.
+ * @param ostream The output stream.
+ * @param player The Player to write.
+ * @return The output stream.
+ */
+std::ostream &operator<<(std::ostream &ostream, const Player &player) {
+    // Output player ID, number of entities, and current energy.
+    ostream << player.player_id << " " << player.entities.size() << " " << player.energy << std::endl;
+    // Output a list of entities.
     for (const auto &entity : player.entities) {
-        os << entity;
+        ostream << entity;
     }
-    return os;
+    return ostream;
 }
 
-bool operator<(const Player &p1, const Player &p2) {
-    return p1.player_id < p2.player_id;
-}
-
-bool operator==(const Player &p1, const Player &p2) {
-    return p1.player_id == p2.player_id;
-}
-
-std::ostream &operator<<(std::ostream &os, const std::list<Player> &players) {
+/**
+ * Write a list of Players to bot serial format.
+ * @param ostream The output stream.
+ * @param players The Players to write.
+ * @return The output stream.
+ */
+std::ostream &operator<<(std::ostream &ostream, const std::list<Player> &players) {
+    // Output each player one after another.
     for (const auto &player : players) {
-        os << player;
+        ostream << player;
     }
-    return os;
+    return ostream;
 }
-
-Player PlayerFactory::new_player(const std::string &name) {
-    return Player(next_player++, name);
-}
-
-PlayerFactory::PlayerFactory(int next_player) : next_player(next_player) {}
-
-Player::Player(int player_id, const std::string &name) : player_id(player_id), name(name), energy(0),
-                                                         factory_cell(Cell(Cell::CellType::Factory, 0, true)) {}
-
-Player::Player(int player_id, const std::string &name, int energy, Cell factory_cell, Player::Entities entities) :
-        player_id(player_id), name(name), energy(energy), factory_cell(factory_cell),
-        entities(std::move(entities)) {}
 
 }
