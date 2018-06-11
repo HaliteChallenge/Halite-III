@@ -50,6 +50,8 @@ public:
      * @param map The Map to act on.
      */
     virtual void act_on_map(Map &map) const = 0;
+
+    virtual ~BaseCommand() = default;
 };
 
 /** Command for moving an entity in a direction. */

@@ -60,6 +60,8 @@ public:
 
     /** Convert the Cell to bot serial format. Used by base class operator<<. */
     virtual std::string to_bot_serial() const = 0;
+
+    virtual ~BaseCell() = default;
 };
 
 /** A cell on the grid with production. */
@@ -80,6 +82,8 @@ public:
      * @param json The JSON.
      */
     explicit ProductionCell(const nlohmann::json &json);
+
+    ~ProductionCell() override = default;
 };
 
 class NormalCell : public ProductionCell {
