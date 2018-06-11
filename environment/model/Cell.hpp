@@ -179,7 +179,7 @@ public:
      * Create FactoryCell from JSON.
      * @param json The JSON.
      */
-    explicit FactoryCell(const nlohmann::json &json) {}
+    explicit FactoryCell(const nlohmann::json &json) { (void) json; }
 };
 
 }

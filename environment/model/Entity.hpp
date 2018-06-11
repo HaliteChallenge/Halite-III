@@ -31,10 +31,10 @@ struct Entity {
     friend void from_json(const nlohmann::json &json, Entity &entity);
 
     /** Test two Entity instances for equality. */
-    bool operator==(const Entity &other) { return entity_id == other.entity_id; }
+    bool operator==(const Entity &other) const { return entity_id == other.entity_id; }
 
     /** Order two Entity instances by ID. */
-    bool operator<(const Entity &other) { return entity_id < other.entity_id; }
+    bool operator<(const Entity &other) const { return entity_id < other.entity_id; }
 
     /**
      * Write an Entity to bot serial format.
