@@ -9,31 +9,46 @@ namespace hlt {
         /**
          * Map generator using a "tiling" method. This generates a single tile of a map, and then duplicates
          * that tile for each player, arranging the tiles into an appropriate number of rows and columns.
-         * The size of the tile is determined from the desired total hieght and width of the map,
+         * The size of the tile is determined from the desired total height and width of the map,
          * and the number of players.
+         *
+         * TileGenerator class is intended to be a super class implementing tiling functionality for subclasses that
+         * implement different methods of generating single tile
          */
-        class TileGenerator : Generator {
-        private:
-            long width; /**< width (in cells) of the final map */
-            long height; /**< height (in cells) of the final map */
-            unsigned long tile_width; /**< width (in cells) of a single tile */
-            unsigned long tile_height; /**< width (in cells) of a single tile */
+        class TileGenerator : protected Generator {
             unsigned long num_tile_rows; /**< number of rows of tiles in map */
             unsigned long num_tile_cols; /**< number of cols of tiles in map */
             long num_players; /**< number of players who will be on the map */
-            long blur_function(const long x_coord, const long y_coord, const hlt::Map &map) const;
+            Map::dimension_type width; /**< width (in cells) of the final map */
+            Map::dimension_type height; /**< height (in cells) of the final map */
+        protected:
+            Map::dimension_type tile_width; /**< width (in cells) of a single tile */
+            Map::dimension_type tile_height; /**< width (in cells) of a single tile */
+
+
+            /** Tile a map from a single tile
+             *
+             * @param factory_y, factory_x: On a tile, the y and x coordinate a factory should be placed
+             * @param tile: A filled map of a single tile. Dimensions tile_height, tile_width. All cells should already be
+             * initialized, but no factories should be placed
+             * @param players: A list of players of the game. This function will set the location of each player's factory
+             * @return map: A map tiled by the input tile. All cells in the map will be initialized.
+             * Effects: Players will have factory locations initialized
+             */
+            hlt::Map tile_map(const Map::dimension_type factory_y, const Map::dimension_type factory_x, const hlt::Map &tile, std::list<hlt::Player> &players);
         public:
             /** name is function to allow for possibly dynamically named subclasses */
-            std::string name() const override;
+            std::string name() const override { return "tile"; };
 
-            /** Generate a map given a list of players
-             *
-             * @param players: list of players of the game. Passed in for the purpose
-             *      of assigning each player's factory to a fell
-             * @return map with cells initialized (ie given production values, or
-             *      assigned to alternate cell type)
-             */
-            hlt::Map generate(std::list<hlt::Player> &players) override;
+//            /** Generate a map given a list of players
+//             * Implemented in subclasses with various methods for generating a tile
+//             *
+//             * @param players: list of players of the game. Passed in for the purpose
+//             *      of assigning each player's factory to a cell
+//             * @return map with cells initialized (ie given production values, or
+//             *      assigned to alternate cell type)
+//             */
+//            virtual hlt::Map generate(std::list<hlt::Player> &players) override = 0;
 
 
             /** TileGenerator class constructor

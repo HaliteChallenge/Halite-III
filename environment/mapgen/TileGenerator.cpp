@@ -1,104 +1,47 @@
 #include "TileGenerator.hpp"
 #include "Map.hpp"
-#include "MapConstants.hpp"
 
 namespace hlt {
     namespace mapgen {
-        // Blur function takes in map, and a cell, and calculates a new production value for that cell
-        // based on some blurring with surrounding cells
-        // currently blurs entire map, not just a tile
-        long TileGenerator::blur_function(const long x_coord, const long y_coord, const hlt::Map &map) const {
-            // rename to use more easily
-            double BLUR_FACTOR = hlt::MapConstants::get().BLUR_FACTOR;
-            long left_coord = (x_coord - 1 + width) % width;
-            long right_coord = (x_coord + 1) % width;
-            long above_coord = (y_coord - 1 + height) % height;
-            long below_coord = (y_coord + 1) % height;
 
-            /** In determining post blur production value, give current production value of cell weight BLUR_FACTOR
-             * and production of neighbors weight (1 - BLUR_FACTOR)
-             * This means that *each* neighbor's production gets weight (1 - BLUR_FACTOR) / 4
-             */
-             // just truncate fractions for now
-             long new_production = (long) (map.grid[y_coord][x_coord] -> production() * BLUR_FACTOR
-                                            + map.grid[y_coord][left_coord] -> production() * (1 - BLUR_FACTOR) / 4
-                                            + map.grid[y_coord][right_coord]-> production() * (1 - BLUR_FACTOR) / 4
-                                            + map.grid[above_coord][x_coord] -> production() * (1 - BLUR_FACTOR) / 4
-                                            + map.grid[below_coord][x_coord] -> production() * (1 - BLUR_FACTOR) / 4);
-             return new_production;
-        }
-
-        std::string TileGenerator::name() const {
-            return "Tile Generator";
-        }
-
-
-        hlt::Map TileGenerator::generate(std::list<hlt::Player> &players) {
-
+        hlt::Map TileGenerator::tile_map(const Map::dimension_type factory_y, const Map::dimension_type factory_x,
+                                const hlt::Map &tile, std::list<hlt::Player> &players) {
             auto map = Map(width, height);
-            for (long row = 0; row < tile_height; ++row) {
-                for (long col = 0; col < tile_width; ++col) {
-                    // randomly generate a production value
-                    // TODO explain usage of this distribution function
-                    // Also, could inherit/use class that generates a single tile for differently generated maps
-                    const auto min_cell = hlt::MapConstants::get().MIN_CELL_PRODUCTION;
-                    const auto max_cell = hlt::MapConstants::get().MIN_CELL_PRODUCTION;
-                    unsigned long production = (unsigned long) rng() / rng.max() * (max_cell - min_cell) + min_cell;
-                    // TODO update with Charles' new classes post pull request
-                    map.grid[row][col] = std::make_unique<NormalCell>(production);
-                }
-            }
-
-            // Tile the whole map
-            // TODO: assess algorithm for cache performance
+            // Copy the tile over the map
             for (long player_row = 0; player_row < num_tile_rows; ++player_row) {
                 for (long player_col = 0; player_col < num_tile_cols; ++player_col) {
                     for (long tile_row = 0; tile_row < tile_height; ++tile_row) {
                         for (long tile_col = 0; tile_col < tile_width; ++tile_col) {
                             map.grid[player_row * tile_height + tile_row][player_col * tile_width + tile_col] =
-                                    std::make_unique<NormalCell>(map.grid[tile_row][tile_col] -> production());
+                                    std::make_unique<NormalCell>(tile.grid[tile_row][tile_col] -> production());
                         }
                     }
                 }
             }
 
-            // Blur the whole map
-            for (long row = 0; row < height; ++row) {
-                for (long col = 0; col < width; ++col) {
-                    //production is a private member, so create new cell with new production value
-                    map.grid[row][col] = std::make_unique<NormalCell>(blur_function(row, col, map));
-                }
-            }
-
-            // Assign factory location randomly within square to start with
-            // TODO: determine alternate method/modular method of factory location
-            // TODO: check for best random distribution / long vs. int
-            // Factory locations are assigned last, as blurring assumes all squares have a production value
-            unsigned long factory_pos_x = (unsigned long) rng() / rng.max() * tile_width;
-            unsigned long factory_pos_y = (unsigned long) rng() / rng.max() * tile_height;
+            // Place a factory for each player on the map at corresponding relative locations and update each
+            // player to know their factory's location
             long player_idx = 0;
             for (auto &player : players) {
-                long player_factory_x = (player_idx % num_tile_cols) + factory_pos_x;
-                long player_factory_y = (player_idx / num_tile_cols) + factory_pos_y;
+                const auto player_factory_x = (player_idx % num_tile_cols) * tile_width + factory_x;
+                const auto player_factory_y = (player_idx / num_tile_cols) * tile_height + factory_y;
                 map.grid[player_factory_y][player_factory_x] = std::make_unique<FactoryCell>();
 
-                hlt::Location factory_location {player_factory_x, player_factory_y};
+                hlt::Location factory_location {(long) player_factory_x, (long) player_factory_y};
                 player.factory_location = factory_location;
 
                 player_idx++;
             }
 
-
             return map;
+
         }
-
-
 
         TileGenerator::TileGenerator(const MapParameters &parameters) :
                 Generator(parameters),
+                num_players(parameters.num_players),
                 width(parameters.width),
-                height(parameters.height),
-                num_players(parameters.num_players) {
+                height(parameters.height){
 
             // Ensure that the map can be subdivided into partitions for a given number of players
             // ie: a 64x64 map cannot be (most basic definition of) symmetrical for 6 players
