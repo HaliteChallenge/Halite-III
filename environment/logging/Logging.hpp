@@ -1,6 +1,7 @@
 #ifndef LOGGING_HPP
 #define LOGGING_HPP
 
+#include <mutex>
 #include <string>
 
 /**
@@ -23,6 +24,9 @@ struct Logging {
         Error = 3,   /**< For important and potentially fatal messages. */
     };
 
+    /** The number of levels. */
+    static constexpr int NUM_LEVELS = 4;
+
     /**
      * The current logging verbosity level.
      * Messages of less severity will not be printed to console.
@@ -37,10 +41,10 @@ struct Logging {
 
     /**
      * Log a message to console.
-     * @param msg The message to log.
+     * @param message The message to log.
      * @param level The severity of the message, defaulting to Info.
      */
-    static void log(const std::string &msg, Level level = Level::Info);
+    static void log(const std::string &message, Level level = Level::Info);
 
 private:
     /**
