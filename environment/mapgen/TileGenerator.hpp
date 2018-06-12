@@ -14,13 +14,13 @@ namespace hlt {
          */
         class TileGenerator : Generator {
         private:
-            unsigned int width; /**< width (in cells) of the final map */
-            unsigned int height; /**< height (in cells) of the final map */
+            long width; /**< width (in cells) of the final map */
+            long height; /**< height (in cells) of the final map */
             unsigned long tile_width; /**< width (in cells) of a single tile */
             unsigned long tile_height; /**< width (in cells) of a single tile */
             unsigned long num_tile_rows; /**< number of rows of tiles in map */
             unsigned long num_tile_cols; /**< number of cols of tiles in map */
-            unsigned int num_players; /**< number of players who will be on the map */
+            long num_players; /**< number of players who will be on the map */
             long blur_function(const long x_coord, const long y_coord, const hlt::Map &map) const;
         public:
             /** name is function to allow for possibly dynamically named subclasses */
@@ -33,7 +33,7 @@ namespace hlt {
              * @return map with cells initialized (ie given production values, or
              *      assigned to alternate cell type)
              */
-            hlt::Map generate(std::list<hlt::Player> &players)  override;
+            hlt::Map generate(std::list<hlt::Player> &players) override;
 
 
             /** TileGenerator class constructor

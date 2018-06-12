@@ -20,11 +20,11 @@ namespace hlt {
              * This means that *each* neighbor's production gets weight (1 - BLUR_FACTOR) / 4
              */
              // just truncate fractions for now
-             long new_production = (long) (map.grid[y_coord][x_coord].production * BLUR_FACTOR
-                                            + map.grid[y_coord][left_coord].production * (1 - BLUR_FACTOR) / 4
-                                            + map.grid[y_coord][right_coord].production * (1 - BLUR_FACTOR) / 4
-                                            + map.grid[above_coord][x_coord].production * (1 - BLUR_FACTOR) / 4
-                                            + map.grid[below_coord][x_coord].production * (1 - BLUR_FACTOR) / 4);
+             long new_production = (long) (map.grid[y_coord][x_coord] -> production() * BLUR_FACTOR
+                                            + map.grid[y_coord][left_coord] -> production() * (1 - BLUR_FACTOR) / 4
+                                            + map.grid[y_coord][right_coord]-> production() * (1 - BLUR_FACTOR) / 4
+                                            + map.grid[above_coord][x_coord] -> production() * (1 - BLUR_FACTOR) / 4
+                                            + map.grid[below_coord][x_coord] -> production() * (1 - BLUR_FACTOR) / 4);
              return new_production;
         }
 
@@ -45,16 +45,9 @@ namespace hlt {
                     const auto max_cell = hlt::MapConstants::get().MIN_CELL_PRODUCTION;
                     unsigned long production = (unsigned long) rng() / rng.max() * (max_cell - min_cell) + min_cell;
                     // TODO update with Charles' new classes post pull request
-                    map.grid[row][col].production = production;
-                    map.grid[row][col].type = Cell::CellType::Normal;
+                    map.grid[row][col] = std::make_unique<NormalCell>(production);
                 }
             }
-
-            // Assign factory location randomly within square to start with
-            // TODO: determine alternate method/modular method of factory location
-            // TODO: check for best random distribution / long vs. int
-            unsigned long factory_pos_x = (unsigned long) rng() / rng.max() * tile_width;
-            unsigned long factory_pos_y = (unsigned long) rng() / rng.max() * tile_height;
 
             // Tile the whole map
             // TODO: assess algorithm for cache performance
@@ -63,30 +56,43 @@ namespace hlt {
                     for (long tile_row = 0; tile_row < tile_height; ++tile_row) {
                         for (long tile_col = 0; tile_col < tile_width; ++tile_col) {
                             map.grid[player_row * tile_height + tile_row][player_col * tile_width + tile_col] =
-                                    map.grid[tile_row][tile_col];
+                                    std::make_unique<NormalCell>(map.grid[tile_row][tile_col] -> production());
                         }
                     }
                 }
             }
 
-            long player_idx = 0;
-            for (auto &player : players) {
-                const long player_factory_x = (player_idx % num_tile_cols) + factory_pos_x;
-                const long player_factory_y = (player_idx / num_tile_cols) + factory_pos_y;
-                map.grid[player_factory_y][player_factory_x] =
-                        player.factory_cell;
-                player_idx++;
-            }
-
             // Blur the whole map
             for (long row = 0; row < height; ++row) {
                 for (long col = 0; col < width; ++col) {
-                    map.grid[row][col].production = blur_function(row, col, map);
+                    //production is a private member, so create new cell with new production value
+                    map.grid[row][col] = std::make_unique<NormalCell>(blur_function(row, col, map));
                 }
             }
 
+            // Assign factory location randomly within square to start with
+            // TODO: determine alternate method/modular method of factory location
+            // TODO: check for best random distribution / long vs. int
+            // Factory locations are assigned last, as blurring assumes all squares have a production value
+            unsigned long factory_pos_x = (unsigned long) rng() / rng.max() * tile_width;
+            unsigned long factory_pos_y = (unsigned long) rng() / rng.max() * tile_height;
+            long player_idx = 0;
+            for (auto &player : players) {
+                long player_factory_x = (player_idx % num_tile_cols) + factory_pos_x;
+                long player_factory_y = (player_idx / num_tile_cols) + factory_pos_y;
+                map.grid[player_factory_y][player_factory_x] = std::make_unique<FactoryCell>();
+
+                hlt::Location factory_location {player_factory_x, player_factory_y};
+                player.factory_location = factory_location;
+
+                player_idx++;
+            }
+
+
             return map;
         }
+
+
 
         TileGenerator::TileGenerator(const MapParameters &parameters) :
                 Generator(parameters),
