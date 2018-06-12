@@ -56,6 +56,8 @@ std::istream &operator>>(std::istream &istream, Command &command) {
     return istream;
 }
 
+constexpr char const *MoveCommand::COMMAND_TYPE_NAME;
+
 /**
  * Convert a MoveCommand to JSON format.
  * @param[out] json The JSON output.
@@ -89,6 +91,7 @@ MoveCommand::MoveCommand(const std::string &bot_serial) {
  * @param map The Map to act on.
  */
 void MoveCommand::act_on_map(Map &map) const {
+    (void) map;
     // TODO: implement
 }
 

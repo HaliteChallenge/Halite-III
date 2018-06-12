@@ -56,7 +56,7 @@ struct Location {
     friend void from_json(const nlohmann::json &json, Location &location);
 
     /** Test two Location instances for equality. */
-    bool operator==(const Location &other) {
+    bool operator==(const Location &other) const {
         return pos_x == other.pos_x && pos_y == other.pos_y;
     }
 
