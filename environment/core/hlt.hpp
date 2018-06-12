@@ -15,7 +15,7 @@
 #include "Constants.hpp"
 #include "Entity.hpp"
 
-#include "util/json.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 extern bool quiet_output;
 extern bool always_log;

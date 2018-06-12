@@ -20,8 +20,6 @@
 #include <thread>
 #include <future>
 
-#include "util/json.hpp"
-
 #include "hlt.hpp"
 #include "GameEvent.hpp"
 #include "Statistics.hpp"

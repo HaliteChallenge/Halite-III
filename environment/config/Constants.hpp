@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
-#include "util/json.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 namespace hlt {
     constexpr auto MAX_PLAYERS = 4;

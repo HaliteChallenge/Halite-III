@@ -1,6 +1,8 @@
 #include "Replay.hpp"
 #include "../version.hpp"
 
+#include "nlohmann/json.hpp"
+
 /**
  * Build up the in-memory representation of the header of the replay.
  *
