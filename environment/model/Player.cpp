@@ -1,5 +1,7 @@
 #include "Player.hpp"
 
+#include "nlohmann/json.hpp"
+
 /** The JSON key for player ID. */
 constexpr auto JSON_PLAYER_ID = "player_id";
 /** The JSON key for name. */

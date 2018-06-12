@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include "util/json.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include "../zstd-1.3.0/lib/zstd.h"
 
 #include "Constants.hpp"

@@ -8,7 +8,7 @@
 #include "Entity.hpp"
 #include "hlt.hpp"
 
-#include "util/json.hpp"
+#include "nlohmann/json.hpp"
 
 /**
  * An event that happens during game simulation. Recorded for the replay, so

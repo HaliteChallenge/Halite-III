@@ -1,7 +1,7 @@
 #ifndef LOCATION_HPP
 #define LOCATION_HPP
 
-#include "util/json.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 namespace hlt {
 

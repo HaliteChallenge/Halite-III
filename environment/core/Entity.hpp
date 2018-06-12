@@ -17,7 +17,7 @@
 
 #include "Constants.hpp"
 
-#include "util/json.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 namespace hlt {
     /**

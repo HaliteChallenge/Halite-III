@@ -2,6 +2,8 @@
 
 #include "Command.hpp"
 
+#include "nlohmann/json.hpp"
+
 /** The JSON key for command type. */
 constexpr auto JSON_TYPE_KEY = "type";
 /** The JSON key for entity ID. */

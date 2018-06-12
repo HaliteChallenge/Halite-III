@@ -1,5 +1,7 @@
 #include "Entity.hpp"
 
+#include "nlohmann/json.hpp"
+
 using namespace std::literals::string_literals;
 
 /** The JSON key for entity ID. */
