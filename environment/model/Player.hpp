@@ -36,10 +36,10 @@ struct Player {
     friend void from_json(const nlohmann::json &json, Player &player);
 
     /** Test two Player instances for equality. */
-    bool operator==(const Player &other) { return player_id == other.player_id; }
+    bool operator==(const Player &other) const { return player_id == other.player_id; }
 
     /** Order two Entity instances by ID. */
-    bool operator<(const Player &other) { return player_id < other.player_id; }
+    bool operator<(const Player &other) const { return player_id < other.player_id; }
 
     /**
      * Write a Player to bot serial format.
