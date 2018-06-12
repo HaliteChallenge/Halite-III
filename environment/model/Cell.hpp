@@ -92,7 +92,7 @@ public:
 class NormalCell : public ProductionCell {
 public:
     /** The name of the normal cell. */
-    static constexpr auto CELL_TYPE_NAME = "normal";
+    static constexpr auto CELL_TYPE_NAME = "n";
 
     void to_json(nlohmann::json &json) const override;
 
@@ -115,7 +115,7 @@ public:
 class ObstacleCell : public ProductionCell {
 public:
     /** The name of the obstacle cell. */
-    static constexpr auto CELL_TYPE_NAME = "obstacle";
+    static constexpr auto CELL_TYPE_NAME = "o";
 
     bool is_passable() const override { return false; };
 
@@ -142,7 +142,7 @@ class EnergyFactorCell : public ProductionCell {
     long _energy_factor;
 public:
     /** The name of the energy factor cell. */
-    static constexpr auto CELL_TYPE_NAME = "energy_factor";
+    static constexpr auto CELL_TYPE_NAME = "e";
 
     long energy_factor() const override { return _energy_factor; };
 
@@ -169,7 +169,7 @@ public:
 class FactoryCell : public BaseCell {
 public:
     /** The name of the factory cell. */
-    static constexpr auto CELL_TYPE_NAME = "factory";
+    static constexpr auto CELL_TYPE_NAME = "f";
 
     void to_json(nlohmann::json &json) const override;
 
