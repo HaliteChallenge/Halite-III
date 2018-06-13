@@ -4,63 +4,62 @@
 #include "nlohmann/json_fwd.hpp"
 
 namespace hlt {
-    constexpr auto MAX_PLAYERS = 4;
-    constexpr auto MAX_QUEUED_MOVES = 1;
+
+/**
+ * Gameplay constants that may be tweaked, though they should be at their
+ * default values in a tournament setting.
+ *
+ * Supports serialization to and deserialization from JSON.
+ */
+struct GameConstants {
+    unsigned long MAX_TURNS = 300;           /**< The maximum number of turns. */
+    unsigned long MAX_PLAYERS = 16;          /**< The maximum number of players. */
+    unsigned long DEFAULT_MAP_WIDTH = 128;   /**< The default width of generated maps. */
+    unsigned long DEFAULT_MAP_HEIGHT = 128;  /**< The default height of generated maps. */
+
+    unsigned long MAX_CELL_PRODUCTION = 255; /**< The maximum amount of production on a cell. */
+    unsigned long MIN_CELL_PRODUCTION = 1;   /**< The minimum amount of production on a cell. */
+    unsigned long MAX_ENERGY = 255;          /**< The maximum amount of energy per entity. */
+    double BLUR_FACTOR = 0.75;               /**< The blur factor for the blurred tile generator. */
 
     /**
-     * Gameplay constants that may be tweaked (though they should be at their
-     * default values in a tournament setting).
+     * Get a mutable reference to the singleton constants.
+     * @return Mutable reference to the singleton constants.
      */
-    struct GameConstants {
-        // Halite 3 constants
-        long MAX_CELL_PRODUCTION = 255;
-        long MIN_CELL_PRODUCTION = 1;
-        long MAX_ENERGY = 255;
-        double BLUR_FACTOR = 0.75;
+    static GameConstants &get_mut() {
+        // Guaranteed initialized only once by C++11
+        static GameConstants instance;
+        return instance;
+    }
 
-        int SHIPS_PER_PLAYER = 3;
-        int PLANETS_PER_PLAYER = 6;
-        unsigned int EXTRA_PLANETS = 4;
-        unsigned int MAX_TURNS = 300;
+    /**
+     * Get the singleton constants.
+     * @return The singleton constants.
+     */
+    static const GameConstants &get() { return get_mut(); }
 
-        double DRAG = 10.0;
-        double MAX_SPEED = 7.0;
-        double MAX_ACCELERATION = 7.0;
+    /**
+     * Encode the constants to JSON.
+     * @param[out] json The JSON output.
+     * @param constants The constants.
+     */
+    friend void to_json(nlohmann::json &json, const GameConstants &constants);
 
-        double SHIP_RADIUS = 0.5;
+    /**
+     * Decode the constants from JSON.
+     * @param json The JSON input.
+     * @param[out] constants The decoded constants.
+     */
+    friend void from_json(const nlohmann::json &json, GameConstants &constants);
 
-        unsigned short MAX_SHIP_HEALTH = 255;
-        unsigned short BASE_SHIP_HEALTH = 255;
-        unsigned short DOCKED_SHIP_REGENERATION = 0;
+    /** Delete the copy constructor. */
+    GameConstants(const GameConstants &) = delete;
 
-        unsigned int WEAPON_COOLDOWN = 1;
-        double WEAPON_RADIUS = 5.0;
-        int WEAPON_DAMAGE = 64;
-        double EXPLOSION_RADIUS = 10.0;
+private:
+    /** Hide the default constructor. */
+    GameConstants() = default;
+};
 
-        double DOCK_RADIUS = 4;
-        unsigned int DOCK_TURNS = 5;
-        int RESOURCES_PER_RADIUS = 144;
-        bool INFINITE_RESOURCES = true;
-        int PRODUCTION_PER_SHIP = 72;
-        unsigned int BASE_PRODUCTIVITY = 6;
-        unsigned int ADDITIONAL_PRODUCTIVITY = 6;
-
-        int SPAWN_RADIUS = 2;
-
-        static auto get_mut() -> GameConstants& {
-            // Guaranteed initialized only once by C++11
-            static GameConstants instance;
-            return instance;
-        }
-
-        static auto get() -> const GameConstants& {
-            return get_mut();
-        }
-
-        auto to_json() const -> nlohmann::json;
-        auto from_json(const nlohmann::json& json) -> void;
-    };
 }
 
 #endif // CONSTANTS_HPP

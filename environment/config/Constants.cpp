@@ -2,81 +2,44 @@
 
 #include "nlohmann/json.hpp"
 
-#define JSON_ENTRY(name) {#name, name}
-#define STR(name) #name
+/** A JSON key and value corresponding to a game constant. */
+#define FIELD_TO_JSON(x) {#x, constants.x}
 
-auto hlt::GameConstants::to_json() const -> nlohmann::json {
-    return {
-        JSON_ENTRY(MAX_CELL_PRODUCTION),
-        JSON_ENTRY(MIN_CELL_PRODUCTION),
-        JSON_ENTRY(MAX_ENERGY),
-        JSON_ENTRY(BLUR_FACTOR),
+/** Get a field from JSON. */
+#define FIELD_FROM_JSON(x) json.at(#x)
 
-        { "SHIPS_PER_PLAYER", SHIPS_PER_PLAYER },
-        { "PLANETS_PER_PLAYER", PLANETS_PER_PLAYER },
-        { "EXTRA_PLANETS", EXTRA_PLANETS },
-        { "MAX_TURNS", MAX_TURNS },
+namespace hlt {
 
-        { "DRAG", DRAG },
-        { "MAX_SPEED", MAX_SPEED },
-        { "MAX_ACCELERATION", MAX_ACCELERATION },
-
-        { "SHIP_RADIUS", SHIP_RADIUS },
-
-        { "MAX_SHIP_HEALTH", MAX_SHIP_HEALTH },
-        { "BASE_SHIP_HEALTH", BASE_SHIP_HEALTH },
-        { "DOCKED_SHIP_REGENERATION", DOCKED_SHIP_REGENERATION },
-
-        { "WEAPON_COOLDOWN", WEAPON_COOLDOWN },
-        { "WEAPON_RADIUS", WEAPON_RADIUS },
-        { "WEAPON_DAMAGE", WEAPON_DAMAGE },
-        { "EXPLOSION_RADIUS", EXPLOSION_RADIUS },
-
-        { "DOCK_RADIUS", DOCK_RADIUS },
-        { "DOCK_TURNS", DOCK_TURNS },
-        { "RESOURCES_PER_RADIUS", RESOURCES_PER_RADIUS },
-        { "INFINITE_RESOURCES", INFINITE_RESOURCES },
-        { "PRODUCTION_PER_SHIP", PRODUCTION_PER_SHIP },
-        { "BASE_PRODUCTIVITY", BASE_PRODUCTIVITY },
-        { "ADDITIONAL_PRODUCTIVITY", ADDITIONAL_PRODUCTIVITY },
-
-        { "SPAWN_RADIUS", SPAWN_RADIUS },
-    };
+/**
+ * Encode the constants to JSON.
+ * @param[out] json The JSON output.
+ * @param constants The constants.
+ */
+void to_json(nlohmann::json &json, const GameConstants &constants) {
+    json = {FIELD_TO_JSON(MAX_TURNS),
+            FIELD_TO_JSON(MAX_PLAYERS),
+            FIELD_TO_JSON(DEFAULT_MAP_WIDTH),
+            FIELD_TO_JSON(DEFAULT_MAP_HEIGHT),
+            FIELD_TO_JSON(MAX_CELL_PRODUCTION),
+            FIELD_TO_JSON(MIN_CELL_PRODUCTION),
+            FIELD_TO_JSON(MAX_ENERGY),
+            FIELD_TO_JSON(BLUR_FACTOR)};
 }
 
-auto hlt::GameConstants::from_json(const nlohmann::json& json) -> void {
-    MAX_CELL_PRODUCTION = json.value(STR(MAX_CELL_PRODUCTION), MAX_CELL_PRODUCTION);
-    MIN_CELL_PRODUCTION = json.value(STR(MIN_CELL_PRODUCTION), MIN_CELL_PRODUCTION);
-    MAX_ENERGY = json.value(STR(MAX_ENERGY), MAX_ENERGY);
-    BLUR_FACTOR = json.value(STR(BLUR_FACTOR), BLUR_FACTOR);
+/**
+ * Decode the constants from JSON.
+ * @param json The JSON input.
+ * @param[out] constants The decoded constants.
+ */
+void from_json(const nlohmann::json &json, GameConstants &constants) {
+    constants = {FIELD_FROM_JSON(MAX_TURNS),
+                 FIELD_FROM_JSON(MAX_PLAYERS),
+                 FIELD_FROM_JSON(DEFAULT_MAP_WIDTH),
+                 FIELD_FROM_JSON(DEFAULT_MAP_HEIGHT),
+                 FIELD_FROM_JSON(MAX_CELL_PRODUCTION),
+                 FIELD_FROM_JSON(MIN_CELL_PRODUCTION),
+                 FIELD_FROM_JSON(MAX_ENERGY),
+                 FIELD_FROM_JSON(BLUR_FACTOR)};
+}
 
-    SHIPS_PER_PLAYER = json.value("SHIPS_PER_PLAYER", SHIPS_PER_PLAYER);
-    PLANETS_PER_PLAYER = json.value("PLANETS_PER_PLAYER", PLANETS_PER_PLAYER);
-    EXTRA_PLANETS = json.value("EXTRA_PLANETS", EXTRA_PLANETS);
-    MAX_TURNS = json.value("MAX_TURNS", MAX_TURNS);
-
-    DRAG = json.value("DRAG", DRAG);
-    MAX_SPEED = json.value("MAX_SPEED", MAX_SPEED);
-    MAX_ACCELERATION = json.value("MAX_ACCELERATION", MAX_ACCELERATION);
-
-    SHIP_RADIUS = json.value("SHIP_RADIUS", SHIP_RADIUS);
-
-    MAX_SHIP_HEALTH = json.value("MAX_SHIP_HEALTH", MAX_SHIP_HEALTH);
-    BASE_SHIP_HEALTH = json.value("BASE_SHIP_HEALTH", BASE_SHIP_HEALTH);
-    DOCKED_SHIP_REGENERATION = json.value("DOCKED_SHIP_REGENERATION", DOCKED_SHIP_REGENERATION);
-
-    WEAPON_COOLDOWN = json.value("WEAPON_COOLDOWN", WEAPON_COOLDOWN);
-    WEAPON_RADIUS = json.value("WEAPON_RADIUS", WEAPON_RADIUS);
-    WEAPON_DAMAGE = json.value("WEAPON_DAMAGE", WEAPON_DAMAGE);
-    EXPLOSION_RADIUS = json.value("EXPLOSION_RADIUS", EXPLOSION_RADIUS);
-
-    DOCK_RADIUS = json.value("DOCK_RADIUS", DOCK_RADIUS);
-    DOCK_TURNS = json.value("DOCK_TURNS", DOCK_TURNS);
-    RESOURCES_PER_RADIUS = json.value("RESOURCES_PER_RADIUS", RESOURCES_PER_RADIUS);
-    INFINITE_RESOURCES = json.value("INFINITE_RESOURCES", INFINITE_RESOURCES);
-    PRODUCTION_PER_SHIP = json.value("PRODUCTION_PER_SHIP", PRODUCTION_PER_SHIP);
-    BASE_PRODUCTIVITY = json.value("BASE_PRODUCTIVITY", BASE_PRODUCTIVITY);
-    ADDITIONAL_PRODUCTIVITY = json.value("ADDITIONAL_PRODUCTIVITY", ADDITIONAL_PRODUCTIVITY);
-
-    SPAWN_RADIUS = json.value("SPAWN_RADIUS", SPAWN_RADIUS);
 }

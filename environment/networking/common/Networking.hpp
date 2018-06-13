@@ -35,7 +35,7 @@ using OSConnection = UnixConnection;
 class Networking final {
 private:
     ConnectionFactory<OSConnection> connection_factory; /**< The platform-specific connection factory. */
-    Connections connections; /**< The current network connections. */
+    Connections connections{}; /**< The current network connections. */
     NetworkingConfig config; /**< The networking configuration. */
     const hlt::Halite *game; /**< The current game. Raw pointer because Networking should always be owned by a game. */
 
