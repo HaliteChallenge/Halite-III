@@ -1,5 +1,7 @@
 #include "Constants.hpp"
 
+#include "nlohmann/json.hpp"
+
 auto hlt::GameConstants::to_json() const -> nlohmann::json {
     return {
         { "MAX_CELL_PRODUCTION", MAX_CELL_PRODUCTION },

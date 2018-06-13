@@ -1,6 +1,8 @@
 #include "Location.hpp"
 #include "Map.hpp"
 
+#include "nlohmann/json.hpp"
+
 /** The JSON key for x-coordinate. */
 constexpr auto JSON_POS_X = "pos_x";
 /** The JSON key for y-coordinate. */

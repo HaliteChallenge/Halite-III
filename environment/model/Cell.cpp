@@ -1,5 +1,7 @@
 #include "Cell.hpp"
 
+#include "nlohmann/json.hpp"
+
 /** The JSON key for cell type. */
 constexpr auto JSON_TYPE_KEY = "type";
 /** The JSON key for production. */

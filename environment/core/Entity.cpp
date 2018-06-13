@@ -1,6 +1,8 @@
 #include "Entity.hpp"
 #include "hlt.hpp"
 
+#include "nlohmann/json.hpp"
+
 namespace hlt {
     auto Location::distance(const Location &other) const -> long double {
         return sqrt(distance2(other));

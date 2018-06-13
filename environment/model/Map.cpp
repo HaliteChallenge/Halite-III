@@ -1,5 +1,7 @@
 #include "Map.hpp"
 
+#include "nlohmann/json.hpp"
+
 /** The JSON key for width. */
 constexpr auto JSON_WIDTH = "width";
 /** The JSON key for height. */

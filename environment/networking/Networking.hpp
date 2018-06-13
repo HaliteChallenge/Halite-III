@@ -26,6 +26,7 @@
 #endif
 
 #include "../core/hlt.hpp"
+#include "nlohmann/json.hpp"
 
 extern bool quiet_output;
 

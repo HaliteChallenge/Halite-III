@@ -9,6 +9,8 @@
 #include <cmath>
 #include "hlt.hpp"
 
+#include "nlohmann/json.hpp"
+
 namespace hlt {
     auto Move::output_json(hlt::PlayerId player_id, int move_no) const -> nlohmann::json {
         auto record = nlohmann::json{

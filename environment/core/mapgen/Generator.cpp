@@ -4,6 +4,8 @@
 
 #include "Generator.hpp"
 
+#include "nlohmann/json.hpp"
+
 namespace mapgen {
     Generator::Generator(unsigned int _seed) {
         rng = std::mt19937(_seed);

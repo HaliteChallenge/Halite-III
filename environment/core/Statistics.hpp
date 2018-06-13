@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "util/json.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include "Entity.hpp"
 
 struct PlayerStatistics {
