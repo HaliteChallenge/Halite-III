@@ -51,8 +51,6 @@ set(dirs
     ${CMAKE_SOURCE_DIR}/mapgen
     ${CMAKE_SOURCE_DIR}/model
     ${CMAKE_SOURCE_DIR}/networking/common
-    ${CMAKE_SOURCE_DIR}/tclap
-    ${CMAKE_SOURCE_DIR}/util
     ${CMAKE_SOURCE_DIR}/zstd-1.3.0
 )
 

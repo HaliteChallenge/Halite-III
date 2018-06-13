@@ -54,7 +54,7 @@ public:
      * Generate a map based on a list of players.
      * @param players The players on the map.
      */
-    virtual hlt::Map generate(std::list<hlt::Player> &players) const = 0;
+    virtual hlt::Map generate(std::list<hlt::Player> &players) = 0;
 };
 
 }
