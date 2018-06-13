@@ -3,7 +3,7 @@
 
 #include <list>
 #include <string>
-
+#include <utility>
 #include "Entity.hpp"
 
 namespace hlt {
@@ -17,6 +17,7 @@ struct Player {
 
     long player_id;               /**< The unique ID of the player. */
     std::string name;             /**< The name of the player. */
+    std::string command;          /**< The bot command for the player. */
     long energy{};                /**< The amount of energy stockpiled by the player. */
     Location factory_location{};  /**< The factory location of the player. */
     Entities entities;            /**< The entities owned by the player. */
@@ -51,11 +52,13 @@ struct Player {
 
 private:
     /**
-     * Construct Player from ID and name.
+     * Construct Player from ID, name, and command.
      * @param player_id The player ID.
      * @param name The player name.
+     * @param command The player bot command.
      */
-    Player(long player_id, std::string name) : player_id(player_id), name(std::move(name)) {}
+    Player(long player_id, std::string name, std::string command) :
+            player_id(player_id), name(std::move(name)), command(std::move(command)) {}
 
     /**
      * Construct Player from ID, name, energy, factory location, and entities.
@@ -85,12 +88,12 @@ class PlayerFactory {
 
 public:
     /**
-     * Make a new player.
-     * @param name The name of the player.
+     * Make a new player with default name (which is ID), and a command.
+     * @param command The bot command.
      * @return The new player.
      */
-    Player new_player(const std::string &name) {
-        return {next_player++, name};
+    Player new_player(std::string command) {
+        return {next_player++, std::to_string(next_player), std::move(command)};
     }
 
     PlayerFactory() = default;

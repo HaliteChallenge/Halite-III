@@ -1,11 +1,6 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
-#ifdef _WIN32
-#define _USE_MATH_DEFINES
-#include <cmath>
-#endif
-
 #include <list>
 #include <random>
 

@@ -5,7 +5,7 @@ namespace hlt {
 
 /** Global configuration. */
 struct Config {
-    int id;
+    long id;
     unsigned int seed;
     bool quiet_output;
     bool always_log;
