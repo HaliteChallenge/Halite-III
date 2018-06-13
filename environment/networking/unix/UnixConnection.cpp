@@ -13,6 +13,16 @@
 /** Try a call, and throw NetworkingError if it fails. */
 #define CHECK(x) do { if ((x) < 0) { throw NetworkingError("Failed to execute " #x); } } while (false)
 
+/** The number of slots in a pipe array. */
+constexpr auto PIPE_PAIR = 2;
+/** The index of the head of the pipe. */
+constexpr auto PIPE_HEAD = 0;
+/** The index of the tail of the pipe. */
+constexpr auto PIPE_TAIL = 1;
+
+/** Offset added to file descriptor, required by select(2) */
+constexpr auto NDFS_OFFSET = 1;
+
 namespace net {
 
 /**
@@ -24,12 +34,12 @@ namespace net {
  */
 UnixConnection::UnixConnection(const std::string &command, NetworkingConfig config) {
     this->config = config;
-    int write_pipe[2];
-    int read_pipe[2];
+    int write_pipe[PIPE_PAIR];
+    int read_pipe[PIPE_PAIR];
     CHECK(pipe(write_pipe));
     CHECK(pipe(read_pipe));
     // Make the write pipe non-blocking
-    CHECK(fcntl(write_pipe[1], F_SETFL, O_NONBLOCK));
+    CHECK(fcntl(write_pipe[PIPE_TAIL], F_SETFL, O_NONBLOCK));
 
     auto ppid_before_fork = getpid();
     auto pid = fork();
@@ -41,9 +51,9 @@ UnixConnection::UnixConnection(const std::string &command, NetworkingConfig conf
         }
 
         // Redirect stdin, stdout, and stderr
-        CHECK(dup2(write_pipe[0], STDIN_FILENO));
-        CHECK(dup2(read_pipe[1], STDOUT_FILENO));
-        CHECK(dup2(read_pipe[1], STDERR_FILENO));
+        CHECK(dup2(write_pipe[PIPE_HEAD], STDIN_FILENO));
+        CHECK(dup2(read_pipe[PIPE_TAIL], STDOUT_FILENO));
+        CHECK(dup2(read_pipe[PIPE_TAIL], STDERR_FILENO));
 
         // Execute the command
         CHECK(execl("/bin/sh", "sh", "-c", command.c_str(), nullptr));
@@ -52,8 +62,8 @@ UnixConnection::UnixConnection(const std::string &command, NetworkingConfig conf
     } else if (pid < 0) {
         throw NetworkingError("Fork failed");
     }
-    this->read_pipe = read_pipe[0];
-    this->write_pipe = write_pipe[1];
+    this->read_pipe = read_pipe[PIPE_HEAD];
+    this->write_pipe = write_pipe[PIPE_TAIL];
     process = pid;
 }
 
@@ -123,7 +133,7 @@ std::string UnixConnection::get_string() {
         // Check if there are bytes in the pipe
         int selection_result;
         if (config.ignore_timeout) {
-            selection_result = select(read_pipe + 1, &set, nullptr, nullptr, nullptr);
+            selection_result = select(read_pipe + NDFS_OFFSET, &set, nullptr, nullptr, nullptr);
         } else {
             auto current_time = high_resolution_clock::now();
             auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
@@ -134,7 +144,7 @@ std::string UnixConnection::get_string() {
             auto sec = duration_cast<seconds>(remaining);
             timeout.tv_sec = sec.count();
             timeout.tv_usec = (remaining - sec).count();
-            selection_result = select(read_pipe + 1, &set, nullptr, nullptr, &timeout);
+            selection_result = select(read_pipe + NDFS_OFFSET, &set, nullptr, nullptr, &timeout);
         }
         if (selection_result > 0) {
             // Read from the pipe, as many as we can into the buffer
@@ -152,12 +162,12 @@ std::string UnixConnection::get_string() {
                 // Keep reading until we find a newline eventually
                 continue;
             } else {
-                // Newline was found. Append the read to the result, up to but not including the newline
+                // Newline was found; append the read to the result, up to but not including the newline
                 current_read += std::string(buffer.begin(), newline_pos);
                 auto result = current_read;
 
                 // There may be more newlines; tokenize the remainder
-                auto string_end = newline_pos + 1;
+                auto string_end = ++newline_pos;
                 auto read = std::string(string_end, read_end);
                 std::stringstream stream(read);
                 auto more_messages = false;

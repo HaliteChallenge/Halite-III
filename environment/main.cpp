@@ -23,6 +23,13 @@ constexpr auto DEFAULT_MAP_HEIGHT = 128;
 /** The default timeout. */
 constexpr auto DEFAULT_TIMEOUT = 6000ms;
 
+/** The platform-specific path separator. */
+#ifdef _WIN32
+constexpr auto SEPARATOR = '\\';
+#else
+constexpr auto SEPARATOR = '/';
+#endif
+
 int main(int argc, char *argv[]) {
     using namespace TCLAP;
     CmdLine cmd("Halite Game Environment", ' ', HALITE_VERSION);
@@ -55,8 +62,8 @@ int main(int argc, char *argv[]) {
     auto map_width = width_arg.getValue();
     auto map_height = height_arg.getValue();
     auto n_players = players_arg.getValue();
-    // One more level than specified verbosity
-    auto verbosity = verbosity_arg.getValue() + 1;
+    auto verbosity = verbosity_arg.getValue();
+    verbosity++; // One more level than specified verbosity
     verbosity = verbosity > Logging::NUM_LEVELS ? 0 : Logging::NUM_LEVELS - verbosity;
     Logging::set_level(static_cast<Logging::Level>(verbosity));
 
@@ -90,11 +97,7 @@ int main(int argc, char *argv[]) {
 
     std::string output_filename = replay_arg.getValue();
 
-    char separator = '/';
-#ifdef _WIN32
-    separator = '\\';
-#endif
-    if (output_filename.back() != separator) output_filename.push_back(separator);
+    if (output_filename.back() != SEPARATOR) output_filename.push_back(SEPARATOR);
 
     hlt::Config config{};
     hlt::Halite game(config, {hlt::mapgen::MapType::Basic, seed, map_width, map_height, n_players}, networking_config,
