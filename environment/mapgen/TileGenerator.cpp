@@ -1,6 +1,8 @@
 #include "TileGenerator.hpp"
 #include "Map.hpp"
 
+#include <assert.h>
+
 namespace hlt {
     namespace mapgen {
 
@@ -45,6 +47,7 @@ namespace hlt {
 
             // Ensure that the map can be subdivided into partitions for a given number of players
             // ie: a 64x64 map cannot be (most basic definition of) symmetrical for 6 players
+            // TODO: find a way to dea with cases when this is not true that's less disruptive than assertion errors - KB
             assert((width * height) % num_players == 0);
 
             // We want our map to be as square-like as possible, so to find the size of a tile, first determine
