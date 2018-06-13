@@ -8,6 +8,7 @@
 
 #include "Logging.hpp"
 #include "NetworkingError.hpp"
+#include "TimeoutError.hpp"
 #include "UnixConnection.hpp"
 
 /** Try a call, and throw NetworkingError if it fails. */
@@ -36,6 +37,8 @@ UnixConnection::UnixConnection(const std::string &command, NetworkingConfig conf
     this->config = config;
     int write_pipe[PIPE_PAIR];
     int read_pipe[PIPE_PAIR];
+    // Ignore SIGPIPE, as we want to detect bot exit gracefully.
+    signal(SIGPIPE, SIG_IGN);
     CHECK(pipe(write_pipe));
     CHECK(pipe(read_pipe));
     // Make the write pipe non-blocking
@@ -52,8 +55,10 @@ UnixConnection::UnixConnection(const std::string &command, NetworkingConfig conf
 
         // Redirect stdin, stdout, and stderr
         CHECK(dup2(write_pipe[PIPE_HEAD], STDIN_FILENO));
+        CHECK(close(write_pipe[PIPE_HEAD]));
         CHECK(dup2(read_pipe[PIPE_TAIL], STDOUT_FILENO));
         CHECK(dup2(read_pipe[PIPE_TAIL], STDERR_FILENO));
+        CHECK(close(read_pipe[PIPE_TAIL]));
 
         // Execute the command
         CHECK(execl("/bin/sh", "sh", "-c", command.c_str(), nullptr));
@@ -63,7 +68,9 @@ UnixConnection::UnixConnection(const std::string &command, NetworkingConfig conf
         throw NetworkingError("Fork failed");
     }
     this->read_pipe = read_pipe[PIPE_HEAD];
+    close(read_pipe[PIPE_TAIL]);
     this->write_pipe = write_pipe[PIPE_TAIL];
+    close(write_pipe[PIPE_HEAD]);
     process = pid;
 }
 
@@ -92,7 +99,7 @@ void UnixConnection::send_string(const std::string &message) {
             auto current_time = high_resolution_clock::now();
             auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
             if (remaining < milliseconds::zero()) {
-                throw NetworkingError("Timeout while sending a message");
+                throw TimeoutError(config.timeout);
             }
         }
         ssize_t chars_written = write(write_pipe, message_ptr, chars_remaining);
@@ -138,9 +145,9 @@ std::string UnixConnection::get_string() {
             auto current_time = high_resolution_clock::now();
             auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
             if (remaining < milliseconds::zero()) {
-                throw NetworkingError("Timeout while reading a message");
+                throw TimeoutError(config.timeout);
             }
-            struct timeval timeout = {};
+            struct timeval timeout{};
             auto sec = duration_cast<seconds>(remaining);
             timeout.tv_sec = sec.count();
             timeout.tv_usec = (remaining - sec).count();
@@ -171,11 +178,9 @@ std::string UnixConnection::get_string() {
                 auto read = std::string(string_end, read_end);
                 std::stringstream stream(read);
                 auto more_messages = false;
-                while (std::getline(stream, current_read, '\n')) {
-                    if (!current_read.empty() && !std::all_of(current_read.begin(), current_read.end(), isspace)) {
-                        more_messages = true;
-                        message_queue.push_back(current_read);
-                    }
+                while (std::getline(stream, current_read)) {
+                    more_messages = true;
+                    message_queue.push_back(current_read);
                 }
                 if (more_messages && read.back() != '\n') {
                     // The last element is not yet done, don't queue it

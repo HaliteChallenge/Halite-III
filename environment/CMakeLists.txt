@@ -46,6 +46,7 @@ add_custom_target(VERSION_CHECK
 set(dirs
     ${CMAKE_SOURCE_DIR}/config
     ${CMAKE_SOURCE_DIR}/core
+    ${CMAKE_SOURCE_DIR}/error
     ${CMAKE_SOURCE_DIR}/logging
     ${CMAKE_SOURCE_DIR}/mapgen
     ${CMAKE_SOURCE_DIR}/model
