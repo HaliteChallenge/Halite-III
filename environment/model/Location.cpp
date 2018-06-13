@@ -1,15 +1,67 @@
 #include "BotCommunicationError.hpp"
+#include "JsonError.hpp"
 #include "Location.hpp"
 #include "Map.hpp"
 
 #include "nlohmann/json.hpp"
 
-/** The JSON key for x-coordinate. */
-constexpr auto JSON_POS_X = "pos_x";
-/** The JSON key for y-coordinate. */
-constexpr auto JSON_POS_Y = "pos_y";
+/** A JSON key and value corresponding to a field. */
+#define FIELD_TO_JSON(x) {#x, location.x}
+
+/** Get a field from JSON. */
+#define FIELD_FROM_JSON(x) json.at(#x)
 
 namespace hlt {
+
+/**
+ * Convert a Direction to JSON format.
+ * @param[out] json The output JSON.
+ * @param direction The Direction to convert.
+ */
+void to_json(nlohmann::json &json, const Direction &direction) {
+    json = std::string() + static_cast<char>(direction);
+}
+
+/**
+ * Convert a char to a Direction.
+ * @param direction_char The character.
+ * @param[out] direction The converted direction.
+ * @return true if the conversion was successful.
+ */
+bool from_char(const char direction_char, Direction &direction) {
+    switch (direction_char) {
+    case static_cast<char>(Direction::North):
+        direction = Direction::North;
+        return true;
+    case static_cast<char>(Direction::South):
+        direction = Direction::South;
+        return true;
+    case static_cast<char>(Direction::East):
+        direction = Direction::East;
+        return true;
+    case static_cast<char>(Direction::West):
+        direction = Direction::West;
+        return true;
+    default:
+        return false;
+    }
+}
+
+/**
+ * Convert an encoded Direction from JSON format.
+ * @param json The JSON.
+ * @param[out] direction The converted Direction.
+ */
+void from_json(const nlohmann::json &json, Direction &direction) {
+    std::string string = json;
+    if (string.empty()) {
+        throw BotCommunicationError(string);
+    }
+    char direction_type = string.front();
+    if (!from_char(direction_type, direction)) {
+        throw JsonError(std::string() + direction_type);
+    }
+}
 
 /**
  * Read a Direction from bot serial format.
@@ -21,20 +73,7 @@ std::istream &operator>>(std::istream &istream, Direction &direction) {
     // Read one character corresponding to the type, and dispatch based on its value.
     char direction_type;
     istream >> direction_type;
-    switch (direction_type) {
-    case static_cast<char>(Direction::North):
-        direction = Direction::North;
-        break;
-    case static_cast<char>(Direction::South):
-        direction = Direction::South;
-        break;
-    case static_cast<char>(Direction::East):
-        direction = Direction::East;
-        break;
-    case static_cast<char>(Direction::West):
-        direction = Direction::West;
-        break;
-    default:
+    if (!from_char(direction_type, direction)) {
         throw BotCommunicationError(std::string() + direction_type);
     }
     return istream;
@@ -77,8 +116,7 @@ void Location::move_toward(const Direction &direction, const Map &map) {
  * @param location The Location to convert.
  */
 void to_json(nlohmann::json &json, const Location &location) {
-    json = {{JSON_POS_X, location.pos_x},
-            {JSON_POS_Y, location.pos_y}};
+    json = {FIELD_TO_JSON(pos_x), FIELD_TO_JSON(pos_y)};
 }
 
 /**
@@ -87,8 +125,7 @@ void to_json(nlohmann::json &json, const Location &location) {
  * @param[out] location The converted Location.
  */
 void from_json(const nlohmann::json &json, Location &location) {
-    location = {json.at(JSON_POS_X).get<decltype(location.pos_x)>(),
-                json.at(JSON_POS_Y).get<decltype(location.pos_y)>()};
+    location = {FIELD_FROM_JSON(pos_x), FIELD_FROM_JSON(pos_y)};
 }
 
 }

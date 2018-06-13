@@ -2,16 +2,11 @@
 
 #include "nlohmann/json.hpp"
 
-/** The JSON key for player ID. */
-constexpr auto JSON_PLAYER_ID = "player_id";
-/** The JSON key for name. */
-constexpr auto JSON_NAME = "name";
-/** The JSON key for energy. */
-constexpr auto JSON_ENERGY = "energy";
-/** The JSON key for factory location. */
-constexpr auto JSON_FACTORY_LOCATION = "factory_location";
-/** The JSON key for entities. */
-constexpr auto JSON_ENTITIES = "entities";
+/** A JSON key and value corresponding to a field. */
+#define FIELD_TO_JSON(x) {#x, player.x}
+
+/** Get a field from JSON. */
+#define FIELD_FROM_JSON(x) json.at(#x)
 
 namespace hlt {
 
@@ -21,11 +16,11 @@ namespace hlt {
  * @param player The Player to convert.
  */
 void to_json(nlohmann::json &json, const Player &player) {
-    json = {{JSON_PLAYER_ID,        player.player_id},
-            {JSON_NAME,             player.name},
-            {JSON_ENERGY,           player.energy},
-            {JSON_FACTORY_LOCATION, player.factory_location},
-            {JSON_ENTITIES,         player.entities}};
+    json = {FIELD_TO_JSON(player_id),
+            FIELD_TO_JSON(name),
+            FIELD_TO_JSON(energy),
+            FIELD_TO_JSON(factory_location),
+            FIELD_TO_JSON(entities)};
 }
 
 /**
@@ -34,11 +29,11 @@ void to_json(nlohmann::json &json, const Player &player) {
  * @param[out] player The converted Player.
  */
 void from_json(const nlohmann::json &json, Player &player) {
-    player = {json.at(JSON_PLAYER_ID).get<decltype(player.player_id)>(),
-              json.at(JSON_NAME).get<decltype(player.name)>(),
-              json.at(JSON_ENERGY).get<decltype(player.energy)>(),
-              json.at(JSON_FACTORY_LOCATION).get<decltype(player.factory_location)>(),
-              json.at(JSON_ENTITIES).get<decltype(player.entities)>()};
+    player = {FIELD_FROM_JSON(player_id),
+              FIELD_FROM_JSON(name),
+              FIELD_FROM_JSON(energy),
+              FIELD_FROM_JSON(factory_location),
+              FIELD_FROM_JSON(entities)};
 }
 
 /**
