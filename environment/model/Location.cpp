@@ -1,3 +1,4 @@
+#include "BotCommunicationError.hpp"
 #include "Location.hpp"
 #include "Map.hpp"
 
@@ -34,8 +35,7 @@ std::istream &operator>>(std::istream &istream, Direction &direction) {
         direction = Direction::West;
         break;
     default:
-        // TODO: error case
-        break;
+        throw BotCommunicationError(std::string() + direction_type);
     }
     return istream;
 }

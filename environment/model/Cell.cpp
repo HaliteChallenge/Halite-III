@@ -1,4 +1,5 @@
 #include "Cell.hpp"
+#include "JsonError.hpp"
 
 #include "nlohmann/json.hpp"
 
@@ -35,7 +36,7 @@ void from_json(const nlohmann::json &json, Cell &cell) {
     } else if (type == FactoryCell::CELL_TYPE_NAME) {
         cell = std::make_unique<FactoryCell>(json);
     } else {
-        // TODO: error case
+        throw JsonError(json);
     }
 }
 

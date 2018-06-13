@@ -15,6 +15,7 @@ set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
 include_directories(${CMAKE_SOURCE_DIR}/config)
 include_directories(${CMAKE_SOURCE_DIR}/core)
+include_directories(${CMAKE_SOURCE_DIR}/error)
 include_directories(${CMAKE_SOURCE_DIR}/logging)
 include_directories(${CMAKE_SOURCE_DIR}/nlohmann)
 include_directories(${CMAKE_SOURCE_DIR}/mapgen)

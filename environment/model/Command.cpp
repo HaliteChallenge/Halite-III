@@ -1,6 +1,8 @@
 #include <memory>
 
+#include "BotCommunicationError.hpp"
 #include "Command.hpp"
+#include "JsonError.hpp"
 
 #include "nlohmann/json.hpp"
 
@@ -31,7 +33,7 @@ void from_json(const nlohmann::json &json, Command &command) {
     if (type == MoveCommand::COMMAND_TYPE_NAME) {
         command = std::make_unique<MoveCommand>(json);
     } else {
-        // TODO: error case
+        throw JsonError(json);
     }
 }
 
@@ -43,17 +45,23 @@ void from_json(const nlohmann::json &json, Command &command) {
  */
 std::istream &operator>>(std::istream &istream, Command &command) {
     // Read one character corresponding to the type, and dispatch the remainder based on its value.
+    std::string line;
+    std::getline(istream, line);
+    std::istringstream stream(line);
     char command_type;
-    istream >> command_type;
+    stream >> command_type;
     std::string remainder;
-    istream >> remainder;
-    switch (command_type) {
-    case MoveCommand::COMMAND_TYPE_SHORT:
-        command = std::make_unique<MoveCommand>(remainder);
-        break;
-    default:
-        // TODO: error case
-        break;
+    std::getline(stream, remainder);
+    try {
+        switch (command_type) {
+        case MoveCommand::COMMAND_TYPE_SHORT:
+            command = std::make_unique<MoveCommand>(remainder);
+            break;
+        default:
+            throw BotCommunicationError(line);
+        }
+    } catch (BotCommunicationError &error) {
+        throw BotCommunicationError(line);
     }
     return istream;
 }
@@ -85,7 +93,11 @@ MoveCommand::MoveCommand(const nlohmann::json &json) :
 MoveCommand::MoveCommand(const std::string &bot_serial) {
     // Read the entity ID and the direction.
     std::istringstream bot_stream(bot_serial);
-    bot_stream >> entity_id >> direction;
+    try {
+        bot_stream >> entity_id >> direction;
+    } catch (std::istream::failure &failure) {
+        throw BotCommunicationError(bot_serial);
+    }
 }
 
 /**
