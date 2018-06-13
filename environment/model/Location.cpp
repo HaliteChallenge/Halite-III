@@ -35,7 +35,7 @@ std::istream &operator>>(std::istream &istream, Direction &direction) {
         direction = Direction::West;
         break;
     default:
-        throw BotCommunicationError(std::string(1, direction_type));
+        throw BotCommunicationError(std::string() + direction_type);
     }
     return istream;
 }
