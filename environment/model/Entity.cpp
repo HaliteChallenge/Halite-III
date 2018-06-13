@@ -4,12 +4,11 @@
 
 using namespace std::literals::string_literals;
 
-/** The JSON key for entity ID. */
-constexpr auto JSON_ENTITY_ID_KEY = "entity_id";
-/** The JSON key for location. */
-constexpr auto JSON_LOCATION_KEY = "location";
-/** The JSON key for energy. */
-constexpr auto JSON_ENERGY_KEY = "energy";
+/** A JSON key and value corresponding to a field. */
+#define FIELD_TO_JSON(x) {#x, entity.x}
+
+/** Get a field from JSON. */
+#define FIELD_FROM_JSON(x) json.at(#x)
 
 namespace hlt {
 
@@ -19,9 +18,9 @@ namespace hlt {
  * @param entity The entity to convert.
  */
 void to_json(nlohmann::json &json, const Entity &entity) {
-    json = {{JSON_ENTITY_ID_KEY, entity.entity_id},
-            {JSON_LOCATION_KEY,  entity.location},
-            {JSON_ENERGY_KEY,    entity.energy}};
+    json = {FIELD_TO_JSON(entity_id),
+            FIELD_TO_JSON(location),
+            FIELD_TO_JSON(energy)};
 }
 
 /**
@@ -30,7 +29,9 @@ void to_json(nlohmann::json &json, const Entity &entity) {
  * @param[out] entity The converted entity.
  */
 void from_json(const nlohmann::json &json, Entity &entity) {
-    entity = {json.at(JSON_ENTITY_ID_KEY), json.at(JSON_LOCATION_KEY), json.at(JSON_ENERGY_KEY)};
+    entity = {FIELD_FROM_JSON(entity_id),
+              FIELD_FROM_JSON(location),
+              FIELD_FROM_JSON(energy)};
 }
 
 /**

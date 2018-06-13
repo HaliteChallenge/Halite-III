@@ -2,12 +2,11 @@
 
 #include "nlohmann/json.hpp"
 
-/** The JSON key for width. */
-constexpr auto JSON_WIDTH = "width";
-/** The JSON key for height. */
-constexpr auto JSON_HEIGHT = "height";
-/** The JSON key for grid. */
-constexpr auto JSON_GRID = "grid";
+/** A JSON key and value corresponding to a field. */
+#define FIELD_TO_JSON(x) {#x, map.x}
+
+/** Get a field from JSON. */
+#define FIELD_FROM_JSON(x) json.at(#x)
 
 namespace hlt {
 
@@ -29,9 +28,9 @@ Map::Map(dimension_type width, dimension_type height) : width(width), height(hei
  * @param map The Map to convert.
  */
 void to_json(nlohmann::json &json, const Map &map) {
-    json = {{JSON_WIDTH,  map.width},
-            {JSON_HEIGHT, map.height},
-            {JSON_GRID,   map.grid}};
+    json = {FIELD_TO_JSON(width),
+            FIELD_TO_JSON(height),
+            FIELD_TO_JSON(grid)};
 }
 
 /**
@@ -40,7 +39,9 @@ void to_json(nlohmann::json &json, const Map &map) {
  * @param[out] map The converted Map.
  */
 void from_json(const nlohmann::json &json, Map &map) {
-    map = {json.at(JSON_WIDTH), json.at(JSON_HEIGHT), json.at(JSON_GRID)};
+    map = {FIELD_FROM_JSON(width),
+           FIELD_FROM_JSON(height),
+           FIELD_FROM_JSON(grid)};
 }
 
 /**

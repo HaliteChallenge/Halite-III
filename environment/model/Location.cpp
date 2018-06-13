@@ -5,10 +5,11 @@
 
 #include "nlohmann/json.hpp"
 
-/** The JSON key for x-coordinate. */
-constexpr auto JSON_POS_X = "pos_x";
-/** The JSON key for y-coordinate. */
-constexpr auto JSON_POS_Y = "pos_y";
+/** A JSON key and value corresponding to a field. */
+#define FIELD_TO_JSON(x) {#x, location.x}
+
+/** Get a field from JSON. */
+#define FIELD_FROM_JSON(x) json.at(#x)
 
 namespace hlt {
 
@@ -115,8 +116,7 @@ void Location::move_toward(const Direction &direction, const Map &map) {
  * @param location The Location to convert.
  */
 void to_json(nlohmann::json &json, const Location &location) {
-    json = {{JSON_POS_X, location.pos_x},
-            {JSON_POS_Y, location.pos_y}};
+    json = {FIELD_TO_JSON(pos_x), FIELD_TO_JSON(pos_y)};
 }
 
 /**
@@ -125,7 +125,7 @@ void to_json(nlohmann::json &json, const Location &location) {
  * @param[out] location The converted Location.
  */
 void from_json(const nlohmann::json &json, Location &location) {
-    location = {json.at(JSON_POS_X), json.at(JSON_POS_Y)};
+    location = {FIELD_FROM_JSON(pos_x), FIELD_FROM_JSON(pos_y)};
 }
 
 }
