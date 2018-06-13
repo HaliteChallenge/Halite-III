@@ -14,6 +14,20 @@ enum class Direction : char {
 };
 
 /**
+ * Convert a Direction to JSON format.
+ * @param[out] json The output JSON.
+ * @param direction The Direction to convert.
+ */
+void to_json(nlohmann::json &json, const Direction &direction);
+
+/**
+ * Convert an encoded Direction from JSON format.
+ * @param json The JSON.
+ * @param[out] direction The converted Direction.
+ */
+void from_json(const nlohmann::json &json, Direction &direction);
+
+/**
  * Read a Direction from bot serial format.
  * @param istream The input stream.
  * @param[out] direction The direction to read.

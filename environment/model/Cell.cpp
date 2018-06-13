@@ -26,7 +26,7 @@ void to_json(nlohmann::json &json, const Cell &cell) { cell->to_json(json); }
  */
 void from_json(const nlohmann::json &json, Cell &cell) {
     // The type field determines the Cell subclass that will be instantiated.
-    const auto &type = json.at(JSON_TYPE_KEY).get<std::string>();
+    const std::string &type = json.at(JSON_TYPE_KEY);
     if (type == NormalCell::CELL_TYPE_NAME) {
         cell = make_cell<NormalCell>(json);
     } else if (type == ObstacleCell::CELL_TYPE_NAME) {
@@ -54,8 +54,7 @@ std::ostream &operator<<(std::ostream &ostream, const Cell &cell) {
  * Create ProductionCell from JSON.
  * @param json The JSON.
  */
-ProductionCell::ProductionCell(const nlohmann::json &json) :
-        _production(json.at(JSON_PRODUCTION_KEY).get<decltype(ProductionCell::_production)>()) {}
+ProductionCell::ProductionCell(const nlohmann::json &json) : _production(json.at(JSON_PRODUCTION_KEY)) {}
 
 constexpr char const *NormalCell::CELL_TYPE_NAME;
 
@@ -122,8 +121,7 @@ std::string EnergyFactorCell::to_bot_serial() const {
  * @param json The JSON.
  */
 EnergyFactorCell::EnergyFactorCell(const nlohmann::json &json) :
-        ProductionCell(json),
-        _energy_factor(json.at(CELL_TYPE_NAME).get<decltype(EnergyFactorCell::_energy_factor)>()) {}
+        ProductionCell(json), _energy_factor(json.at(JSON_ENERGY_FACTOR_KEY)) {}
 
 constexpr char const *FactoryCell::CELL_TYPE_NAME;
 
