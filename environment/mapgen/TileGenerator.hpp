@@ -15,7 +15,7 @@ namespace hlt {
          * TileGenerator class is intended to be a super class implementing tiling functionality for subclasses that
          * implement different methods of generating single tile
          */
-        class TileGenerator : protected Generator {
+        class TileGenerator : public Generator {
             unsigned long num_tile_rows; /**< number of rows of tiles in map */
             unsigned long num_tile_cols; /**< number of cols of tiles in map */
             long num_players; /**< number of players who will be on the map */
@@ -39,16 +39,6 @@ namespace hlt {
         public:
             /** name is function to allow for possibly dynamically named subclasses */
             std::string name() const override { return "tile"; };
-
-//            /** Generate a map given a list of players
-//             * Implemented in subclasses with various methods for generating a tile
-//             *
-//             * @param players: list of players of the game. Passed in for the purpose
-//             *      of assigning each player's factory to a cell
-//             * @return map with cells initialized (ie given production values, or
-//             *      assigned to alternate cell type)
-//             */
-//            virtual hlt::Map generate(std::list<hlt::Player> &players) override = 0;
 
 
             /** TileGenerator class constructor

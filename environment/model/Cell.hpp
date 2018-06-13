@@ -178,7 +178,7 @@ public:
     /**
      * Create FactoryCell with no parameters.
      */
-    explicit FactoryCell() {};
+    FactoryCell() = default;
 
     /**
      * Create FactoryCell from JSON.

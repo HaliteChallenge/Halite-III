@@ -10,6 +10,9 @@ namespace hlt {
         long BlurTileGenerator::blur_function(Map::dimension_type y_coord, Map::dimension_type x_coord, const hlt::Map &map) const {
             // bring into local scope for shorter naming
             const auto BLUR_FACTOR = hlt::GameConstants::get().BLUR_FACTOR;
+            // Weight of a neighbor's effect on a cell's production value is dependent on the number of neighbors being considered
+            // Declare as local constant as rest of function code is also implicitly dependent on the number of neighbors
+            const auto NUM_NEIGHBORS = 4;
 
             // Blur function looks only at immediate neighbors of a tile, wrapping around the edges of the tile as needed
             long left_coord = (x_coord - 1 + tile_width) % tile_width;
@@ -22,10 +25,10 @@ namespace hlt {
             // This means that *each* neighbor's production gets weight (1 - BLUR_FACTOR) / 4
             // Truncate fractions via casting to long
             auto new_production = (long) (map.grid[y_coord][x_coord] -> production() * BLUR_FACTOR
-                                          + map.grid[y_coord][left_coord] -> production() * (1 - BLUR_FACTOR) / 4
-                                          + map.grid[y_coord][right_coord]-> production() * (1 - BLUR_FACTOR) / 4
-                                          + map.grid[above_coord][x_coord] -> production() * (1 - BLUR_FACTOR) / 4
-                                          + map.grid[below_coord][x_coord] -> production() * (1 - BLUR_FACTOR) / 4);
+                                          + map.grid[y_coord][left_coord] -> production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS
+                                          + map.grid[y_coord][right_coord]-> production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS
+                                          + map.grid[above_coord][x_coord] -> production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS
+                                          + map.grid[below_coord][x_coord] -> production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS);
             return new_production;
         }
 
