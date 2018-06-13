@@ -12,7 +12,8 @@ namespace mapgen {
 
 /** Types of available maps to be generated. */
 enum class MapType {
-    Basic
+    Basic,
+    Tile
 };
 
 /** Parameters for map generation. */

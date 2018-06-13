@@ -80,3 +80,7 @@ else()
     # See: https://stackoverflow.com/questions/35116327
     target_link_libraries(halite -Wl,--whole-archive pthread -Wl,--no-whole-archive -static)
 endif()
+
+set(MAPGEN_TEST tile_generator)
+set(SOURCE_FILES "${SOURCE_FILES}" ${CMAKE_SOURCE_DIR}/mapgen/MapTest.cpp)
+add_executable(${MAPGEN_TEST} ${SOURCE_FILES})
