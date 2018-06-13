@@ -23,7 +23,7 @@ class Map {
 
 public:
     /** The type of map dimension values. */
-    using dimension_type = long;
+    using dimension_type = unsigned long;
 
     dimension_type width;         /**< The width of the map. */
     dimension_type height;        /**< The height of the map. */

@@ -10,10 +10,10 @@ namespace hlt {
                                 const hlt::Map &tile, std::list<hlt::Player> &players) {
             auto map = Map(width, height);
             // Copy the tile over the map
-            for (long player_row = 0; player_row < num_tile_rows; ++player_row) {
-                for (long player_col = 0; player_col < num_tile_cols; ++player_col) {
-                    for (long tile_row = 0; tile_row < tile_height; ++tile_row) {
-                        for (long tile_col = 0; tile_col < tile_width; ++tile_col) {
+            for (unsigned long player_row = 0; player_row < num_tile_rows; ++player_row) {
+                for (unsigned long player_col = 0; player_col < num_tile_cols; ++player_col) {
+                    for (unsigned long tile_row = 0; tile_row < tile_height; ++tile_row) {
+                        for (unsigned long tile_col = 0; tile_col < tile_width; ++tile_col) {
                             map.grid[player_row * tile_height + tile_row][player_col * tile_width + tile_col] =
                                     make_cell<NormalCell>(tile.grid[tile_row][tile_col] -> production());
                         }
