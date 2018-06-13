@@ -14,15 +14,6 @@
 #include "nlohmann/json.hpp"
 #include "tclap/CmdLine.h"
 
-using namespace std::literals::chrono_literals;
-
-/** The default map width. */
-constexpr auto DEFAULT_MAP_WIDTH = 128;
-/** The default map height. */
-constexpr auto DEFAULT_MAP_HEIGHT = 128;
-/** The default timeout. */
-constexpr auto DEFAULT_TIMEOUT = 6000ms;
-
 /** The platform-specific path separator. */
 #ifdef _WIN32
 constexpr auto SEPARATOR = '\\';
@@ -31,6 +22,9 @@ constexpr auto SEPARATOR = '/';
 #endif
 
 int main(int argc, char *argv[]) {
+    auto &constants = hlt::GameConstants::get_mut();
+    hlt::Config config{};
+
     using namespace TCLAP;
     CmdLine cmd("Halite Game Environment", ' ', HALITE_VERSION);
     SwitchArg timeout_switch("", "timeout", "Causes game environment to ignore bot timeouts.", cmd, false);
@@ -39,11 +33,12 @@ int main(int argc, char *argv[]) {
     SwitchArg no_compression_switch("", "no-compression", "Disables compression for output files.", cmd, false);
     ValueArg<unsigned long> players_arg("n", "players", "Create a map that will accommodate n players.", false, 1,
                                         "positive integer", cmd);
-    ValueArg<hlt::Map::dimension_type> width_arg("", "width", "The width of the map.", false, DEFAULT_MAP_WIDTH,
+    ValueArg<hlt::Map::dimension_type> width_arg("", "width", "The width of the map.", false,
+                                                 constants.DEFAULT_MAP_WIDTH,
                                                  "positive integer", cmd);
-    ValueArg<hlt::Map::dimension_type> height_arg("", "height", "The height of the map.", false, DEFAULT_MAP_HEIGHT,
-                                                  "positive integer",
-                                                  cmd);
+    ValueArg<hlt::Map::dimension_type> height_arg("", "height", "The height of the map.", false,
+                                                  constants.DEFAULT_MAP_HEIGHT,
+                                                  "positive integer", cmd);
     ValueArg<unsigned int> seed_arg("s", "seed", "The seed for the map generator.", false, 0, "positive integer", cmd);
     ValueArg<std::string> replay_arg("i", "replay-directory", "The path to directory for replay output.", false, ".",
                                      "path to directory", cmd);
@@ -56,40 +51,50 @@ int main(int argc, char *argv[]) {
 
     cmd.parse(argc, argv);
 
+    // If requested, print constants and exit
     if (print_constants_switch.getValue()) {
-        std::cout << hlt::GameConstants::get().to_json().dump(4) << std::endl;
+        std::cout << nlohmann::json(constants).dump() << std::endl;
         return 0;
     }
 
+    // Update the game constants
+    if (constants_arg.isSet()) {
+        std::ifstream constants_file(constants_arg.getValue());
+        nlohmann::json constants_json;
+        constants_file >> constants_json;
+        from_json(constants_json, constants);
+    }
+
+    // TODO: set game ID
+
+    // Set the random seed
+    config.seed = static_cast<unsigned int>(time(nullptr));
+    std::srand(config.seed); // For all non-seeded randomness
+    if (seed_arg.getValue() != 0) {
+        config.seed = seed_arg.getValue();
+    }
+
+    // Get the map parameters
     auto map_width = width_arg.getValue();
     auto map_height = height_arg.getValue();
     auto n_players = players_arg.getValue();
+    hlt::mapgen::MapParameters map_param{hlt::mapgen::MapType::Basic, config.seed, map_width, map_height, n_players};
+
     auto verbosity = verbosity_arg.getValue();
     verbosity++; // One more level than specified verbosity
     verbosity = verbosity > Logging::NUM_LEVELS ? 0 : Logging::NUM_LEVELS - verbosity;
     Logging::set_level(static_cast<Logging::Level>(verbosity));
 
-    auto seed = static_cast<unsigned int>(time(nullptr));
-    std::srand(seed); // For all non-seeded randomness.
-    if (seed_arg.getValue() != 0) {
-        seed = seed_arg.getValue();
-    }
-
-    // Update the game constants.
-    if (constants_arg.isSet()) {
-        std::ifstream constants_file(constants_arg.getValue());
-        nlohmann::json constants_json;
-        constants_file >> constants_json;
-        auto &constants = hlt::GameConstants::get_mut();
-        constants.from_json(constants_json);
-    }
-
+    // Read the player bot commands
     auto bot_commands = command_args.getValue();
+    if (bot_commands.size() > constants.MAX_PLAYERS) {
+        std::cerr << "Error: too many players (max is " << constants.MAX_PLAYERS << ")" << std::endl;
+        return 1;
+    }
     // TODO: override names
 
     net::NetworkingConfig networking_config{};
     networking_config.ignore_timeout = timeout_switch.getValue();
-    networking_config.timeout = DEFAULT_TIMEOUT;
 
     std::list<hlt::Player> players;
     hlt::PlayerFactory player_factory;
@@ -98,13 +103,9 @@ int main(int argc, char *argv[]) {
     }
 
     std::string output_filename = replay_arg.getValue();
-
     if (output_filename.back() != SEPARATOR) output_filename.push_back(SEPARATOR);
 
-    hlt::Config config{};
-    hlt::Halite game(config, {hlt::mapgen::MapType::Basic, seed, map_width, map_height, n_players}, networking_config,
-                     players);
-
+    hlt::Halite game(config, map_param, networking_config, players);
     game.run_game();
     return 0;
 }

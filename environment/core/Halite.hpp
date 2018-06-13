@@ -32,20 +32,23 @@ public:
     std::list<Player> living_players;   /**< The list of currently living players. */
     Map game_map;                       /**< The game map. */
 
-    /** Constructor for the main game.
+    /**
+     * Constructor for the main game.
      *
      * @param config The configuration options for the game.
      * @param parameters The map generation parameters.
      * @param networking_config The networking configuration.
      * @param players The list of players.
      */
-    Halite(const Config &config, const mapgen::MapParameters &parameters,
+    Halite(const Config &config,
+           const mapgen::MapParameters &parameters,
            const net::NetworkingConfig &networking_config,
            std::list<Player> players);
 
     /** Run the game. */
     void run_game();
 };
+
 }
 
 #endif
