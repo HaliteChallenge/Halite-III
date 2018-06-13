@@ -15,7 +15,7 @@ namespace hlt {
                     for (long tile_row = 0; tile_row < tile_height; ++tile_row) {
                         for (long tile_col = 0; tile_col < tile_width; ++tile_col) {
                             map.grid[player_row * tile_height + tile_row][player_col * tile_width + tile_col] =
-                                    std::make_unique<NormalCell>(tile.grid[tile_row][tile_col] -> production());
+                                    make_cell<NormalCell>(tile.grid[tile_row][tile_col] -> production());
                         }
                     }
                 }
@@ -27,7 +27,7 @@ namespace hlt {
             for (auto &player : players) {
                 const auto player_factory_x = (player_idx % num_tile_cols) * tile_width + factory_x;
                 const auto player_factory_y = (player_idx / num_tile_cols) * tile_height + factory_y;
-                map.grid[player_factory_y][player_factory_x] = std::make_unique<FactoryCell>();
+                map.grid[player_factory_y][player_factory_x] = make_cell<FactoryCell>();
 
                 hlt::Location factory_location {(long) player_factory_x, (long) player_factory_y};
                 player.factory_location = factory_location;
