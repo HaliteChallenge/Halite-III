@@ -15,6 +15,21 @@ class BaseCell;
 using Cell = std::unique_ptr<BaseCell>;
 
 /**
+ * Factory method for cells to hide the constructor from clients.
+ * Ideally this function would return Cell and it will always be instantiated to permit it,
+ * but that is not type-safe.
+ *
+ * @tparam CellType The class of the cell.
+ * @tparam Args The types of the arguments to the cell constructor.
+ * @param args The arguments to the cell constructor.
+ * @return The newly constructed cell.
+ */
+template<class CellType, typename... Args>
+std::unique_ptr<CellType> make_cell(Args &&... args) {
+    return std::make_unique<CellType>(std::forward<Args>(args)...);
+}
+
+/**
  * Convert a Cell to JSON format.
  * @param[out] json The output JSON.
  * @param cell The cell to convert.
@@ -70,7 +85,7 @@ public:
 /** A cell on the grid with production. */
 class ProductionCell : public BaseCell {
     /** The production of the cell. */
-    long _production;
+    const long _production;
 public:
     long production() const override { return _production; }
 
@@ -139,7 +154,7 @@ public:
 /** A cell with an augmenting/diminishing energy factor. */
 class EnergyFactorCell : public ProductionCell {
     /** The energy factor of the cell. */
-    long _energy_factor;
+    const long _energy_factor;
 public:
     /** The name of the energy factor cell. */
     static constexpr auto CELL_TYPE_NAME = "e";

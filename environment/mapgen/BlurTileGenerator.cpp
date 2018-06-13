@@ -44,7 +44,7 @@ namespace hlt {
                 for (long col = 0; col < tile_width; ++col) {
                     // randomly generate a production value using generator class' random number generator
                     auto production = (unsigned long) (rng() / (double) rng.max() * (MAX_CELL_PROD - MIN_CELL_PROD) + MIN_CELL_PROD);
-                    tile.grid[row][col] = std::make_unique<NormalCell>(production);
+                    tile.grid[row][col] = make_cell<NormalCell>(production);
                 }
             }
 
@@ -57,7 +57,7 @@ namespace hlt {
                     // production is a private member, so create new cell with new production value (rather than updating prod values directly)
                     const long post_blur_prod = blur_function(row, col, tile);
                     if (post_blur_prod > max_seen_prod) max_seen_prod = post_blur_prod;
-                    tile.grid[row][col] = std::make_unique<NormalCell>(post_blur_prod);
+                    tile.grid[row][col] = make_cell<NormalCell>(post_blur_prod);
                 }
             }
 
@@ -66,7 +66,7 @@ namespace hlt {
             for (long row = 0; row < tile_height; ++row) {
                 for (long col = 0; col < tile_width; ++col) {
                     const long post_normalized_prod = tile.grid[row][col]->production() * MAX_CELL_PROD / max_seen_prod;
-                    tile.grid[row][col] = std::make_unique<NormalCell>(post_normalized_prod);
+                    tile.grid[row][col] = make_cell<NormalCell>(post_normalized_prod);
                 }
             }
 

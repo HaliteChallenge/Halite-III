@@ -28,13 +28,13 @@ void from_json(const nlohmann::json &json, Cell &cell) {
     // The type field determines the Cell subclass that will be instantiated.
     const auto &type = json.at(JSON_TYPE_KEY).get<std::string>();
     if (type == NormalCell::CELL_TYPE_NAME) {
-        cell = std::make_unique<NormalCell>(json);
+        cell = make_cell<NormalCell>(json);
     } else if (type == ObstacleCell::CELL_TYPE_NAME) {
-        cell = std::make_unique<ObstacleCell>(json);
+        cell = make_cell<ObstacleCell>(json);
     } else if (type == EnergyFactorCell::CELL_TYPE_NAME) {
-        cell = std::make_unique<EnergyFactorCell>(json);
+        cell = make_cell<EnergyFactorCell>(json);
     } else if (type == FactoryCell::CELL_TYPE_NAME) {
-        cell = std::make_unique<FactoryCell>(json);
+        cell = make_cell<FactoryCell>(json);
     } else {
         throw JsonError(json);
     }
