@@ -21,7 +21,7 @@ constexpr auto PIPE_HEAD = 0;
 constexpr auto PIPE_TAIL = 1;
 
 /** Offset added to file descriptor, required by select(2) */
-constexpr auto NDFS_OFFSET = 1;
+constexpr auto NFDS_OFFSET = 1;
 
 namespace net {
 
@@ -133,7 +133,7 @@ std::string UnixConnection::get_string() {
         // Check if there are bytes in the pipe
         int selection_result;
         if (config.ignore_timeout) {
-            selection_result = select(read_pipe + NDFS_OFFSET, &set, nullptr, nullptr, nullptr);
+            selection_result = select(read_pipe + NFDS_OFFSET, &set, nullptr, nullptr, nullptr);
         } else {
             auto current_time = high_resolution_clock::now();
             auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
@@ -144,7 +144,7 @@ std::string UnixConnection::get_string() {
             auto sec = duration_cast<seconds>(remaining);
             timeout.tv_sec = sec.count();
             timeout.tv_usec = (remaining - sec).count();
-            selection_result = select(read_pipe + NDFS_OFFSET, &set, nullptr, nullptr, &timeout);
+            selection_result = select(read_pipe + NFDS_OFFSET, &set, nullptr, nullptr, &timeout);
         }
         if (selection_result > 0) {
             // Read from the pipe, as many as we can into the buffer
