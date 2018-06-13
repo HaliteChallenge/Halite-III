@@ -30,9 +30,7 @@ void to_json(nlohmann::json &json, const Entity &entity) {
  * @param[out] entity The converted entity.
  */
 void from_json(const nlohmann::json &json, Entity &entity) {
-    entity = {json.at(JSON_ENTITY_ID_KEY).get<decltype(entity.entity_id)>(),
-              json.at(JSON_LOCATION_KEY).get<decltype(entity.location)>(),
-              json.at(JSON_ENERGY_KEY).get<decltype(entity.energy)>()};
+    entity = {json.at(JSON_ENTITY_ID_KEY), json.at(JSON_LOCATION_KEY), json.at(JSON_ENERGY_KEY)};
 }
 
 /**

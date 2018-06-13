@@ -40,9 +40,7 @@ void to_json(nlohmann::json &json, const Map &map) {
  * @param[out] map The converted Map.
  */
 void from_json(const nlohmann::json &json, Map &map) {
-    map = {json.at(JSON_WIDTH).get<decltype(map.width)>(),
-           json.at(JSON_HEIGHT).get<decltype(map.height)>(),
-           json.at(JSON_GRID).get<decltype(map.grid)>()};
+    map = {json.at(JSON_WIDTH), json.at(JSON_HEIGHT), json.at(JSON_GRID)};
 }
 
 /**

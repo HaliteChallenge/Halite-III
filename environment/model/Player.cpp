@@ -34,11 +34,11 @@ void to_json(nlohmann::json &json, const Player &player) {
  * @param[out] player The converted Player.
  */
 void from_json(const nlohmann::json &json, Player &player) {
-    player = {json.at(JSON_PLAYER_ID).get<decltype(player.player_id)>(),
-              json.at(JSON_NAME).get<decltype(player.name)>(),
-              json.at(JSON_ENERGY).get<decltype(player.energy)>(),
-              json.at(JSON_FACTORY_LOCATION).get<decltype(player.factory_location)>(),
-              json.at(JSON_ENTITIES).get<decltype(player.entities)>()};
+    player = {json.at(JSON_PLAYER_ID),
+              json.at(JSON_NAME),
+              json.at(JSON_ENERGY),
+              json.at(JSON_FACTORY_LOCATION),
+              json.at(JSON_ENTITIES)};
 }
 
 /**

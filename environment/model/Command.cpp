@@ -29,7 +29,7 @@ void to_json(nlohmann::json &json, const Command &command) { command->to_json(js
  */
 void from_json(const nlohmann::json &json, Command &command) {
     // The type field determines the Command subclass that will be instantiated.
-    const auto &type = json.at(JSON_TYPE_KEY).get<std::string>();
+    const std::string &type = json.at(JSON_TYPE_KEY);
     if (type == MoveCommand::COMMAND_TYPE_NAME) {
         command = std::make_unique<MoveCommand>(json);
     } else {
@@ -75,7 +75,7 @@ constexpr char const *MoveCommand::COMMAND_TYPE_NAME;
 void MoveCommand::to_json(nlohmann::json &json) const {
     json = {{JSON_TYPE_KEY,      MoveCommand::COMMAND_TYPE_NAME},
             {JSON_ENTITY_ID_KEY, entity_id},
-            {JSON_DIRECTION_KEY, static_cast<int>(direction)}};
+            {JSON_DIRECTION_KEY, direction}};
 }
 
 /**
@@ -83,8 +83,7 @@ void MoveCommand::to_json(nlohmann::json &json) const {
  * @param json The JSON.
  */
 MoveCommand::MoveCommand(const nlohmann::json &json) :
-        entity_id(json.at(JSON_ENTITY_ID_KEY).get<decltype(MoveCommand::entity_id)>()),
-        direction(static_cast<Direction>(json.at(JSON_DIRECTION_KEY).get<int>())) {}
+        entity_id(json.at(JSON_ENTITY_ID_KEY)), direction(json.at(JSON_DIRECTION_KEY)) {}
 
 /**
  * Create MoveCommand from bot serial format.
