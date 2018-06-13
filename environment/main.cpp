@@ -39,9 +39,11 @@ int main(int argc, char *argv[]) {
     SwitchArg no_compression_switch("", "no-compression", "Disables compression for output files.", cmd, false);
     ValueArg<unsigned long> players_arg("n", "players", "Create a map that will accommodate n players.", false, 1,
                                         "positive integer", cmd);
-    ValueArg<long> width_arg("", "width", "The width of the map.", false, DEFAULT_MAP_WIDTH, "positive integer", cmd);
-    ValueArg<long> height_arg("", "height", "The height of the map.", false, DEFAULT_MAP_HEIGHT, "positive integer",
-                              cmd);
+    ValueArg<hlt::Map::dimension_type> width_arg("", "width", "The width of the map.", false, DEFAULT_MAP_WIDTH,
+                                                 "positive integer", cmd);
+    ValueArg<hlt::Map::dimension_type> height_arg("", "height", "The height of the map.", false, DEFAULT_MAP_HEIGHT,
+                                                  "positive integer",
+                                                  cmd);
     ValueArg<unsigned int> seed_arg("s", "seed", "The seed for the map generator.", false, 0, "positive integer", cmd);
     ValueArg<std::string> replay_arg("i", "replay-directory", "The path to directory for replay output.", false, ".",
                                      "path to directory", cmd);
