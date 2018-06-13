@@ -12,7 +12,8 @@ namespace mapgen {
 
 /** Types of available maps to be generated. */
 enum class MapType {
-    Basic
+    Basic,
+    Tile
 };
 
 /** Parameters for map generation. */
@@ -54,7 +55,7 @@ public:
      * Generate a map based on a list of players.
      * @param players The players on the map.
      */
-    virtual hlt::Map generate(std::list<hlt::Player> &players) const = 0;
+    virtual hlt::Map generate(std::list<hlt::Player> &players) = 0;
 };
 
 }

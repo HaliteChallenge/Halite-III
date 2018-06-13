@@ -10,7 +10,7 @@ namespace mapgen {
  * Generate a map based on a list of players.
  * @param players The players on the map.
  */
-hlt::Map BasicGenerator::generate(std::list<Player> &players) const {
+hlt::Map BasicGenerator::generate(std::list<Player> &players)  {
     (void) players;
     auto map = Map(width, height);
     // Each cell in the map is simply NormalCell with a fixed production, for now.

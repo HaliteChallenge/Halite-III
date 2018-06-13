@@ -12,6 +12,12 @@ namespace hlt {
      * default values in a tournament setting).
      */
     struct GameConstants {
+        // Halite 3 constants
+        long MAX_CELL_PRODUCTION = 255;
+        long MIN_CELL_PRODUCTION = 1;
+        long MAX_ENERGY = 255;
+        double BLUR_FACTOR = 0.75;
+
         int SHIPS_PER_PLAYER = 3;
         int PLANETS_PER_PLAYER = 6;
         unsigned int EXTRA_PLANETS = 4;

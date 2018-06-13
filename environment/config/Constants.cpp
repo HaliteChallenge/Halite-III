@@ -2,8 +2,16 @@
 
 #include "nlohmann/json.hpp"
 
+#define JSON_ENTRY(name) {#name, name}
+#define STR(name) #name
+
 auto hlt::GameConstants::to_json() const -> nlohmann::json {
     return {
+        JSON_ENTRY(MAX_CELL_PRODUCTION),
+        JSON_ENTRY(MIN_CELL_PRODUCTION),
+        JSON_ENTRY(MAX_ENERGY),
+        JSON_ENTRY(BLUR_FACTOR),
+
         { "SHIPS_PER_PLAYER", SHIPS_PER_PLAYER },
         { "PLANETS_PER_PLAYER", PLANETS_PER_PLAYER },
         { "EXTRA_PLANETS", EXTRA_PLANETS },
@@ -37,6 +45,11 @@ auto hlt::GameConstants::to_json() const -> nlohmann::json {
 }
 
 auto hlt::GameConstants::from_json(const nlohmann::json& json) -> void {
+    MAX_CELL_PRODUCTION = json.value(STR(MAX_CELL_PRODUCTION), MAX_CELL_PRODUCTION);
+    MIN_CELL_PRODUCTION = json.value(STR(MIN_CELL_PRODUCTION), MIN_CELL_PRODUCTION);
+    MAX_ENERGY = json.value(STR(MAX_ENERGY), MAX_ENERGY);
+    BLUR_FACTOR = json.value(STR(BLUR_FACTOR), BLUR_FACTOR);
+
     SHIPS_PER_PLAYER = json.value("SHIPS_PER_PLAYER", SHIPS_PER_PLAYER);
     PLANETS_PER_PLAYER = json.value("PLANETS_PER_PLAYER", PLANETS_PER_PLAYER);
     EXTRA_PLANETS = json.value("EXTRA_PLANETS", EXTRA_PLANETS);

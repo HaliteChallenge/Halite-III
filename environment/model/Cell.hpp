@@ -176,6 +176,11 @@ public:
     std::string to_bot_serial() const override;
 
     /**
+     * Create FactoryCell with no parameters.
+     */
+    FactoryCell() = default;
+
+    /**
      * Create FactoryCell from JSON.
      * @param json The JSON.
      */

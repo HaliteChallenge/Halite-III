@@ -132,7 +132,7 @@ constexpr char const *FactoryCell::CELL_TYPE_NAME;
  * @param[out] json The JSON output.
  */
 void FactoryCell::to_json(nlohmann::json &json) const {
-    json = {JSON_TYPE_KEY, CELL_TYPE_NAME};
+    json = {{JSON_TYPE_KEY, CELL_TYPE_NAME}};
 }
 
 /**
