@@ -47,7 +47,7 @@ struct Location {
      * Manhattan distance to another Location.
      * @param other The other Location.
      */
-    long distance(const Location &other) const;
+    hlt::dimension_type distance(const Location &other) const;
 
     /**
      * Move this Location in one direction.
