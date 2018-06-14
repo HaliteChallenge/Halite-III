@@ -6,14 +6,14 @@
 namespace hlt {
     namespace mapgen {
 
-        hlt::Map TileGenerator::tile_map(const Map::dimension_type factory_y, const Map::dimension_type factory_x,
+        hlt::Map TileGenerator::tile_map(const hlt::dimension_type factory_y, const hlt::dimension_type factory_x,
                                 const hlt::Map &tile, std::list<hlt::Player> &players) {
             auto map = Map(width, height);
             // Copy the tile over the map
-            for (Map::dimension_type player_row = 0; player_row < num_tile_rows; ++player_row) {
-                for (Map::dimension_type player_col = 0; player_col < num_tile_cols; ++player_col) {
-                    for (Map::dimension_type tile_row = 0; tile_row < tile_height; ++tile_row) {
-                        for (Map::dimension_type tile_col = 0; tile_col < tile_width; ++tile_col) {
+            for (auto player_row = 0; player_row < num_tile_rows; ++player_row) {
+                for (auto player_col = 0; player_col < num_tile_cols; ++player_col) {
+                    for (auto tile_row = 0; tile_row < tile_height; ++tile_row) {
+                        for (auto tile_col = 0; tile_col < tile_width; ++tile_col) {
                             map.grid[player_row * tile_height + tile_row][player_col * tile_width + tile_col] =
                                     make_cell<NormalCell>(tile.grid[tile_row][tile_col] -> production());
                         }
@@ -29,7 +29,7 @@ namespace hlt {
                 const auto player_factory_y = (player_idx / num_tile_cols) * tile_height + factory_y;
                 map.grid[player_factory_y][player_factory_x] = make_cell<FactoryCell>();
 
-                hlt::Location factory_location {(long) player_factory_x, (long) player_factory_y};
+                hlt::Location factory_location {player_factory_x, player_factory_y};
                 player.factory_location = factory_location;
 
                 player_idx++;
@@ -52,7 +52,7 @@ namespace hlt {
 
             // We want our map to be as square-like as possible, so to find the size of a tile, first determine
             // how many tiles we will have
-            num_tile_rows = (Map::dimension_type) sqrt(num_players);
+            num_tile_rows = (hlt::dimension_type) sqrt(num_players);
             while (num_players % num_tile_rows != 0) {
                 num_tile_rows--;
             }

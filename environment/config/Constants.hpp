@@ -5,6 +5,9 @@
 
 namespace hlt {
 
+/** The type of dimension values across all halite classes using dimension. */
+using dimension_type = long;
+
 /**
  * Gameplay constants that may be tweaked, though they should be at their
  * default values in a tournament setting.
@@ -14,8 +17,8 @@ namespace hlt {
 struct GameConstants {
     unsigned long MAX_TURNS = 300;           /**< The maximum number of turns. */
     unsigned long MAX_PLAYERS = 16;          /**< The maximum number of players. */
-    unsigned long DEFAULT_MAP_WIDTH = 128;   /**< The default width of generated maps. */
-    unsigned long DEFAULT_MAP_HEIGHT = 128;  /**< The default height of generated maps. */
+    hlt::dimension_type DEFAULT_MAP_WIDTH = 128;   /**< The default width of generated maps. */
+    hlt::dimension_type DEFAULT_MAP_HEIGHT = 128;  /**< The default height of generated maps. */
 
     unsigned long MAX_CELL_PRODUCTION = 255; /**< The maximum amount of production on a cell. */
     unsigned long MIN_CELL_PRODUCTION = 1;   /**< The minimum amount of production on a cell. */

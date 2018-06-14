@@ -22,7 +22,7 @@ namespace hlt {
              * @param map: map of the cells. Assumes map is at least as large as tile_width x tile_height
              * @return new production value for the cell of interest
              */
-            long blur_function(Map::dimension_type y_coord, Map::dimension_type x_coord, const hlt::Map &map) const;
+            long blur_function(hlt::dimension_type y_coord, hlt::dimension_type x_coord, const hlt::Map &map) const;
         public:
             std::string name() const override  { return "Blur Tile"; };
 
