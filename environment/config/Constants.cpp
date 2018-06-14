@@ -15,7 +15,7 @@ namespace hlt {
  * @param[out] json The JSON output.
  * @param constants The constants.
  */
-void to_json(nlohmann::json &json, const GameConstants &constants) {
+void to_json(nlohmann::json &json, const Constants &constants) {
     json = {FIELD_TO_JSON(MAX_TURNS),
             FIELD_TO_JSON(MAX_PLAYERS),
             FIELD_TO_JSON(DEFAULT_MAP_WIDTH),
@@ -23,6 +23,9 @@ void to_json(nlohmann::json &json, const GameConstants &constants) {
             FIELD_TO_JSON(MAX_CELL_PRODUCTION),
             FIELD_TO_JSON(MIN_CELL_PRODUCTION),
             FIELD_TO_JSON(MAX_ENERGY),
+            FIELD_TO_JSON(NEW_ENTITY_ENERGY_COST),
+            FIELD_TO_JSON(NEW_ENTITY_ENERGY),
+            FIELD_TO_JSON(BASE_TURN_ENERGY_LOSS),
             FIELD_TO_JSON(BLUR_FACTOR)};
 }
 
@@ -31,7 +34,7 @@ void to_json(nlohmann::json &json, const GameConstants &constants) {
  * @param json The JSON input.
  * @param[out] constants The decoded constants.
  */
-void from_json(const nlohmann::json &json, GameConstants &constants) {
+void from_json(const nlohmann::json &json, Constants &constants) {
     constants = {FIELD_FROM_JSON(MAX_TURNS),
                  FIELD_FROM_JSON(MAX_PLAYERS),
                  FIELD_FROM_JSON(DEFAULT_MAP_WIDTH),
@@ -39,6 +42,9 @@ void from_json(const nlohmann::json &json, GameConstants &constants) {
                  FIELD_FROM_JSON(MAX_CELL_PRODUCTION),
                  FIELD_FROM_JSON(MIN_CELL_PRODUCTION),
                  FIELD_FROM_JSON(MAX_ENERGY),
+                 FIELD_FROM_JSON(NEW_ENTITY_ENERGY_COST),
+                 FIELD_FROM_JSON(NEW_ENTITY_ENERGY),
+                 FIELD_FROM_JSON(BASE_TURN_ENERGY_LOSS),
                  FIELD_FROM_JSON(BLUR_FACTOR)};
 }
 

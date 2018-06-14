@@ -3,7 +3,6 @@
 
 #include "Generator.hpp"
 
-
 namespace hlt {
 namespace mapgen {
 /**
