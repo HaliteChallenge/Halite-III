@@ -43,7 +43,7 @@ namespace hlt {
             for (Map::dimension_type row = 0; row < tile_height; ++row) {
                 for (Map::dimension_type col = 0; col < tile_width; ++col) {
                     // randomly generate a production value using generator class' random number generator
-                    auto production = (unsigned long) (rng() / (double) rng.max() * (MAX_CELL_PROD - MIN_CELL_PROD) + MIN_CELL_PROD);
+                    auto production = (unsigned long) (rng() / (double) std::mt19937::max() * (MAX_CELL_PROD - MIN_CELL_PROD) + MIN_CELL_PROD);
                     tile.grid[row][col] = make_cell<NormalCell>(production);
                 }
             }
@@ -70,8 +70,8 @@ namespace hlt {
                 }
             }
 
-            const auto factory_pos_x = (Map::dimension_type) (rng() / (float) rng.max() * tile_width);
-            const auto factory_pos_y = (Map::dimension_type) (rng() / (float) rng.max() * tile_height);
+            const auto factory_pos_x = (Map::dimension_type) (rng() / (float) std::mt19937::max() * tile_width);
+            const auto factory_pos_y = (Map::dimension_type) (rng() / (float) std::mt19937::max() * tile_height);
 
             // Use super class function to copy the tile over the entire map, including placing all factories
             hlt::Map final_map = tile_map(factory_pos_y, factory_pos_x, tile, players);

@@ -1,7 +1,7 @@
 #include "TileGenerator.hpp"
 #include "Map.hpp"
 
-#include <assert.h>
+#include <cassert>
 
 namespace hlt {
     namespace mapgen {
