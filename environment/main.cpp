@@ -33,10 +33,10 @@ int main(int argc, char *argv[]) {
     SwitchArg no_compression_switch("", "no-compression", "Disables compression for output files.", cmd, false);
     ValueArg<unsigned long> players_arg("n", "players", "Create a map that will accommodate n players.", false, 1,
                                         "positive integer", cmd);
-    ValueArg<hlt::Map::dimension_type> width_arg("", "width", "The width of the map.", false,
+    ValueArg<hlt::dimension_type> width_arg("", "width", "The width of the map.", false,
                                                  constants.DEFAULT_MAP_WIDTH,
                                                  "positive integer", cmd);
-    ValueArg<hlt::Map::dimension_type> height_arg("", "height", "The height of the map.", false,
+    ValueArg<hlt::dimension_type> height_arg("", "height", "The height of the map.", false,
                                                   constants.DEFAULT_MAP_HEIGHT,
                                                   "positive integer", cmd);
     ValueArg<unsigned int> seed_arg("s", "seed", "The seed for the map generator.", false, 0, "positive integer", cmd);

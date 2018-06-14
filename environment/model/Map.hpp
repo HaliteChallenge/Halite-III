@@ -7,6 +7,7 @@
 
 #include "Cell.hpp"
 #include "Entity.hpp"
+#include "Constants.hpp"
 
 namespace hlt {
 
@@ -22,11 +23,8 @@ class Map {
     using Grid = std::vector<std::vector<Cell>>;
 
 public:
-    /** The type of map dimension values. */
-    using dimension_type = unsigned long;
-
-    dimension_type width;         /**< The width of the map. */
-    dimension_type height;        /**< The height of the map. */
+    hlt::dimension_type width;         /**< The width of the map. */
+    hlt::dimension_type height;        /**< The height of the map. */
     EntityFactory entity_factory; /**< The factory producing entities on this map. */
     Grid grid;                    /**< The map grid. */
 
@@ -58,7 +56,7 @@ private:
      * @param width The width.
      * @param height The height.
      */
-    Map(dimension_type width, dimension_type height);
+    Map(hlt::dimension_type width, hlt::dimension_type height);
 
     /**
      * Create a Map from dimensions and grid.
@@ -66,7 +64,7 @@ private:
      * @param height The height.
      * @param grid The grid. Must be of correct dimensions.
      */
-    Map(dimension_type width, dimension_type height, Map::Grid grid) :
+    Map(hlt::dimension_type width, hlt::dimension_type height, Map::Grid grid) :
             width(width), height(height), grid(std::move(grid)) {}
 };
 
