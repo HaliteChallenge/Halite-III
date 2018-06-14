@@ -32,11 +32,11 @@ include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib/deprecated)
 include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib/dictBuilder)
 include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib/legacy)
 
-#if(WIN32)
-#    include_directories(${CMAKE_SOURCE_DIR}/networking/win32)
-#else()
+if(WIN32)
+    include_directories(${CMAKE_SOURCE_DIR}/networking/win32)
+else()
     include_directories(${CMAKE_SOURCE_DIR}/networking/unix)
-#endif()
+endif()
 
 add_custom_target(VERSION_CHECK
     ./set_version.sh
@@ -54,11 +54,11 @@ set(dirs
     ${CMAKE_SOURCE_DIR}/zstd-1.3.0
 )
 
-#if(WIN32)
-#    list(APPEND dirs ${CMAKE_SOURCE_DIR}/networking/win32)
-#else()
+if(WIN32)
+    list(APPEND dirs ${CMAKE_SOURCE_DIR}/networking/win32)
+else()
     list(APPEND dirs ${CMAKE_SOURCE_DIR}/networking/unix)
-#endif()
+endif()
 
 foreach(dir ${dirs})
     file(GLOB_RECURSE SOURCE ${dir}/*.[ch]*)

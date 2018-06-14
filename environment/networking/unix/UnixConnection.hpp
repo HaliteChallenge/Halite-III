@@ -39,9 +39,7 @@ public:
      */
     std::string get_string() override;
 
-    /**
-     * Destroy the UnixConnection, terminating the subprocess if there is one.
-     */
+    /** Destroy the UnixConnection, terminating the subprocess if there is one. */
     ~UnixConnection() noexcept override;
 };
 
