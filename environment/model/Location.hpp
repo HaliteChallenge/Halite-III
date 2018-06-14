@@ -2,6 +2,7 @@
 #define LOCATION_HPP
 
 #include "nlohmann/json_fwd.hpp"
+#include "Constants.hpp"
 
 namespace hlt {
 
@@ -39,14 +40,14 @@ class Map;
 
 /** A location in Halatian space. */
 struct Location {
-    long pos_x; /**< Cartesian x-coordinate. */
-    long pos_y; /**< Cartesian y-coordinate. */
+    hlt::dimension_type pos_x; /**< Cartesian x-coordinate. */
+    hlt::dimension_type pos_y; /**< Cartesian y-coordinate. */
 
     /**
      * Manhattan distance to another Location.
      * @param other The other Location.
      */
-    long distance(const Location &other) const;
+    hlt::dimension_type distance(const Location &other) const;
 
     /**
      * Move this Location in one direction.
@@ -79,7 +80,7 @@ struct Location {
      * @param pos_x The x-coordinate.
      * @param pos_y the y-coordinate.
      */
-    Location(long pos_x, long pos_y) : pos_x(pos_x), pos_y(pos_y) {}
+    Location(hlt::dimension_type pos_x, hlt::dimension_type pos_y) : pos_x(pos_x), pos_y(pos_y) {}
 
     /** Default constructor is required by JSON deserialization. */
     Location() = default;

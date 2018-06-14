@@ -15,7 +15,7 @@ namespace hlt {
  * @param width The width.
  * @param height The height.
  */
-Map::Map(dimension_type width, dimension_type height) : width(width), height(height) {
+Map::Map(hlt::dimension_type width, hlt::dimension_type height) : width(width), height(height) {
     grid.resize(static_cast<decltype(grid)::size_type>(height));
     for (auto &row : grid) {
         row.resize(static_cast<std::remove_reference_t<decltype(row)>::size_type>(width));

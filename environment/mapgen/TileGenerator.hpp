@@ -16,14 +16,14 @@ namespace hlt {
          * implement different methods of generating single tile
          */
         class TileGenerator : public Generator {
-            unsigned long num_tile_rows; /**< number of rows of tiles in map */
-            unsigned long num_tile_cols; /**< number of cols of tiles in map */
+            hlt::dimension_type num_tile_rows; /**< number of rows of tiles in map */
+            hlt::dimension_type num_tile_cols; /**< number of cols of tiles in map */
             long num_players; /**< number of players who will be on the map */
-            Map::dimension_type width; /**< width (in cells) of the final map */
-            Map::dimension_type height; /**< height (in cells) of the final map */
+            hlt::dimension_type width; /**< width (in cells) of the final map */
+            hlt::dimension_type height; /**< height (in cells) of the final map */
         protected:
-            Map::dimension_type tile_width; /**< width (in cells) of a single tile */
-            Map::dimension_type tile_height; /**< width (in cells) of a single tile */
+            hlt::dimension_type tile_width; /**< width (in cells) of a single tile */
+            hlt::dimension_type tile_height; /**< width (in cells) of a single tile */
 
 
             /** Tile a map from a single tile
@@ -35,7 +35,7 @@ namespace hlt {
              * @return map: A map tiled by the input tile. All cells in the map will be initialized.
              * Effects: Players will have factory locations initialized
              */
-            hlt::Map tile_map(Map::dimension_type factory_y, Map::dimension_type factory_x, const hlt::Map &tile, std::list<hlt::Player> &players);
+            hlt::Map tile_map(hlt::dimension_type factory_y, hlt::dimension_type factory_x, const hlt::Map &tile, std::list<hlt::Player> &players);
         public:
             /** name is function to allow for possibly dynamically named subclasses */
             std::string name() const override { return "tile"; };
