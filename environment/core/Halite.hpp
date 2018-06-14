@@ -11,20 +11,16 @@
 
 namespace hlt {
 
+class HaliteImpl;
+
+/** Halite game interface, exposing the top level of the game. */
 class Halite final {
+    friend class HaliteImpl;
 private:
     Config config;                      /**< The game configuration. */
     mapgen::MapParameters parameters;   /**< The map parameters. */
     net::Networking networking;         /**< The networking suite. */
-
-    /** Communicate with bots to obtain moves for next step. */
-    void retrieve_moves();
-
-    /** Process all commands for this turn. */
-    void process_commands();
-
-    /** Process all production results for this turn. */
-    void process_production();
+    std::unique_ptr<HaliteImpl> impl;   /**< The pointer to implementation. */
 
 public:
     unsigned long turn_number{};        /**< The turn number. */
@@ -47,6 +43,9 @@ public:
 
     /** Run the game. */
     void run_game();
+
+    /** Default destructor is defined where HaliteImpl is complete. */
+    ~Halite();
 };
 
 }
