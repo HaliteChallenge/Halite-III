@@ -35,7 +35,7 @@ namespace hlt {
              * @return map: A map tiled by the input tile. All cells in the map will be initialized.
              * Effects: Players will have factory locations initialized
              */
-            hlt::Map tile_map(const hlt::dimension_type factory_y, const hlt::dimension_type factory_x, const hlt::Map &tile, std::list<hlt::Player> &players);
+            hlt::Map tile_map(hlt::dimension_type factory_y, hlt::dimension_type factory_x, const hlt::Map &tile, std::list<hlt::Player> &players);
         public:
             /** name is function to allow for possibly dynamically named subclasses */
             std::string name() const override { return "tile"; };
