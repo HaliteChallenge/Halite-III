@@ -43,22 +43,31 @@ cl.exe /std:c++14 /O2 /MT /EHsc /W2 /Fo.\obj\ /Fehalite.exe ^
  /DNDEBUG ^
  ^
  /I . ^
+ /I .\config ^
+ /I .\core ^
+ /I .\error ^
+ /I .\logging ^
+ /I .\mapgen ^
+ /I .\model ^
+ /I .\networking\common ^
+ /I .\networking\win32 ^
  /I zstd-1.3.0\lib ^
  /I zstd-1.3.0\lib\common ^
  ^
- .\core\mapgen\AsteroidCluster.cpp ^
- .\core\mapgen\Generator.cpp ^
- .\core\mapgen\SolarSystem.cpp ^
- .\core\Constants.cpp ^
- .\core\Entity.cpp ^
- .\core\GameEvent.cpp ^
+ .\config\Constants.cpp ^
  .\core\Halite.cpp ^
- .\core\hlt.cpp ^
- .\core\Replay.cpp ^
- .\core\SimulationEvent.cpp ^
- .\core\Statistics.cpp ^
- .\networking\BotInputError.cpp ^
- .\networking\Networking.cpp ^
+ .\logging\Logging.cpp ^
+ .\mapgen\BasicGenerator.cpp ^
+ .\mapgen\BlurTileGenerator.cpp ^
+ .\mapgen\TileGenerator.cpp ^
+ .\model\Cell.cpp ^
+ .\model\Command.cpp ^
+ .\model\Entity.cpp ^
+ .\model\Location.cpp ^
+ .\model\Map.cpp ^
+ .\model\Player.cpp ^
+ .\networking\common\Networking.cpp ^
+ .\networking\win32\WinConnection.cpp ^
  .\main.cpp ^
  ^
  zstd-1.3.0\lib\common\entropy_common.c ^
