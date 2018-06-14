@@ -33,14 +33,22 @@ WinConnection::WinConnection(const std::string &command, NetworkingConfig config
         throw NetworkingError("Could not create pipe");
     }
     if (!SetHandleInformation(read[PIPE_HEAD], HANDLE_FLAG_INHERIT, 0)) {
+        CloseHandle(read[PIPE_HEAD]);
+        CloseHandle(read[PIPE_TAIL]);
         throw NetworkingError("Could not set handle information");
     }
 
     // Child stdin pipe
     if (!CreatePipe(&write[PIPE_HEAD], &write[PIPE_TAIL], &saAttr, 0)) {
+        CloseHandle(read[PIPE_HEAD]);
+        CloseHandle(read[PIPE_TAIL]);
         throw NetworkingError("Could not create pipe");
     }
     if (!SetHandleInformation(write[PIPE_TAIL], HANDLE_FLAG_INHERIT, 0)) {
+        CloseHandle(read[PIPE_HEAD]);
+        CloseHandle(read[PIPE_TAIL]);
+        CloseHandle(write[PIPE_HEAD]);
+        CloseHandle(write[PIPE_TAIL]);
         throw NetworkingError("Could not set handle information");
     }
 
@@ -69,9 +77,12 @@ WinConnection::WinConnection(const std::string &command, NetworkingConfig config
             &piProcInfo       // receives PROCESS_INFORMATION
     );
     if (!success) {
+        CloseHandle(read[PIPE_HEAD]);
+        CloseHandle(read[PIPE_TAIL]);
+        CloseHandle(write[PIPE_HEAD]);
+        CloseHandle(write[PIPE_TAIL]);
         throw NetworkingError("Could not start process");
     }
-    CloseHandle(piProcInfo.hProcess);
     CloseHandle(piProcInfo.hThread);
     read_pipe = read[PIPE_HEAD];
     write_pipe = write[PIPE_TAIL];
