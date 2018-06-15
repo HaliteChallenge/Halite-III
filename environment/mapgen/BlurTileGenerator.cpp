@@ -14,10 +14,10 @@ energy_type BlurTileGenerator::blur_function(dimension_type y_coord, dimension_t
     const auto NUM_NEIGHBORS = 4;
 
     // Blur function looks only at immediate neighbors of a tile, wrapping around the edges of the tile as needed
-    auto left_coord = (x_coord - 1 + tile_width) % tile_width;
-    auto right_coord = (x_coord + 1) % tile_width;
-    auto above_coord = (y_coord - 1 + tile_height) % tile_height;
-    auto below_coord = (y_coord + 1) % tile_height;
+    dimension_type left_coord = (x_coord - 1 + tile_width) % tile_width;
+    dimension_type right_coord = (x_coord + 1) % tile_width;
+    dimension_type above_coord = (y_coord - 1 + tile_height) % tile_height;
+    dimension_type below_coord = (y_coord + 1) % tile_height;
 
     // In determining post blur production value, give current production value of cell weight BLUR_FACTOR
     // and production of neighbors weight (1 - BLUR_FACTOR)
