@@ -23,7 +23,8 @@ void to_json(nlohmann::json &json, const GameConstants &constants) {
             FIELD_TO_JSON(MAX_CELL_PRODUCTION),
             FIELD_TO_JSON(MIN_CELL_PRODUCTION),
             FIELD_TO_JSON(MAX_ENERGY),
-            FIELD_TO_JSON(BLUR_FACTOR)};
+            FIELD_TO_JSON(BLUR_FACTOR),
+            FIELD_TO_JSON(ALLOW_ENTITY_MERGE)};
 }
 
 /**
@@ -39,7 +40,8 @@ void from_json(const nlohmann::json &json, GameConstants &constants) {
                  FIELD_FROM_JSON(MAX_CELL_PRODUCTION),
                  FIELD_FROM_JSON(MIN_CELL_PRODUCTION),
                  FIELD_FROM_JSON(MAX_ENERGY),
-                 FIELD_FROM_JSON(BLUR_FACTOR)};
+                 FIELD_FROM_JSON(BLUR_FACTOR),
+                 FIELD_FROM_JSON(ALLOW_ENTITY_MERGE)};
 }
 
 }

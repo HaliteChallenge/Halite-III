@@ -66,9 +66,11 @@ foreach(dir ${dirs})
 endforeach()
 
 include_directories(${CMAKE_SOURCE_DIR})
+set(TEST_FILES "${SOURCE_FILES}" ../testing/MapTest.cpp)
 set(SOURCE_FILES "${SOURCE_FILES}" main.cpp)
 
 add_executable(halite ${SOURCE_FILES})
+add_executable(mapTest ${TEST_FILES})
 
 add_dependencies(halite VERSION_CHECK)
 

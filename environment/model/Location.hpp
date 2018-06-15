@@ -46,8 +46,10 @@ struct Location {
     /**
      * Manhattan distance to another Location.
      * @param other The other Location.
+     * @param width The width of the map/plane distance is being measured on (for wrap around computation)
+     * @param height The height of the map/plane distance is being measured on (for wrap around computation)
      */
-    long distance(const Location &other) const;
+    hlt::dimension_type distance(const Location &other, hlt::dimension_type width, hlt::dimension_type height) const;
 
     /**
      * Move this Location in one direction.
