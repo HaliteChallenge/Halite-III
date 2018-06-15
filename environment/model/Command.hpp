@@ -61,8 +61,9 @@ public:
 
 /** Command for moving an entity in a direction. */
 class MoveCommand : public BaseCommand {
-    id_type entity_id;  /**< The ID of the entity to move. */
-    Direction direction;         /**< The direction in which to move the entity. */
+    dimension_type entity_x; /**< The ID of the entity to move. */
+    dimension_type entity_y; /**< The ID of the entity to move. */
+    Direction direction;     /**< The direction in which to move the entity. */
 
 public:
     /** The name of the move command. */
@@ -86,11 +87,12 @@ public:
 
     /**
      * Create MoveCommand from entity ID and direction.
-     * @param entity_id The entity ID.
+     * @param entity_x The x coordinate of the entity
+     * @param entity_y The y coordinate of the entity
      * @param direction The direction.
      */
-    MoveCommand(id_type entity_id, Direction direction)
-            : entity_id(entity_id), direction(direction) {}
+    MoveCommand(dimension_type entity_x, dimension_type entity_y, Direction direction)
+            : entity_x(entity_x), entity_y(entity_y), direction(direction) {}
 
     /**
      * Create MoveCommand from JSON.
