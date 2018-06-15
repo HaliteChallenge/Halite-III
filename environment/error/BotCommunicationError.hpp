@@ -23,7 +23,6 @@ public:
     const char *what() const noexcept override {
         return ("Failed to decode bot message: \"" + bot_input + "\"").c_str();
     }
-
 };
 
 #endif // BOTCOMMUNICATIONERROR_HPP
