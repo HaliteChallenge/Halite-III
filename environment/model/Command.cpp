@@ -100,11 +100,11 @@ MoveCommand::MoveCommand(const std::string &bot_serial) {
 }
 
 /**
- * Cause the MoveCommand to act on a Map.
+ * Cause the move to act on the Map.
  * @param map The Map to act on.
+ * @param player The player who is issuing the command.
  */
-void MoveCommand::act_on_map(Map &map) const {
-    (void) map;
+void MoveCommand::act_on_map(Map &map, Player &player) const {
     // TODO: implement
 }
 

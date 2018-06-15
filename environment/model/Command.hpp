@@ -4,6 +4,7 @@
 #include <deque>
 
 #include "Entity.hpp"
+#include "Player.hpp"
 
 #include "nlohmann/json_fwd.hpp"
 
@@ -48,15 +49,16 @@ public:
     /**
      * If the command has an action on the Map, cause it to occur.
      * @param map The Map to act on.
+     * @param player The player who is issuing the command.
      */
-    virtual void act_on_map(Map &map) const = 0;
+    virtual void act_on_map(Map &map, Player &player) const = 0;
 
     virtual ~BaseCommand() = default;
 };
 
 /** Command for moving an entity in a direction. */
 class MoveCommand : public BaseCommand {
-    Entity::EntityID entity_id;  /**< The ID of the entity to move. */
+    Entity::id_type entity_id;  /**< The ID of the entity to move. */
     Direction direction;         /**< The direction in which to move the entity. */
 
 public:
@@ -66,16 +68,25 @@ public:
     /** The short name of the move command. */
     static constexpr auto COMMAND_TYPE_SHORT = 'm';
 
+    /**
+     * Convert a MoveCommand to JSON format.
+     * @param[out] json The JSON output.
+     */
     void to_json(nlohmann::json &json) const override;
 
-    void act_on_map(Map &map) const override;
+    /**
+     * Cause the move to act on the Map.
+     * @param map The Map to act on.
+     * @param player The player who is issuing the command.
+     */
+    void act_on_map(Map &map, Player &player) const override;
 
     /**
      * Create MoveCommand from entity ID and direction.
      * @param entity_id The entity ID.
      * @param direction The direction.
      */
-    MoveCommand(Entity::EntityID entity_id, Direction direction)
+    MoveCommand(Entity::id_type entity_id, Direction direction)
             : entity_id(entity_id), direction(direction) {}
 
     /**

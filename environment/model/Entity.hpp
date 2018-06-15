@@ -10,11 +10,11 @@ struct Entity {
     friend class EntityFactory;
 
     /** Type of Entity IDs. */
-    using EntityID = long;
+    using id_type = long;
 
-    EntityID entity_id{};   /**< ID of the entity. */
+    id_type entity_id{};   /**< ID of the entity. */
     Location location{};    /**< Location of the entity. */
-    unsigned char energy{}; /**< Energy of the entity. */
+    energy_type energy{}; /**< Energy of the entity. */
 
     /**
      * Convert an Entity to JSON format.
@@ -54,14 +54,14 @@ private:
      * @param location The location.
      * @param energy The energy.
      */
-    Entity(Entity::EntityID entity_id, const Location &location, unsigned char energy) :
+    Entity(Entity::id_type entity_id, const Location &location, energy_type energy) :
             entity_id(entity_id), location(location), energy(energy) {}
 };
 
 /** Factory producing Entity instances. */
 class EntityFactory {
     /** The next Entity to allocate, starting at zero. */
-    Entity::EntityID next_entity{};
+    Entity::id_type next_entity{};
 
 public:
     /**
@@ -70,7 +70,7 @@ public:
      * @param energy The energy of the entity.
      * @return The new entity.
      */
-    Entity new_entity(const Location &location, unsigned char energy) {
+    Entity new_entity(const Location &location, energy_type energy) {
         return {next_entity++, location, energy};
     };
 
