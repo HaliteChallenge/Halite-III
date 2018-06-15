@@ -49,7 +49,7 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
     ostream << player.player_id << " " << player.entities.size() << " " << player.energy << std::endl;
     // Output a list of entities.
     for (const auto &location_entity_pair : player.entities) {
-        std::pair<dimension_type, dimension_type> location = location_entity_pair.first;
+        const std::pair<dimension_type, dimension_type> &location = location_entity_pair.first;
         ostream << location.first << " " << location.second << " " << location_entity_pair.second;
     }
     return ostream;

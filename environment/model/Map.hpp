@@ -25,7 +25,6 @@ class Map {
 public:
     hlt::dimension_type width;         /**< The width of the map. */
     hlt::dimension_type height;        /**< The height of the map. */
-    EntityFactory entity_factory; /**< The factory producing entities on this map. */
     Grid grid;                    /**< The map grid. */
 
     /**

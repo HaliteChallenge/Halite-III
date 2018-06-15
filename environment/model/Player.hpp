@@ -19,12 +19,12 @@ struct Player {
     /** Type of the Entity list of a player. */
     using Entities = std::map<Location, std::shared_ptr<Entity>> ;
 
-    id_type player_id;                                          /**< The unique ID of the player. */
-    std::string name;                                           /**< The name of the player. */
-    std::string command;                                        /**< The bot command for the player. */
-    energy_type energy{};                                       /**< The amount of energy stockpiled by the player. */
-    Location factory_location{};                                /**< The factory location of the player. */
-    Entities entities;                                          /**< Mapping of location of entity to entity shared ptr */
+    id_type player_id;            /**< The unique ID of the player. */
+    std::string name;             /**< The name of the player. */
+    std::string command;          /**< The bot command for the player. */
+    energy_type energy{};         /**< The amount of energy stockpiled by the player. */
+    Location factory_location{};  /**< The factory location of the player. */
+    Entities entities;            /**< Mapping of location of entity to entity shared ptr */
 
     /**
      * Convert a Player to JSON format.
@@ -104,7 +104,7 @@ public:
         return {next_player++, std::to_string(next_player), std::move(command)};
     }
 
-    explicit PlayerFactory() = default ;
+    PlayerFactory() = default;
 };
 
 }
