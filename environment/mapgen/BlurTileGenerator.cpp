@@ -38,8 +38,8 @@ Map BlurTileGenerator::generate(std::list<Player> &players) {
     const auto MIN_CELL_PROD = Constants::get().MIN_CELL_PRODUCTION;
     const auto MAX_CELL_PROD = Constants::get().MAX_CELL_PRODUCTION;
 
-    for (auto row = 0; row < tile_height; ++row) {
-        for (auto col = 0; col < tile_width; ++col) {
+    for (dimension_type row = 0; row < tile_height; ++row) {
+        for (dimension_type col = 0; col < tile_width; ++col) {
             // randomly generate a production value using generator class' random number generator
             auto production = static_cast<energy_type>(rng() / max * (MAX_CELL_PROD - MIN_CELL_PROD) + MIN_CELL_PROD);
             tile.grid[row][col] = make_cell<NormalCell>(production);
@@ -50,8 +50,8 @@ Map BlurTileGenerator::generate(std::list<Player> &players) {
     // Blurring will create regression to mean, so additionally keep track of max value to later ensure full use of
     // production range
     energy_type max_seen_prod = 0;
-    for (auto row = 0; row < tile_height; ++row) {
-        for (auto col = 0; col < tile_width; ++col) {
+    for (dimension_type row = 0; row < tile_height; ++row) {
+        for (dimension_type col = 0; col < tile_width; ++col) {
             // production is a private member, so create new cell with new production value
             const energy_type post_blur_prod = blur_function(row, col, tile);
             if (post_blur_prod > max_seen_prod) max_seen_prod = post_blur_prod;
@@ -61,8 +61,8 @@ Map BlurTileGenerator::generate(std::list<Player> &players) {
 
     // Do a second pass over the tile to scale relative to post blur production, but to still get full range of
     // production values
-    for (auto row = 0; row < tile_height; ++row) {
-        for (auto col = 0; col < tile_width; ++col) {
+    for (dimension_type row = 0; row < tile_height; ++row) {
+        for (dimension_type col = 0; col < tile_width; ++col) {
             const energy_type post_normalized_prod = tile.grid[row][col]->production() * MAX_CELL_PROD / max_seen_prod;
             tile.grid[row][col] = make_cell<NormalCell>(post_normalized_prod);
         }
