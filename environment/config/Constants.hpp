@@ -11,6 +11,9 @@ using dimension_type = long;
 /** The type of energy/production values across all Halite classes. */
 using energy_type = long;
 
+ /** Type of Player IDs. */
+ using id_type = long;
+
 /**
  * Gameplay constants that may be tweaked, though they should be at their
  * default values in a tournament setting.

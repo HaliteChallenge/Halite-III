@@ -1,19 +1,29 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "Location.hpp"
+#include "Constants.hpp"
 
 namespace hlt {
+
+/**
+ * Factory method for Entities to hide the constructor from clients.
+ *
+ * @tparam EntityType The class of the Entity. Currently we only have the class entity, but use templeting to permit expansion
+ *  of Entity types
+ * @tparam Args The types of the arguments to the Entity constructor.
+ * @param args The arguments to the Entity constructor.
+ * @return The newly constructed Entity.
+ */
+template<class EntityType, typename... Args>
+std::shared_ptr<EntityType> make_entity(Args &&... args) {
+    return std::make_shared<EntityType>(std::forward<Args>(args)...);
+}
 
 /** An entity placed on the Halite map. */
 struct Entity {
     friend class EntityFactory;
 
-    /** Type of Entity IDs. */
-    using id_type = long;
-
-    id_type entity_id{};   /**< ID of the entity. */
-    Location location{};    /**< Location of the entity. */
+    id_type owner_id{};   /**< ID of the entity. */
     energy_type energy{}; /**< Energy of the entity. */
 
     /**
@@ -31,10 +41,11 @@ struct Entity {
     friend void from_json(const nlohmann::json &json, Entity &entity);
 
     /** Test two Entity instances for equality. */
-    bool operator==(const Entity &other) const { return entity_id == other.entity_id; }
+    // TODO
+    // bool operator==(const Entity &other) const { return entity_id == other.entity_id; }
 
-    /** Order two Entity instances by ID. */
-    bool operator<(const Entity &other) const { return entity_id < other.entity_id; }
+    /** Order two Entity instances by energy */
+    bool operator<(const Entity &other) const { return energy < other.energy; }
 
     /**
      * Write an Entity to bot serial format.
@@ -54,15 +65,12 @@ private:
      * @param location The location.
      * @param energy The energy.
      */
-    Entity(Entity::id_type entity_id, const Location &location, energy_type energy) :
-            entity_id(entity_id), location(location), energy(energy) {}
+    Entity(id_type owner_id, energy_type energy) :
+            owner_id(owner_id), energy(energy) {}
 };
 
 /** Factory producing Entity instances. */
 class EntityFactory {
-    /** The next Entity to allocate, starting at zero. */
-    Entity::id_type next_entity{};
-
 public:
     /**
      * Make a new entity.
@@ -70,8 +78,8 @@ public:
      * @param energy The energy of the entity.
      * @return The new entity.
      */
-    Entity new_entity(const Location &location, energy_type energy) {
-        return {next_entity++, location, energy};
+    Entity new_entity(id_type owner_id, energy_type energy) {
+        return {owner_id, energy};
     };
 
     EntityFactory() = default;
@@ -79,14 +87,15 @@ public:
 
 }
 
-namespace std {
-template<>
-struct hash<hlt::Entity> {
-    size_t operator()(const hlt::Entity &entity) const {
-        return (size_t) entity.entity_id;
-    }
-};
-}
+// TODO: determine appropriate hash
+//namespace std {
+//template<>
+//struct hash<hlt::Entity> {
+//    size_t operator()(const hlt::Entity &entity) const {
+//        return (size_t) entity.entity_id;
+//    }
+//};
+//}
 
 #endif // ENTITY_H
 

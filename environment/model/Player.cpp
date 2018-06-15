@@ -15,12 +15,13 @@ namespace hlt {
  * @param[out] json The output JSON.
  * @param player The Player to convert.
  */
+// TODO: enable entities to be able to converted to json
 void to_json(nlohmann::json &json, const Player &player) {
     json = {FIELD_TO_JSON(player_id),
             FIELD_TO_JSON(name),
             FIELD_TO_JSON(energy),
-            FIELD_TO_JSON(factory_location),
-            FIELD_TO_JSON(entities)};
+            FIELD_TO_JSON(factory_location)};
+            //FIELD_TO_JSON(entities)};
 }
 
 /**
@@ -28,13 +29,14 @@ void to_json(nlohmann::json &json, const Player &player) {
  * @param json The JSON.
  * @param[out] player The converted Player.
  */
-void from_json(const nlohmann::json &json, Player &player) {
-    player = {FIELD_FROM_JSON(player_id),
-              FIELD_FROM_JSON(name),
-              FIELD_FROM_JSON(energy),
-              FIELD_FROM_JSON(factory_location),
-              FIELD_FROM_JSON(entities)};
-}
+ // TODO
+//void from_json(const nlohmann::json &json, Player &player) {
+//    player = {FIELD_FROM_JSON(player_id),
+//              FIELD_FROM_JSON(name),
+//              FIELD_FROM_JSON(energy),
+//              FIELD_FROM_JSON(factory_location)
+//              FIELD_FROM_JSON(entities)};
+//}
 
 /**
  * Write a Player to bot serial format.
@@ -46,8 +48,9 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
     // Output player ID, number of entities, and current energy.
     ostream << player.player_id << " " << player.entities.size() << " " << player.energy << std::endl;
     // Output a list of entities.
-    for (const auto &entity : player.entities) {
-        ostream << entity;
+    for (const auto &location_entity_pair : player.entities) {
+        std::pair<dimension_type, dimension_type> location = location_entity_pair.first;
+        ostream << location.first << " " << location.second << " " << location_entity_pair.second;
     }
     return ostream;
 }
