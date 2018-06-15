@@ -22,7 +22,7 @@ constexpr auto SEPARATOR = '/';
 #endif
 
 int main(int argc, char *argv[]) {
-    auto &constants = hlt::GameConstants::get_mut();
+    auto &constants = hlt::Constants::get_mut();
     hlt::Config config{};
 
     using namespace TCLAP;

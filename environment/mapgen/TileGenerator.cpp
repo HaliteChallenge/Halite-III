@@ -5,9 +5,9 @@
 namespace hlt {
 namespace mapgen {
 
-hlt::Map TileGenerator::tile_map(const hlt::dimension_type factory_y, const hlt::dimension_type factory_x,
-                                 const hlt::Map &tile, std::list<hlt::Player> &players) {
-    auto map = Map(width, height);
+Map TileGenerator::tile_map(const dimension_type factory_y, const dimension_type factory_x,
+                            const Map &tile, std::list<Player> &players) {
+    auto map = make_map(width, height);
     // Copy the tile over the map
     for (auto player_row = 0; player_row < num_tile_rows; ++player_row) {
         for (auto player_col = 0; player_col < num_tile_cols; ++player_col) {
@@ -28,14 +28,13 @@ hlt::Map TileGenerator::tile_map(const hlt::dimension_type factory_y, const hlt:
         const auto player_factory_y = (player_idx / num_tile_cols) * tile_height + factory_y;
         map.grid[player_factory_y][player_factory_x] = make_cell<FactoryCell>();
 
-        hlt::Location factory_location{player_factory_x, player_factory_y};
+        Location factory_location{player_factory_x, player_factory_y};
         player.factory_location = factory_location;
 
         player_idx++;
     }
 
     return map;
-
 }
 
 TileGenerator::TileGenerator(const MapParameters &parameters) :
@@ -46,12 +45,12 @@ TileGenerator::TileGenerator(const MapParameters &parameters) :
 
     // Ensure that the map can be subdivided into partitions for a given number of players
     // ie: a 64x64 map cannot be (most basic definition of) symmetrical for 6 players
-    // TODO: find a way to dea with cases when this is not true that's less disruptive than assertion errors - KB
+    // TODO: find a way to deal with cases when this is not true that's less disruptive than assertion errors - KB
     assert((width * height) % num_players == 0);
 
     // We want our map to be as square-like as possible, so to find the size of a tile, first determine
     // how many tiles we will have
-    num_tile_rows = (hlt::dimension_type) sqrt(num_players);
+    num_tile_rows = static_cast<dimension_type>(sqrt(num_players));
     while (num_players % num_tile_rows != 0) {
         num_tile_rows--;
     }

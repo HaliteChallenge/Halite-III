@@ -10,7 +10,7 @@ void Halite::run_game() {
     for (auto &player : players) {
         networking.initialize_player(player);
     }
-    const auto &constants = GameConstants::get();
+    const auto &constants = Constants::get();
     for (turn_number = 0; turn_number < constants.MAX_TURNS; turn_number++) {
         impl->retrieve_moves();
         impl->process_commands();

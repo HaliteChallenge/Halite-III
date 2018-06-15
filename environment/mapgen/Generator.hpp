@@ -37,7 +37,7 @@ protected:
      * @param height The height of the Map to construct.
      * @return The constructed Map.
      */
-    static hlt::Map Map(hlt::dimension_type width, hlt::dimension_type height) {
+    static hlt::Map make_map(hlt::dimension_type width, hlt::dimension_type height) {
         return hlt::Map::Map(width, height);
     }
 

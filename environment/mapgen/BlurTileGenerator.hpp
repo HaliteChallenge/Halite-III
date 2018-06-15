@@ -4,7 +4,6 @@
 #include "TileGenerator.hpp"
 #include "Map.hpp"
 
-
 namespace hlt {
 namespace mapgen {
 /**
