@@ -30,16 +30,23 @@ void HaliteImpl::process_commands(const std::unordered_map<id_type, Command> &co
 
 /** Process all entity lifecycle events for this turn. */
 void HaliteImpl::process_entities() {
-    // TODO: merging the existing entities is being left to the first traversal (production calculation).
     // Each factory may spawn a new entity
     const auto &constants = Constants::get();
     for (auto &player_pair : game->players) {
         auto &player = player_pair.second;
         if (player.energy >= constants.NEW_ENTITY_ENERGY_COST) {
             player.energy -= constants.NEW_ENTITY_ENERGY_COST;
-            auto entity = make_entity<Entity>(player.player_id, constants.NEW_ENTITY_ENERGY);
-            // TODO: what if there is already an entity on the factory? Merge
-            player.entities[player.factory_location] = entity;
+            auto entity_iterator = player.entities.find(player.factory_location);
+            if (entity_iterator != player.entities.end()) {
+                // If there is already an entity, merge.
+                entity_iterator->second->energy += constants.NEW_ENTITY_ENERGY;
+            } else {
+                // Otherwise, spawn.
+                auto entity = make_entity<Entity>(player.player_id, constants.NEW_ENTITY_ENERGY);
+                player.entities[player.factory_location] = entity;
+                game->game_map.grid[player.factory_location.first][player.factory_location.second]->
+                        entities[player.player_id] = entity;
+            }
         }
     }
     // Each entity loses some health, each entity with no remaining energy is removed

@@ -64,7 +64,9 @@ class BaseCell {
 
 public:
     // TODO: possible usage of constant size array
+    /** Map from player ID to player possessed entity here, if there is one. */
     std::map<id_type, std::shared_ptr<Entity>> entities;
+
     /** Get the production of this cell. */
     virtual energy_type production() const { return BASE_PRODUCTION; }
 
