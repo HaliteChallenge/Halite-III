@@ -8,8 +8,8 @@ namespace hlt {
 /**
  * Factory method for Entities to hide the constructor from clients.
  *
- * @tparam EntityType The class of the Entity. Currently we only have the class entity, but use templeting to permit expansion
- *  of Entity types
+ * @tparam EntityType The class of the Entity.
+ * Currently we only have the class entity, but use templating to permit expansion of Entity types
  * @tparam Args The types of the arguments to the Entity constructor.
  * @param args The arguments to the Entity constructor.
  * @return The newly constructed Entity.

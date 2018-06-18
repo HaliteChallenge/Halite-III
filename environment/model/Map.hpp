@@ -6,8 +6,9 @@
 #include <vector>
 
 #include "Cell.hpp"
-#include "Entity.hpp"
 #include "Constants.hpp"
+#include "Entity.hpp"
+#include "Location.hpp"
 
 namespace hlt {
 
@@ -25,7 +26,7 @@ class Map {
 public:
     hlt::dimension_type width;         /**< The width of the map. */
     hlt::dimension_type height;        /**< The height of the map. */
-    Grid grid;                    /**< The map grid. */
+    Grid grid;                         /**< The map grid. */
 
     /**
      * Convert a Map to JSON format.
@@ -48,6 +49,13 @@ public:
      * @return The output stream.
      */
     friend std::ostream &operator<<(std::ostream &ostream, const Map &map);
+
+    /**
+     * Move a location in a direction.
+     * @param location The location to move.
+     * @param direction The direction to move it in.
+     */
+    void move_location(Location &location, const Direction &direction);
 
 private:
     /**

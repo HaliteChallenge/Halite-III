@@ -17,7 +17,7 @@ using Cell = std::unique_ptr<BaseCell>;
 
 /**
  * Factory method for cells to hide the constructor from clients.
- * Ideally this function would return Cell and it will always be instantiated to permit it,
+ * Ideally this function would return Cell, and it will always be instantiated to permit that,
  * but that is not type-safe.
  *
  * @tparam CellType The class of the cell.
@@ -27,6 +27,7 @@ using Cell = std::unique_ptr<BaseCell>;
  */
 template<class CellType, typename... Args>
 std::unique_ptr<CellType> make_cell(Args &&... args) {
+    static_assert(std::is_base_of<BaseCell, CellType>::value, "make_cell requires a BaseCell subclass");
     return std::make_unique<CellType>(std::forward<Args>(args)...);
 }
 
