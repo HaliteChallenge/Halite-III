@@ -4,6 +4,7 @@
 #include <list>
 #include <string>
 #include <utility>
+#include <map>
 #include "Entity.hpp"
 
 namespace hlt {
@@ -12,18 +13,18 @@ namespace hlt {
 struct Player {
     friend class PlayerFactory;
 
-    /** Type of Player IDs. */
-    using id_type = long;
+    /** Type of a location . */
+    using Location = std::pair<dimension_type, dimension_type>;
 
     /** Type of the Entity list of a player. */
-    using Entities = std::list<Entity>;
+    using Entities = std::map<Location, std::shared_ptr<Entity>> ;
 
-    id_type player_id;               /**< The unique ID of the player. */
+    id_type player_id;            /**< The unique ID of the player. */
     std::string name;             /**< The name of the player. */
     std::string command;          /**< The bot command for the player. */
     energy_type energy{};         /**< The amount of energy stockpiled by the player. */
     Location factory_location{};  /**< The factory location of the player. */
-    Entities entities;            /**< The entities owned by the player. */
+    Entities entities;            /**< Mapping of location of entity to entity shared ptr */
 
     /**
      * Convert a Player to JSON format.
@@ -31,13 +32,6 @@ struct Player {
      * @param player The Player to convert.
      */
     friend void to_json(nlohmann::json &json, const Player &player);
-
-    /**
-     * Convert an encoded Player from JSON format.
-     * @param json The JSON.
-     * @param[out] player The converted Player.
-     */
-    friend void from_json(const nlohmann::json &json, Player &player);
 
     /** Test two Player instances for equality. */
     bool operator==(const Player &other) const { return player_id == other.player_id; }
@@ -72,11 +66,11 @@ private:
      * @param name The player name.
      * @param energy The energy.
      * @param factory_location The factory location.
-     * @param entities The entities.
+     * @param entities The location -> entity mapping.
      */
     Player(id_type player_id, std::string name, energy_type energy,
            Location factory_location, Player::Entities entities)
-            : player_id(player_id), name(std::move(name)), energy(energy), factory_location(factory_location),
+            : player_id(player_id), name(std::move(name)), energy(energy), factory_location(std::move(factory_location)),
               entities(std::move(entities)) {}
 };
 
@@ -91,7 +85,7 @@ std::ostream &operator<<(std::ostream &ostream, const std::list<Player> &players
 /** Factory which produces Players. */
 class PlayerFactory {
     /** The next player to allocate, starting from zero. */
-    Player::id_type next_player{};
+    id_type next_player{};
 
 public:
     /**

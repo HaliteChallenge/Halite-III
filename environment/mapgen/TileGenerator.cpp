@@ -28,7 +28,7 @@ Map TileGenerator::tile_map(const dimension_type factory_y, const dimension_type
         const dimension_type player_factory_y = (player_idx / num_tile_cols) * tile_height + factory_y;
         map.grid[player_factory_y][player_factory_x] = make_cell<FactoryCell>();
 
-        Location factory_location{player_factory_x, player_factory_y};
+        Player::Location factory_location{player_factory_x, player_factory_y};
         player.factory_location = factory_location;
 
         player_idx++;

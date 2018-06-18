@@ -8,8 +8,10 @@
 
 /** The JSON key for command type. */
 constexpr auto JSON_TYPE_KEY = "type";
-/** The JSON key for entity ID. */
-constexpr auto JSON_ENTITY_ID_KEY = "entity_id";
+/** The JSON key for entity X location. */
+constexpr auto JSON_ENTITY_X_KEY = "entity_x";
+/** The JSON key for entity Y location. */
+constexpr auto JSON_ENTITY_Y_KEY = "entity_y";
 /** The JSON key for direction. */
 constexpr auto JSON_DIRECTION_KEY = "direction";
 
@@ -74,7 +76,8 @@ constexpr char const *MoveCommand::COMMAND_TYPE_NAME;
  */
 void MoveCommand::to_json(nlohmann::json &json) const {
     json = {{JSON_TYPE_KEY,      MoveCommand::COMMAND_TYPE_NAME},
-            {JSON_ENTITY_ID_KEY, entity_id},
+            {JSON_ENTITY_X_KEY, entity_x},
+            {JSON_ENTITY_Y_KEY, entity_y},
             {JSON_DIRECTION_KEY, direction}};
 }
 
@@ -83,7 +86,9 @@ void MoveCommand::to_json(nlohmann::json &json) const {
  * @param json The JSON.
  */
 MoveCommand::MoveCommand(const nlohmann::json &json) :
-        entity_id(json.at(JSON_ENTITY_ID_KEY)), direction(json.at(JSON_DIRECTION_KEY)) {}
+        entity_x(json.at(JSON_ENTITY_X_KEY)),
+        entity_y(json.at(JSON_ENTITY_Y_KEY)),
+        direction(json.at(JSON_DIRECTION_KEY)) {}
 
 /**
  * Create MoveCommand from bot serial format.
@@ -93,7 +98,7 @@ MoveCommand::MoveCommand(const std::string &bot_serial) {
     // Read the entity ID and the direction.
     std::istringstream bot_stream(bot_serial);
     try {
-        bot_stream >> entity_id >> direction;
+        bot_stream >> entity_x >> entity_y >> direction;
     } catch (std::istream::failure &failure) {
         throw BotCommunicationError(bot_serial);
     }

@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "Entity.hpp"
+#include "Constants.hpp"
 
 #include "nlohmann/json_fwd.hpp"
 
@@ -61,6 +62,8 @@ class BaseCell {
     static constexpr auto BASE_ENERGY_FACTOR = 0;
 
 public:
+    // TODO: possible usage of constant size array
+    std::map<id_type, std::shared_ptr<Entity>> entities;
     /** Get the production of this cell. */
     virtual energy_type production() const { return BASE_PRODUCTION; }
 
