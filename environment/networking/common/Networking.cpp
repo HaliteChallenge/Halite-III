@@ -37,7 +37,10 @@ void Networking::initialize_player(Player &player) {
 void Networking::handle_frame(const Player &player, Command &command) {
     std::stringstream message_stream;
     // Send the turn number, then each player in the game.
-    message_stream << game->turn_number << std::endl << game->players;
+    message_stream << game->turn_number << std::endl;
+    for (const auto &player_entry : game->players) {
+        message_stream << player_entry.second;
+    }
     connections[player]->send_string(message_stream.str());
     Logging::log("Turn info sent to player " + std::to_string(player.player_id), Logging::Level::Debug);
     // Get commands from the player.

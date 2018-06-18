@@ -40,18 +40,4 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
     return ostream;
 }
 
-/**
- * Write a list of Players to bot serial format.
- * @param ostream The output stream.
- * @param players The Players to write.
- * @return The output stream.
- */
-std::ostream &operator<<(std::ostream &ostream, const std::list<Player> &players) {
-    // Output each player one after another.
-    for (const auto &player : players) {
-        ostream << player;
-    }
-    return ostream;
-}
-
 }

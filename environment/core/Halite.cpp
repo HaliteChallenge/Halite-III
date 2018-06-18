@@ -8,12 +8,11 @@ namespace hlt {
 /** Run the game. */
 void Halite::run_game() {
     for (auto &player : players) {
-        networking.initialize_player(player);
+        networking.initialize_player(player.second);
     }
     const auto &constants = Constants::get();
     for (turn_number = 0; turn_number < constants.MAX_TURNS; turn_number++) {
-        impl->retrieve_moves();
-        impl->process_commands();
+        impl->process_commands(impl->retrieve_commands());
         impl->process_entities();
     }
     // TODO: thread the communications with players
@@ -35,8 +34,11 @@ Halite::Halite(const Config &config,
         parameters(parameters),
         networking(net::Networking(networking_config, this)),
         impl(std::make_unique<HaliteImpl>(this)),
-        players(std::move(players)),
-        game_map(mapgen::BasicGenerator(parameters).generate(players)) {}
+        game_map(mapgen::BasicGenerator(parameters).generate(players)) {
+    for (const auto &player : players) {
+        this->players[player.player_id] = player;
+    }
+}
 
 /** Default destructor is defined where HaliteImpl is complete. */
 Halite::~Halite() = default;

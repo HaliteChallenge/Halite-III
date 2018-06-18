@@ -1,5 +1,6 @@
 #include <memory>
 
+#include "BotCommandError.hpp"
 #include "BotCommunicationError.hpp"
 #include "Command.hpp"
 #include "JsonError.hpp"
@@ -110,7 +111,16 @@ MoveCommand::MoveCommand(const std::string &bot_serial) {
  * @param player The player who is issuing the command.
  */
 void MoveCommand::act_on_map(Map &map, Player &player) const {
-    // TODO: implement
+    auto location = std::make_pair(entity_x, entity_y);
+    auto entity_iterator = player.entities.find(location);
+    if (entity_iterator == player.entities.end()) {
+        throw BotCommandError("Attempt by player " + std::to_string(player.player_id) + " to move unowned entity");
+    } else {
+        auto entity = entity_iterator->second;
+        player.entities.erase(location);
+        map.move_location(location, direction);
+        player.entities[location] = entity;
+    }
 }
 
 }

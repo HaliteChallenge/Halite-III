@@ -15,7 +15,7 @@ namespace hlt {
 struct Player {
     friend class PlayerFactory;
 
-    /** Type of the Entity map of a player. */
+    /** Type of the Entity map of a player, where keys are entity locations. */
     using Entities = std::map<Location, std::shared_ptr<Entity>>;
 
     id_type player_id{};          /**< The unique ID of the player. */
@@ -73,14 +73,6 @@ private:
               factory_location(std::move(factory_location)),
               entities(std::move(entities)) {}
 };
-
-/**
- * Write a list of Players to bot serial format.
- * @param ostream The output stream.
- * @param players The Players to write.
- * @return The output stream.
- */
-std::ostream &operator<<(std::ostream &ostream, const std::list<Player> &players);
 
 /** Factory which produces Players. */
 class PlayerFactory {
