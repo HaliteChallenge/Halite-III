@@ -40,4 +40,28 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
     return ostream;
 }
 
+/**
+ * Add an entity by location, possibly merging with an existing entity.
+ * @param location The location for the entity.
+ * @param entity The entity to add.
+ */
+void Player::add_entity(const Location &location, std::shared_ptr<Entity> &entity) {
+    auto entity_iterator = entities.find(location);
+    if (entity_iterator != entities.end()) {
+        // If the player already has an entity there, merge
+        entity_iterator->second->energy += entity->energy;
+    } else {
+        // Otherwise, move this entity there
+        entities[location] = entity;
+    }
+}
+
+/**
+ * Remove an entity by location.
+ * @param location The location of the entity.
+ */
+void Player::remove_entity(const Location &location) {
+    entities.erase(location);
+}
+
 }

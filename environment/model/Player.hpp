@@ -26,6 +26,19 @@ struct Player {
     Entities entities;            /**< Mapping of location of entity to entity shared ptr */
 
     /**
+     * Add an entity by location, possibly merging with an existing entity.
+     * @param location The location for the entity.
+     * @param entity The entity to add.
+     */
+    void add_entity(const Location &location, std::shared_ptr<Entity> &entity);
+
+    /**
+     * Remove an entity by location.
+     * @param location The location of the entity.
+     */
+    void remove_entity(const Location &location);
+
+    /**
      * Convert a Player to JSON format.
      * @param[out] json The output JSON.
      * @param player The Player to convert.

@@ -3,8 +3,9 @@
 
 #include <iostream>
 
-#include "Entity.hpp"
 #include "Constants.hpp"
+#include "Entity.hpp"
+#include "Player.hpp"
 
 #include "nlohmann/json_fwd.hpp"
 
@@ -66,6 +67,19 @@ public:
     // TODO: possible usage of constant size array
     /** Map from player ID to player possessed entity here, if there is one. */
     std::map<id_type, std::shared_ptr<Entity>> entities;
+
+    /**
+     * Add an entity by player, possibly merging with an existing entity.
+     * @param player The player for the entity.
+     * @param entity The entity to add.
+     */
+    void add_entity(const Player &player, std::shared_ptr<Entity> &entity);
+
+    /**
+     * Remove an entity by player.
+     * @param player The player of the entity.
+     */
+    void remove_entity(const Player &player);
 
     /** Get the production of this cell. */
     virtual energy_type production() const { return BASE_PRODUCTION; }
