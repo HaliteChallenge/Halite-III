@@ -22,10 +22,27 @@ class Map {
     /** The type of the map grid. */
     using Grid = std::vector<std::vector<Cell>>;
 
+    Grid grid;                         /**< The map grid. */
+
 public:
     hlt::dimension_type width;         /**< The width of the map. */
     hlt::dimension_type height;        /**< The height of the map. */
-    Grid grid;                    /**< The map grid. */
+
+    /**
+     * Get a reference to a cell at grid coordinates.
+     * @param x The grid x-coordinate.
+     * @param y The grid y-coordinate.
+     * @return Reference to the cell at (x, y).
+     */
+    Cell &at(dimension_type x, dimension_type y);
+
+    /**
+     * Get a const reference to a cell at grid coordinates.
+     * @param x The grid x-coordinate.
+     * @param y The grid y-coordinate.
+     * @return Reference to the cell at (x, y).
+     */
+    const Cell &at(dimension_type x, dimension_type y) const;
 
     /**
      * Convert a Map to JSON format.
@@ -64,7 +81,7 @@ private:
      * @param grid The grid. Must be of correct dimensions.
      */
     Map(hlt::dimension_type width, hlt::dimension_type height, Map::Grid grid) :
-            width(width), height(height), grid(std::move(grid)) {}
+            grid(std::move(grid)), width(width), height(height) {}
 };
 
 }
