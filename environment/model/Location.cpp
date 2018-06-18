@@ -85,10 +85,9 @@ std::istream &operator>>(std::istream &istream, Direction &direction) {
  * Manhattan distance to another Location.
  * @param other The other Location.
  */
-hlt::dimension_type Location::distance(const Location &other, const hlt::dimension_type width, const hlt::dimension_type height) const {
-    const auto x_dist = abs(other.pos_x - pos_x);
-    const auto y_dist = abs(other.pos_y - pos_y);
-    return std::min(x_dist, width - x_dist) + std::min(y_dist, height - y_dist);
+hlt::dimension_type Location::distance(const Location &other) const {
+    // TODO: wrap around edges
+    return abs(other.pos_x - pos_x) + abs(other.pos_y - pos_y);
 }
 
 /**

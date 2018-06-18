@@ -15,25 +15,12 @@ namespace hlt {
  * @param[out] json The output JSON.
  * @param player The Player to convert.
  */
+// TODO: add functionality to convert entity mapping to json
 void to_json(nlohmann::json &json, const Player &player) {
     json = {FIELD_TO_JSON(player_id),
             FIELD_TO_JSON(name),
             FIELD_TO_JSON(energy),
-            FIELD_TO_JSON(factory_location),
-            FIELD_TO_JSON(entities)};
-}
-
-/**
- * Convert an encoded Player from JSON format.
- * @param json The JSON.
- * @param[out] player The converted Player.
- */
-void from_json(const nlohmann::json &json, Player &player) {
-    player = {FIELD_FROM_JSON(player_id),
-              FIELD_FROM_JSON(name),
-              FIELD_FROM_JSON(energy),
-              FIELD_FROM_JSON(factory_location),
-              FIELD_FROM_JSON(entities)};
+            FIELD_TO_JSON(factory_location)};
 }
 
 /**
@@ -46,8 +33,9 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
     // Output player ID, number of entities, and current energy.
     ostream << player.player_id << " " << player.entities.size() << " " << player.energy << std::endl;
     // Output a list of entities.
-    for (const auto &entity : player.entities) {
-        ostream << entity;
+    for (const auto &location_entity_pair : player.entities) {
+        const std::pair<dimension_type, dimension_type> &location = location_entity_pair.first;
+        ostream << location.first << " " << location.second << " " << *(location_entity_pair.second);
     }
     return ostream;
 }

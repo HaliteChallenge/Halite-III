@@ -12,7 +12,7 @@ namespace mapgen {
  */
 hlt::Map BasicGenerator::generate(std::list<Player> &players) {
     (void) players;
-    auto map = Map(width, height);
+    auto map = make_map(width, height);
     // Each cell in the map is simply NormalCell with a fixed production, for now.
     for (auto &row : map.grid) {
         for (auto &cell : row) {

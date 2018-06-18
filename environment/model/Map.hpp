@@ -25,8 +25,18 @@ class Map {
 public:
     hlt::dimension_type width;         /**< The width of the map. */
     hlt::dimension_type height;        /**< The height of the map. */
-    EntityFactory entity_factory; /**< The factory producing entities on this map. */
     Grid grid;                    /**< The map grid. */
+
+    /**
+     * Calculate the Manhattan distance between two cells on a grid
+     *
+     * @param x_cell1 The x location of the first cell
+     * @param y_cell1 The y location of the first cell
+     * @param x_cell2 The x location of the second cell
+     * @param y_cell2 The y location of the second cell
+     * @return The manhattan distance between the cells, calculated on a wrap around map
+     */
+    dimension_type distance(dimension_type x_cell1, dimension_type y_cell1, dimension_type x_cell2, dimension_type y_cell2);
 
     /**
      * Convert a Map to JSON format.

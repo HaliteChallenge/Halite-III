@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "Entity.hpp"
+#include "Constants.hpp"
 
 #include "nlohmann/json_fwd.hpp"
 
@@ -61,8 +62,10 @@ class BaseCell {
     static constexpr auto BASE_ENERGY_FACTOR = 0;
 
 public:
+    // TODO: possible usage of constant size array
+    std::map<id_type, std::shared_ptr<Entity>> entities;
     /** Get the production of this cell. */
-    virtual long production() const { return BASE_PRODUCTION; }
+    virtual energy_type production() const { return BASE_PRODUCTION; }
 
     /** Get whether this cell is passable by an entity. */
     virtual bool is_passable() const { return BASE_PASSABLE; }
@@ -85,15 +88,15 @@ public:
 /** A cell on the grid with production. */
 class ProductionCell : public BaseCell {
     /** The production of the cell. */
-    const long _production;
+    const energy_type _production;
 public:
-    long production() const override { return _production; }
+    energy_type production() const override { return _production; }
 
     /**
      * Create ProductionCell from production amount.
      * @param production The production amount.
      */
-    explicit ProductionCell(long production) : _production(production) {}
+    explicit ProductionCell(energy_type production) : _production(production) {}
 
     /**
      * Create ProductionCell from JSON.
@@ -117,7 +120,7 @@ public:
      * Create NormalCell from production amount.
      * @param production The production amount.
      */
-    explicit NormalCell(long production) : ProductionCell(production) {}
+    explicit NormalCell(energy_type production) : ProductionCell(production) {}
 
     /**
      * Create NormalCell from JSON.
@@ -142,7 +145,7 @@ public:
      * Create ObstacleCell from production amount.
      * @param production The production amount.
      */
-    explicit ObstacleCell(long production) : ProductionCell(production) {}
+    explicit ObstacleCell(energy_type production) : ProductionCell(production) {}
 
     /**
      * Create ObstacleCell from JSON.
@@ -170,7 +173,7 @@ public:
      * @param production The production amount.
      * @param energy_factor The energy factor.
      */
-    EnergyFactorCell(long production, long energy_factor) :
+    EnergyFactorCell(energy_type production, long energy_factor) :
             ProductionCell(production), _energy_factor(energy_factor) {}
 
     /**

@@ -12,14 +12,14 @@ using namespace std::literals::string_literals;
 
 namespace hlt {
 
+// TODO: convert to appropriate to and from json methods under new shared pointer entity sceudle
 /**
  * Convert an Entity to JSON format.
  * @param[out] json The output JSON.
  * @param entity The entity to convert.
  */
 void to_json(nlohmann::json &json, const Entity &entity) {
-    json = {FIELD_TO_JSON(entity_id),
-            FIELD_TO_JSON(location),
+    json = {FIELD_TO_JSON(owner_id),
             FIELD_TO_JSON(energy)};
 }
 
@@ -29,8 +29,7 @@ void to_json(nlohmann::json &json, const Entity &entity) {
  * @param[out] entity The converted entity.
  */
 void from_json(const nlohmann::json &json, Entity &entity) {
-    entity = {FIELD_FROM_JSON(entity_id),
-              FIELD_FROM_JSON(location),
+    entity = {FIELD_FROM_JSON(owner_id),
               FIELD_FROM_JSON(energy)};
 }
 
@@ -41,8 +40,8 @@ void from_json(const nlohmann::json &json, Entity &entity) {
  * @return The output stream.
  */
 std::ostream &operator<<(std::ostream &ostream, const Entity &entity) {
-    // Output the entity ID then its energy.
-    return ostream << entity.entity_id << " " << entity.energy << std::endl;
+    // Output the entity owner ID then its energy.
+    return ostream << entity.owner_id << " " << entity.energy << std::endl;
 }
 
 }
