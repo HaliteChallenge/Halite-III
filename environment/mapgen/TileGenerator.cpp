@@ -13,8 +13,8 @@ Map TileGenerator::tile_map(const dimension_type factory_y, const dimension_type
         for (dimension_type player_col = 0; player_col < num_tile_cols; ++player_col) {
             for (dimension_type tile_row = 0; tile_row < tile_height; ++tile_row) {
                 for (dimension_type tile_col = 0; tile_col < tile_width; ++tile_col) {
-                    map.grid[player_row * tile_height + tile_row][player_col * tile_width + tile_col] =
-                            make_cell<NormalCell>(tile.grid[tile_row][tile_col]->production());
+                    map.at(player_col * tile_width + tile_col, player_row * tile_height + tile_row) =
+                            make_cell<NormalCell>(tile.at(tile_col, tile_row)->production());
                 }
             }
         }
@@ -26,7 +26,7 @@ Map TileGenerator::tile_map(const dimension_type factory_y, const dimension_type
     for (auto &player : players) {
         const dimension_type player_factory_x = (player_idx % num_tile_cols) * tile_width + factory_x;
         const dimension_type player_factory_y = (player_idx / num_tile_cols) * tile_height + factory_y;
-        map.grid[player_factory_y][player_factory_x] = make_cell<FactoryCell>();
+        map.at(player_factory_x, player_factory_y) = make_cell<FactoryCell>();
 
         Location factory_location{player_factory_x, player_factory_y};
         player.factory_location = factory_location;

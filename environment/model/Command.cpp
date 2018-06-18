@@ -119,10 +119,10 @@ void MoveCommand::act_on_map(Map &map, Player &player) const {
         auto &entity = player_entity_iterator->second;
         // Remove the old entity
         player.entities.erase(location);
-        map.grid[entity_x][entity_y]->entities.erase(player.player_id);
+        map.at(entity_y, entity_x)->entities.erase(player.player_id);
         // Compute the new position
         map.move_location(location, direction);
-        auto &cell = map.grid[location.first][location.second];
+        auto &cell = map.at(location.second, location.first);
         auto cell_entity_iterator = cell->entities.find(player.player_id);
         if (cell_entity_iterator != cell->entities.end()) {
             // If the player already has an entity there, merge

@@ -23,11 +23,11 @@ energy_type BlurTileGenerator::blur_function(dimension_type y_coord, dimension_t
     // and production of neighbors weight (1 - BLUR_FACTOR)
     // This means that *each* neighbor's production gets weight (1 - BLUR_FACTOR) / 4
     // Truncate fractions via cast
-    return static_cast<energy_type>(map.grid[y_coord][x_coord]->production() * BLUR_FACTOR
-                                    + map.grid[y_coord][left_coord]->production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS
-                                    + map.grid[y_coord][right_coord]->production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS
-                                    + map.grid[above_coord][x_coord]->production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS
-                                    + map.grid[below_coord][x_coord]->production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS);
+    return static_cast<energy_type>(map.at(x_coord, y_coord)->production() * BLUR_FACTOR
+                                    + map.at(left_coord, y_coord)->production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS
+                                    + map.at(right_coord, y_coord)->production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS
+                                    + map.at(x_coord, above_coord)->production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS
+                                    + map.at(x_coord, below_coord)->production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS);
 }
 
 Map BlurTileGenerator::generate(std::list<Player> &players) {
@@ -42,7 +42,7 @@ Map BlurTileGenerator::generate(std::list<Player> &players) {
         for (dimension_type col = 0; col < tile_width; ++col) {
             // randomly generate a production value using generator class' random number generator
             auto production = static_cast<energy_type>(rng() / max * (MAX_CELL_PROD - MIN_CELL_PROD) + MIN_CELL_PROD);
-            tile.grid[row][col] = make_cell<NormalCell>(production);
+            tile.at(col, row) = make_cell<NormalCell>(production);
         }
     }
 
@@ -55,7 +55,7 @@ Map BlurTileGenerator::generate(std::list<Player> &players) {
             // production is a private member, so create new cell with new production value
             const energy_type post_blur_prod = blur_function(row, col, tile);
             if (post_blur_prod > max_seen_prod) max_seen_prod = post_blur_prod;
-            tile.grid[row][col] = make_cell<NormalCell>(post_blur_prod);
+            tile.at(col, row) = make_cell<NormalCell>(post_blur_prod);
         }
     }
 
@@ -63,8 +63,8 @@ Map BlurTileGenerator::generate(std::list<Player> &players) {
     // production values
     for (dimension_type row = 0; row < tile_height; ++row) {
         for (dimension_type col = 0; col < tile_width; ++col) {
-            const energy_type post_normalized_prod = tile.grid[row][col]->production() * MAX_CELL_PROD / max_seen_prod;
-            tile.grid[row][col] = make_cell<NormalCell>(post_normalized_prod);
+            const energy_type post_normalized_prod = tile.at(col, row)->production() * MAX_CELL_PROD / max_seen_prod;
+            tile.at(col, row) = make_cell<NormalCell>(post_normalized_prod);
         }
     }
 

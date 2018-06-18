@@ -44,7 +44,7 @@ void HaliteImpl::process_entities() {
                 // Otherwise, spawn.
                 auto entity = make_entity<Entity>(player.player_id, constants.NEW_ENTITY_ENERGY);
                 player.entities[player.factory_location] = entity;
-                game->game_map.grid[player.factory_location.first][player.factory_location.second]->
+                game->game_map.at(player.factory_location.second, player.factory_location.first)->
                         entities[player.player_id] = std::move(entity);
             }
         }

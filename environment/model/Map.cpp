@@ -84,4 +84,26 @@ void Map::move_location(Location &location, const Direction &direction) {
     }
 }
 
+/**
+ * Get a reference to a cell at grid coordinates.
+ * @param x The grid x-coordinate.
+ * @param y The grid y-coordinate.
+ * @return Reference to the cell at (x, y).
+ */
+Cell &Map::at(dimension_type x, dimension_type y) {
+    // Flipping x and y gives us a grid memory representation that is consistent
+    // with the physical grid, indexed by rows then columns.
+    return grid[y][x];
+}
+
+/**
+ * Get a const reference to a cell at grid coordinates.
+ * @param x The grid x-coordinate.
+ * @param y The grid y-coordinate.
+ * @return Reference to the cell at (x, y).
+ */
+const Cell &Map::at(dimension_type x, dimension_type y) const {
+    return grid[y][x];
+}
+
 }
