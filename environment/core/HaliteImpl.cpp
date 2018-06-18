@@ -28,6 +28,26 @@ void HaliteImpl::process_commands(const std::unordered_map<id_type, Command> &co
     }
 }
 
+/**
+ * Process a spawn operation at a location, possibly merging onto an existing entity.
+ * @param player The player owning the new entity.
+ * @param location The location at which to spawn.
+ */
+void HaliteImpl::spawn_entity(Player &player, const Location& location) {
+    const auto &constants = Constants::get();
+    auto &entities = player.entities;
+    auto entity_iterator = entities.find(location);
+    if (entity_iterator != entities.end()) {
+        // If there is already an entity, merge.
+        entity_iterator->second->energy += constants.NEW_ENTITY_ENERGY;
+    } else {
+        // Otherwise, spawn.
+        auto entity = make_entity<Entity>(player.player_id, constants.NEW_ENTITY_ENERGY);
+        entities[location] = entity;
+        game->game_map.at(location)->entities[player.player_id] = std::move(entity);
+    }
+}
+
 /** Process all entity lifecycle events for this turn. */
 void HaliteImpl::process_entities() {
     // Each factory may spawn a new entity
@@ -36,27 +56,16 @@ void HaliteImpl::process_entities() {
         auto &player = player_pair.second;
         if (player.energy >= constants.NEW_ENTITY_ENERGY_COST) {
             player.energy -= constants.NEW_ENTITY_ENERGY_COST;
-            auto entity_iterator = player.entities.find(player.factory_location);
-            if (entity_iterator != player.entities.end()) {
-                // If there is already an entity, merge.
-                entity_iterator->second->energy += constants.NEW_ENTITY_ENERGY;
-            } else {
-                // Otherwise, spawn.
-                auto entity = make_entity<Entity>(player.player_id, constants.NEW_ENTITY_ENERGY);
-                player.entities[player.factory_location] = entity;
-                game->game_map.at(player.factory_location.second, player.factory_location.first)->
-                        entities[player.player_id] = std::move(entity);
-            }
+            spawn_entity(player, player.factory_location);
         }
     }
     // Each entity loses some health, each entity with no remaining energy is removed
     for (auto &player_pair : game->players) {
-        auto &player = player_pair.second;
-        auto entity = player.entities.begin();
-        while (entity != player.entities.end()) {
+        auto &entities = player_pair.second.entities;
+        for (auto entity = entities.begin(); entity != entities.end();) {
             entity->second->energy -= constants.BASE_TURN_ENERGY_LOSS;
             if (entity->second->energy <= 0) {
-                player.entities.erase(entity++);
+                entities.erase(entity++);
             } else {
                 entity++;
             }

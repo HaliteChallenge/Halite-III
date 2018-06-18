@@ -118,20 +118,14 @@ void MoveCommand::act_on_map(Map &map, Player &player) const {
     } else {
         auto &entity = player_entity_iterator->second;
         // Remove the old entity
-        player.entities.erase(location);
-        map.at(entity_y, entity_x)->entities.erase(player.player_id);
-        // Compute the new position
+        player.remove_entity(location);
+        map.at(location)->remove_entity(player);
+
         map.move_location(location, direction);
-        auto &cell = map.at(location.second, location.first);
-        auto cell_entity_iterator = cell->entities.find(player.player_id);
-        if (cell_entity_iterator != cell->entities.end()) {
-            // If the player already has an entity there, merge
-            cell_entity_iterator->second->energy += entity->energy;
-        } else {
-            // Otherwise, move this entity there
-            player.entities[location] = entity;
-            cell->entities[player.player_id] = entity;
-        }
+
+        // Add the new entity
+        player.add_entity(location, entity);
+        map.at(location)->add_entity(player, entity);
     }
 }
 
