@@ -73,4 +73,23 @@ void HaliteImpl::process_entities() {
     }
 }
 
+/**
+ * Determine whether the game has ended.
+ *
+ * @return True if the game has ended.
+ */
+bool HaliteImpl::game_ended() const {
+    long num_alive_players = 0;
+    for (auto &player_entry : game->players) {
+        // TODO: implement edge case of last player being unable to produce
+        if (!player_entry.second.entities.empty()) {
+            num_alive_players++;
+        }
+        if (num_alive_players > 1) {
+            return false;
+        }
+    }
+    return true;
+}
+
 }

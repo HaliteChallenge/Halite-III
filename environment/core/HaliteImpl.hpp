@@ -34,6 +34,13 @@ class HaliteImpl final {
      */
     void spawn_entity(Player &player, const Location& location);
 
+    /**
+     * Determine whether the game has ended.
+     *
+     * @return True if the game has ended.
+     */
+    bool game_ended() const;
+
 public:
     /**
      * Construct HaliteImpl from game interface.
