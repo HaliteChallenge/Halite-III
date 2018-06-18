@@ -51,6 +51,30 @@ std::ostream &operator<<(std::ostream &ostream, const Cell &cell) {
 }
 
 /**
+ * Add an entity by player, possibly merging with an existing entity.
+ * @param player The player for the entity.
+ * @param entity The entity to add.
+ */
+void BaseCell::add_entity(const Player &player, std::shared_ptr<Entity> &entity) {
+    auto entity_iterator = entities.find(player.player_id);
+    if (entity_iterator != entities.end()) {
+        // If the player already has an entity there, merge
+        entity_iterator->second->energy += entity->energy;
+    } else {
+        // Otherwise, move this entity there
+        entities[player.player_id] = entity;
+    }
+}
+
+/**
+ * Remove an entity by player.
+ * @param player The player of the entity.
+ */
+void BaseCell::remove_entity(const Player &player) {
+    entities.erase(player.player_id);
+}
+
+/**
  * Create ProductionCell from JSON.
  * @param json The JSON.
  */

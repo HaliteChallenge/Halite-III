@@ -12,14 +12,27 @@ class HaliteImpl final {
     /** Pointer to the game interface. Raw because HaliteImpl is always owned by Halite. */
     Halite *game;
 
-    /** Communicate with bots to obtain moves for next step. */
-    void retrieve_moves();
+    /**
+     * Communicate with bots to obtain commands for next step.
+     * @return Commands received from players.
+     */
+    std::unordered_map<id_type, Command> retrieve_commands();
 
-    /** Process all commands for this turn. */
-    void process_commands();
+    /**
+     * Process the effects of commands.
+     * @param commands The commands to process.
+     */
+    void process_commands(const std::unordered_map<id_type, Command> &commands);
 
     /** Process all entity lifecycle events for this turn. */
     void process_entities();
+
+    /**
+     * Process a spawn operation at a location, possibly merging onto an existing entity.
+     * @param player The player owning the new entity.
+     * @param location The location at which to spawn.
+     */
+    void spawn_entity(Player &player, const Location& location);
 
 public:
     /**

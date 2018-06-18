@@ -5,7 +5,9 @@
 #include <string>
 #include <utility>
 #include <map>
+
 #include "Entity.hpp"
+#include "Location.hpp"
 
 namespace hlt {
 
@@ -13,18 +15,28 @@ namespace hlt {
 struct Player {
     friend class PlayerFactory;
 
-    /** Type of a location . */
-    using Location = std::pair<dimension_type, dimension_type>;
+    /** Type of the Entity map of a player, where keys are entity locations. */
+    using Entities = std::map<Location, std::shared_ptr<Entity>>;
 
-    /** Type of the Entity list of a player. */
-    using Entities = std::map<Location, std::shared_ptr<Entity>> ;
-
-    id_type player_id;            /**< The unique ID of the player. */
+    id_type player_id{};          /**< The unique ID of the player. */
     std::string name;             /**< The name of the player. */
     std::string command;          /**< The bot command for the player. */
     energy_type energy{};         /**< The amount of energy stockpiled by the player. */
     Location factory_location{};  /**< The factory location of the player. */
     Entities entities;            /**< Mapping of location of entity to entity shared ptr */
+
+    /**
+     * Add an entity by location, possibly merging with an existing entity.
+     * @param location The location for the entity.
+     * @param entity The entity to add.
+     */
+    void add_entity(const Location &location, std::shared_ptr<Entity> &entity);
+
+    /**
+     * Remove an entity by location.
+     * @param location The location of the entity.
+     */
+    void remove_entity(const Location &location);
 
     /**
      * Convert a Player to JSON format.
@@ -70,17 +82,10 @@ private:
      */
     Player(id_type player_id, std::string name, energy_type energy,
            Location factory_location, Player::Entities entities)
-            : player_id(player_id), name(std::move(name)), energy(energy), factory_location(std::move(factory_location)),
+            : player_id(player_id), name(std::move(name)), energy(energy),
+              factory_location(std::move(factory_location)),
               entities(std::move(entities)) {}
 };
-
-/**
- * Write a list of Players to bot serial format.
- * @param ostream The output stream.
- * @param players The Players to write.
- * @return The output stream.
- */
-std::ostream &operator<<(std::ostream &ostream, const std::list<Player> &players);
 
 /** Factory which produces Players. */
 class PlayerFactory {

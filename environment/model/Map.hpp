@@ -6,8 +6,9 @@
 #include <vector>
 
 #include "Cell.hpp"
-#include "Entity.hpp"
 #include "Constants.hpp"
+#include "Entity.hpp"
+#include "Location.hpp"
 
 namespace hlt {
 
@@ -34,7 +35,11 @@ public:
      * @param y The grid y-coordinate.
      * @return Reference to the cell at (x, y).
      */
-    Cell &at(dimension_type x, dimension_type y);
+    Cell &at(dimension_type x, dimension_type y) {
+        // Flipping x and y gives us a grid memory representation that is consistent
+        // with the physical grid, indexed by rows then columns.
+        return grid[y][x];
+    }
 
     /**
      * Get a const reference to a cell at grid coordinates.
@@ -42,7 +47,27 @@ public:
      * @param y The grid y-coordinate.
      * @return Reference to the cell at (x, y).
      */
-    const Cell &at(dimension_type x, dimension_type y) const;
+    const Cell &at(dimension_type x, dimension_type y) const {
+        return grid[y][x];
+    }
+
+    /**
+     * Get a reference to a cell at a location.
+     * @param location The location.
+     * @return Reference to the cell at (x, y).
+     */
+    Cell &at(const Location &location) {
+        return grid[location.second][location.first];
+    }
+
+    /**
+     * Get a const reference to a cell at a location.
+     * @param location The location.
+     * @return Reference to the cell at (x, y).
+     */
+    const Cell &at(const Location &location) const {
+        return grid[location.second][location.first];
+    }
 
     /**
      * Convert a Map to JSON format.
@@ -65,6 +90,13 @@ public:
      * @return The output stream.
      */
     friend std::ostream &operator<<(std::ostream &ostream, const Map &map);
+
+    /**
+     * Move a location in a direction.
+     * @param location The location to move.
+     * @param direction The direction to move it in.
+     */
+    void move_location(Location &location, const Direction &direction);
 
 private:
     /**
