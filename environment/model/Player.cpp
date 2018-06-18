@@ -15,28 +15,13 @@ namespace hlt {
  * @param[out] json The output JSON.
  * @param player The Player to convert.
  */
-// TODO: enable entities to be able to converted to json
+// TODO: add functionality to convert entity mapping to json
 void to_json(nlohmann::json &json, const Player &player) {
     json = {FIELD_TO_JSON(player_id),
             FIELD_TO_JSON(name),
             FIELD_TO_JSON(energy),
             FIELD_TO_JSON(factory_location)};
-            //FIELD_TO_JSON(entities)};
 }
-
-/**
- * Convert an encoded Player from JSON format.
- * @param json The JSON.
- * @param[out] player The converted Player.
- */
- // TODO
-//void from_json(const nlohmann::json &json, Player &player) {
-//    player = {FIELD_FROM_JSON(player_id),
-//              FIELD_FROM_JSON(name),
-//              FIELD_FROM_JSON(energy),
-//              FIELD_FROM_JSON(factory_location)
-//              FIELD_FROM_JSON(entities)};
-//}
 
 /**
  * Write a Player to bot serial format.

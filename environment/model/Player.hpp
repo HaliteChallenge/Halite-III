@@ -33,13 +33,6 @@ struct Player {
      */
     friend void to_json(nlohmann::json &json, const Player &player);
 
-    /**
-     * Convert an encoded Player from JSON format.
-     * @param json The JSON.
-     * @param[out] player The converted Player.
-     */
-    friend void from_json(const nlohmann::json &json, Player &player);
-
     /** Test two Player instances for equality. */
     bool operator==(const Player &other) const { return player_id == other.player_id; }
 
