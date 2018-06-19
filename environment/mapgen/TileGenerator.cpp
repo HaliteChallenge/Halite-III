@@ -6,7 +6,7 @@ namespace hlt {
 namespace mapgen {
 
 Map TileGenerator::tile_map(const dimension_type factory_y, const dimension_type factory_x,
-                            const Map &tile, std::unordered_map<id_type, Player> &players) {
+                            const Map &tile, std::list<Player> &players) {
     auto map = make_map(width, height);
     // Copy the tile over the map
     for (dimension_type player_row = 0; player_row < num_tile_rows; ++player_row) {
@@ -23,13 +23,13 @@ Map TileGenerator::tile_map(const dimension_type factory_y, const dimension_type
     // Place a factory for each player on the map at corresponding relative locations and update each
     // player to know their factory's location
     long player_idx = 0;
-    for (std::pair<const id_type, Player> &player_pair : players) {
+    for (Player &player : players) {
         const dimension_type player_factory_x = (player_idx % num_tile_cols) * tile_width + factory_x;
         const dimension_type player_factory_y = (player_idx / num_tile_cols) * tile_height + factory_y;
         map.at(player_factory_x, player_factory_y) = make_cell<FactoryCell>();
 
         Location factory_location{player_factory_x, player_factory_y};
-        player_pair.second.factory_location = factory_location;
+        player.factory_location = factory_location;
 
         player_idx++;
     }

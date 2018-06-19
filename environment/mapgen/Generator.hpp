@@ -1,7 +1,7 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
-#include <unordered_map>
+#include <list>
 #include <random>
 
 #include "Player.hpp"
@@ -55,7 +55,7 @@ public:
      * Generate a map based on a list of players.
      * @param players The players on the map.
      */
-    virtual hlt::Map generate(std::unordered_map<id_type, Player> &players) = 0;
+    virtual hlt::Map generate(std::list<Player> &players) = 0;
 };
 
 }

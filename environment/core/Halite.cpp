@@ -34,11 +34,11 @@ Halite::Halite(const Config &config,
         config(config),
         parameters(parameters),
         networking(net::Networking(networking_config, this)),
-        impl(std::make_unique<HaliteImpl>(this)) {
-    for (const auto &player : players) {
-        this->players[player.player_id] = player;
-    }
-    game_map = mapgen::BlurTileGenerator(parameters).generate(this->players);
+        impl(std::make_unique<HaliteImpl>(this)),
+        game_map(mapgen::BlurTileGenerator(parameters).generate(players)) {
+        for (const auto &player : players) {
+            this->players[player.player_id] = player;
+        }
 }
 
 /** Default destructor is defined where HaliteImpl is complete. */

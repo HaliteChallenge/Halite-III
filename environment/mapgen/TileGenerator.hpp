@@ -35,7 +35,7 @@ protected:
      * Effects: Players will have factory locations initialized
      */
     hlt::Map tile_map(hlt::dimension_type factory_y, hlt::dimension_type factory_x, const hlt::Map &tile,
-                      std::unordered_map<id_type, Player> &players);
+                      std::list<Player> &players);
 
 public:
     /** name is function to allow for possibly dynamically named subclasses */
