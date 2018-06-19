@@ -2,6 +2,7 @@
 #include "BasicGenerator.hpp"
 #include "Halite.hpp"
 #include "HaliteImpl.hpp"
+#include "Logging.hpp"
 
 namespace hlt {
 
@@ -14,7 +15,13 @@ void Halite::run_game() {
     for (turn_number = 0; turn_number < constants.MAX_TURNS; turn_number++) {
         impl->process_commands(impl->retrieve_commands());
         impl->process_entities();
+
+        if (impl->game_ended()) {
+            break;
+        }
     }
+    Logging::log("Game has ended after " + std::to_string(turn_number) + " turns.");
+    // TODO: generate replay
     // TODO: thread the communications with players
 }
 
