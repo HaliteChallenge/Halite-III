@@ -23,7 +23,7 @@ Map TileGenerator::tile_map(const dimension_type factory_y, const dimension_type
     // Place a factory for each player on the map at corresponding relative locations and update each
     // player to know their factory's location
     long player_idx = 0;
-    for (Player &player : players) {
+    for (auto &player : players) {
         const dimension_type player_factory_x = (player_idx % num_tile_cols) * tile_width + factory_x;
         const dimension_type player_factory_y = (player_idx / num_tile_cols) * tile_height + factory_y;
         map.at(player_factory_x, player_factory_y) = make_cell<FactoryCell>();

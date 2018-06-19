@@ -30,12 +30,12 @@ protected:
      * @param factory_y, factory_x: On a tile, the y and x coordinate a factory should be placed
      * @param tile: A filled map of a single tile. Dimensions tile_height, tile_width. All cells should already be
      * initialized, but no factories should be placed
-     * @param players: A mapping from player id to player. This function will set the location of each player's factory
+     * @param players: A list of players of the game. This function will set the location of each player's factory
      * @return map: A map tiled by the input tile. All cells in the map will be initialized.
      * Effects: Players will have factory locations initialized
      */
     hlt::Map tile_map(hlt::dimension_type factory_y, hlt::dimension_type factory_x, const hlt::Map &tile,
-                      std::list<Player> &players);
+                      std::list<hlt::Player> &players);
 
 public:
     /** name is function to allow for possibly dynamically named subclasses */

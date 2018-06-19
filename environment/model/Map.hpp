@@ -107,11 +107,6 @@ public:
      */
     void move_location(Location &location, const Direction &direction);
 
-    /**
-     * Default constructor for Map, used by Halite constructor
-     */
-     Map() = default;
-
 private:
     /**
      * Create a Map from dimensions.
