@@ -108,8 +108,7 @@ public:
     void move_location(Location &location, const Direction &direction);
 
     /**
-     * Default constructor for Halite game constructor
-     * Default will be overridden by calling any map generation function
+     * Default constructor for Map, used by Halite constructor
      */
      Map() = default;
 

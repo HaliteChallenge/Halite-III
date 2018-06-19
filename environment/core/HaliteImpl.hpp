@@ -60,7 +60,6 @@ public:
      * @param game The game interface.
      */
     explicit HaliteImpl(Halite *game) : game(game) {}
-
 };
 
 }

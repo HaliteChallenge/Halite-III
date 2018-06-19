@@ -22,13 +22,11 @@ Map::Map(hlt::dimension_type width, hlt::dimension_type height) : width(width), 
     }
 }
 
-
 dimension_type Map::distance(const Location cell1, const Location cell2) {
         const auto x_dist = abs(cell1.first - cell2.first);
         const auto y_dist = abs(cell1.second - cell2.second);
         return std::min(x_dist, width - x_dist) + std::min(y_dist, height - y_dist);
 }
-
 
 /**
  * Convert a Map to JSON format.

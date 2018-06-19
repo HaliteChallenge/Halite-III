@@ -1,5 +1,3 @@
-#include <algorithm>
-
 #include "BotCommunicationError.hpp"
 #include "JsonError.hpp"
 #include "Location.hpp"

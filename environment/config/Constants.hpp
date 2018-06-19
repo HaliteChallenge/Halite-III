@@ -35,9 +35,6 @@ struct Constants {
 
     double BLUR_FACTOR = 0.75;                  /**< The blur factor for the blurred tile generator. */
 
-    bool ALLOW_ENTITY_MERGE = true;          /**< Determine if entities of same player on same cell merge*/
-
-
     /**
      * Get a mutable reference to the singleton constants.
      * @return Mutable reference to the singleton constants.
