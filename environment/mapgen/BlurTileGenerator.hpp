@@ -33,7 +33,7 @@ public:
      * @return map with cells initialized (ie given production values, or
      *      assigned to alternate cell type)
      */
-    hlt::Map generate(std::list<hlt::Player> &players) override;
+    hlt::Map generate(std::unordered_map<id_type, Player> &players) override;
 
     /**
      * Construct BlurTileGenerator from parameters.

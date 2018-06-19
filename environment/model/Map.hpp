@@ -72,13 +72,11 @@ public:
     /**
      * Calculate the Manhattan distance between two cells on a grid
      *
-     * @param x_cell1 The x location of the first cell
-     * @param y_cell1 The y location of the first cell
-     * @param x_cell2 The x location of the second cell
-     * @param y_cell2 The y location of the second cell
+     * @param cell1 The location of the first cell
+     * @param cell2 The location of the second cell
      * @return The manhattan distance between the cells, calculated on a wrap around map
      */
-    dimension_type distance(dimension_type x_cell1, dimension_type y_cell1, dimension_type x_cell2, dimension_type y_cell2);
+    dimension_type distance(Location cell1, Location cell2);
 
     /**
      * Convert a Map to JSON format.
@@ -108,6 +106,12 @@ public:
      * @param direction The direction to move it in.
      */
     void move_location(Location &location, const Direction &direction);
+
+    /**
+     * Default constructor for Halite game constructor
+     * Default will be overridden by calling any map generation function
+     */
+     Map() = default;
 
 private:
     /**
