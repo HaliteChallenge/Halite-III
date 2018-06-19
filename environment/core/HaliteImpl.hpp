@@ -116,6 +116,10 @@ class HaliteImpl final {
      */
     bool game_ended() const;
 
+    void update_player_stats(std::unordered_map<id_type, energy_type> productions);
+
+    void rank_players();
+
 public:
     /**
      * Construct HaliteImpl from game interface.

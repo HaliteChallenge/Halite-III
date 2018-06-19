@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "HaliteImpl.hpp"
 #include <iomanip>
 #include <limits>
@@ -157,6 +159,48 @@ void HaliteImpl::update_production_from_ownership(std::vector<std::vector<GridOw
     for (const auto &player_id_energy_pair : turn_player_production) {
         game->players[player_id_energy_pair.first].energy += player_id_energy_pair.second;
     }
+    update_player_stats(turn_player_production);
+}
+
+void HaliteImpl::update_player_stats(std::unordered_map<id_type, energy_type> productions) {
+    for (PlayerStatistics &player_stats : game->game_stats.player_statistics) {
+        // Player with sprites is still alive, so mark as alive on this turn and add production gained
+        if (!game->players[player_stats.player_id].entities.empty()) {
+            player_stats.last_turn_alive = game->turn_number;
+            player_stats.turn_productions.push_back(productions[player_stats.player_id]);
+            player_stats.total_production += productions[player_stats.player_id];
+        } else {
+            player_stats.turn_productions.push_back(0);
+        }
+    }
+}
+
+bool compare_players(PlayerStatistics player1, PlayerStatistics player2) {
+    if (player1.last_turn_alive == player2.last_turn_alive) {
+        auto turn_to_compare = static_cast<long> (player1.last_turn_alive);
+        while (player1.turn_productions[turn_to_compare] == player2.turn_productions[turn_to_compare]){
+            --turn_to_compare;
+            if (turn_to_compare < 0) {
+                return true;
+            }
+        }
+        return player1.turn_productions[turn_to_compare] < player2.turn_productions[turn_to_compare];
+    } else {
+        return player1.last_turn_alive < player2.last_turn_alive;
+    }
+}
+
+void HaliteImpl::rank_players() {
+
+    std::stable_sort(game->game_stats.player_statistics.begin(), game->game_stats.player_statistics.end(), compare_players);
+    // Reverse list to have best players first
+    std::reverse(game->game_stats.player_statistics.begin(), game->game_stats.player_statistics.end());
+
+    for (size_t index = 0; index < game->game_stats.player_statistics.size(); ++index) {
+        game->game_stats.player_statistics[index].rank = index + 1l;
+    }
+
+
 }
 
 void HaliteImpl::determine_cell_ownership(Location cell_location, std::vector<std::vector<GridOwner>> &ownership_grid) {

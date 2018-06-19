@@ -45,6 +45,7 @@ Halite::Halite(const Config &config,
         game_map(mapgen::BlurTileGenerator(parameters).generate(players)) {
     for (const auto &player : players) {
         this->players[player.player_id] = player;
+        game_stats.player_statistics.emplace_back(player.player_id);
     }
 }
 
