@@ -71,4 +71,26 @@ std::ostream &operator<<(std::ostream &os, const Map &map) {
     return os;
 }
 
+/**
+ * Move a location in a direction.
+ * @param location The location to move.
+ * @param direction The direction to move it in.
+ */
+void Map::move_location(Location &location, const Direction &direction) {
+    switch (direction) {
+    case Direction::North:
+        location.second = (location.second + height - 1) % height;
+        break;
+    case Direction::South:
+        location.second = (location.second + 1) % height;
+        break;
+    case Direction::East:
+        location.first = (location.first + 1) % width;
+        break;
+    case Direction::West:
+        location.first = (location.first + width - 1) % width;
+        break;
+    }
+}
+
 }

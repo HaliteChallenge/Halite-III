@@ -41,17 +41,27 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
 }
 
 /**
- * Write a list of Players to bot serial format.
- * @param ostream The output stream.
- * @param players The Players to write.
- * @return The output stream.
+ * Add an entity by location, possibly merging with an existing entity.
+ * @param location The location for the entity.
+ * @param entity The entity to add.
  */
-std::ostream &operator<<(std::ostream &ostream, const std::list<Player> &players) {
-    // Output each player one after another.
-    for (const auto &player : players) {
-        ostream << player;
+void Player::add_entity(const Location &location, std::shared_ptr<Entity> &entity) {
+    auto entity_iterator = entities.find(location);
+    if (entity_iterator != entities.end()) {
+        // If the player already has an entity there, merge
+        entity_iterator->second->energy += entity->energy;
+    } else {
+        // Otherwise, move this entity there
+        entities[location] = entity;
     }
-    return ostream;
+}
+
+/**
+ * Remove an entity by location.
+ * @param location The location of the entity.
+ */
+void Player::remove_entity(const Location &location) {
+    entities.erase(location);
 }
 
 }

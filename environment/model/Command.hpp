@@ -6,6 +6,7 @@
 #include "Entity.hpp"
 #include "Player.hpp"
 #include "Location.hpp"
+#include "Map.hpp"
 
 #include "nlohmann/json_fwd.hpp"
 

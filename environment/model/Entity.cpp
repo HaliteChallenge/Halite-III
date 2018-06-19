@@ -12,7 +12,6 @@ using namespace std::literals::string_literals;
 
 namespace hlt {
 
-// TODO: convert to appropriate to and from json methods under new shared pointer entity sceudle
 /**
  * Convert an Entity to JSON format.
  * @param[out] json The output JSON.

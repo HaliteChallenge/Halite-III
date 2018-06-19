@@ -17,16 +17,15 @@ class HaliteImpl;
 class Halite final {
     friend class HaliteImpl;
 private:
-    Config config;                      /**< The game configuration. */
-    mapgen::MapParameters parameters;   /**< The map parameters. */
-    net::Networking networking;         /**< The networking suite. */
-    std::unique_ptr<HaliteImpl> impl;   /**< The pointer to implementation. */
+    Config config;                                          /**< The game configuration. */
+    mapgen::MapParameters parameters;                       /**< The map parameters. */
+    net::Networking networking;                             /**< The networking suite. */
+    std::unique_ptr<HaliteImpl> impl;                       /**< The pointer to implementation. */
 
 public:
-    unsigned long turn_number{};        /**< The turn number. */
-    std::list<Player> players;          /**< The list of players. */
-    std::list<Player> living_players;   /**< The list of currently living players. */
-    Map game_map;                       /**< The game map. */
+    unsigned long turn_number{};                            /**< The turn number. */
+    std::unordered_map<id_type, Player> players;    /**< Map from player ID to player. */
+    Map game_map;                                           /**< The game map. */
 
     /**
      * Constructor for the main game.
