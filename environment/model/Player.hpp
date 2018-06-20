@@ -16,6 +16,7 @@ struct Player {
     friend class PlayerFactory;
 
     /** Type of the Entity map of a player, where keys are entity locations. */
+    // TODO: switch from std::map to more efficient data structure on location keys
     using Entities = std::map<Location, std::shared_ptr<Entity>>;
 
     id_type player_id{};          /**< The unique ID of the player. */

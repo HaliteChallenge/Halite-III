@@ -77,7 +77,6 @@ void HaliteImpl::process_entities() {
     }
 }
 
-
 void HaliteImpl::process_tie(Location cell_location, std::vector<std::shared_ptr<Entity>> &close_entities,
                              std::unordered_map<id_type, energy_type> &turn_player_production){
     // TODO: implement
@@ -205,5 +204,22 @@ std::vector<Location> HaliteImpl::get_neighbors(Location location) {
     return neighbors;
 }
 
-
+/**
+ * Determine whether the game has ended.
+ *
+ * @return True if the game has ended.
+ */
+bool HaliteImpl::game_ended() const {
+    long num_alive_players = 0;
+    for (auto &player_entry : game->players) {
+        // TODO: implement edge case of last player being unable to produce
+        if (!player_entry.second.entities.empty()) {
+            num_alive_players++;
+        }
+        if (num_alive_players > 1) {
+            return false;
+        }
+    }
+    return true;
+}
 }

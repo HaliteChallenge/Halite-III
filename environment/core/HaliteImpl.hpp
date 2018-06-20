@@ -109,7 +109,14 @@ class HaliteImpl final {
      */
     void run_initialized_owner_search(std::vector<std::vector<GridOwner>> &ownership_grid, std::queue<Location> &search_cells);
 
- public:
+    /**
+     * Determine whether the game has ended.
+     *
+     * @return True if the game has ended.
+     */
+    bool game_ended() const;
+
+public:
     /**
      * Construct HaliteImpl from game interface.
      * @param game The game interface.
