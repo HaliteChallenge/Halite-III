@@ -70,6 +70,15 @@ public:
     }
 
     /**
+     * Calculate the Manhattan distance between two cells on a grid
+     *
+     * @param cell1 The location of the first cell
+     * @param cell2 The location of the second cell
+     * @return The manhattan distance between the cells, calculated on a wrap around map
+     */
+    dimension_type distance(Location cell1, Location cell2);
+
+    /**
      * Convert a Map to JSON format.
      * @param[out] json The output JSON.
      * @param map The Map to convert.

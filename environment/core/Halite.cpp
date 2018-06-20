@@ -1,5 +1,5 @@
 #include "Constants.hpp"
-#include "BasicGenerator.hpp"
+#include "BlurTileGenerator.hpp"
 #include "Halite.hpp"
 #include "HaliteImpl.hpp"
 #include "Logging.hpp"
@@ -14,6 +14,7 @@ void Halite::run_game() {
     const auto &constants = Constants::get();
     for (turn_number = 0; turn_number < constants.MAX_TURNS; turn_number++) {
         impl->process_commands(impl->retrieve_commands());
+        impl->process_production();
         impl->process_entities();
 
         if (impl->game_ended()) {
@@ -41,7 +42,7 @@ Halite::Halite(const Config &config,
         parameters(parameters),
         networking(net::Networking(networking_config, this)),
         impl(std::make_unique<HaliteImpl>(this)),
-        game_map(mapgen::BasicGenerator(parameters).generate(players)) {
+        game_map(mapgen::BlurTileGenerator(parameters).generate(players)) {
     for (const auto &player : players) {
         this->players[player.player_id] = player;
     }

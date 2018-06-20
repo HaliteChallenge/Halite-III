@@ -2,6 +2,7 @@
 #define CELL_HPP
 
 #include <iostream>
+#include <unordered_map>
 
 #include "Constants.hpp"
 #include "Entity.hpp"
@@ -66,7 +67,7 @@ class BaseCell {
 public:
     // TODO: possible usage of constant size array
     /** Map from player ID to player possessed entity here, if there is one. */
-    std::map<id_type, std::shared_ptr<Entity>> entities;
+    std::unordered_map<id_type, std::shared_ptr<Entity>> entities;
 
     /**
      * Add an entity by player, possibly merging with an existing entity.
