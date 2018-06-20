@@ -45,7 +45,7 @@ class HaliteImpl final {
     void spawn_entity(Player &player, const Location& location);
 
     /** Update the energy/production of each player by calculating ownership of each cell in the current turn */
-    //void process_production();
+    void process_production();
 
     /**
      * Process production granting for a cell with tied ownership (ie multiple equidistant sprites of different players).
@@ -72,48 +72,40 @@ class HaliteImpl final {
     bool multiple_entities_on_cell(Location location);
 
     /**
+     * Determines the proper owner of a cell (or that the cell has tied ownership. Assumes cell_location neighbors at least
+     * one owned cell
      *
-     * @param entity_location
-     * @param ownership_grid
+     * @param cell_location Location of cell to determine ownership
+     * @param ownership_grid 2D Grid storing details of cell ownership.
      */
-    void process_collision(Location entity_location, std::vector<std::vector<GridOwner>> &ownership_grid);
-
     void determine_cell_ownership(Location cell_location, std::vector<std::vector<GridOwner>> &ownership_grid);
+
     /**
-     * Determine if "cell_to_check"'s closest entity is the same as that of "original_ownership_info"
+     * Grant production from owned cells on this turn to players
      *
-     * @param cell_to_check: Cell to determine ownership of
-     * @param original_ownership_info: Ownership information of cell we reached cell_to_check from. This ownership
-     * info is candidate ownership info for cell to check
-     * @param ownership_grid Map sized grid storing cell ownership information as it is calculated
-     * @return Boolean where true means that the owner of the original cell should also be the owner of cell to check
-     */
-    bool is_closest(Location cell_to_check, GridOwner original_ownership_info,
-                    const std::vector<std::vector<GridOwner>> &ownership_grid);
-    /**
-     * Determine if
-     * @param neighbor_location
-     * @param current_cell_location
-     * @param current_cell
-     * @param ownership_grid
-     */
-    void check_update_tie(Location neighbor_location, Location current_cell_location, GridOwner current_cell,
-                          std::vector<std::vector<GridOwner>> &ownership_grid);
-    /**
-     *
-     * @param ownership_grid
+     * Calculates total production gained on this turn for each player before adding to players' totals.
+     * @param ownership_grid: 2d grid with each cell having an owner.
      */
     void update_production_from_ownership(std::vector<std::vector<GridOwner>> &ownership_grid);
+
     /**
+     * Initialized ownership grid with locations of sprites. Assigns each cell to be owned by the sprite on it or determines
+     * that there is a tie if two sprites share a cell. Initializes search_cells queue with cells with sprites on them.
      *
-     * @param ownership_grid
-     * @param search_cells
+     * @param ownership_grid 2D grid in shape of game map storing details of cell ownership in a specific turn. Will update
+     * ownership details as the search determines them.
+     * @param search_cells Queue of cells that have been assigned an owner. After a cell's owner has been determined, it is added
+     * to search_cells for the purpose of searching its neighbors.
      */
     void initialize_owner_search_from_sprites(std::vector<std::vector<GridOwner>> &ownership_grid, std::queue<Location> &search_cells);
     /**
+     * Run modified BFS algorithm to determine owner (or tie) fof each cell. Assumes that search cells has been initized
+     * with locations with sprites on them.
      *
-     * @param ownership_grid
-     * @param search_cells
+     * @param ownership_grid 2D grid in shape of game map storing details of cell ownership in a specific turn. Will update
+     * ownership details as the search determines them.
+     * @param search_cells Queue of cells that have been assigned an owner. After a cell's owner has been determined, it is added
+     * to search cells to search the neighbors of said cells.
      */
     void run_initialized_owner_search(std::vector<std::vector<GridOwner>> &ownership_grid, std::queue<Location> &search_cells);
 
@@ -123,8 +115,6 @@ class HaliteImpl final {
      * @param game The game interface.
      */
     explicit HaliteImpl(Halite *game) : game(game) {}
-
-    void process_production();
 };
 
 }
