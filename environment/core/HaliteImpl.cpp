@@ -106,7 +106,7 @@ void HaliteImpl::initialize_owner_search_from_sprites(std::vector<std::vector<Gr
         for (std::pair<const Location, std::shared_ptr<Entity>> entity_pair : player_pair.second.entities) {
             Location entity_location = entity_pair.first;
             std::shared_ptr<Entity> entity = entity_pair.second;
-            const auto CURR_DIST = 0;
+            const auto CURR_DISTANCE = 0;
             if (!multiple_entities_on_cell(entity_location)) {
                 // claim ownership, add to queue to determine neighbors
                 ownership_grid[entity_location.second][entity_location.first].owner = entity->owner_id;
@@ -114,7 +114,7 @@ void HaliteImpl::initialize_owner_search_from_sprites(std::vector<std::vector<Gr
             } else {
                 ownership_grid[entity_location.second][entity_location.first].owner = TIED;
             }
-            ownership_grid[entity_location.second][entity_location.first].distance = CURR_DIST;
+            ownership_grid[entity_location.second][entity_location.first].distance = CURR_DISTANCE;
             // Entity leading to ownership useful in case of ties
             ownership_grid[entity_location.second][entity_location.first].entities.push_back(entity);
         }
