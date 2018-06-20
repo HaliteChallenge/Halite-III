@@ -238,6 +238,13 @@ void HaliteImpl::update_player_stats(std::unordered_map<id_type, energy_type> pr
     }
 }
 
+/**
+ * Compare two players to rank them. Returns true if player1 will rank below player 2.
+ *
+ * @param player1 The statistics of the first player
+ * @param player2 The statistics of the second player
+ * @return bool that is true if player1 ranks below (ie is worse than) player2
+ */
 bool compare_players(PlayerStatistics player1, PlayerStatistics player2) {
     if (player1.last_turn_alive == player2.last_turn_alive) {
         auto turn_to_compare = static_cast<long> (player1.last_turn_alive);

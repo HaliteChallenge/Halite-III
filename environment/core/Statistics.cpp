@@ -7,7 +7,6 @@
 /** Get a field from JSON. */
 #define FIELD_FROM_JSON(x) json.at(#x)
 
-
 namespace hlt {
 
 /**
@@ -31,6 +30,5 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
 void to_json(nlohmann::json &json, const GameStatistics &stats) {
     json = {FIELD_TO_JSON(player_statistics)};
 }
-
 
 }
