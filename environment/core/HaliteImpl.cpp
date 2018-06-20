@@ -69,9 +69,8 @@ void HaliteImpl::process_entities() {
         for (auto entity = entities.begin(); entity != entities.end();) {
             entity->second->energy -= constants.BASE_TURN_ENERGY_LOSS;
             if (entity->second->energy <= 0) {
-                entities.erase(entity);
                 game->game_map.at(entity->first)->entities.erase(player_pair.first);
-                entity++;
+                entities.erase(entity++);
             } else {
                 entity++;
             }
@@ -106,7 +105,7 @@ void HaliteImpl::initialize_owner_search_from_sprites(std::vector<std::vector<Gr
         for (std::pair<const Location, std::shared_ptr<Entity>> entity_pair : player_pair.second.entities) {
             Location entity_location = entity_pair.first;
             std::shared_ptr<Entity> entity = entity_pair.second;
-            const auto CURR_DISTANCE = 0;
+            const auto CURRENT_DISTANCE = 0;
             if (!multiple_entities_on_cell(entity_location)) {
                 // claim ownership, add to queue to determine neighbors
                 ownership_grid[entity_location.second][entity_location.first].owner = entity->owner_id;
@@ -114,7 +113,7 @@ void HaliteImpl::initialize_owner_search_from_sprites(std::vector<std::vector<Gr
             } else {
                 ownership_grid[entity_location.second][entity_location.first].owner = TIED;
             }
-            ownership_grid[entity_location.second][entity_location.first].distance = CURR_DISTANCE;
+            ownership_grid[entity_location.second][entity_location.first].distance = CURRENT_DISTANCE;
             // Entity leading to ownership useful in case of ties
             ownership_grid[entity_location.second][entity_location.first].entities.push_back(entity);
         }
@@ -162,47 +161,6 @@ void HaliteImpl::update_production_from_ownership(std::vector<std::vector<GridOw
     update_player_stats(turn_player_production);
 }
 
-void HaliteImpl::update_player_stats(std::unordered_map<id_type, energy_type> productions) {
-    for (PlayerStatistics &player_stats : game->game_stats.player_statistics) {
-        // Player with sprites is still alive, so mark as alive on this turn and add production gained
-        if (!game->players[player_stats.player_id].entities.empty()) {
-            player_stats.last_turn_alive = game->turn_number;
-            player_stats.turn_productions.push_back(productions[player_stats.player_id]);
-            player_stats.total_production += productions[player_stats.player_id];
-        } else {
-            player_stats.turn_productions.push_back(0);
-        }
-    }
-}
-
-bool compare_players(PlayerStatistics player1, PlayerStatistics player2) {
-    if (player1.last_turn_alive == player2.last_turn_alive) {
-        auto turn_to_compare = static_cast<long> (player1.last_turn_alive);
-        while (player1.turn_productions[turn_to_compare] == player2.turn_productions[turn_to_compare]){
-            --turn_to_compare;
-            if (turn_to_compare < 0) {
-                return true;
-            }
-        }
-        return player1.turn_productions[turn_to_compare] < player2.turn_productions[turn_to_compare];
-    } else {
-        return player1.last_turn_alive < player2.last_turn_alive;
-    }
-}
-
-void HaliteImpl::rank_players() {
-
-    std::stable_sort(game->game_stats.player_statistics.begin(), game->game_stats.player_statistics.end(), compare_players);
-    // Reverse list to have best players first
-    std::reverse(game->game_stats.player_statistics.begin(), game->game_stats.player_statistics.end());
-
-    for (size_t index = 0; index < game->game_stats.player_statistics.size(); ++index) {
-        game->game_stats.player_statistics[index].rank = index + 1l;
-    }
-
-
-}
-
 void HaliteImpl::determine_cell_ownership(Location cell_location, std::vector<std::vector<GridOwner>> &ownership_grid) {
     dimension_type closest_owned_distance = std::numeric_limits<dimension_type>::max();
     bool multiple_close_players = false;
@@ -244,7 +202,7 @@ std::vector<Location> HaliteImpl::get_neighbors(Location location) {
     neighbors.emplace_back((location.first + 1) % game->game_map.width, location.second);
     neighbors.emplace_back((location.first - 1 + game->game_map.width) % game->game_map.width, location.second);
     neighbors.emplace_back(location.first, (location.second + 1) % game->game_map.height);
-    neighbors.emplace_back(location.first, (location.second - 1  + game->game_map.height) % game->game_map.height);
+    neighbors.emplace_back(location.first, (location.second - 1 + game->game_map.height) % game->game_map.height);
     return neighbors;
 }
 
@@ -266,4 +224,43 @@ bool HaliteImpl::game_ended() const {
     }
     return true;
 }
+
+void HaliteImpl::update_player_stats(std::unordered_map<id_type, energy_type> productions) {
+    for (PlayerStatistics &player_stats : game->game_stats.player_statistics) {
+        // Player with sprites is still alive, so mark as alive on this turn and add production gained
+        if (!game->players[player_stats.player_id].entities.empty()) {
+            player_stats.last_turn_alive = game->turn_number;
+            player_stats.turn_productions.push_back(productions[player_stats.player_id]);
+            player_stats.total_production += productions[player_stats.player_id];
+        } else {
+            player_stats.turn_productions.push_back(0);
+        }
+    }
+}
+
+bool compare_players(PlayerStatistics player1, PlayerStatistics player2) {
+    if (player1.last_turn_alive == player2.last_turn_alive) {
+        auto turn_to_compare = static_cast<long> (player1.last_turn_alive);
+        while (player1.turn_productions[turn_to_compare] == player2.turn_productions[turn_to_compare]){
+            --turn_to_compare;
+            if (turn_to_compare < 0) {
+                return true;
+            }
+        }
+        return player1.turn_productions[turn_to_compare] < player2.turn_productions[turn_to_compare];
+    } else {
+        return player1.last_turn_alive < player2.last_turn_alive;
+    }
+}
+
+void HaliteImpl::rank_players() {
+    std::stable_sort(game->game_stats.player_statistics.begin(), game->game_stats.player_statistics.end(), compare_players);
+    // Reverse list to have best players first
+    std::reverse(game->game_stats.player_statistics.begin(), game->game_stats.player_statistics.end());
+
+    for (size_t index = 0; index < game->game_stats.player_statistics.size(); ++index) {
+        game->game_stats.player_statistics[index].rank = index + 1l;
+    }
+}
+
 }

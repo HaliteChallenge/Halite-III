@@ -56,6 +56,7 @@ class HaliteImpl final {
      */
     void process_tie(Location cell_location, std::vector<std::shared_ptr<Entity>> &close_entities,
                      std::unordered_map<id_type, energy_type> &turn_player_production);
+
     /**
      * Given a location of a cell, return its 4 neighbors
      * @param location: the location of the cell we want the neighbors of
@@ -98,6 +99,7 @@ class HaliteImpl final {
      * to search_cells for the purpose of searching its neighbors.
      */
     void initialize_owner_search_from_sprites(std::vector<std::vector<GridOwner>> &ownership_grid, std::queue<Location> &search_cells);
+
     /**
      * Run modified BFS algorithm to determine owner (or tie) fof each cell. Assumes that search cells has been initized
      * with locations with sprites on them.
@@ -116,8 +118,19 @@ class HaliteImpl final {
      */
     bool game_ended() const;
 
+    /**
+     * Update a player's statistics after a single turn. This will update their total game production, their last turn
+     * alive if they are still alive, and the production for that turn.
+     *
+     * @param productions Mapping from player id to the production they gained in the current turn.
+     */
     void update_player_stats(std::unordered_map<id_type, energy_type> productions);
 
+    /**
+     * Update players' rankings based on their final turn alive, then break ties with production totals in final turn.
+     * Function is intended to be called at end of game, and will in place modify the ranking field of player statistics
+     * to rank players from winner (1) to last player
+     */
     void rank_players();
 
 public:
