@@ -70,7 +70,7 @@ public:
      * @return Reference to the entry at (x, y).
      */
     Entry &at(const Location &location) {
-        auto[x, y] = location;
+        auto [x, y] = location;
         return grid[y][x];
     }
 
@@ -80,7 +80,7 @@ public:
      * @return Reference to the entry at (x, y).
      */
     const Entry &at(const Location &location) const {
-        auto[x, y] = location;
+        auto [x, y] = location;
         return grid[y][x];
     }
 
