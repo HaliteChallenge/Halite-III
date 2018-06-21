@@ -55,7 +55,7 @@ class HaliteImpl final {
     /**
      * Update players' rankings based on their final turn alive, then break ties with production totals in final turn.
      * Function is intended to be called at end of game, and will in place modify the ranking field of player statistics
-     * to rank players from winner (1) to last player
+     * to rank players from winner (1) to last player.
      */
     void rank_players();
 
