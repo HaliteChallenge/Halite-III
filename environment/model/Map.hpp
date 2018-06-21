@@ -69,14 +69,27 @@ public:
         return grid[location.second][location.first];
     }
 
+    /** The number of neighbors of each cell on the map grid. */
+    static constexpr auto NEIGHBOR_COUNT = 4;
+
     /**
-     * Calculate the Manhattan distance between two cells on a grid
-     *
-     * @param cell1 The location of the first cell
-     * @param cell2 The location of the second cell
-     * @return The manhattan distance between the cells, calculated on a wrap around map
+     * Given a location of a cell, return its neighbors.
+     * @param location The location of the cell we want the neighbors of.
+     * @return Array of neighbor locations.
+     *  A neighbor is a location with manhattan distance 1 from the input location.
+     *  This function encapsulates the wrap-around map -
+     *  i.e. cell (0, 0)'s neighbors include cells at the very bottom and very right of the map.
      */
-    dimension_type distance(Location cell1, Location cell2);
+    std::array<Location, NEIGHBOR_COUNT> get_neighbors(const Location &location) const;
+
+    /**
+     * Calculate the Manhattan distance between two cells on a grid.
+     *
+     * @param cell1 The location of the first cell.
+     * @param cell2 The location of the second cell.
+     * @return The Manhattan distance between the cells, calculated on a wrap-around map.
+     */
+    dimension_type distance(const Location &cell1, const Location &cell2) const;
 
     /**
      * Convert a Map to JSON format.
