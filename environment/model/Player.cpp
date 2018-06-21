@@ -33,9 +33,9 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
     // Output player ID, number of entities, and current energy.
     ostream << player.player_id << " " << player.entities.size() << " " << player.energy << std::endl;
     // Output a list of entities.
-    for (const auto &location_entity_pair : player.entities) {
-        const std::pair<dimension_type, dimension_type> &location = location_entity_pair.first;
-        ostream << location.first << " " << location.second << " " << *(location_entity_pair.second);
+    for (const auto &[location, entity] : player.entities) {
+        auto [x, y] = location;
+        ostream << x << " " << y << " " << *entity;
     }
     return ostream;
 }

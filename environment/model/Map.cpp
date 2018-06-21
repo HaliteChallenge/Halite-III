@@ -17,8 +17,7 @@ namespace hlt {
  */
 std::array<Location, Map::NEIGHBOR_COUNT> Map::get_neighbors(const Location &location) const {
     // Allow wrap around neighbors
-    const auto x = location.first;
-    const auto y = location.second;
+    auto [x, y] = location;
     return {{{(x + 1) % width, y},
              {(x - 1 + width) % width, y},
              {x, (y + 1) % height},
@@ -33,8 +32,10 @@ std::array<Location, Map::NEIGHBOR_COUNT> Map::get_neighbors(const Location &loc
  * @return The Manhattan distance between the cells, calculated on a wrap-around map.
  */
 dimension_type Map::distance(const Location &from, const Location &to) const {
-    const auto x_dist = abs(from.first - to.first);
-    const auto y_dist = abs(from.second - to.second);
+    const auto [from_x, from_y] = from;
+    const auto [to_x, to_y] = to;
+    const auto x_dist = abs(from_x - to_x);
+    const auto y_dist = abs(from_y - to_y);
     return std::min(x_dist, width - x_dist) + std::min(y_dist, height - y_dist);
 }
 
@@ -73,8 +74,7 @@ std::ostream &operator<<(std::ostream &os, const Map &map) {
  * @param direction The direction to move it in.
  */
 void Map::move_location(Location &location, const Direction &direction) {
-    auto &x = location.first;
-    auto &y = location.second;
+    auto &[x, y] = location;
     switch (direction) {
     case Direction::North:
         y = (y + height - 1) % height;
