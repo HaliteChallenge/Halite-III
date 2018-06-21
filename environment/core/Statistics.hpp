@@ -5,13 +5,15 @@
 #include <string>
 #include <vector>
 
-#include "json.hpp"
 #include "Constants.hpp"
+#include "Player.hpp"
+
+#include "nlohmann/json_fwd.hpp"
 
 namespace hlt {
 class PlayerStatistics {
 public:
-    id_type player_id;                           /**< The ID of the player. */
+    Player::id_type player_id;                    /**< The ID of the player. */
     long rank{};                                 /**< The rank of the player (1 = highest) */
     unsigned long last_turn_alive{};             /**< The last turn the player remained alive */
     energy_type total_production{};              /**< Over the turns they were alive, the total production gained by a player */
@@ -23,7 +25,7 @@ public:
      * Construct PlayerStatistics from Player ID
      * @param player_id The player ID.
      */
-    explicit PlayerStatistics(id_type player_id) : player_id(player_id) {}
+    explicit PlayerStatistics(Player::id_type player_id) : player_id(player_id) {}
 };
 
 struct GameStatistics {

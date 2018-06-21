@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include "Constants.hpp"
+#include "Player.hpp"
 
 namespace hlt {
 
@@ -21,8 +22,8 @@ std::shared_ptr<EntityType> make_entity(Args &&... args) {
 
 /** An entity placed on the Halite map. */
 struct Entity {
-    id_type owner_id{};   /**< ID of the owner. */
-    energy_type energy{}; /**< Energy of the entity. */
+    Player::id_type owner_id{}; /**< ID of the owner. */
+    energy_type energy{};       /**< Energy of the entity. */
 
     /**
      * Convert an Entity to JSON format.
@@ -54,7 +55,7 @@ struct Entity {
      * @param owner_id The owner ID.
      * @param energy The energy of the entity
      */
-    Entity(id_type owner_id, energy_type energy) :
+    Entity(Player::id_type owner_id, energy_type energy) :
             owner_id(owner_id), energy(energy) {}
 };
 

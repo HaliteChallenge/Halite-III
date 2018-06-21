@@ -2,7 +2,6 @@
 
 #include "HaliteImpl.hpp"
 #include <iomanip>
-#include <limits>
 
 namespace hlt {
 
@@ -10,8 +9,8 @@ namespace hlt {
  * Communicate with bots to obtain commands for next step.
  * @return Commands received from players.
  */
-std::unordered_map<id_type, Command> HaliteImpl::retrieve_commands() {
-    std::unordered_map<id_type, Command> commands;
+std::unordered_map<Player::id_type, Command> HaliteImpl::retrieve_commands() {
+    std::unordered_map<Player::id_type, Command> commands;
     for (auto &player : game->players) {
         Command command;
         game->networking.handle_frame(player.second, command);
@@ -24,7 +23,7 @@ std::unordered_map<id_type, Command> HaliteImpl::retrieve_commands() {
  * Process the effects of commands.
  * @param commands The commands to process.
  */
-void HaliteImpl::process_commands(const std::unordered_map<id_type, Command> &commands) {
+void HaliteImpl::process_commands(const std::unordered_map<Player::id_type, Command> &commands) {
     for (const auto &player_command : commands) {
         auto &player = game->players[player_command.first];
         auto &command = player_command.second;
@@ -79,7 +78,7 @@ void HaliteImpl::process_entities() {
 }
 
 void HaliteImpl::process_tie(Location cell_location, std::vector<std::shared_ptr<Entity>> &close_entities,
-                             std::unordered_map<id_type, energy_type> &turn_player_production){
+                             std::unordered_map<Player::id_type, energy_type> &turn_player_production) {
     // TODO: implement
     (void) cell_location;
     (void) close_entities;
@@ -138,7 +137,7 @@ void HaliteImpl::run_initialized_owner_search(std::vector<std::vector<GridOwner>
 
 void HaliteImpl::update_production_from_ownership(std::vector<std::vector<GridOwner>> &ownership_grid) {
     // Calculate total production per player for this turn for statistics and scoring
-    std::unordered_map<id_type, energy_type> turn_player_production;
+    std::unordered_map<Player::id_type, energy_type> turn_player_production;
     for (dimension_type y_position = 0; y_position < game->game_map.height; ++y_position) {
         for (dimension_type x_position = 0; x_position <  game->game_map.width; ++x_position) {
             switch(ownership_grid[y_position][x_position].owner) {
@@ -165,7 +164,7 @@ void HaliteImpl::determine_cell_ownership(Location cell_location, std::vector<st
     dimension_type closest_owned_distance = std::numeric_limits<dimension_type>::max();
     bool multiple_close_players = false;
     std::vector<std::shared_ptr<Entity>> close_entities;
-    id_type closest_cell_owner = UNOWNED;
+    Player::id_type closest_cell_owner = UNOWNED;
     std::vector<Location> neighbors = get_neighbors(cell_location);
     for (const auto neighbor : neighbors) {
         // Find the owned neighbor with closest distance. If multiple neighbors same distance,
@@ -225,7 +224,7 @@ bool HaliteImpl::game_ended() const {
     return true;
 }
 
-void HaliteImpl::update_player_stats(std::unordered_map<id_type, energy_type> productions) {
+void HaliteImpl::update_player_stats(std::unordered_map<Player::id_type, energy_type> productions) {
     for (PlayerStatistics &player_stats : game->game_stats.player_statistics) {
         // Player with sprites is still alive, so mark as alive on this turn and add production gained
         if (!game->players[player_stats.player_id].entities.empty()) {

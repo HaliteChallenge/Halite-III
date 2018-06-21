@@ -7,11 +7,11 @@
 
 namespace hlt {
 
-constexpr id_type UNOWNED = -1;
-constexpr id_type TIED = -2;
+constexpr Player::id_type UNOWNED = -1;
+constexpr Player::id_type TIED = -2;
 
 struct GridOwner {
-    id_type owner = UNOWNED;
+    Player::id_type owner = UNOWNED;
     std::vector<std::shared_ptr<Entity>> entities;
     dimension_type distance;
 };
@@ -26,13 +26,13 @@ class HaliteImpl final {
      * Communicate with bots to obtain commands for next step.
      * @return Commands received from players.
      */
-    std::unordered_map<id_type, Command> retrieve_commands();
+    std::unordered_map<Player::id_type, Command> retrieve_commands();
 
     /**
      * Process the effects of commands.
      * @param commands The commands to process.
      */
-    void process_commands(const std::unordered_map<id_type, Command> &commands);
+    void process_commands(const std::unordered_map<Player::id_type, Command> &commands);
 
     /** Process all entity lifecycle events for this turn. */
     void process_entities();
@@ -55,7 +55,7 @@ class HaliteImpl final {
      *     Will be updated to grant production of current cell to player that wins the tie
      */
     void process_tie(Location cell_location, std::vector<std::shared_ptr<Entity>> &close_entities,
-                     std::unordered_map<id_type, energy_type> &turn_player_production);
+                     std::unordered_map<Player::id_type, energy_type> &turn_player_production);
 
     /**
      * Given a location of a cell, return its 4 neighbors
@@ -124,7 +124,7 @@ class HaliteImpl final {
      *
      * @param productions Mapping from player id to the production they gained in the current turn.
      */
-    void update_player_stats(std::unordered_map<id_type, energy_type> productions);
+    void update_player_stats(std::unordered_map<Player::id_type, energy_type> productions);
 
     /**
      * Update players' rankings based on their final turn alive, then break ties with production totals in final turn.
