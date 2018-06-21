@@ -26,6 +26,14 @@ struct PlayerStatistics {
     friend void to_json(nlohmann::json &json, const PlayerStatistics &stats);
 
     /**
+     * Compare two players to rank them.
+     *
+     * @param other The statistics of the other player.
+     * @return True if this player ranks below (i.e. is worse than) the other.
+     */
+    bool operator<(const PlayerStatistics &other) const;
+
+    /**
      * Construct PlayerStatistics from Player ID.
      * @param player_id The player ID.
      */
