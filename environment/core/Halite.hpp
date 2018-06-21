@@ -8,6 +8,7 @@
 #include "Map.hpp"
 #include "Networking.hpp"
 #include "Player.hpp"
+#include "Statistics.hpp"
 
 namespace hlt {
 
@@ -26,6 +27,8 @@ public:
     unsigned long turn_number{};                            /**< The turn number. */
     std::unordered_map<id_type, Player> players;            /**< Map from player ID to player. */
     Map game_map;                                           /**< The game map. */
+    GameStatistics game_stats;                              /**< The statistics of the game. */
+
     /**
      * Constructor for the main game.
      *
