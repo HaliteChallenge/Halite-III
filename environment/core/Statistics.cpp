@@ -1,4 +1,5 @@
 #include "Statistics.hpp"
+
 #include "nlohmann/json.hpp"
 
 /** A JSON key and value corresponding to a field. */
