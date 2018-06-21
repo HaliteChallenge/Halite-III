@@ -1,4 +1,4 @@
-#include "Player.hpp"
+#include "Entity.hpp"
 
 #include "nlohmann/json.hpp"
 

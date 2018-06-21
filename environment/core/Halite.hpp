@@ -25,7 +25,7 @@ private:
 
 public:
     unsigned long turn_number{};                            /**< The turn number. */
-    std::unordered_map<id_type, Player> players;            /**< Map from player ID to player. */
+    std::unordered_map<Player::id_type, Player> players;    /**< Map from player ID to player. */
     Map game_map;                                           /**< The game map. */
     GameStatistics game_stats;                              /**< The statistics of the game. */
 
