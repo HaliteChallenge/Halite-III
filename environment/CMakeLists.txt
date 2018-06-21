@@ -49,6 +49,7 @@ set(dirs
     ${CMAKE_SOURCE_DIR}/logging
     ${CMAKE_SOURCE_DIR}/mapgen
     ${CMAKE_SOURCE_DIR}/model
+    ${CMAKE_SOURCE_DIR}/replay
     ${CMAKE_SOURCE_DIR}/networking/common
     ${CMAKE_SOURCE_DIR}/zstd-1.3.0
 )
@@ -65,9 +66,11 @@ foreach(dir ${dirs})
 endforeach()
 
 include_directories(${CMAKE_SOURCE_DIR})
+set(TEST_FILES "${SOURCE_FILES}" testing/MapTest.cpp)
 set(SOURCE_FILES "${SOURCE_FILES}" main.cpp)
 
 add_executable(halite ${SOURCE_FILES})
+add_executable(test ${TEST_FILES})
 
 add_dependencies(halite VERSION_CHECK)
 

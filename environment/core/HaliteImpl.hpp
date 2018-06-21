@@ -4,6 +4,7 @@
 #include <queue>
 
 #include "Halite.hpp"
+#include "Replay.hpp"
 
 namespace hlt {
 
