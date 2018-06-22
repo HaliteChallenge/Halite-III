@@ -1,6 +1,8 @@
 #ifndef OWNERSHIPGRID_HPP
 #define OWNERSHIPGRID_HPP
 
+#include <unordered_set>
+
 #include "Constants.hpp"
 #include "Entity.hpp"
 #include "Grid.hpp"
@@ -15,7 +17,7 @@ struct CellOwner {
         TIED = -2                                   /** Represents a cell owned by possibly multiple players. */
     };
     Player::id_type owner = UNOWNED;                /** The owner of the cell. */
-    std::vector<std::shared_ptr<Entity>> entities;  /** The entities leading to ownership of the cell. */
+    std::unordered_set<std::shared_ptr<Entity>> entities;  /** The entities leading to ownership of the cell. */
     dimension_type distance{};                      /** The distance to the entities leading to ownership. */
 };
 

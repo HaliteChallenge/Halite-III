@@ -29,6 +29,7 @@ struct Constants {
     energy_type NEW_ENTITY_ENERGY_COST = 1000;  /**< The amount of energy it takes to spawn a new entity. */
     energy_type NEW_ENTITY_ENERGY = 255;        /**< The starting energy of a new entity. */
     energy_type BASE_TURN_ENERGY_LOSS = 5;      /**< The base energy decrease of an entity per turn. */
+    energy_type INITIAL_ENERGY = 1000;          /**< The initial amount of energy for a player. */
 
     double BLUR_FACTOR = 0.75;                  /**< The blur factor for the blurred tile generator. */
 
