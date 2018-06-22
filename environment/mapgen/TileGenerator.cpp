@@ -39,9 +39,9 @@ Map TileGenerator::tile_map(const dimension_type factory_y, const dimension_type
 
 TileGenerator::TileGenerator(const MapParameters &parameters) :
         Generator(parameters),
-        num_players(parameters.num_players),
         width(parameters.width),
-        height(parameters.height) {
+        height(parameters.height),
+        num_players(parameters.num_players) {
 
     // Ensure that the map can be subdivided into partitions for a given number of players
     // ie: a 64x64 map cannot be (most basic definition of) symmetrical for 6 players
