@@ -17,11 +17,6 @@ class HaliteImpl;
 /** Halite game interface, exposing the top level of the game. */
 class Halite final {
     friend class HaliteImpl;
-private:
-    Config config;                                          /**< The game configuration. */
-    mapgen::MapParameters parameters;                       /**< The map parameters. */
-    net::Networking networking;                             /**< The networking suite. */
-    std::unique_ptr<HaliteImpl> impl;                       /**< The pointer to implementation. */
 
 public:
     unsigned long turn_number{};                            /**< The turn number. */
@@ -29,6 +24,13 @@ public:
     Map game_map;                                           /**< The game map. */
     GameStatistics game_stats;                              /**< The statistics of the game. */
 
+private:
+    Config config;                                          /**< The game configuration. */
+    mapgen::MapParameters parameters;                       /**< The map parameters. */
+    net::Networking networking;                             /**< The networking suite. */
+    std::unique_ptr<HaliteImpl> impl;                       /**< The pointer to implementation. */
+
+public:
     /**
      * Constructor for the main game.
      *
