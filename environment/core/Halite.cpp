@@ -37,7 +37,6 @@ void Halite::run_game() {
     impl->rank_players();
     Logging::log("Game has ended after " + std::to_string(turn_number) + " turns.");
     // TODO: generate replay
-    // TODO: thread the communications with players
 }
 
 /**
