@@ -29,10 +29,13 @@ void HaliteImpl::initialize_owner_search_from_sprites(std::queue<Location> &sear
             if (multiple_entities_on_cell(location)) {
                 cell.owner = process_collision(location);
             } else {
-                // claim ownership, add to queue to determine neighbors
                 cell.owner = entity->owner_id;
+            }
+            if (cell.owner != CellOwner::UNOWNED) {
+                // Add to queue to determine neighbors
                 search_cells.push(location);
             }
+
             cell.distance = INITIAL_DISTANCE;
             // Entity leading to ownership useful in case of ties
             cell.entities.push_back(entity);
