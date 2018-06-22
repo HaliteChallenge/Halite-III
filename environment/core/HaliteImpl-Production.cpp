@@ -26,12 +26,12 @@ void HaliteImpl::initialize_owner_search_from_sprites(std::queue<Location> &sear
     for (const auto &[_, player] : game->players) {
         for (const auto &[location, entity] : player.entities) {
             auto &cell = ownership_grid[location];
-            if (!multiple_entities_on_cell(location)) {
+            if (multiple_entities_on_cell(location)) {
+                cell.owner = process_collision(location);
+            } else {
                 // claim ownership, add to queue to determine neighbors
                 cell.owner = entity->owner_id;
                 search_cells.push(location);
-            } else {
-                cell.owner = CellOwner::TIED;
             }
             cell.distance = INITIAL_DISTANCE;
             // Entity leading to ownership useful in case of ties
@@ -154,6 +154,36 @@ void HaliteImpl::process_tie(const Location &cell_location, std::vector<std::sha
     (void) cell_location;
     (void) close_entities;
     (void) turn_player_production;
+}
+
+/**
+ * Process the search initialization for a cell with colliding entities
+ * (i.e. entities from multiple different players on one cell).
+ *
+ * @param cell_location Location of cell with colliding entities.
+ * @return Resulting owner for this cell.
+ */
+Player::id_type HaliteImpl::process_collision(const Location &cell_location) {
+    // Use the dominant-entity method
+    auto tied = false;
+    auto max_energy = std::numeric_limits<energy_type>::min();
+    // Pick an arbitrary player to start
+    Player::id_type max_player = game->game_map[cell_location]->entities.begin()->first;
+    // Find the entity with highest energy, keeping track of ties
+    for (auto &[player_id, entity] : game->game_map[cell_location]->entities) {
+        if (entity->energy > max_energy) {
+            max_energy = entity->energy;
+            max_player = player_id;
+            tied = false;
+        } else if (entity->energy == max_energy) {
+            tied = true;
+        }
+    }
+    if (tied) {
+        return CellOwner::TIED;
+    } else {
+        return max_player;
+    }
 }
 
 }

@@ -41,10 +41,10 @@ Halite::Halite(const Config &config,
                const mapgen::MapParameters &parameters,
                const net::NetworkingConfig &networking_config,
                std::list<Player> players) :
+        game_map(mapgen::BlurTileGenerator(parameters).generate(players)),
         config(config),
         parameters(parameters),
         networking(net::Networking(networking_config, this)),
-        game_map(mapgen::BlurTileGenerator(parameters).generate(players)),
         impl(std::make_unique<HaliteImpl>(this)) {
     for (const auto &player : players) {
         this->players[player.player_id] = player;
