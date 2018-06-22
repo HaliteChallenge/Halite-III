@@ -112,6 +112,15 @@ class HaliteImpl final {
     void process_tie(const Location &cell_location, std::vector<std::shared_ptr<Entity>> &close_entities,
                      std::unordered_map<Player::id_type, energy_type> &turn_player_production);
 
+    /**
+     * Process the search initialization for a cell with colliding entities
+     * (i.e. entities from multiple different players on one cell).
+     *
+     * @param cell_location Location of cell with colliding entities.
+     * @return Resulting owner for this cell.
+     */
+    Player::id_type process_collision(const Location &cell_location);
+
 public:
     /**
      * Construct HaliteImpl from game interface.
