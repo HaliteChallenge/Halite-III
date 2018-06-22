@@ -17,12 +17,12 @@ namespace mapgen {
 class TileGenerator : public Generator {
     hlt::dimension_type num_tile_rows; /**< number of rows of tiles in map */
     hlt::dimension_type num_tile_cols; /**< number of cols of tiles in map */
-    long num_players; /**< number of players who will be on the map */
-    hlt::dimension_type width; /**< width (in cells) of the final map */
-    hlt::dimension_type height; /**< height (in cells) of the final map */
+    hlt::dimension_type width;         /**< width (in cells) of the final map */
+    hlt::dimension_type height;        /**< height (in cells) of the final map */
 protected:
-    hlt::dimension_type tile_width; /**< width (in cells) of a single tile */
-    hlt::dimension_type tile_height; /**< width (in cells) of a single tile */
+    unsigned long num_players;         /**< number of players who will be on the map */
+    hlt::dimension_type tile_width;    /**< width (in cells) of a single tile */
+    hlt::dimension_type tile_height;   /**< width (in cells) of a single tile */
 
 
     /** Tile a map from a single tile

@@ -78,7 +78,6 @@ int main(int argc, char *argv[]) {
     auto map_width = width_arg.getValue();
     auto map_height = height_arg.getValue();
     auto n_players = players_arg.getValue();
-    hlt::mapgen::MapParameters map_param{hlt::mapgen::MapType::Basic, config.seed, map_width, map_height, n_players};
 
     auto verbosity = verbosity_arg.getValue();
     verbosity++; // One more level than specified verbosity
@@ -90,7 +89,14 @@ int main(int argc, char *argv[]) {
     if (bot_commands.size() > constants.MAX_PLAYERS) {
         std::cerr << "Error: too many players (max is " << constants.MAX_PLAYERS << ")" << std::endl;
         return 1;
+    } else if (bot_commands.size() > n_players) {
+        n_players = bot_commands.size();
+        if (players_arg.isSet()) {
+            std::cerr << "Warning: overriding the specified number of players." << std::endl;
+        }
     }
+    hlt::mapgen::MapParameters map_param{hlt::mapgen::MapType::Basic, config.seed, map_width, map_height, n_players};
+
     // TODO: override names
 
     net::NetworkingConfig networking_config{};

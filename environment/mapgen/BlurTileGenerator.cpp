@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "BlurTileGenerator.hpp"
 
 namespace hlt {
@@ -31,6 +33,7 @@ energy_type BlurTileGenerator::blur_function(dimension_type y_coord, dimension_t
 }
 
 Map BlurTileGenerator::generate(std::list<Player> &players) {
+    assert(players.size() <= num_players);
     auto tile = make_map(tile_width, tile_height);
     const auto max = static_cast<double>(std::mt19937::max());
 
