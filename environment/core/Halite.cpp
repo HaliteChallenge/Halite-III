@@ -13,6 +13,7 @@ void Halite::run_game() {
     }
     const auto &constants = Constants::get();
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
+        Logging::log("Starting turn " + std::to_string(this->turn_number));
         impl->retrieve_commands();
         impl->process_commands();
         impl->process_production();

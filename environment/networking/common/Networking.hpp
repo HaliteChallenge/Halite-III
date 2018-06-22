@@ -48,10 +48,12 @@ public:
 
     /**
      * Handle the networking for a single frame, obtaining a command from the player if there is one.
+     * Safe to invoke from multiple threads on different players.
+     *
      * @param player The player to communicate with.
-     * @param[out] command The command from the player.
+     * @return The command from the player.
      */
-    void handle_frame(const hlt::Player &player, hlt::Command &command);
+    hlt::Command handle_frame(const hlt::Player &player);
 
     /**
      * Initialize Networking from configuration and Halite game.
