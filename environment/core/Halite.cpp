@@ -1,3 +1,5 @@
+#include <future>
+
 #include "Constants.hpp"
 #include "BlurTileGenerator.hpp"
 #include "Halite.hpp"
@@ -8,9 +10,17 @@ namespace hlt {
 
 /** Run the game. */
 void Halite::run_game() {
-    for (auto &player : players) {
-        networking.initialize_player(player.second);
+    std::unordered_map<Player::id_type, std::future<void>> results;
+    for (auto &[player_id, player] : players) {
+        results[player_id] = std::async(std::launch::async,
+                                        [&networking = networking, &player = player] {
+                                            networking.initialize_player(player);
+                                        });
     }
+    for (auto &[_, result] : results) {
+        result.wait();
+    }
+
     const auto &constants = Constants::get();
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
         Logging::log("Starting turn " + std::to_string(this->turn_number));

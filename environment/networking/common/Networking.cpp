@@ -13,20 +13,36 @@ constexpr auto NAME_MAX_LENGTH = 30;
 
 /**
  * Launch the bot for a player, send the initial game information to the player, and update its name.
+ * Safe to invoke from multiple threads on different players.
+ *
  * @param player The player to communicate with.
  */
 void Networking::initialize_player(Player &player) {
     Logging::log("Initializing player " + std::to_string(player.player_id) + " with command " + player.command);
-    connections[player] = connection_factory.new_connection(player.command);
+    std::unique_ptr<BaseConnection> connection = connection_factory.new_connection(player.command);
     std::stringstream message_stream;
     Logging::log("Sending init message to player " + std::to_string(player.player_id));
-    // Send the player ID, followed by the game map.
-    message_stream << player.player_id << std::endl << game->game_map;
-    connections[player]->send_string(message_stream.str());
+    // Send the number of players and player ID
+    message_stream << game->players.size()
+                   << " " << player.player_id << std::endl;
+    // Send each player's ID and factory location
+    for (const auto &[player_id, other_player] : game->players) {
+        message_stream << player_id
+                       << " " << other_player.factory_location.first
+                       << " " << other_player.factory_location.second
+                       << std::endl;
+    }
+    // Send the map
+    message_stream << game->game_map;
+    connection->send_string(message_stream.str());
     Logging::log("Init message sent to player " + std::to_string(player.player_id));
     // Receive a name from the player.
-    player.name = connections[player]->get_string().substr(0, NAME_MAX_LENGTH);
+    player.name = connection->get_string().substr(0, NAME_MAX_LENGTH);
     Logging::log("Init message received from player " + std::to_string(player.player_id) + ", name: " + player.name);
+    {
+        std::lock_guard<std::mutex> guard(connections_mutex);
+        connections[player] = std::move(connection);
+    }
 }
 
 /**

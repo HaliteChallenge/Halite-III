@@ -35,13 +35,16 @@ using OSConnection = UnixConnection;
 class Networking final {
 private:
     ConnectionFactory<OSConnection> connection_factory; /**< The platform-specific connection factory. */
-    Connections connections{}; /**< The current network connections. */
-    NetworkingConfig config; /**< The networking configuration. */
+    Connections connections{};    /**< The current network connections. */
+    NetworkingConfig config;      /**< The networking configuration. */
     const hlt::Halite *game; /**< The current game. Raw pointer because Networking should always be owned by a game. */
+    std::mutex connections_mutex; /**< Mutex used to protect the connections map. */
 
 public:
     /**
      * Launch the bot for a player, send the initial game information to the player, and update its name.
+     * Safe to invoke from multiple threads on different players.
+     *
      * @param player The player to communicate with.
      */
     void initialize_player(hlt::Player &player);
