@@ -72,7 +72,7 @@ class HaliteImpl final {
     void initialize_owner_search_from_sprites(std::queue<Location> &search_cells);
 
     /**
-     * Run modified BFS algorithm to determine owner (or tie) fof each cell. Assumes that search cells has been initized
+     * Run modified BFS algorithm to determine owner (or tie) of each cell. Assumes that search cells has been initialized
      * with locations with sprites on them.
      *
      * @param search_cells Queue of cells that have been assigned an owner. After a cell's owner has been determined, it is added
@@ -109,7 +109,7 @@ class HaliteImpl final {
      * @param turn_player_production Mapping from player ID to production energy they gain during the turn.
      *     Will be updated to grant production of current cell to player that wins the tie.
      */
-    void process_tie(const Location &cell_location, std::vector<std::shared_ptr<Entity>> &close_entities,
+    void process_tie(const Location &cell_location, std::unordered_set<std::shared_ptr<Entity>> &close_entities,
                      std::unordered_map<Player::id_type, energy_type> &turn_player_production);
 
     /**

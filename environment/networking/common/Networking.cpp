@@ -20,8 +20,18 @@ void Networking::initialize_player(Player &player) {
     connections[player] = connection_factory.new_connection(player.command);
     std::stringstream message_stream;
     Logging::log("Sending init message to player " + std::to_string(player.player_id));
-    // Send the player ID, followed by the game map.
-    message_stream << player.player_id << std::endl << game->game_map;
+    // Send the number of players and player ID
+    message_stream << game->players.size()
+                   << " " << player.player_id << std::endl;
+    // Send each player's ID and factory location
+    for (const auto &[player_id, other_player] : game->players) {
+        message_stream << player_id
+                       << " " << other_player.factory_location.first
+                       << " " << other_player.factory_location.second
+                       << std::endl;
+    }
+    // Send the map
+    message_stream << game->game_map;
     connections[player]->send_string(message_stream.str());
     Logging::log("Init message sent to player " + std::to_string(player.player_id));
     // Receive a name from the player.

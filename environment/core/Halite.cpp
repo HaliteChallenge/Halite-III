@@ -8,10 +8,16 @@ namespace hlt {
 
 /** Run the game. */
 void Halite::run_game() {
-    for (auto &player : players) {
-        networking.initialize_player(player.second);
-    }
     const auto &constants = Constants::get();
+    for (auto &[_, player] : players) {
+        player.energy = constants.INITIAL_ENERGY;
+    }
+    impl->process_entities();
+    for (auto &[_, player] : players) {
+        networking.initialize_player(player);
+    }
+    Logging::log("Player initialization complete.");
+
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
         impl->retrieve_commands();
         impl->process_commands();

@@ -38,13 +38,13 @@ void HaliteImpl::initialize_owner_search_from_sprites(std::queue<Location> &sear
 
             cell.distance = INITIAL_DISTANCE;
             // Entity leading to ownership useful in case of ties
-            cell.entities.push_back(entity);
+            cell.entities.insert(entity);
         }
     }
 }
 
 /**
- * Run modified BFS algorithm to determine owner (or tie) fof each cell. Assumes that search cells has been initialized
+ * Run modified BFS algorithm to determine owner (or tie) of each cell. Assumes that search cells has been initialized
  * with locations with sprites on them.
  *
  * @param search_cells Queue of cells that have been assigned an owner. After a cell's owner has been determined, it is added
@@ -54,7 +54,6 @@ void HaliteImpl::run_initialized_owner_search(std::queue<Location> &search_cells
     while (!search_cells.empty()) {
         Location current_location = search_cells.front();
         const auto &neighbors = game->game_map.get_neighbors(current_location);
-        CellOwner current_cell = ownership_grid[current_location];
         // Search through unowned neighbor of owned cell and determine their ownership
         for (const auto &neighbor : neighbors) {
             if (ownership_grid[neighbor].owner == CellOwner::UNOWNED) {
@@ -105,7 +104,7 @@ void HaliteImpl::update_production_from_ownership() {
 void HaliteImpl::determine_cell_ownership(const Location &cell_location) {
     dimension_type closest_owned_distance = std::numeric_limits<dimension_type>::max();
     bool multiple_close_players = false;
-    std::vector<std::shared_ptr<Entity>> close_entities;
+    std::unordered_set<std::shared_ptr<Entity>> close_entities;
     Player::id_type closest_cell_owner = CellOwner::UNOWNED;
     const auto &neighbors = game->game_map.get_neighbors(cell_location);
     for (const auto &neighbor : neighbors) {
@@ -121,8 +120,7 @@ void HaliteImpl::determine_cell_ownership(const Location &cell_location) {
                 // Determine if equidistant sprites are owned by same player, in which case don't consider cell tied
                 // (though do track all entities this distance away)
                 multiple_close_players = multiple_close_players || closest_cell_owner != cell.owner;
-                close_entities.insert(close_entities.end(), cell.entities.begin(), cell.entities.end());
-
+                close_entities.insert(cell.entities.begin(), cell.entities.end());
             }
         }
     }
@@ -151,7 +149,7 @@ bool HaliteImpl::multiple_entities_on_cell(const Location &location) const {
  * @param turn_player_production Mapping from player ID to production energy they gain during the turn.
  *     Will be updated to grant production of current cell to player that wins the tie.
  */
-void HaliteImpl::process_tie(const Location &cell_location, std::vector<std::shared_ptr<Entity>> &close_entities,
+void HaliteImpl::process_tie(const Location &cell_location, std::unordered_set<std::shared_ptr<Entity>> &close_entities,
                              std::unordered_map<Player::id_type, energy_type> &turn_player_production) {
     // TODO: implement
     (void) cell_location;

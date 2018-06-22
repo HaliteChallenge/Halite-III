@@ -116,7 +116,8 @@ void MoveCommand::act_on_map(Map &map, Player &player) const {
     if (player_entity_iterator == player.entities.end()) {
         throw BotCommandError("Attempt by player " + std::to_string(player.player_id) + " to move unowned entity");
     } else {
-        auto &entity = player_entity_iterator->second;
+        // Copy, because the player will then remove it
+        auto entity = player_entity_iterator->second;
         // Remove the old entity
         player.remove_entity(location);
         map.at(location)->remove_entity(player);
