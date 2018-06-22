@@ -13,7 +13,8 @@ void Halite::run_game() {
     }
     const auto &constants = Constants::get();
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
-        impl->process_commands(impl->retrieve_commands());
+        impl->retrieve_commands();
+        impl->process_commands();
         impl->process_production();
         impl->process_entities();
 
