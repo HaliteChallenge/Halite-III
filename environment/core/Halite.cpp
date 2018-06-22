@@ -1,3 +1,5 @@
+#include <future>
+
 #include "Constants.hpp"
 #include "BlurTileGenerator.hpp"
 #include "Halite.hpp"
@@ -13,12 +15,20 @@ void Halite::run_game() {
         player.energy = constants.INITIAL_ENERGY;
     }
     impl->process_entities();
-    for (auto &[_, player] : players) {
-        networking.initialize_player(player);
+    std::unordered_map<Player::id_type, std::future<void>> results;
+    for (auto &[player_id, player] : players) {
+        results[player_id] = std::async(std::launch::async,
+                                        [&networking = networking, &player = player] {
+                                            networking.initialize_player(player);
+                                        });
+    }
+    for (auto &[_, result] : results) {
+        result.wait();
     }
     Logging::log("Player initialization complete.");
 
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
+        Logging::log("Starting turn " + std::to_string(this->turn_number));
         impl->retrieve_commands();
         impl->process_commands();
         impl->process_production();
@@ -32,7 +42,6 @@ void Halite::run_game() {
     impl->rank_players();
     Logging::log("Game has ended after " + std::to_string(turn_number) + " turns.");
     // TODO: generate replay
-    // TODO: thread the communications with players
 }
 
 /**
