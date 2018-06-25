@@ -15,8 +15,8 @@ namespace hlt {
 void to_json(nlohmann::json &json, const Turn &turn) {
     json = {TURN_FIELD_TO_JSON(events)};
     nlohmann::json moves_json;
-    for (const std::pair<const id_type, Command> &player_moves : turn.moves) {
-        moves_json[std::to_string(player_moves.first)] = player_moves.second;
+    for (auto &[player_id, commands] : turn.moves) {
+        moves_json[std::to_string(player_id)] = commands;
     }
     json["moves"] = moves_json;
 }
@@ -36,12 +36,16 @@ void to_json(nlohmann::json &json, const Replay *replay) {
     json = {REPLAY_FIELD_TO_JSON(game_statistics),
             REPLAY_FIELD_TO_JSON(GAME_CONSTANTS),
             REPLAY_FIELD_TO_JSON(number_of_players),
-            REPLAY_FIELD_TO_JSON(players),
             REPLAY_FIELD_TO_JSON(production_map),
             REPLAY_FIELD_TO_JSON(map_generator_seed),
             REPLAY_FIELD_TO_JSON(full_frames),
             REPLAY_FIELD_TO_JSON(REPLAY_FILE_VERSION),
             REPLAY_FIELD_TO_JSON(ENGINE_VERSION)};
+    nlohmann::json players_json = nlohmann::json::array();
+    for (auto &[_, player] : replay->players) {
+        players_json.push_back(player);
+    }
+    json["players"] = players_json;
 }
 
 /**

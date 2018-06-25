@@ -1,3 +1,5 @@
+#include <future>
+
 #include "Constants.hpp"
 #include "BlurTileGenerator.hpp"
 #include "Halite.hpp"
@@ -5,9 +7,9 @@
 #include "Logging.hpp"
 
 namespace hlt {
-    std::unordered_map<hlt::id_type , hlt::Command> generate_move_list(std::unordered_map<hlt::id_type , hlt::Player> &players) {
-        std::unordered_map<hlt::id_type , hlt::Command> moves;
-        for (std::pair<const hlt::id_type, hlt::Player> &player_pair : players) {
+    std::unordered_map<Player::id_type , hlt::Command> generate_move_list(std::unordered_map<Player::id_type , hlt::Player> &players) {
+        std::unordered_map<Player::id_type , hlt::Command> moves;
+        for (std::pair<const Player::id_type, hlt::Player> &player_pair : players) {
             for (const auto entity_pair : player_pair.second.entities) {
                 hlt::Location location = entity_pair.first;
                 moves[player_pair.first] = std::make_unique<hlt::MoveCommand>(location.first, location.second, hlt::Direction::North);
@@ -18,14 +20,30 @@ namespace hlt {
 
 /** Run the game. */
 void Halite::run_game() {
-//    for (auto &player : players) {
-//        networking.initialize_player(player.second);
-//    }
     const auto &constants = Constants::get();
+    for (auto &[_, player] : players) {
+        player.energy = constants.INITIAL_ENERGY;
+    }
+    impl->process_entities();
+    std::unordered_map<Player::id_type, std::future<void>> results;
+    for (auto &[player_id, player] : players) {
+        results[player_id] = std::async(std::launch::async,
+                                        [&networking = networking, &player = player] {
+                                            networking.initialize_player(player);
+                                        });
+    }
+    for (auto &[_, result] : results) {
+        result.wait();
+    }
+    replay_struct.players = this->players;
+    Logging::log("Player initialization complete.");
+
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
+        Logging::log("Starting turn " + std::to_string(this->turn_number));
         // Create new turn struct for replay file, to be filled by further turn actions
         replay_struct.full_frames.emplace_back();
-        impl->process_commands(generate_move_list(this->players));
+        impl->retrieve_commands();
+        impl->process_commands();
         impl->process_production();
         impl->process_entities();
 
@@ -37,7 +55,6 @@ void Halite::run_game() {
     impl->rank_players();
     Logging::log("Game has ended after " + std::to_string(turn_number) + " turns.");
     // TODO: generate replay
-    // TODO: thread the communications with players
 }
 
 /**
@@ -52,12 +69,12 @@ Halite::Halite(const Config &config,
                const mapgen::MapParameters &parameters,
                const net::NetworkingConfig &networking_config,
                std::list<Player> players) :
+        game_map(mapgen::BlurTileGenerator(parameters).generate(players)),
+        replay_struct(this->game_statistics, parameters.num_players, parameters.seed, this->game_map),
         config(config),
         parameters(parameters),
         networking(net::Networking(networking_config, this)),
-        impl(std::make_unique<HaliteImpl>(this)),
-        game_map(mapgen::BlurTileGenerator(parameters).generate(players)),
-        replay_struct(this->game_statistics, parameters.num_players, players, parameters.seed, this->game_map) {
+        impl(std::make_unique<HaliteImpl>(this)) {
     for (const auto &player : players) {
         this->players[player.player_id] = player;
         game_statistics.player_statistics.emplace_back(player.player_id);

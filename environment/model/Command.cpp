@@ -116,7 +116,9 @@ void MoveCommand::act_on_map(Map &map, Player &player) const {
     if (player_entity_iterator == player.entities.end()) {
         throw BotCommandError("Attempt by player " + std::to_string(player.player_id) + " to move unowned entity");
     } else {
-        std::shared_ptr<Entity> entity = player_entity_iterator->second;
+        //std::shared_ptr<Entity> entity = player_entity_iterator->second;
+        // Move, because the player will then remove it
+        auto entity = std::move(player_entity_iterator->second);
         // Remove the old entity
         player.remove_entity(location);
         map.at(location)->remove_entity(player);

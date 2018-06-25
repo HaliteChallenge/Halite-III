@@ -18,6 +18,14 @@ class HaliteImpl;
 /** Halite game interface, exposing the top level of the game. */
 class Halite final {
     friend class HaliteImpl;
+
+public:
+    unsigned long turn_number{};                            /**< The turn number. */
+    std::unordered_map<Player::id_type, Player> players;    /**< Map from player ID to player. */
+    Map game_map;                                           /**< The game map. */
+    GameStatistics game_statistics;                         /**< The statistics of the game. */
+    Replay replay_struct;                                   /**< Replay class to collect info for visualizer. */
+
 private:
     Config config;                                          /**< The game configuration. */
     mapgen::MapParameters parameters;                       /**< The map parameters. */
@@ -25,11 +33,6 @@ private:
     std::unique_ptr<HaliteImpl> impl;                       /**< The pointer to implementation. */
 
 public:
-    unsigned long turn_number{};                            /**< The turn number. */
-    std::unordered_map<id_type, Player> players;            /**< Map from player ID to player. */
-    Map game_map;                                           /**< The game map. */
-    GameStatistics game_statistics;                              /**< The statistics of the game. */
-    Replay replay_struct;
 
     /**
      * Constructor for the main game.

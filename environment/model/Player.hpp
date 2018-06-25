@@ -6,20 +6,24 @@
 #include <utility>
 #include <map>
 
-#include "Entity.hpp"
 #include "Location.hpp"
 
 namespace hlt {
+
+struct Entity;
 
 /** Representation of a Halite player. */
 struct Player {
     friend class PlayerFactory;
 
+    /** Type of Player IDs. */
+    using id_type = long;
+
     /** Type of the Entity map of a player, where keys are entity locations. */
     // TODO: switch from std::map to more efficient data structure on location keys
     using Entities = std::map<Location, std::shared_ptr<Entity>>;
 
-    id_type player_id{};          /**< The unique ID of the player. */
+    Player::id_type player_id{};  /**< The unique ID of the player. */
     std::string name;             /**< The name of the player. */
     std::string command;          /**< The bot command for the player. */
     energy_type energy{};         /**< The amount of energy stockpiled by the player. */
@@ -70,7 +74,7 @@ private:
      * @param name The player name.
      * @param command The player bot command.
      */
-    Player(id_type player_id, std::string name, std::string command) :
+    Player(Player::id_type player_id, std::string name, std::string command) :
             player_id(player_id), name(std::move(name)), command(std::move(command)) {}
 
     /**
@@ -81,7 +85,7 @@ private:
      * @param factory_location The factory location.
      * @param entities The location -> entity mapping.
      */
-    Player(id_type player_id, std::string name, energy_type energy,
+    Player(Player::id_type player_id, std::string name, energy_type energy,
            Location factory_location, Player::Entities entities)
             : player_id(player_id), name(std::move(name)), energy(energy),
               factory_location(std::move(factory_location)),
@@ -91,7 +95,7 @@ private:
 /** Factory which produces Players. */
 class PlayerFactory {
     /** The next player to allocate, starting from zero. */
-    id_type next_player{};
+    Player::id_type next_player{};
 
 public:
     /**

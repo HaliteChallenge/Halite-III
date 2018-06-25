@@ -17,7 +17,7 @@
 namespace hlt {
 
 struct Turn {
-    std::unordered_map<id_type, Command> moves;             /**< Mapping from player id to the commands they issued this turn */
+    std::unordered_map<Player::id_type, Command> moves;             /**< Mapping from player id to the commands they issued this turn */
     std::vector<GameEvent> events;                          /**< Events occurring this turn (spawns, deaths, etc) for replay */
 
     /**
@@ -35,7 +35,7 @@ struct Replay {
     static constexpr auto ENGINE_VERSION = HALITE_VERSION;      /**< Version of the game engine */
 
     size_t number_of_players;                                   /**< Number of players in this game */
-    std::list<Player> players;                                  /**< List of players at start of game, including factory location and initial entities */
+    std::unordered_map<Player::id_type, Player> players{};                                  /**< List of players at start of game, including factory location and initial entities */
     std::vector<hlt::Turn> full_frames{};                       /**< Turn information: first element = first frame/turn. Length is game_statistics.number_turns */
 
     unsigned int map_generator_seed;                            /**< Seed used in random number generator for map */
@@ -75,8 +75,8 @@ struct Replay {
      * @param seed Seed for random number generator for map
      * @param production_map Initialized map for game play
      */
-    Replay(GameStatistics &game_statistics, size_t number_of_players, std::list<Player> players, unsigned int seed, Map &production_map) :
-            game_statistics(game_statistics), number_of_players(number_of_players), players(std::move(players)),
+    Replay(GameStatistics &game_statistics, size_t number_of_players, unsigned int seed, Map &production_map) :
+            game_statistics(game_statistics), number_of_players(number_of_players),
             map_generator_seed(seed), production_map(production_map) {}
 
     /**
