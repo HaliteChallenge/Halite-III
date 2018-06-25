@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 
     using namespace TCLAP;
     CmdLine cmd("Halite Game Environment", ' ', HALITE_VERSION);
-    SwitchArg timeout_switch("", "timeout", "Causes game environment to ignore bot timeouts.", cmd, false);
+    SwitchArg timeout_switch("", "no-timeout", "Causes game environment to ignore bot timeouts.", cmd, false);
     SwitchArg no_replay_switch("", "no-replay", "Turns off the replay generation.", cmd, false);
     SwitchArg print_constants_switch("", "print-constants", "Print out the default constants and exit.", cmd, false);
     SwitchArg no_compression_switch("", "no-compression", "Disables compression for output files.", cmd, false);
