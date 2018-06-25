@@ -102,10 +102,41 @@ int main(int argc, char *argv[]) {
         players.push_back(player_factory.new_player(command));
     }
 
-    std::string output_filename = replay_arg.getValue();
-    if (output_filename.back() != SEPARATOR) output_filename.push_back(SEPARATOR);
+    std::string replay_directory = replay_arg.getValue();
+    if (replay_directory.back() != SEPARATOR) replay_directory.push_back(SEPARATOR);
 
     hlt::Halite game(config, map_param, networking_config, players);
     game.run_game();
+
+    // Output replay file for visualizer
+    if (!no_replay_switch.getValue()){
+        // Output gamefile. First try the replays folder; if that fails, just use the straight filename.
+        std::stringstream filename_buf;
+        // While compilers like G++4.8 report C++11 compatibility, they do not
+        // support std::put_time, so we have to use strftime instead.
+        auto time = std::time(nullptr);
+        auto localtime = std::localtime(&time);
+        char time_string[30];
+        std::strftime(time_string, 30, "%Y%m%d-%H%M%S%z-", localtime);
+        filename_buf << "replay-" << std::string(time_string);
+        filename_buf << "-" << game.replay_struct.map_generator_seed;
+        filename_buf << "-" << game.game_map.width;
+        filename_buf << "-" << game.game_map.height;
+        auto filename = filename_buf.str();
+        std::string output_filename = replay_directory + "Replays/" + filename;
+        bool enable_compression = !no_compression_switch.getValue();
+        try {
+            game.replay_struct.output(output_filename, enable_compression);
+        }
+        catch (std::runtime_error& e) {
+            output_filename = replay_directory + filename;
+            game.replay_struct.output(output_filename, enable_compression);
+        }
+        std::stringstream replay_message;
+        replay_message << "Map seed was " << game.replay_struct.map_generator_seed << std::endl
+                       << "Opening a file at " << output_filename << std::endl;
+        Logging::log(replay_message.str());
+    }
+
     return 0;
 }

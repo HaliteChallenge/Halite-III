@@ -17,7 +17,13 @@ public:
     energy_type total_production{};              /**< Over the turns they were alive, the total production gained by a player */
     std::vector<energy_type> turn_productions{}; /**< Production granted to player each turn, turn 1 at front of vector */
 
-    friend void to_json(nlohmann::json &json, const PlayerStatistics &stats);
+    /**
+     * Convert Player statistics to json format
+     *
+     * @param[out] json Empty json object to fill
+     * @param statistics Player statistics struct to convert to json
+     */
+    friend void to_json(nlohmann::json &json, const PlayerStatistics &statistics);
 
     /**
      * Construct PlayerStatistics from Player ID
@@ -27,9 +33,16 @@ public:
 };
 
 struct GameStatistics {
-    std::vector<PlayerStatistics> player_statistics;
+    std::vector<PlayerStatistics> player_statistics;     /**< Vector of statistics for each player. */
+    unsigned long number_turns{};                        /**< Total number of turns that finished before game ende. */
 
-    friend void to_json(nlohmann::json &json, const GameStatistics &stats);
+    /**
+     * Convert game statistics to json format
+     *
+     * @param[out] json Empty json object to fill
+     * @param statistics Game statistics struct to convert to json
+     */
+    friend void to_json(nlohmann::json &json, const GameStatistics &statistics);
 };
 
 }

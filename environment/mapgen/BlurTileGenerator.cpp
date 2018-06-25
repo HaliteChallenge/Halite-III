@@ -72,7 +72,9 @@ Map BlurTileGenerator::generate(std::list<Player> &players) {
     const auto factory_pos_y = static_cast<dimension_type>((rng() / max * tile_height));
 
     // Use superclass function to copy the tile over the entire map, including placing all factories
-    return tile_map(factory_pos_y, factory_pos_x, tile, players);
+    Map tiled_map =  tile_map(factory_pos_y, factory_pos_x, tile, players);
+    tiled_map.map_generator = this->name();
+    return tiled_map;
 }
 
 }

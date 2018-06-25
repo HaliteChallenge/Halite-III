@@ -5,15 +5,27 @@
 #include "Logging.hpp"
 
 namespace hlt {
+    std::unordered_map<hlt::id_type , hlt::Command> generate_move_list(std::unordered_map<hlt::id_type , hlt::Player> &players) {
+        std::unordered_map<hlt::id_type , hlt::Command> moves;
+        for (std::pair<const hlt::id_type, hlt::Player> &player_pair : players) {
+            for (const auto entity_pair : player_pair.second.entities) {
+                hlt::Location location = entity_pair.first;
+                moves[player_pair.first] = std::make_unique<hlt::MoveCommand>(location.first, location.second, hlt::Direction::North);
+            }
+        }
+        return moves;
+    };
 
 /** Run the game. */
 void Halite::run_game() {
-    for (auto &player : players) {
-        networking.initialize_player(player.second);
-    }
+//    for (auto &player : players) {
+//        networking.initialize_player(player.second);
+//    }
     const auto &constants = Constants::get();
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
-        impl->process_commands(impl->retrieve_commands());
+        // Create new turn struct for replay file, to be filled by further turn actions
+        replay_struct.full_frames.emplace_back();
+        impl->process_commands(generate_move_list(this->players));
         impl->process_production();
         impl->process_entities();
 
@@ -44,11 +56,13 @@ Halite::Halite(const Config &config,
         parameters(parameters),
         networking(net::Networking(networking_config, this)),
         impl(std::make_unique<HaliteImpl>(this)),
-        game_map(mapgen::BlurTileGenerator(parameters).generate(players)) {
+        game_map(mapgen::BlurTileGenerator(parameters).generate(players)),
+        replay_struct(this->game_statistics, parameters.num_players, players, parameters.seed, this->game_map) {
     for (const auto &player : players) {
         this->players[player.player_id] = player;
-        game_stats.player_statistics.emplace_back(player.player_id);
+        game_statistics.player_statistics.emplace_back(player.player_id);
     }
+    replay_struct.game_statistics = game_statistics;
 }
 
 /** Default destructor is defined where HaliteImpl is complete. */

@@ -11,16 +11,35 @@
 namespace hlt {
 
 /**
+ * Convert a Player's entities to JSON format.
+ * @param[out] json The output JSON.
+ * @param entities The entities to convert.
+ */
+void to_json(nlohmann::json &json, const Player::Entities entities) {
+    // Entities are a mapping from location to entity object
+    // We want the json for an entity to include both the location and the details stored in the entity object
+    json = nlohmann::json::array();
+    for (const auto &location_entity_pair : entities) {
+        nlohmann::json entity_json;
+        nlohmann::to_json(entity_json, *(location_entity_pair.second));
+        const std::pair<dimension_type, dimension_type> &location = location_entity_pair.first;
+        entity_json["x"] = location.first;
+        entity_json["y"] = location.second;
+        json.push_back(entity_json);
+    }
+}
+
+/**
  * Convert a Player to JSON format.
  * @param[out] json The output JSON.
  * @param player The Player to convert.
  */
-// TODO: add functionality to convert entity mapping to json
 void to_json(nlohmann::json &json, const Player &player) {
     json = {FIELD_TO_JSON(player_id),
             FIELD_TO_JSON(name),
             FIELD_TO_JSON(energy),
-            FIELD_TO_JSON(factory_location)};
+            FIELD_TO_JSON(factory_location),
+            FIELD_TO_JSON(entities)};
 }
 
 /**

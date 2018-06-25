@@ -19,6 +19,7 @@ hlt::Map BasicGenerator::generate(std::list<Player> &players) {
             map.at(x, y) = make_cell<NormalCell>(PRODUCTION);
         }
     }
+    map.map_generator = this->name();
     return map;
 }
 

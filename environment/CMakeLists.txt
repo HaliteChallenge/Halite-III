@@ -20,6 +20,7 @@ include_directories(${CMAKE_SOURCE_DIR}/logging)
 include_directories(${CMAKE_SOURCE_DIR}/nlohmann)
 include_directories(${CMAKE_SOURCE_DIR}/mapgen)
 include_directories(${CMAKE_SOURCE_DIR}/model)
+include_directories(${CMAKE_SOURCE_DIR}/replay)
 include_directories(${CMAKE_SOURCE_DIR}/networking/common)
 include_directories(${CMAKE_SOURCE_DIR}/support)
 include_directories(${CMAKE_SOURCE_DIR}/tclap)
@@ -66,11 +67,9 @@ foreach(dir ${dirs})
 endforeach()
 
 include_directories(${CMAKE_SOURCE_DIR})
-set(TEST_FILES "${SOURCE_FILES}" testing/MapTest.cpp)
 set(SOURCE_FILES "${SOURCE_FILES}" main.cpp)
 
 add_executable(halite ${SOURCE_FILES})
-add_executable(test ${TEST_FILES})
 
 add_dependencies(halite VERSION_CHECK)
 

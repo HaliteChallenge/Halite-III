@@ -29,6 +29,7 @@ void HaliteImpl::process_commands(const std::unordered_map<id_type, Command> &co
         auto &player = game->players[player_command.first];
         auto &command = player_command.second;
         command->act_on_map(game->game_map, player);
+        game->replay_struct.full_frames.back().moves = commands;
     }
 }
 
@@ -41,6 +42,7 @@ void HaliteImpl::spawn_entity(Player &player, const Location& location) {
     const auto &constants = Constants::get();
     auto &entities = player.entities;
     auto entity_iterator = entities.find(location);
+
     if (entity_iterator != entities.end()) {
         // If there is already an entity, merge.
         entity_iterator->second->energy += constants.NEW_ENTITY_ENERGY;
@@ -50,6 +52,9 @@ void HaliteImpl::spawn_entity(Player &player, const Location& location) {
         entities[location] = entity;
         game->game_map.at(location)->entities[player.player_id] = std::move(entity);
     }
+    // Create new game event for replay file, regardless of whether spawn creates a new entity or adds to an old entity
+    GameEvent spawn_event = std::make_unique<SpawnEvent>(location, constants.NEW_ENTITY_ENERGY, player.player_id);
+    game->replay_struct.full_frames.back().events.push_back(std::move(spawn_event));
 }
 
 /** Process all entity lifecycle events for this turn. */
@@ -69,7 +74,10 @@ void HaliteImpl::process_entities() {
         for (auto entity = entities.begin(); entity != entities.end();) {
             entity->second->energy -= constants.BASE_TURN_ENERGY_LOSS;
             if (entity->second->energy <= 0) {
-                game->game_map.at(entity->first)->entities.erase(player_pair.first);
+                game->game_map.at(entity->first)->remove_entity(player_pair.second);
+                // Create a new death event for replay file
+                GameEvent death_event = std::make_unique<DeathEvent>(entity->first, entity->second->owner_id);
+                game->replay_struct.full_frames.back().events.push_back(std::move(death_event));
                 entities.erase(entity++);
             } else {
                 entity++;
@@ -78,6 +86,13 @@ void HaliteImpl::process_entities() {
     }
 }
 
+/**
+ * Process production granting for a cell with tied ownership (ie multiple equidistant sprites of different players).
+ * @param cell_location: Location object with details of cell with equidistant sprites
+ * @param close entities Entities calculated to be at the same closest distance to relevant cell
+ * @param turn_player_production Mapping from player id to production energy they gain during the turn.
+ *     Will be updated to grant production of current cell to player that wins the tie
+ */
 void HaliteImpl::process_tie(Location cell_location, std::vector<std::shared_ptr<Entity>> &close_entities,
                              std::unordered_map<id_type, energy_type> &turn_player_production){
     // TODO: implement
@@ -100,6 +115,15 @@ void HaliteImpl::process_production() {
     update_production_from_ownership(ownership_grid);
 }
 
+/**
+ * Initialized ownership grid with locations of sprites. Assigns each cell to be owned by the sprite on it or determines
+ * that there is a tie if two sprites share a cell. Initializes search_cells queue with cells with sprites on them.
+ *
+ * @param ownership_grid 2D grid in shape of game map storing details of cell ownership in a specific turn. Will update
+ * ownership details as the search determines them.
+ * @param search_cells Queue of cells that have been assigned an owner. After a cell's owner has been determined, it is added
+ * to search_cells for the purpose of searching its neighbors.
+ */
 void HaliteImpl::initialize_owner_search_from_sprites(std::vector<std::vector<GridOwner>> &ownership_grid, std::queue<Location> &search_cells) {
     for (const auto &player_pair : game->players) {
         for (std::pair<const Location, std::shared_ptr<Entity>> entity_pair : player_pair.second.entities) {
@@ -120,6 +144,15 @@ void HaliteImpl::initialize_owner_search_from_sprites(std::vector<std::vector<Gr
     }
 }
 
+/**
+ * Run modified BFS algorithm to determine owner (or tie) fof each cell. Assumes that search cells has been initized
+ * with locations with sprites on them.
+ *
+ * @param ownership_grid 2D grid in shape of game map storing details of cell ownership in a specific turn. Will update
+ * ownership details as the search determines them.
+ * @param search_cells Queue of cells that have been assigned an owner. After a cell's owner has been determined, it is added
+ * to search cells to search the neighbors of said cells.
+ */
 void HaliteImpl::run_initialized_owner_search(std::vector<std::vector<GridOwner>> &ownership_grid, std::queue<Location> &search_cells) {
     while (!search_cells.empty()) {
         Location current_location = search_cells.front();
@@ -136,6 +169,12 @@ void HaliteImpl::run_initialized_owner_search(std::vector<std::vector<GridOwner>
     }
 }
 
+/**
+ * Grant production from owned cells on this turn to players
+ *
+ * Calculates total production gained on this turn for each player before adding to players' totals.
+ * @param ownership_grid: 2d grid with each cell having an owner.
+ */
 void HaliteImpl::update_production_from_ownership(std::vector<std::vector<GridOwner>> &ownership_grid) {
     // Calculate total production per player for this turn for statistics and scoring
     std::unordered_map<id_type, energy_type> turn_player_production;
@@ -161,6 +200,13 @@ void HaliteImpl::update_production_from_ownership(std::vector<std::vector<GridOw
     update_player_stats(turn_player_production);
 }
 
+/**
+ * Determines the proper owner of a cell (or that the cell has tied ownership. Assumes cell_location neighbors at least
+ * one owned cell
+ *
+ * @param cell_location Location of cell to determine ownership
+ * @param ownership_grid 2D Grid storing details of cell ownership.
+ */
 void HaliteImpl::determine_cell_ownership(Location cell_location, std::vector<std::vector<GridOwner>> &ownership_grid) {
     dimension_type closest_owned_distance = std::numeric_limits<dimension_type>::max();
     bool multiple_close_players = false;
@@ -191,11 +237,22 @@ void HaliteImpl::determine_cell_ownership(Location cell_location, std::vector<st
     ownership_grid[cell_location.second][cell_location.first].owner = multiple_close_players ? TIED : closest_cell_owner;
 }
 
+/**
+ * Checks a cell to determine if multiple entities are on the cell
+ * @param location. The location of the cell
+ * @return Bool indicating if greater than 1 entity is on the cell.
+ */
 bool HaliteImpl::multiple_entities_on_cell(Location location) {
     const size_t SINGLE_ENTITY = 1;
     return game->game_map.at(location)->entities.size() > SINGLE_ENTITY;
 }
 
+/**
+ * Given a location of a cell, return its 4 neighbors
+ * @param location: the location of the cell we want the neighbors of
+ * @return Vector of locations of length 4. A neighbor is a location with manhattan distance 1 from the first location.
+ *  This function encapsulates the wrap around map - ie cell 0,0's neighbor's include cells at the very bottom and very right
+ */
 std::vector<Location> HaliteImpl::get_neighbors(Location location) {
     std::vector<Location> neighbors;
     // Allow wrap around neighbors
@@ -225,8 +282,14 @@ bool HaliteImpl::game_ended() const {
     return true;
 }
 
+/**
+ * Update a player's statistics after a single turn. This will update their total game production, their last turn
+ * alive if they are still alive, and the production for that turn.
+ *
+ * @param productions Mapping from player id to the production they gained in the current turn.
+ */
 void HaliteImpl::update_player_stats(std::unordered_map<id_type, energy_type> productions) {
-    for (PlayerStatistics &player_stats : game->game_stats.player_statistics) {
+    for (PlayerStatistics &player_stats : game->game_statistics.player_statistics) {
         // Player with sprites is still alive, so mark as alive on this turn and add production gained
         if (!game->players[player_stats.player_id].entities.empty()) {
             player_stats.last_turn_alive = game->turn_number;
@@ -260,13 +323,18 @@ bool compare_players(PlayerStatistics player1, PlayerStatistics player2) {
     }
 }
 
+/**
+ * Update players' rankings based on their final turn alive, then break ties with production totals in final turn.
+ * Function is intended to be called at end of game, and will in place modify the ranking field of player statistics
+ * to rank players from winner (1) to last player
+ */
 void HaliteImpl::rank_players() {
-    std::stable_sort(game->game_stats.player_statistics.begin(), game->game_stats.player_statistics.end(), compare_players);
+    std::stable_sort(game->game_statistics.player_statistics.begin(), game->game_statistics.player_statistics.end(), compare_players);
     // Reverse list to have best players first
-    std::reverse(game->game_stats.player_statistics.begin(), game->game_stats.player_statistics.end());
+    std::reverse(game->game_statistics.player_statistics.begin(), game->game_statistics.player_statistics.end());
 
-    for (size_t index = 0; index < game->game_stats.player_statistics.size(); ++index) {
-        game->game_stats.player_statistics[index].rank = index + 1l;
+    for (size_t index = 0; index < game->game_statistics.player_statistics.size(); ++index) {
+        game->game_statistics.player_statistics[index].rank = index + 1l;
     }
 }
 

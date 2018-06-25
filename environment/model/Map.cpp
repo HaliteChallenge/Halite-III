@@ -36,6 +36,7 @@ dimension_type Map::distance(const Location cell1, const Location cell2) {
 void to_json(nlohmann::json &json, const Map &map) {
     json = {FIELD_TO_JSON(width),
             FIELD_TO_JSON(height),
+            FIELD_TO_JSON(map_generator),
             FIELD_TO_JSON(grid)};
 }
 

@@ -25,10 +25,11 @@ class Map {
 
     Grid grid;                         /**< The map grid. */
 
-public:
-    hlt::dimension_type width;         /**< The width of the map. */
-    hlt::dimension_type height;        /**< The height of the map. */
 
+public:
+    hlt::dimension_type width;             /**< The width of the map. */
+    hlt::dimension_type height;            /**< The height of the map. */
+    std::string map_generator = "none";    /**< The name of the map generator used to generate the map */
     /**
      * Get a reference to a cell at grid coordinates.
      * @param x The grid x-coordinate.
