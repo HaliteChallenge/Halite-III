@@ -7,16 +7,6 @@
 #include "Logging.hpp"
 
 namespace hlt {
-    std::unordered_map<Player::id_type , hlt::Command> generate_move_list(std::unordered_map<Player::id_type , hlt::Player> &players) {
-        std::unordered_map<Player::id_type , hlt::Command> moves;
-        for (std::pair<const Player::id_type, hlt::Player> &player_pair : players) {
-            for (const auto entity_pair : player_pair.second.entities) {
-                hlt::Location location = entity_pair.first;
-                moves[player_pair.first] = std::make_unique<hlt::MoveCommand>(location.first, location.second, hlt::Direction::North);
-            }
-        }
-        return moves;
-    };
 
 /** Run the game. */
 void Halite::run_game() {
@@ -51,10 +41,10 @@ void Halite::run_game() {
             break;
         }
     }
+    game_statistics.number_turns = this->turn_number;
 
     impl->rank_players();
     Logging::log("Game has ended after " + std::to_string(turn_number) + " turns.");
-    // TODO: generate replay
 }
 
 /**

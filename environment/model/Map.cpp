@@ -4,6 +4,9 @@
 /** A JSON key and value corresponding to a field. */
 //#define FIELD_TO_JSON(x) {#x, map.x}
 
+/** Convert a field to JSON. */
+#define FIELD_TO_JSON(x) {#x, x}
+
 /** Get a field from JSON. */
 #define FIELD_FROM_JSON(x) json.at(#x)
 
@@ -34,8 +37,20 @@ std::array<Location, Map::NEIGHBOR_COUNT> Map::get_neighbors(const Location &loc
  * @return The Manhattan distance between the cells, calculated on a wrap-around map.
  */
 void to_json(nlohmann::json &json, const Map &map) {
-    nlohmann::to_json(json, map);
-    json["map_generator"] = map.map_generator;
+    map.to_json(json);
+}
+
+/**
+ * Convert this map to JSON format.
+ * Included in addition to above to gain access to grid member of super class
+ *
+ * @param[out] json The output JSON.
+ */
+void Map::to_json(nlohmann::json &json) const {
+    json = {FIELD_TO_JSON(height),
+            FIELD_TO_JSON(width),
+            FIELD_TO_JSON(map_generator),
+            FIELD_TO_JSON(grid)};
 }
 
 dimension_type Map::distance(const Location &from, const Location &to) const {

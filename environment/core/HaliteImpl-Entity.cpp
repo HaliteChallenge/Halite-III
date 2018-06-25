@@ -21,8 +21,11 @@ void HaliteImpl::spawn_entity(Player &player, const Location &location) {
         game->game_map.at(location)->entities[player.player_id] = std::move(entity);
     }
     // Create new game event for replay file, regardless of whether spawn creates a new entity or adds to an old entity
-    GameEvent spawn_event = std::make_unique<SpawnEvent>(location, constants.NEW_ENTITY_ENERGY, player.player_id);
-    game->replay_struct.full_frames.back().events.push_back(std::move(spawn_event));
+    // Ensure full frames has been initialized (ie don't do this before first turn)
+    if (game->replay_struct.full_frames.size() > 0) {
+        GameEvent spawn_event = std::make_unique<SpawnEvent>(location, constants.NEW_ENTITY_ENERGY, player.player_id);
+        game->replay_struct.full_frames.back().events.push_back(std::move(spawn_event));
+    }
 }
 
 /** Process all entity lifecycle events for this turn. */
@@ -42,11 +45,12 @@ void HaliteImpl::process_entities() {
             auto [location, entity] = *entity_iterator;
             entity->energy -= constants.BASE_TURN_ENERGY_LOSS;
             if (entity->energy <= 0) {
-//                game->game_map.at(location)->entities.erase(player_id);
                 game->game_map.at(location)->remove_entity(player);
                 // Create a new death event for replay file
-                GameEvent death_event = std::make_unique<DeathEvent>(location, entity->owner_id);
-                game->replay_struct.full_frames.back().events.push_back(std::move(death_event));
+                if (game->replay_struct.full_frames.size() > 0) {
+                    GameEvent death_event = std::make_unique<DeathEvent>(location, entity->owner_id);
+                    game->replay_struct.full_frames.back().events.push_back(std::move(death_event));
+                }
                 entities.erase(entity_iterator++);
             } else {
                 entity_iterator++;

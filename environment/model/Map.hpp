@@ -34,6 +34,15 @@ public:
      */
     friend void to_json(nlohmann::json &json, const Map &map);
 
+
+    /**
+     * Convert this map to JSON format.
+     * Included in addition to above to gain access to grid member of super class
+     *
+     * @param[out] json The output JSON.
+     */
+    void to_json(nlohmann::json &json) const;
+
     /**
      * Given a location of a cell, return its neighbors.
      * @param location The location of the cell we want the neighbors of.
