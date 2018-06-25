@@ -5,6 +5,8 @@
 #include "Command.hpp"
 #include "JsonError.hpp"
 
+#include "util.hpp"
+
 /** The JSON key for command type. */
 constexpr auto JSON_TYPE_KEY = "type";
 /** The JSON key for entity X location. */
@@ -56,7 +58,7 @@ std::istream &operator>>(std::istream &istream, Command &command) {
             command = std::make_unique<MoveCommand>(entity_x, entity_y, direction);
             break;
         default:
-            throw BotCommunicationError(std::string() + command_type);
+            throw BotCommunicationError(to_string(command_type));
         }
     }
     return istream;
