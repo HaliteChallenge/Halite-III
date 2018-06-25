@@ -19,10 +19,9 @@ void to_json(nlohmann::json &json, const Player::Entities entities) {
     // Entities are a mapping from location to entity object
     // We want the json for an entity to include both the location and the details stored in the entity object
     json = nlohmann::json::array();
-    for (const auto &location_entity_pair : entities) {
+    for (const auto &[location, entity] : entities) {
         nlohmann::json entity_json;
-        nlohmann::to_json(entity_json, *(location_entity_pair.second));
-        const std::pair<dimension_type, dimension_type> &location = location_entity_pair.first;
+        nlohmann::to_json(entity_json, *entity);
         entity_json["x"] = location.first;
         entity_json["y"] = location.second;
         json.push_back(entity_json);

@@ -1,8 +1,6 @@
 #include "Map.hpp"
 
 #include "nlohmann/json.hpp"
-/** A JSON key and value corresponding to a field. */
-//#define FIELD_TO_JSON(x) {#x, map.x}
 
 /** Convert a field to JSON. */
 #define FIELD_TO_JSON(x) {#x, x}
@@ -59,7 +57,6 @@ dimension_type Map::distance(const Location &from, const Location &to) const {
     const auto x_dist = abs(from_x - to_x);
     const auto y_dist = abs(from_y - to_y);
     return std::min(x_dist, width - x_dist) + std::min(y_dist, height - y_dist);
-
 }
 
 /**

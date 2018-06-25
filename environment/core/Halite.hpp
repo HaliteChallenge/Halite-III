@@ -33,7 +33,6 @@ private:
     std::unique_ptr<HaliteImpl> impl;                       /**< The pointer to implementation. */
 
 public:
-
     /**
      * Constructor for the main game.
      *

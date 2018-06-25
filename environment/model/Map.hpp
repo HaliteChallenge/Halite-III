@@ -34,7 +34,6 @@ public:
      */
     friend void to_json(nlohmann::json &json, const Map &map);
 
-
     /**
      * Convert this map to JSON format.
      * Included in addition to above to gain access to grid member of super class

@@ -43,7 +43,7 @@ struct PlayerStatistics {
 /** Statistics for a game. */
 struct GameStatistics {
     std::vector<PlayerStatistics> player_statistics;     /**< Vector of statistics for each player. */
-    unsigned long number_turns{};                        /**< Total number of turns that finished before game ende. */
+    unsigned long number_turns{};                        /**< Total number of turns that finished before game ends. */
 
     /**
      * Convert game statistics to json format
