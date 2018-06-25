@@ -19,7 +19,7 @@ constexpr auto NAME_MAX_LENGTH = 30;
  */
 void Networking::initialize_player(Player &player) {
     Logging::log("Initializing player " + std::to_string(player.player_id) + " with command " + player.command);
-    std::unique_ptr<BaseConnection> connection = connection_factory.new_connection(player.command);
+    auto connection = connection_factory.new_connection(player.command);
     std::stringstream message_stream;
     Logging::log("Sending init message to player " + std::to_string(player.player_id));
     // Send the number of players and player ID
