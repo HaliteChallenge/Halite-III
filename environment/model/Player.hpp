@@ -1,7 +1,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <list>
 #include <string>
 #include <utility>
 #include <map>

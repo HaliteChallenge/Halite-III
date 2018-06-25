@@ -32,7 +32,7 @@ energy_type BlurTileGenerator::blur_function(dimension_type y_coord, dimension_t
                                     + map.at(x_coord, below_coord)->production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS);
 }
 
-Map BlurTileGenerator::generate(std::list<Player> &players) {
+Map BlurTileGenerator::generate(std::vector<Player> &players) {
     assert(players.size() <= num_players);
     auto tile = make_map(tile_width, tile_height);
     const auto max = static_cast<double>(std::mt19937::max());

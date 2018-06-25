@@ -55,7 +55,7 @@ void Halite::run_game() {
 Halite::Halite(const Config &config,
                const mapgen::MapParameters &parameters,
                const net::NetworkingConfig &networking_config,
-               std::list<Player> players) :
+               std::vector<Player> players) :
         game_map(mapgen::BlurTileGenerator(parameters).generate(players)),
         config(config),
         parameters(parameters),

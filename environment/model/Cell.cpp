@@ -1,8 +1,6 @@
 #include "Cell.hpp"
 #include "JsonError.hpp"
 
-#include "nlohmann/json.hpp"
-
 /** The JSON key for cell type. */
 constexpr auto JSON_TYPE_KEY = "type";
 /** The JSON key for production. */
@@ -80,8 +78,6 @@ void BaseCell::remove_entity(const Player &player) {
  */
 ProductionCell::ProductionCell(const nlohmann::json &json) : _production(json.at(JSON_PRODUCTION_KEY)) {}
 
-constexpr char const *NormalCell::CELL_TYPE_NAME;
-
 /**
  * Convert a NormalCell to JSON format.
  * @param[out] json The JSON output.
@@ -99,8 +95,6 @@ std::string NormalCell::to_bot_serial() const {
     return std::string(CELL_TYPE_NAME) + " " + std::to_string(production());
 }
 
-constexpr char const *ObstacleCell::CELL_TYPE_NAME;
-
 /**
  * Convert an ObstacleCell to JSON format.
  * @param[out] json The JSON output.
@@ -117,8 +111,6 @@ void ObstacleCell::to_json(nlohmann::json &json) const {
 std::string ObstacleCell::to_bot_serial() const {
     return std::string(CELL_TYPE_NAME) + " " + std::to_string(production());
 }
-
-constexpr char const *EnergyFactorCell::CELL_TYPE_NAME;
 
 /**
  * Convert an EnergyFactorCell to JSON format.
@@ -146,8 +138,6 @@ std::string EnergyFactorCell::to_bot_serial() const {
  */
 EnergyFactorCell::EnergyFactorCell(const nlohmann::json &json) :
         ProductionCell(json), _energy_factor(json.at(JSON_ENERGY_FACTOR_KEY)) {}
-
-constexpr char const *FactoryCell::CELL_TYPE_NAME;
 
 /**
  * Convert a FactoryCell to JSON format.
