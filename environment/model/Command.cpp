@@ -5,8 +5,6 @@
 #include "Command.hpp"
 #include "JsonError.hpp"
 
-#include "nlohmann/json.hpp"
-
 /** The JSON key for command type. */
 constexpr auto JSON_TYPE_KEY = "type";
 /** The JSON key for entity X location. */
@@ -69,16 +67,14 @@ std::istream &operator>>(std::istream &istream, Command &command) {
     return istream;
 }
 
-constexpr char const *MoveCommand::COMMAND_TYPE_NAME;
-
 /**
  * Convert a MoveCommand to JSON format.
  * @param[out] json The JSON output.
  */
 void MoveCommand::to_json(nlohmann::json &json) const {
     json = {{JSON_TYPE_KEY,      MoveCommand::COMMAND_TYPE_NAME},
-            {JSON_ENTITY_X_KEY, entity_x},
-            {JSON_ENTITY_Y_KEY, entity_y},
+            {JSON_ENTITY_X_KEY,  entity_x},
+            {JSON_ENTITY_Y_KEY,  entity_y},
             {JSON_DIRECTION_KEY, direction}};
 }
 

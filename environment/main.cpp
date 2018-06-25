@@ -1,7 +1,6 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <list>
 
 #include "Config.hpp"
 #include "Constants.hpp"
@@ -102,7 +101,8 @@ int main(int argc, char *argv[]) {
     net::NetworkingConfig networking_config{};
     networking_config.ignore_timeout = timeout_switch.getValue();
 
-    std::list<hlt::Player> players;
+    std::vector<hlt::Player> players;
+    players.reserve(bot_commands.size());
     hlt::PlayerFactory player_factory;
     for (const auto &command : bot_commands) {
         players.push_back(player_factory.new_player(command));
