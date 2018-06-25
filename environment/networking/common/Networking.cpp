@@ -46,13 +46,13 @@ void Networking::initialize_player(Player &player) {
 }
 
 /**
- * Handle the networking for a single frame, obtaining a command from the player if there is one.
+ * Handle the networking for a single frame, obtaining commands from the player if there are any.
  * Safe to invoke from multiple threads on different players.
  *
  * @param player The player to communicate with.
- * @return The command from the player.
+ * @return The commands from the player.
  */
-Command Networking::handle_frame(const Player &player) {
+std::vector<Command> Networking::handle_frame(const Player &player) {
     std::stringstream message_stream;
     // Send the turn number, then each player in the game.
     message_stream << game->turn_number << std::endl;
@@ -63,10 +63,14 @@ Command Networking::handle_frame(const Player &player) {
     Logging::log("Turn info sent to player " + std::to_string(player.player_id), Logging::Level::Debug);
     // Get commands from the player.
     std::istringstream command_stream(connections[player]->get_string());
+    std::vector<Command> commands;
     Command command;
+    while (command_stream >> command) {
+        commands.push_back(std::move(command));
+    }
     command_stream >> command;
-    Logging::log("Turn info received from player " + std::to_string(player.player_id), Logging::Level::Debug);
-    return command;
+    Logging::log("Received " + std::to_string(commands.size()) + " commands from player " + std::to_string(player.player_id), Logging::Level::Debug);
+    return commands;
 }
 
 }

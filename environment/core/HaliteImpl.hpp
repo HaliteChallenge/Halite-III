@@ -19,7 +19,7 @@ class HaliteImpl final {
     OwnershipGrid ownership_grid;
 
     /** Current commands per player. */
-    std::unordered_map<Player::id_type, Command> commands;
+    std::unordered_map<Player::id_type, std::vector<Command>> commands;
 
     /**
      * Determine whether the game has ended.

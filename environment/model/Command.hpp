@@ -100,12 +100,6 @@ public:
      * @param json The JSON.
      */
     explicit MoveCommand(const nlohmann::json &json);
-
-    /**
-     * Create MoveCommand from bot serial format.
-     * @param bot_serial The bot serial format input.
-     */
-    explicit MoveCommand(const std::string &bot_serial);
 };
 
 }
