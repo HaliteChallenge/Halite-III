@@ -48,23 +48,18 @@ void from_json(const nlohmann::json &json, Command &command) {
  */
 std::istream &operator>>(std::istream &istream, Command &command) {
     // Read one character corresponding to the type, and dispatch the remainder based on its value.
-    std::string line;
-    std::getline(istream, line);
-    std::istringstream stream(line);
     char command_type;
-    stream >> command_type;
-    std::string remainder;
-    std::getline(stream, remainder);
-    try {
+    if (istream >> command_type) {
         switch (command_type) {
         case MoveCommand::COMMAND_TYPE_SHORT:
-            command = std::make_unique<MoveCommand>(remainder);
+            dimension_type entity_x, entity_y;
+            Direction direction;
+            istream >> entity_x >> entity_y >> direction;
+            command = std::make_unique<MoveCommand>(entity_x, entity_y, direction);
             break;
         default:
-            throw BotCommunicationError(line);
+            throw BotCommunicationError(std::string() + command_type);
         }
-    } catch (BotCommunicationError &error) {
-        throw BotCommunicationError(line);
     }
     return istream;
 }
@@ -90,20 +85,6 @@ MoveCommand::MoveCommand(const nlohmann::json &json) :
         entity_x(json.at(JSON_ENTITY_X_KEY)),
         entity_y(json.at(JSON_ENTITY_Y_KEY)),
         direction(json.at(JSON_DIRECTION_KEY)) {}
-
-/**
- * Create MoveCommand from bot serial format.
- * @param bot_serial The bot serial format input.
- */
-MoveCommand::MoveCommand(const std::string &bot_serial) {
-    // Read the entity ID and the direction.
-    std::istringstream bot_stream(bot_serial);
-    try {
-        bot_stream >> entity_x >> entity_y >> direction;
-    } catch (std::istream::failure &failure) {
-        throw BotCommunicationError(bot_serial);
-    }
-}
 
 /**
  * Cause the move to act on the Map.

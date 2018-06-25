@@ -50,13 +50,13 @@ public:
     void initialize_player(hlt::Player &player);
 
     /**
-     * Handle the networking for a single frame, obtaining a command from the player if there is one.
+     * Handle the networking for a single frame, obtaining commands from the player if there are any.
      * Safe to invoke from multiple threads on different players.
      *
      * @param player The player to communicate with.
-     * @return The command from the player.
+     * @return The commands from the player.
      */
-    hlt::Command handle_frame(const hlt::Player &player);
+    std::vector<hlt::Command> handle_frame(const hlt::Player &player);
 
     /**
      * Initialize Networking from configuration and Halite game.
