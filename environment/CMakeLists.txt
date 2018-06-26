@@ -21,6 +21,7 @@ include_directories(${CMAKE_SOURCE_DIR}/nlohmann)
 include_directories(${CMAKE_SOURCE_DIR}/mapgen)
 include_directories(${CMAKE_SOURCE_DIR}/model)
 include_directories(${CMAKE_SOURCE_DIR}/replay)
+include_directories(${CMAKE_SOURCE_DIR}/catch_tests)
 include_directories(${CMAKE_SOURCE_DIR}/networking/common)
 include_directories(${CMAKE_SOURCE_DIR}/support)
 include_directories(${CMAKE_SOURCE_DIR}/util)
@@ -51,6 +52,7 @@ set(dirs
     ${CMAKE_SOURCE_DIR}/logging
     ${CMAKE_SOURCE_DIR}/mapgen
     ${CMAKE_SOURCE_DIR}/model
+    ${CMAKE_SOURCE_DIR}/catch_tests
     ${CMAKE_SOURCE_DIR}/replay
     ${CMAKE_SOURCE_DIR}/networking/common
     ${CMAKE_SOURCE_DIR}/util
@@ -69,9 +71,11 @@ foreach(dir ${dirs})
 endforeach()
 
 include_directories(${CMAKE_SOURCE_DIR})
+set(TEST_FILES "${SOURCE_FILES}" ../catch_tests/TestMain.cpp)
 set(SOURCE_FILES "${SOURCE_FILES}" main.cpp)
 
 add_executable(halite ${SOURCE_FILES})
+add_executable(test_model ${TEST_FILES})
 
 add_dependencies(halite VERSION_CHECK)
 
