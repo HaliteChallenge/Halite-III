@@ -23,8 +23,24 @@ class Map : public Grid<Cell> {
     friend class hlt::mapgen::Generator;
 
 public:
+    std::string map_generator = "none";    /**< The name of the map generator used to generate the map */
     /** The number of neighbors of each cell on the map grid. */
     static constexpr auto NEIGHBOR_COUNT = 4;
+
+    /**
+     * Convert a Map to JSON format.
+     * @param[out] json The output JSON.
+     * @param map The Map to convert.
+     */
+    friend void to_json(nlohmann::json &json, const Map &map);
+
+    /**
+     * Convert this map to JSON format.
+     * Included in addition to above to gain access to grid member of super class
+     *
+     * @param[out] json The output JSON.
+     */
+    void to_json(nlohmann::json &json) const;
 
     /**
      * Given a location of a cell, return its neighbors.

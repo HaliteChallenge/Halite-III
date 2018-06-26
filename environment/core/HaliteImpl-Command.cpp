@@ -25,6 +25,8 @@ void HaliteImpl::process_commands() {
             command->act_on_map(game->game_map, game->players[player_id]);
         }
     }
+    // Add commands to replay struct for visualizer
+    game->replay_struct.full_frames.back().moves = commands;
 }
 
 }

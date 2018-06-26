@@ -9,7 +9,7 @@ namespace hlt {
  * @param productions Mapping from player ID to the production they gained in the current turn.
  */
 void HaliteImpl::update_player_stats(std::unordered_map<Player::id_type, energy_type> &productions) {
-    for (PlayerStatistics &player_stats : game->game_stats.player_statistics) {
+    for (PlayerStatistics &player_stats : game->game_statistics.player_statistics) {
         // Player with sprites is still alive, so mark as alive on this turn and add production gained
         if (!game->players[player_stats.player_id].entities.empty()) {
             player_stats.last_turn_alive = game->turn_number;
@@ -27,7 +27,7 @@ void HaliteImpl::update_player_stats(std::unordered_map<Player::id_type, energy_
  * to rank players from winner (1) to last player.
  */
 void HaliteImpl::rank_players() {
-    auto &statistics = game->game_stats.player_statistics;
+    auto &statistics = game->game_statistics.player_statistics;
     std::stable_sort(statistics.begin(), statistics.end());
     // Reverse list to have best players first
     std::reverse(statistics.begin(), statistics.end());

@@ -39,8 +39,7 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
     json = {FIELD_TO_JSON(player_id),
             FIELD_TO_JSON(rank),
             FIELD_TO_JSON(last_turn_alive),
-            FIELD_TO_JSON(total_production),
-            FIELD_TO_JSON(turn_productions)};
+            FIELD_TO_JSON(total_production)};
 }
 
 /**
@@ -49,7 +48,8 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
  * @param stats The statistics to convert.
  */
 void to_json(nlohmann::json &json, const GameStatistics &stats) {
-    json = {FIELD_TO_JSON(player_statistics)};
+    json = {FIELD_TO_JSON(number_turns),
+            FIELD_TO_JSON(player_statistics)};
 }
 
 }

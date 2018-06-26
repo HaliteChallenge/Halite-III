@@ -18,8 +18,7 @@ namespace hlt {
  * @param entity The entity to convert.
  */
 void to_json(nlohmann::json &json, const Entity &entity) {
-    json = {FIELD_TO_JSON(owner_id),
-            FIELD_TO_JSON(energy)};
+    json = {FIELD_TO_JSON(energy)};
 }
 
 /**

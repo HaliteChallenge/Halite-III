@@ -25,10 +25,13 @@ void Halite::run_game() {
     for (auto &[_, result] : results) {
         result.wait();
     }
+    replay_struct.players = this->players;
     Logging::log("Player initialization complete.");
 
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
         Logging::log("Starting turn " + std::to_string(this->turn_number));
+        // Create new turn struct for replay file, to be filled by further turn actions
+        replay_struct.full_frames.emplace_back();
         impl->retrieve_commands();
         impl->process_commands();
         impl->process_production();
@@ -38,10 +41,10 @@ void Halite::run_game() {
             break;
         }
     }
+    game_statistics.number_turns = this->turn_number;
 
     impl->rank_players();
     Logging::log("Game has ended after " + std::to_string(turn_number) + " turns.");
-    // TODO: generate replay
 }
 
 /**
@@ -57,14 +60,16 @@ Halite::Halite(const Config &config,
                const net::NetworkingConfig &networking_config,
                std::vector<Player> players) :
         game_map(mapgen::BlurTileGenerator(parameters).generate(players)),
+        replay_struct(this->game_statistics, parameters.num_players, parameters.seed, this->game_map),
         config(config),
         parameters(parameters),
         networking(net::Networking(networking_config, this)),
         impl(std::make_unique<HaliteImpl>(this)) {
     for (const auto &player : players) {
         this->players[player.player_id] = player;
-        game_stats.player_statistics.emplace_back(player.player_id);
+        game_statistics.player_statistics.emplace_back(player.player_id);
     }
+    replay_struct.game_statistics = game_statistics;
 }
 
 /** Default destructor is defined where HaliteImpl is complete. */

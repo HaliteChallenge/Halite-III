@@ -23,7 +23,7 @@ struct PlayerStatistics {
      * @param[out] json The output JSON.
      * @param stats The statistics to convert.
      */
-    friend void to_json(nlohmann::json &json, const PlayerStatistics &stats);
+    friend void to_json(nlohmann::json &json, const PlayerStatistics &statistics);
 
     /**
      * Compare two players to rank them.
@@ -42,15 +42,16 @@ struct PlayerStatistics {
 
 /** Statistics for a game. */
 struct GameStatistics {
-    /** The collection of player statistics. */
-    std::vector<PlayerStatistics> player_statistics;
+    std::vector<PlayerStatistics> player_statistics;     /**< Vector of statistics for each player. */
+    unsigned long number_turns{};                        /**< Total number of turns that finished before game ends. */
 
     /**
-     * Convert Game statistics to JSON format.
-     * @param[out] json The output JSON.
-     * @param stats The statistics to convert.
+     * Convert game statistics to json format
+     *
+     * @param[out] json Empty json object to fill
+     * @param statistics Game statistics struct to convert to json
      */
-    friend void to_json(nlohmann::json &json, const GameStatistics &stats);
+    friend void to_json(nlohmann::json &json, const GameStatistics &statistics);
 };
 
 }

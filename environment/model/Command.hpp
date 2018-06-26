@@ -14,10 +14,8 @@ namespace hlt {
 
 class BaseCommand;
 
-//TODO: update moves to work with new implicit location ids for entities
-
 /** Container type for command, exposed to outside users. */
-using Command = std::unique_ptr<BaseCommand>;
+using Command = std::shared_ptr<BaseCommand>;
 
 /**
  * Convert a Command to JSON format.

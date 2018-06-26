@@ -9,6 +9,7 @@
 #include "Networking.hpp"
 #include "Player.hpp"
 #include "Statistics.hpp"
+#include "Replay.hpp"
 
 namespace hlt {
 
@@ -22,7 +23,8 @@ public:
     unsigned long turn_number{};                            /**< The turn number. */
     std::unordered_map<Player::id_type, Player> players;    /**< Map from player ID to player. */
     Map game_map;                                           /**< The game map. */
-    GameStatistics game_stats;                              /**< The statistics of the game. */
+    GameStatistics game_statistics;                         /**< The statistics of the game. */
+    Replay replay_struct;                                   /**< Replay class to collect info for visualizer. */
 
 private:
     Config config;                                          /**< The game configuration. */
