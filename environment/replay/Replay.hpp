@@ -6,7 +6,7 @@
 #include <string>
 
 #include "nlohmann/json.hpp"
-#include "../zstd-1.3.0/lib/zstd.h"
+#include "zstd.h"
 
 #include "Statistics.hpp"
 #include "Command.hpp"

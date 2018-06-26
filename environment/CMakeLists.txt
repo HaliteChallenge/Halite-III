@@ -23,13 +23,6 @@ include_directories(${CMAKE_SOURCE_DIR}/replay)
 include_directories(${CMAKE_SOURCE_DIR}/networking/common)
 include_directories(${CMAKE_SOURCE_DIR}/support)
 include_directories(${CMAKE_SOURCE_DIR}/util)
-include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib)
-include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib/common)
-include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib/compress)
-include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib/decompress)
-include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib/deprecated)
-include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib/dictBuilder)
-include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib/legacy)
 
 if(WIN32)
     include_directories(${CMAKE_SOURCE_DIR}/networking/win32)
@@ -52,7 +45,6 @@ set(dirs
     ${CMAKE_SOURCE_DIR}/replay
     ${CMAKE_SOURCE_DIR}/networking/common
     ${CMAKE_SOURCE_DIR}/util
-    ${CMAKE_SOURCE_DIR}/zstd-1.3.0
 )
 
 if(WIN32)
@@ -98,18 +90,25 @@ ExternalProject_Add(tclap
     INSTALL_COMMAND ""
 )
 
+ExternalProject_Add(libzstd
+    URL https://github.com/facebook/zstd/archive/v1.3.4.zip
+    URL_HASH SHA256=76f3e6cadd9e1714cad7b550e53b82d4a5a5f9e08fbc0b3eb54abd0d0ebeb42d
+    PREFIX ${EXTERNAL_INSTALL_LOCATION}
+    CONFIGURE_COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX:PATH=${EXTERNAL_INSTALL_LOCATION} ${EXTERNAL_INSTALL_LOCATION}/src/libzstd/build/cmake/
+    BUILD_COMMAND make lib
+)
+
 include_directories(${EXTERNAL_INSTALL_LOCATION}/include ${EXTERNAL_INSTALL_LOCATION}/tclap/include)
+link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 
 add_executable(halite ${SOURCE_FILES})
-add_dependencies(halite VERSION_CHECK nlohmann tclap)
+add_dependencies(halite VERSION_CHECK nlohmann tclap libzstd)
 
 if (APPLE)
     # No static linkage here - https://stackoverflow.com/questions/5259249/creating-static-mac-os-x-c-build
-    target_link_libraries(halite pthread)
+    target_link_libraries(halite pthread zstd)
 else()
     # On Linux, make sure to link using the whole-archive option
     # See: https://stackoverflow.com/questions/35116327
-    target_link_libraries(halite -Wl,--whole-archive pthread -Wl,--no-whole-archive -static)
+    target_link_libraries(halite -Wl,--whole-archive pthread -Wl,--no-whole-archive -static zstd -Wl,--no-whole-archive)
 endif()
-
-add_test(NAME example_test COMMAND example)
