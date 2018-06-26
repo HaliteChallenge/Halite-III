@@ -103,7 +103,8 @@ public:
      * @return The new player.
      */
     Player new_player(std::string command) {
-        return {next_player++, std::to_string(next_player), std::move(command)};
+        auto player_id = next_player++;
+        return {player_id, std::to_string(player_id), std::move(command)};
     }
 
     PlayerFactory() = default;

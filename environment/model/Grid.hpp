@@ -40,7 +40,8 @@ public:
      * @param[out] json The output JSON.
      * @param grid The Grid to convert.
      */
-    friend void to_json(nlohmann::json &json, const hlt::Grid<Entry> &grid);
+    template<class T>
+    friend void to_json(nlohmann::json &json, const hlt::Grid<T> &grid);
 
     /**
      * Get a reference to an entry at grid coordinates.
