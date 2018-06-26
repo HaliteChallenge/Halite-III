@@ -122,12 +122,13 @@ int main(int argc, char *argv[]) {
         // support std::put_time, so we have to use strftime instead.
         auto time = std::time(nullptr);
         auto localtime = std::localtime(&time);
-        char time_string[30];
-        std::strftime(time_string, 30, "%Y%m%d-%H%M%S%z-", localtime);
+        static constexpr size_t MAX_DATE_STRING_LENGTH = 25;
+        char time_string[MAX_DATE_STRING_LENGTH];
+        std::strftime(time_string, MAX_DATE_STRING_LENGTH, "%Y%m%d-%H%M%S%z", localtime);
         filename_buf << "replay-" << std::string(time_string);
         filename_buf << "-" << game.replay_struct.map_generator_seed;
         filename_buf << "-" << game.game_map.width;
-        filename_buf << "-" << game.game_map.height;
+        filename_buf << "-" << game.game_map.height << ".hlt";
         auto filename = filename_buf.str();
         std::string output_filename = replay_directory + "Replays/" + filename;
         bool enable_compression = !no_compression_switch.getValue();
