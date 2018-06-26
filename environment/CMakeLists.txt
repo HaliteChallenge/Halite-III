@@ -17,14 +17,12 @@ include_directories(${CMAKE_SOURCE_DIR}/config)
 include_directories(${CMAKE_SOURCE_DIR}/core)
 include_directories(${CMAKE_SOURCE_DIR}/error)
 include_directories(${CMAKE_SOURCE_DIR}/logging)
-include_directories(${CMAKE_SOURCE_DIR}/nlohmann)
 include_directories(${CMAKE_SOURCE_DIR}/mapgen)
 include_directories(${CMAKE_SOURCE_DIR}/model)
 include_directories(${CMAKE_SOURCE_DIR}/replay)
 include_directories(${CMAKE_SOURCE_DIR}/networking/common)
 include_directories(${CMAKE_SOURCE_DIR}/support)
 include_directories(${CMAKE_SOURCE_DIR}/util)
-include_directories(${CMAKE_SOURCE_DIR}/tclap)
 include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib)
 include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib/common)
 include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib/compress)
@@ -71,9 +69,39 @@ endforeach()
 include_directories(${CMAKE_SOURCE_DIR})
 set(SOURCE_FILES "${SOURCE_FILES}" main.cpp)
 
-add_executable(halite ${SOURCE_FILES})
+set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_BINARY_DIR}/external)
+include(ExternalProject)
 
-add_dependencies(halite VERSION_CHECK)
+ExternalProject_Add(nlohmann
+    URL https://github.com/nlohmann/json/releases/download/v3.1.2/include.zip
+    URL_HASH SHA256=495362ee1b9d03d9526ba9ccf1b4a9c37691abe3a642ddbced13e5778c16660c
+    PREFIX ${EXTERNAL_INSTALL_LOCATION}
+    SOURCE_DIR ${EXTERNAL_INSTALL_LOCATION}/include
+    CMAKE_COMMAND ""
+    BUILD_COMMAND ""
+    CONFIGURE_COMMAND ""
+    UPDATE_COMMAND ""
+    INSTALL_COMMAND ""
+)
+
+ExternalProject_Add(tclap
+    URL https://netix.dl.sourceforge.net/project/tclap/tclap-1.2.2.tar.gz
+    URL_HASH SHA256=f5013be7fcaafc69ba0ce2d1710f693f61e9c336b6292ae4f57554f59fde5837
+    PREFIX ${EXTERNAL_INSTALL_LOCATION}
+    SOURCE_DIR ${EXTERNAL_INSTALL_LOCATION}/tclap
+    BINARY_DIR ${EXTERNAL_INSTALL_LOCATION}/tclap
+    CMAKE_COMMAND ""
+    BUILD_COMMAND ""
+    CONFIGURE_COMMAND ""
+    UPDATE_COMMAND ""
+    INSTALL_COMMAND ""
+)
+
+include_directories(${EXTERNAL_INSTALL_LOCATION}/include ${EXTERNAL_INSTALL_LOCATION}/tclap/include)
+
+add_executable(halite ${SOURCE_FILES})
+add_dependencies(halite VERSION_CHECK nlohmann tclap)
 
 if (APPLE)
     # No static linkage here - https://stackoverflow.com/questions/5259249/creating-static-mac-os-x-c-build
@@ -83,3 +111,5 @@ else()
     # See: https://stackoverflow.com/questions/35116327
     target_link_libraries(halite -Wl,--whole-archive pthread -Wl,--no-whole-archive -static)
 endif()
+
+add_test(NAME example_test COMMAND example)
