@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.8)
 
 project(environment)
 
@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall -Wextra -pedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall -Wextra -pedantic -Wno-unused-variable")
 
 # versions of cmake before 3.4 always link with -rdynamic on linux, which breaks static linkage with clang
 # unfortunately travis right now only has cmake 3.2, so have to do this workaround for now
@@ -21,7 +21,6 @@ include_directories(${CMAKE_SOURCE_DIR}/mapgen)
 include_directories(${CMAKE_SOURCE_DIR}/model)
 include_directories(${CMAKE_SOURCE_DIR}/replay)
 include_directories(${CMAKE_SOURCE_DIR}/networking/common)
-include_directories(${CMAKE_SOURCE_DIR}/support)
 include_directories(${CMAKE_SOURCE_DIR}/util)
 
 if(WIN32)

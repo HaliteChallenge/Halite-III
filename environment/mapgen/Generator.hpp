@@ -37,7 +37,7 @@ protected:
      * @return The constructed Map.
      */
     static hlt::Map make_map(hlt::dimension_type width, hlt::dimension_type height) {
-        return hlt::Map::Map(width, height);
+        return hlt::Map(width, height);
     }
 
     /**
