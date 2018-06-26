@@ -6,7 +6,7 @@ namespace hlt {
 namespace mapgen {
 
 Map TileGenerator::tile_map(const dimension_type factory_y, const dimension_type factory_x,
-                            const Map &tile, std::list<Player> &players) {
+                            const Map &tile, std::vector<Player> &players) {
     auto map = make_map(width, height);
     // Copy the tile over the map
     for (dimension_type player_row = 0; player_row < num_tile_rows; ++player_row) {

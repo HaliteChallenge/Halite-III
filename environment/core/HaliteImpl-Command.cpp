@@ -5,7 +5,7 @@ namespace hlt {
 
 /** Communicate with bots to obtain commands for next step. */
 void HaliteImpl::retrieve_commands() {
-    std::unordered_map<Player::id_type, std::future<Command>> results;
+    std::unordered_map<Player::id_type, std::future<std::vector<Command>>> results;
     for (auto &[player_id, player] : game->players) {
         results[player_id] = std::async(std::launch::async,
                                         [game = this->game, &player = player] {
@@ -19,8 +19,11 @@ void HaliteImpl::retrieve_commands() {
 
 /** Process the effects of commands. */
 void HaliteImpl::process_commands() {
-    for (const auto &[player_id, command] : commands) {
-        command->act_on_map(game->game_map, game->players[player_id]);
+    for (const auto &[player_id, command_list] : commands) {
+        // TODO: reject invalid input such as two commands for one sprite before any moves
+        for (const auto &command : command_list) {
+            command->act_on_map(game->game_map, game->players[player_id]);
+        }
     }
     // Add commands to replay struct for visualizer
     game->replay_struct.full_frames.back().moves = commands;

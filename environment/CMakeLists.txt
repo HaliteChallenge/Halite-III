@@ -23,6 +23,7 @@ include_directories(${CMAKE_SOURCE_DIR}/model)
 include_directories(${CMAKE_SOURCE_DIR}/replay)
 include_directories(${CMAKE_SOURCE_DIR}/networking/common)
 include_directories(${CMAKE_SOURCE_DIR}/support)
+include_directories(${CMAKE_SOURCE_DIR}/util)
 include_directories(${CMAKE_SOURCE_DIR}/tclap)
 include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib)
 include_directories(${CMAKE_SOURCE_DIR}/zstd-1.3.0/lib/common)
@@ -52,6 +53,7 @@ set(dirs
     ${CMAKE_SOURCE_DIR}/model
     ${CMAKE_SOURCE_DIR}/replay
     ${CMAKE_SOURCE_DIR}/networking/common
+    ${CMAKE_SOURCE_DIR}/util
     ${CMAKE_SOURCE_DIR}/zstd-1.3.0
 )
 

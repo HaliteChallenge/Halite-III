@@ -3,7 +3,7 @@
 #include "Location.hpp"
 #include "Map.hpp"
 
-#include "nlohmann/json.hpp"
+#include "util.hpp"
 
 /** A JSON key and value corresponding to a field. */
 #define FIELD_TO_JSON(x) {#x, location.x}
@@ -19,7 +19,7 @@ namespace hlt {
  * @param direction The Direction to convert.
  */
 void to_json(nlohmann::json &json, const Direction &direction) {
-    json = std::string() + static_cast<char>(direction);
+    json = to_string(static_cast<char>(direction));
 }
 
 /**
@@ -59,7 +59,7 @@ void from_json(const nlohmann::json &json, Direction &direction) {
     }
     char direction_type = string.front();
     if (!from_char(direction_type, direction)) {
-        throw JsonError(std::string() + direction_type);
+        throw JsonError(to_string(direction_type));
     }
 }
 
@@ -74,7 +74,7 @@ std::istream &operator>>(std::istream &istream, Direction &direction) {
     char direction_type;
     istream >> direction_type;
     if (!from_char(direction_type, direction)) {
-        throw BotCommunicationError(std::string() + direction_type);
+        throw BotCommunicationError(to_string(direction_type));
     }
     return istream;
 }

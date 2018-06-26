@@ -44,7 +44,7 @@ public:
     Halite(const Config &config,
            const mapgen::MapParameters &parameters,
            const net::NetworkingConfig &networking_config,
-           std::list<Player> players);
+           std::vector<Player> players);
 
     /** Run the game. */
     void run_game();

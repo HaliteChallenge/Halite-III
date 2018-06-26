@@ -13,7 +13,7 @@ private:
 public:
     std::string name() const override { return "basic"; }
 
-    hlt::Map generate(std::list<Player> &players) override;
+    hlt::Map generate(std::vector<Player> &players) override;
 
     /**
      * Construct BasicGenerator from parameters.
