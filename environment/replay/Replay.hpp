@@ -17,8 +17,8 @@
 namespace hlt {
 
 struct Turn {
-    std::unordered_map<Player::id_type, Command> moves;             /**< Mapping from player id to the commands they issued this turn */
-    std::vector<GameEvent> events;                          /**< Events occurring this turn (spawns, deaths, etc) for replay */
+    std::unordered_map<Player::id_type, std::vector<Command>> moves;    /**< Mapping from player id to the commands they issued this turn */
+    std::vector<GameEvent> events;                                      /**< Events occurring this turn (spawns, deaths, etc) for replay */
 
     /**
      * Convert turn to JSON format.
