@@ -96,19 +96,24 @@ ExternalProject_Add(libzstd
 )
 
 include_directories(${EXTERNAL_INSTALL_LOCATION}/include ${EXTERNAL_INSTALL_LOCATION}/nlohmann ${EXTERNAL_INSTALL_LOCATION}/tclap/include)
-#find_library(ZSTD_LIB NAMES ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.a zstd)
 link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 
 add_executable(halite ${HALITE_SOURCE_FILES})
 
 if (APPLE)
-    add_custom_target(
-        remove_dylib
-        ${CMAKE_COMMAND} -E remove ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.1.3.4.dylib ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.dylib
-    )
-    add_dependencies(remove_dylib libzstd)
-    add_dependencies(halite remove_dylib)
+add_custom_target(
+    remove_dylib
+    ${CMAKE_COMMAND} -E remove ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.1.3.4.dylib ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.dylib
+)
+else()
+add_custom_target(
+    remove_dylib
+    ${CMAKE_COMMAND} -E remove ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.1.3.4.so ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.so
+)
 endif()
+
+add_dependencies(remove_dylib libzstd)
+add_dependencies(halite remove_dylib)
 
 add_dependencies(halite VERSION_CHECK nlohmann tclap libzstd)
 
