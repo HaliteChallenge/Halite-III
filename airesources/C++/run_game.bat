@@ -1,3 +1,3 @@
 call make.bat
 
-.\halite.exe -d "240 160" ".\MyBot.exe" ".\MyBot.exe"
+.\halite.exe --width 128 --height 128 ".\MyBot.exe" ".\MyBot.exe"

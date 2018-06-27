@@ -1,55 +1,32 @@
-#include "hlt/hlt.hpp"
-#include "hlt/navigation.hpp"
+#include "hlt.hpp"
+
+#include <random>
+#include <chrono>
 
 int main() {
-    const hlt::Metadata metadata = hlt::initialize("IvanTheTerrible");
-    const hlt::PlayerId player_id = metadata.player_id;
+    std::mt19937 prg = std::mt19937(std::chrono::system_clock::now().time_since_epoch().count());
 
-    const hlt::Map& initial_map = metadata.initial_map;
+    std::cout.sync_with_stdio(0);
 
-    // We now have 1 full minute to analyse the initial map.
-    std::ostringstream initial_map_intelligence;
-    initial_map_intelligence
-            << "width: " << initial_map.map_width
-            << "; height: " << initial_map.map_height
-            << "; players: " << initial_map.ship_map.size()
-            << "; my ships: " << initial_map.ship_map.at(player_id).size()
-            << "; planets: " << initial_map.planets.size();
-    hlt::Log::log(initial_map_intelligence.str());
+    id_type myID;
+    hlt::Players players;
+    hlt::Map map;
+    hlt::getInit(map, players, myID);
+    hlt::sendInit("MyC++Bot");
 
-    std::vector<hlt::Move> moves;
-    for (;;) {
+    hlt::Moves moves;
+    while(true) {
         moves.clear();
-        const hlt::Map map = hlt::in::get_map();
 
-        for (const hlt::Ship& ship : map.ships.at(player_id)) {
-            if (ship.docking_status != hlt::ShipDockingStatus::Undocked) {
-                continue;
-            }
+        hlt::getFrame(players);
 
-            for (const hlt::Planet& planet : map.planets) {
-                if (planet.owned) {
-                    continue;
-                }
-
-                if (ship.can_dock(planet)) {
-                    moves.push_back(hlt::Move::dock(ship.entity_id, planet.entity_id));
-                    break;
-                }
-
-                const hlt::possibly<hlt::Move> move =
-                        hlt::navigation::navigate_ship_to_dock(map, ship, planet, hlt::constants::MAX_SPEED / 2);
-                if (move.second) {
-                    moves.push_back(move.first);
-                }
-
-                break;
-            }
+        for(auto &[loc, entity] : players[myID].entities) {
+            moves[loc] = hlt::Direction::NORTH;
         }
 
-        if (!hlt::out::send_moves(moves)) {
-            hlt::Log::log("send_moves failed; exiting");
-            break;
-        }
+        hlt::sendFrame(moves);
     }
+
+    return 0;
+
 }
