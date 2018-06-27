@@ -117,19 +117,10 @@ add_dependencies(halite remove_dylib)
 
 add_dependencies(halite VERSION_CHECK nlohmann tclap libzstd)
 
-# Add testing directorys
-#include_directories(${CMAKE_SOURCE_DIR}/catch_tests)
-#set(test_dir ${CMAKE_SOURCE_DIR}/catch_tests)
-#foreach(dir ${test_dir})
-#    file(GLOB_RECURSE SOURCE ${dir}/*.[ch]*)
-#    set(SOURCE_FILES "${SOURCE_FILES}" ${SOURCE})
-#endforeach()
-
-
 set(TEST_FILES ${SOURCE_FILES})
-file(GLOB_RECURSE SOURCE ${CMAKE_SOURCE_DIR}/catch_tests/*.[ch]*)
-set(TEST_FILES "${TEST_FILES}" ${SOURCE} catch_tests/MapTest.cpp)
-add_executable(halite_test ${TEST_FILES} ${CMAKE_SOURCE_DIR}/TestMain.cpp)
+file(GLOB_RECURSE SOURCE ${CMAKE_SOURCE_DIR}/test/*.[ch]*)
+set(TEST_FILES "${TEST_FILES}" ${SOURCE})
+add_executable(halite_test ${TEST_FILES} ${CMAKE_SOURCE_DIR}/test/TestMain.cpp)
 add_dependencies(halite_test nlohmann tclap libzstd)
 
 if (APPLE)
