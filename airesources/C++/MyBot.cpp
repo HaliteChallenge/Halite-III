@@ -12,7 +12,7 @@ int main() {
     hlt::Players players;
     hlt::Map map;
     hlt::getInit(map, players, myID);
-    hlt::sendInit("MyC++Bot");
+    hlt::sendInit("MyC++Bot-"+std::to_string(myID));
 
     hlt::Moves moves;
     while(true) {

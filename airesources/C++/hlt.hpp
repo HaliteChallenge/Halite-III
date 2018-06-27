@@ -157,12 +157,12 @@ static void getFrame(Players & players) {
 }
 
 static void sendFrame(const Moves & moves) {
-	std::cout << moves << std::flush;
+	std::cout << moves << std::endl;
 }
 
 }
 
-struct Log {
+struct Logging {
 private:
     std::ofstream file;
 
