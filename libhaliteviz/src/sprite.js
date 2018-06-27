@@ -9,8 +9,8 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
  export class playerSprite {
     /**
      *
-     * @param visualizer The visualizer object - what's a visualizer object/where is it defined??
-     * @param record The sprite record from the replay - is this the json file? who knows....
+     * @param visualizer The visualizer object
+     * @param record The sprite record. {x, y, owner, energy}
      */
     constructor(visualizer, record) {
         // Make a sprite a circle
@@ -29,17 +29,22 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         this.container = null;
         this.visualizer = visualizer;
 
+        // Store map size to make movement easier
+        this.map_width = this.visualizer.replay.production_map.width;
+        this.map_height = this.visualizer.replay.production_map.height;
+
         this.owner = record.owner;
-        this.id = record.id;
+        this.energy = record.energy;
+        this.x = record.x;
+        this.y = record.y;
 
         let setupSprite = (sprite, radius) => {
             sprite.width = sprite.height = 2 * radius * this.visualizer.scale;
             sprite.anchor.x = sprite.anchor.y = 0.5;
         };
 
-           // What's the weapon radius/ how is it visualized?
-           // TODO: use something different for purpose of WEAPON RADIUS visualization
-        const radius = this.visualizer.replay.constants.WEAPON_RADIUS;
+        // TODO: convert to more appropriate variable name
+        const radius = this.visualizer.CELL_SIZE;
         this.sprite.anchor.set(0.5);
         this.sprite.width = 0.7 * radius * this.visualizer.scale;
         this.sprite.height = 0.7 * radius * this.visualizer.scale;
@@ -92,96 +97,57 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
      */
 
     update(record) {
-        const max_sprite_health = this.visualizer.replay.constants.MAX_SHIP_HEALTH;
-        const health_factor = 0.1 + 0.2 * record.health / max_sprite_health;
+        const max_sprite_health = this.visualizer.replay.GAME_CONSTANTS.MAX_ENERGY;
+        const health_factor = 0.1 + 0.2 * record.energy / max_sprite_health;
 
         this.halo.alpha = health_factor;
 
         let direction = 0;
-        let vel_x = 0;
-        let vel_y = 0;
+        let x_move = 0;
+        let y_move = 0;
+
         // Draw the exhaust trail based on the thrust command issued this turn
         //this.exhaust.visible = false;
         if (this.visualizer.frame < this.visualizer.replay.frames.length - 1) {
-            let moves = this.visualizer.replay.moves[this.visualizer.frame];
-            let move = moves[record.owner][0][record.id];
-            if (move && move.type === "thrust" && record.docking.status === "undocked") {
-                // Adds the command to the ship velocity
-                let angle = move.angle * Math.PI / 180;
-                vel_x += move.magnitude * Math.cos(angle);
-                vel_y += move.magnitude * Math.sin(angle);
+            let moves = this.visualizer.replay.full_frames[this.visualizer.frame].moves;
+            let move = moves[record.owner];
+            if (move && move.type === "move") {
+                if (move.direction === "n") {
+                    direction = Math.PI;
+                    x_move = 0;
+                    y_move = 1;
 
-                const vel_factor = move.magnitude / this.visualizer.replay.constants.MAX_ACCELERATION;
+                }
+                if (move.direction === "e") {
+                    direction = Math.PI / 2;
+                    x_move = 1;
+                    y_move = 0;
 
-                // this.exhaust.visible = true;
-                // this.exhaust.rotation = angle + Math.PI / 2;
-                // this.exhaust.alpha = 0.4 * vel_factor;
-                // this.exhaust.height = 0.6 * vel_factor * (120 / 11) * this.exhaust.width;
+                }
+                if (move.direction === "s") {
+                    direction = 0;
+                    x_move = 0;
+                    y_move = -1;
+
+                }
+                if (move.direction === "w") {
+                    direction = -Math.PI / 2;
+                    x_move = -1;
+                    y_move = 0;
+
+                }
+                this.sprite.rotation = direction;
+
+                // Use wrap around map in determining movement
+                this.x = (this.x + x_move + this.map_width) % this.map_width;
+                this.y = (this.y + y_move + this.map_height) % this.map_height;
             }
         }
 
-        // if (this.visualizer.frame < this.visualizer.replay.frames.length - 1) {
-        //     let moves = this.visualizer.replay.moves[this.visualizer.frame];
-        //     let move = moves[record.owner][0][record.id];
-        //     if (move && move.type === "move" ) {
-        //         // Adds the command to the ship velocity
-        //         let direction = move.direction;
-        //     }
-            // TODO: add rotation code - just four ifs? seems messy
-            // this.sprite.rotation = 
-            // Adjust our position based on the time (interpolate between frames)
-            // if (move.direction === "N") {
-            //     direction =  Math.PI;
-            //     const x_move = 0;
-            //     const y_move = 1;
-
-            // }
-            // if (move.direction === "E") {
-            //     direction =  Math.PI / 2;
-            //     const x_move = 1;
-            //     const y_move = 0;
-
-            // }
-            // if (move.direction === "S") {
-            //     direction =  0;
-            //     const x_move = 0;
-            //     const y_move = -1;
-
-            // }
-            // if (move.direction === "W") {
-            //     direction = - Math.PI / 2;
-            //     const x_move = -1;
-            //     const y_move = 0;
-
-            // }
-            // this.sprite.rotation = direction;
-
-             // Orient the sprite in the direction that it's moving
-        let angle = Math.atan2(vel_y, vel_x);
-        this.sprite.rotation = angle + Math.PI / 2;
-
-        // Adjust speed to not go over max speed - this also doesn't matter
-        // without drag/inertia (it's to make sure our forecasted positions
-        // line up with what the game environment did)
-        const max_speed = this.visualizer.replay.constants.MAX_SPEED;
-        const magnitude = Math.sqrt(vel_x*vel_x + vel_y*vel_y);
-        if (magnitude > max_speed) {
-            vel_x *= magnitude / max_speed;
-            vel_y *= magnitude / max_speed;
-        }
-
-        // Adjust our position based on the time (interpolate between frames)
-        const x = record.x + this.visualizer.time * vel_x;
-        const y = record.y + this.visualizer.time * vel_y;
-
-        // const x = record.x + x_move;
-        // const y = record.y + y_move;
-
-        const pixelX = this.visualizer.scale * CELL_SIZE * x;
-        const pixelY = this.visualizer.scale * CELL_SIZE * y;
+        const pixelX = this.visualizer.scale * CELL_SIZE * this.x;
+        const pixelY = this.visualizer.scale * CELL_SIZE * this.y;
         this.halo.position.x = this.sprite.position.x = pixelX;
         this.halo.position.y = this.sprite.position.y = pixelY;
-        
     }
 }
 
