@@ -105,9 +105,15 @@ add_custom_target(
     remove_dylib
     ${CMAKE_COMMAND} -E remove ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.1.3.4.dylib ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.dylib
 )
+else()
+add_custom_target(
+    remove_dylib
+    ${CMAKE_COMMAND} -E remove ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.1.3.4.so ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.so
+)
+endif()
+
 add_dependencies(remove_dylib libzstd)
 add_dependencies(halite remove_dylib)
-endif()
 
 add_dependencies(halite VERSION_CHECK nlohmann tclap libzstd)
 
