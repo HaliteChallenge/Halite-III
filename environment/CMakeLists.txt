@@ -58,7 +58,7 @@ foreach(dir ${dirs})
 endforeach()
 
 include_directories(${CMAKE_SOURCE_DIR})
-set(SOURCE_FILES "${SOURCE_FILES}" main.cpp)
+set(HALITE_SOURCE_FILES "${SOURCE_FILES}" main.cpp)
 
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_BINARY_DIR}/external)
@@ -98,7 +98,7 @@ ExternalProject_Add(libzstd
 include_directories(${EXTERNAL_INSTALL_LOCATION}/include ${EXTERNAL_INSTALL_LOCATION}/nlohmann ${EXTERNAL_INSTALL_LOCATION}/tclap/include)
 link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 
-add_executable(halite ${SOURCE_FILES})
+add_executable(halite ${HALITE_SOURCE_FILES})
 
 if (APPLE)
 add_custom_target(
@@ -117,9 +117,25 @@ add_dependencies(halite remove_dylib)
 
 add_dependencies(halite VERSION_CHECK nlohmann tclap libzstd)
 
+# Add testing directorys
+#include_directories(${CMAKE_SOURCE_DIR}/catch_tests)
+#set(test_dir ${CMAKE_SOURCE_DIR}/catch_tests)
+#foreach(dir ${test_dir})
+#    file(GLOB_RECURSE SOURCE ${dir}/*.[ch]*)
+#    set(SOURCE_FILES "${SOURCE_FILES}" ${SOURCE})
+#endforeach()
+
+
+set(TEST_FILES ${SOURCE_FILES})
+file(GLOB_RECURSE SOURCE ${CMAKE_SOURCE_DIR}/catch_tests/*.[ch]*)
+set(TEST_FILES "${TEST_FILES}" ${SOURCE} catch_tests/MapTest.cpp)
+add_executable(halite_test ${TEST_FILES} ${CMAKE_SOURCE_DIR}/TestMain.cpp)
+add_dependencies(halite_test nlohmann tclap libzstd)
+
 if (APPLE)
     # No static linkage here - https://stackoverflow.com/questions/5259249/creating-static-mac-os-x-c-build
     target_link_libraries(halite pthread zstd)
+    target_link_libraries(halite_test pthread zstd)
 else()
     # On Linux, make sure to link using the whole-archive option
     # See: https://stackoverflow.com/questions/35116327
