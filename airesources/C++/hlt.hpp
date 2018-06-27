@@ -138,14 +138,15 @@ static void sendInit(const std::string & name) {
 	else std::cout << name << std::endl;
 }
 
-static void getFrame(Players & players) {
-	long _;
-	std::cin >> _; // Don't care about turn number yet.
+static long getFrame(Players & players) {
+	long turn_number;
+	std::cin >> turn_number;
 	for(unsigned int i = 0; i < players.size(); i++) {
 		Player p;
 		std::cin >> p;
 		players[p.player_id] = p;
 	}
+	return turn_number;
 }
 
 static void sendFrame(const Moves & moves) {
