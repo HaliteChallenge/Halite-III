@@ -1,7 +1,7 @@
 #ifndef GAMEEVENT_HPP
 #define GAMEEVENT_HPP
 
-#include "json_fwd.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include "Location.hpp"
 #include "Entity.hpp"
 

@@ -11,14 +11,12 @@ namespace hlt {
 
 /** Representation of the owner of a cell on the grid. */
 struct CellOwner {
-    /** Special owner specifications. */
-    enum {
-        UNOWNED = -1,                               /** Represents a cell not owned by any player. */
-        TIED = -2                                   /** Represents a cell owned by possibly multiple players. */
-    };
-    Player::id_type owner = UNOWNED;                /** The owner of the cell. */
+    static constexpr auto UNOWNED = -1;     /** Represents a cell not owned by any player. */
+    static constexpr auto TIED = -2;        /** Represents a cell owned by possibly multiple players. */
+
+    Player::id_type owner = UNOWNED;        /** The owner of the cell. */
     std::unordered_set<std::shared_ptr<Entity>> entities;  /** The entities leading to ownership of the cell. */
-    dimension_type distance{};                      /** The distance to the entities leading to ownership. */
+    dimension_type distance{};              /** The distance to the entities leading to ownership. */
 };
 
 /** Representation of the map grid containing ownership information. */

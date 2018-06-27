@@ -2,6 +2,7 @@
 #define NETWORKING_H
 
 #include <map>
+#include <mutex>
 #include <unordered_map>
 #include <utility>
 

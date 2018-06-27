@@ -1,10 +1,10 @@
-#include <fcntl.h>
-#include <unistd.h>
-#include <csignal>
+#include <algorithm>
 #include <cassert>
 #include <chrono>
-#include <array>
+#include <csignal>
+#include <fcntl.h>
 #include <sstream>
+#include <unistd.h>
 
 #include "Logging.hpp"
 #include "NetworkingError.hpp"
