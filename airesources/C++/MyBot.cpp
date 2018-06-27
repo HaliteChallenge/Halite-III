@@ -1,11 +1,8 @@
 #include "hlt.hpp"
 
 #include <random>
-#include <chrono>
 
 int main() {
-    std::mt19937 prg = std::mt19937(std::chrono::system_clock::now().time_since_epoch().count());
-
     std::cout.sync_with_stdio(0);
 
     id_type myID;
@@ -14,6 +11,7 @@ int main() {
     hlt::getInit(map, players, myID);
     hlt::sendInit("MyC++Bot-"+std::to_string(myID));
 
+    std::mt19937 prg(time(NULL));
     hlt::Moves moves;
     while(true) {
         moves.clear();
