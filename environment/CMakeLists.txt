@@ -68,7 +68,7 @@ ExternalProject_Add(nlohmann
     URL https://github.com/nlohmann/json/releases/download/v3.1.2/include.zip
     URL_HASH SHA256=495362ee1b9d03d9526ba9ccf1b4a9c37691abe3a642ddbced13e5778c16660c
     PREFIX ${EXTERNAL_INSTALL_LOCATION}
-    SOURCE_DIR ${EXTERNAL_INSTALL_LOCATION}/include
+    SOURCE_DIR ${EXTERNAL_INSTALL_LOCATION}/nlohmann
     CMAKE_COMMAND ""
     BUILD_COMMAND ""
     CONFIGURE_COMMAND ""
@@ -81,7 +81,6 @@ ExternalProject_Add(tclap
     URL_HASH SHA256=f5013be7fcaafc69ba0ce2d1710f693f61e9c336b6292ae4f57554f59fde5837
     PREFIX ${EXTERNAL_INSTALL_LOCATION}
     SOURCE_DIR ${EXTERNAL_INSTALL_LOCATION}/tclap
-    BINARY_DIR ${EXTERNAL_INSTALL_LOCATION}/tclap
     CMAKE_COMMAND ""
     BUILD_COMMAND ""
     CONFIGURE_COMMAND ""
@@ -94,13 +93,22 @@ ExternalProject_Add(libzstd
     URL_HASH SHA256=76f3e6cadd9e1714cad7b550e53b82d4a5a5f9e08fbc0b3eb54abd0d0ebeb42d
     PREFIX ${EXTERNAL_INSTALL_LOCATION}
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX:PATH=${EXTERNAL_INSTALL_LOCATION} ${EXTERNAL_INSTALL_LOCATION}/src/libzstd/build/cmake/
-    BUILD_COMMAND make lib
 )
 
-include_directories(${EXTERNAL_INSTALL_LOCATION}/include ${EXTERNAL_INSTALL_LOCATION}/tclap/include)
+include_directories(${EXTERNAL_INSTALL_LOCATION}/include ${EXTERNAL_INSTALL_LOCATION}/nlohmann ${EXTERNAL_INSTALL_LOCATION}/tclap/include)
 link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 
 add_executable(halite ${SOURCE_FILES})
+
+if (APPLE)
+add_custom_target(
+    remove_dylib
+    ${CMAKE_COMMAND} -E remove ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.1.3.4.dylib ${EXTERNAL_INSTALL_LOCATION}/lib/libzstd.dylib
+)
+add_dependencies(remove_dylib libzstd)
+add_dependencies(halite remove_dylib)
+endif()
+
 add_dependencies(halite VERSION_CHECK nlohmann tclap libzstd)
 
 if (APPLE)
