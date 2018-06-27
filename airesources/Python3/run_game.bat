@@ -1,1 +1,1 @@
-halite.exe -d "240 160" "python MyBot.py" "python MyBot.py"
+halite.exe --width 128 --height 128 "python MyBot.py" "python MyBot.py"
