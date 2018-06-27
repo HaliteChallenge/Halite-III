@@ -21,21 +21,7 @@ int main() {
         hlt::getFrame(players);
 
         for(auto &[loc, _] : players[myID].entities) {
-            switch (prg() % 4) {
-                case 0:
-                    moves[loc] = hlt::Direction::NORTH;
-                    break;
-                case 1:
-                    moves[loc] = hlt::Direction::EAST;
-                    break;
-                case 2:
-                    moves[loc] = hlt::Direction::SOUTH;
-                    break;
-                case 3:
-                    moves[loc] = hlt::Direction::WEST;
-                    break;
-            }
-            
+            moves[loc] = hlt::DIRECTIONS[prg() % 4];
         }
 
         hlt::sendFrame(moves);

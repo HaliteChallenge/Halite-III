@@ -2,9 +2,10 @@
 
 #include <string>
 #include <iostream>
+#include <array>
 #include <vector>
-#include <exception>
 #include <unordered_map>
+#include <exception>
 #include <fstream>
 
 typedef long energy_type;
@@ -34,20 +35,11 @@ namespace hlt {
 
 enum class Direction : char {
     NORTH = 'n',
-    SOUTH = 's',
     EAST = 'e',
+    SOUTH = 's',
     WEST = 'w',
 };
-/* Probably not going to use this; useful for random though
-static Direction directionFromInt(int d) {
-	switch(d) {
-		// No present value for still -- API is to give no command
-		case 1: return 'n';
-		case 2: return 'e';
-		case 3: return 's';
-		case 4: return 'w';
-	}
-} */
+static const std::array<Direction, 4> DIRECTIONS = { Direction::NORTH, Direction::EAST, Direction::SOUTH, Direction::WEST };
 typedef std::unordered_map<Location, Direction> Moves;
 static std::ostream & operator<<(std::ostream & ostream, const Moves & moves) {
 	for(auto &[location, direction] : moves) {
