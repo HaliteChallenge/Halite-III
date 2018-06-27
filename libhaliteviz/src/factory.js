@@ -2,39 +2,16 @@ import * as PIXI from "pixi.js";
 
 import * as assets from "./assets";
 
-
-const WINTER_START = new Date(2018, 11, 23);
-const NEW_YEAR_START = new Date(2018, 11, 30);
-const NEW_YEAR_END = new Date(2019, 0, 2);
-
-export function holidaySprite() {
-    const date = new Date();
-    if (date.getTime() >= WINTER_START.getTime() && date.getTime() < NEW_YEAR_START.getTime()) {
-        return assets.WINTER_PLANET_IMAGE;
-    }
-    else if (date.getTime() >= NEW_YEAR_START.getTime() && date.getTime() < NEW_YEAR_END.getTime()) {
-        return assets.NEWYEAR_PLANET_IMAGE;
-    }
-    return null;
-}
-
-function useHolidaySprite() {
-    if (window.localStorage["holiday"] === "false") return false;
-    // Cast result of holidaySprite to Boolean
-    return !!holidaySprite();
-}
-
-
 /**
- * Manages a planet on screen.
+ * Manages a factory on screen.
  */
 export class Factory {
     /**
      *
-     * @param factoryBase The "base" factory record in the replay. (replay.factory[i])
+     * @param factoryBase The "base" factory record in the replay (contains a location)
      * @param constants The constants object from the replay.
      * @param scale The scale factor the visualizer is using.
-     * @param onSelect The callback for when this planet is selected.
+     * @param onSelect The callback for when this factory is selected.
      */
     constructor(factoryBase, constants, scale, onSelect, renderer) {
         this.container = null;
@@ -45,7 +22,6 @@ export class Factory {
 
         const pixelsPerUnit = assets.CELL_SIZE * scale;
         // TODO: Use a factory image of some sort
-        // Make a sprite a circle
         const factoryShape = new PIXI.Graphics();
         factoryShape.beginFill(assets.HALO_COLOR, assets.HALO_ALPHA);
         // draw rect - x coord, y coord, pts, radius
@@ -64,12 +40,12 @@ export class Factory {
         //this.baseHaloAlpha = 0.2;
 
         // TODO: make not about r
-        this.core.width = this.core.height = 2 * factoryBase.r * pixelsPerUnit;
+        this.core.width = this.core.height = 2 * assets.CELL_SIZE * pixelsPerUnit;
         this.core.anchor.x = 0.5;
         this.core.anchor.y = 0.5;
         this.core.alpha = 0.9;
 
-        this.core.position.x = scale * assets.CELL_SIZE * factoryBase.x;
+        this.core.position.x = scale * assets.CELL_SIZE * factoryBase.x
         this.core.position.y = scale * assets.CELL_SIZE * factoryBase.y;
         //this.halo.position.x = scale * assets.CELL_SIZE * factoryBase.x;
         //this.halo.position.y = scale * assets.CELL_SIZE * factoryBase.y;
@@ -134,28 +110,16 @@ export class Factory {
         // this.core.position.x += delta;
         // this.core.position.y += delta;
 
-        const side = assets.CELL_SIZE * this.scale;
         const color = factoryStatus.owner === null ?
             assets.PLANET_COLOR : assets.PLAYER_COLORS[factoryStatus.owner];
 
-        // TODO: change from r when no longer getting in planet data
-        const radius = side * this.factoryBase.r;
-
-        // TODO: make this about production ability instead?
-        const health_factor = factoryStatus.health / this.factoryBase.health;
-        const health_bar = health_factor * 2 * radius;
 
         this.core.tint = color;
         this.core.interactive = true;
         this.core.buttonMode = true;
 
-        if (factoryStatus.health === 0) {
-            this.core.interactive = false;
-            this.core.buttonMode = false;
-        }
-
         //this.halo.visible = factoryStatus.health > 0;
-        this.core.visible = factoryStatus.health > 0;
+        this.core.visible = factoryStatus.alive > 0;
     }
 }
 

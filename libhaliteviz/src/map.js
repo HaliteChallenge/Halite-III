@@ -24,25 +24,22 @@ export class Map {
         // Background image, based on initial production values
         // draw a map, with color intensity dependent on production value
         // todo: get rows/cols from replay file
-        this.rows = assets.REPLAY_HEIGHT;
-        this.cols = assets.REPLAY_WIDTH;
+        this.rows = replay.production_map.height;
+        this.cols = replay.production_map.width;
         let mapGraphics = new PIXI.Graphics();
         // TODO: get this info dynamically from replay file
         this.productions = new Array(this.rows);
-        this.owners = new Array(this.rows);
+        //this.owners = new Array(this.rows);
         for (let row = 0; row < this.rows; row++) {
             this.productions[row] = new Array(this.cols);
-            this.owners[row] = new Array(this.cols);
+            //this.owners[row] = new Array(this.cols);
             for (let col = 0; col < this.cols; col++) {
-                // TODO: get production values from new replay json file.
-                // For now: make a random production map, but save the production
-                // TODO: also get production max from replay file
-                let production = Math.floor(Math.random() * assets.MAX_PRODUCTION);
-                this.productions[row][col] = production;
-                this.owners[row][col] = row + col > assets.REPLAY_WIDTH ? {owner: 0} : {owner: 1};
+                let cell = replay.production_map.grid[row][col];
+                this.productions[row][col] = cell["type"] === "n" ? cell.production : 0;
+                //this.owners[row][col] = row + col > assets.REPLAY_WIDTH ? {owner: 0} : {owner: 1};
             }
         }
-        console.log(this.owners);
+       // console.log(this.owners);
 
         let baseMapTexture = this.generateMapTexture(this.rows, this.cols, this.productions, this.productionToColor,
             false, this.renderer, assets.MAP_ALPHA, this.scale);
@@ -78,10 +75,10 @@ export class Map {
      */
     productionToColor(productions, row, col) {
         const production = productions[row][col];
-        if (production / assets.MAX_PRODUCTION < 0.33) {
+        if (production / this.constants.MAX_CELL_PRODUCTION < 0.33) {
             return assets.MAP_COLOR_LIGHT;
         }
-        else if (production / assets.MAX_PRODUCTION < 0.66) {
+        else if (production / this.constants.MAX_CELL_PRODUCTION < 0.66) {
             return assets.MAP_COLOR_MEDIUM;
         }
         else {
