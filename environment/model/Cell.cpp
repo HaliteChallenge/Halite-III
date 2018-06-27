@@ -127,7 +127,7 @@ void EnergyFactorCell::to_json(nlohmann::json &json) const {
  * @return The formatted output.
  */
 std::string EnergyFactorCell::to_bot_serial() const {
-    return std::string(JSON_ENERGY_FACTOR_KEY) + " " +
+    return std::string(CELL_TYPE_NAME) + " " +
            std::to_string(production()) + " " +
            std::to_string(_energy_factor);
 }
