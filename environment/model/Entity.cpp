@@ -16,9 +16,14 @@ namespace hlt {
  * Convert an Entity to JSON format.
  * @param[out] json The output JSON.
  * @param entity The entity to convert.
+ * @param include_owner If true, add the owner ID to the JSON.
  */
-void to_json(nlohmann::json &json, const Entity &entity) {
-    json = {FIELD_TO_JSON(energy)};
+void to_json(nlohmann::json &json, const Entity &entity, bool include_owner) {
+    if (include_owner) {
+        json = {FIELD_TO_JSON(owner_id), FIELD_TO_JSON(energy)};
+    } else {
+        json = {FIELD_TO_JSON(energy)};
+    }
 }
 
 /**

@@ -14,7 +14,8 @@ SCENARIO("Entity constructor initializes member variables", "[entity]") {
         WHEN("converted to json") {
             nlohmann::json json;
             to_json(json, entity);
-            THEN("json has energy of correct value") {
+            THEN("json has owner and energy of correct value") {
+                REQUIRE(json.at("owner_id") == 0);
                 REQUIRE(json.at("energy") == 10);
             }
         }
