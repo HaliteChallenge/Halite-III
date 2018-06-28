@@ -19,6 +19,7 @@ export class Factory {
         this.factoryBase = factoryBase;
         this.scale = scale;
         this.constants = constants;
+        this.owner = factoryBase.owner;
 
         const pixelsPerUnit = assets.CELL_SIZE * scale;
         // TODO: Use a factory image of some sort
@@ -40,13 +41,15 @@ export class Factory {
         //this.baseHaloAlpha = 0.2;
 
         // TODO: make not about r
-        this.core.width = this.core.height = 2 * assets.CELL_SIZE * pixelsPerUnit;
+        this.core.width = this.core.height = assets.CELL_SIZE * pixelsPerUnit;
+        // anchor factory in center for rotation
         this.core.anchor.x = 0.5;
         this.core.anchor.y = 0.5;
         this.core.alpha = 0.9;
 
-        this.core.position.x = scale * assets.CELL_SIZE * factoryBase.x
-        this.core.position.y = scale * assets.CELL_SIZE * factoryBase.y;
+        // Place factories in center of cells
+        this.core.position.x = pixelsPerUnit * factoryBase.x + pixelsPerUnit / 2;
+        this.core.position.y = pixelsPerUnit * factoryBase.y + pixelsPerUnit / 2;;
         //this.halo.position.x = scale * assets.CELL_SIZE * factoryBase.x;
         //this.halo.position.y = scale * assets.CELL_SIZE * factoryBase.y;
 
@@ -61,6 +64,12 @@ export class Factory {
                 id: this.id,
             });
         });
+
+        const color = this.owner === null ?
+            assets.PLANET_COLOR : assets.PLAYER_COLORS[this.owner];
+
+        this.core.tint = color;
+
     }
 
     /**

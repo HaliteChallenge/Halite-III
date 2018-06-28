@@ -73,7 +73,7 @@ export class HaliteVisualizer {
         this.container.position.y = 0;
         this.letterbox = new PIXI.Graphics();
         if (this.container.position.y > 0) {
-            this.letterbox.beginFill(0x000000);
+            this.letterbox.beginFill(0xFFFFFF);
             this.letterbox.drawRect(0, 0, assets.VISUALIZER_SIZE, this.container.position.y);
             this.letterbox.drawRect(
                 0,
@@ -82,7 +82,7 @@ export class HaliteVisualizer {
                 this.container.position.y);
         }
         if (this.container.position.x > 0) {
-            this.letterbox.beginFill(0x000000);
+            this.letterbox.beginFill(0xFFFFFF);
             this.letterbox.drawRect(0, 0, this.container.position.x, assets.VISUALIZER_HEIGHT);
             this.letterbox.drawRect(
                 this.container.position.x + this.map_width * this.scale * assets.CELL_SIZE,
@@ -102,17 +102,23 @@ export class HaliteVisualizer {
         this.lights.blendMode = PIXI.BLEND_MODES.SCREEN;
         this.lights.filters = [new GlowFilter(20, 1.5, 0.5, 0xFFFFFF, 0.3)];
 
-        this.entities = Array(this.map_height).fill({}).map(()=>Array(this.map_width).fill({}));
+        this.entities = [];
         this.factories = [];
         this.fish = [];
+        this.player_energies = {};
         for (let i = 0; i < this.replay.players.length; i++) {
-            const factoryBase = {"x" : this.replay.players[i].factory[0], "y" : this.replay.players[i].factory[1], "owner" : this.replay.players[i].player_id };
+            const factoryBase = {"x" : this.replay.players[i].factory_location[0], "y" : this.replay.players[i].factory_location[1], "owner" : this.replay.players[i].player_id };
             const factory = new Factory(factoryBase, this.replay.constants,
                 this.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
             this.factories.push(factory);
             factory.attach(this.factoryContainer);
             // Add players'initial entities
-            for (entity of )
+            for (let entity_json of this.replay.players[i].entities) {
+                let entity_object = {"x" : entity_json.x, "y" : entity_json.y, "energy" : entity_json.energy, "owner": this.replay.players[i].player_id};
+                let new_entity = new playerSprite(this, entity_object);
+                this.entities.push(new_entity);
+                new_entity.attach(this.entityContainer);
+            }
 
             // also a swarm of fish!
             // const fish = new Fish(this.replay.constants, this.scale, (kind, args) => this.onSelect(kind, args));
@@ -124,22 +130,16 @@ export class HaliteVisualizer {
             (kind, args) => this.onSelect(kind, args), this.application.renderer);
         this.baseMap.attach(this.mapContainer);
 
-        let poi = new PIXI.Graphics();
-        this.drawPOI(poi);
 
         // Prerender the points of interest once, and keep it as a texture
-        let renderer = new PIXI.CanvasRenderer(
-            assets.VISUALIZER_SIZE, assets.VISUALIZER_SIZE);
-        let texture = renderer.generateTexture(poi);
-        this.poi = PIXI.Sprite.from(texture);
 
         this.container.addChild(this.mapContainer);
-        // this.container.addChild(this.dockingContainer);
+        // // this.container.addChild(this.dockingContainer);
         this.container.addChild(this.factoryContainer);
         this.container.addChild(this.entityContainer);
         this.container.addChild(this.fishContainer);
         //this.container.addChild(this.overlay);
-        this.container.addChild(this.lights);
+        //this.container.addChild(this.lights);
 
         this.application.stage.addChild(this.container);
         this.application.stage.addChild(this.letterbox);
@@ -265,7 +265,12 @@ export class HaliteVisualizer {
         let frame = this.currentFrame;
         let entities = {};
         let total_entities = 0;
-        // TODO
+        // TODO: update with Halite 3 statistics
+        return {
+            "planets": 0,
+            "ships": 0,
+            "total_ships": 0,
+        };
     }
 
     attach(containerEl) {
@@ -352,38 +357,19 @@ export class HaliteVisualizer {
         this.application.render();
     }
 
-    // drawPOI(graphics) {
-    //     const side = assets.CELL_SIZE * this.scale;
-    //     for (let poi of this.replay.poi) {
-    //         if (poi.type === "orbit") {
-    //             graphics.beginFill(0, 0);
-    //             graphics.lineStyle(1, 0xFFFFFF, 0.2);
-    //             const x = side * poi.x;
-    //             const y = side * poi.y;
-    //             const a = side * poi.x_axis;
-    //             const b = side * poi.y_axis;
-    //             graphics.drawEllipse(x, y, a, b);
-    //             graphics.endFill();
-    //         }
-    //         else {
-    //             console.log(poi);
-    //         }
-    //     }
-    // }
-
     update() {
-        this.deathFlags = {
-            "planets": {},
-        };
+        this.deathFlags = {};
+        this.newEntities = [];
 
         if (this.currentFrame.events) {
             for (let event of this.currentFrame.events) {
                 // How much to delay (in terms of ticks) before
                 // actually playing the event
-                const delayTime = event.time ? event.time / (this.timeStep * this.playSpeed) : 0;
+                const delayTime = 0;
                 const cellSize = assets.CELL_SIZE * this.scale;
 
                 if (event.type === "death") {
+                    console.log("should be a death", event.owner_id, event.location);
                     // Use default draw function
                     this.animationQueue.push(
                         new animation.ShipExplosionFrameAnimation(
@@ -391,109 +377,71 @@ export class HaliteVisualizer {
                     if (typeof this.deathFlags[event.owner_id] === "undefined") {
                         this.deathFlags[event.owner_id] = {};
                     }
-                    this.deathFlags[event.owner_owner][event.location] = event.time;
+                    this.deathFlags[event.owner_id][event.location] = this.currentFrame;
 
                 }
                 else if (event.type === "spawn") {
-                    if (event.planet) {
-                        const planet = this.planets[event.planet.id];
-                        const duration = 24;
-                        this.animationQueue.push(new animation.FrameAnimation(
-                            duration, delayTime,
-                            () => {
-                            },
-                            (frame) => {
-                                let ship = this.ships[event.entity.id];
-                                if (!ship) return;
+                    // add the entity to the list of entities
+                    let entity_object = {"x" : event.location[0], "y" : event.location[1], "energy" : event.energy, "owner": event.owner_id};
+                    let new_entity = new playerSprite(this, entity_object);
+                    this.entities.push(new_entity);
+                    new_entity.attach(this.entityContainer);
+                    this.animationQueue.push(new animation.FrameAnimation(
+                        100, delayTime,
+                        () => {
+                        },
+                        (frame) => {
+                            const side = assets.CELL_SIZE * this.scale;
 
-                                let factor = frame / duration;
-                                ship.halo.alpha = factor;
-                            },
-                            () => {
+                            const entity_x = side * (event.location[0] + 0.5);
+                            const entity_y = side * (event.location[1] + 0.5);
+                            this.lights.lineStyle(2, assets.PLAYER_COLORS[event.owner_id], 0.5 * frame / 100);
+                            this.lights.moveTo(entity_x - 0.5, entity_y - 0.5);
+                            this.lights.lineTo(entity_x, entity_y);
+                            this.lights.endFill();
+                        },
+                        () => {
 
-                            }
-                        ));
-                    }
-                    else {
-                        this.animationQueue.push(new animation.FrameAnimation(
-                            100, delayTime,
-                            () => {
-                            },
-                            (frame) => {
-                                const side = assets.CELL_SIZE * this.scale;
-                                const planetX = side * (event.planet_x + 0.5);
-                                const planetY = side * (event.planet_y + 0.5);
-                                const ship_x = side * (event.x + 0.5);
-                                const ship_y = side * (event.y + 0.5);
-                                this.lights.lineStyle(2, assets.PLAYER_COLORS[event.entity.owner], 0.5 * frame / 100);
-                                this.lights.moveTo(planetX, planetY);
-                                this.lights.lineTo(ship_x, ship_y);
-                                this.lights.endFill();
-                            },
-                            () => {
-
-                            }
-                        ));
-                    }
+                        }
+                    ));
                 }
                 else {
                     console.log(event);
                 }
             }
         }
+        this.draw();
     }
 
     draw(dt=0) {
-        //this.overlay.clear();
         this.lights.clear();
 
-        for (let planet of Object.values(this.currentFrame.planets)) {
-            if (typeof this.deathFlags["planets"][planet.id] !== "undefined") {
-                if (this.time < this.deathFlags["planets"][planet.id]) {
-                    this.planets[planet.id].update(planet, dt);
-                }
-            }
-            else {
-                this.planets[planet.id].update(planet, dt);
-            }
-        }
+        // for (let factory of this.factories) {
+        //     // TODO: check for living players and update factories with statuses
+        // }
+
         // just let the fish wander
-        for (let fish of this.fish) {
-            fish.update(this.time, dt);
-        }
-        // TODO: pass in a map record of some sort
-        this.baseMap.update(this.currentFrame);
+        // for (let fish of this.fish) {
+        //     fish.update(this.time, dt);
+        // }
+        // TODO: determine map ownership
+        //this.baseMap.update(this.currentFrame);
 
-        // Handle dead planets
-        for (let planet of this.replay.planets) {
-            if (typeof this.currentFrame.planets[planet.id] === "undefined") {
-                this.planets[planet.id].update({ id: planet.id, owner: null, health: 0 }, dt);
+        for (let entity_index = 0; entity_index < this.entities.length; entity_index++) {
+            let entity = this.entities[entity_index];
+            let deathFrame = 500;
+            if (this.deathFlags[entity.owner_id] &&
+                typeof this.deathFlags[entity.owner_id][[entity.x, entity.y]] !== "undefined") {
+                deathFrame = this.deathFlags[entity.owner_id][[entity.x, entity.y]];
+                console.log("death frame");
             }
-        }
 
-        for (let playerShips of Object.values(this.currentFrame.ships)) {
-            for (let ship of Object.values(playerShips)) {
-                let deathTime = 1.1;
-                if (this.deathFlags[ship.owner] &&
-                    typeof this.deathFlags[ship.owner][ship.id] !== "undefined") {
-                    deathTime = this.deathFlags[ship.owner][ship.id];
-                }
-
-                if (this.time < deathTime) {
-                    if (typeof this.ships[ship.id] === "undefined") {
-                        this.ships[ship.id] = new playerSprite(this, ship);
-                        this.ships[ship.id].attach(this.shipContainer);
-                    }
-                    this.ships[ship.id].update(ship);
-                }
-            }
-        }
-
-        for (let shipIndex of Object.keys(this.ships)) {
-            const ship = this.ships[shipIndex];
-            if (!this.currentFrame.ships[ship.owner][ship.id]) {
-                ship.destroy();
-                delete this.ships[shipIndex];
+            if (this.frame < deathFrame) {
+                entity.update();
+            } else {
+                entity.destroy();
+                console.log("trying to delete entity");
+                delete this.entities[entity_index];
             }
         }
 
@@ -527,41 +475,7 @@ export class HaliteVisualizer {
     }
 
     drawStats() {
-        let stats = this.currentStatistics;
-
-        let bestPlayer = 0;
-        let bestPlayerCount = 0;
-
-        let x = 0;
-        for (let player = 0; player < this.replay.num_players; player++) {
-            const width = assets.VISUALIZER_SIZE * (stats.ships[player] || 0) / stats.total_ships;
-            this.statsDisplay.beginFill(assets.PLAYER_COLORS[player]);
-            this.statsDisplay.drawRect(x, 0, width, assets.STATS_SIZE * 0.8);
-            this.statsDisplay.endFill();
-            x += width;
-
-            if (stats.ships[player] > bestPlayerCount) {
-                bestPlayerCount = stats.ships[player];
-                bestPlayer = player;
-            }
-        }
-
-        // this.starfield.tint = Math.floor(0.95 * this.starfield.tint +
-        //     0.05 * assets.PLAYER_COLORS[bestPlayer]);
-
-        x = 0;
-        for (let player = 0; player < this.replay.num_players; player++) {
-            const width = assets.VISUALIZER_SIZE * (stats.planets[player] || 0) / this.replay.planets.length;
-            this.statsDisplay.beginFill(assets.PLAYER_COLORS[player]);
-            this.statsDisplay.drawRect(x, assets.STATS_SIZE, width, assets.STATS_SIZE * 0.8);
-            this.statsDisplay.endFill();
-            x += width;
-        }
-        const width = assets.VISUALIZER_SIZE * (stats.planets["unowned"] || 0) / this.replay.planets.length;
-        this.statsDisplay.beginFill(assets.PLANET_COLOR);
-        this.statsDisplay.drawRect(x, assets.STATS_SIZE, width, assets.STATS_SIZE * 0.8);
-        this.statsDisplay.endFill();
-        this.statsDisplay.drawRect(0, 90, assets.VISUALIZER_SIZE, 10);
+        // TODO Add statistics for game play
     }
 
     render(dt=1000/60) {

@@ -146,19 +146,19 @@
                   <tbody>
                     <tr>
                       <th>Map Size:</th>
-                      <td>{{`${replay.width}x${replay.height}`}}</td>
+                      <td>{{`${replay.production_map.width}x${replay.production_map.height}`}}</td>
                     </tr>
                     <tr>
                       <th>Map Parameters:</th>
-                      <td>{{replay.map_generator}}</td>
+                      <td>{{replay.production_map.map_generator}}</td>
                     </tr>
                     <tr>
                       <th>Seed:</th>
-                      <td>{{replay.seed}}</td>
+                      <td>{{replay.map_generator_seed}}</td>
                     </tr>
                     <tr>
                       <th>Replay Version:</th>
-                      <td>{{replay.version}}</td>
+                      <td>{{replay.REPLAY_FILE_VERSION}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -198,7 +198,7 @@
                 <SelectedShip :selected-ship="selectedShip" :players="players"></SelectedShip>
               </div>
               <div v-else-if="selectedPoint">
-                <SelectedPoint :selected-point="selectedPoint"></SelectedPoint>
+                <SelectedPoint :selected-point="selectedPoint" :players="players"></SelectedPoint>
               </div>
               <div class="message-box" v-else>
                 <p><span class="icon-info"></span></p>
@@ -372,7 +372,7 @@
         showHoliday: false,
         isMobile: window.mobileAndTabletcheck(),
         user: null,
-        // showChart: false,
+        showChart: false,
         selected: {
           kind: '',
           id: 0,
@@ -421,11 +421,11 @@
     mounted: function () {
       this.getSortedPlayers()
       this.sliderOptions = Object.assign(this.sliderOptions, {
-        max: this.replay.num_frames - 1,
+        max: this.replay.game_statistics.number_turns - 1,
         value: this.frame
       })
 
-      this.showHoliday = libhaliteviz.isHoliday();
+      this.showHoliday = false;
 
       // current user
       api.me().then((user) => {
@@ -482,7 +482,7 @@
       // action
       this.playVideo = (e) => {
         if (visualizer) {
-          if (this.frame >= this.replay.num_frames - 1) {
+          if (this.frame >= this.replay.game_statistics.number_turns - 1) {
             visualizer.frame = 0
             visualizer.time = 0.0
             this.frame = 0
@@ -529,7 +529,7 @@
         this.gaData('visualizer', 'click-back', 'gameplay')
       }
       this.nextFrame = () => {
-        if (visualizer && this.frame < this.replay.num_frames - 1) {
+        if (visualizer && this.frame < this.replay.game_statistics.number_turns - 1) {
           visualizer.scrub(this.frame + 1, 0)
         }
 
@@ -595,60 +595,36 @@
       statistics: function () {
         let count = {}
 
-        if (!this.shipsProduced) {
-          this.shipsProduced = []
-          for (let frame of this.replay.frames) {
+        if (!this.entitiesProduced) {
+          this.entitiesProduced = []
+          for (let frame of this.replay.full_frames) {
             let thisFrame = { 0: 3, 1: 3, 2: 3, 3: 3 }
-            if (this.shipsProduced.length > 0) {
-              thisFrame[0] = this.shipsProduced[this.shipsProduced.length - 1][0]
-              thisFrame[1] = this.shipsProduced[this.shipsProduced.length - 1][1]
-              thisFrame[2] = this.shipsProduced[this.shipsProduced.length - 1][2]
-              thisFrame[3] = this.shipsProduced[this.shipsProduced.length - 1][3]
+            if (this.entitiesProduced.length > 0) {
+              thisFrame[0] = this.entitiesProduced[this.entitiesProduced.length - 1][0]
+              thisFrame[1] = this.entitiesProduced[this.entitiesProduced.length - 1][1]
+              thisFrame[2] = this.entitiesProduced[this.entitiesProduced.length - 1][2]
+              thisFrame[3] = this.entitiesProduced[this.entitiesProduced.length - 1][3]
             }
             if (frame.events) {
               for (let event of frame.events) {
-                if (event.event === 'spawned') {
-                  thisFrame[event.entity.owner]++
+                if (event.event === 'spawn') {
+                  thisFrame[event.owner_id]++
                 }
               }
             }
-            this.shipsProduced.push(thisFrame)
+            this.entitiesProduced.push(thisFrame)
           }
         }
 
-        for (let i = 0; i < this.replay.num_players; i++) {
+        for (let i = 0; i < this.replay.number_of_players; i++) {
           count[i] = {
             ships: 0,
             planets: 0,
             shipsRate: 0,
             planetsRate: 0,
-            shipsProduced: this.shipsProduced[this.frame][i]
+            shipsProduced: 0
           }
         }
-
-        let frame = this.replay.frames[this.frame]
-        for (let owner of Object.keys(frame.ships)) {
-          count[owner].ships += Object.values(frame.ships[owner]).length
-        }
-
-        for (let planet of Object.values(frame.planets)) {
-          if (planet.owner !== null) {
-            count[planet.owner].planets++
-          }
-        }
-        // total
-        let total = {ships: 0, planets: 0}
-        for (let item of Object.values(count)) {
-          total.ships += item.ships
-          total.planets += item.planets
-        }
-
-        for (let owner in Object.keys(count)) {
-          count[owner].shipsRate = total.ships == 0 ? 0 : count[owner].ships / total.ships
-          count[owner].planetsRate = total.planets == 0 ? 0 : count[owner].planets / total.planets
-        }
-
-        return count
       },
       chartData: function () {
         let output = {
@@ -688,33 +664,33 @@
         }
       },
       selectedPlanet: function () {
-        if (this.selected.kind === 'planet') {
-          let frame = this.replay.frames[this.frame]
-          let state = frame.planets[this.selected.id]
-          if (state) {
-            return {
-              base: this.replay.planets[this.selected.id],
-              state: state
-            }
-          }
-        }
+        // if (this.selected.kind === 'planet') {
+        //   let frame = this.replay.full_frames[this.frame]
+        //   let state = frame.planets[this.selected.id]
+        //   if (state) {
+        //     return {
+        //       base: this.replay.planets[this.selected.id],
+        //       state: state
+        //     }
+        //   }
+        // }
         return null
       },
       selectedShip: function () {
-        if (this.selected.kind === 'ship') {
-          let frame = this.replay.frames[this.frame]
-          let state = frame.ships[this.selected.owner][this.selected.id]
-
-          if (state) {
-            const moves = this.replay.moves[this.frame][this.selected.owner][0];
-            if (moves && moves[this.selected.id] && moves[this.selected.id].type === "thrust") {
-              const move = moves[this.selected.id];
-              state.vel_x = move.magnitude * Math.cos(move.angle * Math.PI / 180);
-              state.vel_y = move.magnitude * Math.sin(move.angle * Math.PI / 180);
-            }
-            return state;
-          }
-        }
+        // if (this.selected.kind === 'ship') {
+        //   let frame = this.replay.frames[this.frame]
+        //   let state = frame.ships[this.selected.owner][this.selected.id]
+        //
+        //   if (state) {
+        //     const moves = this.replay.moves[this.frame][this.selected.owner][0];
+        //     if (moves && moves[this.selected.id] && moves[this.selected.id].type === "thrust") {
+        //       const move = moves[this.selected.id];
+        //       state.vel_x = move.magnitude * Math.cos(move.angle * Math.PI / 180);
+        //       state.vel_y = move.magnitude * Math.sin(move.angle * Math.PI / 180);
+        //     }
+        //     return state;
+        //   }
+        // }
         return null
       },
       selectedPoint: function () {
@@ -743,35 +719,27 @@
       getPlayers: async function () {
         if (!this.replay) return []
 
-        let ranks = this.replay.stats
+        //let ranks = {}
 
-        for (let id of Object.keys(this.replay.stats)) {
-          ranks[id].index = parseInt(id)
-          ranks[id].botname = this.replay.player_names[id]
-          ranks[id].name = this.getPlayerName(this.replay.player_names[id])
-          if (this.game) {
-            let player = {}
-            Object.getOwnPropertyNames(this.game.players).map(userId => {
-              if (this.game.players[userId].player_index == id) {
-                player = this.game.players[userId]
-                player.id = userId
-              }
-            })
-            ranks[id].version = player.version_number
-            ranks[id].id = player.id
-            const user = await api.get_user(player.id)
-            ranks[id].tier = user.tier
-            ranks[id].userRank = user.rank
-          } else {
-            const version = ranks[id].botname.match(/v(\d+)$/, '$1')
-            if (version) {
-              ranks[id].version = version[1]
-            } else {
-              ranks[id].version = null
-            }
-          }
-        }
-        return Object.values(ranks)
+        // for (let player of Object.keys(this.replay.game_statistics.player_statistics)) {
+        //   let id = player.player_id
+        //   ranks[id].index = parseInt(id)
+        //   ranks[id].botname = this.replay.players[id]
+        //   ranks[id].name = this.replay.players[id].name
+        //   if (this.game) {
+        //     let player = {}
+        //     Object.getOwnPropertyNames(this.game.players).map(userId => {
+        //       if (this.game.players[userId].player_index == id) {
+        //         player = this.game.players[userId]
+        //         player.id = userId
+        //       }
+        //     })
+        //     ranks[id].id = player.player_id
+        //   } else {
+        //       ranks[id].version = null
+        //   }
+        // }
+        return Object.values(this.replay.game_statistics.player_statistics)
       },
       getSortedPlayers: async function () {
         const players = await this.getPlayers()
