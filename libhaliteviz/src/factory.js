@@ -41,7 +41,7 @@ export class Factory {
         //this.baseHaloAlpha = 0.2;
 
         // TODO: make not about r
-        this.core.width = this.core.height = assets.CELL_SIZE * pixelsPerUnit;
+        this.core.width = this.core.height = 2 * assets.CELL_SIZE * pixelsPerUnit;
         // anchor factory in center for rotation
         this.core.anchor.x = 0.5;
         this.core.anchor.y = 0.5;
