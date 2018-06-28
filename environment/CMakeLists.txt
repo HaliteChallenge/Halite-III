@@ -11,7 +11,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -pedantic -Wno-unused-variable")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fno-inline -Wall -Wextra -pedantic -Wno-unused-variable -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fno-inline -Wall -Wextra -pedantic -Wno-unused-variable")
 
 # versions of cmake before 3.4 always link with -rdynamic on linux, which breaks static linkage with clang
 # unfortunately travis right now only has cmake 3.2, so have to do this workaround for now
@@ -93,14 +93,31 @@ add_library(halite_core OBJECT ${SOURCE_FILES})
 add_executable(halite $<TARGET_OBJECTS:halite_core> main.cpp)
 add_dependencies(halite VERSION_CHECK libzstd_static)
 
-file(GLOB_RECURSE TEST_FILES ${CMAKE_SOURCE_DIR}/test/*.[ch]*)
-add_executable(halite_test $<TARGET_OBJECTS:halite_core> ${TEST_FILES} ${CMAKE_SOURCE_DIR}/test/TestMain.cpp)
-
 set(TEST_FILES ${SOURCE_FILES})
 file(GLOB_RECURSE SOURCE ${CMAKE_SOURCE_DIR}/test/*.[ch]*)
 set(TEST_FILES "${TEST_FILES}" ${SOURCE})
-add_dependencies(halite_test libzstd_static)
 
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules)
+    include(CodeCoverage)
+    set(COVERAGE_EXCLUDES '${CMAKE_SOURCE_DIR}/external/*' '${CMAKE_SOURCE_DIR}/test/*' '/usr/include/*')
+    if(APPLE)
+        set(COVERAGE_EXCLUDES ${COVERAGE_EXCLUDES} '/Applications/Xcode.app/*')
+    endif()
+
+    add_library(halite_core_coverage OBJECT ${SOURCE_FILES})
+    target_compile_options(halite_core_coverage PRIVATE -fprofile-arcs -ftest-coverage)
+
+    file(GLOB_RECURSE TEST_FILES ${CMAKE_SOURCE_DIR}/test/*.[ch]*)
+    add_executable(halite_test $<TARGET_OBJECTS:halite_core_coverage> ${TEST_FILES} ${CMAKE_SOURCE_DIR}/test/TestMain.cpp)
+
+    setup_target_for_coverage(NAME coverage EXECUTABLE halite_test)
+    target_compile_options(halite_test PRIVATE -fprofile-arcs -ftest-coverage)
+else()
+    add_executable(halite_test $<TARGET_OBJECTS:halite_core> ${TEST_FILES} ${CMAKE_SOURCE_DIR}/test/TestMain.cpp)
+endif()
+
+add_dependencies(halite_test libzstd_static)
 if (APPLE)
     # No static linkage here - https://stackoverflow.com/questions/5259249/creating-static-mac-os-x-c-build
     target_link_libraries(halite pthread libzstd_static)
@@ -109,18 +126,10 @@ else()
     # On Linux, make sure to link using the whole-archive option
     # See: https://stackoverflow.com/questions/35116327
     target_link_libraries(halite -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static)
-    target_link_libraries(halite_test gcov -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static Catch2::Catch)
-endif()
-
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules)
-    include(CodeCoverage)
-    APPEND_COVERAGE_COMPILER_FLAGS()
-    set(COVERAGE_EXCLUDES '${CMAKE_SOURCE_DIR}/external/*' '${CMAKE_SOURCE_DIR}/test/*' '/usr/include/*')
-    if(APPLE)
-        set(COVERAGE_EXCLUDES ${COVERAGE_EXCLUDES} '/Applications/Xcode.app/*')
+    target_link_libraries(halite_test -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static Catch2::Catch)
+    if(CMAKE_BUILD_TYPE MATCHES Debug)
+        target_link_libraries(halite_test gcov)
     endif()
-    setup_target_for_coverage(NAME coverage EXECUTABLE halite_test)
 endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${EXTERNAL_INSTALL_LOCATION}/catch/contrib)
