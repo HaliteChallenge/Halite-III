@@ -98,7 +98,9 @@ SCENARIO("Players are encoded to JSON and bot serial format correctly", "[player
             std::stringstream stream;
             stream << player;
             THEN("output is correct") {
-                REQUIRE(stream.str() == "1 1 2\n0 0 " + (std::stringstream() << *entity).str());
+                std::stringstream stream2;
+                stream2 << *entity;
+                REQUIRE(stream.str() == "1 1 2\n0 0 " + stream2.str());
             }
         }
     }
