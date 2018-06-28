@@ -1,13 +1,13 @@
+#include "nlohmann/json.hpp"
+
+#include "catch.hpp"
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wkeyword-macro"
 #define protected public
 #pragma GCC diagnostic pop
 
 #include "Grid.hpp"
-
-#include "nlohmann/json.hpp"
-
-#include "catch.hpp"
 
 using namespace hlt;
 
