@@ -39,16 +39,11 @@ export class Map {
                 //this.owners[row][col] = row + col > assets.REPLAY_WIDTH ? {owner: 0} : {owner: 1};
             }
         }
-       // console.log(this.owners);
 
         let baseMapTexture = this.generateMapTexture(this.rows, this.cols, this.productions, this.productionToColor,
-            false, this.renderer, assets.MAP_ALPHA, this.scale);
+            true, this.renderer, assets.MAP_ALPHA, this.scale, this.constants);
 
         this.baseMap = new PIXI.Sprite(baseMapTexture);
-        // this.starfield.width = replay.width * this.scale * assets.CELL_SIZE;
-        // this.starfield.height = replay.height * this.scale * assets.CELL_SIZE;
-        this.baseMap.width = assets.VISUALIZER_SIZE;
-        this.baseMap.height = assets.VISUALIZER_HEIGHT;
 
         this.baseMap.interactive = true;
 
@@ -56,13 +51,13 @@ export class Map {
             const localCoords = e.data.global;
             const relativeX = localCoords.x;
             const relativeY = localCoords.y;
-            const coordX = (relativeX / assets.VISUALIZER_SIZE) * assets.REPLAY_WIDTH;
-            const coordY = (relativeY / assets.VISUALIZER_HEIGHT) * assets.REPLAY_HEIGHT;
+            const coordX = (relativeX / assets.VISUALIZER_SIZE) * replay.production_map.width;
+            const coordY = (relativeY / assets.VISUALIZER_HEIGHT) * replay.production_map.height;
             const cellX = Math.floor(coordX);
             const cellY = Math.floor(coordY);
             const production = this.productions[cellY][cellX];
             onSelect("point", { x: cellX, y: cellY, production: production,
-                owner: this.owners[cellX][cellY].owner});
+                owner: 0}); //this.owners[cellX][cellY].owner});
         });
     }
 
@@ -71,33 +66,37 @@ export class Map {
      * @param productions: an array containing the production value of each cell
      * @param row: the row of the cell of interest
      * @param col: the column of the cell of interest
-     * Returns a color
+     * Returns a color, alpha pair. Darker = more production
      */
-    productionToColor(productions, row, col) {
+    productionToColor(productions, row, col, MAX_PRODUCTION) {
         const production = productions[row][col];
-        if (production / this.constants.MAX_CELL_PRODUCTION < 0.33) {
-            return assets.MAP_COLOR_LIGHT;
+        if (production === 0) {
+            // TODO: determine best base color for factories
+            return 0x000000;
         }
-        else if (production / this.constants.MAX_CELL_PRODUCTION < 0.66) {
-            return assets.MAP_COLOR_MEDIUM;
+        let production_fraction = production / MAX_PRODUCTION;
+        if (production_fraction < 0.33) {
+            return [assets.MAP_COLOR_LIGHT, (production_fraction / 0.33)];
+        }
+        else if (production_fraction < 0.66) {
+            return [assets.MAP_COLOR_MEDIUM, (production_fraction - 0.33) / 0.33];
         }
         else {
-            return assets.MAP_COLOR_DARK;
+            return [assets.MAP_COLOR_DARK, (production_fraction - 0.66) / 0.34];
         }
     }
     /**
      * Generate a map texture to be used as a sprite
      * Can be used to draw both the base production map and any ownership tinting
      */
-    generateMapTexture(rows, cols, mapArray, squareToColor, drawLines, renderer, alpha, scale) {
+    generateMapTexture(rows, cols, mapArray, squareToColor, drawLines, renderer, alpha, scale, constants) {
         let mapGraphics = new PIXI.Graphics();
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < cols; col++) {
-                let color = squareToColor(mapArray, row, col);
-                mapGraphics.beginFill(color, alpha);
-                mapGraphics.drawRect(col * assets.MAP_SQUARE_SIZE, row * assets.MAP_SQUARE_SIZE,
-                    scale * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE,
-                    scale * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE);
+                let color_arr = squareToColor(mapArray, row, col, constants.MAX_CELL_PRODUCTION);
+                mapGraphics.beginFill(color_arr[0], color_arr[1]);
+                mapGraphics.drawRect(col * scale, row * scale, scale, scale);
+
                 mapGraphics.endFill();
             }
         }
@@ -107,16 +106,16 @@ export class Map {
             for (let row = 0; row <= rows + 2; row++) {
                 // move to start of row, draw line
                 // TODO: why are there 2 more columns and rows than I expect?
-                mapGraphics.moveTo(0, row * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE);
-                mapGraphics.lineTo((cols + 2) * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE,
-                    row * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE);
+                mapGraphics.moveTo(0, row * scale);
+                mapGraphics.lineTo((cols + 2) * scale,
+                    row * scale);
             }
 
             for (let col = 0; col <= cols + 2; col++) {
                 // move to start of col, draw line
-                mapGraphics.moveTo(col * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE, 0);
-                mapGraphics.lineTo(col * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE,
-                    (rows + 2) * assets.CELL_SIZE * assets.MAP_SQUARE_SIZE);
+                mapGraphics.moveTo(col * scale, 0);
+                mapGraphics.lineTo(col * scale,
+                    (rows + 2) * scale);
             }
         }
 
