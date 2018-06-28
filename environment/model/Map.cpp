@@ -54,8 +54,8 @@ void Map::to_json(nlohmann::json &json) const {
 dimension_type Map::distance(const Location &from, const Location &to) const {
     const auto [from_x, from_y] = from;
     const auto [to_x, to_y] = to;
-    const auto x_dist = abs(from_x - to_x);
-    const auto y_dist = abs(from_y - to_y);
+    const auto x_dist = std::abs(from_x - to_x);
+    const auto y_dist = std::abs(from_y - to_y);
     return std::min(x_dist, width - x_dist) + std::min(y_dist, height - y_dist);
 }
 
