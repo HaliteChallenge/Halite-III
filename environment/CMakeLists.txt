@@ -10,8 +10,8 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif(NOT CMAKE_BUILD_TYPE)
 
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -pedantic -Wno-unused-variable -Qunused-arguments")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -Wall -Wextra -pedantic -Wno-unused-variable -Qunused-arguments")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -pedantic -Wno-unused-variable")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -Wall -Wextra -pedantic -Wno-unused-variable  -fprofile-arcs -ftest-coverage")
 
 # versions of cmake before 3.4 always link with -rdynamic on linux, which breaks static linkage with clang
 # unfortunately travis right now only has cmake 3.2, so have to do this workaround for now
@@ -109,7 +109,7 @@ else()
     # On Linux, make sure to link using the whole-archive option
     # See: https://stackoverflow.com/questions/35116327
     target_link_libraries(halite -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static)
-    target_link_libraries(halite_test -Wl,--whole-archive pthread -Wl,--whole-archive -static libzstd_static Catch2::Catch)
+    target_link_libraries(halite_test gcov -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static Catch2::Catch)
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
