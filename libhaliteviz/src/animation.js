@@ -32,8 +32,8 @@ export class SpritesheetFrameAnimation extends FrameAnimation {
         let sprite = PIXI.Sprite.from(frames[0]);
         sprite.anchor.x = 0.5;
         sprite.anchor.y = 0.5;
-        sprite.position.x = cellSize * x;
-        sprite.position.y = cellSize * y;
+        sprite.position.x = cellSize * x + cellSize / 2;
+        sprite.position.y = cellSize * y + cellSize / 2;
         sprite.width = cellSize * sizeFactor;
         sprite.height = cellSize * sizeFactor;
         sprite.tint = tintColor;
@@ -75,7 +75,7 @@ export class ShipExplosionFrameAnimation extends SpritesheetFrameAnimation {
     constructor(event, delayTime, cellSize, container) {
         super({
             sheet: assets.SHIP_EXPLOSION_SHEET,
-            sizeFactor: 10,
+            sizeFactor: 5,
             x: event.location[0],
             y: event.location[1],
             tintColor: assets.PLAYER_COLORS[event.owner_id],

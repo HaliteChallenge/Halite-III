@@ -31,6 +31,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         // Store map size to make movement easier
         this.map_width = this.visualizer.replay.production_map.width;
         this.map_height = this.visualizer.replay.production_map.height;
+        this.energy_loss = this.visualizer.replay.GAME_CONSTANTS.BASE_TURN_ENERGY_LOSS;
 
         this.owner = record.owner;
         this.energy = record.energy;
@@ -94,7 +95,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         let y_move = 0;
 
         // Move the sprite according to move commands and redraw in new location
-        if (this.visualizer.frame && this.visualizer.frame < this.visualizer.replay.full_frames.length - 1) {
+        if (this.visualizer.frame < this.visualizer.replay.full_frames.length - 1) {
             let moves = this.visualizer.replay.full_frames[this.visualizer.frame].moves;
             let player_moves = moves[this.owner];
             for (let move_idx = 0; move_idx < player_moves.length; move_idx++) {
@@ -103,7 +104,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                     if (move.direction === "n") {
                         direction = Math.PI;
                         x_move = 0;
-                        y_move = 1;
+                        y_move = -1;
 
                     }
                     if (move.direction === "e") {
@@ -115,7 +116,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                     if (move.direction === "s") {
                         direction = 0;
                         x_move = 0;
-                        y_move = -1;
+                        y_move = 1;
 
                     }
                     if (move.direction === "w") {
@@ -133,6 +134,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                 }
             }
         }
+        this.energy -= this.energy_loss;
 
         const pixelX = this.visualizer.scale * CELL_SIZE * this.x + this.visualizer.scale * CELL_SIZE / 2;
         const pixelY = this.visualizer.scale * CELL_SIZE * this.y + this.visualizer.scale * CELL_SIZE / 2;

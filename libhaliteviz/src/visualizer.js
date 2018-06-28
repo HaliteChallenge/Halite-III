@@ -27,6 +27,7 @@ export class HaliteVisualizer {
         //this.stats = new statistics.Statistics(replay);
 
         this.frame = 0;
+        this.prevFrame = -1;
         this.time = 0;
         this._playing = false;
 
@@ -102,7 +103,8 @@ export class HaliteVisualizer {
         this.lights.blendMode = PIXI.BLEND_MODES.SCREEN;
         this.lights.filters = [new GlowFilter(20, 1.5, 0.5, 0xFFFFFF, 0.3)];
 
-        this.entities = [];
+        this.entities = Array.from(Array(this.map_height), () => new Array(this.map_width));
+        this.entities_list = [];
         this.factories = [];
         this.fish = [];
         this.player_energies = {};
@@ -116,7 +118,11 @@ export class HaliteVisualizer {
             for (let entity_json of this.replay.players[i].entities) {
                 let entity_object = {"x" : entity_json.x, "y" : entity_json.y, "energy" : entity_json.energy, "owner": this.replay.players[i].player_id};
                 let new_entity = new playerSprite(this, entity_object);
-                this.entities.push(new_entity);
+                if (typeof this.entities[new_entity.y][new_entity.x] === "undefined") {
+                    this.entities[new_entity.y][new_entity.x] = {}
+                }
+                this.entities[new_entity.y][new_entity.x][new_entity.owner] = new_entity;
+                this.entities_list.push(new_entity);
                 new_entity.attach(this.entityContainer);
             }
 
@@ -308,7 +314,7 @@ export class HaliteVisualizer {
     advanceTime(time) {
         // Interpolate between frames for smoother feel
         const prevFrame = this.frame;
-
+        this.prevFrame = prevFrame;
         this.time += time;
         if (this.time >= 1.0) {
             this.frame++;
@@ -360,16 +366,16 @@ export class HaliteVisualizer {
     update() {
         this.deathFlags = {};
         this.newEntities = [];
-
-        if (this.currentFrame.events) {
-            for (let event of this.currentFrame.events) {
+        console.log(this.frame);
+        if (this.replay.full_frames[this.frame].events) {
+            for (let event of this.replay.full_frames[this.frame].events) {
                 // How much to delay (in terms of ticks) before
                 // actually playing the event
                 const delayTime = 0;
                 const cellSize = assets.CELL_SIZE * this.scale;
 
                 if (event.type === "death") {
-                    console.log("should be a death", event.owner_id, event.location);
+                    console.log("should be a death", event.owner_id, event.location[0], event.location[1]);
                     // Use default draw function
                     this.animationQueue.push(
                         new animation.ShipExplosionFrameAnimation(
@@ -384,8 +390,17 @@ export class HaliteVisualizer {
                     // add the entity to the list of entities
                     let entity_object = {"x" : event.location[0], "y" : event.location[1], "energy" : event.energy, "owner": event.owner_id};
                     let new_entity = new playerSprite(this, entity_object);
-                    this.entities.push(new_entity);
-                    new_entity.attach(this.entityContainer);
+                    if (typeof this.entities[new_entity.y][new_entity.x] === "undefined") {
+                        this.entities[new_entity.y][new_entity.x] = {}
+                    }
+                    // check if existing entity on square, in which case merge
+                    if (this.entities[new_entity.y][new_entity.x].hasOwnProperty(new_entity.owner)) {
+                        this.entities[new_entity.y][new_entity.x][new_entity.owner].energy += new_entity.energy;
+                    } else {
+                        this.entities[new_entity.y][new_entity.x][new_entity.owner] = new_entity;
+                        this.entities_list.push(new_entity);
+                        new_entity.attach(this.entityContainer);
+                    }
                     this.animationQueue.push(new animation.FrameAnimation(
                         100, delayTime,
                         () => {
@@ -410,7 +425,46 @@ export class HaliteVisualizer {
                 }
             }
         }
-        this.draw();
+        for (let entity_index of Object.keys(this.entities_list)) {
+            let entity = this.entities_list[entity_index];
+            // let deathFrame = 500;
+            // if (this.deathFlags[entity.owner_id] &&
+            //     typeof this.deathFlags[entity.owner_id][[entity.x, entity.y]] !== "undefined") {
+            //     deathFrame = this.deathFlags[entity.owner_id][[entity.x, entity.y]];
+            //     console.log("death frame");
+            // }
+
+            // remove from old position in aray and add to new one
+            if (!this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
+                console.log("floating entity");
+            } else {
+                delete this.entities[entity.y][entity.x][entity.owner];
+            }
+
+            entity.update();
+
+            // determine entity death from energy
+            if (entity.energy <= 0) {
+                console.log("entity death", entity.owner, entity.x, entity.y);
+
+                entity.destroy();
+                delete this.entities_list[entity_index];
+            } else { // Entity is alive so update location
+                if (typeof this.entities[entity.y][entity.x] === "undefined") {
+                    this.entities[entity.y][entity.x] = {};
+                }
+                // check for entity in new cell, and merge if needed
+                if (this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
+                    this.entities[entity.y][entity.x][entity.owner].energy += entity.energy;
+                    entity.destroy();
+                    delete this.entities_list[entity_index];
+                } else {
+                    this.entities[entity.y][entity.x][entity.owner] = entity;
+                }
+            }
+
+        }
+        // this.draw();
     }
 
     draw(dt=0) {
@@ -426,25 +480,48 @@ export class HaliteVisualizer {
         // }
         // TODO: determine map ownership
         //this.baseMap.update(this.currentFrame);
-
-        for (let entity_index = 0; entity_index < this.entities.length; entity_index++) {
-            let entity = this.entities[entity_index];
-            let deathFrame = 500;
-            if (this.deathFlags[entity.owner_id] &&
-                typeof this.deathFlags[entity.owner_id][[entity.x, entity.y]] !== "undefined") {
-                deathFrame = this.deathFlags[entity.owner_id][[entity.x, entity.y]];
-                console.log("death frame");
-            }
-
-            if (this.frame < deathFrame) {
-                entity.update();
-            } else {
-                entity.destroy();
-                console.log("trying to delete entity");
-                delete this.entities[entity_index];
-            }
+        if (this.frame !== this.prevFrame) {
+            this.prevFrame = this.frame;
+            // for (let entity_index of Object.keys(this.entities_list)) {
+            //     let entity = this.entities_list[entity_index];
+            //     // let deathFrame = 500;
+            //     // if (this.deathFlags[entity.owner_id] &&
+            //     //     typeof this.deathFlags[entity.owner_id][[entity.x, entity.y]] !== "undefined") {
+            //     //     deathFrame = this.deathFlags[entity.owner_id][[entity.x, entity.y]];
+            //     //     console.log("death frame");
+            //     // }
+            //
+            //     // remove from old position in aray and add to new one
+            //     if (!this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
+            //         console.log("floating entity");
+            //     } else {
+            //         delete this.entities[entity.y][entity.x][entity.owner];
+            //     }
+            //
+            //     entity.update();
+            //
+            //     // determine entity death from energy
+            //     if (entity.energy <= 0) {
+            //         console.log("entity death", entity.owner, entity.x, entity.y);
+            //
+            //         entity.destroy();
+            //         delete this.entities_list[entity_index];
+            //     } else { // Entity is alive so update location
+            //         if (typeof this.entities[entity.y][entity.x] === "undefined") {
+            //             this.entities[entity.y][entity.x] = {};
+            //         }
+            //         // check for entity in new cell, and merge if needed
+            //         if (this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
+            //             this.entities[entity.y][entity.x][entity.owner].energy += entity.energy;
+            //             entity.destroy();
+            //             delete this.entities_list[entity_index];
+            //         } else {
+            //             this.entities[entity.y][entity.x][entity.owner] = entity;
+            //         }
+            //     }
+            //
+            // }
         }
-
         // dt comes from Pixi ticker, and the unit is essentially frames
         let queue = this.animationQueue;
         this.animationQueue = [];
