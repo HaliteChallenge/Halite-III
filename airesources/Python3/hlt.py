@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-import numpy
-import sys, random, time, copy
+import sys, copy
 
 base_players = None # Need to remember this
 
