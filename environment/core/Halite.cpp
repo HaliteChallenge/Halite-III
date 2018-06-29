@@ -63,8 +63,8 @@ Halite::Halite(const Config &config,
         replay_struct(this->game_statistics, parameters.num_players, parameters.seed, this->game_map),
         config(config),
         parameters(parameters),
-        networking(net::Networking(networking_config, this)),
-        impl(std::make_unique<HaliteImpl>(this)) {
+        networking(net::Networking(networking_config, *this)),
+        impl(std::make_unique<HaliteImpl>(*this)) {
     for (const auto &player : players) {
         this->players[player.player_id] = player;
         game_statistics.player_statistics.emplace_back(player.player_id);

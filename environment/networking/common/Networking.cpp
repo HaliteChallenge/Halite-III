@@ -23,17 +23,17 @@ void Networking::initialize_player(Player &player) {
     std::stringstream message_stream;
     Logging::log("Sending init message to player " + std::to_string(player.player_id));
     // Send the number of players and player ID
-    message_stream << game->players.size()
+    message_stream << game.players.size()
                    << " " << player.player_id << std::endl;
     // Send each player's ID and factory location
-    for (const auto &[player_id, other_player] : game->players) {
+    for (const auto &[player_id, other_player] : game.players) {
         message_stream << player_id
                        << " " << other_player.factory_location.first
                        << " " << other_player.factory_location.second
                        << std::endl;
     }
     // Send the map
-    message_stream << game->game_map;
+    message_stream << game.game_map;
     connection->send_string(message_stream.str());
     Logging::log("Init message sent to player " + std::to_string(player.player_id));
     // Receive a name from the player.
@@ -55,8 +55,8 @@ void Networking::initialize_player(Player &player) {
 std::vector<Command> Networking::handle_frame(const Player &player) {
     std::stringstream message_stream;
     // Send the turn number, then each player in the game.
-    message_stream << game->turn_number << std::endl;
-    for (const auto &[_, other_player] : game->players) {
+    message_stream << game.turn_number << std::endl;
+    for (const auto &[_, other_player] : game.players) {
         message_stream << other_player;
     }
     connections[player]->send_string(message_stream.str());
