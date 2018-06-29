@@ -1,5 +1,4 @@
 #include <set>
-#include <Logging.hpp>
 
 #include "Map.hpp"
 
