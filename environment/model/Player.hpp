@@ -77,7 +77,7 @@ struct Player : Transactional<PlayerTransaction> {
      * @param location The location for the entity.
      * @param entity The entity to add.
      */
-    void add_entity(const Location &location, std::shared_ptr<Entity> &entity);
+    void add_entity(const Location &location, std::shared_ptr<Entity> entity);
 
     /**
      * Remove an entity by location.

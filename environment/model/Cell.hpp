@@ -81,7 +81,7 @@ public:
      * @param player The player for the entity.
      * @param entity The entity to add.
      */
-    void add_entity(const Player &player, std::shared_ptr<Entity> &entity);
+    void add_entity(const Player &player, std::shared_ptr<Entity> entity);
 
     /**
      * Remove an entity by player.

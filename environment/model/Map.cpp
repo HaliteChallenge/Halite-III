@@ -135,7 +135,7 @@ bool MapTransaction::commit() {
     }
     for (auto &[player, entities] : moved_entities) {
         for (auto &[location, entity] : entities) {
-            map.at(location)->add_entity(player, entity);
+            map.at(location)->add_entity(player, std::move(entity));
         }
     }
     return true;

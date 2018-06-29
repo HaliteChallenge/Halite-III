@@ -78,7 +78,7 @@ std::shared_ptr<Entity> Player::find_entity(const Location &location) const {
  * @param location The location for the entity.
  * @param entity The entity to add.
  */
-void Player::add_entity(const Location &location, std::shared_ptr<Entity> &entity) {
+void Player::add_entity(const Location &location, std::shared_ptr<Entity> entity) {
     if (auto entity_iterator = entities.find(location); entity_iterator != entities.end()) {
         // If the player already has an entity there, merge
         entity_iterator->second->energy += entity->energy;
@@ -124,7 +124,7 @@ bool PlayerTransaction::commit() {
         moved_entities.emplace_back(to, player.remove_entity(from));
     }
     for (auto &[location, entity] : moved_entities) {
-        player.add_entity(location, entity);
+        player.add_entity(location, std::move(entity));
     }
     return true;
 }
