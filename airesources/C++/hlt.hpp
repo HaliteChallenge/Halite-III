@@ -34,16 +34,20 @@ struct hash<hlt::Location> {
 namespace hlt {
 
 enum class Direction : char {
+    STILL = 'o',
     NORTH = 'n',
     EAST = 'e',
     SOUTH = 's',
-    WEST = 'w',
+    WEST = 'w'
 };
-static const std::array<Direction, 4> DIRECTIONS = { Direction::NORTH, Direction::EAST, Direction::SOUTH, Direction::WEST };
+static const std::array<Direction, 5> DIRECTIONS = { Direction::STILL, Direction::NORTH, Direction::EAST, Direction::SOUTH, Direction::WEST };
+static const std::array<Direction, 4> CARDINALS = { Direction::NORTH, Direction::EAST, Direction::SOUTH, Direction::WEST };
 typedef std::unordered_map<Location, Direction> Moves;
 static std::ostream & operator<<(std::ostream & ostream, const Moves & moves) {
 	for(auto &[location, direction] : moves) {
-		ostream << "m " << location.x << ' ' << location.y << ' ' << static_cast<char>(direction) << ' ';
+		if(direction != Direction::STILL) {
+			ostream << "m " << location.x << ' ' << location.y << ' ' << static_cast<char>(direction) << ' ';
+		}
 	}
 	return ostream;
 }
@@ -113,6 +117,30 @@ static std::istream &operator>>(std::istream & istream, Cell & cell) {
 struct Map {
 	dimension_type width, height;
 	std::vector< std::vector<Cell> > grid;
+	dimension_type distance(const Location & l1, const Location & l2) const {
+	    const dimension_type x_dist = std::abs(l2.x - l1.x);
+	    const dimension_type y_dist = std::abs(l2.y - l1.y);
+	    return std::min(x_dist, width - x_dist) + std::min(y_dist, height - y_dist);
+	}
+	Location getLocation(Location l, const hlt::Direction & d) const {
+	    if(d == Direction::NORTH) {
+	    	l.y--;
+	    	if(l.y == -1) l.y = height-1;
+	    }
+	    else if(d == Direction::EAST) {
+	    	l.x++;
+	    	if(l.x == width) l.x = 0;
+	    }
+	    else if(d == Direction::SOUTH) {
+	    	l.y++;
+	    	if(l.y == height) l.y = 0;
+	    }
+	    else if(d == Direction::WEST) {
+	    	l.x--;
+	    	if(l.x == -1) l.x = width-1;
+	    }
+	    return l;
+	}
 };
 static std::istream &operator>>(std::istream & istream, Map & map) {
 	istream >> map.width >> map.height;
