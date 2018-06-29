@@ -70,6 +70,13 @@ public:
     std::unordered_map<Player::id_type, std::shared_ptr<Entity>> entities;
 
     /**
+     * Find an entity by player.
+     * @param player The player to search.
+     * @return The entity for that player, or null if not found.
+     */
+    std::shared_ptr<Entity> find_entity(const Player &player) const;
+
+    /**
      * Add an entity by player, possibly merging with an existing entity.
      * @param player The player for the entity.
      * @param entity The entity to add.

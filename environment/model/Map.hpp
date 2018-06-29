@@ -11,6 +11,7 @@
 #include "Entity.hpp"
 #include "Grid.hpp"
 #include "Location.hpp"
+#include "Transaction.hpp"
 
 namespace hlt {
 
@@ -18,14 +19,51 @@ namespace mapgen {
 class Generator;
 }
 
+class Map;
+
+/** Transactions on Maps, which execute a series of player commands atomically. */
+class MapTransaction : public Transaction {
+    /** The command buffer. */
+    std::vector<std::tuple<Player, Location, Location>> commands;
+
+public:
+    /** The map. */
+    Map &map;
+
+    /**
+     * Construct MapTransaction from Map.
+     * @param map The Map.
+     */
+    explicit MapTransaction(Map &map) : map(map) {}
+
+    /**
+     * Attempt to commit the transaction.
+     * @return True if the commit succeeded.
+     */
+    bool commit() override;
+
+    /**
+     * Add an entity move to the transaction.
+     *
+     * @param player The player owning the entity.
+     * @param from The source location of the entity.
+     * @param to The destination location of the entity.
+     */
+    void move_entity(const Player &player, const Location &from, const Location &to) {
+        commands.emplace_back(player, from, to);
+    }
+};
+
 /** The map of cells. */
-class Map : public Grid<Cell> {
+class Map : public Grid<Cell>, public Transactional<MapTransaction> {
     friend class hlt::mapgen::Generator;
 
 public:
     std::string map_generator = "none";    /**< The name of the map generator used to generate the map */
     /** The number of neighbors of each cell on the map grid. */
     static constexpr auto NEIGHBOR_COUNT = 4;
+
+    using Transaction = MapTransaction;
 
     /**
      * Convert a Map to JSON format.
@@ -81,7 +119,14 @@ public:
      * @param location The location to move.
      * @param direction The direction to move it in.
      */
-    void move_location(Location &location, const Direction &direction);
+    void move_location(Location &location, const Direction &direction) const;
+
+    /**
+     * Begin a transaction.
+     *
+     * @return New Transaction object.
+     */
+    Transaction begin_transaction() override { return Transaction(*this); };
 
 private:
     /**
