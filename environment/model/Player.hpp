@@ -82,8 +82,9 @@ struct Player : Transactional<PlayerTransaction> {
     /**
      * Remove an entity by location.
      * @param location The location of the entity.
+     * @return The entity there, or null if not found.
      */
-    void remove_entity(const Location &location);
+    std::shared_ptr<Entity> remove_entity(const Location &location);
 
     /**
      * Begin a transaction.

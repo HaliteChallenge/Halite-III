@@ -86,8 +86,9 @@ public:
     /**
      * Remove an entity by player.
      * @param player The player of the entity.
+     * @return The entity for that player, or null of not found.
      */
-    void remove_entity(const Player &player);
+    std::shared_ptr<Entity> remove_entity(const Player &player);
 
     /** Get the production of this cell. */
     virtual energy_type production() const { return BASE_PRODUCTION; }

@@ -79,9 +79,16 @@ void BaseCell::add_entity(const Player &player, std::shared_ptr<Entity> &entity)
 /**
  * Remove an entity by player.
  * @param player The player of the entity.
+ * @return The entity for that player, or null of not found.
  */
-void BaseCell::remove_entity(const Player &player) {
-    entities.erase(player.player_id);
+std::shared_ptr<Entity> BaseCell::remove_entity(const Player &player) {
+    if (auto entity = entities.find(player.player_id); entity != entities.end()) {
+        auto found = std::move(entity->second);
+        entities.erase(player.player_id);
+        return found;
+    } else {
+        return std::shared_ptr<Entity>();
+    }
 }
 
 /**

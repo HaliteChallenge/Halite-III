@@ -1,4 +1,5 @@
 #include <set>
+#include <Logging.hpp>
 
 #include "Map.hpp"
 
@@ -128,10 +129,14 @@ bool MapTransaction::commit() {
             return false;
         }
     }
+    std::unordered_map<Player, std::vector<std::pair<Location, std::shared_ptr<Entity>>>> moved_entities;
     for (const auto &[player, from, to] : commands) {
-        auto entity = map.at(from)->find_entity(player);
-        map.at(from)->remove_entity(player);
-        map.at(to)->add_entity(player, entity);
+        moved_entities[player].emplace_back(to, map.at(from)->remove_entity(player));
+    }
+    for (auto &[player, entities] : moved_entities) {
+        for (auto &[location, entity] : entities) {
+            map.at(location)->add_entity(player, entity);
+        }
     }
     return true;
 }

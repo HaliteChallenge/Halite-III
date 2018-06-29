@@ -91,9 +91,16 @@ void Player::add_entity(const Location &location, std::shared_ptr<Entity> &entit
 /**
  * Remove an entity by location.
  * @param location The location of the entity.
+ * @return The entity there, or null if not found.
  */
-void Player::remove_entity(const Location &location) {
-    entities.erase(location);
+std::shared_ptr<Entity> Player::remove_entity(const Location &location) {
+    if (auto entity = entities.find(location); entity != entities.end()) {
+        auto found = std::move(entity->second);
+        entities.erase(location);
+        return found;
+    } else {
+        return std::shared_ptr<Entity>();
+    }
 }
 
 /**
@@ -111,10 +118,13 @@ bool PlayerTransaction::commit() {
             return false;
         }
     }
+    std::vector<std::pair<Location, std::shared_ptr<Entity>>> moved_entities;
+    moved_entities.reserve(commands.size());
     for (const auto &[from, to] : commands) {
-        auto entity = player.find_entity(from);
-        player.remove_entity(from);
-        player.add_entity(to, entity);
+        moved_entities.emplace_back(to, player.remove_entity(from));
+    }
+    for (auto &[location, entity] : moved_entities) {
+        player.add_entity(location, entity);
     }
     return true;
 }
