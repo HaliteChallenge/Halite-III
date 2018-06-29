@@ -294,7 +294,7 @@ twq('track','PageView');
     _global.baseUrl = '{{ site.baseurl }}';
   </script>
   <script>
-    if(window.localStorage["user_id"] != null)
+    if(window.localStorage["user_id"] != null && document.getElementById("subscribeFooter") != null)
     {
       document.getElementById("subscribeFooter").className += ' '+'footer-hidden';
     }
