@@ -38,7 +38,7 @@ private:
     ConnectionFactory<OSConnection> connection_factory; /**< The platform-specific connection factory. */
     Connections connections{};    /**< The current network connections. */
     NetworkingConfig config;      /**< The networking configuration. */
-    const hlt::Halite *game; /**< The current game. Raw pointer because Networking should always be owned by a game. */
+    const hlt::Halite &game;      /**< The current game. */
     std::mutex connections_mutex; /**< Mutex used to protect the connections map. */
 
 public:
@@ -64,7 +64,7 @@ public:
      * @param config The configuration.
      * @param game The Halite game.
      */
-    explicit Networking(NetworkingConfig config, const hlt::Halite *game) :
+    explicit Networking(NetworkingConfig config, const hlt::Halite &game) :
             connection_factory(config), config(config), game(game) {};
 };
 

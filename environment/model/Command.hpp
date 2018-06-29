@@ -50,10 +50,10 @@ public:
 
     /**
      * If the command has an action on the Map, cause it to occur.
-     * @param map The Map to act on.
-     * @param player The player who is issuing the command.
+     * @param map_transaction The Map transaction to act on.
+     * @param player_transaction The Player transaction issuing the command.
      */
-    virtual void act_on_map(Map &map, Player &player) const = 0;
+    virtual void act_on_map(Map::Transaction &map_transaction, Player::Transaction &player_transaction) const = 0;
 
     virtual ~BaseCommand() = default;
 };
@@ -79,10 +79,10 @@ public:
 
     /**
      * Cause the move to act on the Map.
-     * @param map The Map to act on.
-     * @param player The player who is issuing the command.
+     * @param map_transaction The Map transaction to act on.
+     * @param player_transaction The Player transaction issuing the command.
      */
-    void act_on_map(Map &map, Player &player) const override;
+    void act_on_map(Map::Transaction &map_transaction, Player::Transaction &player_transaction) const override;
 
     /**
      * Create MoveCommand from entity ID and direction.

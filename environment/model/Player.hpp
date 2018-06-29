@@ -6,17 +6,53 @@
 #include <map>
 
 #include "Location.hpp"
+#include "Transaction.hpp"
 
 namespace hlt {
 
 struct Entity;
 
+struct Player;
+
+/** Transactions on Players, which execute a series of player commands atomically. */
+class PlayerTransaction : public Transaction {
+    /** The command buffer. */
+    std::vector<std::tuple<Location, Location>> commands;
+public:
+    /** The player. */
+    Player &player;
+
+    /**
+     * Construct PlayerTransaction from Player.
+     * @param player The Player.
+     */
+    explicit PlayerTransaction(Player &player) : player(player) {}
+
+    /**
+     * Attempt to commit the transaction.
+     * @return True if the commit succeeded.
+     */
+    bool commit() override;
+
+    /**
+     * Add an entity move to the transaction.
+     *
+     * @param from The source location of the entity.
+     * @param to The destination location of the entity.
+     */
+    void move_entity(const Location &from, const Location &to) {
+        commands.emplace_back(from, to);
+    }
+};
+
 /** Representation of a Halite player. */
-struct Player {
+struct Player : Transactional<PlayerTransaction> {
     friend class PlayerFactory;
 
     /** Type of Player IDs. */
     using id_type = long;
+
+    using Transaction = PlayerTransaction;
 
     /** Type of the Entity map of a player, where keys are entity locations. */
     // TODO: switch from std::map to more efficient data structure on location keys
@@ -30,17 +66,32 @@ struct Player {
     Entities entities;            /**< Mapping of location of entity to entity shared ptr */
 
     /**
+     * Find an entity by location.
+     * @param location The location to search.
+     * @return The entity there, or null if not found.
+     */
+    std::shared_ptr<Entity> find_entity(const Location &location) const;
+
+    /**
      * Add an entity by location, possibly merging with an existing entity.
      * @param location The location for the entity.
      * @param entity The entity to add.
      */
-    void add_entity(const Location &location, std::shared_ptr<Entity> &entity);
+    void add_entity(const Location &location, std::shared_ptr<Entity> entity);
 
     /**
      * Remove an entity by location.
      * @param location The location of the entity.
+     * @return The entity there.
      */
-    void remove_entity(const Location &location);
+    std::shared_ptr<Entity> remove_entity(const Location &location);
+
+    /**
+     * Begin a transaction.
+     *
+     * @return New Transaction object.
+     */
+    Transaction begin_transaction() override { return Transaction(*this); };
 
     /**
      * Convert a Player to JSON format.

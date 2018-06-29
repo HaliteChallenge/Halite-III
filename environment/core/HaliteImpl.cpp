@@ -9,7 +9,7 @@ namespace hlt {
  */
 bool HaliteImpl::game_ended() const {
     long num_alive_players = 0;
-    for (auto &&[_, player] : game->players) {
+    for (auto &&[_, player] : game.players) {
         // TODO: implement edge case of last player being unable to produce
         if (!player.entities.empty()) {
             num_alive_players++;
@@ -26,6 +26,6 @@ bool HaliteImpl::game_ended() const {
  *
  * @param game The game interface.
  */
-HaliteImpl::HaliteImpl(Halite *game) : game(game), ownership_grid(game->game_map.height, game->game_map.width) {}
+HaliteImpl::HaliteImpl(Halite &game) : game(game), ownership_grid(game.game_map.height, game.game_map.width) {}
 
 }
