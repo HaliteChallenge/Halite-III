@@ -364,6 +364,9 @@ export class HaliteVisualizer {
     }
 
     update() {
+        // Determine and draw map ownership
+        this.check_ownership();
+        this.baseMap.update(this.owner_grid);
         this.deathFlags = {};
         this.newEntities = [];
         console.log(this.frame);
@@ -427,14 +430,7 @@ export class HaliteVisualizer {
         }
         for (let entity_index of Object.keys(this.entities_list)) {
             let entity = this.entities_list[entity_index];
-            // let deathFrame = 500;
-            // if (this.deathFlags[entity.owner_id] &&
-            //     typeof this.deathFlags[entity.owner_id][[entity.x, entity.y]] !== "undefined") {
-            //     deathFrame = this.deathFlags[entity.owner_id][[entity.x, entity.y]];
-            //     console.log("death frame");
-            // }
-
-            // remove from old position in aray and add to new one
+            // Remove entity from map at old location.
             if (!this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
                 console.log("floating entity");
             } else {
@@ -449,22 +445,24 @@ export class HaliteVisualizer {
 
                 entity.destroy();
                 delete this.entities_list[entity_index];
-            } else { // Entity is alive so update location
-                if (typeof this.entities[entity.y][entity.x] === "undefined") {
-                    this.entities[entity.y][entity.x] = {};
-                }
-                // check for entity in new cell, and merge if needed
-                if (this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
-                    this.entities[entity.y][entity.x][entity.owner].energy += entity.energy;
-                    entity.destroy();
-                    delete this.entities_list[entity_index];
-                } else {
-                    this.entities[entity.y][entity.x][entity.owner] = entity;
-                }
             }
-
         }
-        // this.draw();
+        // After processing all moves, add entities to map at their new locations, and merge if needed
+        for (let entity_index of Object.keys(this.entities_list)) {
+            let entity = this.entities_list[entity_index];
+            if (typeof this.entities[entity.y][entity.x] === "undefined") {
+                this.entities[entity.y][entity.x] = {};
+            }
+            // check for entity in new cell, and merge if needed
+            if (this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
+                this.entities[entity.y][entity.x][entity.owner].energy += entity.energy;
+                console.log("entity merge");
+                entity.destroy();
+                delete this.entities_list[entity_index];
+            } else {
+                this.entities[entity.y][entity.x][entity.owner] = entity;
+            }
+        }
     }
 
     draw(dt=0) {
@@ -478,49 +476,8 @@ export class HaliteVisualizer {
         // for (let fish of this.fish) {
         //     fish.update(this.time, dt);
         // }
-        // TODO: determine map ownership
-        //this.baseMap.update(this.currentFrame);
         if (this.frame !== this.prevFrame) {
             this.prevFrame = this.frame;
-            // for (let entity_index of Object.keys(this.entities_list)) {
-            //     let entity = this.entities_list[entity_index];
-            //     // let deathFrame = 500;
-            //     // if (this.deathFlags[entity.owner_id] &&
-            //     //     typeof this.deathFlags[entity.owner_id][[entity.x, entity.y]] !== "undefined") {
-            //     //     deathFrame = this.deathFlags[entity.owner_id][[entity.x, entity.y]];
-            //     //     console.log("death frame");
-            //     // }
-            //
-            //     // remove from old position in aray and add to new one
-            //     if (!this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
-            //         console.log("floating entity");
-            //     } else {
-            //         delete this.entities[entity.y][entity.x][entity.owner];
-            //     }
-            //
-            //     entity.update();
-            //
-            //     // determine entity death from energy
-            //     if (entity.energy <= 0) {
-            //         console.log("entity death", entity.owner, entity.x, entity.y);
-            //
-            //         entity.destroy();
-            //         delete this.entities_list[entity_index];
-            //     } else { // Entity is alive so update location
-            //         if (typeof this.entities[entity.y][entity.x] === "undefined") {
-            //             this.entities[entity.y][entity.x] = {};
-            //         }
-            //         // check for entity in new cell, and merge if needed
-            //         if (this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
-            //             this.entities[entity.y][entity.x][entity.owner].energy += entity.energy;
-            //             entity.destroy();
-            //             delete this.entities_list[entity_index];
-            //         } else {
-            //             this.entities[entity.y][entity.x][entity.owner] = entity;
-            //         }
-            //     }
-            //
-            // }
         }
         // dt comes from Pixi ticker, and the unit is essentially frames
         let queue = this.animationQueue;
@@ -553,6 +510,67 @@ export class HaliteVisualizer {
 
     drawStats() {
         // TODO Add statistics for game play
+    }
+
+    check_ownership() {
+        // create ownership grid
+        this.TIED = -2;
+        this.UNOWNED = -1;
+        this.owner_grid = Array.from(Array(this.map_height), () => new Array(this.map_width).fill({"owner" : this.UNOWNED, "distance": 0}));
+        const INITIAL_DISTANCE = 0;
+        // TODO: find faster queue libary
+        let search_locations = [];
+        // initialize ownership search with cells with entities on them
+        for (let entity_index of Object.keys(this.entities_list)) {
+            let entity = this.entities_list[entity_index];
+                //  TODO: determine if multiple entities on cell, and follow same collision logic as game engine
+            this.owner_grid[entity.y][entity.x] = {"owner" : entity.owner, "distance" : INITIAL_DISTANCE};
+            search_locations.push({"x" : entity.x, "y": entity.y});
+        }
+        // Run search after initialization
+        while (search_locations.length > 0) {
+            let current_location = search_locations.shift();
+            let neighbors = this.get_neighbors(current_location);
+            for (let neighbor of Object.values(neighbors)) {
+                if (this.owner_grid[neighbor.y][neighbor.x].owner === this.UNOWNED) {
+                    this.determine_cell_ownership(neighbor);
+                    search_locations.push(neighbor);
+                }
+            }
+        }
+
+    }
+
+    get_neighbors(location) {
+        // Allow wrap around neighbors
+        return [{"x" :(location.x + 1) % this.map_width, "y" : location.y},
+            {"x" : (location.x - 1 + this.map_width) % this.map_width, "y" : location.y},
+            {"x" : location.x, "y" : (location.y + 1) % this.map_height},
+            {"x" : location.x, "y" : (location.y - 1 + this.map_height) % this.map_height}];
+    }
+
+    determine_cell_ownership(cell_location) {
+        let closest_owned_distance = Number.MAX_VALUE;
+        let multiple_close_players = false;
+        let closest_cell_owner = this.UNOWNED;
+        let neighbors = this.get_neighbors(cell_location);
+        for (let neighbor of Object.values(neighbors)) {
+            let cell = this.owner_grid[neighbor.y][neighbor.x];
+            if (cell.owner !== this.UNOWNED) {
+                if (cell.distance < closest_owned_distance) {
+                    closest_owned_distance = cell.distance;
+                    multiple_close_players = false;
+                    closest_cell_owner = cell.owner;
+                } else if (cell.distance === closest_owned_distance) {
+                    multiple_close_players = multiple_close_players || closest_cell_owner !== cell.owner;
+                }
+            }
+        }
+        let distance = closest_owned_distance + 1;
+        let owner  = multiple_close_players ? this.TIED : closest_cell_owner;
+        // Fill with new object - each row bu default is filled with references to same object, so changing one (ie cell.distance)
+        // affects the whole row
+        this.owner_grid[cell_location.y][cell_location.x] = {"distance" : distance, "owner" : owner};
     }
 
     render(dt=1000/60) {
