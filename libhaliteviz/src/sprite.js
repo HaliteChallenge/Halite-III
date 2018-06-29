@@ -17,7 +17,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         const spriteShape = new PIXI.Graphics();
         spriteShape.beginFill(assets.SPRITE_COLOR, 1);
         // draw circle - x coord, y coord, radius
-        spriteShape.drawCircle(0, 0, assets.CELL_SIZE * 10);
+        spriteShape.drawCircle(0, 0, assets.CELL_SIZE * visualizer.scale);
         spriteShape.endFill();
 
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);

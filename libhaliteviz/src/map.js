@@ -151,27 +151,31 @@ export class Map {
      * @params row, col: row and column of cell of interest
      * returns a color in hex
      */
-    ownerToColor(owners, row, col) {
+    ownerToColor(owners, row, col, _max_production) {
         const cell = owners[row][col];
-        return PLAYER_COLORS[cell.owner];
-
+        if (cell.owner < 0) {
+            return [PLAYER_COLORS[0], 0];
+        }
+        return [PLAYER_COLORS[cell.owner], assets.OWNER_TINT_ALPHA];
     }
     /**
      * Update the fish display based on the current frame and time.
-     * @param dt
+     * @param owner_grid: grid of owners of clls
      */
-    update(mapRecord) {
+    update(owner_grid) {
+        console.log("drawing owner grid");
         // TODO: update dynamically from record
 
         let newTintTexture = this.generateMapTexture(this.rows, this.cols,
-            this.owners, this.ownerToColor, false, this.renderer,
-            assets.OWNER_TINT_ALPHA, this.scale);
+            owner_grid, this.ownerToColor, false, this.renderer,
+            assets.OWNER_TINT_ALPHA, this.scale, this.constants);
         this.newTintMap = new PIXI.Sprite(newTintTexture);
 
         this.newTintMap.width = assets.VISUALIZER_SIZE;
         this.newTintMap.height = assets.VISUALIZER_HEIGHT;
 
         this.newTintMap.interactive = false;
+        this.newTintMap.zOrder = -1;
 
         // add the tint to the map
         // TODO: investigate if this is a reasonable way to do this
