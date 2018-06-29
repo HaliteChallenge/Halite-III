@@ -29,8 +29,9 @@ struct Entity {
      * Convert an Entity to JSON format.
      * @param[out] json The output JSON.
      * @param entity The entity to convert.
+     * @param include_owner If true, add the owner ID to the JSON.
      */
-    friend void to_json(nlohmann::json &json, const Entity &entity);
+    friend void to_json(nlohmann::json &json, const Entity &entity, bool include_owner);
 
     /**
      * Convert an encoded Entity from JSON format.
@@ -58,6 +59,9 @@ struct Entity {
     Entity(Player::id_type owner_id, energy_type energy) :
             owner_id(owner_id), energy(energy) {}
 };
+
+/** This redeclaration only serves to bind the default argument. */
+void to_json(nlohmann::json &json, const Entity &entity, bool include_owner = true);
 
 }
 
