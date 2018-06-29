@@ -34,6 +34,8 @@ COMPILATION_STUCK_THRESHOLD = 30
 MAX_BOT_UPLOAD_SIZE = 20 * 1024 * 1024
 # Needs to match corresponding value in worker configuration
 MAX_COMPILED_BOT_UPLOAD_SIZE = 100 * 1024 * 1024
+# Max bot file size
+MAX_BOT_FILE_SIZE = 100 * 1024 * 1024
 # Secret key for Flask session cookies
 FLASK_SECRET_KEY = ""
 # Where to look for API keys
@@ -57,6 +59,7 @@ GCLOUD_REPLAY_BUCKETS = {
 }
 GCLOUD_ERROR_LOG_BUCKET = 'TODO'
 GCLOUD_DEPLOYED_ARTIFACTS_BUCKET = 'TODO'
+GCLOUD_EDITOR_BUCKET = 'editor-bucket'
 
 # The name of the worker source blob in the object storage bucket.
 WORKER_ARTIFACT_KEY = ""
