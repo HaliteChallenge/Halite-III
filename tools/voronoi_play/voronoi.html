@@ -7,8 +7,8 @@
 //Constants
 window.SCREEN_HEIGHT = Math.min(window.innerHeight - 20, window.innerWidth - 20);
 window.SCREEN_WIDTH = Math.min(window.innerHeight - 20, window.innerWidth - 20);
-window.GRID_HEIGHT = 64;
-window.GRID_WIDTH = 64;
+window.GRID_HEIGHT = 128;
+window.GRID_WIDTH = 128;
 //Aliases
 let Application = PIXI.Application,
     Container = PIXI.Container,
@@ -45,10 +45,10 @@ function setup() {
     // Handlers
     app.stage.interactive = true;
     app.stage.on('click', function(event) {
-        active_tile = { x: Math.floor(window.GRID_WIDTH * manager.mouse.global.x / window.SCREEN_WIDTH) - Math.round(xOffset),
-            y: Math.floor(window.GRID_HEIGHT * manager.mouse.global.y / window.SCREEN_HEIGHT) - Math.round(yOffset) };
-        if(active_tile.x < 0) active_tile.x += window.GRID_WIDTH;
-        if(active_tile.y < 0) active_tile.y += window.GRID_HEIGHT;
+        active_tile = { x: Math.floor(window.GRID_WIDTH * manager.mouse.global.x / window.SCREEN_WIDTH) + Math.round(xOffset),
+            y: Math.floor(window.GRID_HEIGHT * manager.mouse.global.y / window.SCREEN_HEIGHT) + Math.round(yOffset) };
+        if(active_tile.x >= window.GRID_WIDTH) active_tile.x -= window.GRID_WIDTH;
+        if(active_tile.y >= window.GRID_HEIGHT) active_tile.y -= window.GRID_HEIGHT;
     });
     document.onkeydown=function(e) {
         if(active_tile != null && e.keyCode >= 48 && e.keyCode <= 57) {
@@ -175,15 +175,33 @@ function render() {
         need_recalculate = false;
     }
 
+    // For aggregating rectangles.
+    var visited = [];
+    for(let y = 0; y < window.GRID_HEIGHT; y++) visited.push(new Array(window.GRID_WIDTH).fill(false));
+
     graphics.clear();
     const CELL_WIDTH = window.SCREEN_WIDTH / window.GRID_WIDTH, CELL_HEIGHT = window.SCREEN_HEIGHT / window.GRID_HEIGHT;
     let ty = Math.round(yOffset);
     for(let y = 0; y < window.GRID_HEIGHT; y++) {
         let tx = Math.round(xOffset);
         for(let x = 0; x < window.GRID_WIDTH; x++) {
-            graphics.beginFill(color_map[y][x], seed_map[y][x] ? 1 : 0.25);
-            graphics.drawRect(tx * CELL_WIDTH, ty * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT)
-            graphics.endFill();
+            if(!visited[ty][tx] && !seed_map[ty][tx]) {
+                let fx = 1;
+                while(!visited[ty][(tx+fx)%window.GRID_WIDTH] && color_map[ty][tx] == color_map[ty][(tx+fx)%window.GRID_WIDTH]) {
+                    visited[ty][(tx+fx)%window.GRID_WIDTH] = true;
+                    fx++;
+                }
+                fx--; // Go back 1 to the one which worked.
+                if(color_map[ty][tx])
+                graphics.beginFill(color_map[ty][tx], 0.25);
+                graphics.drawRect(x * CELL_WIDTH, y * CELL_HEIGHT, (fx+1)*CELL_WIDTH, CELL_HEIGHT)
+                graphics.endFill();
+            }
+            else if(seed_map[ty][tx]) {
+                graphics.beginFill(color_map[ty][tx]);
+                graphics.drawRect(x * CELL_WIDTH, y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT)
+                graphics.endFill();
+            }
             tx++;
             if(tx == window.GRID_WIDTH) tx = 0;
         }
@@ -192,14 +210,15 @@ function render() {
     }
 
     app.render();
+    console.log('render')
 
     // If moving two directions at once, divide by sqrt(2) so speed feels constant.
     const BASE_SCROLL_SPEED = 0.03;
     const SCROLL_SPEED = ((pressed['87']^pressed['83']) && (pressed['68']^pressed['65'])) ? BASE_SCROLL_SPEED / Math.sqrt(2) : BASE_SCROLL_SPEED;
-    if(pressed['87']) yOffset += SCROLL_SPEED * GRID_HEIGHT;
-    if(pressed['68']) xOffset -= SCROLL_SPEED * GRID_WIDTH;
-    if(pressed['83']) yOffset -= SCROLL_SPEED * GRID_HEIGHT;
-    if(pressed['65']) xOffset += SCROLL_SPEED * GRID_WIDTH;
+    if(pressed['87']) yOffset -= SCROLL_SPEED * GRID_HEIGHT;
+    if(pressed['68']) xOffset += SCROLL_SPEED * GRID_WIDTH;
+    if(pressed['83']) yOffset += SCROLL_SPEED * GRID_HEIGHT;
+    if(pressed['65']) xOffset -= SCROLL_SPEED * GRID_WIDTH;
     if(Math.round(xOffset) >= GRID_WIDTH) xOffset -= GRID_WIDTH;
     else if(Math.round(xOffset) < 0) xOffset += GRID_WIDTH;
     if(Math.round(yOffset) >= GRID_HEIGHT) yOffset -= GRID_HEIGHT;
