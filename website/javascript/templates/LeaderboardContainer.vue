@@ -76,7 +76,7 @@
   </div>
 </template>
 <script>
-  import Vue from 'vue'
+import Vue from 'vue'
 import * as api from '../api'
 import _ from 'lodash'
 import Leaderboard from './Leaderboard.vue'
@@ -90,7 +90,7 @@ export default {
 
       // determine whether the collapseable summary panel should be collapsed
       this.setupCollapseStats()
-  },
+    }, 
     data: function () {
       return {
         hackathonId: null,

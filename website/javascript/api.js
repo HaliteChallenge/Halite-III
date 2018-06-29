@@ -25,8 +25,7 @@ export function me_cached () {
 
 export function me () {
   if (cached_me !== null) return Promise.resolve(cached_me)
-  else if (logged_in === false) return Promise.resolve(null)
-
+  else if (logged_in === false) return Promise.resolve(null) 
   return $.get({
     url: `${LOGIN_SERVER_URL}/me`,
     xhrFields: {
