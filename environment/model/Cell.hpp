@@ -86,7 +86,7 @@ public:
     /**
      * Remove an entity by player.
      * @param player The player of the entity.
-     * @return The entity for that player, or null of not found.
+     * @return The entity for that player.
      */
     std::shared_ptr<Entity> remove_entity(const Player &player);
 

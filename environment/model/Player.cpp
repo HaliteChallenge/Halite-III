@@ -91,16 +91,12 @@ void Player::add_entity(const Location &location, std::shared_ptr<Entity> entity
 /**
  * Remove an entity by location.
  * @param location The location of the entity.
- * @return The entity there, or null if not found.
+ * @return The entity there.
  */
 std::shared_ptr<Entity> Player::remove_entity(const Location &location) {
-    if (auto entity = entities.find(location); entity != entities.end()) {
-        auto found = std::move(entity->second);
-        entities.erase(location);
-        return found;
-    } else {
-        return std::shared_ptr<Entity>();
-    }
+    auto found = std::move(entities[location]);
+    entities.erase(location);
+    return found;
 }
 
 /**
