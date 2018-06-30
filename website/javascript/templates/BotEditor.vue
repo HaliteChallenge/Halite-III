@@ -59,23 +59,6 @@ const FILE_NAMES_KEY = 'file_names'
 const DARK_THEME = 'Dark'
 const RESET_MSG = 'Are you sure you want to reset your bot code to the default sample code?\n(All changes will be lost!)'
 
-// TODO
-function loadEditorTheme () {
-  var theme = window.localStorage.getItem(THEME_KEY)
-  if (!theme) {
-    theme = DARK_THEME
-  }
-  logInfo('Setting editor theme to ' + theme)
-  return theme
-}
-
-// TODO
-function loadCodeFromLocalStorage (ctx) {
-  const fileName = ctx.bot_info().fileName
-  logInfo('Loading code into editor from web local storage: ' + fileName)
-  return window.localStorage.getItem(fileName)
-}
-
 function logError (err) {
   console.error(err)
 }
@@ -94,7 +77,7 @@ export default {
   data: function () {
     console.log('data')
     const lang = 'Python3'
-    const theme = loadEditorTheme()
+    const theme = DARK_THEME
     const editor_files = this.editor_files === null ? [] : this.editor_files
     return {
       all_bot_languages: botLanguagePacks,
