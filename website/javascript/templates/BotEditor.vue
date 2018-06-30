@@ -189,7 +189,6 @@ export default {
       this.editor_files[this.active_file_name].contents = this.get_editor_code()
       this.set_editor_contents(this.editor_files[sel_file_name].contents)
       this.active_file_name = sel_file_name
-      /* TODO switch code in editor */
     },
     load_code: function () {
       // Restore user's bot code, or use demo code for new bot
