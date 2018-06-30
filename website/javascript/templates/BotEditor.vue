@@ -59,15 +59,6 @@ const FILE_NAMES_KEY = 'file_names'
 const DARK_THEME = 'Dark'
 const RESET_MSG = 'Are you sure you want to reset your bot code to the default sample code?\n(All changes will be lost!)'
 
-function saveCode (ctx) {
-  const fileName = ctx.bot_info().fileName
-  logInfo('Saving bot file to web local storage: ' + fileName)
-  const code = ctx.get_editor_code()
-  window.localStorage.setItem(fileName, code)
-  window.localStorage.setItem(BOT_LANG_KEY, ctx.bot_lang)
-  window.localStorage.setItem(THEME_KEY, ctx.selected_theme)
-}
-
 // TODO
 function loadEditorTheme () {
   var theme = window.localStorage.getItem(THEME_KEY)
@@ -156,12 +147,14 @@ export default {
 
         // Set up save action (note: auto-save is enabled by default)
         const saveEventHandler = () => {
-          saveCode(this)
+          console.log('handler')
+          this.save_code()
           return true
         }
 
         // Auto-save event
         editor.addEventListener('InputChanged', function (evt) {
+          console.log(evt)
           if (evt.contentsSaved) {
             // save editor contents
             saveEventHandler()
@@ -299,6 +292,15 @@ export default {
         this.reload_code(true)
       }
       return true
+    },
+    save_code: function() {
+      logInfo('Saving bot file to web local storage')
+      window.localStorage.setItem(FILE_NAMES_KEY, JSON.stringify(Object.keys(this.editor_files)))
+      for(let name in this.editor_files) {
+        window.localStorage.setItem(name, this.editor_files[name].contents)
+      }
+      window.localStorage.setItem(BOT_LANG_KEY, ctx.bot_lang)
+      window.localStorage.setItem(THEME_KEY, ctx.selected_theme)
     },
     /* Set the contents of our edior */
     set_editor_contents: function(contents) {
