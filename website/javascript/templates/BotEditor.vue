@@ -4,9 +4,9 @@
                         <div class="col-12 col-md-1 col-xl-1 hidden-sm hidden-xs bd-sidebar">
                                 <nav id="bd-docs-nav"><div class="bd-toc-item active">
                                         <ul class="nav bd-sidenav">
-                                          <li v-for="f in file_list" class="bd-sidenav-active" v-bind:class="{ active: f.isActive }">
-                                            <a v-on:click="file_selected(f.name)" href="">
-                                              {{ f.file_name }}
+                                          <li v-for="(f, name) in editor_files" class="bd-sidenav-active" v-bind:class="{ active: name === active_file_name }">
+                                            <a v-on:click="file_selected(name)">
+                                              {{ name }}
                                             </a>
                                           </li>
                                         </ul>
@@ -52,10 +52,11 @@ const botLanguagePacks = {
   }
 }
 
-var logVerbose = false
+var logVerbose = true
 const BOT_LANG_KEY = 'bot_language'
 const THEME_KEY = 'editor_theme'
-const DARK_THEME = 'Light'
+const FILE_NAMES_KEY = 'file_names'
+const DARK_THEME = 'Dark'
 const RESET_MSG = 'Are you sure you want to reset your bot code to the default sample code?\n(All changes will be lost!)'
 
 function saveCode (ctx) {
@@ -67,6 +68,7 @@ function saveCode (ctx) {
   window.localStorage.setItem(THEME_KEY, ctx.selected_theme)
 }
 
+// TODO
 function loadEditorTheme () {
   var theme = window.localStorage.getItem(THEME_KEY)
   if (!theme) {
@@ -76,6 +78,7 @@ function loadEditorTheme () {
   return theme
 }
 
+// TODO
 function loadCodeFromLocalStorage (ctx) {
   const fileName = ctx.bot_info().fileName
   logInfo('Loading code into editor from web local storage: ' + fileName)
@@ -101,7 +104,7 @@ export default {
     console.log('data')
     const lang = 'Python3'
     const theme = loadEditorTheme()
-    const file_list = this.file_list == null ? [] : this.file_list
+    const editor_files = this.editor_files === null ? [] : this.editor_files
     return {
       all_bot_languages: botLanguagePacks,
       status_message: null,
@@ -111,7 +114,7 @@ export default {
       bot_lang: lang,
       selected_language: lang,
       selected_theme: theme,
-      file_list: file_list
+      editor_files: editor_files
     }
   },
   /*
@@ -125,7 +128,11 @@ export default {
       }
     })
     // Restore user's bot code, or use demo code for new bot
-    this.load_code().then((code) => this.create_editor(code))
+    this.load_code().then((function(editor_files) {
+      this.editor_files = editor_files
+      this.active_file_name = this.bot_info().fileName
+      this.create_editor(this.get_active_file_code())
+    }).bind(this))
   },
   methods: {
     /* Return bot language specific info */
@@ -188,16 +195,47 @@ export default {
       })
       return true
     },
-    file_selected: function(file_name) {
-      for (a in this.file_list) {
-        a.isActive = file_name == a.file_name;
+    extract_files_from_zip: function(zip_file) {
+      let promises = []
+      console.log(zip_file.files)
+      let names = Object.keys(zip_file.files)
+      console.log(names)
+      for(let a = 0; a < names.length; a++) {
+        promises.push(zip_file.file(names[a]).async('text'))
       }
-    }
+      return Promise.all(promises).then(function(values) {
+        let editor_files = {}
+        console.log(values)
+        for(let a = 0; a < names.length; a++) {
+          let name = names[a]
+          editor_files[name] = {contents: values.shift()}
+        }
+        console.log(editor_files)
+        return editor_files
+      })
+    },
+    file_selected: function(sel_file_name) {
+      this.editor_files[this.active_file_name].contents = this.get_editor_code()
+      this.set_editor_contents(this.editor_files[sel_file_name].contents)
+      this.active_file_name = sel_file_name
+      /* TODO switch code in editor */
+    },
     load_code: function () {
       // Restore user's bot code, or use demo code for new bot
-      const startCode = loadCodeFromLocalStorage(this)
-      console.log(startCode)
+      const startCode = this.load_code_from_local_storage()
       return (startCode === null) ? this.load_default_code() : Promise.resolve(startCode)
+    },
+    load_code_from_local_storage: function() {
+      const file_names = JSON.parse(window.localStorage.getItem(FILE_NAMES_KEY))
+      if(file_names === null) return null
+
+      logInfo('Loading code into editor from web local storage')
+      let editor_files = {}
+      for (name in file_names) {
+        editor_files[name] = {contents: window.localStorage.getItem()}
+      }
+
+      return editor_files
     },
     /* Return MyBot file of the starter bot in string format */
     load_default_code: function () {
@@ -206,9 +244,11 @@ export default {
       return this.get_starter_zip().then((starterZip) => {
         logInfo('Got starter zip. Getting sample bot file: ' + fileName)
         console.log(starterZip.files)
-        this.set_file_list_zip(starterZip)
-        return starterZip.file(fileName).async('text')
+        return this.extract_files_from_zip(starterZip)
       }, logError)
+    },
+    get_active_file_code: function() {
+      return this.editor_files[this.active_file_name].contents
     },
     /* Return a string of the code currently in the editor */
     get_editor_code: function () {
@@ -246,9 +286,10 @@ export default {
     },
     /* Load code into editor; either saved code or default */
     reload_code: function (use_default = false) {
-      const codePromise = use_default ? this.get_default_code_promise() : this.load_code()
-      return codePromise.then((contents) => {
-        this.set_editor_contents(contents)
+      const codePromise = use_default ? this.load_default_code() : this.load_code()
+      return codePromise.then((editor_files) => {
+        this.editor_files = editor_files
+        this.set_editor_contents(this.get_active_file_code())
       })
     },
     /* Revert to starter bot code */
@@ -262,12 +303,6 @@ export default {
     /* Set the contents of our edior */
     set_editor_contents: function(contents) {
       this.editorViewer.setContents(contents, this.bot_info().mimeType)
-    },
-    set_file_list_zip: function(zip_file) {
-      this.file_list = Object.keys(zip_file.files).map(function(key, index) {
-        let f = zip_file.files[key]
-        return {file_name: f.name, isActive: f.name == this.bot_info().file_name }
-      }, this)
     },
     /* Submit bot to our leaderboard */
     submit_bot: function () {
