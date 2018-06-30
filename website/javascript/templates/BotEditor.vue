@@ -84,7 +84,6 @@ export default {
       status_message: null,
       logged_in: false,
       editorViewer: null,
-      // Currently defaulting to Python3 starter kit
       bot_lang: lang,
       selected_language: lang,
       selected_theme: theme,
@@ -173,20 +172,16 @@ export default {
     },
     extract_files_from_zip: function(zip_file) {
       let promises = []
-      console.log(zip_file.files)
       let names = Object.keys(zip_file.files)
-      console.log(names)
       for(let a = 0; a < names.length; a++) {
         promises.push(zip_file.file(names[a]).async('text'))
       }
       return Promise.all(promises).then(function(values) {
         let editor_files = {}
-        console.log(values)
         for(let a = 0; a < names.length; a++) {
           let name = names[a]
           editor_files[name] = {contents: values.shift()}
         }
-        console.log(editor_files)
         return editor_files
       })
     },
@@ -219,7 +214,6 @@ export default {
       const fileName = this.bot_info().fileName
       return this.get_starter_zip().then((starterZip) => {
         logInfo('Got starter zip. Getting sample bot file: ' + fileName)
-        console.log(starterZip.files)
         return this.extract_files_from_zip(starterZip)
       }, logError)
     },
@@ -228,7 +222,6 @@ export default {
     },
     /* Return a string of the code currently in the editor */
     get_editor_code: function () {
-      console.log('test')
       return this.editorViewer.editor.getModel().getText()
     },
     get_starter_zip: function fn (forceClean = false) {
@@ -291,7 +284,7 @@ export default {
     },
     /* Submit bot to our leaderboard */
     submit_bot: function () {
-      console.log('... starting upload')
+      logInfo('... starting upload')
       return new Promise ((resolve, reject) => {
         this.get_user_zip_promise().then((blob) => {
           const botFile = new File([blob], this.bot_info().zipName)
@@ -315,11 +308,11 @@ export default {
               this.status_message = `Uploading... (${p}%)`
             })
           }).then(() => {
-            console.log('upload successully')
+            logInfo('upload successully')
             this.status_message = 'Successfully uploaded!'
             resolve();
           }, (err) => {
-            console.log('error: ' + err.message)
+            logInfo('error: ' + err.message)
             this.status_message = err.message
             reject(err.message);
           })
