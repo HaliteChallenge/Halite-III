@@ -54,7 +54,6 @@ const botLanguagePacks = {
 
 var logVerbose = true
 const BOT_LANG_KEY = 'bot_language'
-const THEME_KEY = 'editor_theme'
 const FILE_NAMES_KEY = 'file_names'
 const DARK_THEME = 'Dark'
 const RESET_MSG = 'Are you sure you want to reset your bot code to the default sample code?\n(All changes will be lost!)'
@@ -75,7 +74,6 @@ function copyZip (zipPromise) {
 export default {
   name: 'bot_editor',
   data: function () {
-    console.log('data')
     const lang = 'Python3'
     const theme = DARK_THEME
     const editor_files = this.editor_files === null ? [] : this.editor_files
@@ -95,7 +93,6 @@ export default {
   */
   mounted: function () {
     api.me().then((me) => {
-      console.log(me)
       if (me !== null) {
         this.logged_in = true
       }
@@ -123,20 +120,17 @@ export default {
         const editor = editorViewer.editor
 
         // make sure we're using the correct color theme
-        this.reset_theme()
 
         logInfo('Adding editor save handlers...')
 
         // Set up save action (note: auto-save is enabled by default)
         const saveEventHandler = () => {
-          console.log('handler')
-          this.save_code()
+          this.save_code_to_local_storage()
           return true
         }
 
         // Auto-save event
         editor.addEventListener('InputChanged', function (evt) {
-          console.log(evt)
           if (evt.contentsSaved) {
             // save editor contents
             saveEventHandler()
@@ -198,11 +192,11 @@ export default {
     load_code_from_local_storage: function() {
       const file_names = JSON.parse(window.localStorage.getItem(FILE_NAMES_KEY))
       if(file_names === null) return null
-
       logInfo('Loading code into editor from web local storage')
       let editor_files = {}
-      for (name in file_names) {
-        editor_files[name] = {contents: window.localStorage.getItem()}
+      for (let a = 0; a < file_names.length; a++) {
+        let name = file_names[a]
+        editor_files[name] = {contents: window.localStorage.getItem(String(name))}
       }
 
       return editor_files
@@ -268,14 +262,14 @@ export default {
       }
       return true
     },
-    save_code: function() {
+    save_code_to_local_storage: function() {
       logInfo('Saving bot file to web local storage')
+      this.update_editor_files()
       window.localStorage.setItem(FILE_NAMES_KEY, JSON.stringify(Object.keys(this.editor_files)))
       for(let name in this.editor_files) {
         window.localStorage.setItem(name, this.editor_files[name].contents)
       }
-      window.localStorage.setItem(BOT_LANG_KEY, ctx.bot_lang)
-      window.localStorage.setItem(THEME_KEY, ctx.selected_theme)
+      window.localStorage.setItem(BOT_LANG_KEY, this.bot_lang)
     },
     /* Set the contents of our edior */
     set_editor_contents: function(contents) {
@@ -317,6 +311,9 @@ export default {
           })
         })
       })
+    },
+    update_editor_files: function() {
+      this.editor_files[this.active_file_name].contents = this.editorViewer.editor.getModel().getText()
     }
   }
 }
