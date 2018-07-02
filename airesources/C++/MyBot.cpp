@@ -14,7 +14,7 @@ int main() {
     hlt::Players players;
     hlt::Map map;
     hlt::getInit(map, players, myID);
-    hlt::sendInit("BasicC++Bot-"+std::to_string(myID));
+    hlt::sendInit("MyC++Bot-"+std::to_string(myID));
 
     std::mt19937 prg(time(NULL));
     hlt::Moves moves;

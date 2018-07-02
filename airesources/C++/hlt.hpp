@@ -12,6 +12,29 @@ typedef long energy_type;
 typedef long id_type;
 typedef long dimension_type;
 
+struct Logging {
+private:
+    std::ofstream file;
+
+    void initialize(const std::string& filename) {
+        file.open(filename, std::ios::trunc | std::ios::out);
+    }
+
+public:
+    static Logging & get() {
+        static Logging instance{};
+        return instance;
+    }
+
+    static void open(const std::string& filename) {
+        get().initialize(filename);
+    }
+
+    static void log(const std::string& message) {
+        get().file << message << std::endl;
+    }
+};
+
 namespace hlt {
 struct Location {
 	dimension_type x, y;
@@ -172,6 +195,7 @@ static long getFrame(Players & players) {
 	for(unsigned int i = 0; i < players.size(); i++) {
 		Player p;
 		std::cin >> p;
+		p.factory_location = players[p.player_id].factory_location;
 		players[p.player_id] = p;
 	}
 	return turn_number;
@@ -180,28 +204,4 @@ static long getFrame(Players & players) {
 static void sendFrame(const Moves & moves) {
 	std::cout << moves << std::endl;
 }
-
 }
-
-struct Logging {
-private:
-    std::ofstream file;
-
-    void initialize(const std::string& filename) {
-        file.open(filename, std::ios::trunc | std::ios::out);
-    }
-
-public:
-    static Logging & get() {
-        static Logging instance{};
-        return instance;
-    }
-
-    static void open(const std::string& filename) {
-        get().initialize(filename);
-    }
-
-    static void log(const std::string& message) {
-        get().file << message << std::endl;
-    }
-};

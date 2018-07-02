@@ -4,12 +4,15 @@
 
 int main() {
     std::cout.sync_with_stdio(0);
+    Logging::open("log.log");
 
     id_type myID;
     hlt::Players players;
     hlt::Map map;
     hlt::getInit(map, players, myID);
-    hlt::sendInit("MyC++Bot-"+std::to_string(myID));
+    hlt::sendInit("BasicC++Bot-"+std::to_string(myID));
+
+    Logging::log("myID: "+std::to_string(myID));
 
     std::mt19937 prg(time(NULL));
     hlt::Moves moves;
@@ -23,11 +26,12 @@ int main() {
         for(long y = 0; y < map.height; y++) for(long x = 0; x < map.width; x++) {
             for(auto &[id, player] : players) {
                 double playerWeight = 0;
-                playerWeight += 2 / (map.distance({ x, y }, player.factory_location) + 1);
+                playerWeight += 2.0 / (map.distance({ x, y }, player.factory_location) + 1);
+                //Logging::log(std::to_string(playerWeight));
                 for(auto &[loc, _] : player.entities) {
-                    playerWeight += 1 / (map.distance({ x, y }, loc) + 1);
+                    playerWeight += 1.0 / (map.distance({ x, y }, loc) + 1);
                 }
-                values[y][x] += id != myID ? playerWeight : 0; //-playerWeight;
+                values[y][x] += id != myID ? playerWeight : -playerWeight;
             }
         }
 
