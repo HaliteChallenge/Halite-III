@@ -7,25 +7,23 @@ import google.cloud.storage as gcloud_storage
 from .. import model, util
 
 from . import util as api_util
-from .blueprint import editor_api
+from .blueprint import web_api
 
 # Get a list of users file names
-@editor_api.route("/user/<int:intended_user>/source_file", methods=["GET"])
+@web_api.route("/user/<int:intended_user>/source_file", methods=["GET"])
 @util.cross_origin(methods=["GET"])
 @api_util.requires_login(accept_key=True, association=True)
-@api_util.requires_competition_open
 def list_user_files(intended_user, *, user_id):
     if user_id != intended_user:
         raise api_util.user_mismatch_error(
             message="Cannot list files for another user.")
     bucket = model.get_editor_bucket()
-    return flask.jsonify([a.name[len(intended_user)+1:] for a in bucket.list_blobs(prefix=str(intended_user)) if a.name[:-1] != intended_user])
+    return flask.jsonify([a.name[len(str(intended_user))+1:] for a in bucket.list_blobs(prefix=str(intended_user)) if a.name[:-1] != str(intended_user)])
 
 
-@editor_api.route("/user/<string:intended_user>/source_file/<string:file_id>", methods=["GET"])
+@web_api.route("/user/<int:intended_user>/source_file/<string:file_id>", methods=["GET"])
 @util.cross_origin(methods=["GET"])
 @api_util.requires_login(accept_key=True, association=True)
-@api_util.requires_competition_open
 def get_user_file(intended_user, file_id, *, user_id):
     if user_id != intended_user:
         raise api_util.user_mismatch_error(
@@ -46,10 +44,9 @@ def get_user_file(intended_user, file_id, *, user_id):
 
     return response
 
-@editor_api.route("/user/<string:intended_user>/source_file", methods=["POST"])
+@web_api.route("/user/<int:intended_user>/source_file", methods=["POST"])
 @util.cross_origin(methods=["POST"])
 @api_util.requires_login(accept_key=True, association=True)
-@api_util.requires_competition_open
 def create_user_filespace(intended_user, *, user_id):
     if user_id != intended_user:
         raise api_util.user_mismatch_error(
@@ -57,15 +54,14 @@ def create_user_filespace(intended_user, *, user_id):
 
     pass
 
-@editor_api.route("/user/<string:intended_user>/source_file/<string:file_id>", methods=["POST"])
+@web_api.route("/user/<int:intended_user>/source_file/<string:file_id>", methods=["POST"])
 @util.cross_origin(methods=["POST"])
 @api_util.requires_login(accept_key=True, association=True)
-@api_util.requires_competition_open
 def change_user_file(intended_user, file_id, *, user_id):
     if user_id != intended_user:
         raise api_util.user_mismatch_error(
             message="Cannot list files for another user.")
-    
+
     bucket = model.get_editor_bucket()
 
     blob = gcloud_storage.Blob('%s/%s' % (intended_user, file_id), bucket, chunk_size=262144)

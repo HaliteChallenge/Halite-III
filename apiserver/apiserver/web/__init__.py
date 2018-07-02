@@ -1,6 +1,7 @@
 from .blueprint import web_api
 
 # Make sure views get registered
+from . import editor
 from . import hackathon
 from . import leaderboard
 from . import match
