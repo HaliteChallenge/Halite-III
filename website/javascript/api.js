@@ -1,6 +1,7 @@
 /* jshint esversion: 6 */
 
 export const API_SERVER_URL = api_server_url
+export const EDITOR_SERVER_URL = editor_server_url
 export const LOGIN_SERVER_URL = login_server_url
 export const LOGOUT_SERVER_URL = logout_server_url
 
