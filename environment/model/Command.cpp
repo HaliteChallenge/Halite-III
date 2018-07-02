@@ -15,6 +15,8 @@ constexpr auto JSON_ENTITY_X_KEY = "entity_x";
 constexpr auto JSON_ENTITY_Y_KEY = "entity_y";
 /** The JSON key for direction. */
 constexpr auto JSON_DIRECTION_KEY = "direction";
+/** The JSON key for energy. */
+constexpr auto JSON_ENERGY_KEY = "energy";
 
 namespace hlt {
 
@@ -56,6 +58,11 @@ std::istream &operator>>(std::istream &istream, Command &command) {
             Direction direction;
             istream >> entity_x >> entity_y >> direction;
             command = std::make_unique<MoveCommand>(entity_x, entity_y, direction);
+            break;
+        case SpawnCommand::COMMAND_TYPE_SHORT:
+            energy_type energy;
+            istream >> energy;
+            command = std::make_unique<SpawnCommand>(energy);
             break;
         default:
             throw BotCommunicationError(to_string(command_type));
@@ -100,6 +107,15 @@ void MoveCommand::act_on_map(Map::Transaction &map_transaction, Player::Transact
         player_transaction.move_entity(location, destination);
         map_transaction.move_entity(player, location, destination);
     }
+}
+
+void SpawnCommand::to_json(nlohmann::json &json) const {
+    json = {{JSON_TYPE_KEY,       SpawnCommand::COMMAND_TYPE_NAME},
+            {JSON_ENERGY_KEY,  energy}};
+}
+
+void SpawnCommand::act_on_map(Map::Transaction &map_transaction, Player::Transaction &player_transaction) const {
+    // Gotta figure this out
 }
 
 }
