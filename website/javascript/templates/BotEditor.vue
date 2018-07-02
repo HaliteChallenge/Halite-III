@@ -97,7 +97,6 @@ export default {
         this.user_id = me.user_id
         this.logged_in = true
         this.load_code().then((function(editor_files) {
-          console.log(editor_files)
           this.editor_files = editor_files
           this.active_file_name = this.bot_info().fileName
           this.create_editor(this.get_active_file_code())
@@ -127,27 +126,33 @@ export default {
 
         // Set up save action (note: auto-save is enabled by default)
         const saveEventHandler = () => {
-          this.save_code_to_local_storage()
+          this.save_current_file()
           return true
         }
-
-        // Auto-save event
-        editor.addEventListener('InputChanged', function (evt) {
-          if (evt.contentsSaved) {
-            // save editor contents
-            saveEventHandler()
-            // clear upload status message when user edits code
-            if (this.status_message) {
-              this.status_message = null
-            }
-          }
-        })
 
         // Manual save action (Ctrl+S)
         editor.getTextView().setAction('save', saveEventHandler)
 
+        editor.addEventListener('InputChanged', (function (evt) {
+          if (evt.contentsSaved) {
+            logInfo('input changed')
+            this.allSaved = false;
+          }
+        }).bind(this))
+
         // Be sure to save before closing/leaving the page
-        window.addEventListener('unload', saveEventHandler)
+        window.addEventListener('beforeunload', (function(e) {
+          logInfo(this.allSaved)
+          if (this.allSaved) {
+            return undefined;
+          }
+
+          var confirmationMessage = 'It looks like you have been editing something. '
+            + 'If you leave before saving, your changes will be lost.';
+
+          (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+          return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+        }).bind(this))
 
         // Other settings
         if (editorViewer.settings) {
@@ -182,18 +187,18 @@ export default {
       })
     },
     file_selected: function(sel_file_name) {
+      this.save_current_file()
       this.editor_files[this.active_file_name].contents = this.get_editor_code()
       this.set_editor_contents(this.editor_files[sel_file_name].contents)
       this.active_file_name = sel_file_name
     },
     load_code: function () {
       // Restore user's bot code, or use demo code for new bot
-      const startCode = this.load_code_from_local_storage()
+      const startCode = this.load_user_code()
       return (startCode === null) ? this.load_default_code() : Promise.resolve(startCode)
     },
-    load_code_from_local_storage: function() {
+    load_user_code: function() {
       return api.get_editor_file_list(this.user_id).then((function(file_list) {
-        console.log(file_list)
         return Promise.all(file_list.map(
           (file_name) => (api.get_editor_file(this.user_id, file_name).then(
             (contents) => ({contents: contents, name: file_name})))
@@ -204,7 +209,6 @@ export default {
             prev[cur.name] = {contents: cur.contents}
             return prev
           }, {})
-          console.log(editor_files)
           return editor_files
         })
       })
@@ -270,14 +274,15 @@ export default {
       }
       return true
     },
-    save_code_to_local_storage: function() {
-      logInfo('Saving bot file to web local storage')
+    save_current_file: function() {
+      logInfo('Saving bot file to gcloud storage')
       this.update_editor_files()
-      window.localStorage.setItem(FILE_NAMES_KEY, JSON.stringify(Object.keys(this.editor_files)))
-      for(let name in this.editor_files) {
-        window.localStorage.setItem(name, this.editor_files[name].contents)
-      }
-      window.localStorage.setItem(BOT_LANG_KEY, this.bot_lang)
+      api.update_source_file(this.user_id, this.active_file_name, this.editor_files[this.active_file_name].contents, function(){}).then((function() {
+        logInfo('success')
+        this.allSaved = true;
+      }).bind(this), function(response) {
+        logInfo(response)
+      })
     },
     /* Set the contents of our edior */
     set_editor_contents: function(contents) {

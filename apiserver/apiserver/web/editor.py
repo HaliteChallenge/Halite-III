@@ -54,7 +54,7 @@ def create_user_filespace(intended_user, *, user_id):
 
     pass
 
-@web_api.route("/user/<int:intended_user>/source_file/<string:file_id>", methods=["POST"])
+@web_api.route("/user/<int:intended_user>/source_file/<path:file_id>", methods=["POST"])
 @util.cross_origin(methods=["POST"])
 @api_util.requires_login(accept_key=True, association=True)
 def change_user_file(intended_user, file_id, *, user_id):
@@ -65,24 +65,25 @@ def change_user_file(intended_user, file_id, *, user_id):
     bucket = model.get_editor_bucket()
 
     blob = gcloud_storage.Blob('%s/%s' % (intended_user, file_id), bucket, chunk_size=262144)
-    uploaded_file = validate_bot_submission()
+    uploaded_file = validate_file_submission()
     blob.upload_from_file(uploaded_file)
 
     return util.response_success()
 
 def validate_file_submission():
     """Validate the uploaded file, returning the file if so."""
-    if "uploadFile" not in flask.request.files:
+    if "sourceFile" not in flask.request.files:
         raise util.APIError(400, message="file not provided (must "
                                          "provide as uploadFile).")
 
     # Save to GCloud
-    uploaded_file = flask.request.files["botFile"]
-    if not zipfile.is_zipfile(uploaded_file):
+    uploaded_file = flask.request.files["sourceFile"]
+    '''if not zipfile.is_zipfile(uploaded_file):
         raise util.APIError(
             400,
             message="file does not appear to be a zip file.")
 
+    '''
     uploaded_file.seek(0)
     return uploaded_file
 

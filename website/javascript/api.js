@@ -88,7 +88,6 @@ export function makeRequest () {
 export function update_bot (user_id, bot_id, file, progress_callback) {
   const method = bot_id === null ? 'POST' : 'PUT'
   const endpoint = bot_id === null ? 'bot' : `bot/${bot_id}`
-
   const xhr = makeRequest()
   xhr.upload.addEventListener('progress', function (e) {
     if (e.lengthComputable) {
@@ -134,7 +133,7 @@ export function get_season1_stats (userId) {
   })
 }
 
-export function get_editor_file_list(userId) {
+export function get_editor_file_list (userId) {
   return $.get({
     url: `${API_SERVER_URL}/user/${userId}/source_file`,
     xhrFields: {
@@ -143,11 +142,42 @@ export function get_editor_file_list(userId) {
   })
 }
 
-export function get_editor_file(userId, file_name) {
+export function get_editor_file (userId, file_name) {
   return $.get({
     url: `${API_SERVER_URL}/user/${userId}/source_file/`+encodeURIComponent(file_name),
     xhrFields: {
       withCredentials: true
+    }
+  })
+}
+
+export function update_source_file (user_id, file_name, file_contents, progress_callback) {
+  const xhr = makeRequest()
+  xhr.upload.addEventListener('progress', function (e) {
+    if (e.lengthComputable) {
+      progress_callback(e.loaded / e.total)
+    }
+  }, false)
+  xhr.upload.addEventListener('load', function (e) {
+    progress_callback(1)
+  }, false)
+  xhr.withCredentials = true
+  xhr.open('POST', `${API_SERVER_URL}/user/${user_id}/source_file/${encodeURIComponent(file_name)}`)
+
+  const form_data = new FormData()
+  form_data.append('name', 'sourceFile')
+  form_data.append('sourceFile', new File([new Blob([file_contents])], 'sourceFile'))
+
+  xhr.send(form_data)
+
+  return new Promise((resolve, reject) => {
+    xhr.onload = function (e) {
+      if (this.status === 200 || this.status == 201) {
+        resolve()
+      } else {
+        const response = JSON.parse(e.target.responseText)
+        reject(response)
+      }
     }
   })
 }
