@@ -15,9 +15,9 @@ std::vector< std::vector<double> > FractalValueNoiseTileGenerator::generateSmoot
     }
     std::vector< std::vector<double> > smoothed_source(source_noise.size(), std::vector<double>(source_noise[0].size(), 0));
     for (dimension_type y = 0; y < source_noise.size(); y++) {
-        dimension_type y_i = y/wavelength, y_f = (y/wavelength + 1) % source_noise.size();
+        dimension_type y_i = y/wavelength, y_f = (y/wavelength + 1) % mini_source.size();
         double vertical_blend = double(y)/wavelength - y_i;
-        for (dimension_type x = 0; x < source_noise[0].size(); x++) {
+        for (dimension_type x = 0; x < mini_source[0].size(); x++) {
             dimension_type x_i = x/wavelength, x_f = (x/wavelength + 1) % source_noise[0].size();
             double horizontal_blend = double(x)/wavelength - x_i;
 
@@ -27,7 +27,6 @@ std::vector< std::vector<double> > FractalValueNoiseTileGenerator::generateSmoot
         }
     }
     return smoothed_source;
-
 }
 
 Map FractalValueNoiseTileGenerator::generate(std::vector<Player> &players) {
