@@ -62,12 +62,18 @@ std::shared_ptr<Entity> BaseCell::find_entity(const Player &player) const {
 }
 
 /**
- * Add a new entity by player. No entity must exist for that player.
+ * Add an entity by player, possibly merging with an existing entity.
  * @param player The player for the entity.
  * @param entity The entity to add.
  */
 void BaseCell::add_entity(const Player &player, std::shared_ptr<Entity> entity) {
-    entities[player.player_id] = entity;
+    if (auto entity_iterator = entities.find(player.player_id); entity_iterator != entities.end()) {
+        // If the player already has an entity there, merge
+        entity_iterator->second->energy += entity->energy;
+    } else {
+        // Otherwise, move this entity there
+        entities[player.player_id] = entity;
+    }
 }
 
 /**

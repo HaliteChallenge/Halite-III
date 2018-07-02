@@ -1,3 +1,5 @@
+#include <set>
+
 #include "Map.hpp"
 
 #include "nlohmann/json.hpp"
@@ -109,6 +111,33 @@ void Map::move_location(Location &location, const Direction &direction) const {
         x = (x + width - 1) % width;
         break;
     }
+}
+
+/**
+ * Attempt to commit the transaction.
+ * @return True if the commit succeeded.
+ */
+bool MapTransaction::commit() {
+    std::set<std::pair<Player, Location>> command_set;
+    for (const auto &[player, from, to] : commands) {
+        if (map.at(from)->find_entity(player) == nullptr) {
+            return false;
+        }
+        if (const auto &[_, inserted] = command_set.emplace(player, from); !inserted) {
+            // Duplicate found
+            return false;
+        }
+    }
+    std::unordered_map<Player, std::vector<std::pair<Location, std::shared_ptr<Entity>>>> moved_entities;
+    for (const auto &[player, from, to] : commands) {
+        moved_entities[player].emplace_back(to, map.at(from)->remove_entity(player));
+    }
+    for (auto &[player, entities] : moved_entities) {
+        for (auto &[location, entity] : entities) {
+            map.at(location)->add_entity(player, std::move(entity));
+        }
+    }
+    return true;
 }
 
 }

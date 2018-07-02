@@ -22,11 +22,12 @@ void HaliteImpl::retrieve_commands() {
 /** Process the effects of commands. */
 void HaliteImpl::process_commands() {
     for (const auto &[player_id, command_list] : commands) {
-        auto transaction = CommandTransaction(game.game_map, game.players[player_id]);
+        auto map_transaction = game.game_map.begin_transaction();
+        auto player_transaction = game.players[player_id].begin_transaction();
         for (const auto &command : command_list) {
-            command->act_on_map(transaction);
+            command->act_on_map(map_transaction, player_transaction);
         }
-        if (!transaction.commit()) {
+        if (!map_transaction.commit() || !player_transaction.commit()) {
             throw BotCommandError("Invalid commands");
         }
     }

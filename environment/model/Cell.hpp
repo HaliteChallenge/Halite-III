@@ -77,7 +77,7 @@ public:
     std::shared_ptr<Entity> find_entity(const Player &player) const;
 
     /**
-     * Add a new entity by player. No entity must exist for that player.
+     * Add an entity by player, possibly merging with an existing entity.
      * @param player The player for the entity.
      * @param entity The entity to add.
      */
