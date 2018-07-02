@@ -113,8 +113,8 @@ def requires_competition_open(view):
 
     return decorated_view
 
-
-def is_user_admin(user_id, *, conn):
-    user = conn.execute(model.users.select(model.users.c.id == user_id)).first()
-    return user and user["is_admin"]
-
+def user_mismatch_error(message="Cannot perform action for other user."):
+    """
+    Error for when the logged in and target users of an action don't match.
+    """
+    raise util.APIError(400, message=message)
