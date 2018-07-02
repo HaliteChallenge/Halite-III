@@ -86,19 +86,18 @@ MoveCommand::MoveCommand(const nlohmann::json &json) :
 
 /**
  * Cause the move to act on the Map.
- * @param map_transaction The Map transaction to act on.
- * @param player_transaction The Player transaction issuing the command.
+ * @param transaction The command transaction to act on.
  */
-void MoveCommand::act_on_map(Map::Transaction &map_transaction, Player::Transaction &player_transaction) const {
-    auto location = std::make_pair(entity_x, entity_y);
-    const auto &player = player_transaction.player;
+void MoveCommand::act_on_map(CommandTransaction &transaction) const {
+    Location location{entity_x, entity_y};
+    auto &player = transaction.player;
     if (player.find_entity(location) == nullptr) {
         throw BotCommandError("Attempt by player " + std::to_string(player.player_id) + " to move unowned entity");
     } else {
         auto destination = location;
-        map_transaction.map.move_location(destination, direction);
-        player_transaction.move_entity(location, destination);
-        map_transaction.move_entity(player, location, destination);
+        // Move the location by the specified direction to get the destination
+        transaction.map.move_location(destination, direction);
+        transaction.move_entity(location, destination);
     }
 }
 
