@@ -1,12 +1,8 @@
 const PIXI = require("pixi.js");
 const $ = require("jquery");
 const extraFilters = require("pixi-extra-filters");
-const GlowFilter = extraFilters.GlowFilter;
-const pako = require("pako");
 
-import {Ship} from "./ship";
 import {playerSprite} from "./sprite";
-import {Planet, holidaySprite} from "./planet";
 import {Factory} from "./factory";
 import {Fish} from "./fish";
 import {Map} from "./map";
@@ -17,7 +13,6 @@ import * as assets from "./assets";
 
 import * as animation from "./animation";
 
-export const isHoliday = holidaySprite;
 
 export class HaliteVisualizer {
     constructor(replay) {
@@ -97,24 +92,23 @@ export class HaliteVisualizer {
         this.factoryContainer = new PIXI.Container();
         this.entityContainer = new PIXI.Container();
         this.fishContainer = new PIXI.Container();
-        // this.dockingContainer = new PIXI.Container();
-        // this.overlay = new PIXI.Graphics();
-        this.lights = new PIXI.Graphics();
-        this.lights.blendMode = PIXI.BLEND_MODES.SCREEN;
-        this.lights.filters = [new GlowFilter(20, 1.5, 0.5, 0xFFFFFF, 0.3)];
 
+        // Store entities both in list for easy iteration and in 2d array to understand spatial relationships
         this.entities = Array.from(Array(this.map_height), () => new Array(this.map_width));
         this.entities_list = [];
         this.factories = [];
         this.fish = [];
-        this.player_energies = {};
+
+
         for (let i = 0; i < this.replay.players.length; i++) {
-            const factoryBase = {"x" : this.replay.players[i].factory_location[0], "y" : this.replay.players[i].factory_location[1], "owner" : this.replay.players[i].player_id };
+            const factoryBase = {"x" : this.replay.players[i].factory_location[0],
+                "y" : this.replay.players[i].factory_location[1], "owner" : this.replay.players[i].player_id };
             const factory = new Factory(factoryBase, this.replay.constants,
                 this.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
             this.factories.push(factory);
             factory.attach(this.factoryContainer);
-            // Add players'initial entities
+
+            // Add players'initial entities to list and map
             for (let entity_json of this.replay.players[i].entities) {
                 let entity_object = {"x" : entity_json.x, "y" : entity_json.y, "energy" : entity_json.energy, "owner": this.replay.players[i].player_id};
                 let new_entity = new playerSprite(this, entity_object);
@@ -126,18 +120,18 @@ export class HaliteVisualizer {
                 new_entity.attach(this.entityContainer);
             }
 
-            // also a swarm of fish!
+            // TODO: Re-add fish with herding logic
             // const fish = new Fish(this.replay.constants, this.scale, (kind, args) => this.onSelect(kind, args));
             // this.fish.push(fish);
             // fish.attach(this.fishContainer);
         }
-
+        
+        // Generate base map with visualziation of production squares
         this.baseMap = new Map(this.replay, this.replay.GAME_CONSTANTS, this.scale,
             (kind, args) => this.onSelect(kind, args), this.application.renderer);
         this.baseMap.attach(this.mapContainer);
 
         // Draw initial ownership
-        // Determine and draw map ownership
         this.check_ownership();
         this.baseMap.update(this.owner_grid);
 
@@ -145,12 +139,9 @@ export class HaliteVisualizer {
         // Prerender the points of interest once, and keep it as a texture
 
         this.container.addChild(this.mapContainer);
-        // // this.container.addChild(this.dockingContainer);
         this.container.addChild(this.factoryContainer);
         this.container.addChild(this.entityContainer);
         this.container.addChild(this.fishContainer);
-        //this.container.addChild(this.overlay);
-        //this.container.addChild(this.lights);
 
         this.application.stage.addChild(this.container);
         this.application.stage.addChild(this.letterbox);
@@ -187,8 +178,7 @@ export class HaliteVisualizer {
         this.pause();
         this.application.destroy(true);
         PIXI.ticker.shared.stop();
-        // TODO: destroy ships, planets
-        // TODO: profile CPU, memory usage to make sure all is well
+        // TODO: destroy entities, factories
     }
 
     encodeVideo(type="canvas") {
@@ -276,7 +266,7 @@ export class HaliteVisualizer {
         let frame = this.currentFrame;
         let entities = {};
         let total_entities = 0;
-        // TODO: update with Halite 3 statistics
+        // TODO: update with Halite 3 statistics (keep stubs of old statistics as they are expected by the rest of the website
         return {
             "planets": 0,
             "ships": 0,
@@ -368,7 +358,7 @@ export class HaliteVisualizer {
         this.application.render();
     }
 
-    // Every frame, update the location of all entities
+    // Update the status of the game once per frame. Updating includes processing turn movement, spawning, death, and map ownership
     // Be sure order of events (movement, merging, production calculation, spawning, and death) directly mirrors
     // game engine or visualization will be incorrect.
     update() {
@@ -382,19 +372,24 @@ export class HaliteVisualizer {
         // Spawn entities (info from replay file), then process deaths
         this.process_entity_events();
         this.process_entity_energy_loss();
-        // Process movements, merges, and deaths (via entity energy) for the frame
     }
 
+    /**
+     * Moves all entities for a turn
+     * First removes all entities from map, then has each entity independently calculate its new location from this turn's
+     * commands, the re-adds entities to map, merging in the process. This order ensures that merges happen only after all
+     * of a player's move commands have been processed.
+     */
     process_entity_movement() {
         for (let entity_index of Object.keys(this.entities_list)) {
             let entity = this.entities_list[entity_index];
             // Remove entity from map at old location.
             if (!this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
-                console.log("floating entity");
+                console.error("Entity expected where none exists");
             } else {
                 delete this.entities[entity.y][entity.x][entity.owner];
             }
-            // entities independently determine movement
+            // entities independently determine their own movement
             entity.update();
         }
         // After processing all moves, add entities to map at their new locations, and merge if needed
@@ -404,32 +399,32 @@ export class HaliteVisualizer {
             if (this.add_entity_to_map(entity)) {
                 entity.destroy();
                 delete this.entities_list[entity_index];
-                console.log("removing entity at index due to merge", entity_index);
             }
         }
     }
 
-    // Spawns new entities and creates death animation (but does not actually process deaths)
+    /**
+     * Read events for the turn from the replay file.
+     * This functions will spawn new entities, and create animations for spawning and deaths.
+     * Though this function adds animations for deaths, it does not remove dying entities.
+     */
     process_entity_events() {
-        // TODO: determine in between frame interpoation, and from that appropriate delay
+        // TODO: add within frame interpolation
         let delayTime = 0;
         if (this.replay.full_frames[this.frame].events) {
             for (let event of this.replay.full_frames[this.frame].events) {
                 const cellSize = assets.CELL_SIZE * this.scale;
 
                 if (event.type === "death") {
+                    // Check that replay file and animation are in sync by checking that there is an entity at the place
+                    // the replay file expects an entity to die.
                     console.assert(typeof this.entities[event.location[1]][event.location[0]] !== "undefined"
                         && this.entities[event.location[1]][event.location[0]].hasOwnProperty(event.owner_id),
                         "Replay files has a death at %d %d with owner $d, but there is no entity there",
                         event.location[0], event.location[1], event.owner_id, this.frame);
-                    // check that energy of dying entity is 0
-                    if (typeof this.entities[event.location[1]][event.location[0]] !== "undefined"
-                        && this.entities[event.location[1]][event.location[0]].hasOwnProperty(event.owner_id)) {
-                        console.log("Replay file has death of entity with visualization having entity have current value ",
-                            this.entities[event.location[1]][event.location[0]][event.owner_id].energy);
-                    }
 
                     // add death animation to be drawn
+                    // TODO: switch to Halite 3 animation
                     this.animationQueue.push(
                         new animation.ShipExplosionFrameAnimation(
                             event, delayTime, cellSize, this.entityContainer));
@@ -437,33 +432,20 @@ export class HaliteVisualizer {
                 }
                 else if (event.type === "spawn") {
                     // Create a new entity, add to map, and merge as needed
-                    let entity_object = {"x" : event.location[0], "y" : event.location[1], "energy" : event.energy, "owner": event.owner_id};
+                    let entity_object = {"x" : event.location[0], "y" : event.location[1],
+                                        "energy" : event.energy, "owner": event.owner_id};
                     let new_entity = new playerSprite(this, entity_object);
-                    console.log("sprite spawning: x, y, owner, turn", event.location[0], event.location[1], event.owner_id, this.frame);
+
 
                     // Add to map. If it wasn't merged immediately, track the new entity
                     if (!this.add_entity_to_map(new_entity)) {
                         this.entities_list.push(new_entity);
                         new_entity.attach(this.entityContainer);
                     }
-                    // TODO: new spawn animation
-                    this.animationQueue.push(new animation.FrameAnimation(
-                        100, delayTime,
-                        () => {
-                        },
-                        (frame) => {
-                            const side = assets.CELL_SIZE * this.scale;
-
-                            const entity_x = side * (event.location[0] + 0.5);
-                            const entity_y = side * (event.location[1] + 0.5);
-                            this.lights.lineStyle(2, assets.PLAYER_COLORS[event.owner_id], 0.5 * frame / 100);
-                            this.lights.moveTo(entity_x - 0.5, entity_y - 0.5);
-                            this.lights.lineTo(entity_x, entity_y);
-                            this.lights.endFill();
-                        },
-                        () => {
-                        }
-                    ));
+                    // TODO: use new Halite 3 spawn animation
+                    this.animationQueue.push(
+                        new animation.PlanetExplosionFrameAnimation(
+                            event, delayTime, cellSize, this.entityContainer));
                 }
                 else {
                     console.log(event);
@@ -473,16 +455,18 @@ export class HaliteVisualizer {
 
     }
 
-    // returns true if new entity, false if merge
+    /**
+     * Adds an entity to the map structure
+     * This function deals with determining if merge is needed, and executes the merge as needed
+     * param entity: the entity to add to the map (entity structure holds location it should be added at)
+     * Return: true if the entity was merged, false if the entity was added
+     */
     add_entity_to_map(entity) {
         if (typeof this.entities[entity.y][entity.x] === "undefined") {
             this.entities[entity.y][entity.x] = {}
         }
         // check if existing entity on square, in which case merge
         if (this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
-            console.log("merge at x, y, owner, turn, old energy, added energy",
-                entity.x, entity.y, entity.owner, this.frame,
-                this.entities[entity.y][entity.x][entity.owner].energy, entity.energy);
             this.entities[entity.y][entity.x][entity.owner].energy += entity.energy;
             return true;
         } else {
@@ -491,7 +475,9 @@ export class HaliteVisualizer {
         }
     }
 
-    // Removes energy from all entities. Entities with no remaining energy are removed
+    /**
+     * Calculates energy loss for each entity on the map, and removes entities with no remaining energy
+     */
     process_entity_energy_loss() {
         for (let entity_index of Object.keys(this.entities_list)) {
             let entity = this.entities_list[entity_index];
@@ -500,8 +486,6 @@ export class HaliteVisualizer {
 
             // destroy entity if energy is less than 0
             if (entity.energy <= 0) {
-                console.log("entity death", entity.owner, entity.x, entity.y, this.frame);
-
                 // Remove from screen, list of entities, and map of entities
                 entity.destroy();
                 delete this.entities_list[entity_index];
@@ -511,20 +495,17 @@ export class HaliteVisualizer {
 
     }
 
+    /**
+     * Draw animations. Draw called more than once per frame
+     * @param dt
+     */
     draw(dt=0) {
-        this.lights.clear();
-
-        // for (let factory of this.factories) {
-        //     // TODO: check for living players and update factories with statuses
-        // }
-
+        // TODO: update fish with herding mechanism
         // just let the fish wander
         // for (let fish of this.fish) {
         //     fish.update(this.time, dt);
         // }
-        if (this.frame !== this.prevFrame) {
-            this.prevFrame = this.frame;
-        }
+
         // dt comes from Pixi ticker, and the unit is essentially frames
         let queue = this.animationQueue;
         this.animationQueue = [];
@@ -558,20 +539,32 @@ export class HaliteVisualizer {
         // TODO Add statistics for game play
     }
 
+    /**
+     * Calculate ownership of cells on map
+     * Mirrors distance/ownership calculation used in game engine
+     */
     check_ownership() {
         // create ownership grid
         this.TIED = -2;
         this.UNOWNED = -1;
         this.owner_grid = Array.from(Array(this.map_height), () => new Array(this.map_width).fill({"owner" : this.UNOWNED, "distance": 0}));
         const INITIAL_DISTANCE = 0;
-        // TODO: find faster queue libary
+        // TODO: find faster queue library - currently visualization reasonably fast, but this "queue" copies list with each remove
         let search_locations = [];
         // initialize ownership search with cells with entities on them
         for (let entity_index of Object.keys(this.entities_list)) {
             let entity = this.entities_list[entity_index];
-                //  TODO: determine if multiple entities on cell, and follow same collision logic as game engine
+            // Initialize new object on ownership grid
             this.owner_grid[entity.y][entity.x] = {"owner" : entity.owner, "distance" : INITIAL_DISTANCE};
-            search_locations.push({"x" : entity.x, "y": entity.y});
+            // Check for multiple entities, in which case, process as a collision
+            if (this.multiple_entities_on_cell(entity.x, entity.y)){
+                this.owner_grid[entity.y][entity.x].owner = this.process_collision(entity.x, entity.y);
+            }
+
+            // Only add cell as location to search from if someone won the collision
+            if (this.owner_grid[entity.y][entity.x].owner !== this.UNOWNED) {
+                search_locations.push({"x": entity.x, "y": entity.y});
+            }
         }
         // Run search after initialization
         while (search_locations.length > 0) {
@@ -587,6 +580,45 @@ export class HaliteVisualizer {
 
     }
 
+    /**
+     * Check location for possession of multiple entities
+     * @param x_location X position to check
+     * @param y_location Y position to check
+     */
+    multiple_entities_on_cell(x_location, y_location) {
+        return typeof this.entities[y_location][x_location] !== "undefined" &&
+            this.entities[y_location][x_location].length > 1;
+    }
+
+    /**
+     * Determine winner of a cell when a collision has occured
+     * This function assumes that one has previously verified there is more than one entity in the given location.
+     * Update if collision function in game engine changes (currently used dominant entity method)
+     * @param x_location
+     * @param y_location
+     * return Id of owner of the cell
+     */
+    process_collision(x_location, y_location) {
+        let max_energy = Number.MIN_SAFE_INTEGER;
+        let max_player = this.UNOWNED;
+        for (let owner_id of Object.keys(this.entities[y_location][x_location])) {
+            let entity = this.entities[y_location][x_location][owner_id];
+            if (entity.energy > max_energy) {
+                max_energy = entity.energy;
+                max_player = entity.owner;
+            } else if (entity.energy === max_energy) {
+                max_player = this.TIED
+            }
+        }
+        return max_player;
+    }
+
+    /**
+     * Return the neighbors of a location on a map. Each neighbor is representated as an object, with values x and y
+     * Neighbors are calculated using a wrap around map
+     * @param location: Object with fields x and y to represent a location
+     * Return: list of 4 location objects considered the neighbors of the input location
+     */
     get_neighbors(location) {
         // Allow wrap around neighbors
         return [{"x" :(location.x + 1) % this.map_width, "y" : location.y},
@@ -595,6 +627,11 @@ export class HaliteVisualizer {
             {"x" : location.x, "y" : (location.y - 1 + this.map_height) % this.map_height}];
     }
 
+    /**
+     * Calculate and assign the owner of a cell. The owner of a cell is the owner of the neighbor cell which is owned at
+     * the closest distance. If two neighboring cells are owned at the same distance, this cell has tied ownership
+     * @param cell_location
+     */
     determine_cell_ownership(cell_location) {
         let closest_owned_distance = Number.MAX_VALUE;
         let multiple_close_players = false;
