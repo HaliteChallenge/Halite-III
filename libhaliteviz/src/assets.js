@@ -6,19 +6,16 @@ export const VISUALIZER_SIZE = 700;
 export const VISUALIZER_HEIGHT = 700;
 export const STATS_SIZE = 20;
 export const CELL_SIZE = 1;
+
 export const PLAYER_COLORS = [0xff0000, 0x00FF00, 0xBA55D3, 0xffae42,
                                 0xbd00db, 0xFF69B4, 0xFFFF00, 0x009900,
                                 0xFF8C00, 0xff0000, 0x00FF00, 0xBA55D3,
                                 0xffae42, 0xbd00db, 0xFF69B4, 0xFFFF00];
 export const PLANET_COLOR = 0xb7b7b7;
 export const FISH_COLOR = 0xFFA500;
-//export const HEALTH_BAR_COLOR = 0x990000;
-//export const EXPLOSION_COLOR = 0xFF7607;
 
 export const SPRITE_COLOR = 0xFFFFFF;
 export const SPRITE_ALPHA = 0.8;
-// export const HALO_COLOR = 0XD0D0D0;
-// export const HALO_ALPHA = 0.8;
 export const FACTORY_BASE_COLOR = 0xFFFFFF;
 export const FACTORY_BASE_ALPHA = 0.8;
 

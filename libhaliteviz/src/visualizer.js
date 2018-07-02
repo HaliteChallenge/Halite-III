@@ -99,7 +99,6 @@ export class HaliteVisualizer {
         this.factories = [];
         this.fish = [];
 
-
         for (let i = 0; i < this.replay.players.length; i++) {
             const factoryBase = {"x" : this.replay.players[i].factory_location[0],
                 "y" : this.replay.players[i].factory_location[1], "owner" : this.replay.players[i].player_id };
@@ -134,7 +133,6 @@ export class HaliteVisualizer {
         // Draw initial ownership
         this.check_ownership();
         this.baseMap.update(this.owner_grid);
-
 
         // Prerender the points of interest once, and keep it as a texture
 
@@ -452,7 +450,6 @@ export class HaliteVisualizer {
                 }
             }
         }
-
     }
 
     /**

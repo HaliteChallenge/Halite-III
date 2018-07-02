@@ -23,6 +23,7 @@ export class Factory {
         this.owner = factoryBase.owner;
 
         const pixelsPerUnit = assets.CELL_SIZE * scale;
+
         // TODO: Switch factory from square to image
         const factoryShape = new PIXI.Graphics();
         factoryShape.beginFill(assets.FACTORY_BASE_COLOR, assets.FACTORY_BASE_ALPHA);
@@ -42,7 +43,6 @@ export class Factory {
         this.core.position.x = pixelsPerUnit * factoryBase.x + pixelsPerUnit / 2;
         this.core.position.y = pixelsPerUnit * factoryBase.y + pixelsPerUnit / 2;
 
-
         // Rotate the factory a bit just to mix it up
         this.core.rotation = Math.random() * 2 * Math.PI;
         this.core.interactive = true;
@@ -60,8 +60,7 @@ export class Factory {
 
     /**
      * Add this factory to the PIXI stage.
-     * @param container {PIXI.Container} The parent container of the factory
-     * sprites.
+     * @param container {PIXI.Container} The parent container of the factory sprites.
      */
     attach(container) {
         container.addChild(this.core);

@@ -27,9 +27,7 @@ void to_json(nlohmann::json &json, const Constants &constants) {
             FIELD_TO_JSON(NEW_ENTITY_ENERGY),
             FIELD_TO_JSON(BASE_TURN_ENERGY_LOSS),
             FIELD_TO_JSON(INITIAL_ENERGY),
-            FIELD_TO_JSON(PERSISTENCE),
-            FIELD_TO_JSON(FACTOR_EXP_1),
-            FIELD_TO_JSON()};
+            FIELD_FROM_JSON(BLUR_FACTOR)};
 }
 
 /**
