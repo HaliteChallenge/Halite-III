@@ -163,9 +163,6 @@ export class Map {
      * @param owner_grid: grid of owners of clls
      */
     update(owner_grid) {
-        console.log("drawing owner grid");
-        // TODO: update dynamically from record
-
         let newTintTexture = this.generateMapTexture(this.rows, this.cols,
             owner_grid, this.ownerToColor, false, this.renderer,
             assets.OWNER_TINT_ALPHA, this.scale, this.constants);

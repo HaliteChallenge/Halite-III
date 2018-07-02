@@ -93,9 +93,8 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         let direction = 0;
         let x_move = 0;
         let y_move = 0;
-
         // Move the sprite according to move commands and redraw in new location
-        if (this.visualizer.frame < this.visualizer.replay.full_frames.length - 1) {
+        if (this.visualizer.frame < this.visualizer.replay.full_frames.length) {
             let moves = this.visualizer.replay.full_frames[this.visualizer.frame].moves;
             let player_moves = moves[this.owner];
             for (let move_idx = 0; move_idx < player_moves.length; move_idx++) {
@@ -130,16 +129,17 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                     // Use wrap around map in determining movement
                     this.x = (this.x + x_move + this.map_width) % this.map_width;
                     this.y = (this.y + y_move + this.map_height) % this.map_height;
-                    break;
+
+                    const pixelX = this.visualizer.scale * CELL_SIZE * this.x + this.visualizer.scale * CELL_SIZE / 2;
+                    const pixelY = this.visualizer.scale * CELL_SIZE * this.y + this.visualizer.scale * CELL_SIZE / 2;
+                    this.sprite.position.x = pixelX;
+                    this.sprite.position.y = pixelY;
+
+                    return;
                 }
             }
         }
-        this.energy -= this.energy_loss;
-
-        const pixelX = this.visualizer.scale * CELL_SIZE * this.x + this.visualizer.scale * CELL_SIZE / 2;
-        const pixelY = this.visualizer.scale * CELL_SIZE * this.y + this.visualizer.scale * CELL_SIZE / 2;
-        this.sprite.position.x = pixelX;
-        this.sprite.position.y = pixelY;
+       // this.energy -= this.energy_loss;
     }
 }
 

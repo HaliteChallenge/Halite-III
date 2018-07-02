@@ -136,6 +136,11 @@ export class HaliteVisualizer {
             (kind, args) => this.onSelect(kind, args), this.application.renderer);
         this.baseMap.attach(this.mapContainer);
 
+        // Draw initial ownership
+        // Determine and draw map ownership
+        this.check_ownership();
+        this.baseMap.update(this.owner_grid);
+
 
         // Prerender the points of interest once, and keep it as a texture
 
@@ -363,47 +368,85 @@ export class HaliteVisualizer {
         this.application.render();
     }
 
+    // Every frame, update the location of all entities
+    // Be sure order of events (movement, merging, production calculation, spawning, and death) directly mirrors
+    // game engine or visualization will be incorrect.
     update() {
-        // Determine and draw map ownership
+        // Move entities (includes merges)
+        this.process_entity_movement();
+
+        // Process map ownership
         this.check_ownership();
         this.baseMap.update(this.owner_grid);
-        this.deathFlags = {};
-        this.newEntities = [];
-        console.log(this.frame);
+
+        // Spawn entities (info from replay file), then process deaths
+        this.process_entity_events();
+        this.process_entity_energy_loss();
+        // Process movements, merges, and deaths (via entity energy) for the frame
+    }
+
+    process_entity_movement() {
+        for (let entity_index of Object.keys(this.entities_list)) {
+            let entity = this.entities_list[entity_index];
+            // Remove entity from map at old location.
+            if (!this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
+                console.log("floating entity");
+            } else {
+                delete this.entities[entity.y][entity.x][entity.owner];
+            }
+            // entities independently determine movement
+            entity.update();
+        }
+        // After processing all moves, add entities to map at their new locations, and merge if needed
+        for (let entity_index of Object.keys(this.entities_list)) {
+            let entity = this.entities_list[entity_index];
+            // Add to map. If this entity merged with an existing entity on the square, remove this entity
+            if (this.add_entity_to_map(entity)) {
+                entity.destroy();
+                delete this.entities_list[entity_index];
+                console.log("removing entity at index due to merge", entity_index);
+            }
+        }
+    }
+
+    // Spawns new entities and creates death animation (but does not actually process deaths)
+    process_entity_events() {
+        // TODO: determine in between frame interpoation, and from that appropriate delay
+        let delayTime = 0;
         if (this.replay.full_frames[this.frame].events) {
             for (let event of this.replay.full_frames[this.frame].events) {
-                // How much to delay (in terms of ticks) before
-                // actually playing the event
-                const delayTime = 0;
                 const cellSize = assets.CELL_SIZE * this.scale;
 
                 if (event.type === "death") {
-                    console.log("should be a death", event.owner_id, event.location[0], event.location[1]);
-                    // Use default draw function
+                    console.assert(typeof this.entities[event.location[1]][event.location[0]] !== "undefined"
+                        && this.entities[event.location[1]][event.location[0]].hasOwnProperty(event.owner_id),
+                        "Replay files has a death at %d %d with owner $d, but there is no entity there",
+                        event.location[0], event.location[1], event.owner_id, this.frame);
+                    // check that energy of dying entity is 0
+                    if (typeof this.entities[event.location[1]][event.location[0]] !== "undefined"
+                        && this.entities[event.location[1]][event.location[0]].hasOwnProperty(event.owner_id)) {
+                        console.log("Replay file has death of entity with visualization having entity have current value ",
+                            this.entities[event.location[1]][event.location[0]][event.owner_id].energy);
+                    }
+
+                    // add death animation to be drawn
                     this.animationQueue.push(
                         new animation.ShipExplosionFrameAnimation(
                             event, delayTime, cellSize, this.entityContainer));
-                    if (typeof this.deathFlags[event.owner_id] === "undefined") {
-                        this.deathFlags[event.owner_id] = {};
-                    }
-                    this.deathFlags[event.owner_id][event.location] = this.currentFrame;
 
                 }
                 else if (event.type === "spawn") {
-                    // add the entity to the list of entities
+                    // Create a new entity, add to map, and merge as needed
                     let entity_object = {"x" : event.location[0], "y" : event.location[1], "energy" : event.energy, "owner": event.owner_id};
                     let new_entity = new playerSprite(this, entity_object);
-                    if (typeof this.entities[new_entity.y][new_entity.x] === "undefined") {
-                        this.entities[new_entity.y][new_entity.x] = {}
-                    }
-                    // check if existing entity on square, in which case merge
-                    if (this.entities[new_entity.y][new_entity.x].hasOwnProperty(new_entity.owner)) {
-                        this.entities[new_entity.y][new_entity.x][new_entity.owner].energy += new_entity.energy;
-                    } else {
-                        this.entities[new_entity.y][new_entity.x][new_entity.owner] = new_entity;
+                    console.log("sprite spawning: x, y, owner, turn", event.location[0], event.location[1], event.owner_id, this.frame);
+
+                    // Add to map. If it wasn't merged immediately, track the new entity
+                    if (!this.add_entity_to_map(new_entity)) {
                         this.entities_list.push(new_entity);
                         new_entity.attach(this.entityContainer);
                     }
+                    // TODO: new spawn animation
                     this.animationQueue.push(new animation.FrameAnimation(
                         100, delayTime,
                         () => {
@@ -419,7 +462,6 @@ export class HaliteVisualizer {
                             this.lights.endFill();
                         },
                         () => {
-
                         }
                     ));
                 }
@@ -428,41 +470,45 @@ export class HaliteVisualizer {
                 }
             }
         }
+
+    }
+
+    // returns true if new entity, false if merge
+    add_entity_to_map(entity) {
+        if (typeof this.entities[entity.y][entity.x] === "undefined") {
+            this.entities[entity.y][entity.x] = {}
+        }
+        // check if existing entity on square, in which case merge
+        if (this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
+            console.log("merge at x, y, owner, turn, old energy, added energy",
+                entity.x, entity.y, entity.owner, this.frame,
+                this.entities[entity.y][entity.x][entity.owner].energy, entity.energy);
+            this.entities[entity.y][entity.x][entity.owner].energy += entity.energy;
+            return true;
+        } else {
+            this.entities[entity.y][entity.x][entity.owner] = entity;
+            return false;
+        }
+    }
+
+    // Removes energy from all entities. Entities with no remaining energy are removed
+    process_entity_energy_loss() {
         for (let entity_index of Object.keys(this.entities_list)) {
             let entity = this.entities_list[entity_index];
-            // Remove entity from map at old location.
-            if (!this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
-                console.log("floating entity");
-            } else {
+            // Decrease entity energy
+            entity.energy -= this.replay.GAME_CONSTANTS.BASE_TURN_ENERGY_LOSS;
+
+            // destroy entity if energy is less than 0
+            if (entity.energy <= 0) {
+                console.log("entity death", entity.owner, entity.x, entity.y, this.frame);
+
+                // Remove from screen, list of entities, and map of entities
+                entity.destroy();
+                delete this.entities_list[entity_index];
                 delete this.entities[entity.y][entity.x][entity.owner];
             }
-
-            entity.update();
-
-            // determine entity death from energy
-            if (entity.energy <= 0) {
-                console.log("entity death", entity.owner, entity.x, entity.y);
-
-                entity.destroy();
-                delete this.entities_list[entity_index];
-            }
         }
-        // After processing all moves, add entities to map at their new locations, and merge if needed
-        for (let entity_index of Object.keys(this.entities_list)) {
-            let entity = this.entities_list[entity_index];
-            if (typeof this.entities[entity.y][entity.x] === "undefined") {
-                this.entities[entity.y][entity.x] = {};
-            }
-            // check for entity in new cell, and merge if needed
-            if (this.entities[entity.y][entity.x].hasOwnProperty(entity.owner)) {
-                this.entities[entity.y][entity.x][entity.owner].energy += entity.energy;
-                console.log("entity merge");
-                entity.destroy();
-                delete this.entities_list[entity_index];
-            } else {
-                this.entities[entity.y][entity.x][entity.owner] = entity;
-            }
-        }
+
     }
 
     draw(dt=0) {
