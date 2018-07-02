@@ -134,6 +134,23 @@ export function get_season1_stats (userId) {
   })
 }
 
+export function get_editor_file_list(userId) {
+  return $.get({
+    url: `${API_SERVER_URL}/user/${userId}/source_file`,
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
+
+export function get_editor_file(userId, file_name) {
+  return $.get({
+    url: `${API_SERVER_URL}/user/${userId}/source_file/`+encodeURIComponent(file_name),
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
 
 export function register_me (data) {
   return $.post({

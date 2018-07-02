@@ -94,15 +94,17 @@ export default {
   mounted: function () {
     api.me().then((me) => {
       if (me !== null) {
+        this.user_id = me.user_id
         this.logged_in = true
+        this.load_code().then((function(editor_files) {
+          console.log(editor_files)
+          this.editor_files = editor_files
+          this.active_file_name = this.bot_info().fileName
+          this.create_editor(this.get_active_file_code())
+        }).bind(this))
       }
     })
     // Restore user's bot code, or use demo code for new bot
-    this.load_code().then((function(editor_files) {
-      this.editor_files = editor_files
-      this.active_file_name = this.bot_info().fileName
-      this.create_editor(this.get_active_file_code())
-    }).bind(this))
   },
   methods: {
     /* Return bot language specific info */
@@ -190,16 +192,22 @@ export default {
       return (startCode === null) ? this.load_default_code() : Promise.resolve(startCode)
     },
     load_code_from_local_storage: function() {
-      const file_names = JSON.parse(window.localStorage.getItem(FILE_NAMES_KEY))
-      if(file_names === null) return null
-      logInfo('Loading code into editor from web local storage')
-      let editor_files = {}
-      for (let a = 0; a < file_names.length; a++) {
-        let name = file_names[a]
-        editor_files[name] = {contents: window.localStorage.getItem(String(name))}
-      }
-
-      return editor_files
+      return api.get_editor_file_list(this.user_id).then((function(file_list) {
+        console.log(file_list)
+        return Promise.all(file_list.map(
+          (file_name) => (api.get_editor_file(this.user_id, file_name).then(
+            (contents) => ({contents: contents, name: file_name})))
+        ))
+      }).bind(this)).then(function(file_promise) {
+        return file_promise.then(function(file_contents) {
+          let editor_files =  file_contents.reduce(function(prev, cur) {
+            prev[cur.name] = {contents: cur.contents}
+            return prev
+          }, {})
+          console.log(editor_files)
+          return editor_files
+        })
+      })
     },
     /* Return MyBot file of the starter bot in string format */
     load_default_code: function () {

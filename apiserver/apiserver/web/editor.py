@@ -21,7 +21,7 @@ def list_user_files(intended_user, *, user_id):
     return flask.jsonify([a.name[len(str(intended_user))+1:] for a in bucket.list_blobs(prefix=str(intended_user)) if a.name[:-1] != str(intended_user)])
 
 
-@web_api.route("/user/<int:intended_user>/source_file/<string:file_id>", methods=["GET"])
+@web_api.route("/user/<int:intended_user>/source_file/<path:file_id>", methods=["GET"])
 @util.cross_origin(methods=["GET"])
 @api_util.requires_login(accept_key=True, association=True)
 def get_user_file(intended_user, file_id, *, user_id):
