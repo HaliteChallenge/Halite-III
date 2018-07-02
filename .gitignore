@@ -496,3 +496,5 @@ environment/cmake_install.cmake
 environment/CMakeCache.txt
 environment/Makefile
 tools/standalone_visualizer/release-builds/*
+
+gcloud_config.json
