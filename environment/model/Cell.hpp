@@ -70,17 +70,25 @@ public:
     std::unordered_map<Player::id_type, std::shared_ptr<Entity>> entities;
 
     /**
+     * Find an entity by player.
+     * @param player The player to search.
+     * @return The entity for that player, or null if not found.
+     */
+    std::shared_ptr<Entity> find_entity(const Player &player) const;
+
+    /**
      * Add an entity by player, possibly merging with an existing entity.
      * @param player The player for the entity.
      * @param entity The entity to add.
      */
-    void add_entity(const Player &player, std::shared_ptr<Entity> &entity);
+    void add_entity(const Player &player, std::shared_ptr<Entity> entity);
 
     /**
      * Remove an entity by player.
      * @param player The player of the entity.
+     * @return The entity for that player.
      */
-    void remove_entity(const Player &player);
+    std::shared_ptr<Entity> remove_entity(const Player &player);
 
     /** Get the production of this cell. */
     virtual energy_type production() const { return BASE_PRODUCTION; }

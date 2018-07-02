@@ -23,7 +23,7 @@ void HaliteImpl::process_production() {
  */
 void HaliteImpl::initialize_owner_search_from_sprites(std::queue<Location> &search_cells) {
     static constexpr auto INITIAL_DISTANCE = 0;
-    for (const auto &[_, player] : game->players) {
+    for (const auto &[_, player] : game.players) {
         for (const auto &[location, entity] : player.entities) {
             auto &cell = ownership_grid[location];
             if (multiple_entities_on_cell(location)) {
@@ -53,7 +53,7 @@ void HaliteImpl::initialize_owner_search_from_sprites(std::queue<Location> &sear
 void HaliteImpl::run_initialized_owner_search(std::queue<Location> &search_cells) {
     while (!search_cells.empty()) {
         Location current_location = search_cells.front();
-        const auto &neighbors = game->game_map.get_neighbors(current_location);
+        const auto &neighbors = game.game_map.get_neighbors(current_location);
         // Search through unowned neighbor of owned cell and determine their ownership
         for (const auto &neighbor : neighbors) {
             if (ownership_grid[neighbor].owner == CellOwner::UNOWNED) {
@@ -72,8 +72,8 @@ void HaliteImpl::run_initialized_owner_search(std::queue<Location> &search_cells
 void HaliteImpl::update_production_from_ownership() {
     // Calculate total production per player for this turn for statistics and scoring
     std::unordered_map<Player::id_type, energy_type> turn_player_production;
-    for (dimension_type y_position = 0; y_position < game->game_map.height; ++y_position) {
-        for (dimension_type x_position = 0; x_position < game->game_map.width; ++x_position) {
+    for (dimension_type y_position = 0; y_position < game.game_map.height; ++y_position) {
+        for (dimension_type x_position = 0; x_position < game.game_map.width; ++x_position) {
             switch (ownership_grid.at(x_position, y_position).owner) {
             case CellOwner::UNOWNED:
                 // TODO: error case
@@ -84,13 +84,13 @@ void HaliteImpl::update_production_from_ownership() {
                 break;
             default:
                 const auto &current_cell = ownership_grid.at(x_position, y_position);
-                turn_player_production[current_cell.owner] += game->game_map.at(x_position, y_position)->production();
+                turn_player_production[current_cell.owner] += game.game_map.at(x_position, y_position)->production();
             }
         }
     }
     // Add the energy from this turn to each player
     for (const auto &[player_id, energy] : turn_player_production) {
-        game->players[player_id].energy += energy;
+        game.players[player_id].energy += energy;
     }
     update_player_stats(turn_player_production);
 }
@@ -106,7 +106,7 @@ void HaliteImpl::determine_cell_ownership(const Location &cell_location) {
     bool multiple_close_players = false;
     std::unordered_set<std::shared_ptr<Entity>> close_entities;
     Player::id_type closest_cell_owner = CellOwner::UNOWNED;
-    const auto &neighbors = game->game_map.get_neighbors(cell_location);
+    const auto &neighbors = game.game_map.get_neighbors(cell_location);
     for (const auto &neighbor : neighbors) {
         // Find the owned neighbor with closest distance. If multiple neighbors same distance,
         const auto &cell = ownership_grid[neighbor];
@@ -138,7 +138,7 @@ void HaliteImpl::determine_cell_ownership(const Location &cell_location) {
  */
 bool HaliteImpl::multiple_entities_on_cell(const Location &location) const {
     static constexpr auto SINGLE_ENTITY = 1;
-    return game->game_map.at(location)->entities.size() > SINGLE_ENTITY;
+    return game.game_map.at(location)->entities.size() > SINGLE_ENTITY;
 }
 
 /**
@@ -169,9 +169,9 @@ Player::id_type HaliteImpl::process_collision(const Location &cell_location) {
     auto tied = false;
     auto max_energy = std::numeric_limits<energy_type>::min();
     // Pick an arbitrary player to start
-    Player::id_type max_player = game->game_map[cell_location]->entities.begin()->first;
+    Player::id_type max_player = game.game_map[cell_location]->entities.begin()->first;
     // Find the entity with highest energy, keeping track of ties
-    for (auto &[player_id, entity] : game->game_map[cell_location]->entities) {
+    for (auto &[player_id, entity] : game.game_map[cell_location]->entities) {
         if (entity->energy > max_energy) {
             max_energy = entity->energy;
             max_player = player_id;

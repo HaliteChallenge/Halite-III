@@ -13,8 +13,8 @@ namespace hlt {
 class HaliteImpl final {
     friend class Halite;
 
-    /** Pointer to the game interface. Raw because HaliteImpl is always owned by Halite. */
-    Halite *game;
+    /** The game interface. */
+    Halite &game;
 
     /** Representation of the map grid containing ownership information. */
     OwnershipGrid ownership_grid;
@@ -128,7 +128,7 @@ public:
      *
      * @param game The game interface.
      */
-    explicit HaliteImpl(Halite *game);
+    explicit HaliteImpl(Halite &game);
 };
 
 }

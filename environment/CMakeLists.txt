@@ -93,7 +93,6 @@ add_library(halite_core OBJECT ${SOURCE_FILES})
 add_executable(halite $<TARGET_OBJECTS:halite_core> main.cpp)
 add_dependencies(halite VERSION_CHECK libzstd_static)
 
-set(TEST_FILES ${SOURCE_FILES})
 file(GLOB_RECURSE SOURCE ${CMAKE_SOURCE_DIR}/test/*.[ch]*)
 set(TEST_FILES "${TEST_FILES}" ${SOURCE})
 
@@ -136,3 +135,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${EXTERNAL_INSTALL_LOCATION}/catch/co
 include(Catch)
 enable_testing()
 catch_discover_tests(halite_test)
+
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
+add_dependencies(check halite_test)

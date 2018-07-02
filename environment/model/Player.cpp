@@ -1,3 +1,5 @@
+#include <set>
+
 #include "Entity.hpp"
 
 #include "nlohmann/json.hpp"
@@ -59,13 +61,25 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
 }
 
 /**
+ * Find an entity by location.
+ * @param location The location to search.
+ * @return The entity there, or null if not found.
+ */
+std::shared_ptr<Entity> Player::find_entity(const Location &location) const {
+    if (auto entity_iterator = entities.find(location); entity_iterator != entities.end()) {
+        return entity_iterator->second;
+    } else {
+        return std::shared_ptr<Entity>();
+    }
+}
+
+/**
  * Add an entity by location, possibly merging with an existing entity.
  * @param location The location for the entity.
  * @param entity The entity to add.
  */
-void Player::add_entity(const Location &location, std::shared_ptr<Entity> &entity) {
-    auto entity_iterator = entities.find(location);
-    if (entity_iterator != entities.end()) {
+void Player::add_entity(const Location &location, std::shared_ptr<Entity> entity) {
+    if (auto entity_iterator = entities.find(location); entity_iterator != entities.end()) {
         // If the player already has an entity there, merge
         entity_iterator->second->energy += entity->energy;
     } else {
@@ -77,9 +91,37 @@ void Player::add_entity(const Location &location, std::shared_ptr<Entity> &entit
 /**
  * Remove an entity by location.
  * @param location The location of the entity.
+ * @return The entity there.
  */
-void Player::remove_entity(const Location &location) {
+std::shared_ptr<Entity> Player::remove_entity(const Location &location) {
+    auto found = std::move(entities[location]);
     entities.erase(location);
+    return found;
 }
 
+/**
+ * Attempt to commit the transaction.
+ * @return True if the commit succeeded.
+ */
+bool PlayerTransaction::commit() {
+    std::set<Location> command_set;
+    for (const auto &[from, to] : commands) {
+        if (player.find_entity(from) == nullptr) {
+            return false;
+        }
+        if (const auto &[_, inserted] = command_set.emplace(from); !inserted) {
+            // Duplicate found
+            return false;
+        }
+    }
+    std::vector<std::pair<Location, std::shared_ptr<Entity>>> moved_entities;
+    moved_entities.reserve(commands.size());
+    for (const auto &[from, to] : commands) {
+        moved_entities.emplace_back(to, player.remove_entity(from));
+    }
+    for (auto &[location, entity] : moved_entities) {
+        player.add_entity(location, std::move(entity));
+    }
+    return true;
+}
 }
