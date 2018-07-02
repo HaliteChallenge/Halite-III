@@ -27,7 +27,7 @@
 </template>
 
 <script>
-  import * as api from '../api'
+import * as api from '../api'
 import _ from 'lodash'
 import JSZip from 'jszip'
 import * as utils from '../utils'
