@@ -4,7 +4,7 @@ import * as assets from "./assets";
 import {CELL_SIZE, PLAYER_COLORS} from "./assets";
 
 /**
- * Manages a Sprite (Boat?) on screen.
+ * Manages a Sprite on screen.
  */
  export class playerSprite {
     /**
@@ -38,8 +38,9 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         this.x = record.x;
         this.y = record.y;
 
+        // Set up sprite to be anchored in center and be square
         let setupSprite = (sprite, width) => {
-            sprite.width = sprite.height = width
+            sprite.width = sprite.height = width;
             sprite.anchor.x = sprite.anchor.y = 0.5;
         };
 
@@ -104,25 +105,21 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                         direction = Math.PI;
                         x_move = 0;
                         y_move = -1;
-
                     }
                     if (move.direction === "e") {
                         direction = Math.PI / 2;
                         x_move = 1;
                         y_move = 0;
-
                     }
                     if (move.direction === "s") {
                         direction = 0;
                         x_move = 0;
                         y_move = 1;
-
                     }
                     if (move.direction === "w") {
                         direction = -Math.PI / 2;
                         x_move = -1;
                         y_move = 0;
-
                     }
                     this.sprite.rotation = direction;
 
@@ -130,16 +127,17 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                     this.x = (this.x + x_move + this.map_width) % this.map_width;
                     this.y = (this.y + y_move + this.map_height) % this.map_height;
 
+                    // Determine pixel location from grid location, then move sprite
                     const pixelX = this.visualizer.scale * CELL_SIZE * this.x + this.visualizer.scale * CELL_SIZE / 2;
                     const pixelY = this.visualizer.scale * CELL_SIZE * this.y + this.visualizer.scale * CELL_SIZE / 2;
                     this.sprite.position.x = pixelX;
                     this.sprite.position.y = pixelY;
 
+                    // Sprite can only move once, so after reaching move pertaining to this sprite, exit
                     return;
                 }
             }
         }
-       // this.energy -= this.energy_loss;
     }
 }
 

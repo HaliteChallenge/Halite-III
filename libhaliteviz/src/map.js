@@ -8,13 +8,14 @@ import {PLAYER_COLORS} from "./assets";
  */
 export class Map {
     /**
+     * @param replay The replay json
      * @param constants The constants object from the replay.
      * @param scale The scale factor the visualizer is using.
      * @param onSelect The callback for when this planet is selected.
+     * @param renderer The renderer used by the visualizer (for rendering the map)
      */
     constructor(replay, constants, scale, onSelect, renderer) {
         this.container = null;
-        this.ownershipOverlay = null;
         this.scale = scale;
         this.constants = constants;
         this.prev_time = 0;
@@ -23,25 +24,22 @@ export class Map {
 
         // Background image, based on initial production values
         // draw a map, with color intensity dependent on production value
-        // todo: get rows/cols from replay file
         this.rows = replay.production_map.height;
         this.cols = replay.production_map.width;
-        let mapGraphics = new PIXI.Graphics();
-        // TODO: get this info dynamically from replay file
+
+        // Read in production values from replay file and store
         this.productions = new Array(this.rows);
-        //this.owners = new Array(this.rows);
+        this.owners = null;
         for (let row = 0; row < this.rows; row++) {
             this.productions[row] = new Array(this.cols);
-            //this.owners[row] = new Array(this.cols);
             for (let col = 0; col < this.cols; col++) {
                 let cell = replay.production_map.grid[row][col];
                 this.productions[row][col] = cell["type"] === "n" ? cell.production : 0;
-                //this.owners[row][col] = row + col > assets.REPLAY_WIDTH ? {owner: 0} : {owner: 1};
             }
         }
 
         let baseMapTexture = this.generateMapTexture(this.rows, this.cols, this.productions, this.productionToColor,
-            true, this.renderer, assets.MAP_ALPHA, this.scale, this.constants);
+            assets.DRAW_LINES_BASE_MAP, this.renderer, this.scale, this.constants);
 
         this.baseMap = new PIXI.Sprite(baseMapTexture);
 
@@ -49,15 +47,14 @@ export class Map {
 
         this.baseMap.on("pointerdown", (e) => {
             const localCoords = e.data.global;
-            const relativeX = localCoords.x;
-            const relativeY = localCoords.y;
-            const coordX = (relativeX / assets.VISUALIZER_SIZE) * replay.production_map.width;
-            const coordY = (relativeY / assets.VISUALIZER_HEIGHT) * replay.production_map.height;
+            const coordX = (localCoords.x / assets.VISUALIZER_SIZE) * replay.production_map.width;
+            const coordY = (localCoords.y / assets.VISUALIZER_HEIGHT) * replay.production_map.height;
             const cellX = Math.floor(coordX);
             const cellY = Math.floor(coordY);
             const production = this.productions[cellY][cellX];
+            const owner = this.owners !== null ? this.owners[cellX][cellY].owner : -1;
             onSelect("point", { x: cellX, y: cellY, production: production,
-                owner: 0}); //this.owners[cellX][cellY].owner});
+                owner: owner});
         });
     }
 
@@ -71,8 +68,7 @@ export class Map {
     productionToColor(productions, row, col, MAX_PRODUCTION) {
         const production = productions[row][col];
         if (production === 0) {
-            // TODO: determine best base color for factories
-            return 0x000000;
+            return [assets.FACTORY_BASE_COLOR, assets.FACTORY_BASE_ALPHA];
         }
         let production_fraction = production / MAX_PRODUCTION;
         if (production_fraction < 0.33) {
@@ -89,7 +85,7 @@ export class Map {
      * Generate a map texture to be used as a sprite
      * Can be used to draw both the base production map and any ownership tinting
      */
-    generateMapTexture(rows, cols, mapArray, squareToColor, drawLines, renderer, alpha, scale, constants) {
+    generateMapTexture(rows, cols, mapArray, squareToColor, drawLines, renderer, scale, constants) {
         let mapGraphics = new PIXI.Graphics();
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < cols; col++) {
@@ -118,7 +114,6 @@ export class Map {
                     (rows + 2) * scale);
             }
         }
-
         return renderer.generateTexture(mapGraphics);
     }
 
@@ -163,19 +158,21 @@ export class Map {
      * @param owner_grid: grid of owners of clls
      */
     update(owner_grid) {
+        this.owners = owner_grid;
+
+        // Use the given grid to texture the map
         let newTintTexture = this.generateMapTexture(this.rows, this.cols,
-            owner_grid, this.ownerToColor, false, this.renderer,
-            assets.OWNER_TINT_ALPHA, this.scale, this.constants);
+            owner_grid, this.ownerToColor, assets.DRAW_LINES_OWNER_MAP, this.renderer, this.scale, this.constants);
         this.newTintMap = new PIXI.Sprite(newTintTexture);
 
+        // Scale to fit visualizer, bring to front
         this.newTintMap.width = assets.VISUALIZER_SIZE;
         this.newTintMap.height = assets.VISUALIZER_HEIGHT;
 
         this.newTintMap.interactive = false;
         this.newTintMap.zOrder = -1;
 
-        // add the tint to the map
-        // TODO: investigate if this is a reasonable way to do this
+        // update the map tint
         this.container.addChild(this.newTintMap);
         if (typeof this.oldTintMap !== 'undefined') {
             this.container.removeChild(this.oldTintMap);
