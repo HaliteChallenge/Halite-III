@@ -1,3 +1,3 @@
 #!/bin/sh
 
-./halite -d "240 160" "./MyBot.native" "./MyBot.native"
+./halite -v "./MyBot.native" "./MyBot.native" "./MyBot.native" "./MyBot.native"

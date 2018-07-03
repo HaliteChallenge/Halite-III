@@ -1,2 +1,2 @@
 #!/bin/bash
-ocamlbuild -lib unix MyBot.native
+ocamlbuild -r -lib unix MyBot.native
