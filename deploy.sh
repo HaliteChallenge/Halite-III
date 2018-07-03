@@ -16,6 +16,10 @@ fi
 cp ../config.py apiserver/apiserver/config.py
 
 # TODO: build the website
-tar cvzf ../Halite.tgz apiserver environment website
+
+# Wrap directories in archive in top-level Halite/ folder via a
+# replacement
+tar cvzf ../Halite.tgz -s ',^,Halite/,' \
+    apiserver environment website
 
 git checkout -- apiserver/apiserver/config.py
