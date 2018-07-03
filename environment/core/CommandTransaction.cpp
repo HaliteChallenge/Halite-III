@@ -39,7 +39,7 @@ bool CommandTransaction::commit() {
     }
     for (auto &[location, energy] : moved_entities) {
         // Place new entities with corresponding energies
-        auto entity = make_entity(player.player_id, energy);
+        auto entity = make_entity<Entity>(player.player_id, energy);
         _map.at(location)->add_entity(player, entity);
         _player.add_entity(location, std::move(entity));
     }

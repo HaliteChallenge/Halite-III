@@ -113,7 +113,7 @@ void SpawnCommand::to_json(nlohmann::json &json) const {
             {JSON_ENERGY_KEY,  energy}};
 }
 
-void SpawnCommand::act_on_map(Map::Transaction &map_transaction, Player::Transaction &player_transaction) const {
+void SpawnCommand::act_on_map(CommandTransaction &transaction) const {
     // Gotta figure this out
 }
 
