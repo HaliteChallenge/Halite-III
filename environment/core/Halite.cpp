@@ -23,7 +23,7 @@ void Halite::run_game() {
                                         });
     }
     for (auto &[_, result] : results) {
-        result.wait();
+        result.get();
     }
     replay_struct.players = this->players;
     // In the replay object, replace any entities owned by players at the start of the game with a copy,
