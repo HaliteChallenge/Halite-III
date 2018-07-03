@@ -38,8 +38,12 @@ export class Map {
             }
         }
 
-        let baseMapTexture = this.generateMapTexture(this.rows, this.cols, this.productions, this.productionToColor,
-            assets.DRAW_LINES_BASE_MAP, this.renderer, this.scale, this.constants);
+        let baseMapTexture = this.generateMapTexture(
+            this.rows, this.cols,
+            this.productions, this.productionToColor,
+            assets.DRAW_LINES_BASE_MAP,
+            this.renderer, this.scale, this.constants
+        );
 
         this.baseMap = new PIXI.Sprite(baseMapTexture);
 
@@ -56,6 +60,16 @@ export class Map {
             onSelect("point", { x: cellX, y: cellY, production: production,
                 owner: owner});
         });
+    }
+
+    /** Recreate the texture for the base map. */
+    regenerateBaseMap() {
+        this.baseMap.texture = this.generateMapTexture(
+            this.rows, this.cols,
+            this.productions, this.productionToColor,
+            assets.DRAW_LINES_BASE_MAP,
+            this.renderer, this.scale, this.constants
+        );
     }
 
     /**
@@ -165,10 +179,7 @@ export class Map {
             owner_grid, this.ownerToColor, assets.DRAW_LINES_OWNER_MAP, this.renderer, this.scale, this.constants);
         this.newTintMap = new PIXI.Sprite(newTintTexture);
 
-        // Scale to fit visualizer, bring to front
-        this.newTintMap.width = assets.VISUALIZER_SIZE;
-        this.newTintMap.height = assets.VISUALIZER_HEIGHT;
-
+        // Bring to front
         this.newTintMap.interactive = false;
         this.newTintMap.zOrder = -1;
 

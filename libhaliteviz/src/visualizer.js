@@ -6,6 +6,7 @@ import {playerSprite} from "./sprite";
 import {Factory} from "./factory";
 import {Fish} from "./fish";
 import {Map} from "./map";
+import Camera from "./camera";
 import * as statistics from "./statistics";
 import * as keyboard from "./keyboardControls";
 
@@ -143,6 +144,8 @@ export class HaliteVisualizer {
 
         this.application.stage.addChild(this.container);
         this.application.stage.addChild(this.letterbox);
+
+        this.camera = new Camera(this.container, this.baseMap);
 
         this.timer = null;
 
@@ -292,6 +295,9 @@ export class HaliteVisualizer {
                 this.application.stop();
             }
         });
+
+        // Handle panning and zooming
+        this.camera.attach(this.application.view);
     }
 
     play() {
@@ -370,6 +376,9 @@ export class HaliteVisualizer {
         // Spawn entities (info from replay file), then process deaths
         this.process_entity_events();
         this.process_entity_energy_loss();
+
+        // Update camera
+        this.camera.update();
     }
 
     /**
