@@ -1,28 +1,25 @@
 package hlt;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 public class Player {
+	public int playerID;
+	public int energy;
+	public Location factoryLocation;
+	public HashMap<Location, Entity> entities;
+	
+	public Player(int p, int e, Location f, HashMap<Location, Entity> ent) {
+		playerID = p;
+		energy = e;
+		factoryLocation = f;
+		entities = ent;
+	}
 
-    private final Map<Integer, Ship> ships;
-    private final int id;
+	// Place entity in our entities hashmap
+	// Accounts for merging of entities
+	public void addEntity(Location l, Entity e) {
+		if(entities.containsKey(l)) entities.get(l).energy += e.energy;	
+		else entities.put(l, e);
+	}
 
-    public Player(final int id, Map<Integer, Ship> ships) {
-        this.id = id;
-        this.ships = Collections.unmodifiableMap(ships);
-    }
-
-    public Map<Integer, Ship> getShips() {
-        return ships;
-    }
-
-    public Ship getShip(final int entityId) {
-        return ships.get(entityId);
-    }
-
-    public int getId() {
-        return id;
-    }
 }
