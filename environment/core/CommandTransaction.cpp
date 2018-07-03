@@ -19,18 +19,27 @@ bool CommandTransaction::commit() {
             return false;
         }
     }
-    std::map<Location, std::shared_ptr<Entity>> moved_entities;
+    // Map from destination location to final energy at destination
+    std::map<Location, energy_type> moved_entities;
     for (auto &[from, to] : commands) {
-        auto entity = _map.at(from)->remove_entity(player);
-        _player.remove_entity(from);
-        if (auto entity_iterator = moved_entities.find(to); entity_iterator != moved_entities.end()) {
-            // A merge is necessary
-            entity_iterator->second->energy += entity->energy;
-        } else {
-            moved_entities[to] = std::move(entity);
+        // Remove each source entity and pool energies
+        auto energy = _player.remove_entity(from)->energy;
+        _map.at(from)->remove_entity(player);
+        if (const auto &[iterator, inserted] = moved_entities.emplace(to, energy); !inserted) {
+            iterator->second += energy;
         }
     }
-    for (auto &[location, entity] : moved_entities) {
+    for (auto &[_, to] : commands) {
+        if (_player.find_entity(to) != nullptr) {
+            // An entity already exists at the destination, add it to pool
+            auto energy = _player.remove_entity(to)->energy;
+            _map.at(to)->remove_entity(player);
+            moved_entities[to] += energy;
+        }
+    }
+    for (auto &[location, energy] : moved_entities) {
+        // Place new entities with corresponding energies
+        auto entity = make_entity<Entity>(player.player_id, energy);
         _map.at(location)->add_entity(player, entity);
         _player.add_entity(location, std::move(entity));
     }

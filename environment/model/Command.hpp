@@ -118,10 +118,9 @@ public:
 
     /**
      * Cause the move to act on the Map.
-     * @param map_transaction The Map transaction to act on.
-     * @param player_transaction The Player transaction issuing the command.
+     * @param transaction The command transaction to act on.
      */
-    void act_on_map(Map::Transaction &map_transaction, Player::Transaction &player_transaction) const override;
+    void act_on_map(CommandTransaction &transaction) const override;
 
     /**
      * Create SpawnCommand
