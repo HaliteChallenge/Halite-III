@@ -11,7 +11,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -pedantic -Wno-unused-variable")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -Wall -Wextra -pedantic -Wno-unused-variable")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fno-inline -Wall -Wextra -pedantic -Wno-unused-variable")
 
 # versions of cmake before 3.4 always link with -rdynamic on linux, which breaks static linkage with clang
 # unfortunately travis right now only has cmake 3.2, so have to do this workaround for now
