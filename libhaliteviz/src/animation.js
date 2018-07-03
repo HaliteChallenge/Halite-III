@@ -32,8 +32,8 @@ export class SpritesheetFrameAnimation extends FrameAnimation {
         let sprite = PIXI.Sprite.from(frames[0]);
         sprite.anchor.x = 0.5;
         sprite.anchor.y = 0.5;
-        sprite.position.x = cellSize * x;
-        sprite.position.y = cellSize * y;
+        sprite.position.x = cellSize * x + cellSize / 2;
+        sprite.position.y = cellSize * y + cellSize / 2;
         sprite.width = cellSize * sizeFactor;
         sprite.height = cellSize * sizeFactor;
         sprite.tint = tintColor;
@@ -58,15 +58,15 @@ export class PlanetExplosionFrameAnimation extends SpritesheetFrameAnimation {
     constructor(event, delayTime, cellSize, container) {
         super({
             sheet: assets.PLANET_EXPLOSION_SHEET,
-            sizeFactor: 5 * event.radius,
-            x: event.x,
-            y: event.y,
-            tintColor: assets.EXPLOSION_COLOR,
+            sizeFactor: 8,
+            x: event.location[0],
+            y: event.location[1],
+            tintColor: assets.PLAYER_COLORS[event.owner_id],
             delayTime: delayTime,
             cellSize: cellSize,
             container: container,
             opacity: 0.3,
-            duration: 192,
+            duration: 100,
         });
     }
 }
@@ -75,53 +75,12 @@ export class ShipExplosionFrameAnimation extends SpritesheetFrameAnimation {
     constructor(event, delayTime, cellSize, container) {
         super({
             sheet: assets.SHIP_EXPLOSION_SHEET,
-            sizeFactor: 10,
-            x: event.x,
-            y: event.y,
-            tintColor: assets.PLAYER_COLORS[event.entity.owner],
+            sizeFactor: 5,
+            x: event.location[0],
+            y: event.location[1],
+            tintColor: assets.PLAYER_COLORS[event.owner_id],
             delayTime: delayTime,
             cellSize: cellSize,
-            container: container,
-        });
-    }
-}
-
-export class ShipAttackFrameAnimation extends SpritesheetFrameAnimation {
-    constructor(event, weaponRadius, delayTime, cellSize, container) {
-                    //         const side = assets.CELL_SIZE * this.scale;
-                    //
-                    // const x = side * event.x;
-                    // const y = side * event.y;
-                    //
-                    // let attackSprite = PIXI.Sprite.fromImage(assets.ATTACK_IMAGE);
-                    // attackSprite.anchor.x = 0.5;
-                    // attackSprite.anchor.y = 0.5;
-                    // attackSprite.position.x = x;
-                    // attackSprite.position.y = y;
-                    // attackSprite.width = 2 * side * this.replay.constants.WEAPON_RADIUS;
-                    // attackSprite.height = 2 * side * this.replay.constants.WEAPON_RADIUS;
-                    // attackSprite.tint = assets.PLAYER_COLORS[event.entity.owner];
-                    // this.shipContainer.addChild(attackSprite);
-                    //
-                    // this.animationQueue.push(new FrameAnimation(
-                    //     24, delayTime,
-                    //     () => {
-                    //     },
-                    //     (frame) => {
-                    //         attackSprite.alpha = 0.5 * frame / 24;
-                    //     },
-                    //     () => {
-                    //         this.shipContainer.removeChild(attackSprite);
-                    //     }
-                    // ));
-        super({
-            sheet: assets.ATTACK_SHEET,
-            sizeFactor: 2 * weaponRadius * 114/74,
-            x: event.x,
-            y: event.y,
-            cellSize: cellSize,
-            tintColor: assets.PLAYER_COLORS[event.entity.owner],
-            delayTime: delayTime,
             container: container,
         });
     }

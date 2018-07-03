@@ -23,15 +23,28 @@ struct Constants {
     dimension_type DEFAULT_MAP_WIDTH = 128;     /**< The default width of generated maps. */
     dimension_type DEFAULT_MAP_HEIGHT = 128;    /**< The default height of generated maps. */
 
-    energy_type MAX_CELL_PRODUCTION = 255;      /**< The maximum amount of production on a cell. */
-    energy_type MIN_CELL_PRODUCTION = 85;        /**< The minimum amount of production on a cell. */
+    energy_type MAX_CELL_PRODUCTION = 255;      /**< The maximum maximum amount of production on a cell. */
+    energy_type MIN_CELL_PRODUCTION = 85;        /**< The minimum maximum amount of production on a cell. */
     energy_type MAX_ENERGY = 255;               /**< The maximum amount of energy per entity. */
-    energy_type NEW_ENTITY_ENERGY_COST = 1000;  /**< The amount of energy it takes to spawn a new entity. */
+    energy_type NEW_ENTITY_ENERGY_COST = 1000;  /**< The amount of production which equals one energy. */
     energy_type NEW_ENTITY_ENERGY = 255;        /**< The starting energy of a new entity. */
-    energy_type BASE_TURN_ENERGY_LOSS = 5;      /**< The base energy decrease of an entity per turn. */
-    energy_type INITIAL_ENERGY = 1000;          /**< The initial amount of energy for a player. */
+    energy_type BASE_TURN_ENERGY_LOSS = 1;      /**< The base energy decrease of an entity per turn. */
+    energy_type INITIAL_ENERGY = 255000;          /**< The initial amount of energy for a player. */
 
-    double BLUR_FACTOR = 0.75;                  /**< The blur factor for the blurred tile generator. */
+    double PERSISTENCE = 0.7; // Determines relative weight of local vs global features.
+    double FACTOR_EXP_1 = 1.5; // Determines initial spikiness of map. Higher values weight towards 0.
+    double FACTOR_EXP_2 = 1.5; // Determines final spikiness of map. Higher values weight towards 0.
+    /*
+    The two FACTOR_EXP constants do related things but they are not the same.
+    FACTOR_EXP_1 exponentiates the distribution used to seed the randomness. 
+    FACTOR_EXP_2 exponentiates the final distribution just prior to normalization.
+    Broadly, both will give spikier maps. However (and perhaps counterintuitively), using
+    FACTOR_EXP_1 will give maps that have more individual, small-scale spikes. Conversely,
+    FACTOR_EXP_2 gives maps that moreso utilize the global structure, and have less noise.
+    FACTOR_EXP_2 is also more sensitive than FACTOR_EXP_1.
+    */
+
+    static constexpr double BLUR_FACTOR = 0.75; // Not part of canon, needed to compile
 
     /**
      * Get a mutable reference to the singleton constants.

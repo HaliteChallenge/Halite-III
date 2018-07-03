@@ -1,54 +1,12 @@
 package hlt;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Networking {
+	static Player[] lastPlayers;
 
-    private static final char UNDOCK_KEY = 'u';
-    private static final char DOCK_KEY = 'd';
-    private static final char THRUST_KEY = 't';
-
-    private String botName;
-    private int turn = 0;
-
-    public static void sendMoves(final Iterable<Move> moves) {
-        final StringBuilder moveString = new StringBuilder();
-
-        for (final Move move : moves) {
-            switch (move.getType()) {
-                case Noop:
-                    continue;
-                case Undock:
-                    moveString.append(UNDOCK_KEY)
-                            .append(" ")
-                            .append(move.getShip().getId())
-                            .append(" ");
-                    break;
-                case Dock:
-                    moveString.append(DOCK_KEY)
-                            .append(" ")
-                            .append(move.getShip().getId())
-                            .append(" ")
-                            .append(((DockMove) move).getDestinationId())
-                            .append(" ");
-                    break;
-                case Thrust:
-                    moveString.append(THRUST_KEY)
-                            .append(" ")
-                            .append(move.getShip().getId())
-                            .append(" ")
-                            .append(((ThrustMove) move).getThrust())
-                            .append(" ")
-                            .append(((ThrustMove) move).getAngle())
-                            .append(" ");
-                    break;
-            }
-        }
-        System.out.println(moveString);
-    }
-
-    private static String readLine() {
+	private static String readLine() {
         try {
             StringBuilder builder = new StringBuilder();
             int buffer;
@@ -69,46 +27,71 @@ public class Networking {
             throw new RuntimeException(e);
         }
     }
+	
+	private static String[] getSplitLine() { return readLine().split(" "); }
 
-    private static Metadata readLineIntoMetadata() {
-        return new Metadata(readLine().trim().split(" "));
-    }
+	public static GameParameters getInit() {
+		String[] c = getSplitLine();		
+		int numPlayers = Integer.parseInt(c[0]);
+		int myID = Integer.parseInt(c[1]);
+		Player[] players = new Player[numPlayers];
+		for(int i = 0; i < numPlayers; i++) {
+			c = getSplitLine();
+			Location fl = new Location(Integer.parseInt(c[1]), Integer.parseInt(c[2]));
+			players[i] = new Player(Integer.parseInt(c[0]), 0, fl, new HashMap<Location, Entity>());
+		}
+		
+		c = getSplitLine();
+		int width = Integer.parseInt(c[0]);
+		int height = Integer.parseInt(c[0]);
+		Cell[][] grid = new Cell[height][width];
+		for(int y=0; y<height; y++) {
+			for(int x=0; x<width; x++) {
+				c = getSplitLine();
+				// TODO add support for other cell types
+				grid[y][x] = new Cell(Integer.parseInt(c[1]), true, 1);	
+			}
+		}
+		GameMap map = new GameMap(width, height, grid);
+		
+		lastPlayers = players;
+		return new GameParameters(map, players, myID);
+	}
 
-    public GameMap initialize(final String botName) {
-        this.botName = botName;
 
-        final int myId = Integer.parseInt(readLine());
-        try {
-            Log.initialize(new FileWriter(String.format("%d_%s.log", myId, botName)));
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        final Metadata inputStringMapSize = readLineIntoMetadata();
-        final int width = Integer.parseInt(inputStringMapSize.pop());
-        final int height = Integer.parseInt(inputStringMapSize.pop());
-
-        final GameMap gameMap = new GameMap(width, height, myId);
-        updateMap(gameMap);
-
-        return gameMap;
-    }
-
-    public void updateMap(final GameMap map) {
-        if (turn == 1) {
-            System.out.println(botName);
-        }
-
-        final Metadata inputStringMetadata = readLineIntoMetadata();
-
-        if (turn == 0) {
-            Log.log("--- PRE-GAME ---");
-        } else {
-            Log.log("--- TURN " + turn + " ---");
-        }
-        ++turn;
-
-        map.updateMap(inputStringMetadata);
-    }
+	public static void sendInit(String name) {
+		if(name.length() < 1) System.out.println(' ');
+		else System.out.println(name);
+	}
+	public static Player[] getFrame() {
+		int turnNumber = Integer.parseInt(readLine());
+		String[] c;
+		for(int i=0; i<lastPlayers.length; i++) {
+			c = getSplitLine();	
+			int playerID = Integer.parseInt(c[0]);
+			int numEntities = Integer.parseInt(c[1]);
+			int storedEnergy = Integer.parseInt(c[2]);
+			HashMap<Location, Entity> entities = new HashMap<Location, Entity>();
+			for(int j=0; j<numEntities; j++) {
+				c = getSplitLine();	
+				entities.put(
+					new Location(Integer.parseInt(c[0]), Integer.parseInt(c[1])), 
+					new Entity(playerID, Integer.parseInt(c[3])));
+			}
+			lastPlayers[i] = new Player(playerID, 
+					storedEnergy, 
+					lastPlayers[i].factoryLocation, 
+					entities);
+		}
+		return lastPlayers;
+	}
+	public static void sendFrame(HashMap<Location, Direction> moves) {
+		for(Map.Entry<Location, Direction> entry: moves.entrySet()) {
+			System.out.print(entry.getKey().x);
+			System.out.print(' ');
+			System.out.print(entry.getKey().y);
+			System.out.print(' ');
+			System.out.println(entry.getValue().getCharRepresent());
+		}
+	}
 }

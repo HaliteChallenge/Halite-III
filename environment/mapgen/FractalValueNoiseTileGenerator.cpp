@@ -17,8 +17,8 @@ std::vector< std::vector<double> > FractalValueNoiseTileGenerator::generateSmoot
     for (dimension_type y = 0; y < source_noise.size(); y++) {
         dimension_type y_i = y/wavelength, y_f = (y/wavelength + 1) % mini_source.size();
         double vertical_blend = double(y)/wavelength - y_i;
-        for (dimension_type x = 0; x < mini_source[0].size(); x++) {
-            dimension_type x_i = x/wavelength, x_f = (x/wavelength + 1) % source_noise[0].size();
+        for (dimension_type x = 0; x < source_noise[0].size(); x++) {
+            dimension_type x_i = x/wavelength, x_f = (x/wavelength + 1) % mini_source[0].size();
             double horizontal_blend = double(x)/wavelength - x_i;
 
             double top_blend = (1-horizontal_blend)*mini_source[y_i][x_i] + horizontal_blend*mini_source[y_i][x_f];
@@ -36,12 +36,14 @@ Map FractalValueNoiseTileGenerator::generate(std::vector<Player> &players) {
     std::vector< std::vector<double> > source_noise(tile_height, std::vector<double>(tile_width, 0));
     std::vector< std::vector<double> > region = source_noise;
 
-    const double PERSISTENCE = 0.7; // Determines relative weight of local vs global features.
-    const double FACTOR_EXP = 2; // Determines spikiness of map. Higher values weight towards 0.
+    const auto FACTOR_EXP_1 = Constants::get().FACTOR_EXP_1;
+    const auto FACTOR_EXP_2 = Constants::get().FACTOR_EXP_2;
+    const auto PERSISTENCE = Constants::get().PERSISTENCE;
+
     std::uniform_real_distribution<double> urd(0.0, 1.0);
     for (dimension_type y = 0; y < tile_height; y++) {
         for (dimension_type x = 0; x < tile_width; x++) {
-            source_noise[y][x] = pow(urd(rng), FACTOR_EXP);
+            source_noise[y][x] = pow(urd(rng), FACTOR_EXP_1);
         }
     }
 
@@ -66,7 +68,7 @@ Map FractalValueNoiseTileGenerator::generate(std::vector<Player> &players) {
     double max_value = 0;
     for (dimension_type y = 0; y < tile_height; y++) {
         for (dimension_type x = 0; x < tile_width; x++) {
-            region[y][x] = pow(region[y][x], 2);
+            region[y][x] = pow(region[y][x], FACTOR_EXP_2);
             if(region[y][x] > max_value) max_value = region[y][x];
         }
     }
