@@ -3,6 +3,7 @@
 
 #include <deque>
 
+#include "CommandTransaction.hpp"
 #include "Entity.hpp"
 #include "Player.hpp"
 #include "Location.hpp"
@@ -50,10 +51,9 @@ public:
 
     /**
      * If the command has an action on the Map, cause it to occur.
-     * @param map_transaction The Map transaction to act on.
-     * @param player_transaction The Player transaction issuing the command.
+     * @param transaction The command transaction to act on.
      */
-    virtual void act_on_map(Map::Transaction &map_transaction, Player::Transaction &player_transaction) const = 0;
+    virtual void act_on_map(CommandTransaction &transaction) const = 0;
 
     virtual ~BaseCommand() = default;
 };
@@ -79,10 +79,9 @@ public:
 
     /**
      * Cause the move to act on the Map.
-     * @param map_transaction The Map transaction to act on.
-     * @param player_transaction The Player transaction issuing the command.
+     * @param transaction The command transaction to act on.
      */
-    void act_on_map(Map::Transaction &map_transaction, Player::Transaction &player_transaction) const override;
+    void act_on_map(CommandTransaction &transaction) const override;
 
     /**
      * Create MoveCommand from entity ID and direction.
