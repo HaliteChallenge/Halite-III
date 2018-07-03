@@ -1,3 +1,5 @@
+import * as assets from "./assets";
+
 export default class Camera {
     constructor(container, map) {
         this.container = container;
@@ -13,7 +15,7 @@ export default class Camera {
     attach(view) {
         view.addEventListener("mousedown", this.onDragStart.bind(this));
         view.addEventListener("mousemove", this.onDragMove.bind(this));
-        view.addEventListener("mouseexit", this.onDragStop.bind(this));
+        view.addEventListener("mouseleave", this.onDragStop.bind(this));
         view.addEventListener("mouseup", this.onDragStop.bind(this));
         view.addEventListener("mousewheel", this.onZoom.bind(this));
     }
@@ -54,8 +56,19 @@ export default class Camera {
         }
 
         if (this.dragging) {
-            this.container.position.x = dx;
-            this.container.position.y = dy;
+            this.container.position.x += dx;
+            this.container.position.y += dy;
+
+            // Constrain translation
+            const fullWidth = this.map.scale * this.map.cols;
+            const fullHeight = this.map.scale * this.map.rows;
+            this.container.position.y = Math.max(assets.VISUALIZER_HEIGHT - fullHeight,
+                                                 this.container.position.y);
+            this.container.position.y = Math.min(0, this.container.position.y);
+            this.container.position.x = Math.max(assets.VISUALIZER_SIZE - fullWidth,
+                                                 this.container.position.x);
+            this.container.position.x = Math.min(0, this.container.position.x);
+            this.dragBase = [ e.offsetX, e.offsetY ];
         }
     }
 
