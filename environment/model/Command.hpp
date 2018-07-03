@@ -3,6 +3,7 @@
 
 #include <deque>
 
+#include "CommandTransaction.hpp"
 #include "Entity.hpp"
 #include "Player.hpp"
 #include "Location.hpp"
@@ -50,10 +51,9 @@ public:
 
     /**
      * If the command has an action on the Map, cause it to occur.
-     * @param map_transaction The Map transaction to act on.
-     * @param player_transaction The Player transaction issuing the command.
+     * @param transaction The command transaction to act on.
      */
-    virtual void act_on_map(Map::Transaction &map_transaction, Player::Transaction &player_transaction) const = 0;
+    virtual void act_on_map(CommandTransaction &transaction) const = 0;
 
     virtual ~BaseCommand() = default;
 };
@@ -79,10 +79,9 @@ public:
 
     /**
      * Cause the move to act on the Map.
-     * @param map_transaction The Map transaction to act on.
-     * @param player_transaction The Player transaction issuing the command.
+     * @param transaction The command transaction to act on.
      */
-    void act_on_map(Map::Transaction &map_transaction, Player::Transaction &player_transaction) const override;
+    void act_on_map(CommandTransaction &transaction) const override;
 
     /**
      * Create MoveCommand from entity ID and direction.
@@ -98,6 +97,43 @@ public:
      * @param json The JSON.
      */
     explicit MoveCommand(const nlohmann::json &json);
+};
+
+/** Command for moving an entity in a direction. */
+class SpawnCommand : public BaseCommand {
+    energy_type energy;     /**< The amount of energy to give the new entity. */
+
+public:
+    /** The name of the spawn command. */
+    static constexpr auto COMMAND_TYPE_NAME = "spawn";
+
+    /** The short name of the spawn command. */
+    static constexpr auto COMMAND_TYPE_SHORT = 's';
+
+    /**
+     * Convert a SpawnCommand to JSON format.
+     * @param[out] json The JSON output.
+     */
+    void to_json(nlohmann::json &json) const override;
+
+    /**
+     * Cause the move to act on the Map.
+     * @param transaction The command transaction to act on.
+     */
+    void act_on_map(CommandTransaction &transaction) const override;
+
+    /**
+     * Create SpawnCommand
+     * @param energy The energy to use.
+     */
+    SpawnCommand(energy_type energy)
+            : energy(energy) {}
+
+    /**
+     * Create MoveCommand from JSON.
+     * @param json The JSON.
+     */
+    explicit SpawnCommand(const nlohmann::json &json);
 };
 
 }
