@@ -128,10 +128,12 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                     this.y = (this.y + y_move + this.map_height) % this.map_height;
 
                     // Determine pixel location from grid location, then move sprite
-                    const pixelX = this.visualizer.camera.scale * CELL_SIZE * this.x + this.visualizer.camera.scale * CELL_SIZE / 2;
-                    const pixelY = this.visualizer.camera.scale * CELL_SIZE * this.y + this.visualizer.camera.scale * CELL_SIZE / 2;
+                    const size = this.visualizer.camera.scale * CELL_SIZE;
+                    const pixelX = size * this.x + this.visualizer.camera.scale * CELL_SIZE / 2;
+                    const pixelY = size * this.y + this.visualizer.camera.scale * CELL_SIZE / 2;
                     this.sprite.position.x = pixelX;
                     this.sprite.position.y = pixelY;
+                    this.sprite.width = this.sprite.height = size;
 
                     // Sprite can only move once, so after reaching move pertaining to this sprite, exit
                     return;

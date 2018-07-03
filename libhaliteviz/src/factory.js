@@ -73,27 +73,12 @@ export class Factory {
 
     /**
      * Update the factory display based on the current frame and time.
-     * @param factoryStatus
-     * @param dt
      */
     //TODO: update to make factories change color when player dies
-    update(factoryStatus, dt) {
-        if (factoryStatus.owner !== null) {
-            this.core.alpha = 1.0;
-        }
-        else {
-            this.core.alpha = 0.5;
-        }
-
-        const color = factoryStatus.owner === null ?
-            assets.PLANET_COLOR : assets.PLAYER_COLORS[factoryStatus.owner];
-
-        this.core.tint = color;
-        this.core.interactive = true;
-        this.core.buttonMode = true;
-
-        this.core.visible = factoryStatus.alive > 0;
+    update() {
+        const pixelsPerUnit = assets.CELL_SIZE * this.scale;
+        this.core.width = this.core.height = 2 * pixelsPerUnit;
+        this.core.position.x = pixelsPerUnit * this.factoryBase.x + pixelsPerUnit / 2;
+        this.core.position.y = pixelsPerUnit * this.factoryBase.y + pixelsPerUnit / 2;
     }
 }
-
-

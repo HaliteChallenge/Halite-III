@@ -366,6 +366,11 @@ export class HaliteVisualizer {
     // Be sure order of events (movement, merging, production calculation, spawning, and death) directly mirrors
     // game engine or visualization will be incorrect.
     update() {
+        for (const factory of this.factories) {
+            factory.scale = this.camera.scale;
+            factory.update();
+        }
+
         // Move entities (includes merges)
         this.process_entity_movement();
 
