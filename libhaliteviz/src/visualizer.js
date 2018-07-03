@@ -59,9 +59,9 @@ export class HaliteVisualizer {
         assets.prepareAll(this.application.renderer, this.application.renderer.plugins.prepare);
 
         // Scale things to fit exactly in the visible area
-        this.scale = assets.VISUALIZER_HEIGHT / (this.map_height * assets.CELL_SIZE);
-        if (this.map_width * this.scale * assets.CELL_SIZE > assets.VISUALIZER_SIZE) {
-            this.scale = assets.VISUALIZER_SIZE / (this.map_width * assets.CELL_SIZE);
+        let scale = assets.VISUALIZER_HEIGHT / (this.map_height * assets.CELL_SIZE);
+        if (this.map_width * scale * assets.CELL_SIZE > assets.VISUALIZER_SIZE) {
+            scale = assets.VISUALIZER_SIZE / (this.map_width * assets.CELL_SIZE);
         }
 
         this.container = new PIXI.Container();
@@ -74,7 +74,7 @@ export class HaliteVisualizer {
             this.letterbox.drawRect(0, 0, assets.VISUALIZER_SIZE, this.container.position.y);
             this.letterbox.drawRect(
                 0,
-                this.container.position.y + this.map_height * this.scale * assets.CELL_SIZE,
+                this.container.position.y + this.map_height * scale * assets.CELL_SIZE,
                 assets.VISUALIZER_SIZE,
                 this.container.position.y);
         }
@@ -82,7 +82,7 @@ export class HaliteVisualizer {
             this.letterbox.beginFill(0xFFFFFF);
             this.letterbox.drawRect(0, 0, this.container.position.x, assets.VISUALIZER_HEIGHT);
             this.letterbox.drawRect(
-                this.container.position.x + this.map_width * this.scale * assets.CELL_SIZE,
+                this.container.position.x + this.map_width * scale * assets.CELL_SIZE,
                 0,
                 this.container.position.x,
                 assets.VISUALIZER_HEIGHT);
@@ -100,11 +100,22 @@ export class HaliteVisualizer {
         this.factories = [];
         this.fish = [];
 
+        // Generate base map with visualziation of production squares
+        this.baseMap = new Map(this.replay, this.replay.GAME_CONSTANTS, scale,
+            (kind, args) => this.onSelect(kind, args), this.application.renderer);
+        this.baseMap.attach(this.mapContainer);
+
+        this.camera = new Camera(scale, this.container, this.baseMap);
+
+        // Draw initial ownership
+        this.check_ownership();
+        this.baseMap.update(this.owner_grid);
+
         for (let i = 0; i < this.replay.players.length; i++) {
             const factoryBase = {"x" : this.replay.players[i].factory_location[0],
                 "y" : this.replay.players[i].factory_location[1], "owner" : this.replay.players[i].player_id };
             const factory = new Factory(factoryBase, this.replay.constants,
-                this.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
+                scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
             this.factories.push(factory);
             factory.attach(this.factoryContainer);
 
@@ -113,7 +124,7 @@ export class HaliteVisualizer {
                 let entity_object = {"x" : entity_json.x, "y" : entity_json.y, "energy" : entity_json.energy, "owner": this.replay.players[i].player_id};
                 let new_entity = new playerSprite(this, entity_object);
                 if (typeof this.entities[new_entity.y][new_entity.x] === "undefined") {
-                    this.entities[new_entity.y][new_entity.x] = {}
+                    this.entities[new_entity.y][new_entity.x] = {};
                 }
                 this.entities[new_entity.y][new_entity.x][new_entity.owner] = new_entity;
                 this.entities_list.push(new_entity);
@@ -121,19 +132,10 @@ export class HaliteVisualizer {
             }
 
             // TODO: Re-add fish with herding logic
-            // const fish = new Fish(this.replay.constants, this.scale, (kind, args) => this.onSelect(kind, args));
+            // const fish = new Fish(this.replay.constants, scale, (kind, args) => this.onSelect(kind, args));
             // this.fish.push(fish);
             // fish.attach(this.fishContainer);
         }
-        
-        // Generate base map with visualziation of production squares
-        this.baseMap = new Map(this.replay, this.replay.GAME_CONSTANTS, this.scale,
-            (kind, args) => this.onSelect(kind, args), this.application.renderer);
-        this.baseMap.attach(this.mapContainer);
-
-        // Draw initial ownership
-        this.check_ownership();
-        this.baseMap.update(this.owner_grid);
 
         // Prerender the points of interest once, and keep it as a texture
 
@@ -144,8 +146,6 @@ export class HaliteVisualizer {
 
         this.application.stage.addChild(this.container);
         this.application.stage.addChild(this.letterbox);
-
-        this.camera = new Camera(this.container, this.baseMap);
 
         this.timer = null;
 
@@ -377,7 +377,6 @@ export class HaliteVisualizer {
         this.process_entity_events();
         this.process_entity_energy_loss();
 
-        // Update camera
         this.camera.update();
     }
 
@@ -420,7 +419,7 @@ export class HaliteVisualizer {
         let delayTime = 0;
         if (this.replay.full_frames[this.frame].events) {
             for (let event of this.replay.full_frames[this.frame].events) {
-                const cellSize = assets.CELL_SIZE * this.scale;
+                const cellSize = assets.CELL_SIZE * this.camera.scale;
 
                 if (event.type === "death") {
                     // Check that replay file and animation are in sync by checking that there is an entity at the place

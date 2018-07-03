@@ -17,7 +17,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         const spriteShape = new PIXI.Graphics();
         spriteShape.beginFill(assets.SPRITE_COLOR, 1);
         // draw circle - x coord, y coord, radius
-        spriteShape.drawCircle(0, 0, assets.CELL_SIZE * visualizer.scale);
+        spriteShape.drawCircle(0, 0, assets.CELL_SIZE * visualizer.camera.scale);
         spriteShape.endFill();
 
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);
@@ -45,14 +45,14 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         };
 
         // Set up sprite size & anchors
-        const width = assets.CELL_SIZE * this.visualizer.scale;
+        const width = assets.CELL_SIZE * this.visualizer.camera.scale;
         setupSprite(this.sprite, width);
 
         this.sprite.tint = PLAYER_COLORS[this.owner];
 
         // add to board in correct position
-        const pixelX = this.visualizer.scale * CELL_SIZE * this.x + this.visualizer.scale * CELL_SIZE / 2;
-        const pixelY = this.visualizer.scale * CELL_SIZE * this.y + this.visualizer.scale * CELL_SIZE / 2;
+        const pixelX = this.visualizer.camera.scale * CELL_SIZE * this.x + this.visualizer.camera.scale * CELL_SIZE / 2;
+        const pixelY = this.visualizer.camera.scale * CELL_SIZE * this.y + this.visualizer.camera.scale * CELL_SIZE / 2;
         this.sprite.position.x = pixelX;
         this.sprite.position.y = pixelY;
     }
@@ -128,8 +128,8 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                     this.y = (this.y + y_move + this.map_height) % this.map_height;
 
                     // Determine pixel location from grid location, then move sprite
-                    const pixelX = this.visualizer.scale * CELL_SIZE * this.x + this.visualizer.scale * CELL_SIZE / 2;
-                    const pixelY = this.visualizer.scale * CELL_SIZE * this.y + this.visualizer.scale * CELL_SIZE / 2;
+                    const pixelX = this.visualizer.camera.scale * CELL_SIZE * this.x + this.visualizer.camera.scale * CELL_SIZE / 2;
+                    const pixelY = this.visualizer.camera.scale * CELL_SIZE * this.y + this.visualizer.camera.scale * CELL_SIZE / 2;
                     this.sprite.position.x = pixelX;
                     this.sprite.position.y = pixelY;
 
@@ -140,4 +140,3 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         }
     }
 }
-

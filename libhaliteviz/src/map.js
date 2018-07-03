@@ -106,10 +106,10 @@ export class Map {
                 let color_arr = squareToColor(mapArray, row, col, constants.MAX_CELL_PRODUCTION);
                 mapGraphics.beginFill(color_arr[0], color_arr[1]);
                 mapGraphics.drawRect(col * scale, row * scale, scale, scale);
-
                 mapGraphics.endFill();
             }
         }
+
         if (drawLines) {
             mapGraphics.lineStyle(assets.LINE_WIDTH, assets.LINE_COLOR);
             //Draw the map lines
@@ -128,6 +128,7 @@ export class Map {
                     (rows + 2) * scale);
             }
         }
+
         return renderer.generateTexture(mapGraphics);
     }
 

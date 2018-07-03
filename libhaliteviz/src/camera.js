@@ -1,14 +1,15 @@
 import * as assets from "./assets";
 
 export default class Camera {
-    constructor(container, map) {
+    constructor(initScale, container, map) {
         this.container = container;
         this.map = map;
         this.dragBase = [ 0, 0 ];
         this.dragging = false;
         this.mouseDown = false;
 
-        this.scale = 1.0;
+        this.initScale = initScale;
+        this.scale = initScale;
         this.dirty = false;
     }
 
@@ -22,6 +23,7 @@ export default class Camera {
 
     update() {
         if (this.dirty) {
+            this.map.scale = this.scale;
             this.map.regenerateBaseMap();
         }
         this.dirty = false;
