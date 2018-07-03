@@ -23,9 +23,16 @@ void Halite::run_game() {
                                         });
     }
     for (auto &[_, result] : results) {
-        result.wait();
+        result.get();
     }
     replay_struct.players = this->players;
+    // In the replay object, replace any entities owned by players at the start of the game with a copy,
+    // so the replay object keeps a snapshot of the entities at the start of the game
+    for (auto &[player_id, player] : replay_struct.players) {
+        for (auto &[entity_location, entity] : player.entities) {
+            player.entities[entity_location] = make_entity<Entity>(entity->owner_id, entity->energy);
+        }
+    }
     Logging::log("Player initialization complete.");
 
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {

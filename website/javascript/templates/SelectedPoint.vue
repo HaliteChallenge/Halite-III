@@ -9,6 +9,14 @@
                     <td>Location:</td>
                     <td>{{info.location}}</td>
                 </tr>
+                <tr>
+                    <td>Cell Production:</td>
+                    <td>{{info.production}}</td>
+                </tr>
+                <tr>
+                    <td>Cell Owner:</td>
+                    <td>{{info.owner}}</td>
+                </tr>
             </table>
         </div>
     </div>
@@ -17,11 +25,13 @@
  import Vue from 'vue'
 
 export default {
-   props: ['selectedPoint'],
+   props: ['selectedPoint', 'players'],
    computed: {
      info: function () {
        const info = {
-         location: `${this.selectedPoint.x.toFixed(4)}, ${this.selectedPoint.y.toFixed(4)}`
+         location: `${this.selectedPoint.x}, ${this.selectedPoint.y}`,
+         production: this.selectedPoint.production,
+         owner: this.selectedPoint.owner
        }
 
        return info
