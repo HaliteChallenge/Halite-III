@@ -31,8 +31,23 @@ popd
 
 # Wrap directories in archive in top-level Halite/ folder via a
 # replacement
-tar cvzf ../Halite.tgz -s ',^,Halite/,' \
-    apiserver environment website/_site \
+rm ../Halite.tgz
+tar czf ../Halite.tgz -s ',^,Halite/,' \
+    apiserver/ environment/ website/_site/ \
 
 git checkout -- apiserver/apiserver/config.py
 git checkout -- website/Gemfile.lock
+
+echo "Uploading new blob to Google Cloud Storage."
+pushd admin/deploy/
+
+if [[ ! -d venv ]]; then
+    virtualenv -p python3 venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+else
+    source venv/bin/activate
+fi
+
+export GOOGLE_APPLICATION_CREDENTIALS=../../../serviceaccount.json
+python deploy.py
