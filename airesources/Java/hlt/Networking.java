@@ -2,6 +2,8 @@ package hlt;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Networking {
 	static Player[] lastPlayers;
@@ -31,6 +33,11 @@ public class Networking {
 	private static String[] getSplitLine() { return readLine().split(" "); }
 
 	public static GameParameters getInit() {
+		try {
+			Log.initialize(new FileWriter("Log.log"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		String[] c = getSplitLine();		
 		int numPlayers = Integer.parseInt(c[0]);
 		int myID = Integer.parseInt(c[1]);
