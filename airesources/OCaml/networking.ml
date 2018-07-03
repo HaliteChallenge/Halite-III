@@ -1,8 +1,8 @@
 open Halite
 
-let init_state () : State.state =
+let init_state () : State.t =
   let (num_players, player_id) = Scanf.scanf "%d %d\n" (fun x y -> (x, y)) in
-  let players : (Player.id, Player.player) Hashtbl.t = Hashtbl.create num_players in
+  let players : (Player.id, Player.t) Hashtbl.t = Hashtbl.create num_players in
   let rec loop n =
     if n = 0 then () else
       let (id, factory_location) = Scanf.scanf "%d %d %d\n" (fun x y z -> (x, (y, z))) in
@@ -27,7 +27,7 @@ let init_state () : State.state =
   loop 0;
   {turn_number=0; player_id; players; map}
 
-let update_state (state : State.state) =
+let update_state (state : State.t) =
   state.turn_number <- Scanf.scanf "%d\n" (fun x -> x);
   let rec loop n =
     if n = 0 then () else begin
@@ -50,3 +50,5 @@ let send_commands commands =
       Printf.printf "m %d %d %s "
         x y (match dir with North -> "n" | South -> "s" | East -> "e" | West -> "w")) commands;
   Printf.printf "\n"; flush stdout
+
+let send_name name = Printf.printf "%s\n" name; flush stdout

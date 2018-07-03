@@ -6,8 +6,7 @@ let () =
   let state = init_state () in
 
   (* Announce the bot name *)
-  Printf.printf "MyBot %d\n" state.player_id;
-  flush stdout;
+  send_name ("MyBot " ^ string_of_int state.player_id);
 
   let rec loop () =
     (* Update the state for a turn *)
