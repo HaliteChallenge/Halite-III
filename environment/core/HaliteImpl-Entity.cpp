@@ -7,7 +7,7 @@ namespace hlt {
  * @param player The player owning the new entity.
  * @param location The location at which to spawn.
  */
-void HaliteImpl::spawn_entity(Player &player, const Location &location, const energy_type e) {
+void HaliteImpl::spawn_entity(Player &player, const Location &location) { //, const energy_type e
     const auto &constants = Constants::get();
     auto &entities = player.entities;
     auto entity_iterator = entities.find(location);
