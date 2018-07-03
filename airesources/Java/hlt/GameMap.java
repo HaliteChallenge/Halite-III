@@ -17,9 +17,11 @@ public class GameMap {
 			+ Math.min(y_dist, height - y_dist);
 	}
 
-	public Cell getCell(Location l) {
-		return grid[l.y][l.x];
-	}
+	public Cell getCell(Location l) { return grid[l.y][l.x]; }
+	public Cell[][] getGrid() { return grid; }
+	public int getWidth() { return width; }
+	public int getHeight() { return height; }
+
 
 	public Location getLocation(Location l, Direction d) {
 	    if(d == Direction.NORTH) {

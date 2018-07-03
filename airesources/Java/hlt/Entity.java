@@ -8,4 +8,6 @@ public class Entity {
 		ownerID = o;
 		energy = e;
 	}
+
+	public int getOwnerID() { return ownerID; }
 }
