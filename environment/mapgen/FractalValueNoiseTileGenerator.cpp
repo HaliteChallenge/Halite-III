@@ -7,7 +7,7 @@ namespace mapgen {
 
 // Would use Grid but the constructor is protected and that's a pain :(
 std::vector< std::vector<double> > FractalValueNoiseTileGenerator::generateSmoothNoise(const std::vector< std::vector<double> > & source_noise, dimension_type wavelength) const {
-    std::vector< std::vector<double> > mini_source(source_noise.size()/wavelength, std::vector<double>(source_noise[0].size()/wavelength, 0));
+    std::vector< std::vector<double> > mini_source(ceil(double(source_noise.size())/wavelength), std::vector<double>(ceil(double(source_noise[0].size())/wavelength), 0));
     for (dimension_type y = 0; y < mini_source.size(); y++) {
         for (dimension_type x = 0; x < mini_source[0].size(); x++) {
             mini_source[y][x] = source_noise[wavelength*y][wavelength*x];
