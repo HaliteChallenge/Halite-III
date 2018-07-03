@@ -8,6 +8,7 @@ namespace hlt {
  * Use modified BFS starting from each sprite to determine cell ownership one distance unit at a time.
  */
 void HaliteImpl::process_production() {
+    this->ownership_grid = OwnershipGrid(game.game_map.width, game.game_map.height);
     std::queue<Location> search_cells;
     initialize_owner_search_from_sprites(search_cells);
     run_initialized_owner_search(search_cells);
