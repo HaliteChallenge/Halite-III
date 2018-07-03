@@ -79,7 +79,7 @@ void HaliteImpl::update_production_from_ownership() {
                 // TODO: error case
                 break;
             case CellOwner::TIED:
-                process_tie(std::make_pair(x_position, y_position), ownership_grid.at(x_position, y_position).entities,
+                process_tie({x_position, y_position}, ownership_grid.at(x_position, y_position).entities,
                             turn_player_production);
                 break;
             default:

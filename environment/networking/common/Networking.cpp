@@ -28,8 +28,7 @@ void Networking::initialize_player(Player &player) {
     // Send each player's ID and factory location
     for (const auto &[player_id, other_player] : game.players) {
         message_stream << player_id
-                       << " " << other_player.factory_location.first
-                       << " " << other_player.factory_location.second
+                       << " " << other_player.factory_location
                        << std::endl;
     }
     // Send the map
