@@ -44,6 +44,8 @@ struct Constants {
     FACTOR_EXP_2 is also more sensitive than FACTOR_EXP_1.
     */
 
+    static constexpr double BLUR_FACTOR = 0.75; // Not part of canon, needed to compile
+
     /**
      * Get a mutable reference to the singleton constants.
      * @return Mutable reference to the singleton constants.
