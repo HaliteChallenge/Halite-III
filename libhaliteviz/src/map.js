@@ -48,7 +48,10 @@ export class Map {
         this.tintMap.hitArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
         this.tintMap.on("pointerdown", (e) => {
             const localCoords = e.data.global;
-            const [ cellX, cellY ] = this.camera.screenToWorld(localCoords.x, localCoords.y);
+            // Adjust coordinates to account for canvas scaling
+            const zoom = parseFloat($('.game-replay-viewer').find('>canvas').css('zoom'));
+            const [ cellX, cellY ] = this.camera.screenToWorld(
+                localCoords.x / zoom, localCoords.y / zoom);
             const production = this.productions[cellY][cellX];
             const owner = this.owners !== null ? this.owners[cellX][cellY].owner : -1;
             onSelect("point", { x: cellX, y: cellY, production: production,
