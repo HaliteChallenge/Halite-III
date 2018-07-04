@@ -402,6 +402,7 @@ export class HaliteVisualizer {
         if (!this.isPlaying()) {
             this.application.render();
         }
+        this.onUpdate();
     }
 
     /**

@@ -163,6 +163,14 @@
                       <th>Replay Version:</th>
                       <td>{{replay.REPLAY_FILE_VERSION}}</td>
                     </tr>
+                    <tr>
+                      <th>Zoom Level:</th>
+                      <td>{{Math.round(zoom*100)}}%</td>
+                    </tr>
+                    <tr>
+                      <th>Camera Position:</th>
+                      <td>{{pan.x}}, {{pan.y}}</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -408,7 +416,9 @@
         },
         players: [],
         sortedPlayers: [],
-        selectedPlayers: []
+        selectedPlayers: [],
+        zoom: 1,
+        pan: { x: 0, y: 0 },
       }
     },
     components: {
@@ -459,6 +469,9 @@
       visualizer.onUpdate = () => {
         this.frame = visualizer.frame
         this.time = visualizer.time
+        this.zoom = visualizer.camera.scale / visualizer.camera.initScale
+        this.pan.x = visualizer.camera.pan.x
+        this.pan.y = visualizer.camera.pan.y
       }
       visualizer.onPlay = () => {
         this.playing = true
