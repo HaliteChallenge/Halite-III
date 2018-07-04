@@ -1,10 +1,10 @@
 import * as assets from "./assets";
 
 export default class Camera {
-    constructor(initScale, container, cols, rows) {
+    constructor(initScale, panRender, cols, rows) {
         this.cols = cols;
         this.rows = rows;
-        this.container = container;
+        this.panRender = panRender;
         this.dragBase = [ 0, 0 ];
         this.dragging = false;
         this.mouseDown = false;
@@ -27,10 +27,8 @@ export default class Camera {
 
     screenToWorld(x, y) {
         return [
-            (Math.floor((x - this.container.position.x) / this.scale)
-             - this.pan.x + this.cols) % this.cols,
-            (Math.floor((y - this.container.position.y) / this.scale)
-             - this.pan.y + this.rows) % this.rows,
+            (Math.floor(x / this.scale) - this.pan.x + this.cols) % this.cols,
+            (Math.floor(y / this.scale) - this.pan.y + this.rows) % this.rows,
         ];
     }
 
@@ -54,6 +52,7 @@ export default class Camera {
 
         this.scale += delta;
         this.scale = Math.min(32, Math.max(this.initScale, this.scale));
+        this.panRender();
     }
 
     onDragStart(e) {
@@ -81,6 +80,7 @@ export default class Camera {
             this.pixelPan.y = (this.pixelPan.y + fullHeight) % fullHeight;
             this.pan.x = Math.round(this.pixelPan.x / this.scale);
             this.pan.y = Math.round(this.pixelPan.y / this.scale);
+            this.panRender();
         }
     }
 

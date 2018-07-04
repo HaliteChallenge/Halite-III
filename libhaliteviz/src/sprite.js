@@ -127,15 +127,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                     this.x = (this.x + x_move + this.map_width) % this.map_width;
                     this.y = (this.y + y_move + this.map_height) % this.map_height;
 
-                    // Determine pixel location from grid location, then move sprite
-                    const size = this.visualizer.camera.scale * CELL_SIZE;
-                    // Account for camera panning
-                    const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(this.x, this.y);
-                    const pixelX = size * cellX + this.visualizer.camera.scale * CELL_SIZE / 2;
-                    const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
-                    this.sprite.position.x = pixelX;
-                    this.sprite.position.y = pixelY;
-                    this.sprite.width = this.sprite.height = size;
+                    this.updatePosition();
 
                     // Sprite can only move once, so after reaching move pertaining to this sprite, exit
                     return;
@@ -143,4 +135,16 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
             }
         }
     }
+
+     updatePosition() {
+         // Determine pixel location from grid location, then move sprite
+         const size = this.visualizer.camera.scale * CELL_SIZE;
+         // Account for camera panning
+         const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(this.x, this.y);
+         const pixelX = size * cellX + this.visualizer.camera.scale * CELL_SIZE / 2;
+         const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
+         this.sprite.position.x = pixelX;
+         this.sprite.position.y = pixelY;
+         this.sprite.width = this.sprite.height = size;
+     }
 }

@@ -101,7 +101,7 @@ export class HaliteVisualizer {
         this.fish = [];
 
         this.camera = new Camera(
-            scale, this.container,
+            scale, this.panRender.bind(this),
             this.replay.production_map.width,
             this.replay.production_map.height
         );
@@ -385,6 +385,23 @@ export class HaliteVisualizer {
         // Spawn entities (info from replay file), then process deaths
         this.process_entity_events();
         this.process_entity_energy_loss();
+    }
+
+    /** Update/rerender after panning. */
+    panRender() {
+        for (const sprite of this.entities_list) {
+            if (sprite) sprite.updatePosition();
+        }
+
+        for (const factory of this.factories) {
+            factory.update();
+        }
+
+        this.baseMap.update(this.owner_grid);
+
+        if (!this.isPlaying()) {
+            this.application.render();
+        }
     }
 
     /**
