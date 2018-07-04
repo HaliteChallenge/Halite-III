@@ -190,15 +190,36 @@ export class Map {
         // Use the given grid to texture the map
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
-                const [ base ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
+                const [ base, baseOpacity ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
                 const [ color, opacity ] = this.ownerToColor(owner_grid, row, col, this.constants.MAX_CELL_PRODUCTION);
                 const cell = this.cells[row * this.cols + col];
-                cell.tint = Math.floor(opacity * color + (1 - opacity) * base);
+                const tintedBase = alphaBlend(base, this.renderer.backgroundColor, baseOpacity);
+                cell.tint = alphaBlend(color, tintedBase, opacity);
                 cell.width = this.scale;
                 cell.height = this.scale;
-                cell.position.x = ((col + this.camera.pan.x + this.cols) % this.cols) * this.scale;
-                cell.position.y = ((row + this.camera.pan.y + this.rows) % this.rows) * this.scale;
+                const [ cellX, cellY ] = this.camera.worldToCamera(col, row);
+                cell.position.x = cellX * this.scale;
+                cell.position.y = cellY * this.scale;
             }
         }
     }
+}
+
+function alphaBlend(rgb1, rgb2, alpha) {
+    const b1 = rgb1 & 0xFF;
+    const b2 = rgb2 & 0xFF;
+    const g1 = (rgb1 & 0xFF00) >> 8;
+    const g2 = (rgb2 & 0xFF00) >> 8;
+    const r1 = (rgb1 & 0xFF0000) >> 16;
+    const r2 = (rgb2 & 0xFF0000) >> 16;
+
+    const r = alphaBlend1(r1, r2, alpha);
+    const g = alphaBlend1(g1, g2, alpha);
+    const b = alphaBlend1(b1, b2, alpha);
+
+    return Math.floor((r << 16) | (g << 8) | b);
+}
+
+function alphaBlend1(c1, c2, alpha) {
+    return Math.floor(alpha * c1 + (1 - alpha) * c2);
 }
