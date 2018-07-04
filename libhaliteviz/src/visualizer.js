@@ -118,7 +118,7 @@ export class HaliteVisualizer {
         for (let i = 0; i < this.replay.players.length; i++) {
             const factoryBase = {"x" : this.replay.players[i].factory_location[0],
                 "y" : this.replay.players[i].factory_location[1], "owner" : this.replay.players[i].player_id };
-            const factory = new Factory(factoryBase, this.replay.constants,
+            const factory = new Factory(this, factoryBase, this.replay.constants,
                 scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
             this.factories.push(factory);
             factory.attach(this.factoryContainer);

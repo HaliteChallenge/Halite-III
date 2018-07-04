@@ -32,6 +32,13 @@ export default class Camera {
         ];
     }
 
+    worldToCamera(cellX, cellY) {
+        return [
+            (cellX + this.pan.x + this.cols) % this.cols,
+            (cellY + this.pan.y + this.rows) % this.rows,
+        ];
+    }
+
     update() {
     }
 

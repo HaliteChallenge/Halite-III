@@ -14,7 +14,8 @@ export class Factory {
      * @param onSelect The callback for when this factory is selected.
      * @param renderer The renderer from the visualizer, used for rendering factories
      */
-    constructor(factoryBase, constants, scale, onSelect, renderer) {
+    constructor(visualizer, factoryBase, constants, scale, onSelect, renderer) {
+        this.visualizer = visualizer;
         this.container = null;
         //this.overlay = null;
         this.factoryBase = factoryBase;
@@ -78,7 +79,14 @@ export class Factory {
     update() {
         const pixelsPerUnit = assets.CELL_SIZE * this.scale;
         this.core.width = this.core.height = 2 * pixelsPerUnit;
-        this.core.position.x = pixelsPerUnit * this.factoryBase.x + pixelsPerUnit / 2;
-        this.core.position.y = pixelsPerUnit * this.factoryBase.y + pixelsPerUnit / 2;
+
+        // Account for camera panning
+        const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(
+            this.factoryBase.x,
+            this.factoryBase.y
+        );
+
+        this.core.position.x = pixelsPerUnit * cellX + pixelsPerUnit / 2;
+        this.core.position.y = pixelsPerUnit * cellY + pixelsPerUnit / 2;
     }
 }

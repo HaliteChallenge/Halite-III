@@ -130,10 +130,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                     // Determine pixel location from grid location, then move sprite
                     const size = this.visualizer.camera.scale * CELL_SIZE;
                     // Account for camera panning
-                    const cellX = (this.x + this.visualizer.camera.pan.x + this.map_width)
-                          % this.map_width;
-                    const cellY = (this.y + this.visualizer.camera.pan.y + this.map_height)
-                          % this.map_height;
+                    const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(this.x, this.y);
                     const pixelX = size * cellX + this.visualizer.camera.scale * CELL_SIZE / 2;
                     const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
                     this.sprite.position.x = pixelX;
