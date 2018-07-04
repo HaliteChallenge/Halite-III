@@ -1,9 +1,10 @@
 import * as assets from "./assets";
 
 export default class Camera {
-    constructor(initScale, container, map) {
+    constructor(initScale, container, cols, rows) {
+        this.cols = cols;
+        this.rows = rows;
         this.container = container;
-        this.map = map;
         this.dragBase = [ 0, 0 ];
         this.dragging = false;
         this.mouseDown = false;
@@ -22,11 +23,6 @@ export default class Camera {
     }
 
     update() {
-        if (this.dirty) {
-            this.map.scale = this.scale;
-            this.map.regenerateBaseMap();
-        }
-        this.dirty = false;
     }
 
     onZoom(e) {
@@ -39,7 +35,6 @@ export default class Camera {
 
         this.scale += delta;
         this.scale = Math.min(15, Math.max(1, this.scale));
-        this.map.scale = this.scale;
         this.dirty = true;
     }
 
@@ -62,8 +57,8 @@ export default class Camera {
             this.container.position.y += dy;
 
             // Constrain translation
-            const fullWidth = this.map.scale * this.map.cols;
-            const fullHeight = this.map.scale * this.map.rows;
+            const fullWidth = this.scale * this.cols;
+            const fullHeight = this.scale * this.rows;
             this.container.position.y = Math.max(assets.VISUALIZER_HEIGHT - fullHeight,
                                                  this.container.position.y);
             this.container.position.y = Math.min(0, this.container.position.y);

@@ -100,12 +100,16 @@ export class HaliteVisualizer {
         this.factories = [];
         this.fish = [];
 
+        this.camera = new Camera(
+            scale, this.container,
+            this.replay.production_map.width,
+            this.replay.production_map.height
+        );
+
         // Generate base map with visualziation of production squares
-        this.baseMap = new Map(this.replay, this.replay.GAME_CONSTANTS, scale,
+        this.baseMap = new Map(this.replay, this.replay.GAME_CONSTANTS, this.camera,
             (kind, args) => this.onSelect(kind, args), this.application.renderer);
         this.baseMap.attach(this.mapContainer);
-
-        this.camera = new Camera(scale, this.container, this.baseMap);
 
         // Draw initial ownership
         this.check_ownership();
@@ -382,7 +386,7 @@ export class HaliteVisualizer {
         this.process_entity_events();
         this.process_entity_energy_loss();
 
-        this.camera.update();
+        this.camera.dirty = false;
     }
 
     /**

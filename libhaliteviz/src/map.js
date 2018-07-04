@@ -10,13 +10,13 @@ export class Map {
     /**
      * @param replay The replay json
      * @param constants The constants object from the replay.
-     * @param scale The scale factor the visualizer is using.
+     * @param camera The camera.
      * @param onSelect The callback for when this planet is selected.
      * @param renderer The renderer used by the visualizer (for rendering the map)
      */
-    constructor(replay, constants, scale, onSelect, renderer) {
+    constructor(replay, constants, camera, onSelect, renderer) {
         this.container = null;
-        this.scale = scale;
+        this.camera = camera;
         this.constants = constants;
         this.prev_time = 0;
         this.renderer = renderer;
@@ -70,14 +70,18 @@ export class Map {
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
                 const cell = PIXI.Sprite.from(tex);
-                cell.width = scale;
-                cell.height = scale;
-                cell.position.x = col * scale;
-                cell.position.y = row * scale;
+                cell.width = this.scale;
+                cell.height = this.scale;
+                cell.position.x = col * this.scale;
+                cell.position.y = row * this.scale;
                 this.cells.push(cell);
                 this.tintMap.addChild(cell);
             }
         }
+    }
+
+    get scale() {
+        return this.camera.scale;
     }
 
     /** Recreate the texture for the base map. */
@@ -207,6 +211,10 @@ export class Map {
                 cell.position.x = col * this.scale;
                 cell.position.y = row * this.scale;
             }
+        }
+
+        if (this.camera.dirty) {
+            this.regenerateBaseMap();
         }
     }
 }
