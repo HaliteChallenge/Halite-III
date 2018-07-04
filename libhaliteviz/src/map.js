@@ -54,7 +54,30 @@ export class Map {
 
         this.regenerateBaseMap();
 
-        this.tintMap = new PIXI.Graphics();
+        this.tintMap = new PIXI.particles.ParticleContainer(this.rows * this.cols, {
+            vertices: true,
+            position: true,
+            tint: true,
+        });
+
+        const g = new PIXI.Graphics();
+        g.beginFill(0xFFFFFF, 1.0);
+        g.drawRect(0, 0, 16, 16);
+        const tex = renderer.generateTexture(g);
+
+        this.cells = [];
+
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                const cell = PIXI.Sprite.from(tex);
+                cell.width = scale;
+                cell.height = scale;
+                cell.position.x = col * scale;
+                cell.position.y = row * scale;
+                this.cells.push(cell);
+                this.tintMap.addChild(cell);
+            }
+        }
     }
 
     /** Recreate the texture for the base map. */
@@ -165,6 +188,7 @@ export class Map {
         }
         return [PLAYER_COLORS[cell.owner], assets.OWNER_TINT_ALPHA];
     }
+
     /**
      * Update the fish display based on the current frame and time.
      * @param owner_grid: grid of owners of clls
@@ -172,12 +196,17 @@ export class Map {
     update(owner_grid) {
         this.owners = owner_grid;
         // Use the given grid to texture the map
-        this.drawMap(
-            this.tintMap,
-            this.rows, this.cols,
-            owner_grid, this.ownerToColor,
-            assets.DRAW_LINES_OWNER_MAP,
-            this.renderer, this.scale, this.constants
-        );
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                const [ color, opacity ] = this.ownerToColor(owner_grid, row, col, this.constants.MAX_CELL_PRODUCTION);
+                const cell = this.cells[row * this.cols + col];
+                cell.tint = color;
+                cell.alpha = opacity;
+                cell.width = this.scale;
+                cell.height = this.scale;
+                cell.position.x = col * this.scale;
+                cell.position.y = row * this.scale;
+            }
+        }
     }
 }
