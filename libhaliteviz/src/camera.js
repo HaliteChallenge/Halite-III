@@ -27,8 +27,10 @@ export default class Camera {
 
     screenToWorld(x, y) {
         return [
-            Math.floor((x - this.container.position.x) / this.scale),
-            Math.floor((y - this.container.position.y) / this.scale),
+            (Math.floor((x - this.container.position.x) / this.scale)
+             - this.pan.x + this.cols) % this.cols,
+            (Math.floor((y - this.container.position.y) / this.scale)
+             - this.pan.y + this.rows) % this.rows,
         ];
     }
 
