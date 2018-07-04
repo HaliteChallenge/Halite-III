@@ -38,17 +38,8 @@ export class Map {
             }
         }
 
-        let baseMapTexture = this.generateMapTexture(
-            this.rows, this.cols,
-            this.productions, this.productionToColor,
-            assets.DRAW_LINES_BASE_MAP,
-            this.renderer, this.scale, this.constants
-        );
-
-        this.baseMap = new PIXI.Sprite(baseMapTexture);
-
+        this.baseMap = new PIXI.Graphics();
         this.baseMap.interactive = true;
-
         this.baseMap.on("pointerdown", (e) => {
             const localCoords = e.data.global;
             const coordX = (localCoords.x / assets.VISUALIZER_SIZE) * replay.production_map.width;
@@ -60,11 +51,16 @@ export class Map {
             onSelect("point", { x: cellX, y: cellY, production: production,
                 owner: owner});
         });
+
+        this.regenerateBaseMap();
+
+        this.tintMap = new PIXI.Graphics();
     }
 
     /** Recreate the texture for the base map. */
     regenerateBaseMap() {
-        this.baseMap.texture = this.generateMapTexture(
+        this.drawMap(
+            this.baseMap,
             this.rows, this.cols,
             this.productions, this.productionToColor,
             assets.DRAW_LINES_BASE_MAP,
@@ -95,12 +91,14 @@ export class Map {
             return [assets.MAP_COLOR_DARK, (production_fraction - 0.66) / 0.34];
         }
     }
+
     /**
-     * Generate a map texture to be used as a sprite
+     * Draw the map onto the given Graphics object
      * Can be used to draw both the base production map and any ownership tinting
      */
-    generateMapTexture(rows, cols, mapArray, squareToColor, drawLines, renderer, scale, constants) {
-        let mapGraphics = new PIXI.Graphics();
+    drawMap(mapGraphics, rows, cols, mapArray, squareToColor, drawLines, renderer, scale, constants) {
+        mapGraphics.clear();
+
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < cols; col++) {
                 let color_arr = squareToColor(mapArray, row, col, constants.MAX_CELL_PRODUCTION);
@@ -128,8 +126,6 @@ export class Map {
                     (rows + 2) * scale);
             }
         }
-
-        return renderer.generateTexture(mapGraphics);
     }
 
     /**
@@ -139,6 +135,7 @@ export class Map {
      */
     attach(container) {
         container.addChild(this.baseMap);
+        container.addChild(this.tintMap);
         this.container = container;
     }
 
@@ -174,21 +171,13 @@ export class Map {
      */
     update(owner_grid) {
         this.owners = owner_grid;
-
         // Use the given grid to texture the map
-        let newTintTexture = this.generateMapTexture(this.rows, this.cols,
-            owner_grid, this.ownerToColor, assets.DRAW_LINES_OWNER_MAP, this.renderer, this.scale, this.constants);
-        this.newTintMap = new PIXI.Sprite(newTintTexture);
-
-        // Bring to front
-        this.newTintMap.interactive = false;
-        this.newTintMap.zOrder = -1;
-
-        // update the map tint
-        this.container.addChild(this.newTintMap);
-        if (typeof this.oldTintMap !== 'undefined') {
-            this.container.removeChild(this.oldTintMap);
-        }
-        this.oldTintMap = this.newTintMap;
+        this.drawMap(
+            this.tintMap,
+            this.rows, this.cols,
+            owner_grid, this.ownerToColor,
+            assets.DRAW_LINES_OWNER_MAP,
+            this.renderer, this.scale, this.constants
+        );
     }
 }
