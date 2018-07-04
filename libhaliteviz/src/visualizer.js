@@ -143,12 +143,11 @@ export class HaliteVisualizer {
 
         // Prerender the points of interest once, and keep it as a texture
 
-        // this.container.addChild(this.mapContainer);
+        this.container.addChild(this.mapContainer);
         this.container.addChild(this.factoryContainer);
         this.container.addChild(this.entityContainer);
         this.container.addChild(this.fishContainer);
 
-        this.application.stage.addChild(this.mapContainer);
         this.application.stage.addChild(this.container);
         this.application.stage.addChild(this.letterbox);
 
