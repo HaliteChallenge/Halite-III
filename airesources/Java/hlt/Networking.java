@@ -2,6 +2,8 @@ package hlt;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Networking {
 	static Player[] lastPlayers;
@@ -31,6 +33,11 @@ public class Networking {
 	private static String[] getSplitLine() { return readLine().split(" "); }
 
 	public static GameParameters getInit() {
+		try {
+			Log.initialize(new FileWriter("Log.log"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		String[] c = getSplitLine();		
 		int numPlayers = Integer.parseInt(c[0]);
 		int myID = Integer.parseInt(c[1]);
@@ -43,13 +50,16 @@ public class Networking {
 		
 		c = getSplitLine();
 		int width = Integer.parseInt(c[0]);
-		int height = Integer.parseInt(c[0]);
+		int height = Integer.parseInt(c[1]);
 		Cell[][] grid = new Cell[height][width];
 		for(int y=0; y<height; y++) {
 			for(int x=0; x<width; x++) {
 				c = getSplitLine();
-				// TODO add support for other cell types
-				grid[y][x] = new Cell(Integer.parseInt(c[1]), true, 1);	
+				if(c[0].equals("f")) {
+					grid[y][x] = new Cell(0, true, 1);	
+				} else {
+					grid[y][x] = new Cell(Integer.parseInt(c[1]), true, 1);	
+				} 
 			}
 		}
 		GameMap map = new GameMap(width, height, grid);
@@ -62,6 +72,7 @@ public class Networking {
 	public static void sendInit(String name) {
 		if(name.length() < 1) System.out.println(' ');
 		else System.out.println(name);
+		System.out.flush();
 	}
 	public static Player[] getFrame() {
 		int turnNumber = Integer.parseInt(readLine());
@@ -78,20 +89,25 @@ public class Networking {
 					new Location(Integer.parseInt(c[0]), Integer.parseInt(c[1])), 
 					new Entity(playerID, Integer.parseInt(c[3])));
 			}
-			lastPlayers[i] = new Player(playerID, 
+			lastPlayers[playerID] = new Player(playerID, 
 					storedEnergy, 
-					lastPlayers[i].factoryLocation, 
+					lastPlayers[i].getFactoryLocation(), 
 					entities);
 		}
 		return lastPlayers;
 	}
 	public static void sendFrame(HashMap<Location, Direction> moves) {
 		for(Map.Entry<Location, Direction> entry: moves.entrySet()) {
+			if(entry.getValue() == Direction.STILL) continue;
+			System.out.print("m ");
 			System.out.print(entry.getKey().x);
 			System.out.print(' ');
 			System.out.print(entry.getKey().y);
 			System.out.print(' ');
-			System.out.println(entry.getValue().getCharRepresent());
+			System.out.print(entry.getValue().getCharRepresent());
+			System.out.print(' ');
 		}
+		System.out.print('\n');
+		System.out.flush();
 	}
 }
