@@ -12,6 +12,9 @@ export default class Camera {
         this.initScale = initScale;
         this.scale = initScale;
         this.dirty = false;
+
+        this.pan = { x: 0, y: 0 };
+        this.pixelPan = { x: 0, y: 0 };
     }
 
     attach(view) {
@@ -41,8 +44,7 @@ export default class Camera {
         const delta = sign * Math.max(1, Math.min(2, Math.abs(e.wheelDelta) / 150));
 
         this.scale += delta;
-        this.scale = Math.min(15, Math.max(1, this.scale));
-        this.dirty = true;
+        this.scale = Math.min(32, Math.max(this.initScale, this.scale));
     }
 
     onDragStart(e) {
@@ -60,19 +62,16 @@ export default class Camera {
         }
 
         if (this.dragging) {
-            this.container.position.x += dx;
-            this.container.position.y += dy;
+            this.pixelPan.x += dx;
+            this.pixelPan.y += dy;
 
-            // Constrain translation
             const fullWidth = this.scale * this.cols;
             const fullHeight = this.scale * this.rows;
-            this.container.position.y = Math.max(assets.VISUALIZER_HEIGHT - fullHeight,
-                                                 this.container.position.y);
-            this.container.position.y = Math.min(0, this.container.position.y);
-            this.container.position.x = Math.max(assets.VISUALIZER_SIZE - fullWidth,
-                                                 this.container.position.x);
-            this.container.position.x = Math.min(0, this.container.position.x);
             this.dragBase = [ e.offsetX, e.offsetY ];
+            this.pixelPan.x = (this.pixelPan.x + fullWidth) % fullWidth;
+            this.pixelPan.y = (this.pixelPan.y + fullHeight) % fullHeight;
+            this.pan.x = Math.round(this.pixelPan.x / this.scale);
+            this.pan.y = Math.round(this.pixelPan.y / this.scale);
         }
     }
 

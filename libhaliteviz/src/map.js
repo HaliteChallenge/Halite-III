@@ -38,9 +38,15 @@ export class Map {
             }
         }
 
-        this.baseMap = new PIXI.Graphics();
-        this.baseMap.interactive = true;
-        this.baseMap.on("pointerdown", (e) => {
+        this.tintMap = new PIXI.particles.ParticleContainer(this.rows * this.cols, {
+            vertices: true,
+            position: true,
+            tint: true,
+        });
+
+        this.tintMap.interactive = true;
+        this.tintMap.hitArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
+        this.tintMap.on("pointerdown", (e) => {
             const localCoords = e.data.global;
             const [ cellX, cellY ] = this.camera.screenToWorld(localCoords.x, localCoords.y);
             const production = this.productions[cellY][cellX];
@@ -49,17 +55,14 @@ export class Map {
                 owner: owner});
         });
 
-        this.regenerateBaseMap();
-
-        this.tintMap = new PIXI.particles.ParticleContainer(this.rows * this.cols, {
-            vertices: true,
-            position: true,
-            tint: true,
-        });
-
         const g = new PIXI.Graphics();
         g.beginFill(0xFFFFFF, 1.0);
         g.drawRect(0, 0, 16, 16);
+        g.beginFill(0x000000, 0.7);
+        g.drawRect(0, 0, 16, 2);
+        g.drawRect(0, 2, 2, 14);
+        g.drawRect(14, 2, 2, 14);
+        g.drawRect(2, 14, 12, 2);
         const tex = renderer.generateTexture(g);
 
         this.cells = [];
@@ -79,17 +82,6 @@ export class Map {
 
     get scale() {
         return this.camera.scale;
-    }
-
-    /** Recreate the texture for the base map. */
-    regenerateBaseMap() {
-        this.drawMap(
-            this.baseMap,
-            this.rows, this.cols,
-            this.productions, this.productionToColor,
-            assets.DRAW_LINES_BASE_MAP,
-            this.renderer, this.scale, this.constants
-        );
     }
 
     /**
@@ -158,7 +150,6 @@ export class Map {
      * sprites.
      */
     attach(container) {
-        container.addChild(this.baseMap);
         container.addChild(this.tintMap);
         this.container = container;
     }
@@ -167,7 +158,7 @@ export class Map {
      * Remove the map from the visualizer.
      */
     destroy() {
-        this.container.removeChild(this.baseMap);
+        this.container.removeChild(this.tintMap);
     }
 
     get id() {
@@ -199,19 +190,15 @@ export class Map {
         // Use the given grid to texture the map
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
+                const [ base ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
                 const [ color, opacity ] = this.ownerToColor(owner_grid, row, col, this.constants.MAX_CELL_PRODUCTION);
                 const cell = this.cells[row * this.cols + col];
-                cell.tint = color;
-                cell.alpha = opacity;
+                cell.tint = Math.floor(opacity * color + (1 - opacity) * base);
                 cell.width = this.scale;
                 cell.height = this.scale;
-                cell.position.x = col * this.scale;
-                cell.position.y = row * this.scale;
+                cell.position.x = ((col + this.camera.pan.x + this.cols) % this.cols) * this.scale;
+                cell.position.y = ((row + this.camera.pan.y + this.rows) % this.rows) * this.scale;
             }
-        }
-
-        if (this.camera.dirty) {
-            this.regenerateBaseMap();
         }
     }
 }
