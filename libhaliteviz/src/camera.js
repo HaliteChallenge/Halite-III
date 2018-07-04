@@ -17,6 +17,15 @@ export default class Camera {
         this.pixelPan = { x: 0, y: 0 };
     }
 
+    reset() {
+        this.scale = this.initScale;
+        this.pan.x = 0;
+        this.pan.y = 0;
+        this.pixelPan.x = 0;
+        this.pixelPan.y = 0;
+        this.panRender();
+    }
+
     attach(view) {
         view.addEventListener("mousedown", this.onDragStart.bind(this));
         view.addEventListener("mousemove", this.onDragMove.bind(this));

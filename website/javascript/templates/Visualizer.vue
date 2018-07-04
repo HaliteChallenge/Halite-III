@@ -59,6 +59,9 @@
                 <span class="replay-btn">
                   <a href="javascript:;" @click="nextFrame"><span class="icon-next"></span></a>
                 </span>
+                <span class="replay-btn" style="text-align: center">
+                  <a href="javascript:;" @click="resetView" title="Reset zoom/pan"><span class="icon-lightning"></span></a>
+                </span>
                 <span class="replay-btn">
                   <a style="text-align: center; margin-bottom: 4px;" v-if="game && game.game_id" :href="replay_download_link(game.game_id)">
                     <span class="icon-download"></span>
@@ -499,6 +502,11 @@
 
         this.gaData('visualizer', 'click-pause', 'gameplay')
       }
+      this.resetView = () => {
+        if (visualizer) {
+          visualizer.camera.reset();
+        }
+      }
 
       const changeSpeed = (speed) => {
         this.speedIndex = speed
@@ -767,6 +775,7 @@
       },
       changeFrame: function (event) {
       },
+      resetView: function() {},
       toggleObjectPanel: function (e) {
         this.showObjectPanel = !this.showObjectPanel
         sessionStorage.setItem('halite-showMapObjectPanel', this.showObjectPanel.toString())
