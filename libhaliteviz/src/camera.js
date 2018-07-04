@@ -22,6 +22,13 @@ export default class Camera {
         view.addEventListener("mousewheel", this.onZoom.bind(this));
     }
 
+    screenToWorld(x, y) {
+        return [
+            Math.floor((x - this.container.position.x) / this.scale),
+            Math.floor((y - this.container.position.y) / this.scale),
+        ];
+    }
+
     update() {
     }
 

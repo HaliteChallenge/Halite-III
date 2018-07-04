@@ -42,10 +42,7 @@ export class Map {
         this.baseMap.interactive = true;
         this.baseMap.on("pointerdown", (e) => {
             const localCoords = e.data.global;
-            const coordX = (localCoords.x / assets.VISUALIZER_SIZE) * replay.production_map.width;
-            const coordY = (localCoords.y / assets.VISUALIZER_HEIGHT) * replay.production_map.height;
-            const cellX = Math.floor(coordX);
-            const cellY = Math.floor(coordY);
+            const [ cellX, cellY ] = this.camera.screenToWorld(localCoords.x, localCoords.y);
             const production = this.productions[cellY][cellX];
             const owner = this.owners !== null ? this.owners[cellX][cellY].owner : -1;
             onSelect("point", { x: cellX, y: cellY, production: production,
