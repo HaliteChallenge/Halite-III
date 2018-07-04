@@ -61,6 +61,8 @@ export default class Camera {
 
         this.scale += delta;
         this.scale = Math.min(32, Math.max(this.initScale, this.scale));
+        this.pixelPan.x = this.pan.x * this.scale;
+        this.pixelPan.y = this.pan.y * this.scale;
         this.panRender();
     }
 
