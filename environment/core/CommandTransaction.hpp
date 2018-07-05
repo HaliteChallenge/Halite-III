@@ -11,7 +11,8 @@ class Map;
 
 /** Transactions that execute a series of player commands atomically. */
 class CommandTransaction {
-    std::vector<std::tuple<Location, Location>> commands{}; /** The command buffer. */
+    std::vector<std::tuple<Location, Location>> move_commands{}; /** The move command buffer. */
+    std::vector<std::tuple<Location, energy_type>> spawn_commands{}; /** The spawn command buffer. */
     Map &_map;                                              /** Mutable map reference. */
     Player &_player;                                        /** Mutable player reference. */
 
@@ -30,7 +31,13 @@ public:
      * Attempt to commit the transaction.
      * @return True if the commit succeeded.
      */
-    bool commit();
+    bool commit_moves();
+
+    /**
+     * Attempt to commit the transaction.
+     * @return True if the commit succeeded.
+     */
+    bool commit_spawn(std::vector<std::tuple<Location, energy_type>> & spawns);
 
     /**
      * Add an entity move to the transaction.
@@ -39,7 +46,17 @@ public:
      * @param to The destination location of the entity.
      */
     void move_entity(const Location &from, const Location &to) {
-        commands.emplace_back(from, to);
+        move_commands.emplace_back(from, to);
+    }
+
+    /**
+     * Add an entity spawn to the transaction.
+     *
+     * @param factory The factory location to spawn from.
+     * @param energy The amount of energy to spawn with.
+     */
+    void spawn_entity(const Location & factory, const energy_type & energy) {
+        spawn_commands.emplace_back(factory, energy);
     }
 };
 
