@@ -6,6 +6,7 @@
 
 #include "Constants.hpp"
 #include "Entity.hpp"
+#include "IndependentEntity.hpp"
 #include "Player.hpp"
 
 #include "nlohmann/json_fwd.hpp"
@@ -67,28 +68,31 @@ class BaseCell {
 public:
     // TODO: possible usage of constant size array
     /** Map from player ID to player possessed entity here, if there is one. */
-    std::unordered_map<Player::id_type, std::shared_ptr<Entity>> entities;
+    std::unordered_map<Player::id_type, std::shared_ptr<PlayerEntity>> entities;
+
+    /** Store independent entity on this cell. One entity max per cell */
+    std::shared_ptr<IndependentEntity> independent_entity;
 
     /**
      * Find an entity by player.
      * @param player The player to search.
      * @return The entity for that player, or null if not found.
      */
-    std::shared_ptr<Entity> find_entity(const Player &player) const;
+    std::shared_ptr<PlayerEntity> find_entity(const Player &player) const;
 
     /**
      * Add a new entity by player. No entity must exist for that player.
      * @param player The player for the entity.
      * @param entity The entity to add.
      */
-    void add_entity(const Player &player, std::shared_ptr<Entity> entity);
+    void add_entity(const Player &player, std::shared_ptr<PlayerEntity> entity);
 
     /**
      * Remove an entity by player.
      * @param player The player of the entity.
      * @return The entity for that player.
      */
-    std::shared_ptr<Entity> remove_entity(const Player &player);
+    std::shared_ptr<PlayerEntity> remove_entity(const Player &player);
 
     /** Get the production of this cell. */
     virtual energy_type production() const { return BASE_PRODUCTION; }

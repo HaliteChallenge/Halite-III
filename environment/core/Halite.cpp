@@ -30,7 +30,7 @@ void Halite::run_game() {
     // so the replay object keeps a snapshot of the entities at the start of the game
     for (auto &[player_id, player] : replay_struct.players) {
         for (auto &[entity_location, entity] : player.entities) {
-            player.entities[entity_location] = make_entity<Entity>(entity->owner_id, entity->energy);
+            player.entities[entity_location] = make_entity<PlayerEntity>(entity->owner_id, entity->energy);
         }
     }
     Logging::log("Player initialization complete.");

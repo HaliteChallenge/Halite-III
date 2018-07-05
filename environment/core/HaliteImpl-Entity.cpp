@@ -16,7 +16,7 @@ void HaliteImpl::spawn_entity(Player &player, const Location &location) { //, co
         entity_iterator->second->energy += constants.NEW_ENTITY_ENERGY;
     } else {
         // Otherwise, spawn.
-        auto entity = make_entity<Entity>(player.player_id, constants.NEW_ENTITY_ENERGY);
+        auto entity = make_entity<PlayerEntity>(player.player_id, constants.NEW_ENTITY_ENERGY);
         entities[location] = entity;
         game.game_map.at(location)->entities[player.player_id] = std::move(entity);
     }
