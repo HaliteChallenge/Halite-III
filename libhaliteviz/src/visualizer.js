@@ -34,9 +34,13 @@ export class HaliteVisualizer {
         // a handler
         this.keyboardControls = new keyboard.KeyboardControls(this, {
             "ArrowLeft": "scrubBackwards",
-            "KeyA": "scrubBackwards",
             "ArrowRight": "scrubForwards",
-            "KeyD": "scrubForwards",
+            "KeyW": "panUp",
+            "KeyS": "panDown",
+            "KeyA": "panLeft",
+            "KeyD": "panRight",
+            "Equal": "zoomIn",
+            "Minus": "zoomOut",
             "Space": () => {
                 if (this.isPlaying()) this.pause();
                 else this.play();

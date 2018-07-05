@@ -56,21 +56,26 @@ export default class Camera {
 
         const sign = e.wheelDelta >= 0 ? 1 : -1;
         const delta = sign * Math.max(1, Math.min(2, Math.abs(e.wheelDelta) / 150));
+        const percentX = (e.offsetX + 0.5 * this.scale) / assets.VISUALIZER_SIZE;
+        const percentY = (e.offsetY + 0.5 * this.scale) / assets.VISUALIZER_HEIGHT;
 
-        const oldScale = this.scale;
+        this.zoomBy(percentX, percentY, delta);
+    }
 
+    zoomBy(anchorX, anchorY, delta) {
         // Try to keep point under mouse fixed
-        const [ centerX, centerY ] = this.screenToWorld(e.offsetX, e.offsetY);
-        const percentX = (e.offsetX + 0.5 * oldScale) / assets.VISUALIZER_SIZE;
-        const percentY = (e.offsetY + 0.5 * oldScale) / assets.VISUALIZER_HEIGHT;
+        const [ centerX, centerY ] = this.screenToWorld(
+            anchorX * assets.VISUALIZER_SIZE,
+            anchorY * assets.VISUALIZER_HEIGHT
+        );
 
         this.scale += delta;
         this.scale = Math.min(10 * this.initScale, Math.max(this.initScale, this.scale));
 
         const viewWidth = assets.VISUALIZER_SIZE / this.scale;
         const viewHeight = assets.VISUALIZER_HEIGHT / this.scale;
-        const viewLeft = centerX - percentX * viewWidth;
-        const viewTop = centerY - percentY * viewHeight;
+        const viewLeft = centerX - anchorX * viewWidth;
+        const viewTop = centerY - anchorY * viewHeight;
 
         this.pan.x = Math.round((-viewLeft + this.cols) % this.cols);
         this.pan.y = Math.round((-viewTop + this.rows) % this.rows);
@@ -108,6 +113,18 @@ export default class Camera {
             this.pan.y = Math.round(this.pixelPan.y / this.scale);
             this.panRender();
         }
+    }
+
+    panBy(dx, dy) {
+        this.pan.x += dx + this.cols;
+        this.pan.y += dy + this.rows;
+        this.pan.x %= this.cols;
+        this.pan.y %= this.rows;
+
+        this.pixelPan.x = this.pan.x * this.scale;
+        this.pixelPan.y = this.pan.y * this.scale;
+
+        this.panRender();
     }
 
     onDragStop(e) {
