@@ -12,10 +12,11 @@ class Map;
 
 /** Transactions that execute a series of player commands atomically. */
 class CommandTransaction {
-    std::vector<std::tuple<Location, Location>> move_commands{}; /** The move command buffer. */
+    std::vector<std::tuple<Location, Location>> move_commands{};     /** The move command buffer. */
     std::vector<std::tuple<Location, energy_type>> spawn_commands{}; /** The spawn command buffer. */
-    Map &_map;                                              /** Mutable map reference. */
-    Player &_player;                                        /** Mutable player reference. */
+    Map &_map;                                 /** Mutable map reference. */
+    Player &_player;                           /** Mutable player reference. */
+    std::function<void(GameEvent)> callback{}; /** Event callback. */
 
 public:
     const Map &map;         /** The game map to update. */
@@ -29,16 +30,16 @@ public:
     explicit CommandTransaction(Map &map, Player &player) : _map(map), _player(player), map(map), player(player) {}
 
     /**
-     * Attempt to commit the transaction.
-     * @return True if the commit succeeded.
+     * Set a callback for GameEvents generated during the transaction commit.
+     * @param callback The callback to set.
      */
-    bool commit_moves();
+    void set_callback(std::function<void(GameEvent)> callback);
 
     /**
      * Attempt to commit the transaction.
      * @return True if the commit succeeded.
      */
-    bool commit_spawn(std::vector<GameEvent> & spawns);
+    bool commit();
 
     /**
      * Add an entity move to the transaction.
