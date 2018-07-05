@@ -37,7 +37,7 @@ void to_json(nlohmann::json &json, const Replay *replay) {
             REPLAY_FIELD_TO_JSON(GAME_CONSTANTS),
             REPLAY_FIELD_TO_JSON(number_of_players),
             REPLAY_FIELD_TO_JSON(production_map),
-            REPLAY_FIELD_TO_JSON(map_generator_seed),
+            { "map_generator_seed", replay->map_generator_parameters.seed },
             REPLAY_FIELD_TO_JSON(full_frames),
             REPLAY_FIELD_TO_JSON(REPLAY_FILE_VERSION),
             REPLAY_FIELD_TO_JSON(ENGINE_VERSION)};
@@ -57,6 +57,14 @@ void to_json(nlohmann::json &json, const Replay *replay) {
  */
 void to_json(nlohmann::json &json, const Replay &replay) {
     nlohmann::to_json(json, &replay);
+}
+
+std::string Replay::snapshot(int frame) {
+    std::stringstream ss;
+
+    ss << ENGINE_VERSION << ";";
+
+    return ss.str();
 }
 
 /**

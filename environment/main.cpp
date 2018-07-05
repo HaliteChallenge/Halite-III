@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
         char time_string[MAX_DATE_STRING_LENGTH];
         std::strftime(time_string, MAX_DATE_STRING_LENGTH, "%Y%m%d-%H%M%S%z", localtime);
         filename_buf << "replay-" << std::string(time_string);
-        filename_buf << "-" << game.replay_struct.map_generator_seed;
+        filename_buf << "-" << game.replay_struct.map_generator_parameters.seed;
         filename_buf << "-" << game.game_map.width;
         filename_buf << "-" << game.game_map.height << ".hlt";
         auto filename = filename_buf.str();
@@ -141,7 +141,7 @@ int main(int argc, char *argv[]) {
             game.replay_struct.output(output_filename, enable_compression);
         }
         std::stringstream replay_message;
-        replay_message << "Map seed was " << game.replay_struct.map_generator_seed << std::endl
+        replay_message << "Map seed was " << game.replay_struct.map_generator_parameters.seed << std::endl
                        << "Opening a file at " << output_filename << std::endl;
         Logging::log(replay_message.str());
     }
