@@ -144,17 +144,19 @@ int main(int argc, char *argv[]) {
         replay_message << "Map seed was " << game.replay_struct.map_generator_seed << std::endl
                        << "Opening a file at " << output_filename << std::endl;
         Logging::log(replay_message.str());
-    }
 
-    if (json_results_switch.getValue()) {
-        nlohmann::json results;
-        results["stats"] = nlohmann::json::object();
-        for (const auto& stats : game.replay_struct.game_statistics.player_statistics) {
-            results["stats"][std::to_string(stats.player_id)] = { { "rank", stats.rank } };
+
+        if (json_results_switch.getValue()) {
+            nlohmann::json results;
+            results["replay"] = output_filename;
+            results["stats"] = nlohmann::json::object();
+            for (const auto& stats : game.replay_struct.game_statistics.player_statistics) {
+                results["stats"][std::to_string(stats.player_id)] = { { "rank", stats.rank } };
+            }
+            // TODO: where are the error logs?
+            results["error_logs"] = nlohmann::json::object();
+            std::cout << results.dump(4) << std::endl;
         }
-        // TODO: where are the error logs?
-        results["error_logs"] = nlohmann::json::object();
-        std::cout << results.dump(4) << std::endl;
     }
 
     return 0;
