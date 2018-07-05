@@ -174,8 +174,8 @@ def runGame(width, height, users):
 
         command = [
             "./" + ENVIRONMENT,
-            "--width", width,
-            "--height", height,
+            "--width", str(width),
+            "--height", str(height),
             "--results-as-json",
         ]
 
