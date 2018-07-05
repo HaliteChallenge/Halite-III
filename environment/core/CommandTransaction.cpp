@@ -10,7 +10,7 @@ namespace hlt {
  * Attempt to commit the transaction.
  * @return True if the commit succeeded.
  */
-bool CommandTransaction::commit_spawn(std::vector<std::tuple<Location, energy_type>> & spawns) {
+bool CommandTransaction::commit_spawn(std::vector<GameEvent> & spawns) {
     // See if attempting to spawn multiple pieces from one factory
     std::set<Location> factories;
     for (const auto &[factory, _] : spawn_commands) {
@@ -19,6 +19,7 @@ bool CommandTransaction::commit_spawn(std::vector<std::tuple<Location, energy_ty
             return false;
         }
     }
+    spawns.clear();
     const auto &constants = Constants::get();
     for (const auto &[factory, energy] : spawn_commands) {
         if(energy > constants.MAX_ENERGY) return false; // Tried to create with too much energy.
@@ -34,9 +35,9 @@ bool CommandTransaction::commit_spawn(std::vector<std::tuple<Location, energy_ty
             _map.at(factory)->entities[player.player_id] = std::move(entity);
         }
         _player.energy -= energy * constants.NEW_ENTITY_ENERGY_COST;
+        spawns.push_back(std::make_unique<SpawnEvent>(factory, energy, player.player_id));
         if(_player.energy < 0) return false; // Don't allow players to spend more than they have
     }
-    spawns = spawn_commands;
     return true;
 }
 

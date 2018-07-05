@@ -29,16 +29,15 @@ void HaliteImpl::process_commands() {
         if (!transaction.commit_moves()) {
             throw BotCommandError("Invalid move commands");
         }
-        std::vector<std::tuple<Location, energy_type>> spawns;
+        std::vector<GameEvent> spawns;
         if (!transaction.commit_spawn(spawns)) {
             throw BotCommandError("Invalid spawn commands");
         }
-        for(const auto &[factory, energy] : spawns) {
+        for(auto &event : spawns) {
             // Create new game event for replay file, regardless of whether spawn creates a new entity or adds to an old entity
             // Ensure full frames has been initialized (ie don't do this before first turn)
             if (game.replay_struct.full_frames.size() > 0) {
-                GameEvent spawn_event = std::make_unique<SpawnEvent>(factory, energy, player_id);
-                game.replay_struct.full_frames.back().events.push_back(std::move(spawn_event));
+                game.replay_struct.full_frames.back().events.emplace_back(std::move(event));
             }
         }
     }

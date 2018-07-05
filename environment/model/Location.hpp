@@ -39,13 +39,5 @@ std::istream &operator>>(std::istream &istream, Direction &direction);
 /** Type of a location. */
 using Location = std::pair<dimension_type, dimension_type>;
 }
-namespace std {
-template <>
-struct hash<hlt::Location> {
-	size_t operator()(const hlt::Location & l) {
-		return ((l.first+l.second) * (l.first+l.second+1) / 2) + l.second;
-	}
-};
-}
 
 #endif // LOCATION_HPP

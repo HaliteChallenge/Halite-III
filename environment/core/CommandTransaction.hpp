@@ -2,6 +2,7 @@
 #define COMMANDTRANSACTION_HPP
 
 #include "Location.hpp"
+#include "GameEvent.hpp"
 
 namespace hlt {
 
@@ -37,7 +38,7 @@ public:
      * Attempt to commit the transaction.
      * @return True if the commit succeeded.
      */
-    bool commit_spawn(std::vector<std::tuple<Location, energy_type>> & spawns);
+    bool commit_spawn(std::vector<GameEvent> & spawns);
 
     /**
      * Add an entity move to the transaction.
