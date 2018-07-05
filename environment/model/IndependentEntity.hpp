@@ -1,6 +1,8 @@
 #ifndef INDEPENDENTENTITY_H
 #define INDEPENDENTENTITY_H
 
+#include "nlohmann/json_fwd.hpp"
+
 /** A non-player-owned entity placed on the Halite map. Used for herding features of game play. */
 class IndependentEntity {
 public:

@@ -1,12 +1,14 @@
 #include "IndependentEntity.hpp"
 
-#define FIELD_TO_JSON(x) {#x, entity.x};
+#include "nlohmann/json.hpp"
+
+#define FIELD_TO_JSON(x) {#x, entity.x}
 
 /**
  * Merges given entity with this entity by summing the total number of entities the merged entity represents
  * param other_entity The entity to merge with this one.
  */
-void IndependentEntity::merge_entities(const Entity &other_entity) {
+void IndependentEntity::merge_entities(const IndependentEntity &other_entity) {
     this->entities_represented += other_entity.entities_represented;
 }
 
