@@ -381,34 +381,14 @@ def parse_replay(replay):
     if replay is None:
         return None
 
-    stats = GameStat(replay["num_players"])
-    stats.turns_total = len(replay['frames']) - 1
-    for frame in replay["frames"]:
-        for event in frame.get("events", []):
-            player_tag = event["entity"].get("owner")
-            if event["event"] == "spawned":
-                stats.ships_produced += 1
-                stats.players[player_tag].ships_produced += 1
-            elif event["event"] == "destroyed":
-                if event["entity"]["type"] == "ship":
-                    stats.ships_destroyed += 1
-                elif event["entity"]["type"] == "planet":
-                    stats.planets_destroyed += 1
-                    if player_tag:
-                        stats.players[player_tag].planets_destroyed += 1
-            elif event["event"] == "attack":
-                stats.players[player_tag].attacks_total += 1
-
-    ships_alive_total = sum([len(ships) for ships in replay["frames"][-1]["ships"].values()])
+    stats = GameStat(replay["number_of_players"])
+    stats.turns_total = len(replay['full_frames']) - 1
+    # TODO: compute and record interesting stats
     for player_tag in stats.players.keys():
-        stats.players[player_tag].ships_alive = len(replay["frames"][-1]["ships"][str(player_tag)])
-        # use max(1.0, ...) to avoid ZeroDivisionError
-        stats.players[player_tag].ships_alive_ratio = 1.0 * stats.players[player_tag].ships_alive / max(1.0, stats.players[player_tag].ships_produced)
-        stats.players[player_tag].ships_relative_ratio = 1.0 * stats.players[player_tag].ships_alive / max(1.0, ships_alive_total)
-
-    for planet in replay["frames"][-1]["planets"].values():
-        if planet["owner"] is not None:
-            stats.players[planet["owner"]].planets_controlled += 1
+        # TODO: compute and record new interesting stats
+        stats.players[player_tag].ships_alive = 0
+        stats.players[player_tag].ships_alive_ratio = 1.0
+        stats.players[player_tag].ships_relative_ratio = 1.0
 
     return stats
 
