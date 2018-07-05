@@ -12,20 +12,18 @@ namespace mapgen {
  * The size of the tile is determined from the desired total height and width of the map,
  * and the number of players.
  */
-class FractalValueNoiseTileGenerator : protected TileGenerator {
+class FractalValueNoiseTileGenerator : public TileGenerator {
 private:
     std::vector< std::vector<double> > generateSmoothNoise(const std::vector< std::vector<double> > & source_noise, dimension_type wavelength) const;
 public:
     std::string name() const override { return "Fractal Value Noise Tile"; };
 
-    /** Generate a map given a list of players
-     *
-     * @param players: list of players of the game. Passed in for the purpose
-     *      of assigning each player's factory to a cell
-     * @return map with cells initialized (ie given production values, or
-     *      assigned to alternate cell type)
+    /**
+     * Generate a map.
+     * @param[out] map The map to generate.
+     * @param[out] factories The factories generated on the map. Length must be >= number of players.
      */
-    hlt::Map generate(std::vector<hlt::Player> &players) override;
+    void generate(Map &map, std::vector<Location> &factories) override;
 
     /**
      * Construct BlurTileGenerator from parameters.

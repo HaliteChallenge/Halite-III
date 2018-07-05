@@ -32,9 +32,8 @@ energy_type BlurTileGenerator::blur_function(dimension_type y_coord, dimension_t
                                     + map.at(x_coord, below_coord)->production() * (1 - BLUR_FACTOR) / NUM_NEIGHBORS);
 }
 
-Map BlurTileGenerator::generate(std::vector<Player> &players) {
-    assert(players.size() <= num_players);
-    auto tile = make_map(tile_width, tile_height);
+void BlurTileGenerator::generate(Map &map, std::vector<Location> &factories) {
+    auto tile = Map(tile_width, tile_height);
     const auto max = static_cast<double>(std::mt19937::max());
 
     // Fetch max and min values for square production and store for ease of use
@@ -75,9 +74,7 @@ Map BlurTileGenerator::generate(std::vector<Player> &players) {
     const auto factory_pos_y = static_cast<dimension_type>((rng() / max * tile_height));
 
     // Use superclass function to copy the tile over the entire map, including placing all factories
-    Map tiled_map =  tile_map(factory_pos_y, factory_pos_x, tile, players);
-    tiled_map.map_generator = this->name();
-    return tiled_map;
+    tile_map(map, factory_pos_y, factory_pos_x, tile, factories);
 }
 
 }

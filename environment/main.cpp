@@ -94,7 +94,8 @@ int main(int argc, char *argv[]) {
             std::cerr << "Warning: overriding the specified number of players." << std::endl;
         }
     }
-    hlt::mapgen::MapParameters map_param{hlt::mapgen::MapType::Basic, config.seed, map_width, map_height, n_players};
+    // TODO: allow map type selection
+    hlt::mapgen::MapParameters map_param{hlt::mapgen::MapType::Fractal, config.seed, map_width, map_height, n_players};
 
     // TODO: override names
 

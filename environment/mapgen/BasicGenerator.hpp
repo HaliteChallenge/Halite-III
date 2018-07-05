@@ -8,19 +8,18 @@ namespace mapgen {
 
 class BasicGenerator : public Generator {
 private:
-    hlt::dimension_type width;       /**< The width of the map. */
-    hlt::dimension_type height;      /**< The height of the map. */
+    long num_players;  /**< The number of players. */
 public:
     std::string name() const override { return "basic"; }
 
-    hlt::Map generate(std::vector<Player> &players) override;
+    void generate(Map &map, std::vector<Location> &factories) override;
 
     /**
      * Construct BasicGenerator from parameters.
      * @param parameters The map generation parameters.
      */
     explicit BasicGenerator(const MapParameters &parameters) :
-            Generator(parameters), width(parameters.width), height(parameters.height) {}
+            Generator(parameters), num_players(parameters.num_players) {}
 };
 
 }

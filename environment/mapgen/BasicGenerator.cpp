@@ -6,21 +6,19 @@ constexpr auto PRODUCTION = 10;
 namespace hlt {
 namespace mapgen {
 
-/**
- * Generate a map based on a list of players.
- * @param players The players on the map.
- */
-hlt::Map BasicGenerator::generate(std::vector<Player> &players) {
-    (void) players;
-    auto map = make_map(width, height);
+void BasicGenerator::generate(Map &map, std::vector<Location> &factories) {
     // Each cell in the map is simply NormalCell with a fixed production, for now.
-    for (auto y = 0; y < map.height; y++) {
-        for (auto x = 0; y < map.width; x++) {
-            map.at(x, y) = make_cell<NormalCell>(PRODUCTION);
+    auto players = num_players;
+    for (dimension_type y = 0; y < map.height; y++) {
+        for (dimension_type x = 0; x < map.width; x++) {
+            if (players-- > 0) {
+                map.at(x, y) = make_cell<FactoryCell>();
+                factories.emplace_back(x, y);
+            } else {
+                map.at(x, y) = make_cell<NormalCell>(PRODUCTION);
+            }
         }
     }
-    map.map_generator = this->name();
-    return map;
 }
 
 }
