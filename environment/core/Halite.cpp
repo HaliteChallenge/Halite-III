@@ -91,7 +91,7 @@ Halite::Halite(const Config &config,
     generator->generate(game_map, factories);
     for (const auto &player : players) {
         this->players[player.player_id] = player;
-        this->players[player.player_id].factory_location = factories.back();
+        this->players[player.player_id].factories.push_back(factories.back());
         factories.pop_back();
         game_statistics.player_statistics.emplace_back(player.player_id);
     }
