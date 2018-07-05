@@ -761,7 +761,12 @@
         //       ranks[id].version = null
         //   }
         // }
-        return Object.values(this.replay.game_statistics.player_statistics)
+        return this.replay.game_statistics.player_statistics
+                   .map((p, idx) => {
+                     const player = Object.assign({}, p);
+                     player.name = this.replay.players[idx].name;
+                     return player;
+                   })
       },
       getSortedPlayers: async function () {
         const players = await this.getPlayers()
