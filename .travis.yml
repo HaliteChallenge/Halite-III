@@ -1,12 +1,11 @@
 sudo: true
-dist: trusty
+dist: bionic
 language: cpp
 
 # https://docs.travis-ci.com/user/languages/cpp/
 # Test on multiple GCC and Clang versions
 matrix:
   include:
-    # works on Precise and Trusty
     - os: linux
       addons:
         apt:
@@ -19,13 +18,12 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
-    # works on Trusty
     - os: linux
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-6.0
+            - llvm-toolchain-bionic-6.0
           packages:
             - clang-6.0
             - lcov
@@ -46,12 +44,6 @@ script:
 # build C++ bot
   - cd ../airesources/C++
   - make MyBot
-
-# build scala bot
-#  - sudo apt-get install scala
-# - cd ../Scala
-#  - scalac MyBot.scala hlt/*
-
 
 # build Rust bot
   - cd ../Rust
