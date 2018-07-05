@@ -8,6 +8,9 @@
 #include <exception>
 #include <fstream>
 
+#define ENERGY_COST 1000
+#define MAX_ENERGY 255
+
 typedef long energy_type;
 typedef long id_type;
 typedef long dimension_type;
@@ -201,7 +204,9 @@ static long getFrame(Players & players) {
 	return turn_number;
 }
 
-static void sendFrame(const Moves & moves) {
-	std::cout << moves << std::endl;
+static void sendFrame(const Moves & moves, const energy_type & spawn_energy = 0) {
+	std::cout << moves;
+	if(spawn_energy > 0) std::cout << "s " << spawn_energy << ' ';
+	std::cout << std::endl;
 }
 }

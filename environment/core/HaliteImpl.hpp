@@ -35,13 +35,6 @@ class HaliteImpl final {
     /** Process the effects of retrieved commands. */
     void process_commands();
 
-    /**
-     * Process a spawn operation at a location, possibly merging onto an existing entity.
-     * @param player The player owning the new entity.
-     * @param location The location at which to spawn.
-     */
-    void spawn_entity(Player &player, const Location &location);
-
     /** Process all entity lifecycle events for this turn. */
     void process_entities();
 

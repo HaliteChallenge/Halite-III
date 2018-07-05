@@ -77,7 +77,6 @@ struct Location {
     /** The default constructor. */
     Location() = default;
 };
-
 }
 
 namespace std {

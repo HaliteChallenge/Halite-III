@@ -23,8 +23,8 @@ struct Constants {
     dimension_type DEFAULT_MAP_WIDTH = 128;     /**< The default width of generated maps. */
     dimension_type DEFAULT_MAP_HEIGHT = 128;    /**< The default height of generated maps. */
 
-    energy_type MAX_CELL_PRODUCTION = 255;      /**< The maximum maximum amount of production on a cell. */
-    energy_type MIN_CELL_PRODUCTION = 85;        /**< The minimum maximum amount of production on a cell. */
+    energy_type MAX_CELL_PRODUCTION = 100;      /**< The maximum maximum amount of production on a cell. */
+    energy_type MIN_CELL_PRODUCTION = 40;        /**< The minimum maximum amount of production on a cell. */
     energy_type MAX_ENERGY = 255;               /**< The maximum amount of energy per entity. */
     energy_type NEW_ENTITY_ENERGY_COST = 1000;  /**< The amount of production which equals one energy. */
     energy_type NEW_ENTITY_ENERGY = 255;        /**< The starting energy of a new entity. */

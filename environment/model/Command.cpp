@@ -114,7 +114,7 @@ void SpawnCommand::to_json(nlohmann::json &json) const {
 }
 
 void SpawnCommand::act_on_map(CommandTransaction &transaction) const {
-    // Gotta figure this out
+    transaction.spawn_entity(transaction.player.factory_location, energy);
 }
 
 }
