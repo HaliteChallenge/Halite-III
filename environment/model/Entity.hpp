@@ -20,8 +20,8 @@ std::shared_ptr<EntityType> make_entity(Args &&... args) {
     return std::make_shared<EntityType>(std::forward<Args>(args)...);
 }
 
-/** An entity placed on the Halite map. */
-struct Entity {
+/** A player-affiliated entity placed on the Halite map. */
+struct PlayerEntity {
     Player::id_type owner_id{}; /**< ID of the owner. */
     energy_type energy{};       /**< Energy of the entity. */
 
@@ -31,14 +31,14 @@ struct Entity {
      * @param entity The entity to convert.
      * @param include_owner If true, add the owner ID to the JSON.
      */
-    friend void to_json(nlohmann::json &json, const Entity &entity, bool include_owner);
+    friend void to_json(nlohmann::json &json, const PlayerEntity &entity, bool include_owner);
 
     /**
      * Convert an encoded Entity from JSON format.
      * @param json The JSON.
      * @param[out] entity The converted entity.
      */
-    friend void from_json(const nlohmann::json &json, Entity &entity);
+    friend void from_json(const nlohmann::json &json, PlayerEntity &entity);
 
     /**
      * Write an Entity to bot serial format.
@@ -46,22 +46,22 @@ struct Entity {
      * @param entity The entity to write.
      * @return The output stream.
      */
-    friend std::ostream &operator<<(std::ostream &ostream, const Entity &entity);
+    friend std::ostream &operator<<(std::ostream &ostream, const PlayerEntity &entity);
 
     /** Default constructor is required by JSON deserialization. */
-    Entity() = default;
+    PlayerEntity() = default;
 
     /**
      * Create Entity from owner ID, and energy.
      * @param owner_id The owner ID.
      * @param energy The energy of the entity
      */
-    Entity(Player::id_type owner_id, energy_type energy) :
+    PlayerEntity(Player::id_type owner_id, energy_type energy) :
             owner_id(owner_id), energy(energy) {}
 };
 
 /** This redeclaration only serves to bind the default argument. */
-void to_json(nlohmann::json &json, const Entity &entity, bool include_owner = true);
+void to_json(nlohmann::json &json, const PlayerEntity &entity, bool include_owner = true);
 
 }
 

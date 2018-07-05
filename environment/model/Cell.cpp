@@ -53,11 +53,11 @@ std::ostream &operator<<(std::ostream &ostream, const Cell &cell) {
  * @param player The player to search.
  * @return The entity for that player, or null if not found.
  */
-std::shared_ptr<Entity> BaseCell::find_entity(const Player &player) const {
+std::shared_ptr<PlayerEntity> BaseCell::find_entity(const Player &player) const {
     if (auto entity_iterator = entities.find(player.player_id); entity_iterator != entities.end()) {
         return entity_iterator->second;
     } else {
-        return std::shared_ptr<Entity>();
+        return std::shared_ptr<PlayerEntity>();
     }
 }
 
@@ -66,7 +66,7 @@ std::shared_ptr<Entity> BaseCell::find_entity(const Player &player) const {
  * @param player The player for the entity.
  * @param entity The entity to add.
  */
-void BaseCell::add_entity(const Player &player, std::shared_ptr<Entity> entity) {
+void BaseCell::add_entity(const Player &player, std::shared_ptr<PlayerEntity> entity) {
     entities[player.player_id] = entity;
 }
 
@@ -75,7 +75,7 @@ void BaseCell::add_entity(const Player &player, std::shared_ptr<Entity> entity) 
  * @param player The player of the entity.
  * @return The entity for that player.
  */
-std::shared_ptr<Entity> BaseCell::remove_entity(const Player &player) {
+std::shared_ptr<PlayerEntity> BaseCell::remove_entity(const Player &player) {
     auto found = std::move(entities[player.player_id]);
     entities.erase(player.player_id);
     return found;

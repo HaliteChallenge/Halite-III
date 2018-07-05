@@ -9,7 +9,7 @@
 
 namespace hlt {
 
-struct Entity;
+struct PlayerEntity;
 
 /** Representation of a Halite player. */
 struct Player {
@@ -19,7 +19,7 @@ struct Player {
     using id_type = long;
 
     /** Type of the Entity map of a player, where keys are entity locations. */
-    using Entities = std::unordered_map<Location, std::shared_ptr<Entity>>;
+    using Entities = std::unordered_map<Location, std::shared_ptr<PlayerEntity>>;
 
     Player::id_type player_id{};  /**< The unique ID of the player. */
     std::string name;             /**< The name of the player. */
@@ -33,21 +33,21 @@ struct Player {
      * @param location The location to search.
      * @return The entity there, or null if not found.
      */
-    std::shared_ptr<Entity> find_entity(const Location &location) const;
+    std::shared_ptr<PlayerEntity> find_entity(const Location &location) const;
 
     /**
      * Add a new entity by location. No entity must exist at that location.
      * @param location The location for the entity.
      * @param entity The entity to add.
      */
-    void add_entity(const Location &location, std::shared_ptr<Entity> entity);
+    void add_entity(const Location &location, std::shared_ptr<PlayerEntity> entity);
 
     /**
      * Remove an entity by location.
      * @param location The location of the entity.
      * @return The entity there.
      */
-    std::shared_ptr<Entity> remove_entity(const Location &location);
+    std::shared_ptr<PlayerEntity> remove_entity(const Location &location);
 
     /**
      * Convert a Player to JSON format.
