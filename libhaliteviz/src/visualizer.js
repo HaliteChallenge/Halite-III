@@ -100,8 +100,8 @@ export class HaliteVisualizer {
         this.fish = [];
 
         for (let i = 0; i < this.replay.players.length; i++) {
-            const factoryBase = {"x" : this.replay.players[i].factory_location[0],
-                "y" : this.replay.players[i].factory_location[1], "owner" : this.replay.players[i].player_id };
+            const factoryBase = {"x" : this.replay.players[i].factory_location.x,
+                "y" : this.replay.players[i].factory_location.y, "owner" : this.replay.players[i].player_id };
             const factory = new Factory(factoryBase, this.replay.constants,
                 this.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
             this.factories.push(factory);
@@ -416,10 +416,10 @@ export class HaliteVisualizer {
                 if (event.type === "death") {
                     // Check that replay file and animation are in sync by checking that there is an entity at the place
                     // the replay file expects an entity to die.
-                    console.assert(typeof this.entities[event.location[1]][event.location[0]] !== "undefined"
-                        && this.entities[event.location[1]][event.location[0]].hasOwnProperty(event.owner_id),
+                    console.assert(typeof this.entities[event.location.y][event.location.x] !== "undefined"
+                        && this.entities[event.location.y][event.location.x].hasOwnProperty(event.owner_id),
                         "Replay files has a death at %d %d with owner $d, but there is no entity there",
-                        event.location[0], event.location[1], event.owner_id, this.frame);
+                        event.location.x, event.location.y, event.owner_id, this.frame);
 
                     // add death animation to be drawn
                     // TODO: switch to Halite 3 animation
@@ -430,7 +430,7 @@ export class HaliteVisualizer {
                 }
                 else if (event.type === "spawn") {
                     // Create a new entity, add to map, and merge as needed
-                    let entity_object = {"x" : event.location[0], "y" : event.location[1],
+                    let entity_object = {"x" : event.location.x, "y" : event.location.y,
                                         "energy" : event.energy, "owner": event.owner_id};
                     let new_entity = new playerSprite(this, entity_object);
 
