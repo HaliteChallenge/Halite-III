@@ -6,6 +6,7 @@
 
 #include "Constants.hpp"
 #include "Entity.hpp"
+#include "IndependentEntity.hpp"
 #include "Player.hpp"
 
 #include "nlohmann/json_fwd.hpp"
@@ -68,6 +69,9 @@ public:
     // TODO: possible usage of constant size array
     /** Map from player ID to player possessed entity here, if there is one. */
     std::unordered_map<Player::id_type, std::shared_ptr<Entity>> entities;
+
+    /** Store independent entity on this cell. One entity max per cell */
+    std::shared_ptr<IndependentEntity> independent_entity;
 
     /**
      * Find an entity by player.
