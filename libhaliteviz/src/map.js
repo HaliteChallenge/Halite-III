@@ -112,42 +112,6 @@ export class Map {
     }
 
     /**
-     * Draw the map onto the given Graphics object
-     * Can be used to draw both the base production map and any ownership tinting
-     */
-    drawMap(mapGraphics, rows, cols, mapArray, squareToColor, drawLines, renderer, scale, constants) {
-        mapGraphics.clear();
-
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-                let color_arr = squareToColor(mapArray, row, col, constants.MAX_CELL_PRODUCTION);
-                mapGraphics.beginFill(color_arr[0], color_arr[1]);
-                mapGraphics.drawRect(col * scale, row * scale, scale, scale);
-                mapGraphics.endFill();
-            }
-        }
-
-        if (drawLines) {
-            mapGraphics.lineStyle(assets.LINE_WIDTH, assets.LINE_COLOR);
-            //Draw the map lines
-            for (let row = 0; row <= rows + 2; row++) {
-                // move to start of row, draw line
-                // TODO: why are there 2 more columns and rows than I expect?
-                mapGraphics.moveTo(0, row * scale);
-                mapGraphics.lineTo((cols + 2) * scale,
-                    row * scale);
-            }
-
-            for (let col = 0; col <= cols + 2; col++) {
-                // move to start of col, draw line
-                mapGraphics.moveTo(col * scale, 0);
-                mapGraphics.lineTo(col * scale,
-                    (rows + 2) * scale);
-            }
-        }
-    }
-
-    /**
      * Add this factory to the PIXI stage.
      * @param container {PIXI.Container} The parent container of the fish
      * sprites.
