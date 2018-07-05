@@ -3,7 +3,7 @@
 
 #include <string>
 #include <utility>
-#include <map>
+#include <unordered_map>
 
 #include "Location.hpp"
 
@@ -19,15 +19,14 @@ struct Player {
     using id_type = long;
 
     /** Type of the Entity map of a player, where keys are entity locations. */
-    // TODO: switch from std::map to more efficient data structure on location keys
-    using Entities = std::map<Location, std::shared_ptr<Entity>>;
+    using Entities = std::unordered_map<Location, std::shared_ptr<Entity>>;
 
     Player::id_type player_id{};  /**< The unique ID of the player. */
     std::string name;             /**< The name of the player. */
     std::string command;          /**< The bot command for the player. */
     energy_type energy{};         /**< The amount of energy stockpiled by the player. */
     Location factory_location{};  /**< The factory location of the player. */
-    Entities entities;            /**< Mapping of location of entity to entity shared ptr */
+    Entities entities{};          /**< Mapping of location of entity to entity shared ptr */
 
     /**
      * Find an entity by location.

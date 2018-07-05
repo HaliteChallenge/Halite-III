@@ -24,8 +24,9 @@ void to_json(nlohmann::json &json, const Player::Entities entities) {
     for (const auto &[location, entity] : entities) {
         nlohmann::json entity_json;
         to_json(entity_json, *entity, false);
-        entity_json["x"] = location.first;
-        entity_json["y"] = location.second;
+        nlohmann::json location_json;
+        to_json(location_json, location);
+        entity_json.insert(location_json.begin(), location_json.end());
         json.push_back(entity_json);
     }
 }
