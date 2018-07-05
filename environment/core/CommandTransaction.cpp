@@ -1,4 +1,4 @@
-#include <set>
+#include <unordered_set>
 
 #include "CommandTransaction.hpp"
 #include "Entity.hpp"
@@ -47,7 +47,7 @@ bool CommandTransaction::commit_spawn(std::vector<GameEvent> & spawns) {
  */
 bool CommandTransaction::commit_moves() {
     // The requested destination locations.
-    std::set<Location> destinations;
+    std::unordered_set<Location> destinations;
     for (const auto &[from, _] : move_commands) {
         if (const auto &[_, inserted] = destinations.emplace(from); !inserted) {
             // Duplicate found
@@ -55,7 +55,7 @@ bool CommandTransaction::commit_moves() {
         }
     }
     // Map from destination location to final energy at destination
-    std::map<Location, energy_type> moved_entities;
+    std::unordered_map<Location, energy_type> moved_entities;
     for (auto &[from, to] : move_commands) {
         // Remove each source entity and pool energies
         auto energy = _player.remove_entity(from)->energy;
@@ -74,7 +74,7 @@ bool CommandTransaction::commit_moves() {
     }
     for (auto &[location, energy] : moved_entities) {
         // Place new entities with corresponding energies
-        auto entity = make_entity<Entity>(player.player_id, energy);
+        auto entity = make_entity<PlayerEntity>(player.player_id, energy);
         _map.at(location)->add_entity(player, entity);
         _player.add_entity(location, std::move(entity));
     }

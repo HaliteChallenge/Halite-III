@@ -24,8 +24,9 @@ void to_json(nlohmann::json &json, const Player::Entities entities) {
     for (const auto &[location, entity] : entities) {
         nlohmann::json entity_json;
         to_json(entity_json, *entity, false);
-        entity_json["x"] = location.first;
-        entity_json["y"] = location.second;
+        nlohmann::json location_json;
+        to_json(location_json, location);
+        entity_json.insert(location_json.begin(), location_json.end());
         json.push_back(entity_json);
     }
 }
@@ -65,11 +66,11 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
  * @param location The location to search.
  * @return The entity there, or null if not found.
  */
-std::shared_ptr<Entity> Player::find_entity(const Location &location) const {
+std::shared_ptr<PlayerEntity> Player::find_entity(const Location &location) const {
     if (auto entity_iterator = entities.find(location); entity_iterator != entities.end()) {
         return entity_iterator->second;
     } else {
-        return std::shared_ptr<Entity>();
+        return std::shared_ptr<PlayerEntity>();
     }
 }
 
@@ -78,7 +79,7 @@ std::shared_ptr<Entity> Player::find_entity(const Location &location) const {
  * @param location The location for the entity.
  * @param entity The entity to add.
  */
-void Player::add_entity(const Location &location, std::shared_ptr<Entity> entity) {
+void Player::add_entity(const Location &location, std::shared_ptr<PlayerEntity> entity) {
     entities[location] = entity;
 }
 
@@ -87,7 +88,7 @@ void Player::add_entity(const Location &location, std::shared_ptr<Entity> entity
  * @param location The location of the entity.
  * @return The entity there.
  */
-std::shared_ptr<Entity> Player::remove_entity(const Location &location) {
+std::shared_ptr<PlayerEntity> Player::remove_entity(const Location &location) {
     auto found = std::move(entities[location]);
     entities.erase(location);
     return found;

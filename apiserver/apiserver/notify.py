@@ -5,7 +5,9 @@ import sendgrid
 import sendgrid.helpers
 import sendgrid.helpers.mail
 
-from . import config
+from python_http_client.exceptions import UnauthorizedError
+
+from . import app, config
 
 
 sg = sendgrid.SendGridAPIClient(apikey=config.SENDGRID_API_KEY)
@@ -37,7 +39,10 @@ def send_notification(recipient_email, recipient_name, subject, body,
     settings.sandbox_mode = sendgrid.helpers.mail.SandBoxMode(config.SENDGRID_SANDBOX_MODE)
     mail.mail_settings = settings
 
-    response = sg.client.mail.send.post(request_body=mail.get())
+    try:
+        response = sg.client.mail.send.post(request_body=mail.get())
+    except UnauthorizedError as e:
+        app.logger.error("Could not send email", exc_info=e)
 
 
 def send_templated_notification(recipient, template_id, substitutions, group_id, category):
@@ -72,9 +77,11 @@ def send_templated_notification(recipient, template_id, substitutions, group_id,
     settings.sandbox_mode = sendgrid.helpers.mail.SandBoxMode(config.SENDGRID_SANDBOX_MODE)
     mail.mail_settings = settings
 
-    response = sg.client.mail.send.post(request_body=mail.get())
-    print(response.status_code)
-
+    try:
+        response = sg.client.mail.send.post(request_body=mail.get())
+        print(response.status_code)
+    except UnauthorizedError as e:
+        app.logger.error("Could not send email", exc_info=e)
 
 def send_templated_notification_simple(email, template_id, group_id, category):
     """
@@ -97,9 +104,12 @@ def send_templated_notification_simple(email, template_id, group_id, category):
     settings = sendgrid.helpers.mail.MailSettings()
     settings.sandbox_mode = sendgrid.helpers.mail.SandBoxMode(config.SENDGRID_SANDBOX_MODE)
     mail.mail_settings = settings
-    
-    response = sg.client.mail.send.post(request_body=mail.get())
-    print(response.status_code)
+
+    try:
+        response = sg.client.mail.send.post(request_body=mail.get())
+        print(response.status_code)
+    except UnauthorizedError as e:
+        app.logger.error("Could not send email", exc_info=e)
 
 def add_user_to_contact_list(recipient):
     """
@@ -113,5 +123,8 @@ def add_user_to_contact_list(recipient):
                     "email": recipient
                 }
             ]
-    response = sg.client.contactdb.recipients.post(request_body=data)
-    print(response.status_code)
+    try:
+        response = sg.client.contactdb.recipients.post(request_body=data)
+        print(response.status_code)
+    except UnauthorizedError as e:
+        app.logger.error("Could not add user to contact list", exc_info=e)

@@ -80,7 +80,7 @@ void HaliteImpl::update_production_from_ownership() {
                 // TODO: error case
                 break;
             case CellOwner::TIED:
-                process_tie(std::make_pair(x_position, y_position), ownership_grid.at(x_position, y_position).entities,
+                process_tie({x_position, y_position}, ownership_grid.at(x_position, y_position).entities,
                             turn_player_production);
                 break;
             default:
@@ -105,7 +105,7 @@ void HaliteImpl::update_production_from_ownership() {
 void HaliteImpl::determine_cell_ownership(const Location &cell_location) {
     dimension_type closest_owned_distance = std::numeric_limits<dimension_type>::max();
     bool multiple_close_players = false;
-    std::unordered_set<std::shared_ptr<Entity>> close_entities;
+    std::unordered_set<std::shared_ptr<PlayerEntity>> close_entities;
     Player::id_type closest_cell_owner = CellOwner::UNOWNED;
     const auto &neighbors = game.game_map.get_neighbors(cell_location);
     for (const auto &neighbor : neighbors) {
@@ -150,7 +150,7 @@ bool HaliteImpl::multiple_entities_on_cell(const Location &location) const {
  * @param turn_player_production Mapping from player ID to production energy they gain during the turn.
  *     Will be updated to grant production of current cell to player that wins the tie.
  */
-void HaliteImpl::process_tie(const Location &cell_location, std::unordered_set<std::shared_ptr<Entity>> &close_entities,
+void HaliteImpl::process_tie(const Location &cell_location, std::unordered_set<std::shared_ptr<PlayerEntity>> &close_entities,
                              std::unordered_map<Player::id_type, energy_type> &turn_player_production) {
     // TODO: implement
     (void) cell_location;

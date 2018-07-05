@@ -14,7 +14,8 @@ export class Factory {
      * @param onSelect The callback for when this factory is selected.
      * @param renderer The renderer from the visualizer, used for rendering factories
      */
-    constructor(factoryBase, constants, scale, onSelect, renderer) {
+    constructor(visualizer, factoryBase, constants, scale, onSelect, renderer) {
+        this.visualizer = visualizer;
         this.container = null;
         //this.overlay = null;
         this.factoryBase = factoryBase;
@@ -73,27 +74,19 @@ export class Factory {
 
     /**
      * Update the factory display based on the current frame and time.
-     * @param factoryStatus
-     * @param dt
      */
     //TODO: update to make factories change color when player dies
-    update(factoryStatus, dt) {
-        if (factoryStatus.owner !== null) {
-            this.core.alpha = 1.0;
-        }
-        else {
-            this.core.alpha = 0.5;
-        }
+    update() {
+        const pixelsPerUnit = assets.CELL_SIZE * this.visualizer.camera.scale;
+        this.core.width = this.core.height = 2 * pixelsPerUnit;
 
-        const color = factoryStatus.owner === null ?
-            assets.PLANET_COLOR : assets.PLAYER_COLORS[factoryStatus.owner];
+        // Account for camera panning
+        const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(
+            this.factoryBase.x,
+            this.factoryBase.y
+        );
 
-        this.core.tint = color;
-        this.core.interactive = true;
-        this.core.buttonMode = true;
-
-        this.core.visible = factoryStatus.alive > 0;
+        this.core.position.x = pixelsPerUnit * cellX + pixelsPerUnit / 2;
+        this.core.position.y = pixelsPerUnit * cellY + pixelsPerUnit / 2;
     }
 }
-
-

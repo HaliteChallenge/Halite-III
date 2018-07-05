@@ -3,7 +3,7 @@ export class KeyboardControls {
         this.visualizer = visualizer;
         this.keyState = {};
         this.keyBindings = bindings;
-        
+
         this.el = null;
         this._onKeyUp = null;
         this._onKeyDown = null;
@@ -67,6 +67,27 @@ export class KeyboardControls {
             this.visualizer.pause();
             this.visualizer.advanceTime(dt);
             this.visualizer.render(dt);
+        }
+
+        if (this.keyState["panUp"]) {
+            this.visualizer.camera.panBy(0, 1);
+        }
+        else if (this.keyState["panDown"]) {
+            this.visualizer.camera.panBy(0, -1);
+        }
+
+        if (this.keyState["panLeft"]) {
+            this.visualizer.camera.panBy(1, 0);
+        }
+        else if (this.keyState["panRight"]) {
+            this.visualizer.camera.panBy(-1, 0);
+        }
+
+        if (this.keyState["zoomIn"]) {
+            this.visualizer.camera.zoomBy(0.5, 0.5, dt);
+        }
+        else if (this.keyState["zoomOut"]) {
+            this.visualizer.camera.zoomBy(0.5, 0.5, -dt);
         }
     }
 }

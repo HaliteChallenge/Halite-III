@@ -6,6 +6,7 @@ import {playerSprite} from "./sprite";
 import {Factory} from "./factory";
 import {Fish} from "./fish";
 import {Map} from "./map";
+import Camera from "./camera";
 import * as statistics from "./statistics";
 import * as keyboard from "./keyboardControls";
 
@@ -33,9 +34,13 @@ export class HaliteVisualizer {
         // a handler
         this.keyboardControls = new keyboard.KeyboardControls(this, {
             "ArrowLeft": "scrubBackwards",
-            "KeyA": "scrubBackwards",
             "ArrowRight": "scrubForwards",
-            "KeyD": "scrubForwards",
+            "KeyW": "panUp",
+            "KeyS": "panDown",
+            "KeyA": "panLeft",
+            "KeyD": "panRight",
+            "Equal": "zoomIn",
+            "Minus": "zoomOut",
             "Space": () => {
                 if (this.isPlaying()) this.pause();
                 else this.play();
@@ -58,9 +63,9 @@ export class HaliteVisualizer {
         assets.prepareAll(this.application.renderer, this.application.renderer.plugins.prepare);
 
         // Scale things to fit exactly in the visible area
-        this.scale = assets.VISUALIZER_HEIGHT / (this.map_height * assets.CELL_SIZE);
-        if (this.map_width * this.scale * assets.CELL_SIZE > assets.VISUALIZER_SIZE) {
-            this.scale = assets.VISUALIZER_SIZE / (this.map_width * assets.CELL_SIZE);
+        let scale = assets.VISUALIZER_HEIGHT / (this.map_height * assets.CELL_SIZE);
+        if (this.map_width * scale * assets.CELL_SIZE > assets.VISUALIZER_SIZE) {
+            scale = assets.VISUALIZER_SIZE / (this.map_width * assets.CELL_SIZE);
         }
 
         this.container = new PIXI.Container();
@@ -73,7 +78,7 @@ export class HaliteVisualizer {
             this.letterbox.drawRect(0, 0, assets.VISUALIZER_SIZE, this.container.position.y);
             this.letterbox.drawRect(
                 0,
-                this.container.position.y + this.map_height * this.scale * assets.CELL_SIZE,
+                this.container.position.y + this.map_height * scale * assets.CELL_SIZE,
                 assets.VISUALIZER_SIZE,
                 this.container.position.y);
         }
@@ -81,7 +86,7 @@ export class HaliteVisualizer {
             this.letterbox.beginFill(0xFFFFFF);
             this.letterbox.drawRect(0, 0, this.container.position.x, assets.VISUALIZER_HEIGHT);
             this.letterbox.drawRect(
-                this.container.position.x + this.map_width * this.scale * assets.CELL_SIZE,
+                this.container.position.x + this.map_width * scale * assets.CELL_SIZE,
                 0,
                 this.container.position.x,
                 assets.VISUALIZER_HEIGHT);
@@ -99,11 +104,26 @@ export class HaliteVisualizer {
         this.factories = [];
         this.fish = [];
 
+        this.camera = new Camera(
+            scale, this.panRender.bind(this),
+            this.replay.production_map.width,
+            this.replay.production_map.height
+        );
+
+        // Generate base map with visualziation of production squares
+        this.baseMap = new Map(this.replay, this.replay.GAME_CONSTANTS, this.camera,
+            (kind, args) => this.onSelect(kind, args), this.application.renderer);
+        this.baseMap.attach(this.mapContainer);
+
+        // Draw initial ownership
+        this.check_ownership();
+        this.baseMap.update(this.owner_grid);
+
         for (let i = 0; i < this.replay.players.length; i++) {
-            const factoryBase = {"x" : this.replay.players[i].factory_location[0],
-                "y" : this.replay.players[i].factory_location[1], "owner" : this.replay.players[i].player_id };
-            const factory = new Factory(factoryBase, this.replay.constants,
-                this.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
+            const factoryBase = {"x" : this.replay.players[i].factory_location.x,
+                "y" : this.replay.players[i].factory_location.y, "owner" : this.replay.players[i].player_id };
+            const factory = new Factory(this, factoryBase, this.replay.constants,
+                scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
             this.factories.push(factory);
             factory.attach(this.factoryContainer);
 
@@ -112,7 +132,7 @@ export class HaliteVisualizer {
                 let entity_object = {"x" : entity_json.x, "y" : entity_json.y, "energy" : entity_json.energy, "owner": this.replay.players[i].player_id};
                 let new_entity = new playerSprite(this, entity_object);
                 if (typeof this.entities[new_entity.y][new_entity.x] === "undefined") {
-                    this.entities[new_entity.y][new_entity.x] = {}
+                    this.entities[new_entity.y][new_entity.x] = {};
                 }
                 this.entities[new_entity.y][new_entity.x][new_entity.owner] = new_entity;
                 this.entities_list.push(new_entity);
@@ -120,19 +140,10 @@ export class HaliteVisualizer {
             }
 
             // TODO: Re-add fish with herding logic
-            // const fish = new Fish(this.replay.constants, this.scale, (kind, args) => this.onSelect(kind, args));
+            // const fish = new Fish(this.replay.constants, scale, (kind, args) => this.onSelect(kind, args));
             // this.fish.push(fish);
             // fish.attach(this.fishContainer);
         }
-        
-        // Generate base map with visualziation of production squares
-        this.baseMap = new Map(this.replay, this.replay.GAME_CONSTANTS, this.scale,
-            (kind, args) => this.onSelect(kind, args), this.application.renderer);
-        this.baseMap.attach(this.mapContainer);
-
-        // Draw initial ownership
-        this.check_ownership();
-        this.baseMap.update(this.owner_grid);
 
         // Prerender the points of interest once, and keep it as a texture
 
@@ -292,6 +303,9 @@ export class HaliteVisualizer {
                 this.application.stop();
             }
         });
+
+        // Handle panning and zooming
+        this.camera.attach(this.application.view);
     }
 
     play() {
@@ -360,6 +374,11 @@ export class HaliteVisualizer {
     // Be sure order of events (movement, merging, production calculation, spawning, and death) directly mirrors
     // game engine or visualization will be incorrect.
     update() {
+        for (const factory of this.factories) {
+            factory.scale = this.camera.scale;
+            factory.update();
+        }
+
         // Move entities (includes merges)
         this.process_entity_movement();
 
@@ -370,6 +389,24 @@ export class HaliteVisualizer {
         // Spawn entities (info from replay file), then process deaths
         this.process_entity_events();
         this.process_entity_energy_loss();
+    }
+
+    /** Update/rerender after panning. */
+    panRender() {
+        for (const sprite of this.entities_list) {
+            if (sprite) sprite.updatePosition();
+        }
+
+        for (const factory of this.factories) {
+            factory.update();
+        }
+
+        this.baseMap.update(this.owner_grid);
+
+        if (!this.isPlaying()) {
+            this.application.render();
+        }
+        this.onUpdate();
     }
 
     /**
@@ -411,15 +448,15 @@ export class HaliteVisualizer {
         let delayTime = 0;
         if (this.replay.full_frames[this.frame].events) {
             for (let event of this.replay.full_frames[this.frame].events) {
-                const cellSize = assets.CELL_SIZE * this.scale;
+                const cellSize = assets.CELL_SIZE;
 
                 if (event.type === "death") {
                     // Check that replay file and animation are in sync by checking that there is an entity at the place
                     // the replay file expects an entity to die.
-                    console.assert(typeof this.entities[event.location[1]][event.location[0]] !== "undefined"
-                        && this.entities[event.location[1]][event.location[0]].hasOwnProperty(event.owner_id),
+                    console.assert(typeof this.entities[event.location.y][event.location.x] !== "undefined"
+                        && this.entities[event.location.y][event.location.x].hasOwnProperty(event.owner_id),
                         "Replay files has a death at %d %d with owner $d, but there is no entity there",
-                        event.location[0], event.location[1], event.owner_id, this.frame);
+                        event.location.x, event.location.y, event.owner_id, this.frame);
 
                     // add death animation to be drawn
                     // TODO: switch to Halite 3 animation
@@ -430,7 +467,7 @@ export class HaliteVisualizer {
                 }
                 else if (event.type === "spawn") {
                     // Create a new entity, add to map, and merge as needed
-                    let entity_object = {"x" : event.location[0], "y" : event.location[1],
+                    let entity_object = {"x" : event.location.x, "y" : event.location.y,
                                         "energy" : event.energy, "owner": event.owner_id};
                     let new_entity = new playerSprite(this, entity_object);
 
@@ -519,7 +556,7 @@ export class HaliteVisualizer {
             }
 
             if (anim.delayFrames <= 0 && anim.frames >= subdelta) {
-                anim.draw(anim.frames);
+                anim.draw(this.camera, anim.frames);
                 anim.frames -= subdelta;
                 this.animationQueue.push(anim);
             }

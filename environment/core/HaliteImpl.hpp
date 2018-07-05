@@ -103,7 +103,7 @@ class HaliteImpl final {
      * @param turn_player_production Mapping from player ID to production energy they gain during the turn.
      *     Will be updated to grant production of current cell to player that wins the tie.
      */
-    void process_tie(const Location &cell_location, std::unordered_set<std::shared_ptr<Entity>> &close_entities,
+    void process_tie(const Location &cell_location, std::unordered_set<std::shared_ptr<PlayerEntity>> &close_entities,
                      std::unordered_map<Player::id_type, energy_type> &turn_player_production);
 
     /**
