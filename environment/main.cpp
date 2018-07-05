@@ -20,6 +20,8 @@ constexpr auto SEPARATOR = '\\';
 constexpr auto SEPARATOR = '/';
 #endif
 
+constexpr auto JSON_INDENT_LEVEL = 4;
+
 int main(int argc, char *argv[]) {
     auto &constants = hlt::Constants::get_mut();
     hlt::Config config{};
@@ -160,7 +162,7 @@ int main(int argc, char *argv[]) {
             }
             // TODO: where are the error logs?
             results["error_logs"] = nlohmann::json::object();
-            std::cout << results.dump(4) << std::endl;
+            std::cout << results.dump(JSON_INDENT_LEVEL) << std::endl;
         }
     }
 
