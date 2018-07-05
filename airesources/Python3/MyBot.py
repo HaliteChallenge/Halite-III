@@ -7,4 +7,4 @@ hlt.send_init("MyPythonBot-"+str(myID))
 while True:
 	turn_number, players = hlt.get_frame()
 	moves = { location: random.choice(["n", "e", "s", "w"]) for location in players[myID].entities.keys() }
-	hlt.send_frame(moves)
+	hlt.send_frame(moves, 255 if players[myID].energy >= 255000 else 0)
