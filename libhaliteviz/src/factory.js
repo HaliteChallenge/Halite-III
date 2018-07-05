@@ -77,7 +77,7 @@ export class Factory {
      */
     //TODO: update to make factories change color when player dies
     update() {
-        const pixelsPerUnit = assets.CELL_SIZE * this.scale;
+        const pixelsPerUnit = assets.CELL_SIZE * this.visualizer.camera.scale;
         this.core.width = this.core.height = 2 * pixelsPerUnit;
 
         // Account for camera panning
