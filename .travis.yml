@@ -3,7 +3,6 @@ dist: trusty
 language: cpp
 
 # https://docs.travis-ci.com/user/languages/cpp/
-# Test on multiple GCC and Clang versions
 matrix:
   include:
     # works on Precise and Trusty
