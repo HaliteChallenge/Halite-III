@@ -1,5 +1,5 @@
-#ifndef ENVIRONMENT_INDEPENDENTENTITY_HPP
-#define ENVIRONMENT_INDEPENDENTENTITY_HPP
+#ifndef INDEPENDENTENTITY_H
+#define INDEPENDENTENTITY_H
 
 /** A non-player-owned entity placed on the Halite map. Used for herding features of game play. */
 class IndependentEntity {
@@ -34,4 +34,4 @@ public:
 
 };
 
-#endif //ENVIRONMENT_INDEPENDENTENTITY_HPP
+#endif //INDEPENDENTENTITY_H

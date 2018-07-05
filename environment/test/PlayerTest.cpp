@@ -24,8 +24,8 @@ SCENARIO("Player constructor initializes member variables", "[player]") {
         REQUIRE(player.name == "player");
         REQUIRE(player.command == "./bot");
         REQUIRE(player.energy == 0);
-        REQUIRE(player.factory_location.first == 0);
-        REQUIRE(player.factory_location.second == 0);
+        REQUIRE(player.factory_location.x == 0);
+        REQUIRE(player.factory_location.y == 0);
         REQUIRE(player.entities.empty());
     }
 
@@ -34,8 +34,8 @@ SCENARIO("Player constructor initializes member variables", "[player]") {
         REQUIRE(player.player_id == 1);
         REQUIRE(player.name == "player");
         REQUIRE(player.energy == 2);
-        REQUIRE(player.factory_location.first == 3);
-        REQUIRE(player.factory_location.second == 4);
+        REQUIRE(player.factory_location.x == 3);
+        REQUIRE(player.factory_location.y == 4);
         REQUIRE(player.entities.empty());
     }
 }
@@ -121,8 +121,8 @@ SCENARIO("Players and entities interact correctly", "[player_entities]") {
         }
         WHEN("additional entity for same player added to same cell") {
             player.add_entity(location, entity);
-            THEN("entities merge, have additive energy") {
-                REQUIRE(player.entities[location]->energy == 2 * BASE_ENERGY);
+            THEN("entities do not merge (merges hidden by transaction abstraction)") {
+                REQUIRE(player.entities[location]->energy == BASE_ENERGY);
             }
         }
         WHEN("entity at different location added") {
