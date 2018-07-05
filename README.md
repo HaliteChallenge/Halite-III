@@ -1,6 +1,6 @@
 # Halite
 
-[![Travis Build Status](https://travis-ci.org/HaliteChallenge/Halite-II.svg?branch=master)](https://travis-ci.org/HaliteChallenge/Halite-II)
+[![Travis Build Status](https://travis-ci.com/HaliteChallenge/Halite-III-Internal.svg?token=pSKmDxrtsEqWauNf11Hq&branch=master)](https://travis-ci.com/HaliteChallenge/Halite-III-Internal)
 [![Appveyor Build status](https://ci.appveyor.com/api/projects/status/yfjnkbkso6rr9lfr?svg=true)](https://ci.appveyor.com/project/Halite/halite-ii-kpb3g)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/HaliteChallenge/Halite/master/LICENSE)
 
