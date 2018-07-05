@@ -77,8 +77,10 @@ export default class Camera {
         const viewLeft = centerX - anchorX * viewWidth;
         const viewTop = centerY - anchorY * viewHeight;
 
-        this.pan.x = Math.round((-viewLeft + this.cols) % this.cols);
-        this.pan.y = Math.round((-viewTop + this.rows) % this.rows);
+        // 0.5 factor helps keeps things properly centered - otherwise
+        // there's a bias towards the top-left corner
+        this.pan.x = Math.round((-viewLeft - 0.5 + this.cols) % this.cols);
+        this.pan.y = Math.round((-viewTop - 0.5 + this.rows) % this.rows);
 
         this.pixelPan.x = this.pan.x * this.scale;
         this.pixelPan.y = this.pan.y * this.scale;
