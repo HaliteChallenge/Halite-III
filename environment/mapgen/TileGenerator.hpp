@@ -15,27 +15,26 @@ namespace mapgen {
  * implement different methods of generating single tile
  */
 class TileGenerator : public Generator {
-    hlt::dimension_type num_tile_rows; /**< number of rows of tiles in map */
-    hlt::dimension_type num_tile_cols; /**< number of cols of tiles in map */
-    hlt::dimension_type width;         /**< width (in cells) of the final map */
-    hlt::dimension_type height;        /**< height (in cells) of the final map */
+    dimension_type num_tile_rows; /**< number of rows of tiles in map */
+    dimension_type num_tile_cols; /**< number of cols of tiles in map */
+    dimension_type width;         /**< width (in cells) of the final map */
+    dimension_type height;        /**< height (in cells) of the final map */
 protected:
-    unsigned long num_players;         /**< number of players who will be on the map */
-    hlt::dimension_type tile_width;    /**< width (in cells) of a single tile */
-    hlt::dimension_type tile_height;   /**< width (in cells) of a single tile */
+    unsigned long num_players;    /**< number of players who will be on the map */
+    dimension_type tile_width;    /**< width (in cells) of a single tile */
+    dimension_type tile_height;   /**< width (in cells) of a single tile */
 
 
     /** Tile a map from a single tile
      *
+     * @param[out] map A map tiled by the input tile. All cells in the map will be initialized.
      * @param factory_y, factory_x: On a tile, the y and x coordinate a factory should be placed
      * @param tile: A filled map of a single tile. Dimensions tile_height, tile_width. All cells should already be
      * initialized, but no factories should be placed
-     * @param players: A list of players of the game. This function will set the location of each player's factory
-     * @return map: A map tiled by the input tile. All cells in the map will be initialized.
-     * Effects: Players will have factory locations initialized
+     * @param[out] factories: Destination for factories that will be placed on the map.
      */
-    hlt::Map tile_map(hlt::dimension_type factory_y, hlt::dimension_type factory_x, const hlt::Map &tile,
-                      std::vector<hlt::Player> &players);
+    void tile_map(Map &map, dimension_type factory_y, dimension_type factory_x,
+                  const Map &tile, std::vector<Location> &factories);
 
 public:
     /** name is function to allow for possibly dynamically named subclasses */

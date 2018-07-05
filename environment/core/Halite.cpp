@@ -1,6 +1,7 @@
 #include <future>
 
 #include "Constants.hpp"
+#include "BlurTileGenerator.hpp"
 #include "FractalValueNoiseTileGenerator.hpp"
 #include "Halite.hpp"
 #include "HaliteImpl.hpp"
@@ -66,14 +67,32 @@ Halite::Halite(const Config &config,
                const mapgen::MapParameters &parameters,
                const net::NetworkingConfig &networking_config,
                std::vector<Player> players) :
-        game_map(mapgen::FractalValueNoiseTileGenerator(parameters).generate(players)),
+        game_map(parameters.width, parameters.height),
         replay_struct(this->game_statistics, parameters.num_players, parameters.seed, this->game_map),
         config(config),
         parameters(parameters),
         networking(net::Networking(networking_config, *this)),
         impl(std::make_unique<HaliteImpl>(*this)) {
+    std::unique_ptr<mapgen::Generator> generator;
+    switch (parameters.type) {
+    case mapgen::MapType::Basic:
+        generator = std::make_unique<mapgen::BasicGenerator>(parameters);
+        break;
+    case mapgen::MapType::BlurTile:
+        generator = std::make_unique<mapgen::BlurTileGenerator>(parameters);
+        break;
+    case mapgen::MapType::Fractal:
+        generator = std::make_unique<mapgen::FractalValueNoiseTileGenerator>(parameters);
+        break;
+    }
+    game_map.map_generator = generator->name();
+    std::vector<Location> factories;
+    factories.reserve(players.size());
+    generator->generate(game_map, factories);
     for (const auto &player : players) {
         this->players[player.player_id] = player;
+        this->players[player.player_id].factory_location = factories.back();
+        factories.pop_back();
         game_statistics.player_statistics.emplace_back(player.player_id);
     }
     replay_struct.game_statistics = game_statistics;

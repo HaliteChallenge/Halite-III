@@ -12,7 +12,7 @@ namespace mapgen {
  * The size of the tile is determined from the desired total height and width of the map,
  * and the number of players.
  */
-class BlurTileGenerator : protected TileGenerator {
+class BlurTileGenerator : public TileGenerator {
 private:
     /**
      * Generate a production value correlated with neighboring cells
@@ -21,19 +21,17 @@ private:
      * @param map: map of the cells. Assumes map is at least as large as tile_width x tile_height
      * @return new production value for the cell of interest
      */
-    energy_type blur_function(hlt::dimension_type y_coord, hlt::dimension_type x_coord, const hlt::Map &map) const;
+    energy_type blur_function(dimension_type y_coord, dimension_type x_coord, const hlt::Map &map) const;
 
 public:
     std::string name() const override { return "Blur Tile"; };
 
-    /** Generate a map given a list of players
-     *
-     * @param players: list of players of the game. Passed in for the purpose
-     *      of assigning each player's factory to a cell
-     * @return map with cells initialized (ie given production values, or
-     *      assigned to alternate cell type)
+    /**
+     * Generate a map.
+     * @param[out] map The map to generate.
+     * @param[out] factories The factories generated on the map. Length must be >= number of players.
      */
-    hlt::Map generate(std::vector<hlt::Player> &players) override;
+    void generate(Map &map, std::vector<Location> &factories) override;
 
     /**
      * Construct BlurTileGenerator from parameters.

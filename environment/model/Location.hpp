@@ -66,6 +66,16 @@ struct Location {
      * @param location The Location to convert.
      */
     friend void to_json(nlohmann::json &json, const Location &location);
+
+    /**
+     * Construct Location from coordinates.
+     * @param x The x-coordinate.
+     * @param y The y-coordinate.
+     */
+    Location(dimension_type x, dimension_type y) : x(x), y(y) {}
+
+    /** The default constructor. */
+    Location() = default;
 };
 
 }

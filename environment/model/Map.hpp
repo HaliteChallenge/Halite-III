@@ -14,16 +14,20 @@
 
 namespace hlt {
 
+class Halite;
+
 namespace mapgen {
 class Generator;
 }
 
 /** The map of cells. */
 class Map : public Grid<Cell> {
-    friend class hlt::mapgen::Generator;
+    friend class Halite;
+
+    /** The name of the map generator used to generate the map. */
+    std::string map_generator = "none";
 
 public:
-    std::string map_generator = "none";    /**< The name of the map generator used to generate the map */
     /** The number of neighbors of each cell on the map grid. */
     static constexpr auto NEIGHBOR_COUNT = 4;
 
@@ -83,7 +87,6 @@ public:
      */
     void move_location(Location &location, const Direction &direction) const;
 
-private:
     /**
      * Create a Map from dimensions.
      * @param width The width.
@@ -91,6 +94,7 @@ private:
      */
     Map(dimension_type width, dimension_type height) : Grid(width, height) {}
 
+private:
     /**
      * Create a Map from dimensions and grid.
      * @param width The width.
