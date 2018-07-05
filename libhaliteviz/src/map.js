@@ -58,14 +58,21 @@ export class Map {
                 owner: owner});
         });
 
+        // Generate the texture for a single map cell (16x16 white
+        // square with a 2 pixel 70% black border blended on top)
+        // Could probably be replaced with a real texture
         const g = new PIXI.Graphics();
+        const borderWidth = 1;
+        const textureWidth = 16;
         g.beginFill(0xFFFFFF, 1.0);
-        g.drawRect(0, 0, 16, 16);
+        g.drawRect(0, 0, textureWidth, textureWidth);
         g.beginFill(0x000000, 0.7);
-        g.drawRect(0, 0, 16, 2);
-        g.drawRect(0, 2, 2, 14);
-        g.drawRect(14, 2, 2, 14);
-        g.drawRect(2, 14, 12, 2);
+        // Be careful not to overlap when drawing the border, or else
+        // some parts will be darker than others
+        g.drawRect(0, 0, textureWidth, borderWidth);
+        g.drawRect(0, borderWidth, borderWidth, textureWidth - borderWidth);
+        g.drawRect(textureWidth - borderWidth, borderWidth, borderWidth, textureWidth - borderWidth);
+        g.drawRect(borderWidth, textureWidth - borderWidth, textureWidth - 2*borderWidth, borderWidth);
         const tex = renderer.generateTexture(g);
 
         this.cells = [];
