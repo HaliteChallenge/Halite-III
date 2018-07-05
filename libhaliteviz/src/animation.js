@@ -43,9 +43,14 @@ export class SpritesheetFrameAnimation extends FrameAnimation {
 
         super(duration, delayTime, () => {
 
-        }, (frame) => {
+        }, (camera, frame) => {
             const t = (duration - frame) / duration;
             const index = Math.floor(t * (frames.length - 1));
+            sprite.width = cellSize * sizeFactor * camera.scale;
+            sprite.height = cellSize * sizeFactor * camera.scale;
+            const [ cellX, cellY ] = camera.worldToCamera(x, y);
+            sprite.position.x = cellSize * cellX * camera.scale + cellSize * camera.scale / 2;
+            sprite.position.y = cellSize * cellY * camera.scale + cellSize * camera.scale / 2;
             sprite.texture = frames[index];
             sprite.alpha = frame / duration;
         }, () => {

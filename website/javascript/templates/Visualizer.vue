@@ -59,6 +59,9 @@
                 <span class="replay-btn">
                   <a href="javascript:;" @click="nextFrame"><span class="icon-next"></span></a>
                 </span>
+                <span class="replay-btn" style="text-align: center">
+                  <a href="javascript:;" @click="resetView" title="Reset zoom/pan"><span class="icon-lightning"></span></a>
+                </span>
                 <span class="replay-btn">
                   <a style="text-align: center; margin-bottom: 4px;" v-if="game && game.game_id" :href="replay_download_link(game.game_id)">
                     <span class="icon-download"></span>
@@ -159,6 +162,14 @@
                     <tr>
                       <th>Replay Version:</th>
                       <td>{{replay.REPLAY_FILE_VERSION}}</td>
+                    </tr>
+                    <tr>
+                      <th>Zoom Level:</th>
+                      <td>{{Math.round(zoom*100)}}%</td>
+                    </tr>
+                    <tr>
+                      <th>Camera Position:</th>
+                      <td>{{pan.x}}, {{pan.y}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -405,7 +416,9 @@
         },
         players: [],
         sortedPlayers: [],
-        selectedPlayers: []
+        selectedPlayers: [],
+        zoom: 1,
+        pan: { x: 0, y: 0 },
       }
     },
     components: {
@@ -456,6 +469,10 @@
       visualizer.onUpdate = () => {
         this.frame = visualizer.frame
         this.time = visualizer.time
+        this.zoom = visualizer.camera.scale / visualizer.camera.initScale
+        const camera = visualizer.camera
+        this.pan.x = (camera.cols - camera.pan.x) % camera.cols
+        this.pan.y = (camera.rows - camera.pan.y) % camera.rows
       }
       visualizer.onPlay = () => {
         this.playing = true
@@ -498,6 +515,11 @@
         }
 
         this.gaData('visualizer', 'click-pause', 'gameplay')
+      }
+      this.resetView = () => {
+        if (visualizer) {
+          visualizer.camera.reset();
+        }
       }
 
       const changeSpeed = (speed) => {
@@ -739,7 +761,12 @@
         //       ranks[id].version = null
         //   }
         // }
-        return Object.values(this.replay.game_statistics.player_statistics)
+        return this.replay.game_statistics.player_statistics
+                   .map((p, idx) => {
+                     const player = Object.assign({}, p);
+                     player.name = this.replay.players[idx].name;
+                     return player;
+                   })
       },
       getSortedPlayers: async function () {
         const players = await this.getPlayers()
@@ -767,6 +794,7 @@
       },
       changeFrame: function (event) {
       },
+      resetView: function() {},
       toggleObjectPanel: function (e) {
         this.showObjectPanel = !this.showObjectPanel
         sessionStorage.setItem('halite-showMapObjectPanel', this.showObjectPanel.toString())

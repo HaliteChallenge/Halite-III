@@ -10,13 +10,13 @@ export class Map {
     /**
      * @param replay The replay json
      * @param constants The constants object from the replay.
-     * @param scale The scale factor the visualizer is using.
+     * @param camera The camera.
      * @param onSelect The callback for when this planet is selected.
      * @param renderer The renderer used by the visualizer (for rendering the map)
      */
-    constructor(replay, constants, scale, onSelect, renderer) {
+    constructor(replay, constants, camera, onSelect, renderer) {
         this.container = null;
-        this.scale = scale;
+        this.camera = camera;
         this.constants = constants;
         this.prev_time = 0;
         this.renderer = renderer;
@@ -38,24 +38,60 @@ export class Map {
             }
         }
 
-        let baseMapTexture = this.generateMapTexture(this.rows, this.cols, this.productions, this.productionToColor,
-            assets.DRAW_LINES_BASE_MAP, this.renderer, this.scale, this.constants);
+        this.tintMap = new PIXI.particles.ParticleContainer(this.rows * this.cols, {
+            vertices: true,
+            position: true,
+            tint: true,
+        });
 
-        this.baseMap = new PIXI.Sprite(baseMapTexture);
-
-        this.baseMap.interactive = true;
-
-        this.baseMap.on("pointerdown", (e) => {
+        this.tintMap.interactive = true;
+        this.tintMap.hitArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
+        this.tintMap.on("pointerdown", (e) => {
             const localCoords = e.data.global;
-            const coordX = (localCoords.x / assets.VISUALIZER_SIZE) * replay.production_map.width;
-            const coordY = (localCoords.y / assets.VISUALIZER_HEIGHT) * replay.production_map.height;
-            const cellX = Math.floor(coordX);
-            const cellY = Math.floor(coordY);
+            // Adjust coordinates to account for canvas scaling
+            const zoom = parseFloat($('.game-replay-viewer').find('>canvas').css('zoom'));
+            const [ cellX, cellY ] = this.camera.screenToWorld(
+                localCoords.x / zoom, localCoords.y / zoom);
             const production = this.productions[cellY][cellX];
             const owner = this.owners !== null ? this.owners[cellX][cellY].owner : -1;
             onSelect("point", { x: cellX, y: cellY, production: production,
                 owner: owner});
         });
+
+        // Generate the texture for a single map cell (16x16 white
+        // square with a 2 pixel 70% black border blended on top)
+        // Could probably be replaced with a real texture
+        const g = new PIXI.Graphics();
+        const borderWidth = 1;
+        const textureWidth = 16;
+        g.beginFill(0xFFFFFF, 1.0);
+        g.drawRect(0, 0, textureWidth, textureWidth);
+        g.beginFill(0x000000, 0.7);
+        // Be careful not to overlap when drawing the border, or else
+        // some parts will be darker than others
+        g.drawRect(0, 0, textureWidth, borderWidth);
+        g.drawRect(0, borderWidth, borderWidth, textureWidth - borderWidth);
+        g.drawRect(textureWidth - borderWidth, borderWidth, borderWidth, textureWidth - borderWidth);
+        g.drawRect(borderWidth, textureWidth - borderWidth, textureWidth - 2*borderWidth, borderWidth);
+        const tex = renderer.generateTexture(g);
+
+        this.cells = [];
+
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                const cell = PIXI.Sprite.from(tex);
+                cell.width = this.scale;
+                cell.height = this.scale;
+                cell.position.x = col * this.scale;
+                cell.position.y = row * this.scale;
+                this.cells.push(cell);
+                this.tintMap.addChild(cell);
+            }
+        }
+    }
+
+    get scale() {
+        return this.camera.scale;
     }
 
     /**
@@ -81,41 +117,6 @@ export class Map {
             return [assets.MAP_COLOR_DARK, (production_fraction - 0.66) / 0.34];
         }
     }
-    /**
-     * Generate a map texture to be used as a sprite
-     * Can be used to draw both the base production map and any ownership tinting
-     */
-    generateMapTexture(rows, cols, mapArray, squareToColor, drawLines, renderer, scale, constants) {
-        let mapGraphics = new PIXI.Graphics();
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-                let color_arr = squareToColor(mapArray, row, col, constants.MAX_CELL_PRODUCTION);
-                mapGraphics.beginFill(color_arr[0], color_arr[1]);
-                mapGraphics.drawRect(col * scale, row * scale, scale, scale);
-
-                mapGraphics.endFill();
-            }
-        }
-        if (drawLines) {
-            mapGraphics.lineStyle(assets.LINE_WIDTH, assets.LINE_COLOR);
-            //Draw the map lines
-            for (let row = 0; row <= rows + 2; row++) {
-                // move to start of row, draw line
-                // TODO: why are there 2 more columns and rows than I expect?
-                mapGraphics.moveTo(0, row * scale);
-                mapGraphics.lineTo((cols + 2) * scale,
-                    row * scale);
-            }
-
-            for (let col = 0; col <= cols + 2; col++) {
-                // move to start of col, draw line
-                mapGraphics.moveTo(col * scale, 0);
-                mapGraphics.lineTo(col * scale,
-                    (rows + 2) * scale);
-            }
-        }
-        return renderer.generateTexture(mapGraphics);
-    }
 
     /**
      * Add this factory to the PIXI stage.
@@ -123,7 +124,7 @@ export class Map {
      * sprites.
      */
     attach(container) {
-        container.addChild(this.baseMap);
+        container.addChild(this.tintMap);
         this.container = container;
     }
 
@@ -131,7 +132,7 @@ export class Map {
      * Remove the map from the visualizer.
      */
     destroy() {
-        this.container.removeChild(this.baseMap);
+        this.container.removeChild(this.tintMap);
     }
 
     get id() {
@@ -153,30 +154,46 @@ export class Map {
         }
         return [PLAYER_COLORS[cell.owner], assets.OWNER_TINT_ALPHA];
     }
+
     /**
      * Update the fish display based on the current frame and time.
      * @param owner_grid: grid of owners of clls
      */
     update(owner_grid) {
         this.owners = owner_grid;
-
         // Use the given grid to texture the map
-        let newTintTexture = this.generateMapTexture(this.rows, this.cols,
-            owner_grid, this.ownerToColor, assets.DRAW_LINES_OWNER_MAP, this.renderer, this.scale, this.constants);
-        this.newTintMap = new PIXI.Sprite(newTintTexture);
-
-        // Scale to fit visualizer, bring to front
-        this.newTintMap.width = assets.VISUALIZER_SIZE;
-        this.newTintMap.height = assets.VISUALIZER_HEIGHT;
-
-        this.newTintMap.interactive = false;
-        this.newTintMap.zOrder = -1;
-
-        // update the map tint
-        this.container.addChild(this.newTintMap);
-        if (typeof this.oldTintMap !== 'undefined') {
-            this.container.removeChild(this.oldTintMap);
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                const [ base, baseOpacity ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
+                const [ color, opacity ] = this.ownerToColor(owner_grid, row, col, this.constants.MAX_CELL_PRODUCTION);
+                const cell = this.cells[row * this.cols + col];
+                const tintedBase = alphaBlend(base, this.renderer.backgroundColor, baseOpacity);
+                cell.tint = alphaBlend(color, tintedBase, opacity);
+                cell.width = this.scale;
+                cell.height = this.scale;
+                const [ cellX, cellY ] = this.camera.worldToCamera(col, row);
+                cell.position.x = cellX * this.scale;
+                cell.position.y = cellY * this.scale;
+            }
         }
-        this.oldTintMap = this.newTintMap;
     }
+}
+
+function alphaBlend(rgb1, rgb2, alpha) {
+    const b1 = rgb1 & 0xFF;
+    const b2 = rgb2 & 0xFF;
+    const g1 = (rgb1 & 0xFF00) >> 8;
+    const g2 = (rgb2 & 0xFF00) >> 8;
+    const r1 = (rgb1 & 0xFF0000) >> 16;
+    const r2 = (rgb2 & 0xFF0000) >> 16;
+
+    const r = alphaBlend1(r1, r2, alpha);
+    const g = alphaBlend1(g1, g2, alpha);
+    const b = alphaBlend1(b1, b2, alpha);
+
+    return Math.floor((r << 16) | (g << 8) | b);
+}
+
+function alphaBlend1(c1, c2, alpha) {
+    return Math.floor(alpha * c1 + (1 - alpha) * c2);
 }
