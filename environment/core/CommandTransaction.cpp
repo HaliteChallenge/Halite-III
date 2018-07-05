@@ -1,4 +1,4 @@
-#include <set>
+#include <unordered_set>
 
 #include "CommandTransaction.hpp"
 #include "Entity.hpp"
@@ -12,7 +12,7 @@ namespace hlt {
  */
 bool CommandTransaction::commit() {
     // The requested destination locations.
-    std::set<Location> destinations;
+    std::unordered_set<Location> destinations;
     for (const auto &[from, _] : commands) {
         if (const auto &[_, inserted] = destinations.emplace(from); !inserted) {
             // Duplicate found
@@ -20,7 +20,7 @@ bool CommandTransaction::commit() {
         }
     }
     // Map from destination location to final energy at destination
-    std::map<Location, energy_type> moved_entities;
+    std::unordered_map<Location, energy_type> moved_entities;
     for (auto &[from, to] : commands) {
         // Remove each source entity and pool energies
         auto energy = _player.remove_entity(from)->energy;

@@ -3,8 +3,6 @@
 #include "Location.hpp"
 #include "Map.hpp"
 
-#include "util.hpp"
-
 /** A JSON key and value corresponding to a field. */
 #define FIELD_TO_JSON(x) {#x, location.x}
 
@@ -77,6 +75,26 @@ std::istream &operator>>(std::istream &istream, Direction &direction) {
         throw BotCommunicationError(to_string(direction_type));
     }
     return istream;
+}
+
+
+/**
+ * Convert a Location to JSON format.
+ * @param[out] json The output JSON.
+ * @param location The Location to convert.
+ */
+void to_json(nlohmann::json &json, const Location &location) {
+    json = {FIELD_TO_JSON(x), FIELD_TO_JSON(y)};
+}
+
+/**
+ * Write a Location to bot serial format.
+ * @param ostream The output stream.
+ * @param location The Location to write.
+ * @return The output stream.
+ */
+std::ostream &operator<<(std::ostream &ostream, const Location &location) {
+    return ostream << location.x << " " << location.y;
 }
 
 }

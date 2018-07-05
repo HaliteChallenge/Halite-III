@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 public class MyBot {
 	public static void main(String[] args) throws java.io.IOException {
+
 		GameParameters g = Networking.getInit();	
 		GameMap map = g.getMap();
 		Player[] players = g.getPlayers();
