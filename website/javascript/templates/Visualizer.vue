@@ -470,8 +470,9 @@
         this.frame = visualizer.frame
         this.time = visualizer.time
         this.zoom = visualizer.camera.scale / visualizer.camera.initScale
-        this.pan.x = visualizer.camera.pan.x
-        this.pan.y = visualizer.camera.pan.y
+        const camera = visualizer.camera
+        this.pan.x = (camera.cols - camera.pan.x) % camera.cols
+        this.pan.y = (camera.rows - camera.pan.y) % camera.rows
       }
       visualizer.onPlay = () => {
         this.playing = true
