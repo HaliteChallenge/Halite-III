@@ -149,6 +149,11 @@ int main(int argc, char *argv[]) {
         if (json_results_switch.getValue()) {
             nlohmann::json results;
             results["replay"] = output_filename;
+            results["map_width"] = map_width;
+            results["map_height"] = map_height;
+            results["map_seed"] = config.seed;
+            // TODO: put the actual generator here
+            results["map_generator"] = "default";
             results["stats"] = nlohmann::json::object();
             for (const auto& stats : game.replay_struct.game_statistics.player_statistics) {
                 results["stats"][std::to_string(stats.player_id)] = { { "rank", stats.rank } };
