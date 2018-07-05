@@ -174,8 +174,9 @@ def runGame(width, height, users):
 
         command = [
             "./" + ENVIRONMENT,
-            "-d", "{} {}".format(width, height),
-            "-q", "-o",
+            "--width", width,
+            "--height", height,
+            "--results-as-json",
         ]
 
         # Make sure bots have access to the temp dir as a whole
@@ -215,6 +216,7 @@ def runGame(width, height, users):
                 bot_user=bot_user,
                 runfile=RUNFILE,
             ))
+            command.append("-o")
             command.append("{} v{}".format(user["username"],
                                            user["version_number"]))
 
