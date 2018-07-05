@@ -448,7 +448,7 @@ export class HaliteVisualizer {
         let delayTime = 0;
         if (this.replay.full_frames[this.frame].events) {
             for (let event of this.replay.full_frames[this.frame].events) {
-                const cellSize = assets.CELL_SIZE * this.camera.scale;
+                const cellSize = assets.CELL_SIZE;
 
                 if (event.type === "death") {
                     // Check that replay file and animation are in sync by checking that there is an entity at the place
@@ -556,7 +556,7 @@ export class HaliteVisualizer {
             }
 
             if (anim.delayFrames <= 0 && anim.frames >= subdelta) {
-                anim.draw(anim.frames);
+                anim.draw(this.camera, anim.frames);
                 anim.frames -= subdelta;
                 this.animationQueue.push(anim);
             }
