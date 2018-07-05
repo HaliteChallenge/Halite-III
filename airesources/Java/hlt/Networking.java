@@ -96,7 +96,7 @@ public class Networking {
 		}
 		return lastPlayers;
 	}
-	public static void sendFrame(HashMap<Location, Direction> moves) {
+	public static void sendFrame(HashMap<Location, Direction> moves, int spawnenergy) {
 		for(Map.Entry<Location, Direction> entry: moves.entrySet()) {
 			if(entry.getValue() == Direction.STILL) continue;
 			System.out.print("m ");
@@ -105,6 +105,11 @@ public class Networking {
 			System.out.print(entry.getKey().y);
 			System.out.print(' ');
 			System.out.print(entry.getValue().getCharRepresent());
+			System.out.print(' ');
+		}
+		if(spawnenergy > 0) {
+			System.out.print("s ");
+			System.out.print(spawnenergy);
 			System.out.print(' ');
 		}
 		System.out.print('\n');
