@@ -33,7 +33,7 @@ public:
      * Set a callback for GameEvents generated during the transaction commit.
      * @param callback The callback to set.
      */
-    void set_callback(std::function<void(GameEvent)> callback);
+    void set_callback(const std::function<void(GameEvent)> &callback);
 
     /**
      * Attempt to commit the transaction.

@@ -83,7 +83,7 @@ bool CommandTransaction::commit() {
  * Set a callback for GameEvents generated during the transaction commit.
  * @param callback The callback to set.
  */
-void CommandTransaction::set_callback(std::function<void(GameEvent)> callback) {
+void CommandTransaction::set_callback(const std::function<void(GameEvent)> &callback) {
     this->callback = callback;
 }
 

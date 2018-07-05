@@ -27,7 +27,7 @@ void HaliteImpl::process_commands() {
             // Create new game event for replay file,
             // regardless of whether spawn creates a new entity or adds to an old entity
             // Ensure full frames has been initialized (ie don't do this before first turn)
-            if (frames.size() > 0) {
+            if (!frames.empty()) {
                 frames.back().events.push_back(std::move(event));
             }
         });
