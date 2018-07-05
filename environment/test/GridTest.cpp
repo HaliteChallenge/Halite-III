@@ -2,10 +2,10 @@
 
 #include "catch.hpp"
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wkeyword-macro"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wkeyword-macro"
 #define protected public
-#pragma GCC diagnostic pop
+#pragma clang diagnostic pop
 
 #include "Grid.hpp"
 
