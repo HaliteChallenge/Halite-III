@@ -40,12 +40,6 @@ SCENARIO("Cell constructor initializes member variables", "[cell]") {
                 REQUIRE(normal_cell->entities[player.player_id]->energy == BASE_ENERGY);
                 REQUIRE(normal_cell->entities[player.player_id]->owner_id == player.player_id);
             }
-            WHEN("additional entity for same player added to same cell") {
-                normal_cell->add_entity(player, entity);
-                THEN("entities merge, have additive energy") {
-                    REQUIRE(normal_cell->entities[player.player_id]->energy == 2 * BASE_ENERGY);
-                }
-            }
             WHEN("different player's entity added") {
                 Player player2 = player_factory.new_player("./bot2");
                 std::shared_ptr<hlt::Entity> entity2 = hlt::make_entity<hlt::Entity>(player2.player_id, BASE_ENERGY);
