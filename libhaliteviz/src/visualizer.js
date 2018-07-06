@@ -186,15 +186,6 @@ export class HaliteVisualizer {
             this.replay.map_generator_seed,
         ].join(","));
 
-        const factories = [];
-        for (const factory of this.factories) {
-            const { owner } = factory;
-            const { x, y } = factory.factoryBase;
-            const energy = this.replay.full_frames[this.frame].energy[owner];
-            factories.push(`${owner}-${x}-${y}-${energy}`);
-        }
-        parts.push(factories.join(","));
-
         const spritesByOwner = [];
         for (const sprite of this.entities_list) {
             if (!sprite) continue;
@@ -206,6 +197,16 @@ export class HaliteVisualizer {
         }
         spritesByOwner.forEach((ownedSprites, ownerId) => {
             parts.push(ownerId);
+            parts.push(this.replay.full_frames[this.frame].energy[ownerId]);
+            const factories = [];
+            for (const factory of this.factories) {
+                if (factory.owner === ownerId) {
+                    const { x, y } = factory.factoryBase;
+                    factories.push(`${x}-${y}`);
+                }
+            }
+            parts.push(factories.join(","));
+
             parts.push(ownedSprites.join(","));
         });
 

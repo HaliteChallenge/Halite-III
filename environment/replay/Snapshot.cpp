@@ -86,76 +86,44 @@ Snapshot Snapshot::from_str(const std::string& snapshot) {
 
     std::unordered_map<Player::id_type, PlayerSnapshot> players;
 
-    // Parse factories and player locations
-    if (!std::getline(iss, buf, ';')) {
-        throw SnapshotError(
-            "EOF while parsing players from snapshot",
-            snapshot.size()
-        );
-    }
-    std::string playerbuf;
-    std::istringstream playeriss{buf};
-
     for (unsigned long i = 0; i < num_players; i++) {
-        if (!std::getline(playeriss, playerbuf, ',')) {
-            throw SnapshotError(
-                "EOF while parsing players from snapshot",
-                snapshot.size()
-            );
-        }
-
         Player::id_type player_id;
         energy_type energy;
-        dimension_type x;
-        dimension_type y;
 
-        std::istringstream player{playerbuf};
-        player >> player_id;
-        ignore_delimiter(player, '-', iss.tellg());
-        player >> x;
-        ignore_delimiter(player, '-', iss.tellg());
-        player >> y;
-        ignore_delimiter(player, '-', iss.tellg());
-        player >> energy;
-
-        players[player_id] = PlayerSnapshot{Location{x,y}, energy, {}};
-    }
-
-    // Parse player entities
-    while (iss) {
-        Player::id_type player_id;
         iss >> player_id;
         ignore_delimiter(iss, ';', 0);
+        iss >> energy;
+        ignore_delimiter(iss, ';', 0);
 
-        if (!std::getline(iss, buf, ';')) {
-            throw SnapshotError(
-                "EOF while parsing players from snapshot",
-                snapshot.size()
-            );
+        players[player_id] = PlayerSnapshot{{}, energy, {}};
+
+        // Parse factories
+        while (iss && iss.peek() != ';') {
+            dimension_type x, y;
+            iss >> x;
+            ignore_delimiter(iss, '-', 0);
+            iss >> y;
+            if (iss.peek() == ',') iss.ignore();
+
+            players[player_id].factories.emplace_back(x, y);
         }
+        ignore_delimiter(iss, ';', 0);
 
-        if (buf.size() == 0) {
-            // Player has no entities
-            continue;
-        }
-
-        std::istringstream entityiss{buf};
-        while (entityiss) {
-            dimension_type x;
-            dimension_type y;
+        // Parse entities
+        while (iss && iss.peek() != ';' && iss.peek() != EOF) {
+            dimension_type x, y;
             energy_type energy;
+            iss >> x;
+            ignore_delimiter(iss, '-', 0);
+            iss >> y;
+            ignore_delimiter(iss, '-', 0);
+            iss >> energy;
+            if (iss.peek() == ',') iss.ignore();
 
-            entityiss >> x;
-            ignore_delimiter(entityiss, '-', iss.tellg());
-            entityiss >> y;
-            ignore_delimiter(entityiss, '-', iss.tellg());
-
-            entityiss >> energy;
-            // Ignore comma if present, but don't require it
-            if (entityiss.peek() == ',') entityiss.ignore();
-
-            players[player_id].entities.emplace_back(std::make_pair(Location{x, y}, energy));
+            players[player_id].entities.emplace_back(Location{x, y}, energy);
         }
+        // Skip ; between players but don't require it at end
+        if (iss) ignore_delimiter(iss, ';', 0);
     }
 
     return Snapshot{map_params, players};

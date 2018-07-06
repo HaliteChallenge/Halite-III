@@ -9,7 +9,7 @@
 namespace hlt {
 
 struct PlayerSnapshot {
-    Location factory_location;
+    std::vector<Location> factories;
     energy_type energy;
     std::vector<std::pair<Location, energy_type>> entities;
 };
