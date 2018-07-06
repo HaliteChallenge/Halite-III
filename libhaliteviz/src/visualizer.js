@@ -186,6 +186,7 @@ export class HaliteVisualizer {
             this.replay.production_map.width,
             this.replay.production_map.height,
             this.replay.number_of_players,
+            this.replay.map_generator_seed,
         ].join(","));
 
         const factories = [];
