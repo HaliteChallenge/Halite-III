@@ -13,7 +13,6 @@
 #include "GameEvent.hpp"
 #include "../version.hpp"
 #include "Constants.hpp"
-#include "mapgen/Generator.hpp"
 
 namespace hlt {
 
@@ -39,7 +38,7 @@ struct Replay {
     std::unordered_map<Player::id_type, Player> players{};                                  /**< List of players at start of game, including factory location and initial entities */
     std::vector<hlt::Turn> full_frames{};                       /**< Turn information: first element = first frame/turn. Length is game_statistics.number_turns */
 
-    mapgen::MapParameters map_generator_parameters;             /**< Parameters used to generate map */
+    unsigned int map_generator_seed;                            /**< Seed used in random number generator for map */
     Map &production_map;                                        /**< Map of cells game was played on, including factory and other cells. Struct incldues name of map generator */
 
     /**
@@ -61,11 +60,6 @@ struct Replay {
     friend void to_json(nlohmann::json &json, const Replay &replay);
 
     /**
-     * Snapshot game state in a form that can be reloaded.
-     */
-    std::string snapshot(int frame);
-
-    /**
      * Output replay into file. Replay will be in json format and may be compressed
      *
      * @param filename File to put replay into
@@ -81,9 +75,9 @@ struct Replay {
      * @param seed Seed for random number generator for map
      * @param production_map Initialized map for game play
      */
-    Replay(GameStatistics &game_statistics, size_t number_of_players, const mapgen::MapParameters &params, Map &production_map) :
+    Replay(GameStatistics &game_statistics, size_t number_of_players, unsigned int seed, Map &production_map) :
             game_statistics(game_statistics), number_of_players(number_of_players),
-            map_generator_parameters(params), production_map(production_map) {}
+            map_generator_seed(seed), production_map(production_map) {}
 
     /**
      * Default destructor for class

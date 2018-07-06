@@ -68,7 +68,7 @@ Halite::Halite(const Config &config,
                const net::NetworkingConfig &networking_config,
                std::vector<Player> players) :
         game_map(parameters.width, parameters.height),
-        replay_struct(this->game_statistics, parameters.num_players, parameters, this->game_map),
+        replay_struct(this->game_statistics, parameters.num_players, parameters.seed, this->game_map),
         config(config),
         parameters(parameters),
         networking(net::Networking(networking_config, *this)),
