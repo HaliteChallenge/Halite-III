@@ -11,6 +11,7 @@
 #include "Location.hpp"
 #include "Statistics.hpp"
 #include "Replay.hpp"
+#include "Snapshot.hpp"
 
 namespace hlt {
 
@@ -50,6 +51,7 @@ public:
 
     /** Run the game. */
     void run_game();
+    void load_snapshot(const Snapshot& snapshot);
 
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();

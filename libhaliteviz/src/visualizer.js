@@ -158,9 +158,6 @@ export class HaliteVisualizer {
         this.timer = null;
 
         this.animationQueue = [];
-        // Keep track of when ships die this frame, so that we don't
-        // draw them after they die
-        this.deathFlags = {};
 
         this.onUpdate = function() {};
         this.onPlay = function() {};
@@ -173,6 +170,47 @@ export class HaliteVisualizer {
         this._onKeyDown = null;
 
         this.application.render();
+    }
+
+    /**
+     * Generate a string used to load the game from a certain point.
+     */
+    snapshot(frame) {
+        const parts = [];
+        parts.push(this.replay.ENGINE_VERSION);
+        parts.push([
+            this.replay.production_map.map_generator,
+            this.replay.production_map.width,
+            this.replay.production_map.height,
+            this.replay.number_of_players,
+            this.replay.map_generator_seed,
+        ].join(","));
+
+        const spritesByOwner = [];
+        for (const sprite of this.entities_list) {
+            if (!sprite) continue;
+            if (!spritesByOwner[sprite.owner]) {
+                spritesByOwner[sprite.owner] = [];
+            }
+            const { x, y, energy } = sprite;
+            spritesByOwner[sprite.owner].push(`${x}-${y}-${energy}`);
+        }
+        spritesByOwner.forEach((ownedSprites, ownerId) => {
+            parts.push(ownerId);
+            parts.push(this.replay.full_frames[this.frame].energy[ownerId]);
+            const factories = [];
+            for (const factory of this.factories) {
+                if (factory.owner === ownerId) {
+                    const { x, y } = factory.factoryBase;
+                    factories.push(`${x}-${y}`);
+                }
+            }
+            parts.push(factories.join(","));
+
+            parts.push(ownedSprites.join(","));
+        });
+
+        return parts.join(";");
     }
 
     /**
