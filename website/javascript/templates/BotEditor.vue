@@ -198,11 +198,20 @@ export default {
       return (startCode === null) ? this.load_default_code() : Promise.resolve(startCode)
     },
     load_user_code: function() {
-      return api.get_editor_file_list(this.user_id).then((function(file_list) {
+      function get_files_with_list(ctx, file_list) {
         return Promise.all(file_list.map(
-          (file_name) => (api.get_editor_file(this.user_id, file_name).then(
+          (file_name) => (api.get_editor_file(ctx.user_id, file_name).then(
             (contents) => ({contents: contents, name: file_name})))
         ))
+      }
+      return api.get_editor_file_list(this.user_id).then((function(file_list) {
+        if(file_list !== []) {
+          return get_files_with_list(this, file_list)
+        } else { // if no workspace create one and then pull our files down
+          api.create_editor_file_space(this.user_id, 'Python').then((function(file_list) {
+            return get_files_with_list(this, file_list)
+          }).bind(this))
+        }
       }).bind(this)).then(function(file_promise) {
         return file_promise.then(function(file_contents) {
           let editor_files =  file_contents.reduce(function(prev, cur) {
