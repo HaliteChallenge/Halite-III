@@ -1,7 +1,6 @@
 #include <unordered_set>
 
 #include "CommandTransaction.hpp"
-#include "Entity.hpp"
 #include "Map.hpp"
 
 namespace hlt {
@@ -10,42 +9,7 @@ namespace hlt {
  * Attempt to commit the transaction.
  * @return True if the commit succeeded.
  */
-bool CommandTransaction::commit_spawn(std::vector<GameEvent> & spawns) {
-    // See if attempting to spawn multiple pieces from one factory
-    std::unordered_set<Location> factories;
-    for (const auto &[factory, _] : spawn_commands) {
-        if (const auto &[_, inserted] = factories.emplace(factory); !inserted) {
-            // Duplicate found
-            return false;
-        }
-    }
-    spawns.clear();
-    const auto &constants = Constants::get();
-    for (const auto &[factory, energy] : spawn_commands) {
-        if(energy > constants.MAX_ENERGY) return false; // Tried to create with too much energy.
-        auto &entities = _player.entities;
-        auto entity_iterator = entities.find(factory);
-        if (entity_iterator != entities.end()) {
-            // If there is already an entity, merge.
-            entity_iterator->second->energy += energy;
-        } else {
-            // Otherwise, spawn.
-            auto entity = make_entity<PlayerEntity>(player.player_id, energy);
-            entities[factory] = entity;
-            _map.at(factory)->entities[player.player_id] = std::move(entity);
-        }
-        _player.energy -= energy * constants.NEW_ENTITY_ENERGY_COST;
-        spawns.push_back(std::make_unique<SpawnEvent>(factory, energy, player.player_id));
-        if(_player.energy < 0) return false; // Don't allow players to spend more than they have
-    }
-    return true;
-}
-
-/**
- * Attempt to commit the transaction.
- * @return True if the commit succeeded.
- */
-bool CommandTransaction::commit_moves() {
+bool CommandTransaction::commit() {
     // The requested destination locations.
     std::unordered_set<Location> destinations;
     for (const auto &[from, _] : move_commands) {
@@ -54,6 +18,22 @@ bool CommandTransaction::commit_moves() {
             return false;
         }
     }
+
+    // See if attempting to spawn multiple pieces from one factory, or insufficient energy
+    std::unordered_set<Location> factories;
+    const auto &constants = Constants::get();
+    for (const auto &[factory, energy] : spawn_commands) {
+        if (energy > constants.MAX_ENERGY || player.energy < energy * constants.NEW_ENTITY_ENERGY_COST) {
+            // Insufficient energy
+            return false;
+        }
+        if (const auto &[_, inserted] = factories.emplace(factory); !inserted) {
+            // Duplicate found
+            return false;
+        }
+    }
+
+    // Process move events
     // Map from destination location to final energy at destination
     std::unordered_map<Location, energy_type> moved_entities;
     for (auto &[from, to] : move_commands) {
@@ -78,7 +58,33 @@ bool CommandTransaction::commit_moves() {
         _map.at(location)->add_entity(player, entity);
         _player.add_entity(location, std::move(entity));
     }
+
+    // Process spawn events
+    for (const auto &[factory, energy] : spawn_commands) {
+        auto &entities = _player.entities;
+        if (auto entity_iterator = entities.find(factory); entity_iterator != entities.end()) {
+            // If there is already an entity, merge.
+            entity_iterator->second->energy += energy;
+        } else {
+            // Otherwise, spawn.
+            auto entity = make_entity<PlayerEntity>(player.player_id, energy);
+            entities[factory] = entity;
+            _map.at(factory)->entities[player.player_id] = std::move(entity);
+        }
+        _player.energy -= energy * constants.NEW_ENTITY_ENERGY_COST;
+        if (callback) {
+            callback(std::make_unique<SpawnEvent>(factory, energy, player.player_id));
+        }
+    }
     return true;
+}
+
+/**
+ * Set a callback for GameEvents generated during the transaction commit.
+ * @param callback The callback to set.
+ */
+void CommandTransaction::set_callback(const std::function<void(GameEvent)> &callback) {
+    this->callback = callback;
 }
 
 }
