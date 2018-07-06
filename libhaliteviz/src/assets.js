@@ -22,10 +22,10 @@ export const FACTORY_BASE_ALPHA = 0.8;
 
 export const MAX_PRODUCTION = 255;
 export const MAP_COLOR_LIGHT = 0x00FFFF;
-export const MAP_COLOR_MEDIUM = 0x0000FF;
-export const MAP_COLOR_DARK = 0x0000A0;
+export const MAP_COLOR_MEDIUM = 0xFF00FF;
+export const MAP_COLOR_DARK = 0xFFFF00;
 export const MAP_ALPHA = 0.1;
-export const OWNER_TINT_ALPHA = 0.4;
+export const OWNER_TINT_ALPHA = 0.25;
 export const MAP_SQUARE_SIZE = 10;
 export const LINE_COLOR = 0x000000;
 export const LINE_WIDTH = 1;
