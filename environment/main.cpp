@@ -8,6 +8,7 @@
 #include "Halite.hpp"
 #include "Logging.hpp"
 #include "replay/Snapshot.hpp"
+#include "error/SnapshotError.hpp"
 
 #include "version.hpp"
 
@@ -103,17 +104,15 @@ int main(int argc, char *argv[]) {
 
     hlt::Snapshot snapshot;
     if (snapshot_arg.getValue().size() > 0) {
-        const auto snapshot_result = hlt::Snapshot::from_str(snapshot_arg.getValue());
-        if (snapshot_result.second.size() > 0) {
-            std::cerr << "Error: could not parse snapshot: "
-                      << snapshot_result.second
-                      << std::endl;
+        try {
+            snapshot = hlt::Snapshot::from_str(snapshot_arg.getValue());
+        }
+        catch (const SnapshotError& err) {
+            std::cerr << err.what() << std::endl;
             return 1;
         }
-        map_param = snapshot_result.first.map_param;
+        map_param = snapshot.map_param;
         config.seed = map_param.seed;
-
-        snapshot = snapshot_result.first;
     }
 
     // TODO: override names

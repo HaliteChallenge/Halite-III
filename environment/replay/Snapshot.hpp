@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "error/SnapshotError.hpp"
 #include "mapgen/Generator.hpp"
 
 namespace hlt {
@@ -17,7 +18,7 @@ struct Snapshot {
     mapgen::MapParameters map_param;
     std::unordered_map<Player::id_type, PlayerSnapshot> players;
 
-    static std::pair<Snapshot, std::string> from_str(const std::string& snapshot);
+    static Snapshot from_str(const std::string& snapshot);
 
     /**
      * Create snapshot from parameters

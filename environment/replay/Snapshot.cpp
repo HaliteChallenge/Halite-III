@@ -4,34 +4,64 @@
 
 #include "../version.hpp"
 
-std::pair<hlt::Snapshot, std::string> error(std::string msg) {
-    return std::make_pair(hlt::Snapshot{}, msg);
+/**
+ * Check the string stream and ignore the given delimiter character if
+ * present. Otherwise, throw an exception. The string stream might be
+ * a subset of the overall string stream, so use pos as an offset.
+ */
+void ignore_delimiter(std::istringstream& iss, char delim, int pos) {
+    if (iss.peek() == delim) {
+        iss.ignore();
+    }
+    else {
+        std::stringstream msg;
+        msg << "Expected "
+            << delim
+            << " but got "
+            << (iss.peek() == EOF ? "EOF" : std::string(1, iss.peek()));
+        throw SnapshotError(msg.str(), pos + iss.tellg());
+    }
 }
 
 namespace hlt {
 
-std::pair<Snapshot, std::string> Snapshot::from_str(const std::string& snapshot) {
+Snapshot Snapshot::from_str(const std::string& snapshot) {
     std::istringstream iss{snapshot};
     std::string buf;
 
     if (!std::getline(iss, buf, ';')) {
-        return error("EOF while parsing engine version from snapshot");
+        throw SnapshotError(
+            "EOF while parsing engine version from snapshot",
+            snapshot.size()
+        );
     }
     if (buf != HALITE_VERSION) {
-        return error("Halite engine version does not match");
+        throw SnapshotError(
+            "Halite engine version does not match",
+            iss.tellg()
+        );
     }
 
     if (!std::getline(iss, buf, ';')) {
-        return error("EOF while parsing mapgen parameters from snapshot");
+        throw SnapshotError(
+            "EOF while parsing mapgen parameters from snapshot",
+            snapshot.size()
+        );
     }
     std::string mapbuf;
     std::istringstream mapiss{buf};
     if (!std::getline(mapiss, mapbuf, ',')) {
-        return error("EOF while parsing mapgen algorithm");
+        throw SnapshotError(
+            "EOF while parsing mapgen algorithm",
+            snapshot.size()
+        );
     }
     // TODO: parse all mapgen algorithms
     if (mapbuf != "Fractal Value Noise Tile") {
-        return error("Unrecognized mapgen algorithm");
+        throw SnapshotError(
+            "Unrecognized mapgen algorithm",
+            iss.tellg()
+        );
     }
     dimension_type width;
     dimension_type height;
@@ -39,14 +69,11 @@ std::pair<Snapshot, std::string> Snapshot::from_str(const std::string& snapshot)
     unsigned int seed;
 
     mapiss >> width;
-    if (mapiss.peek() == ',') mapiss.ignore();
-    else return error("Could not parse mapgen parameters (expected comma)");
+    ignore_delimiter(mapiss, ',', iss.tellg());
     mapiss >> height;
-    if (mapiss.peek() == ',') mapiss.ignore();
-    else return error("Could not parse mapgen parameters (expected comma)");
+    ignore_delimiter(mapiss, ',', iss.tellg());
     mapiss >> num_players;
-    if (mapiss.peek() == ',') mapiss.ignore();
-    else return error("Could not parse mapgen parameters (expected comma)");
+    ignore_delimiter(mapiss, ',', iss.tellg());
     mapiss >> seed;
 
     auto map_params = mapgen::MapParameters{
@@ -61,14 +88,20 @@ std::pair<Snapshot, std::string> Snapshot::from_str(const std::string& snapshot)
 
     // Parse factories and player locations
     if (!std::getline(iss, buf, ';')) {
-        return error("EOF while parsing players from snapshot");
+        throw SnapshotError(
+            "EOF while parsing players from snapshot",
+            snapshot.size()
+        );
     }
     std::string playerbuf;
     std::istringstream playeriss{buf};
 
     for (unsigned long i = 0; i < num_players; i++) {
         if (!std::getline(playeriss, playerbuf, ',')) {
-            return error("EOF while parsing players from snapshot");
+            throw SnapshotError(
+                "EOF while parsing players from snapshot",
+                snapshot.size()
+            );
         }
 
         Player::id_type player_id;
@@ -78,28 +111,32 @@ std::pair<Snapshot, std::string> Snapshot::from_str(const std::string& snapshot)
 
         std::istringstream player{playerbuf};
         player >> player_id;
-        if (player.peek() == '-') player.ignore();
-        else return error("Could not parse player (expected dash)");
+        ignore_delimiter(player, '-', iss.tellg());
         player >> x;
-        if (player.peek() == '-') player.ignore();
-        else return error("Could not parse player (expected dash)");
+        ignore_delimiter(player, '-', iss.tellg());
         player >> y;
-        if (player.peek() == '-') player.ignore();
-        else return error("Could not parse player (expected dash)");
+        ignore_delimiter(player, '-', iss.tellg());
         player >> energy;
 
         players[player_id] = PlayerSnapshot{Location{x,y}, energy, {}};
     }
 
     // Parse player entities
-    for (unsigned long i = 0; i < num_players; i++) {
+    while (iss) {
         Player::id_type player_id;
         iss >> player_id;
-        if (iss.peek() == ';') iss.ignore();
-        else return error("Could not parse player (expected semicolon)");
+        ignore_delimiter(iss, ';', 0);
 
         if (!std::getline(iss, buf, ';')) {
-            return error("EOF while parsing players from snapshot");
+            throw SnapshotError(
+                "EOF while parsing players from snapshot",
+                snapshot.size()
+            );
+        }
+
+        if (buf.size() == 0) {
+            // Player has no entities
+            continue;
         }
 
         std::istringstream entityiss{buf};
@@ -109,12 +146,9 @@ std::pair<Snapshot, std::string> Snapshot::from_str(const std::string& snapshot)
             energy_type energy;
 
             entityiss >> x;
-            if (entityiss.peek() == '-') entityiss.ignore();
-            else return error("Could not parse player entity (expected dash)");
-
+            ignore_delimiter(entityiss, '-', iss.tellg());
             entityiss >> y;
-            if (entityiss.peek() == '-') entityiss.ignore();
-            else return error("Could not parse player entity (expected dash)");
+            ignore_delimiter(entityiss, '-', iss.tellg());
 
             entityiss >> energy;
             // Ignore comma if present, but don't require it
@@ -124,6 +158,6 @@ std::pair<Snapshot, std::string> Snapshot::from_str(const std::string& snapshot)
         }
     }
 
-    return std::make_pair(Snapshot{map_params, players}, "");
+    return Snapshot{map_params, players};
 }
 }
