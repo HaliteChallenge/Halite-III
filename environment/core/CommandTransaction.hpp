@@ -1,7 +1,10 @@
 #ifndef COMMANDTRANSACTION_HPP
 #define COMMANDTRANSACTION_HPP
 
+#include <functional>
+
 #include "Location.hpp"
+#include "GameEvent.hpp"
 
 namespace hlt {
 
@@ -11,9 +14,11 @@ class Map;
 
 /** Transactions that execute a series of player commands atomically. */
 class CommandTransaction {
-    std::vector<std::tuple<Location, Location>> commands{}; /** The command buffer. */
-    Map &_map;                                              /** Mutable map reference. */
-    Player &_player;                                        /** Mutable player reference. */
+    std::vector<std::tuple<Location, Location>> move_commands{};     /** The move command buffer. */
+    std::vector<std::tuple<Location, energy_type>> spawn_commands{}; /** The spawn command buffer. */
+    Map &_map;                                 /** Mutable map reference. */
+    Player &_player;                           /** Mutable player reference. */
+    std::function<void(GameEvent)> callback{}; /** Event callback. */
 
 public:
     const Map &map;         /** The game map to update. */
@@ -25,6 +30,12 @@ public:
      * @param player The Player.
      */
     explicit CommandTransaction(Map &map, Player &player) : _map(map), _player(player), map(map), player(player) {}
+
+    /**
+     * Set a callback for GameEvents generated during the transaction commit.
+     * @param callback The callback to set.
+     */
+    void set_callback(const std::function<void(GameEvent)> &callback);
 
     /**
      * Attempt to commit the transaction.
@@ -39,7 +50,17 @@ public:
      * @param to The destination location of the entity.
      */
     void move_entity(const Location &from, const Location &to) {
-        commands.emplace_back(from, to);
+        move_commands.emplace_back(from, to);
+    }
+
+    /**
+     * Add an entity spawn to the transaction.
+     *
+     * @param factory The factory location to spawn from.
+     * @param energy The amount of energy to spawn with.
+     */
+    void spawn_entity(const Location & factory, const energy_type & energy) {
+        spawn_commands.emplace_back(factory, energy);
     }
 };
 

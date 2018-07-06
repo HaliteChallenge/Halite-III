@@ -23,6 +23,14 @@ void HaliteImpl::retrieve_commands() {
 void HaliteImpl::process_commands() {
     for (const auto &[player_id, command_list] : commands) {
         auto transaction = CommandTransaction(game.game_map, game.players[player_id]);
+        transaction.set_callback([&frames = game.replay_struct.full_frames](auto event) {
+            // Create new game event for replay file,
+            // regardless of whether spawn creates a new entity or adds to an old entity
+            // Ensure full frames has been initialized (ie don't do this before first turn)
+            if (!frames.empty()) {
+                frames.back().events.push_back(std::move(event));
+            }
+        });
         for (const auto &command : command_list) {
             command->act_on_map(transaction);
         }
@@ -31,7 +39,7 @@ void HaliteImpl::process_commands() {
         }
     }
     // Add commands to replay struct for visualizer
-    game.replay_struct.full_frames.back().moves = commands;
+    game.replay_struct.full_frames.back().moves = std::move(commands);
 }
 
 }

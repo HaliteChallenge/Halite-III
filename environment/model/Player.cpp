@@ -10,6 +10,9 @@
 /** Get a field from JSON. */
 #define FIELD_FROM_JSON(x) json.at(#x)
 
+/** The JSON key for factory. */
+constexpr auto JSON_FACTORY_KEY = "factory_location";
+
 namespace hlt {
 
 /**
@@ -40,7 +43,7 @@ void to_json(nlohmann::json &json, const Player &player) {
     json = {FIELD_TO_JSON(player_id),
             FIELD_TO_JSON(name),
             FIELD_TO_JSON(energy),
-            FIELD_TO_JSON(factory_location),
+            {JSON_FACTORY_KEY, player.factories.front()},
             FIELD_TO_JSON(entities)};
 }
 

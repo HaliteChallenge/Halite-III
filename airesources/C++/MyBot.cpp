@@ -2,11 +2,6 @@
 
 #include <random>
 
-/*
-My pieces (& factory) push away my pieces
-Opposing pieces (& factory) are a draw for my pieces
-*/
-
 int main() {
     std::cout.sync_with_stdio(0);
 
@@ -25,9 +20,10 @@ int main() {
 
         for(auto &[loc, _] : players[myID].entities) {
             moves[loc] = hlt::DIRECTIONS[prg() % 5];
+            moves[loc] = hlt::Direction::NORTH;
         }
 
-        hlt::sendFrame(moves);
+        hlt::sendFrame(moves, players[myID].energy >= ENERGY_COST*MAX_ENERGY ? MAX_ENERGY : 0);
     }
 
     return 0;

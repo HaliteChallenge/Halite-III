@@ -21,12 +21,12 @@ struct Player {
     /** Type of the Entity map of a player, where keys are entity locations. */
     using Entities = std::unordered_map<Location, std::shared_ptr<PlayerEntity>>;
 
-    Player::id_type player_id{};  /**< The unique ID of the player. */
-    std::string name;             /**< The name of the player. */
-    std::string command;          /**< The bot command for the player. */
-    energy_type energy{};         /**< The amount of energy stockpiled by the player. */
-    Location factory_location{};  /**< The factory location of the player. */
-    Entities entities{};          /**< Mapping of location of entity to entity shared ptr */
+    Player::id_type player_id{};      /**< The unique ID of the player. */
+    std::string name;                 /**< The name of the player. */
+    std::string command;              /**< The bot command for the player. */
+    energy_type energy{};             /**< The amount of energy stockpiled by the player. */
+    std::vector<Location> factories;  /**< The factory locations of the player. */
+    Entities entities{};              /**< Mapping of location of entity to entity shared ptr */
 
     /**
      * Find an entity by location.
@@ -84,18 +84,17 @@ private:
             player_id(player_id), name(std::move(name)), command(std::move(command)) {}
 
     /**
-     * Construct Player from ID, name, energy, factory location, and entities.
+     * Construct Player from ID, name, energy, factory locations, and entities.
      * @param player_id The player ID.
      * @param name The player name.
      * @param energy The energy.
-     * @param factory_location The factory location.
+     * @param factories The factory locations.
      * @param entities The location -> entity mapping.
      */
     Player(Player::id_type player_id, std::string name, energy_type energy,
-           Location factory_location, Player::Entities entities)
+           const std::vector<Location> &factories, Player::Entities entities)
             : player_id(player_id), name(std::move(name)), energy(energy),
-              factory_location(std::move(factory_location)),
-              entities(std::move(entities)) {}
+              factories(factories), entities(std::move(entities)) {}
 };
 
 /** Factory which produces Players. */

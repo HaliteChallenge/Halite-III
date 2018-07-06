@@ -26,13 +26,6 @@ using Command = std::shared_ptr<BaseCommand>;
 void to_json(nlohmann::json &json, const Command &cell);
 
 /**
- * Convert an encoded Command from JSON format.
- * @param json The JSON.
- * @param[out] command The converted command.
- */
-void from_json(const nlohmann::json &json, Command &cell);
-
-/**
  * Read a Command from bot serial format.
  * @param istream The input stream.
  * @param[out] command The command to read.
@@ -97,6 +90,62 @@ public:
      * @param json The JSON.
      */
     explicit MoveCommand(const nlohmann::json &json);
+};
+
+/** Command for an attempt to buy a factory. */
+class BuyCommand : public BaseCommand {
+    energy_type price;  /**< The price. */
+    Location factory;   /**< The factory being bought. */
+
+public:
+    /** The name of the buy command. */
+    static constexpr auto COMMAND_TYPE_NAME = "buy";
+
+    /** The short name of the buy command. */
+    static constexpr auto COMMAND_TYPE_SHORT = 'b';
+
+    /**
+     * Convert a BuyCommand to JSON format.
+     * @param[out] json The JSON output.
+     */
+    void to_json(nlohmann::json &json) const override;
+
+    /** No effect on the map. */
+    void act_on_map(CommandTransaction &) const override {}
+
+    /**
+     * Construct BuyCommand from price and factory.
+     * @param price The price.
+     * @param factory The factory.
+     */
+    BuyCommand(energy_type price, const Location &factory) : price(price), factory(factory) {}
+};
+
+/** Command for selling a factory. */
+class SellCommand : public BaseCommand {
+    Location factory;   /**< The factory being sold. */
+
+public:
+    /** The name of the sell command. */
+    static constexpr auto COMMAND_TYPE_NAME = "sell";
+
+    /** The short name of the sell command. */
+    static constexpr auto COMMAND_TYPE_SHORT = 'e';
+
+    /**
+     * Convert a SellCommand to JSON format.
+     * @param[out] json The JSON output.
+     */
+    void to_json(nlohmann::json &json) const override;
+
+    /** No effect on the map. */
+    void act_on_map(CommandTransaction &) const override {}
+
+    /**
+    * Construct SellCommand from factory.
+    * @param factory The factory.
+    */
+    explicit SellCommand(const Location &factory) : factory(factory) {}
 };
 
 /** Command for moving an entity in a direction. */

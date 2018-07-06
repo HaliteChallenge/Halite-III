@@ -2,9 +2,15 @@
 
 #include <random>
 
-int main() {
+/*
+My pieces (& factory) push away my pieces
+Opposing pieces (& factory) are a draw for my pieces
+*/
+
+int main(int argc, char ** argv) {
     std::cout.sync_with_stdio(0);
     Logging::open("log.log");
+    const int ENTITY_ENERGY = atoi(argv[1]);
 
     id_type myID;
     hlt::Players players;
@@ -48,7 +54,7 @@ int main() {
             moves[loc] = bestDir;
         }
 
-        hlt::sendFrame(moves);
+        hlt::sendFrame(moves, players[myID].energy >= ENERGY_COST*ENTITY_ENERGY ? ENTITY_ENERGY : 0);
     }
 
     return 0;

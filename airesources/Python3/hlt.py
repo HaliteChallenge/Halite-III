@@ -73,8 +73,10 @@ def get_frame():
             players[player].entities[(x, y)] = Entity(player, energy)
     return turn_number, players
 
-def send_frame(moves):
-    print(" ".join(["m " + str(loc[0]) + " " + str(loc[1]) + " " + direction for loc, direction in moves.items()]))
+def send_frame(moves, spawn_energy = 0):
+    send = " ".join(["m " + str(loc[0]) + " " + str(loc[1]) + " " + direction for loc, direction in moves.items()])
+    if spawn_energy > 0: send += "s " + str(spawn_energy) + " "
+    print(send)
     sys.stdout.flush()
 
 # I'm not yet doing custom logging because Python's logging is
