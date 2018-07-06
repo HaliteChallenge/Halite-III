@@ -1,6 +1,8 @@
 #ifndef COMMANDTRANSACTION_HPP
 #define COMMANDTRANSACTION_HPP
 
+#include <functional>
+
 #include "Location.hpp"
 #include "GameEvent.hpp"
 
