@@ -12,7 +12,7 @@ namespace hlt {
  */
 bool CommandTransaction::commit_spawn(std::vector<GameEvent> & spawns) {
     // See if attempting to spawn multiple pieces from one factory
-    std::set<Location> factories;
+    std::unordered_set<Location> factories;
     for (const auto &[factory, _] : spawn_commands) {
         if (const auto &[_, inserted] = factories.emplace(factory); !inserted) {
             // Duplicate found
@@ -30,7 +30,7 @@ bool CommandTransaction::commit_spawn(std::vector<GameEvent> & spawns) {
             entity_iterator->second->energy += energy;
         } else {
             // Otherwise, spawn.
-            auto entity = make_entity<Entity>(player.player_id, energy);
+            auto entity = make_entity<PlayerEntity>(player.player_id, energy);
             entities[factory] = entity;
             _map.at(factory)->entities[player.player_id] = std::move(entity);
         }
