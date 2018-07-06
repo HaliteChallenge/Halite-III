@@ -176,6 +176,44 @@ export class HaliteVisualizer {
     }
 
     /**
+     * Generate a string used to load the game from a certain point.
+     */
+    snapshot(frame) {
+        const parts = [];
+        parts.push(this.replay.ENGINE_VERSION);
+        parts.push([
+            this.replay.production_map.map_generator,
+            this.replay.production_map.width,
+            this.replay.production_map.height,
+            this.replay.number_of_players,
+        ].join(","));
+
+        const factories = [];
+        for (const factory of this.factories) {
+            const { id, owner } = factory;
+            const { x, y } = factory.factoryBase;
+            factories.push(`${id}-${owner}-${x}-${y}`);
+        }
+        parts.push(factories.join(","));
+
+        const spritesByOwner = [];
+        for (const sprite of this.entities_list) {
+            if (!sprite) continue;
+            if (!spritesByOwner[sprite.owner]) {
+                spritesByOwner[sprite.owner] = [];
+            }
+            const { x, y, energy } = sprite;
+            spritesByOwner[sprite.owner].push(`${x}-${y}-${energy}`);
+        }
+        spritesByOwner.forEach((ownedSprites, ownerId) => {
+            parts.push(ownerId);
+            parts.push(ownedSprites.join(","));
+        });
+
+        return parts.join(";");
+    }
+
+    /**
      * Clean up the visualizer and stop it from rendering.
      *
      * Call this before creating a new instance, or you'll wonder why
