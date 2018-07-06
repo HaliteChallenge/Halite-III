@@ -158,9 +158,6 @@ export class HaliteVisualizer {
         this.timer = null;
 
         this.animationQueue = [];
-        // Keep track of when ships die this frame, so that we don't
-        // draw them after they die
-        this.deathFlags = {};
 
         this.onUpdate = function() {};
         this.onPlay = function() {};
@@ -193,7 +190,8 @@ export class HaliteVisualizer {
         for (const factory of this.factories) {
             const { owner } = factory;
             const { x, y } = factory.factoryBase;
-            factories.push(`${owner}-${x}-${y}`);
+            const energy = this.replay.full_frames[this.frame].energy[owner];
+            factories.push(`${owner}-${x}-${y}-${energy}`);
         }
         parts.push(factories.join(","));
 

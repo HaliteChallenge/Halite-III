@@ -72,8 +72,7 @@ std::pair<Snapshot, std::string> Snapshot::from_str(const std::string& snapshot)
         }
 
         Player::id_type player_id;
-        // TODO: parse energy from snapshot
-        energy_type energy = 20000;
+        energy_type energy;
         dimension_type x;
         dimension_type y;
 
@@ -85,6 +84,9 @@ std::pair<Snapshot, std::string> Snapshot::from_str(const std::string& snapshot)
         if (player.peek() == '-') player.ignore();
         else return error("Could not parse player (expected dash)");
         player >> y;
+        if (player.peek() == '-') player.ignore();
+        else return error("Could not parse player (expected dash)");
+        player >> energy;
 
         players[player_id] = PlayerSnapshot{Location{x,y}, energy, {}};
     }
