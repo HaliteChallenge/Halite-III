@@ -191,9 +191,9 @@ export class HaliteVisualizer {
 
         const factories = [];
         for (const factory of this.factories) {
-            const { id, owner } = factory;
+            const { owner } = factory;
             const { x, y } = factory.factoryBase;
-            factories.push(`${id}-${owner}-${x}-${y}`);
+            factories.push(`${owner}-${x}-${y}`);
         }
         parts.push(factories.join(","));
 

@@ -101,6 +101,7 @@ int main(int argc, char *argv[]) {
     // TODO: allow map type selection
     hlt::mapgen::MapParameters map_param{hlt::mapgen::MapType::Fractal, config.seed, map_width, map_height, n_players};
 
+    hlt::Snapshot snapshot;
     if (snapshot_arg.getValue().size() > 0) {
         const auto snapshot_result = hlt::Snapshot::from_str(snapshot_arg.getValue());
         if (snapshot_result.second.size() > 0) {
@@ -111,6 +112,8 @@ int main(int argc, char *argv[]) {
         }
         map_param = snapshot_result.first.map_param;
         config.seed = map_param.seed;
+
+        snapshot = snapshot_result.first;
     }
 
     // TODO: override names
@@ -129,6 +132,23 @@ int main(int argc, char *argv[]) {
     if (replay_directory.back() != SEPARATOR) replay_directory.push_back(SEPARATOR);
 
     hlt::Halite game(config, map_param, networking_config, players);
+
+    // Load factories/energy/sprites from snapshot (if none passed,
+    // snapshot.players will be empty)
+    // TODO: assumes mapgen put the factories in the same place - is
+    // this true?
+    for (const auto& player : snapshot.players) {
+        game.players[player.first].factory_location = player.second.factory_location;
+        game.players[player.first].energy = player.second.energy;
+
+        for (const auto& entity_pair : player.second.entities) {
+            auto entity = hlt::make_entity<hlt::PlayerEntity>(player.first, entity_pair.second);
+            auto location = entity_pair.first;
+            game.players[player.first].entities[location] = entity;
+            game.game_map.at(location)->entities[player.first] = std::move(entity);
+        }
+    }
+
     game.run_game();
 
     // Output replay file for visualizer
