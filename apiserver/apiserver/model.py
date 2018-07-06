@@ -274,6 +274,9 @@ def get_editor_bucket():
     """Get the object storage bucket for game replays."""
     return get_storage_client().get_bucket(config.GCLOUD_EDITOR_BUCKET)
 
+def get_starter_bucket():
+    """Get the object storage bucket for game replays."""
+    return get_storage_client().get_bucket(config.GCLOUD_STARTER_BUCKET)
 
 def get_error_log_bucket():
     """Get the object storage bucket for game error log files."""

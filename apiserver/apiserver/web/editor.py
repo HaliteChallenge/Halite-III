@@ -17,8 +17,14 @@ def list_user_files(intended_user, *, user_id):
     if user_id != intended_user:
         raise api_util.user_mismatch_error(
             message="Cannot list files for another user.")
-    bucket = model.get_editor_bucket()
-    return flask.jsonify([a.name[len(str(intended_user))+1:] for a in bucket.list_blobs(prefix=str(intended_user)) if a.name[:-1] != str(intended_user)])
+    editor_bucket = model.get_editor_bucket()
+    if len([a for a in editor_bucket.list_blobs(prefix=str(intended_user))]) == 0:
+        starter_bucket = model.get_starter_bucket()
+        for sub_blob in starter_bucket.list_blobs(prefix='Python'):
+            starter_bucket.copy_blob(sub_blob, 
+                    editor_bucket, 
+                    '%s/%s' % (str(intended_user), '/'.join(sub_blob.name.split('/')[1:])))
+    return flask.jsonify([a.name[len(str(intended_user))+1:] for a in editor_bucket.list_blobs(prefix=str(intended_user)) if a.name[:-1] != str(intended_user)])
 
 
 @web_api.route("/user/<int:intended_user>/source_file/<path:file_id>", methods=["GET"])
