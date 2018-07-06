@@ -98,6 +98,36 @@ Halite::Halite(const Config &config,
     replay_struct.game_statistics = game_statistics;
 }
 
+void Halite::load_snapshot(const Snapshot& snapshot) {
+    // Load factories/energy/sprites from snapshot (if none passed,
+    // snapshot.players will be empty)
+    // TODO: assumes mapgen put the factories in the same place - is
+    // this true?
+
+    for (const auto& player : snapshot.players) {
+        const auto player_id = player.first;
+
+        // Erase pre-placed entities
+        auto &entities = this->players[player_id].entities;
+        for (auto entity_iterator = entities.begin(); entity_iterator != entities.end();) {
+            auto [location, entity] = *entity_iterator;
+            this->game_map.at(location)->remove_entity(this->players[player_id]);
+            entities.erase(entity_iterator++);
+        }
+
+        this->players[player_id].factory_location = player.second.factory_location;
+        this->players[player_id].energy = player.second.energy;
+
+        // Spawn new entities
+        for (const auto& entity_pair : player.second.entities) {
+            auto entity = make_entity<PlayerEntity>(player_id, entity_pair.second);
+            auto location = entity_pair.first;
+            this->players[player_id].entities[location] = entity;
+            this->game_map.at(location)->entities[player_id] = std::move(entity);
+        }
+    }
+}
+
 /** Default destructor is defined where HaliteImpl is complete. */
 Halite::~Halite() = default;
 
