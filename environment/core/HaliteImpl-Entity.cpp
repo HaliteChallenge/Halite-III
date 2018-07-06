@@ -56,6 +56,11 @@ void HaliteImpl::process_entities() {
                 entity_iterator++;
             }
         }
+
+        // Record energy left over at end
+        if (game.replay_struct.full_frames.size() > 0) {
+            game.replay_struct.full_frames.back().energy[player_id] = player.energy;
+        }
     }
 }
 
