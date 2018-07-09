@@ -14,7 +14,7 @@ ONDEMAND_KIND = "ondemand"
 def key_from_user_id(user_id):
     return gcloud_datastore.Key(
         ONDEMAND_KIND,
-        str(user_id),
+        user_id,
         project=config.GCLOUD_PROJECT,
     )
 
