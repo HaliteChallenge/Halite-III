@@ -12,7 +12,9 @@ from .blueprint import web_api
 @util.cross_origin(methods=["GET", "POST", "PUT"])
 @web_util.requires_login(accept_key=False)
 def check_ondemand(*, user_id):
-    return util.response_success(ondemand.check_status(user_id) or {})
+    return util.response_success(ondemand.check_status(user_id) or {
+        "status": "none",
+    })
 
 
 @web_api.route("/ondemand", methods=["PUT"])
