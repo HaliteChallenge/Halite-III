@@ -178,9 +178,9 @@ def runGame(environment_parameters, users):
             "--results-as-json",
         ]
 
-        for key, value in environment_parameters:
-            command.push("--{}".format(key))
-            command.push("{}".format(value))
+        for key, value in environment_parameters.items():
+            command.append("--{}".format(key))
+            command.append("{}".format(value))
 
         # Make sure bots have access to the temp dir as a whole
         # Otherwise, Python can't import modules from the bot dir

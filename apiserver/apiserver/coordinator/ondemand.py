@@ -18,6 +18,7 @@ def ondemand_task():
         result["users"] = [
             {
                 "user_id": task.key.id,
+                "bot_id": 0,
             },
         ]
         return util.response_success(result)
