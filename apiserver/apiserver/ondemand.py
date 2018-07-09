@@ -35,6 +35,8 @@ def launch(user_id, opponents, num_turns):
         "status": "pending",
         "opponents": opponents,
         "num_turns": num_turns,
+        "width": 128,
+        "height": 128,
         "last_updated": datetime.datetime.now(),
     })
     client.put(entity)

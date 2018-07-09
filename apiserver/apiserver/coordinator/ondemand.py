@@ -11,10 +11,16 @@ from .blueprint import coordinator_api
 def ondemand_task():
     task = ondemand.pending_task()
     if task:
-        return util.response_success({
-            "type": "ondemand",
-            "task": task,
-        })
+        result = dict(task)
+        result["type"] = "ondemand"
+        result["challenge"] = None
+        # TODO: fill in all proper parameters
+        result["users"] = [
+            {
+                "user_id": task.key.id,
+            },
+        ]
+        return util.response_success(result)
     else:
         return util.response_success({
             "type": "notask",
