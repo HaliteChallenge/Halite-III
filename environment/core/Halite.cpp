@@ -15,7 +15,6 @@ void Halite::run_game() {
     for (auto &[_, player] : players) {
         player.energy = constants.INITIAL_ENERGY;
     }
-    impl->process_entities();
     std::unordered_map<Player::id_type, std::future<void>> results;
     for (auto &[player_id, player] : players) {
         results[player_id] = std::async(std::launch::async,
