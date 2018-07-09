@@ -1,0 +1,30 @@
+"""
+Coordinator API for running games on-demand (e.g. for the web editor
+and tutorial).
+"""
+
+from .. import model, ondemand, util
+
+from . import util as web_util
+from .blueprint import web_api
+
+@web_api.route("/ondemand", methods=["GET"])
+@util.cross_origin(methods=["GET", "POST", "PUT"])
+@web_util.requires_login(accept_key=False)
+def check_ondemand(*, user_id):
+    return util.response_success(ondemand.check_status(user_id) or {})
+
+
+@web_api.route("/ondemand", methods=["PUT"])
+@util.cross_origin(methods=["GET", "POST", "PUT"])
+@web_util.requires_login(accept_key=False)
+def start_ondemand(*, user_id):
+    ondemand.launch(user_id, [], 1)
+    return util.response_success()
+
+
+@web_api.route("/ondemand", methods=["POST"])
+@util.cross_origin(methods=["GET", "POST", "PUT"])
+@web_util.requires_login(accept_key=False)
+def continue_ondemand():
+    pass

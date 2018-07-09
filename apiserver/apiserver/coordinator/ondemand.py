@@ -11,7 +11,7 @@ from .blueprint import coordinator_api
 def ondemand_task():
     task = ondemand.pending_task()
     return util.response_success({
-        "task": task[0] if task else None,
+        "task": task,
     })
 
 
