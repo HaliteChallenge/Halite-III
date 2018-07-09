@@ -12,9 +12,6 @@ namespace hlt {
 /** Run the game. */
 void Halite::run_game() {
     const auto &constants = Constants::get();
-    for (auto &[_, player] : players) {
-        player.energy = constants.INITIAL_ENERGY;
-    }
     std::unordered_map<Player::id_type, std::future<void>> results;
     for (auto &[player_id, player] : players) {
         results[player_id] = std::async(std::launch::async,
@@ -88,12 +85,17 @@ Halite::Halite(const Config &config,
     std::vector<Location> factories;
     factories.reserve(players.size());
     generator->generate(game_map, factories);
+
+    const auto &constants = Constants::get();
     for (const auto &player : players) {
         this->players[player.player_id] = player;
         this->players[player.player_id].factories.push_back(factories.back());
+        this->players[player.player_id].energy = constants.INITIAL_ENERGY;
+
         factories.pop_back();
         game_statistics.player_statistics.emplace_back(player.player_id);
     }
+
     replay_struct.game_statistics = game_statistics;
 }
 
