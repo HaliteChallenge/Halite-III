@@ -5,3 +5,4 @@ from . import compilation
 from . import coordinator
 from . import matchmaking
 from . import storage
+from . import ondemand

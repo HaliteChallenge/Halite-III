@@ -1,5 +1,6 @@
 import enum
 
+import google.cloud.datastore as gcloud_datastore
 import google.cloud.storage as gcloud_storage
 import sqlalchemy
 
@@ -254,6 +255,10 @@ def hackathon_ranked_bots_users_query(hackathon_id, *, alias="hackathon_ranked_b
 
 def get_storage_client():
     return gcloud_storage.Client(project=config.GCLOUD_PROJECT)
+
+
+def get_datastore_client():
+    return gcloud_datastore.Client(project=config.GCLOUD_PROJECT)
 
 
 def get_compilation_bucket():
