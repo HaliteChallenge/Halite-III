@@ -267,7 +267,7 @@ def parseGameOutput(output, users):
 
 def executeGameTask(environment_parameters, users, challenge, backend):
     """Downloads compiled bots, runs a game, and posts the results of the game"""
-    logging.debug("Running game with width %d, height %d\n" % (width, height))
+    logging.debug("Running game with parameters {}s\n".format(environment_parameters))
     logging.debug("Users objects %s\n" % (str(users)))
 
     raw_output = '\n'.join(runGame(environment_parameters, users))
