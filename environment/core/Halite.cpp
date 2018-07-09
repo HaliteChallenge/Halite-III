@@ -89,6 +89,7 @@ Halite::Halite(const Config &config,
     std::vector<Location> factories;
     factories.reserve(players.size());
     generator->generate(game_map, factories);
+    game_map.factory_count = factories.size();
     for (const auto &player : players) {
         this->players[player.player_id] = player;
         this->players[player.player_id].factories.push_back(factories.back());
