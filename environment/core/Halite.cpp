@@ -30,6 +30,7 @@ void Halite::run_game() {
             player.entities[entity_location] = make_entity<PlayerEntity>(entity->owner_id, entity->energy);
         }
     }
+    replay_struct.full_frames.emplace_back();
     Logging::log("Player initialization complete.");
 
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
