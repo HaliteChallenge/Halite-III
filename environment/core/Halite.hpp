@@ -51,11 +51,14 @@ public:
 
     /** Run the game. */
     void run_game();
+    /** Load game state from a parsed snapshot. */
     void load_snapshot(const Snapshot& snapshot);
     /** Write error logs and quit. */
     void fail();
     /** Remove a player from the game. */
     void kill_player(Player::id_type player_id);
+    /** Generate a snapshot string from current game state. */
+    std::string to_snapshot();
 
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();

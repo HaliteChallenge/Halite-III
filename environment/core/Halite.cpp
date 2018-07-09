@@ -161,6 +161,64 @@ void Halite::kill_player(Player::id_type player_id) {
     }
 }
 
+// TODO: move this to parser too
+constexpr auto SNAPSHOT_FIELD_DELIMITER = ";";
+constexpr auto SNAPSHOT_LIST_DELIMITER = ",";
+constexpr auto SNAPSHOT_SUBFIELD_DELIMITER = "-";
+
+std::string Halite::to_snapshot() {
+    std::stringstream output;
+
+    output << HALITE_VERSION << SNAPSHOT_FIELD_DELIMITER;
+
+    output << game_map.map_generator
+           << SNAPSHOT_LIST_DELIMITER << parameters.width
+           << SNAPSHOT_LIST_DELIMITER << parameters.height
+           << SNAPSHOT_LIST_DELIMITER << parameters.num_players
+           << SNAPSHOT_LIST_DELIMITER << parameters.seed
+           << SNAPSHOT_FIELD_DELIMITER;
+
+    // Iterate over players in order
+    std::vector<Player::id_type> player_ids;
+    for (const auto& [player_id, _] : players) {
+        player_ids.push_back(player_id);
+    }
+    std::sort(player_ids.begin(), player_ids.end());
+
+    auto first_player = true;
+    for (const auto player_id : player_ids) {
+        if (!first_player) output << SNAPSHOT_FIELD_DELIMITER;
+        first_player = false;
+
+        const auto& player = players[player_id];
+        output << player_id << SNAPSHOT_FIELD_DELIMITER;
+        output << player.energy << SNAPSHOT_FIELD_DELIMITER;
+
+        auto first = true;
+        for (const auto& factory_location : player.factories) {
+            if (!first) output << SNAPSHOT_LIST_DELIMITER;
+            first = false;
+
+            output << factory_location.x
+                   << SNAPSHOT_SUBFIELD_DELIMITER << factory_location.y;
+        }
+
+        output << SNAPSHOT_FIELD_DELIMITER;
+
+        first = true;
+        for (const auto& [entity_location, entity] : player.entities) {
+            if (!first) output << SNAPSHOT_LIST_DELIMITER;
+            first = false;
+
+            output << entity_location.x
+                   << SNAPSHOT_SUBFIELD_DELIMITER << entity_location.y
+                   << SNAPSHOT_SUBFIELD_DELIMITER << entity->energy;
+        }
+    }
+
+    return output.str();
+}
+
 /** Default destructor is defined where HaliteImpl is complete. */
 Halite::~Halite() = default;
 
