@@ -169,16 +169,18 @@ def executeCompileTask(user_id, bot_id, backend):
             rm_as_user("bot_compilation", temp_dir)
 
 
-def runGame(width, height, users):
+def runGame(environment_parameters, users):
     with tempfile.TemporaryDirectory(dir=TEMP_DIR) as temp_dir:
         shutil.copy(ENVIRONMENT, os.path.join(temp_dir, ENVIRONMENT))
 
         command = [
             "./" + ENVIRONMENT,
-            "--width", str(width),
-            "--height", str(height),
             "--results-as-json",
         ]
+
+        for key, value in environment_parameters:
+            command.push("--{}".format(key))
+            command.push("{}".format(value))
 
         # Make sure bots have access to the temp dir as a whole
         # Otherwise, Python can't import modules from the bot dir
@@ -263,12 +265,12 @@ def parseGameOutput(output, users):
     return users, result
 
 
-def executeGameTask(width, height, users, challenge, backend):
+def executeGameTask(environment_parameters, users, challenge, backend):
     """Downloads compiled bots, runs a game, and posts the results of the game"""
     logging.debug("Running game with width %d, height %d\n" % (width, height))
     logging.debug("Users objects %s\n" % (str(users)))
 
-    raw_output = '\n'.join(runGame(width, height, users))
+    raw_output = '\n'.join(runGame(environment_parameters, users))
     users, parsed_output = parseGameOutput(raw_output, users)
 
     backend.gameResult(users, parsed_output, challenge)
@@ -281,6 +283,7 @@ def executeGameTask(width, height, users, challenge, backend):
 
     # Make sure game processes exit
     subprocess.run(["pkill", "--signal", "9", "-f", "cgexec"])
+
 
 def _set_logging():
     logging.basicConfig(filename=LOG_FILENAME, level=logging.INFO)
@@ -334,8 +337,10 @@ def main(args):
                     executeCompileTask(task["user"], task["bot"], backend)
                 else:
                     logging.debug("Running a game task...\n")
-                    executeGameTask(int(task["width"]), int(task["height"]),
-                                    task["users"], task["challenge"], backend)
+                    executeGameTask({
+                        "width": task["width"],
+                        "height": task["height"],
+                    }, task["users"], task["challenge"], backend)
             else:
                 logging.debug("No task available at time %s (GMT). Sleeping...\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         except Exception as e:
