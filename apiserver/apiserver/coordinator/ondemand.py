@@ -10,9 +10,15 @@ from .blueprint import coordinator_api
 @coordinator_api.route("/ondemand")
 def ondemand_task():
     task = ondemand.pending_task()
-    return util.response_success({
-        "task": task,
-    })
+    if task:
+        return util.response_success({
+            "type": "ondemand",
+            "task": task,
+        })
+    else:
+        return util.response_success({
+            "type": "notask",
+        })
 
 
 @coordinator_api.route("/ondemand_result", methods=["POST"])

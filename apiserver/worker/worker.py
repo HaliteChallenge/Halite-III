@@ -1,3 +1,4 @@
+import argparse
 import copy
 import os
 import sys
@@ -314,7 +315,7 @@ def health_check():
     else:
         return "Dead. Last alive at {}".format(TIME), 503
 
-def main():
+def main(args):
     _set_logging()
     logging.info("Starting up worker at {}".format(socket.gethostname()))
     threading.Thread(target=app.run, kwargs={'host':'0.0.0.0', 'port':5001, 'threaded':True}).start()
@@ -322,10 +323,12 @@ def main():
         set_time()
         try:
             logging.debug("\n\n\nQuerying for new task at time %s (GMT)\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
-            task = backend.getTask()
+
+            task = backend.getTask(args.task_type)
             if "type" in task and (task["type"] == "compile" or task["type"] == "game"):
                 logging.debug("Got new task at time %s (GMT)\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
                 logging.debug("Task object %s\n" % str(task))
+
                 if task["type"] == "compile":
                     logging.debug("Running a compilation task...\n")
                     executeCompileTask(task["user"], task["bot"], backend)
@@ -343,4 +346,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--task-type", default="task")
+    args = parser.parse_args()
+    main(args)

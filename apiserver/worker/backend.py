@@ -24,12 +24,12 @@ with open("config.json") as configfile:
         MAX_BOT_UPLOAD_SIZE = provided_size
 
 
-def getTask():
+def getTask(kind="task"):
     """Gets either a run or a compile task from the API"""
     params = {
         "capability": CAPABILITIES,
     }
-    content = requests.get(MANAGER_URL+"task", params=params).text
+    content = requests.get(MANAGER_URL + kind, params=params).text
 
     print("Task call %s\n" % content)
     if content == "null":
