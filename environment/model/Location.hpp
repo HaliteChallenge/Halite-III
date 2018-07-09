@@ -61,6 +61,14 @@ struct Location {
     friend std::ostream &operator<<(std::ostream &ostream, const Location &location);
 
     /**
+     * Read a Location from bot serial format.
+     * @param istream The input stream.
+     * @param[out] location The location to read.
+     * @return The input stream.
+     */
+    friend std::istream &operator>>(std::istream &istream, Location &location);
+
+    /**
      * Convert a Location to JSON format.
      * @param[out] json The output JSON.
      * @param location The Location to convert.

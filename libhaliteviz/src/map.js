@@ -104,17 +104,17 @@ export class Map {
     productionToColor(productions, row, col, MAX_PRODUCTION) {
         const production = productions[row][col];
         if (production === 0) {
-            return [assets.FACTORY_BASE_COLOR, assets.FACTORY_BASE_ALPHA];
+            return [assets.FACTORY_BASE_COLOR, 1];
         }
         let production_fraction = production / MAX_PRODUCTION;
-        if (production_fraction < 0.33) {
-            return [assets.MAP_COLOR_LIGHT, (production_fraction / 0.33)];
+        if (production_fraction <= 0.3333) {
+            return [alphaBlend(0x282828, assets.MAP_COLOR_LIGHT, 1-3*production_fraction), .75];
         }
-        else if (production_fraction < 0.66) {
-            return [assets.MAP_COLOR_MEDIUM, (production_fraction - 0.33) / 0.33];
+        else if (production_fraction <= 0.6666) {
+            return [alphaBlend(assets.MAP_COLOR_LIGHT, assets.MAP_COLOR_MEDIUM, 2-3*production_fraction), .75];
         }
         else {
-            return [assets.MAP_COLOR_DARK, (production_fraction - 0.66) / 0.34];
+            return [alphaBlend(assets.MAP_COLOR_MEDIUM, assets.MAP_COLOR_DARK, 3-3*production_fraction), .75];
         }
     }
 

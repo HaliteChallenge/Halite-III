@@ -62,6 +62,9 @@
                 <span class="replay-btn" style="text-align: center">
                   <a href="javascript:;" @click="resetView" title="Reset zoom/pan"><span class="icon-lightning"></span></a>
                 </span>
+                <span class="replay-btn" style="text-align: center">
+                  <a href="javascript:;" @click="snapshot" title="Snapshot state"><span class="icon-lightning"></span></a>
+                </span>
                 <span class="replay-btn">
                   <a style="text-align: center; margin-bottom: 4px;" v-if="game && game.game_id" :href="replay_download_link(game.game_id)">
                     <span class="icon-download"></span>
@@ -521,6 +524,9 @@
           visualizer.camera.reset();
         }
       }
+      this.snapshot = () => {
+        window.prompt("Copy the snapshot:", visualizer.snapshot())
+      }
 
       const changeSpeed = (speed) => {
         this.speedIndex = speed
@@ -795,6 +801,7 @@
       changeFrame: function (event) {
       },
       resetView: function() {},
+      snapshot: function() {},
       toggleObjectPanel: function (e) {
         this.showObjectPanel = !this.showObjectPanel
         sessionStorage.setItem('halite-showMapObjectPanel', this.showObjectPanel.toString())

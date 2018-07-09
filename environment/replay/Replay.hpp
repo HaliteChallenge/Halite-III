@@ -18,6 +18,7 @@ namespace hlt {
 
 struct Turn {
     std::unordered_map<Player::id_type, std::vector<Command>> moves;    /**< Mapping from player id to the commands they issued this turn */
+    std::unordered_map<Player::id_type, energy_type> energy;            /**< Mapping from player id to the energy they ended the turn with */
     std::vector<GameEvent> events;                                      /**< Events occurring this turn (spawns, deaths, etc) for replay */
 
     /**
@@ -31,7 +32,7 @@ struct Turn {
 struct Replay {
     GameStatistics &game_statistics;                            /**< Statistics for the game (inlcudes number of turns) */
     const Constants &GAME_CONSTANTS = Constants{}.get();        /**< Constants used in this game */
-    static constexpr unsigned long REPLAY_FILE_VERSION = 1;     /**< Replay file version (updated as this struct or serialization changes) */
+    static constexpr unsigned long REPLAY_FILE_VERSION = 2;     /**< Replay file version (updated as this struct or serialization changes) */
     static constexpr auto ENGINE_VERSION = HALITE_VERSION;      /**< Version of the game engine */
 
     size_t number_of_players;                                   /**< Number of players in this game */
