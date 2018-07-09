@@ -11,12 +11,12 @@ namespace hlt {
  */
 class Auction {
 public:
-    energy_type minimum_price;
-    Player::id_type previous_owner;
-    energy_type previous_purchase_price;
-    std::unordered_set<Player::id_type> eligible_players;
+    energy_type minimum_price;                                          /**< Minimum price needed to purchase factory. */
+    Player::id_type previous_owner;                                     /**< Player putting factory up for sale. */
+    energy_type previous_purchase_price;                                /**< Price player putting factory up for sale paid for it. */
+    std::unordered_set<Player::id_type> eligible_players;               /**< Players eligible to purchase (in case of ties). Empty implies all players may purchase. */
 
-    std::unordered_map<Player::id_type, energy_type> player_buy_offers;
+    std::unordered_map<Player::id_type, energy_type> player_buy_offers; /**< Amount a player offered to buy the factory. */
 
     /**
      * Determine if any player successfully purchased the factory. Fill eligible players with number of players offering
