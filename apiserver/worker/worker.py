@@ -341,6 +341,22 @@ def main(args):
                         "width": task["width"],
                         "height": task["height"],
                     }, task["users"], task["challenge"], backend)
+            elif task.get("type") == "ondemand":
+                environment_params = {}
+                if task.get("snapshot"):
+                    environment_params["from-snapshot"] = task["snapshot"]
+                else:
+                    if "width" in task:
+                        environment_params["width"] = task["width"]
+                    if "height" in task:
+                        environment_params["height"] = task["height"]
+                    if "seed" in task:
+                        environment_params["s"] = task["seed"]
+
+                # TODO: add num_turns
+
+                executeGameTask(environment_params,
+                                task["users"], task["challenge"], backend)
             else:
                 logging.debug("No task available at time %s (GMT). Sleeping...\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         except Exception as e:
