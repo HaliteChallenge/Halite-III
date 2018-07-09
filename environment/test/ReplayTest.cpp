@@ -75,9 +75,9 @@ TEST_CASE("Replay object created and converted to json as expected by visualizer
     generator->generate(game_map, factories);
     std::unordered_map<Player::id_type, Player> player_map;
     for (auto &player : players) {
-        player.factory_location = factories.back();
+        player.factories.push_back(factories.back());
         factories.pop_back();
-        player.entities[player.factory_location] = make_entity<PlayerEntity>(player.player_id, GAME_CONSTANTS.NEW_ENTITY_ENERGY);
+        player.entities[player.factories.front()] = make_entity<PlayerEntity>(player.player_id, GAME_CONSTANTS.NEW_ENTITY_ENERGY);
         player_map[player.player_id] = player;
     }
 
@@ -157,8 +157,8 @@ TEST_CASE("Replay object created and converted to json as expected by visualizer
             for (const auto player_json : replay_json["players"]) {
                 REQUIRE_NOTHROW(player_json.at("player_id").get<Player::id_type>());
                 Player::id_type player_id = player_json.at("player_id").get<Player::id_type>();
-                REQUIRE(player_json.at("factory_location").at("x") == player_map[player_id].factory_location.x);
-                REQUIRE(player_json.at("factory_location").at("y") == player_map[player_id].factory_location.y);
+                REQUIRE(player_json.at("factory_location").at("x") == player_map[player_id].factories.front().x);
+                REQUIRE(player_json.at("factory_location").at("y") == player_map[player_id].factories.front().y);
             }
 
             SECTION( "Entity json format" ) {
