@@ -141,7 +141,7 @@ def compileResult(user_id, bot_id, did_compile, language, errors=None):
     print("Posted compile result %s\n" % r.text)
 
 
-def gameResult(users, game_output, challenge):
+def gameResult(users, game_output, challenge, url_path="game"):
     """
     POST the results of a game to the game coordinator.
     :param users:
@@ -164,9 +164,13 @@ def gameResult(users, game_output, challenge):
     print("Uploading game result")
     print(json.dumps(users, indent=4))
     print(json.dumps(game_output, indent=4))
-    r = requests.post(MANAGER_URL+"game", data=data, files=files)
+    r = requests.post(MANAGER_URL + url_path, data=data, files=files)
 
     print("Got game result %s (GMT)\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
     print("\n-------Game result:-----")
     print(r.text)
     print("------------------------\n")
+
+
+def ondemandResult(users, game_output, challenge):
+    gameResult(users, game_output, challenge, url_path="ondemand_result")

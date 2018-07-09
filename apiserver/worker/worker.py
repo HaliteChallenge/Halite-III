@@ -265,7 +265,7 @@ def parseGameOutput(output, users):
     return users, result
 
 
-def executeGameTask(environment_parameters, users, challenge, backend):
+def executeGameTask(environment_parameters, users, challenge, gameResult):
     """Downloads compiled bots, runs a game, and posts the results of the game"""
     logging.debug("Running game with parameters {}s\n".format(environment_parameters))
     logging.debug("Users objects %s\n" % (str(users)))
@@ -273,7 +273,7 @@ def executeGameTask(environment_parameters, users, challenge, backend):
     raw_output = '\n'.join(runGame(environment_parameters, users))
     users, parsed_output = parseGameOutput(raw_output, users)
 
-    backend.gameResult(users, parsed_output, challenge)
+    gameResult(users, parsed_output, challenge)
 
     # Clean up game logs and replays
     filelist = glob.glob("*.log")
@@ -340,7 +340,7 @@ def main(args):
                     executeGameTask({
                         "width": task["width"],
                         "height": task["height"],
-                    }, task["users"], task["challenge"], backend)
+                    }, task["users"], task["challenge"], backend.gameResult)
             elif task.get("type") == "ondemand":
                 environment_params = {}
                 if task.get("snapshot"):
@@ -356,7 +356,7 @@ def main(args):
                 # TODO: add num_turns
 
                 executeGameTask(environment_params,
-                                task["users"], task["challenge"], backend)
+                                task["users"], task["challenge"], backend.ondemandResult)
             else:
                 logging.debug("No task available at time %s (GMT). Sleeping...\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         except Exception as e:
