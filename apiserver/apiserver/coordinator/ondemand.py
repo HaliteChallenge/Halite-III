@@ -19,8 +19,17 @@ def ondemand_task():
             {
                 "user_id": task.key.id,
                 "bot_id": 0,
+                "username": "test",
+                "version_number": 1,
+            },
+            {
+                "user_id": 4385,
+                "bot_id": 0,
+                "username": "test",
+                "version_number": 1,
             },
         ]
+
         return util.response_success(result)
     else:
         return util.response_success({
