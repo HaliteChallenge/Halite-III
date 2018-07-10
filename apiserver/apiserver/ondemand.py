@@ -38,7 +38,7 @@ def launch(user_id, opponents, num_turns):
         "num_turns": num_turns,
         "width": 128,
         "height": 128,
-        "last_updated": datetime.datetime.now(),
+        "last_updated": datetime.datetime.now(datetime.timezone.utc),
     })
     client.put(entity)
 
@@ -47,9 +47,17 @@ def continue_game(user_id, num_turns):
     pass
 
 
+# Base seconds to wait if task assignment conflicts.
 TASK_CONFLICT_BACKOFF = 1
+
+# Multiplicative increase for wait time
 TASK_CONFLICT_FACTOR = 2
+
+# Maximum wait time
 TASK_CONFLICT_BACKOFF_MAX = 16
+
+# Maximum minutes before task is stale and can be rescheduled.
+MAX_TASK_AGE = 5
 
 
 def pending_task():
@@ -57,26 +65,39 @@ def pending_task():
     current_backoff = TASK_CONFLICT_BACKOFF
 
     while True:
+        # Search first for games that are stuck
+        stale_cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=MAX_TASK_AGE)
         query = client.query(kind=ONDEMAND_KIND)
-        query.add_filter("status", "=", "pending")
+        query.add_filter("status", "=", "running")
+        query.add_filter("last_updated", "<", stale_cutoff)
         query.order = ["-last_updated"]
 
         result = list(query.fetch(limit=1))
 
+        # Search for regular games
+        if not result:
+            query = client.query(kind=ONDEMAND_KIND)
+            query.add_filter("status", "=", "pending")
+            query.order = ["-last_updated"]
+
+            result = list(query.fetch(limit=1))
+
         if result:
             with client.transaction() as xact:
                 task = client.get(result[0].key)
-                if task["status"] != "pending":
-                    # Wait and retry
-                    time.sleep(current_backoff)
-                    current_backoff = min(
-                        TASK_CONFLICT_BACKOFF_MAX,
-                        TASK_CONFLICT_FACTOR * current_backoff)
-                    continue
+                if task["status"] == "pending" or (
+                        task["status"] == "running" and
+                        task["last_updated"] < stale_cutoff):
+                    task["status"] = "running"
+                    task["last_updated"] = datetime.datetime.now(datetime.timezone.utc)
+                    xact.put(task)
+                    return task
 
-                task["status"] = "running"
-                xact.put(task)
-                return task
+                # Otherwise, wait and retry
+                time.sleep(current_backoff)
+                current_backoff = min(
+                    TASK_CONFLICT_BACKOFF_MAX,
+                    TASK_CONFLICT_FACTOR * current_backoff)
         else:
             # No task available
             return None
@@ -94,6 +115,7 @@ def update_task(user_id, game_output, files):
     task = result[0]
     task["status"] = "completed"
     task["game_output"] = game_output
+    task["last_updated"] = datetime.datetime.now(datetime.timezone.utc)
 
     # TODO: upload replay and error logs
 
