@@ -2,6 +2,11 @@
 Coordinator API for running games on-demand (e.g. for the web editor
 and tutorial).
 """
+import io
+
+import flask
+import google.cloud.exceptions as gcloud_exceptions
+import google.cloud.storage as gcloud_storage
 
 from .. import model, ondemand, util
 
@@ -37,3 +42,28 @@ def continue_ondemand(*, user_id):
     # TODO: specify turns
     ondemand.continue_game(user_id, 1)
     return util.response_success()
+
+
+@web_api.route("/ondemand/replay", methods=["GET"])
+@util.cross_origin(methods=["GET"])
+@web_util.requires_login(accept_key=False)
+def get_ondemand_replay(*, user_id):
+    bucket = model.get_ondemand_replay_bucket()
+    blob = gcloud_storage.Blob("ondemand_{}".format(user_id), bucket, chunk_size=262144)
+    buffer = io.BytesIO()
+
+    try:
+        blob.download_to_file(buffer)
+    except gcloud_exceptions.NotFound:
+        raise util.APIError(404, message="Replay not found.")
+
+    buffer.seek(0)
+    response = flask.make_response(flask.send_file(
+        buffer,
+        mimetype="application/x-halite-3-replay",
+        as_attachment=True,
+        attachment_filename="{}.hlt".format(user_id)))
+
+    response.headers["Content-Length"] = str(buffer.getbuffer().nbytes)
+
+    return response
