@@ -2,6 +2,7 @@
 Internal API for running games on-demand (e.g. tutorials/web editor).
 """
 import datetime
+import time
 
 import google.cloud.datastore as gcloud_datastore
 
@@ -46,8 +47,15 @@ def continue_game(user_id, num_turns):
     pass
 
 
+TASK_CONFLICT_BACKOFF = 1
+TASK_CONFLICT_FACTOR = 2
+TASK_CONFLICT_BACKOFF_MAX = 16
+
+
 def pending_task():
     client = model.get_datastore_client()
+    current_backoff = TASK_CONFLICT_BACKOFF
+
     while True:
         query = client.query(kind=ONDEMAND_KIND)
         query.add_filter("status", "=", "pending")
@@ -59,7 +67,11 @@ def pending_task():
             with client.transaction() as xact:
                 task = client.get(result[0].key)
                 if task["status"] != "pending":
-                    # TODO: backoff
+                    # Wait and retry
+                    time.sleep(current_backoff)
+                    current_backoff = min(
+                        TASK_CONFLICT_BACKOFF_MAX,
+                        TASK_CONFLICT_FACTOR * current_backoff)
                     continue
 
                 task["status"] = "running"
