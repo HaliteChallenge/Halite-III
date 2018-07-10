@@ -10,6 +10,8 @@ namespace hlt {
 void HaliteImpl::retrieve_commands() {
     std::unordered_map<Player::id_type, std::future<std::vector<Command>>> results;
     for (auto &[player_id, player] : game.players) {
+        if (!player.alive) continue;
+
         results[player_id] = std::async(std::launch::async,
                                         [&game = this->game, &player = player] {
                                             return game.networking.handle_frame(player);
@@ -20,12 +22,14 @@ void HaliteImpl::retrieve_commands() {
     buf << "Turn " << this->game.turn_number;
 
     for (auto &[player_id, result] : results) {
+        if (!this->game.players[player_id].alive) continue;
+
         this->game.players[player_id].log_error_section(buf.str());
         try {
             commands[player_id] = result.get();
         }
         catch (const std::exception& e) {
-          // TODO: kick player out of game
+            this->game.kill_player(player_id);
         }
     }
 }
@@ -33,6 +37,8 @@ void HaliteImpl::retrieve_commands() {
 /** Process the effects of commands. */
 void HaliteImpl::process_commands() {
     for (const auto &[player_id, command_list] : commands) {
+        if (!this->game.players[player_id].alive) continue;
+
         auto transaction = CommandTransaction(game.game_map, game.players[player_id]);
         transaction.set_callback([&frames = game.replay_struct.full_frames](auto event) {
             // Create new game event for replay file,

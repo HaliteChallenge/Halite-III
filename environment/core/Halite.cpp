@@ -147,6 +147,19 @@ void Halite::load_snapshot(const Snapshot& snapshot) {
     }
 }
 
+void Halite::kill_player(Player::id_type player_id) {
+    auto& player = this->players[player_id];
+
+    player.alive = false;
+
+    auto &entities = player.entities;
+    for (auto entity_iterator = entities.begin(); entity_iterator != entities.end();) {
+        auto [location, entity] = *entity_iterator;
+        this->game_map.at(location)->remove_entity(player);
+        entities.erase(entity_iterator++);
+    }
+}
+
 /** Default destructor is defined where HaliteImpl is complete. */
 Halite::~Halite() = default;
 

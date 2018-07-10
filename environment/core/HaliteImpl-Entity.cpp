@@ -7,6 +7,8 @@ void HaliteImpl::process_entities() {
     const auto &constants = Constants::get();
     // Each entity loses some health, each entity with no remaining energy is removed
     for (auto &[player_id, player] : game.players) {
+        if (!player.alive) continue;
+
         auto &entities = player.entities;
         for (auto entity_iterator = entities.begin(); entity_iterator != entities.end();) {
             auto [location, entity] = *entity_iterator;

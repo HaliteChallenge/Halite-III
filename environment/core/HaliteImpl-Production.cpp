@@ -25,6 +25,8 @@ void HaliteImpl::process_production() {
 void HaliteImpl::initialize_owner_search_from_sprites(std::queue<Location> &search_cells) {
     static constexpr auto INITIAL_DISTANCE = 0;
     for (const auto &[_, player] : game.players) {
+        if (!player.alive) continue;
+
         for (const auto &[location, entity] : player.entities) {
             auto &cell = ownership_grid[location];
             if (multiple_entities_on_cell(location)) {
@@ -91,6 +93,7 @@ void HaliteImpl::update_production_from_ownership() {
     }
     // Add the energy from this turn to each player
     for (const auto &[player_id, energy] : turn_player_production) {
+        if (!this->game.players[player_id].alive) continue;
         game.players[player_id].energy += energy;
     }
     update_player_stats(turn_player_production);
