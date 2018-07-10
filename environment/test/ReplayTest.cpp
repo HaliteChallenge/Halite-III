@@ -35,7 +35,7 @@ TEST_CASE("Replay object created and converted to json as expected by visualizer
     const auto SEED = 10;
     srand(SEED);
 
-    const Constants &GAME_CONSTANTS = Constants{}.get();
+    const Constants &GAME_CONSTANTS = Constants::get();
     // Add player to stats struct and make up some stats
     for (const auto player : players) {
         stats.player_statistics.emplace_back(player.player_id);

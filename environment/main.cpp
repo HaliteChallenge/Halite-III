@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
                                                   constants.DEFAULT_MAP_HEIGHT,
                                                   "positive integer", cmd);
     ValueArg<unsigned int> seed_arg("s", "seed", "The seed for the map generator.", false, 0, "positive integer", cmd);
+    ValueArg<unsigned long> turn_limit_arg("", "turn-limit", "The maximum number of turns to play (0 for default).", false, 0, "positive integer", cmd);
     ValueArg<std::string> replay_arg("i", "replay-directory", "The path to directory for replay output.", false, ".",
                                      "path to directory", cmd);
     ValueArg<std::string> constants_arg("c", "constants-file", "JSON file containing runtime constants to use.", false,
@@ -70,6 +71,10 @@ int main(int argc, char *argv[]) {
         nlohmann::json constants_json;
         constants_file >> constants_json;
         from_json(constants_json, constants);
+    }
+
+    if (turn_limit_arg.isSet()) {
+        constants.MAX_TURNS = turn_limit_arg.getValue();
     }
 
     // TODO: set game ID

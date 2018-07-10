@@ -96,8 +96,8 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         let y_move = 0;
         // Move the sprite according to move commands and redraw in new location
         if (this.visualizer.frame < this.visualizer.replay.full_frames.length) {
-            let moves = this.visualizer.replay.full_frames[this.visualizer.frame].moves;
-            let player_moves = moves[this.owner];
+            let moves = this.visualizer.replay.full_frames[this.visualizer.frame].moves || {};
+            let player_moves = moves[this.owner] || [];
             for (let move_idx = 0; move_idx < player_moves.length; move_idx++) {
                 let move = player_moves[move_idx];
                 if (move && move.type === "move" && move.entity_x === this.x && move.entity_y === this.y) {
