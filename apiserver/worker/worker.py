@@ -169,6 +169,44 @@ def executeCompileTask(user_id, bot_id, backend):
             rm_as_user("bot_compilation", temp_dir)
 
 
+def setupParticipant(user_index, user, temp_dir):
+    """
+    Download and set up the bot for a game participant.
+    """
+    bot_dir = "{}_{}".format(user["user_id"], user["bot_id"])
+    bot_dir = os.path.join(temp_dir, bot_dir)
+    os.mkdir(bot_dir)
+    archive.unpack(backend.storeBotLocally(user["user_id"],
+                                           user["bot_id"], bot_dir))
+
+    # Make the start script executable
+    os.chmod(os.path.join(bot_dir, RUNFILE), 0o755)
+
+    # Give the bot user ownership of their directory
+    # We should set up each user's default group as a group that the
+    # worker is also a part of. Then we always have access to their
+    # files, but not vice versa.
+    # https://superuser.com/questions/102253/how-to-make-files-created-in-a-directory-owned-by-directory-group
+
+    bot_user = "bot_{}".format(user_index)
+    bot_cgroup = "bot_{}".format(user_index)
+
+    # We want 775 so that the bot can create files still; leading 2
+    # is equivalent to g+s which forces new files to be owned by the
+    # group
+    give_ownership(bot_dir, "bots", 0o2775)
+
+    bot_command = BOT_COMMAND.format(
+        cgroup=bot_cgroup,
+        bot_dir=bot_dir,
+        bot_user=bot_user,
+        runfile=RUNFILE,
+    )
+    bot_name = "{} v{}".format(user["username"], user["version_number"])
+
+    return bot_command, bot_name
+
+
 def runGame(environment_parameters, users):
     with tempfile.TemporaryDirectory(dir=TEMP_DIR) as temp_dir:
         shutil.copy(ENVIRONMENT, os.path.join(temp_dir, ENVIRONMENT))
@@ -191,38 +229,10 @@ def runGame(environment_parameters, users):
         os.chmod(temp_dir, 0o755)
 
         for user_index, user in enumerate(users):
-            bot_dir = "{}_{}".format(user["user_id"], user["bot_id"])
-            bot_dir = os.path.join(temp_dir, bot_dir)
-            os.mkdir(bot_dir)
-            archive.unpack(backend.storeBotLocally(user["user_id"],
-                                                   user["bot_id"], bot_dir))
-
-            # Make the start script executable
-            os.chmod(os.path.join(bot_dir, RUNFILE), 0o755)
-
-            # Give the bot user ownership of their directory
-            # We should set up each user's default group as a group that the
-            # worker is also a part of. Then we always have access to their
-            # files, but not vice versa.
-            # https://superuser.com/questions/102253/how-to-make-files-created-in-a-directory-owned-by-directory-group
-
-            bot_user = "bot_{}".format(user_index)
-            bot_cgroup = "bot_{}".format(user_index)
-
-            # We want 775 so that the bot can create files still; leading 2
-            # is equivalent to g+s which forces new files to be owned by the
-            # group
-            give_ownership(bot_dir, "bots", 0o2775)
-
-            command.append(BOT_COMMAND.format(
-                cgroup=bot_cgroup,
-                bot_dir=bot_dir,
-                bot_user=bot_user,
-                runfile=RUNFILE,
-            ))
+            bot_command, bot_name = setupParticipant(user_index, user, temp_dir)
+            command.append(bot_command)
             command.append("-o")
-            command.append("{} v{}".format(user["username"],
-                                           user["version_number"]))
+            command.append(bot_name)
 
         logging.debug("Run game command %s\n" % command)
         logging.debug("Waiting for game output...\n")
