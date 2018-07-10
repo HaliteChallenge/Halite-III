@@ -33,5 +33,7 @@ def start_ondemand(*, user_id):
 @web_api.route("/ondemand", methods=["POST"])
 @util.cross_origin(methods=["GET", "POST", "PUT"])
 @web_util.requires_login(accept_key=False)
-def continue_ondemand():
-    pass
+def continue_ondemand(*, user_id):
+    # TODO: specify turns
+    ondemand.continue_game(user_id, 1)
+    return util.response_success()

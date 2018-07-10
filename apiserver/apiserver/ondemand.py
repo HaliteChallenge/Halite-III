@@ -6,7 +6,7 @@ import time
 
 import google.cloud.datastore as gcloud_datastore
 
-from . import config, model
+from . import config, model, util
 
 
 ONDEMAND_KIND = "ondemand"
@@ -45,7 +45,33 @@ def launch(user_id, opponents, num_turns):
 
 
 def continue_game(user_id, num_turns):
-    pass
+    client = model.get_datastore_client()
+    query = client.query(kind=ONDEMAND_KIND)
+    query.key_filter(key_from_user_id(user_id))
+
+    result = list(query.fetch(limit=1))
+    if not result:
+        raise util.APIError(
+            404,
+            message="Ondemand game not found for user {}.".format(user_id))
+
+    task = result[0]
+    if task["status"] == "failed":
+        raise util.APIError(
+            400,
+            message="Ondemand game failed for user {}. Please restart.".format(user_id))
+    elif task["status"] != "completed":
+        raise util.APIError(
+            400,
+            message="Ondemand game not ready for user {}. Please wait.".format(user_id))
+
+    task.update({
+        "status": "pending",
+        "last_updated": datetime.datetime.now(datetime.timezone.utc),
+        "retries": 0,
+        "snapshot": task["game_output"]["final_snapshot"],
+    })
+    client.put(task)
 
 
 # Base seconds to wait if task assignment conflicts.
