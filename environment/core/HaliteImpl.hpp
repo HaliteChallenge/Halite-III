@@ -39,6 +39,19 @@ class HaliteImpl final {
     void process_entities();
 
     /**
+     * Determine minimum purchase price for factories at start of game
+     * @return minimum purchase price
+     */
+    energy_type initial_minimum_price();
+
+    /**
+     * Execute initial factory division, including dealing with ties. This function will deal with processing commands from
+     * players and sending them info after each tie break
+     * Will assign players' their initial factory.
+     */
+    void initial_factory_assignment();
+
+    /**
      * Update a player's statistics after a single turn. This will update their total game production, their last turn
      * alive if they are still alive, and the production for that turn.
      *
