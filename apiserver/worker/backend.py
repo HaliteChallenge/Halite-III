@@ -175,5 +175,5 @@ def gameResult(users, game_output, extra_metadata, url_path="game"):
     print("------------------------\n")
 
 
-def ondemandResult(users, game_output, challenge):
-    gameResult(users, game_output, challenge, url_path="ondemand_result")
+def ondemandResult(users, game_output, extra_metadata, challenge):
+    gameResult(users, game_output, extra_metadata, url_path="ondemand_result")
