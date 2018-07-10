@@ -148,19 +148,14 @@ def google_login_callback():
 
     flask.session["google_token"] = (response["access_token"], "")
 
-    user_data = google.get("userinfo")
-    print(user_data)
+    user_data = google.get("userinfo").data
 
-    username = user_data["login"]
+    # TODO: better way of doing this?
+    # TODO: username collisions between services...
+    username = user_data["email"].split("@")[0]
     google_user_id = user_data["id"]
-    emails = github.get("user/emails").data
-
-    email = emails[0]["email"]
-    for record in emails:
-        if record["primary"]:
-            email = record["email"]
-            break
-
+    email = user_data["email"]
+    # TODO: factor this out into constant
     return generic_login_callback(username, email, 2, google_user_id)
 
 
