@@ -22,7 +22,10 @@
                                 </div>
                         </div>
                         <div class="col-12 col-md-4 col-xl-4 hidden-sm hidden-xs py-md-4 pl-md-4 bd-toc replay_col">
-                          REPLAY HERE
+                          <div class="replay">
+                          </div>
+                          <div class="console">
+                          </div>
                         </div>
                 </div>
         </div>
@@ -113,12 +116,14 @@ export default {
     /* Init the Orion Editor */
     create_editor: function (code) {
       logInfo('Creating editor...')
-      const codeEdit = new orion.codeEdit()
+      const codeEdit = new orion.codeEdit({editorConfig: {wordWrap: true, annotationRuler: false}})
       var opts = {parent: 'embeddedEditor', contentType: this.bot_info().mimeType, contents: code}
       codeEdit.create(opts).then((editorViewer) => {
         logInfo('Initializing editor...')
         this.editorViewer = editorViewer
         const editor = editorViewer.editor
+        
+        editor.setAnnotationRulerVisible(false);
 
         // make sure we're using the correct color theme
 
@@ -159,6 +164,7 @@ export default {
           editorViewer.settings.showOccurrences = true
         }
 
+        jQuery('.textview').addClass('editorTheme')
         logInfo('Editor ready!')
       })
     },
@@ -374,12 +380,27 @@ export default {
   }
   .file_tree_col {
     padding: 0px;	
+    border-right: 1px solid #424C53;
   }
   .editor_col {
     padding: 0px;	
     margin-top: 0px;
+    border-right: 1px solid #424C53;
+  }
+  .replay_col {
+    padding: 0px;
   }
   .page_container, .page_row, .editorArea, .replay_col, .editor_col, .file_tree_col, .editorBody {
      height: 100%;
   }
+
+  .replay {
+    border-bottom: 1px solid #424C53;
+  }
+
+  .replay, .console {
+    width: 100%;
+    height: 50%;
+  }
+
 </style>

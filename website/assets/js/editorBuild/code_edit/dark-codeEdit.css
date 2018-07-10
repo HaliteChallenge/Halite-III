@@ -162,7 +162,7 @@
 	color: #FFA83E;
 }
 .editorTheme .ruler {
-	background-color: #26343F;
+	background-color: #25242f;
 }
 .editorTheme .rulerLines {
 	color: #93A2AA;
@@ -205,7 +205,7 @@
 	color: #8CD211;
 }
 .editorTheme.textview {
-	background-color: #26343F;
+	background-color: #25242f;
 	color: #07ADCF;
 	font-family: "Consolas", "Menlo", "Monaco", "Vera Mono", monospace;
 	font-size: 12px;
