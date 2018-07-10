@@ -46,7 +46,7 @@ def launch(user_id, opponents, environment_parameters, metadata):
     client.put(entity)
 
 
-def continue_game(user_id, num_turns):
+def continue_game(user_id, num_turns, snapshot_index):
     client = model.get_datastore_client()
     query = client.query(kind=ONDEMAND_KIND)
     query.key_filter(key_from_user_id(user_id))
@@ -77,7 +77,7 @@ def continue_game(user_id, num_turns):
     # we're starting it
     if task["status"] == "finished" and "game_output" in task:
         task["environment_parameters"]["from-snapshot"] = \
-            task["game_output"]["final_snapshot"]
+            task["snapshots"][snapshot_index]["snapshot"]
 
     task["environment_parameters"]["turn-limit"] = num_turns
 
@@ -162,8 +162,22 @@ def update_task(user_id, game_output, files):
 
     task = result[0]
     task["status"] = "completed"
+
+    current_time = datetime.datetime.now(datetime.timezone.utc)
+
+    # Track history of game state snapshots, so that user can
+    # rewind. Use case: user takes next step in tutorial and fails;
+    # needs previous game state, not current game state, to continue.
+    if "snapshots" not in task:
+        task["snapshots"] = []
+
+    task["snapshots"].append({
+        "snapshot": game_output["final_snapshot"],
+        "updated_at": current_time,
+    })
+
     task["game_output"] = game_output
-    task["last_updated"] = datetime.datetime.now(datetime.timezone.utc)
+    task["last_updated"] = current_time
     task["retries"] = 0
 
     # TODO: upload error logs (just store them in the blob if small enough?)

@@ -60,11 +60,15 @@ def continue_ondemand(intended_user, *, user_id):
             message="Cannot continue ondemand game for another user.")
 
     num_turns = 1
+    snapshot_index = -1
+
     if flask.request.json:
         if flask.request.json.get("turn-limit"):
             num_turns = flask.request.json["turn-limit"]
+        if flask.request.json.get("snapshot-index"):
+            snapshot_index = flask.request.json["snapshot-index"]
 
-    ondemand.continue_game(user_id, num_turns)
+    ondemand.continue_game(user_id, num_turns, snapshot_index)
 
     return util.response_success()
 
