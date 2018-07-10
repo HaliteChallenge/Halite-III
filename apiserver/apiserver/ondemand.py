@@ -39,6 +39,7 @@ def launch(user_id, opponents, num_turns):
         "width": 128,
         "height": 128,
         "last_updated": datetime.datetime.now(datetime.timezone.utc),
+        "retries": 0,
     })
     client.put(entity)
 
@@ -57,7 +58,10 @@ TASK_CONFLICT_FACTOR = 2
 TASK_CONFLICT_BACKOFF_MAX = 16
 
 # Maximum minutes before task is stale and can be rescheduled.
-MAX_TASK_AGE = 5
+TASK_MAX_AGE = 5
+
+# Maximum number of times a task will be retried.
+TASK_MAX_RETRIES = 3
 
 
 def pending_task():
@@ -66,7 +70,7 @@ def pending_task():
 
     while True:
         # Search first for games that are stuck
-        stale_cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=MAX_TASK_AGE)
+        stale_cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=TASK_MAX_AGE)
         query = client.query(kind=ONDEMAND_KIND)
         query.add_filter("status", "=", "running")
         query.add_filter("last_updated", "<", stale_cutoff)
@@ -85,11 +89,19 @@ def pending_task():
         if result:
             with client.transaction() as xact:
                 task = client.get(result[0].key)
-                if task["status"] == "pending" or (
+                if (task["status"] == "running" and
+                    task["last_updated"] < stale_cutoff and
+                    task["retries"] > TASK_MAX_RETRIES):
+                    task["status"] = "failed"
+                    task["last_updated"] = datetime.datetime.now(datetime.timezone.utc)
+                    xact.put(task)
+
+                elif task["status"] == "pending" or (
                         task["status"] == "running" and
                         task["last_updated"] < stale_cutoff):
                     task["status"] = "running"
                     task["last_updated"] = datetime.datetime.now(datetime.timezone.utc)
+                    task["retries"] += 1
                     xact.put(task)
                     return task
 
@@ -116,6 +128,7 @@ def update_task(user_id, game_output, files):
     task["status"] = "completed"
     task["game_output"] = game_output
     task["last_updated"] = datetime.datetime.now(datetime.timezone.utc)
+    task["retries"] = 0
 
     # TODO: upload replay and error logs
 
