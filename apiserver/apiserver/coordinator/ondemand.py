@@ -2,6 +2,9 @@
 Coordinator API for running games on-demand (e.g. for the web editor
 and tutorial).
 """
+import flask
+import json
+import os
 
 from .. import model, ondemand, util
 
@@ -14,6 +17,7 @@ def ondemand_task():
         result = dict(task)
         result["type"] = "ondemand"
         result["challenge"] = None
+        result["task_user_id"] = task.key.id
         # TODO: fill in all proper parameters
         result["users"] = [
             {
@@ -39,4 +43,25 @@ def ondemand_task():
 
 @coordinator_api.route("/ondemand_result", methods=["POST"])
 def ondemand_result():
-    pass
+    """Save the results of an ondemand game into document storage."""
+
+    if ("game_output" not in flask.request.values or
+            "users" not in flask.request.values):
+        raise util.APIError(
+            400, message="Please provide both the game output and users.")
+
+    game_output = json.loads(flask.request.values["game_output"])
+    replay_name = os.path.basename(game_output["replay"])
+    task_user_id = int(flask.request.values["task_user_id"])
+    if replay_name not in flask.request.files:
+        raise util.APIError(
+            400, message="Replay file not found in uploaded files.")
+
+    print(game_output)
+
+    ondemand.update_task(task_user_id, game_output, {
+        "replay": flask.request.files[replay_name],
+        # TODO: error logs
+    })
+
+    return util.response_success()

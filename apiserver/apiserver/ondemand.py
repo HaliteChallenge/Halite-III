@@ -68,3 +68,21 @@ def pending_task():
         else:
             # No task available
             return None
+
+
+def update_task(user_id, game_output, files):
+    client = model.get_datastore_client()
+    query = client.query(kind=ONDEMAND_KIND)
+    query.key_filter(key_from_user_id(user_id))
+
+    result = list(query.fetch(limit=1))
+    if not result:
+        return
+
+    task = result[0]
+    task["status"] = "completed"
+    task["game_output"] = game_output
+
+    # TODO: upload replay and error logs
+
+    client.put(task)
