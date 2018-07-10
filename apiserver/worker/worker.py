@@ -265,15 +265,16 @@ def parseGameOutput(output, users):
     return users, result
 
 
-def executeGameTask(environment_parameters, users, challenge, gameResult):
+def executeGameTask(environment_parameters, users, extra_metadata, gameResult):
     """Downloads compiled bots, runs a game, and posts the results of the game"""
-    logging.debug("Running game with parameters {}s\n".format(environment_parameters))
-    logging.debug("Users objects %s\n" % (str(users)))
+    logging.debug("Running game with parameters {}\n".format(environment_parameters))
+    logging.debug("Users objects {}\n".format(users))
+    logging.debug("Extra metadata {}\n".format(extra_metadata))
 
     raw_output = '\n'.join(runGame(environment_parameters, users))
     users, parsed_output = parseGameOutput(raw_output, users)
 
-    gameResult(users, parsed_output, challenge)
+    gameResult(users, parsed_output, extra_metadata)
 
     # Clean up game logs and replays
     filelist = glob.glob("*.log")
@@ -340,7 +341,9 @@ def main(args):
                     executeGameTask({
                         "width": task["width"],
                         "height": task["height"],
-                    }, task["users"], task["challenge"], backend.gameResult)
+                    }, task["users"], {
+                        "challenge": task.get("challenge"),
+                    }, backend.gameResult)
             elif task.get("type") == "ondemand":
                 environment_params = {}
                 if task.get("snapshot"):
@@ -356,7 +359,9 @@ def main(args):
                 # TODO: add num_turns
 
                 executeGameTask(environment_params,
-                                task["users"], task["challenge"], backend.ondemandResult)
+                                task["users"], {
+                                    "task_user_id": task["task_user_id"],
+                                }, backend.ondemandResult)
             else:
                 logging.debug("No task available at time %s (GMT). Sleeping...\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         except Exception as e:

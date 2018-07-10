@@ -141,12 +141,13 @@ def compileResult(user_id, bot_id, did_compile, language, errors=None):
     print("Posted compile result %s\n" % r.text)
 
 
-def gameResult(users, game_output, challenge, url_path="game"):
+def gameResult(users, game_output, extra_metadata, url_path="game"):
     """
     POST the results of a game to the game coordinator.
     :param users:
     :param game_output: The parsed JSON result the game gives in quiet mode.
-    :param challenge: The challenge ID, or None.
+    :param challenge: A dictionary of extra metadata to pass back to
+    the coordinator.
     :return:
     """
 
@@ -159,8 +160,10 @@ def gameResult(users, game_output, challenge, url_path="game"):
     data = {
         "users": json.dumps(users),
         "game_output": json.dumps(game_output),
-        "challenge": json.dumps(challenge),
     }
+    for key, value in extra_metadata.items():
+        data[key] = json.dumps(value)
+
     print("Uploading game result")
     print(json.dumps(users, indent=4))
     print(json.dumps(game_output, indent=4))
