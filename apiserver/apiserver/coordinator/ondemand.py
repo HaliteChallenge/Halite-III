@@ -18,21 +18,24 @@ def ondemand_task():
         result["type"] = "ondemand"
         result["challenge"] = None
         result["task_user_id"] = task.key.id
-        # TODO: fill in all proper parameters
-        result["users"] = [
+
+        users = [
             {
                 "user_id": task.key.id,
                 "bot_id": 0,
                 "username": "test",
                 "version_number": 1,
             },
-            {
-                "user_id": 4385,
-                "bot_id": 0,
-                "username": "test",
-                "version_number": 1,
-            },
         ]
+        for opponent in task["opponents"]:
+            users.append({
+                "user_id": "gym",
+                "bot_id": opponent["bot_id"],
+                "username": opponent["name"],
+                "version_number": 1,
+            })
+
+        result["users"] = users
 
         return util.response_success(result)
     else:

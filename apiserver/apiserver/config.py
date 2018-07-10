@@ -58,6 +58,9 @@ GCLOUD_REPLAY_BUCKETS = {
     1: 'todo',
 }
 GCLOUD_ONDEMAND_REPLAY_BUCKET = "TODO"
+# Bucket for pre-assembled bots that players fight in the
+# tutorial/online editor
+GCLOUD_GYM_BUCKET = ""
 GCLOUD_ERROR_LOG_BUCKET = 'TODO'
 GCLOUD_DEPLOYED_ARTIFACTS_BUCKET = 'TODO'
 GCLOUD_EDITOR_BUCKET = 'editor-bucket'

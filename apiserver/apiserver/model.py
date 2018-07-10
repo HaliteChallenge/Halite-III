@@ -281,6 +281,11 @@ def get_ondemand_replay_bucket():
     return get_storage_client().get_bucket(config.GCLOUD_ONDEMAND_REPLAY_BUCKET)
 
 
+def get_gym_bot_bucket():
+    """Get object storage bucket for pre-built enemy bots."""
+    return get_storage_client().get_bucket(config.GCLOUD_GYM_BUCKET)
+
+
 def get_editor_bucket():
     """Get the object storage bucket for game replays."""
     return get_storage_client().get_bucket(config.GCLOUD_EDITOR_BUCKET)

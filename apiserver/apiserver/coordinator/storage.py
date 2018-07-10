@@ -74,7 +74,9 @@ def download_bot():
     bot_id = flask.request.values.get("bot_id", None)
     compile = flask.request.values.get("compile", False)
 
-    if compile:
+    if user_id == "gym":
+        bucket = model.get_gym_bot_bucket()
+    elif compile:
         bucket = model.get_compilation_bucket()
     else:
         bucket = model.get_bot_bucket()
@@ -104,7 +106,9 @@ def hash_bot():
     if not user_id or not bot_id:
         raise util.APIError(400, message="Please provide user and bot ID.")
 
-    if compile:
+    if user_id == "gym":
+        bucket = model.get_gym_bot_bucket()
+    elif compile:
         bucket = model.get_compilation_bucket()
     else:
         bucket = model.get_bot_bucket()

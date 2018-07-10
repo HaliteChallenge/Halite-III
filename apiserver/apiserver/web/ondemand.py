@@ -32,8 +32,13 @@ def start_ondemand(intended_user, *, user_id):
     if user_id != intended_user:
         raise web_util.user_mismatch_error(
             message="Cannot start ondemand game for another user.")
-    # TODO: specify opponents, or specify something like "web-ide" vs
-    # "tutorial-1"
+
+    opponents = []
+    for opponent in flask.request.json["opponents"]:
+        opponents.append({
+            "name": opponent["name"],
+            "bot_id": opponent["bot_id"],
+        })
 
     env_params = {}
     for key, value in flask.request.json.items():
@@ -42,7 +47,7 @@ def start_ondemand(intended_user, *, user_id):
 
     # TODO: check that user has a bot in the editor bucket (tutorial
     # bucket?)
-    ondemand.launch(user_id, [], env_params)
+    ondemand.launch(user_id, opponents, env_params)
     return util.response_success()
 
 
