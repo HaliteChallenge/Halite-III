@@ -29,11 +29,14 @@ def start_ondemand(*, user_id):
     # TODO: specify opponents, or specify something like "web-ide" vs
     # "tutorial-1"
 
+    env_params = {}
+    for key, value in flask.request.json.items():
+        if key in ("width", "height", "s", "no-timeout"):
+            env_params[key] = value
+
     # TODO: check that user has a bot in the editor bucket (tutorial
     # bucket?)
-    ondemand.launch(user_id, [], {
-
-    })
+    ondemand.launch(user_id, [], env_params)
     return util.response_success()
 
 
