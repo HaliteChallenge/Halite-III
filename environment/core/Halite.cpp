@@ -1,4 +1,5 @@
 #include <future>
+#include <sstream>
 
 #include "Constants.hpp"
 #include "BlurTileGenerator.hpp"
@@ -6,6 +7,7 @@
 #include "Halite.hpp"
 #include "HaliteImpl.hpp"
 #include "Logging.hpp"
+#include "error/NetworkingError.hpp"
 
 namespace hlt {
 
@@ -19,9 +21,27 @@ void Halite::run_game() {
                                             networking.initialize_player(player);
                                         });
     }
-    for (auto &[_, result] : results) {
-        result.get();
+
+    auto failed = false;
+    for (auto &[player_id, result] : results) {
+        try {
+            result.get();
+        }
+        catch (const net::NetworkingError err) {
+            std::ostringstream msg;
+            this->players[player_id].log_error_section("Initialization");
+            this->players[player_id].log_error(err.what());
+            failed = true;
+            msg << "Player " << player_id << " failed initialization: " << err.what();
+            Logging::log(msg.str());
+        }
     }
+
+    if (failed) {
+        // TODO: write error logs
+        std::exit(1);
+    }
+
     replay_struct.players = this->players;
     // In the replay object, replace any entities owned by players at the start of the game with a copy,
     // so the replay object keeps a snapshot of the entities at the start of the game

@@ -97,4 +97,15 @@ std::shared_ptr<PlayerEntity> Player::remove_entity(const Location &location) {
     return found;
 }
 
+void Player::log_error_section(const std::string& section_name) {
+    error_log.append(section_name);
+    error_log.append("\n");
+    error_log.append("================================================================\n");
+}
+
+void Player::log_error(const std::string& text) {
+    error_log.append(text);
+    error_log.append("\n");
+}
+
 }
