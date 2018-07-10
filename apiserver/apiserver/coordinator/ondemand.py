@@ -24,6 +24,7 @@ def ondemand_task():
                 "user_id": task.key.id,
                 "bot_id": "editor",
                 "username": "my-editor-bot",
+                "requires_compilation": True,
                 "version_number": 1,
             },
         ]

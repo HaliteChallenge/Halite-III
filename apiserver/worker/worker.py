@@ -179,6 +179,19 @@ def setupParticipant(user_index, user, temp_dir):
     archive.unpack(backend.storeBotLocally(user["user_id"],
                                            user["bot_id"], bot_dir))
 
+    if user.get("requires_compilation"):
+        try:
+            language, errors = compiler.compile_anything(bot_dir)
+            didCompile = errors is None
+        except Exception:
+            language = "Other"
+            errors = [COMPILE_ERROR_MESSAGE + traceback.format_exc()] + errors
+            didCompile = False
+
+        if not didCompile:
+            # TODO: abort and upload an error log (somehow)
+            pass
+
     # Make the start script executable
     os.chmod(os.path.join(bot_dir, RUNFILE), 0o755)
 
