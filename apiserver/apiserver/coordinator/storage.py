@@ -1,7 +1,9 @@
 import base64
 import binascii
 import io
+import os.path
 import tempfile
+import zipfile
 
 import flask
 import google.cloud.storage as gcloud_storage
@@ -76,6 +78,8 @@ def download_bot():
 
     if user_id == "gym":
         bucket = model.get_gym_bot_bucket()
+    elif bot_id == "editor":
+        return download_editor_bot(user_id)
     elif compile:
         bucket = model.get_compilation_bucket()
     else:
@@ -94,6 +98,25 @@ def download_bot():
                                attachment_filename=botname + ".zip")
     except gcloud_exceptions.NotFound:
         raise util.APIError(404, message="Bot not found.")
+
+
+def download_editor_bot(user_id):
+    bucket = model.get_editor_bucket()
+    prefix = "{}/".format(user_id)
+    blobs = bucket.list_blobs(prefix=prefix)
+
+    zipblob = io.BytesIO()
+    with zipfile.ZipFile(zipblob, "w") as zipresult:
+        for blob in blobs:
+            path = os.path.relpath(blob.name, prefix)
+            contents = blob.download_as_string()
+
+            zipresult.writestr(path, contents)
+
+    zipblob.seek(0)
+    return flask.send_file(zipblob, mimetype="application/zip",
+                           as_attachment=True,
+                           attachment_filename="{}_editor.zip".format(user_id))
 
 
 @coordinator_api.route("/botHash")
