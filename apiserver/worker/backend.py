@@ -175,5 +175,24 @@ def gameResult(users, game_output, extra_metadata, url_path="game"):
     print("------------------------\n")
 
 
-def ondemandResult(users, game_output, extra_metadata, challenge):
+def ondemandResult(users, game_output, extra_metadata):
     gameResult(users, game_output, extra_metadata, url_path="ondemand_result")
+
+
+def ondemandError(users, extra_metadata, language, log):
+    """
+    POST a compilation error that occurred during an ondemand game.
+    """
+
+    data = {
+        "users": json.dumps(users),
+        "language": language,
+        "log": log,
+    }
+    for key, value in extra_metadata.items():
+        data[key] = json.dumps(value)
+
+    r = requests.post(MANAGER_URL + "/ondemand_compile", data=data)
+    print("\n-------Game result:-----")
+    print(r.text)
+    print("------------------------\n")

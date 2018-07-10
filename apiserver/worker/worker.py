@@ -70,6 +70,15 @@ this happened, please email us at halite@halite.io. We can help.
 For our reference, here is the trace of the error:
 """
 
+class OndemandCompileError(Exception):
+    """
+    Error for when compilation fails before an ondemand game.
+    """
+
+    def __init__(self, language, log):
+        self.language = language
+        self.log = log
+
 
 def makePath(path):
     """Deletes anything residing at path, creates path, and chmods the directory"""
@@ -189,8 +198,8 @@ def setupParticipant(user_index, user, temp_dir):
             didCompile = False
 
         if not didCompile:
-            # TODO: abort and upload an error log (somehow)
-            pass
+            # Abort and upload an error log
+            raise OndemandCompileError(language, errors)
 
     # Make the start script executable
     os.chmod(os.path.join(bot_dir, RUNFILE), 0o755)
@@ -370,13 +379,21 @@ def main(args):
                     }, backend.gameResult)
             elif task.get("type") == "ondemand":
                 environment_params = task["environment_parameters"]
+                extra_metadata = {
+                    "task_user_id": task["task_user_id"],
+                }
 
-                # TODO: add num_turns
-
-                executeGameTask(environment_params,
-                                task["users"], {
-                                    "task_user_id": task["task_user_id"],
-                                }, backend.ondemandResult)
+                try:
+                    executeGameTask(environment_params,
+                                    task["users"],
+                                    extra_metadata,
+                                    backend.ondemandResult)
+                except OndemandCompileError as e:
+                    backend.ondemandError(
+                        task["users"],
+                        extra_metadata,
+                        e.language, e.log
+                    )
             else:
                 logging.debug("No task available at time %s (GMT). Sleeping...\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         except Exception as e:
