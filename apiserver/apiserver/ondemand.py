@@ -30,15 +30,18 @@ def check_status(user_id):
     return result[0] if result else None
 
 
-def launch(user_id, opponents, environment_parameters):
+def launch(user_id, opponents, environment_parameters, metadata):
     client = model.get_datastore_client()
     entity = gcloud_datastore.Entity(key_from_user_id(user_id))
     entity.update({
-        "status": "pending",
+        "status": "created",
         "opponents": opponents,
         "environment_parameters": environment_parameters,
         "last_updated": datetime.datetime.now(datetime.timezone.utc),
         "retries": 0,
+        # Used to associate a game with a tutorial or something like
+        # that
+        "metadata": metadata,
     })
     client.put(entity)
 
@@ -59,7 +62,7 @@ def continue_game(user_id, num_turns):
         raise util.APIError(
             400,
             message="Ondemand game failed for user {}. Please restart.".format(user_id))
-    elif task["status"] != "completed":
+    elif task["status"] not in ("completed", "created"):
         raise util.APIError(
             400,
             message="Ondemand game not ready for user {}. Please wait.".format(user_id))
@@ -69,7 +72,13 @@ def continue_game(user_id, num_turns):
         "last_updated": datetime.datetime.now(datetime.timezone.utc),
         "retries": 0,
     })
-    task["environment_parameters"]["from-snapshot"] = task["game_output"]["final_snapshot"]
+
+    # Resume game from snapshot of state if this is not the first time
+    # we're starting it
+    if task["status"] == "finished" and "game_output" in task:
+        task["environment_parameters"]["from-snapshot"] = \
+            task["game_output"]["final_snapshot"]
+
     task["environment_parameters"]["turn-limit"] = num_turns
 
     client.put(task)

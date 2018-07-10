@@ -28,7 +28,7 @@ def check_ondemand(intended_user, *, user_id):
 @web_api.route("/ondemand/<int:intended_user>", methods=["POST"])
 @util.cross_origin(methods=["GET", "POST", "PUT"])
 @web_util.requires_login(accept_key=False)
-def start_ondemand(intended_user, *, user_id):
+def create_ondemand(intended_user, *, user_id):
     if user_id != intended_user:
         raise web_util.user_mismatch_error(
             message="Cannot start ondemand game for another user.")
@@ -47,7 +47,7 @@ def start_ondemand(intended_user, *, user_id):
 
     # TODO: check that user has a bot in the editor bucket (tutorial
     # bucket?)
-    ondemand.launch(user_id, opponents, env_params)
+    ondemand.launch(user_id, opponents, env_params, {})
     return util.response_success()
 
 
