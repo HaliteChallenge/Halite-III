@@ -64,13 +64,13 @@ def continue_game(user_id, num_turns):
             400,
             message="Ondemand game not ready for user {}. Please wait.".format(user_id))
 
-    # TODO: use num_turns
     task.update({
         "status": "pending",
         "last_updated": datetime.datetime.now(datetime.timezone.utc),
         "retries": 0,
     })
     task["environment_parameters"]["from-snapshot"] = task["game_output"]["final_snapshot"]
+    task["environment_parameters"]["turn-limit"] = num_turns
 
     client.put(task)
 

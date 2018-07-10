@@ -37,7 +37,7 @@ def start_ondemand(intended_user, *, user_id):
 
     env_params = {}
     for key, value in flask.request.json.items():
-        if key in ("width", "height", "s", "no-timeout"):
+        if key in ("width", "height", "s", "no-timeout", "turn-limit"):
             env_params[key] = value
 
     # TODO: check that user has a bot in the editor bucket (tutorial
@@ -53,8 +53,14 @@ def continue_ondemand(intended_user, *, user_id):
     if user_id != intended_user:
         raise web_util.user_mismatch_error(
             message="Cannot continue ondemand game for another user.")
-    # TODO: specify turns
-    ondemand.continue_game(user_id, 1)
+
+    num_turns = 1
+    if flask.request.json:
+        if flask.request.json.get("turn-limit"):
+            num_turns = flask.request.json["turn-limit"]
+
+    ondemand.continue_game(user_id, num_turns)
+
     return util.response_success()
 
 
