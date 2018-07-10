@@ -22,8 +22,8 @@ def ondemand_task():
         users = [
             {
                 "user_id": task.key.id,
-                "bot_id": 0,
-                "username": "test",
+                "bot_id": "editor",
+                "username": "my-editor-bot",
                 "version_number": 1,
             },
         ]
