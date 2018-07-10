@@ -29,9 +29,11 @@ def start_ondemand(*, user_id):
     # TODO: specify opponents, or specify something like "web-ide" vs
     # "tutorial-1"
 
-    # TODO: check that user has a bot and that it successfully
-    # compiled
-    ondemand.launch(user_id, [], 1)
+    # TODO: check that user has a bot in the editor bucket (tutorial
+    # bucket?)
+    ondemand.launch(user_id, [], {
+
+    })
     return util.response_success()
 
 

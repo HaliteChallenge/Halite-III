@@ -30,15 +30,13 @@ def check_status(user_id):
     return result[0] if result else None
 
 
-def launch(user_id, opponents, num_turns):
+def launch(user_id, opponents, environment_parameters):
     client = model.get_datastore_client()
     entity = gcloud_datastore.Entity(key_from_user_id(user_id))
     entity.update({
         "status": "pending",
         "opponents": opponents,
-        "num_turns": num_turns,
-        "width": 128,
-        "height": 128,
+        "environment_parameters": environment_parameters,
         "last_updated": datetime.datetime.now(datetime.timezone.utc),
         "retries": 0,
     })
@@ -70,8 +68,9 @@ def continue_game(user_id, num_turns):
         "status": "pending",
         "last_updated": datetime.datetime.now(datetime.timezone.utc),
         "retries": 0,
-        "snapshot": task["game_output"]["final_snapshot"],
     })
+    task["environment_parameters"]["from-snapshot"] = task["game_output"]["final_snapshot"]
+
     client.put(task)
 
 

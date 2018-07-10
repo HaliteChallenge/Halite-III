@@ -345,16 +345,7 @@ def main(args):
                         "challenge": task.get("challenge"),
                     }, backend.gameResult)
             elif task.get("type") == "ondemand":
-                environment_params = {}
-                if task.get("snapshot"):
-                    environment_params["from-snapshot"] = task["snapshot"]
-                else:
-                    if "width" in task:
-                        environment_params["width"] = task["width"]
-                    if "height" in task:
-                        environment_params["height"] = task["height"]
-                    if "seed" in task:
-                        environment_params["s"] = task["seed"]
+                environment_params = task["environment_parameters"]
 
                 # TODO: add num_turns
 
