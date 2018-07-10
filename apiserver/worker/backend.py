@@ -192,7 +192,7 @@ def ondemandError(users, extra_metadata, language, log):
     for key, value in extra_metadata.items():
         data[key] = json.dumps(value)
 
-    r = requests.post(MANAGER_URL + "/ondemand_compile", data=data)
+    r = requests.post(MANAGER_URL + "ondemand_compile", data=data)
     print("\n-------Game result:-----")
     print(r.text)
     print("------------------------\n")

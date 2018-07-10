@@ -69,3 +69,16 @@ def ondemand_result():
     })
 
     return util.response_success()
+
+
+@coordinator_api.route("/ondemand_compile", methods=["POST"])
+def ondemand_compile():
+    """Save the results of an ondemand game that failed compilation."""
+
+    task_user_id = int(flask.request.values["task_user_id"])
+
+    ondemand.update_task(task_user_id, None, {
+        "compile_error": flask.request.values["log"],
+    })
+
+    return util.response_success()
