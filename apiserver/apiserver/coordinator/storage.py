@@ -1,5 +1,6 @@
 import base64
 import binascii
+import hashlib
 import io
 import os.path
 import tempfile
@@ -88,14 +89,22 @@ def download_bot():
     # Retrieve from GCloud
     try:
         botname = "{}_{}".format(user_id, bot_id)
-        blob = gcloud_storage.Blob(botname,
-                                   bucket, chunk_size=262144)
+        blob = bucket.get_blob(botname)
         buffer = io.BytesIO()
         blob.download_to_file(buffer)
         buffer.seek(0)
-        return flask.send_file(buffer, mimetype="application/zip",
-                               as_attachment=True,
-                               attachment_filename=botname + ".zip")
+
+        blob_hash = binascii.hexlify(base64.b64decode(blob.md5_hash)).decode('utf-8')
+
+        response = flask.make_response(flask.send_file(
+            buffer,
+            mimetype="application/zip",
+            as_attachment=True,
+            attachment_filename=botname + ".zip"))
+
+        # Give hash in the header to avoid a separate request
+        response.headers["X-Hash"] = blob_hash
+        return response
     except gcloud_exceptions.NotFound:
         raise util.APIError(404, message="Bot not found.")
 
@@ -114,9 +123,16 @@ def download_editor_bot(user_id):
             zipresult.writestr(path, contents)
 
     zipblob.seek(0)
-    return flask.send_file(zipblob, mimetype="application/zip",
-                           as_attachment=True,
-                           attachment_filename="{}_editor.zip".format(user_id))
+    blob_hash = hashlib.md5(zipblob.getbuffer()).hexdigest()
+    response = flask.make_response(flask.send_file(
+        zipblob,
+        mimetype="application/zip",
+        as_attachment=True,
+        attachment_filename="{}_editor.zip".format(user_id)))
+
+    # Give hash in the header to avoid a separate request
+    response.headers["X-Hash"] = blob_hash
+    return response
 
 
 @coordinator_api.route("/botHash")

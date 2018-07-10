@@ -82,7 +82,7 @@ def storeBotLocally(user_id, bot_id, storage_dir, is_compile=False):
         local_zip.close()
 
         content_hash = md5(remote_zip_contents).hexdigest()
-        remote_hash = getBotHash(user_id, bot_id, is_compile)
+        remote_hash = remote_zip.headers.get("X-Hash")
         if content_hash != remote_hash:
             iterations += 1
             continue
