@@ -5,6 +5,7 @@ import datetime
 import time
 
 import google.cloud.datastore as gcloud_datastore
+import google.cloud.storage as gcloud_storage
 
 from . import config, model, util
 
@@ -156,6 +157,10 @@ def update_task(user_id, game_output, files):
     task["last_updated"] = datetime.datetime.now(datetime.timezone.utc)
     task["retries"] = 0
 
-    # TODO: upload replay and error logs
+    # TODO: upload error logs (just store them in the blob if small enough?)
+    bucket = model.get_ondemand_replay_bucket()
+    replay_key = "ondemand_{}".format(user_id)
+    blob = gcloud_storage.Blob(replay_key, bucket, chunk_size=262144)
+    blob.upload_from_file(files["replay"])
 
     client.put(task)

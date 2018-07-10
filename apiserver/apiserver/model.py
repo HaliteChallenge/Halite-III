@@ -275,6 +275,12 @@ def get_replay_bucket(kind=0):
     """Get the object storage bucket for game replays."""
     return get_storage_client().get_bucket(config.GCLOUD_REPLAY_BUCKETS[kind])
 
+
+def get_ondemand_replay_bucket():
+    """Get object storage bucket for ondemand game replays."""
+    return get_storage_client().get_bucket(config.GCLOUD_ONDEMAND_REPLAY_BUCKET)
+
+
 def get_editor_bucket():
     """Get the object storage bucket for game replays."""
     return get_storage_client().get_bucket(config.GCLOUD_EDITOR_BUCKET)

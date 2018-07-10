@@ -57,6 +57,7 @@ GCLOUD_REPLAY_BUCKETS = {
     # 1 is the bucket for gold and above players
     1: 'todo',
 }
+GCLOUD_ONDEMAND_REPLAY_BUCKET = "TODO"
 GCLOUD_ERROR_LOG_BUCKET = 'TODO'
 GCLOUD_DEPLOYED_ARTIFACTS_BUCKET = 'TODO'
 GCLOUD_EDITOR_BUCKET = 'editor-bucket'
