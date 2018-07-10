@@ -13,19 +13,25 @@ from .. import model, ondemand, util
 from . import util as web_util
 from .blueprint import web_api
 
-@web_api.route("/ondemand", methods=["GET"])
+@web_api.route("/ondemand/<int:intended_user>", methods=["GET"])
 @util.cross_origin(methods=["GET", "POST", "PUT"])
 @web_util.requires_login(accept_key=False)
-def check_ondemand(*, user_id):
+def check_ondemand(intended_user, *, user_id):
+    if user_id != intended_user:
+        raise web_util.user_mismatch_error(
+            message="Cannot check ondemand game for another user.")
     return util.response_success(ondemand.check_status(user_id) or {
         "status": "none",
     })
 
 
-@web_api.route("/ondemand", methods=["POST"])
+@web_api.route("/ondemand/<int:intended_user>", methods=["POST"])
 @util.cross_origin(methods=["GET", "POST", "PUT"])
 @web_util.requires_login(accept_key=False)
-def start_ondemand(*, user_id):
+def start_ondemand(intended_user, *, user_id):
+    if user_id != intended_user:
+        raise web_util.user_mismatch_error(
+            message="Cannot start ondemand game for another user.")
     # TODO: specify opponents, or specify something like "web-ide" vs
     # "tutorial-1"
 
@@ -40,19 +46,26 @@ def start_ondemand(*, user_id):
     return util.response_success()
 
 
-@web_api.route("/ondemand", methods=["PUT"])
+@web_api.route("/ondemand/<int:intended_user>", methods=["PUT"])
 @util.cross_origin(methods=["GET", "POST", "PUT"])
 @web_util.requires_login(accept_key=False)
-def continue_ondemand(*, user_id):
+def continue_ondemand(intended_user, *, user_id):
+    if user_id != intended_user:
+        raise web_util.user_mismatch_error(
+            message="Cannot continue ondemand game for another user.")
     # TODO: specify turns
     ondemand.continue_game(user_id, 1)
     return util.response_success()
 
 
-@web_api.route("/ondemand/replay", methods=["GET"])
+@web_api.route("/ondemand/<int:intended_user>/replay", methods=["GET"])
 @util.cross_origin(methods=["GET"])
 @web_util.requires_login(accept_key=False)
-def get_ondemand_replay(*, user_id):
+def get_ondemand_replay(intended_user, *, user_id):
+    if user_id != intended_user:
+        raise web_util.user_mismatch_error(
+            message="Cannot get replay for another user.")
+
     bucket = model.get_ondemand_replay_bucket()
     blob = gcloud_storage.Blob("ondemand_{}".format(user_id), bucket, chunk_size=262144)
     buffer = io.BytesIO()
