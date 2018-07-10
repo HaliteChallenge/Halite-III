@@ -8,7 +8,7 @@ namespace hlt {
  * @return minimum purchase price
  */
 energy_type HaliteImpl::initial_minimum_price() {
-    const auto initial_player_energy = Constants{}.get().INITIAL_ENERGY;
+    const auto initial_player_energy = Constants::get().INITIAL_ENERGY;
     return initial_player_energy / game.game_map.factory_count;
 
 }
