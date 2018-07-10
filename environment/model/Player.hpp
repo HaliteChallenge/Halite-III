@@ -28,6 +28,7 @@ struct Player {
     std::vector<Location> factories;  /**< The factory locations of the player. */
     Entities entities{};              /**< Mapping of location of entity to entity shared ptr */
     std::string error_log;            /**< A log of errors this player encounters. */
+    bool alive;                       /**< A log of errors this player encounters. */
 
     /**
      * Find an entity by location.
@@ -92,7 +93,8 @@ private:
      * @param command The player bot command.
      */
     Player(Player::id_type player_id, std::string name, std::string command) :
-            player_id(player_id), name(std::move(name)), command(std::move(command)), error_log() {}
+            player_id(player_id), name(std::move(name)), command(std::move(command)),
+            error_log(), alive(true) {}
 
     /**
      * Construct Player from ID, name, energy, factory locations, and entities.
@@ -105,7 +107,8 @@ private:
     Player(Player::id_type player_id, std::string name, energy_type energy,
            const std::vector<Location> &factories, Player::Entities entities)
             : player_id(player_id), name(std::move(name)), energy(energy),
-              factories(factories), entities(std::move(entities)), error_log("") {}
+              factories(factories), entities(std::move(entities)), error_log(""),
+              alive(true) {}
 };
 
 /** Factory which produces Players. */

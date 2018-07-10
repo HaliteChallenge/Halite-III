@@ -1,4 +1,5 @@
 #include <future>
+#include <sstream>
 
 #include "BotCommandError.hpp"
 #include "HaliteImpl.hpp"
@@ -14,8 +15,18 @@ void HaliteImpl::retrieve_commands() {
                                             return game.networking.handle_frame(player);
                                         });
     }
+
+    std::ostringstream buf;
+    buf << "Turn " << this->game.turn_number;
+
     for (auto &[player_id, result] : results) {
-        commands[player_id] = result.get();
+        this->game.players[player_id].log_error_section(buf.str());
+        try {
+            commands[player_id] = result.get();
+        }
+        catch (const std::exception& e) {
+          // TODO: kick player out of game
+        }
     }
 }
 

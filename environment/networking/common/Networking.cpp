@@ -51,24 +51,40 @@ void Networking::initialize_player(Player &player) {
  * @param player The player to communicate with.
  * @return The commands from the player.
  */
-std::vector<Command> Networking::handle_frame(const Player &player) {
-    std::stringstream message_stream;
-    // Send the turn number, then each player in the game.
-    message_stream << game.turn_number << std::endl;
-    for (const auto &[_, other_player] : game.players) {
-        message_stream << other_player;
-    }
-    connections[player]->send_string(message_stream.str());
-    Logging::log("Turn info sent to player " + std::to_string(player.player_id), Logging::Level::Debug);
-    // Get commands from the player.
-    std::istringstream command_stream(connections[player]->get_string());
+std::vector<Command> Networking::handle_frame(Player &player) {
     std::vector<Command> commands;
-    Command command;
-    while (command_stream >> command) {
-        commands.push_back(std::move(command));
+    std::stringstream message_stream;
+    std::string received_input;
+    bool read_input = false;
+
+    try {
+        // Send the turn number, then each player in the game.
+        message_stream << game.turn_number << std::endl;
+        for (const auto &[_, other_player] : game.players) {
+            message_stream << other_player;
+        }
+        connections[player]->send_string(message_stream.str());
+        Logging::log("Turn info sent to player " + std::to_string(player.player_id), Logging::Level::Debug);
+        // Get commands from the player.
+        received_input = connections[player]->get_string();
+        read_input = true;
+        std::istringstream command_stream(received_input);
+        Command command;
+        while (command_stream >> command) {
+            commands.push_back(std::move(command));
+        }
+        command_stream >> command;
+        Logging::log("Received " + std::to_string(commands.size()) + " commands from player " + std::to_string(player.player_id), Logging::Level::Debug);
     }
-    command_stream >> command;
-    Logging::log("Received " + std::to_string(commands.size()) + " commands from player " + std::to_string(player.player_id), Logging::Level::Debug);
+    catch (const std::exception& e) {
+        player.log_error(e.what());
+        if (read_input) {
+            player.log_error("Last input received was:");
+            player.log_error(received_input);
+        }
+        throw;
+    }
+
     return commands;
 }
 

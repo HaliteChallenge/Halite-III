@@ -22,7 +22,6 @@ void Halite::run_game() {
                                         });
     }
 
-    auto failed = false;
     for (auto &[player_id, result] : results) {
         try {
             result.get();
@@ -31,15 +30,10 @@ void Halite::run_game() {
             std::ostringstream msg;
             this->players[player_id].log_error_section("Initialization");
             this->players[player_id].log_error(err.what());
-            failed = true;
             msg << "Player " << player_id << " failed initialization: " << err.what();
             Logging::log(msg.str());
+            // TODO: kick player out of game
         }
-    }
-
-    if (failed) {
-        // TODO: write error logs
-        std::exit(1);
     }
 
     replay_struct.players = this->players;

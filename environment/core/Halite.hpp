@@ -52,6 +52,8 @@ public:
     /** Run the game. */
     void run_game();
     void load_snapshot(const Snapshot& snapshot);
+    /** Write error logs and quit. */
+    void fail();
 
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();
