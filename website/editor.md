@@ -17,4 +17,10 @@ additional_css: ["built-codeEdit", "dark-codeEdit"]
 	html {
 		height: 100%;
 	}
+	.body {
+		height: 100%;
+	}
+	body {
+		height: calc(100% - 71px);
+	}
 </style>

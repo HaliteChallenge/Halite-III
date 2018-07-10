@@ -1,7 +1,7 @@
 <template>
-        <div class="container-fluid h-100" role="main">
-                <div class="row flex-xl-nowrap h-100">
-                        <div class="col-12 col-md-1 col-xl-1 hidden-sm hidden-xs bd-sidebar">
+        <div class="container-fluid h-100 page_container" role="main">
+                <div class="row flex-xl-nowrap h-100 page_row">
+                        <div class="col-12 col-md-2 col-xl-1 hidden-sm hidden-xs bd-sidebar file_tree_col">
                                 <nav id="bd-docs-nav"><div class="bd-toc-item active">
                                         <ul class="nav bd-sidenav">
                                           <li v-for="(f, name) in editor_files" class="bd-sidenav-active" v-bind:class="{ active: name === active_file_name }">
@@ -12,7 +12,7 @@
                                         </ul>
                                 </div></nav>
                         </div>
-                        <div class="col-12 col-md-7 col-xl-7 py-md-7 pl-md-7 bd-content">
+                        <div class="col-12 col-md-6 col-xl-7 py-md-6 pl-md-6 bd-content editor_col">
                                 <div class="editorArea">
                                         <div class="editorBody" id="embeddedEditor">
                                                 <div class="editorTitle">
@@ -21,7 +21,7 @@
                                         </div>
                                 </div>
                         </div>
-                        <div class="col-12 col-md-4 col-xl-4 hidden-sm hidden-xs py-md-4 pl-md-4 bd-toc">
+                        <div class="col-12 col-md-4 col-xl-4 hidden-sm hidden-xs py-md-4 pl-md-4 bd-toc replay_col">
                           REPLAY HERE
                         </div>
                 </div>
@@ -359,7 +359,7 @@ export default {
     text-align: left;
     margin: 15px 0px;
     position: relative;
-    height: 25em;
+    margin: 0px;
   }
 
   .editorArea button{
@@ -372,8 +372,14 @@ export default {
     padding-left: 0px;
     padding-right: 0px; 
   }
-  .row, .col-12, .editorArea, .container-fluid, .editorBody {
-    min-height: 80vh;
-    height: 80vh;
+  .file_tree_col {
+    padding: 0px;	
+  }
+  .editor_col {
+    padding: 0px;	
+    margin-top: 0px;
+  }
+  .page_container, .page_row, .editorArea, .replay_col, .editor_col, .file_tree_col, .editorBody {
+     height: 100%;
   }
 </style>
