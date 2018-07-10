@@ -22,7 +22,7 @@ def check_ondemand(*, user_id):
     })
 
 
-@web_api.route("/ondemand", methods=["PUT"])
+@web_api.route("/ondemand", methods=["POST"])
 @util.cross_origin(methods=["GET", "POST", "PUT"])
 @web_util.requires_login(accept_key=False)
 def start_ondemand(*, user_id):
@@ -40,7 +40,7 @@ def start_ondemand(*, user_id):
     return util.response_success()
 
 
-@web_api.route("/ondemand", methods=["POST"])
+@web_api.route("/ondemand", methods=["PUT"])
 @util.cross_origin(methods=["GET", "POST", "PUT"])
 @web_util.requires_login(accept_key=False)
 def continue_ondemand(*, user_id):

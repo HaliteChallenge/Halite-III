@@ -64,6 +64,7 @@ def continue_game(user_id, num_turns):
             400,
             message="Ondemand game not ready for user {}. Please wait.".format(user_id))
 
+    # TODO: use num_turns
     task.update({
         "status": "pending",
         "last_updated": datetime.datetime.now(datetime.timezone.utc),
