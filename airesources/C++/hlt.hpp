@@ -206,7 +206,7 @@ static long getFrame(Players & players) {
 
 static void sendFrame(const Moves & moves, const energy_type & spawn_energy = 0) {
 	std::cout << moves;
-	if(spawn_energy > 0) std::cout << "s " << spawn_energy << ' ';
+	if(spawn_energy > 0) std::cout << "g " << spawn_energy << ' ';
 	std::cout << std::endl;
 }
 }

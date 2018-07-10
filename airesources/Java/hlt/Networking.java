@@ -29,7 +29,7 @@ public class Networking {
             throw new RuntimeException(e);
         }
     }
-	
+
 	private static String[] getSplitLine() { return readLine().split(" "); }
 
 	public static GameParameters getInit() {
@@ -38,7 +38,7 @@ public class Networking {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		String[] c = getSplitLine();		
+		String[] c = getSplitLine();
 		int numPlayers = Integer.parseInt(c[0]);
 		int myID = Integer.parseInt(c[1]);
 		Player[] players = new Player[numPlayers];
@@ -47,7 +47,7 @@ public class Networking {
 			Location fl = new Location(Integer.parseInt(c[1]), Integer.parseInt(c[2]));
 			players[i] = new Player(Integer.parseInt(c[0]), 0, fl, new HashMap<Location, Entity>());
 		}
-		
+
 		c = getSplitLine();
 		int width = Integer.parseInt(c[0]);
 		int height = Integer.parseInt(c[1]);
@@ -56,14 +56,14 @@ public class Networking {
 			for(int x=0; x<width; x++) {
 				c = getSplitLine();
 				if(c[0].equals("f")) {
-					grid[y][x] = new Cell(0, true, 1);	
+					grid[y][x] = new Cell(0, true, 1);
 				} else {
-					grid[y][x] = new Cell(Integer.parseInt(c[1]), true, 1);	
-				} 
+					grid[y][x] = new Cell(Integer.parseInt(c[1]), true, 1);
+				}
 			}
 		}
 		GameMap map = new GameMap(width, height, grid);
-		
+
 		lastPlayers = players;
 		return new GameParameters(map, players, myID);
 	}
@@ -78,20 +78,20 @@ public class Networking {
 		int turnNumber = Integer.parseInt(readLine());
 		String[] c;
 		for(int i=0; i<lastPlayers.length; i++) {
-			c = getSplitLine();	
+			c = getSplitLine();
 			int playerID = Integer.parseInt(c[0]);
 			int numEntities = Integer.parseInt(c[1]);
 			int storedEnergy = Integer.parseInt(c[2]);
 			HashMap<Location, Entity> entities = new HashMap<Location, Entity>();
 			for(int j=0; j<numEntities; j++) {
-				c = getSplitLine();	
+				c = getSplitLine();
 				entities.put(
-					new Location(Integer.parseInt(c[0]), Integer.parseInt(c[1])), 
+					new Location(Integer.parseInt(c[0]), Integer.parseInt(c[1])),
 					new Entity(playerID, Integer.parseInt(c[3])));
 			}
-			lastPlayers[playerID] = new Player(playerID, 
-					storedEnergy, 
-					lastPlayers[i].getFactoryLocation(), 
+			lastPlayers[playerID] = new Player(playerID,
+					storedEnergy,
+					lastPlayers[i].getFactoryLocation(),
 					entities);
 		}
 		return lastPlayers;
@@ -108,7 +108,7 @@ public class Networking {
 			System.out.print(' ');
 		}
 		if(spawnenergy > 0) {
-			System.out.print("s ");
+			System.out.print("g ");
 			System.out.print(spawnenergy);
 			System.out.print(' ');
 		}

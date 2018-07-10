@@ -24,18 +24,18 @@ SCENARIO("Player constructor initializes member variables", "[player]") {
         REQUIRE(player.name == "player");
         REQUIRE(player.command == "./bot");
         REQUIRE(player.energy == 0);
-        REQUIRE(player.factory_location.x == 0);
-        REQUIRE(player.factory_location.y == 0);
+        REQUIRE(player.factories.empty());
         REQUIRE(player.entities.empty());
     }
 
     GIVEN("A reconstructed player") {
-        Player player(1, "player", 2, {3, 4}, {});
+        Player player(1, "player", 2, {{3, 4}}, {});
         REQUIRE(player.player_id == 1);
         REQUIRE(player.name == "player");
         REQUIRE(player.energy == 2);
-        REQUIRE(player.factory_location.x == 3);
-        REQUIRE(player.factory_location.y == 4);
+        const auto &factory = player.factories.front();
+        REQUIRE(player.factories.front().x == 3);
+        REQUIRE(player.factories.front().y == 4);
         REQUIRE(player.entities.empty());
     }
 }
@@ -79,7 +79,7 @@ SCENARIO("Player operators are semantically correct", "[player_operators]") {
 SCENARIO("Players are encoded to JSON and bot serial format correctly", "[player_serial]") {
     GIVEN("A player") {
         auto entity = make_entity<PlayerEntity>(1, 128);
-        Player player(1, "player", 2, {3, 4}, {{{0, 0}, entity}});
+        Player player(1, "player", 2, {{3, 4}}, {{{0, 0}, entity}});
         WHEN("player is serialized to JSON") {
             nlohmann::json json;
             to_json(json, player);
@@ -87,7 +87,7 @@ SCENARIO("Players are encoded to JSON and bot serial format correctly", "[player
                 REQUIRE(json.at("player_id") == player.player_id);
                 REQUIRE(json.at("name") == player.name);
                 REQUIRE(json.at("energy") == player.energy);
-                REQUIRE(json.at("factory_location") == player.factory_location);
+                REQUIRE(json.at("factory_location") == player.factories.front());
                 REQUIRE(json.at("entities").size() == 1);
                 REQUIRE(json.at("entities")[0].at("x") == 0);
                 REQUIRE(json.at("entities")[0].at("y") == 0);

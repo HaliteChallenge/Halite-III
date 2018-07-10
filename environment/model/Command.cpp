@@ -17,6 +17,8 @@ constexpr auto JSON_ENTITY_Y_KEY = "entity_y";
 constexpr auto JSON_DIRECTION_KEY = "direction";
 /** The JSON key for energy. */
 constexpr auto JSON_ENERGY_KEY = "energy";
+/** The JSON key for factory. */
+constexpr auto JSON_FACTORY_KEY = "factory";
 
 namespace hlt {
 
@@ -26,21 +28,6 @@ namespace hlt {
  * @param command The command to convert.
  */
 void to_json(nlohmann::json &json, const Command &command) { command->to_json(json); }
-
-/**
- * Convert an encoded Command from JSON format.
- * @param json The JSON.
- * @param[out] command The converted command.
- */
-void from_json(const nlohmann::json &json, Command &command) {
-    // The type field determines the Command subclass that will be instantiated.
-    const std::string &type = json.at(JSON_TYPE_KEY);
-    if (type == MoveCommand::COMMAND_TYPE_NAME) {
-        command = std::make_unique<MoveCommand>(json);
-    } else {
-        throw JsonError(json);
-    }
-}
 
 /**
  * Read a Command from bot serial format.
@@ -53,17 +40,32 @@ std::istream &operator>>(std::istream &istream, Command &command) {
     char command_type;
     if (istream >> command_type) {
         switch (command_type) {
-        case MoveCommand::COMMAND_TYPE_SHORT:
+        case MoveCommand::COMMAND_TYPE_SHORT: {
             dimension_type entity_x, entity_y;
             Direction direction;
             istream >> entity_x >> entity_y >> direction;
             command = std::make_unique<MoveCommand>(entity_x, entity_y, direction);
             break;
-        case SpawnCommand::COMMAND_TYPE_SHORT:
+        }
+        case BuyCommand::COMMAND_TYPE_SHORT: {
+            energy_type energy;
+            Location location;
+            istream >> energy >> location;
+            command = std::make_unique<BuyCommand>(energy, location);
+            break;
+        }
+        case SellCommand::COMMAND_TYPE_SHORT: {
+            Location location;
+            istream >> location;
+            command = std::make_unique<SellCommand>(location);
+            break;
+        }
+        case SpawnCommand::COMMAND_TYPE_SHORT: {
             energy_type energy;
             istream >> energy;
             command = std::make_unique<SpawnCommand>(energy);
             break;
+        }
         default:
             throw BotCommunicationError(to_string(command_type));
         }
@@ -108,13 +110,32 @@ void MoveCommand::act_on_map(CommandTransaction &transaction) const {
     }
 }
 
+/**
+ * Convert a BuyCommand to JSON format.
+ * @param[out] json The JSON output.
+ */
+void BuyCommand::to_json(nlohmann::json &json) const {
+    json = {{JSON_TYPE_KEY,     BuyCommand::COMMAND_TYPE_NAME},
+            {JSON_ENERGY_KEY,   price},
+            {JSON_FACTORY_KEY,  factory}};
+}
+
+/**
+ * Convert a SellCommand to JSON format.
+ * @param[out] json The JSON output.
+ */
+void SellCommand::to_json(nlohmann::json &json) const {
+    json = {{JSON_TYPE_KEY,     SellCommand::COMMAND_TYPE_NAME},
+            {JSON_FACTORY_KEY,  factory}};
+}
+
 void SpawnCommand::to_json(nlohmann::json &json) const {
-    json = {{JSON_TYPE_KEY,       SpawnCommand::COMMAND_TYPE_NAME},
+    json = {{JSON_TYPE_KEY,    SpawnCommand::COMMAND_TYPE_NAME},
             {JSON_ENERGY_KEY,  energy}};
 }
 
 void SpawnCommand::act_on_map(CommandTransaction &transaction) const {
-    transaction.spawn_entity(transaction.player.factory_location, energy);
+    transaction.spawn_entity(transaction.player.factories.front(), energy);
 }
 
 }

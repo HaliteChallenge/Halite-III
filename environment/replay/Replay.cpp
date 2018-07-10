@@ -15,10 +15,15 @@ namespace hlt {
 void to_json(nlohmann::json &json, const Turn &turn) {
     json = {TURN_FIELD_TO_JSON(events)};
     nlohmann::json moves_json;
+    nlohmann::json energy_json;
     for (auto &[player_id, commands] : turn.moves) {
         moves_json[std::to_string(player_id)] = commands;
     }
+    for (auto &[player_id, energy] : turn.energy) {
+        energy_json[std::to_string(player_id)] = energy;
+    }
     json["moves"] = moves_json;
+    json["energy"] = energy_json;
 }
 
 // Reserve space for constants to use in json functions
