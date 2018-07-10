@@ -151,6 +151,16 @@ export function get_editor_file (userId, file_name) {
   })
 }
 
+export function create_editor_file_space (userId, language) {
+  return $.get({
+    url: `${API_SERVER_URL}/user/${userId}/source_file/${language}`,
+	method: 'POST',
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
+
 export function update_source_file (user_id, file_name, file_contents, progress_callback) {
   const xhr = makeRequest()
   xhr.upload.addEventListener('progress', function (e) {

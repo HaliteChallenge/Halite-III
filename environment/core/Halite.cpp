@@ -12,10 +12,6 @@ namespace hlt {
 /** Run the game. */
 void Halite::run_game() {
     const auto &constants = Constants::get();
-    for (auto &[_, player] : players) {
-        player.energy = constants.INITIAL_ENERGY;
-    }
-    impl->process_entities();
     std::unordered_map<Player::id_type, std::future<void>> results;
     for (auto &[player_id, player] : players) {
         results[player_id] = std::async(std::launch::async,
@@ -34,6 +30,7 @@ void Halite::run_game() {
             player.entities[entity_location] = make_entity<PlayerEntity>(entity->owner_id, entity->energy);
         }
     }
+    replay_struct.full_frames.emplace_back();
     Logging::log("Player initialization complete.");
 
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
@@ -90,12 +87,17 @@ Halite::Halite(const Config &config,
     factories.reserve(players.size());
     generator->generate(game_map, factories);
     game_map.factory_count = factories.size();
+
+    const auto &constants = Constants::get();
     for (const auto &player : players) {
         this->players[player.player_id] = player;
         this->players[player.player_id].factories.push_back(factories.back());
+        this->players[player.player_id].energy = constants.INITIAL_ENERGY;
+
         factories.pop_back();
         game_statistics.player_statistics.emplace_back(player.player_id);
     }
+
     replay_struct.game_statistics = game_statistics;
 }
 

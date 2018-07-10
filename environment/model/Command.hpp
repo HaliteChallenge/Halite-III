@@ -130,7 +130,7 @@ public:
     static constexpr auto COMMAND_TYPE_NAME = "sell";
 
     /** The short name of the sell command. */
-    static constexpr auto COMMAND_TYPE_SHORT = 'e';
+    static constexpr auto COMMAND_TYPE_SHORT = 's';
 
     /**
      * Convert a SellCommand to JSON format.
@@ -157,7 +157,7 @@ public:
     static constexpr auto COMMAND_TYPE_NAME = "spawn";
 
     /** The short name of the spawn command. */
-    static constexpr auto COMMAND_TYPE_SHORT = 's';
+    static constexpr auto COMMAND_TYPE_SHORT = 'g';
 
     /**
      * Convert a SpawnCommand to JSON format.

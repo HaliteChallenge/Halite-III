@@ -75,7 +75,7 @@ def get_frame():
 
 def send_frame(moves, spawn_energy = 0):
     send = " ".join(["m " + str(loc[0]) + " " + str(loc[1]) + " " + direction for loc, direction in moves.items()])
-    if spawn_energy > 0: send += "s " + str(spawn_energy) + " "
+    if spawn_energy > 0: send += "g " + str(spawn_energy) + " "
     print(send)
     sys.stdout.flush()
 
