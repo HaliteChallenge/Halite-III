@@ -67,7 +67,7 @@ std::istream &operator>>(std::istream &istream, Command &command) {
             break;
         }
         default:
-            throw BotCommunicationError(to_string(command_type));
+            throw BotCommunicationError(to_string(command_type), istream.tellg());
         }
     }
     return istream;
