@@ -99,7 +99,7 @@ void UnixConnection::send_string(const std::string &message) {
             auto current_time = high_resolution_clock::now();
             auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
             if (remaining < milliseconds::zero()) {
-                throw TimeoutError(config.timeout);
+                throw TimeoutError("when sending string", config.timeout, "");
             }
         }
         ssize_t chars_written = write(write_pipe, message_ptr, chars_remaining);
@@ -145,7 +145,8 @@ std::string UnixConnection::get_string() {
             auto current_time = high_resolution_clock::now();
             auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
             if (remaining < milliseconds::zero()) {
-                throw TimeoutError(config.timeout);
+                // TODO: continue and read remainder of input
+                throw TimeoutError("when reading string", config.timeout, current_read);
             }
             struct timeval timeout{};
             auto sec = duration_cast<seconds>(remaining);
@@ -157,7 +158,8 @@ std::string UnixConnection::get_string() {
             // Read from the pipe, as many as we can into the buffer
             auto bytes_read = read(read_pipe, buffer.begin(), buffer.size());
             if (bytes_read < 0) {
-                throw NetworkingError("Read failed");
+                // TODO: continue and read remainder of input
+                throw NetworkingError("Read failed", current_read);
             }
             // Iterator one past the last read character
             auto read_end = buffer.begin() + bytes_read;

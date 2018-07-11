@@ -86,14 +86,6 @@ std::vector<Command> Networking::handle_frame(Player &player) {
         }
         throw;
     }
-    catch (const NetworkingError& e) {
-        player.log_error(e.what());
-        if (read_input) {
-            player.log_error("Last input received was:");
-            player.log_error(received_input);
-        }
-        throw;
-    }
 
     return commands;
 }
