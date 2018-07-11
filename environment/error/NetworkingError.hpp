@@ -38,11 +38,11 @@ struct NetworkingError : public BotError {
 
         result << "Error communicating with bot: "
                << message
-               << " errno was: "
+               << ".\nerrno was: "
                << errno
                << " ("
                << std::strerror(errno)
-               << "). Remaining bot input was:"
+               << ").\nRemaining bot input was:"
                << std::endl
                << remaining_input;
 
