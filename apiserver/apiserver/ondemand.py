@@ -70,6 +70,12 @@ def continue_game(user_id, num_turns, snapshot_index):
             400,
             message="Ondemand game not ready for user {}. Please wait.".format(user_id))
 
+    # Resume game from snapshot of state if this is not the first time
+    # we're starting it
+    if task["status"] == "completed" and "game_output" in task:
+        task["environment_parameters"]["from-snapshot"] = \
+            task["snapshots"][snapshot_index]["snapshot"]
+
     task.update({
         "status": "pending",
         "last_updated": datetime.datetime.now(datetime.timezone.utc),
@@ -78,12 +84,6 @@ def continue_game(user_id, num_turns, snapshot_index):
             "completed": False,
         },
     })
-
-    # Resume game from snapshot of state if this is not the first time
-    # we're starting it
-    if task["status"] == "finished" and "game_output" in task:
-        task["environment_parameters"]["from-snapshot"] = \
-            task["snapshots"][snapshot_index]["snapshot"]
 
     task["environment_parameters"]["turn-limit"] = num_turns
 
