@@ -1,4 +1,5 @@
 #include <unordered_set>
+#include <sstream>
 
 #include "CommandTransaction.hpp"
 #include "Map.hpp"
@@ -15,6 +16,9 @@ bool CommandTransaction::commit() {
     for (const auto &[from, _] : move_commands) {
         if (const auto &[_, inserted] = destinations.emplace(from); !inserted) {
             // Duplicate found
+            std::stringstream msg;
+            msg << "Entity at " << from.x << ", " << from.y << " already moved";
+            _player.log_error(msg.str());
             return false;
         }
     }
@@ -25,10 +29,20 @@ bool CommandTransaction::commit() {
     for (const auto &[factory, energy] : spawn_commands) {
         if (energy > constants.MAX_ENERGY || player.energy < energy * constants.NEW_ENTITY_ENERGY_COST) {
             // Insufficient energy
+            std::stringstream msg;
+            msg << "Insufficient energy to spawn entity with energy "
+                << energy
+                << " at factory located at "
+                << factory.x << ", " << factory.y;
+            _player.log_error(msg.str());
             return false;
         }
         if (const auto &[_, inserted] = factories.emplace(factory); !inserted) {
             // Duplicate found
+            std::stringstream msg;
+            msg << "Entity already spawned at factory located at "
+                << factory.x << ", " << factory.y;
+            _player.log_error(msg.str());
             return false;
         }
     }
