@@ -28,7 +28,8 @@ struct Player {
     std::vector<Location> factories;  /**< The factory locations of the player. */
     Entities entities{};              /**< Mapping of location of entity to entity shared ptr */
     std::string error_log;            /**< A log of errors this player encounters. */
-    bool alive;                       /**< A log of errors this player encounters. */
+    bool alive;                       /**< Whether the player is still in the game. */
+    bool crashed;                     /**< Whether the player was kicked out of the game. */
 
     /**
      * Find an entity by location.
@@ -94,7 +95,7 @@ private:
      */
     Player(Player::id_type player_id, std::string name, std::string command) :
             player_id(player_id), name(std::move(name)), command(std::move(command)),
-            error_log(), alive(true) {}
+            error_log(), alive(true), crashed(false) {}
 
     /**
      * Construct Player from ID, name, energy, factory locations, and entities.
@@ -108,7 +109,7 @@ private:
            const std::vector<Location> &factories, Player::Entities entities)
             : player_id(player_id), name(std::move(name)), energy(energy),
               factories(factories), entities(std::move(entities)), error_log(""),
-              alive(true) {}
+              alive(true), crashed(false) {}
 };
 
 /** Factory which produces Players. */

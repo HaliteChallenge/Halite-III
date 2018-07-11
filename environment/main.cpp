@@ -170,8 +170,34 @@ int main(int argc, char *argv[]) {
         std::stringstream replay_message;
         replay_message << "Map seed was " << game.replay_struct.map_generator_seed << std::endl
                        << "Opening a file at " << output_filename << std::endl;
-        Logging::log(replay_message.str());
 
+        for (const auto &[player_id, player] : game.players) {
+            if (player.crashed) {
+                std::stringstream logname_buf;
+                logname_buf << "errorlog-" << std::string(time_string)
+                            << "-" << game.replay_struct.map_generator_seed
+                            << "-" << game.game_map.width
+                            << "-" << game.game_map.height
+                            << "-" << player_id
+                            << ".log";
+                const auto log_filename = logname_buf.str();
+                auto log_filepath = replay_directory + "Replays/" + log_filename;
+
+                std::ofstream log_file;
+                log_file.open(log_filepath, std::ios_base::out);
+                if (!log_file.is_open()) {
+                    log_filepath = replay_directory + log_filename;
+                    log_file.open(log_filepath, std::ios_base::out);
+                }
+
+                log_file.write(player.error_log.c_str(), player.error_log.size());
+
+                replay_message << "Player " << player_id << " crashed. "
+                               << "Writing a log at " << log_filepath << std::endl;
+            }
+        }
+
+        Logging::log(replay_message.str());
 
         if (json_results_switch.getValue()) {
             nlohmann::json results;

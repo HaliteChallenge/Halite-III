@@ -32,7 +32,7 @@ void Halite::run_game() {
             this->players[player_id].log_error(err.what());
             msg << "Player " << player_id << " failed initialization: " << err.what();
             Logging::log(msg.str());
-            // TODO: kick player out of game
+            kill_player(player_id);
         }
     }
 
@@ -151,6 +151,7 @@ void Halite::kill_player(Player::id_type player_id) {
     auto& player = this->players[player_id];
 
     player.alive = false;
+    player.crashed = true;
 
     auto &entities = player.entities;
     for (auto entity_iterator = entities.begin(); entity_iterator != entities.end();) {

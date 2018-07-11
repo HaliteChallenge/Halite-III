@@ -10,6 +10,9 @@ namespace hlt {
 bool HaliteImpl::game_ended() const {
     long num_alive_players = 0;
     for (auto &&[_, player] : game.players) {
+        if (!player.alive) {
+            continue;
+        }
         // TODO: implement edge case of last player being unable to produce
         if (!player.entities.empty()) {
             num_alive_players++;
