@@ -42,6 +42,9 @@ def launch(user_id, opponents, environment_parameters, metadata):
         # Used to associate a game with a tutorial or something like
         # that
         "metadata": metadata,
+        "objective": {
+            "completed": False,
+        },
     })
     client.put(entity)
 
@@ -71,6 +74,9 @@ def continue_game(user_id, num_turns, snapshot_index):
         "status": "pending",
         "last_updated": datetime.datetime.now(datetime.timezone.utc),
         "retries": 0,
+        "objective": {
+            "completed": False,
+        },
     })
 
     # Resume game from snapshot of state if this is not the first time
@@ -152,6 +158,9 @@ def pending_task():
 
 
 def update_task(user_id, game_output, files):
+    """
+    Update the status of an ondemand game after play.
+    """
     client = model.get_datastore_client()
     query = client.query(kind=ONDEMAND_KIND)
     query.key_filter(key_from_user_id(user_id))
@@ -180,6 +189,14 @@ def update_task(user_id, game_output, files):
     task["game_output"] = game_output
     task["last_updated"] = current_time
     task["retries"] = 0
+
+    # TODO: once we track tutorials, have this reflect tutorial
+    # objective completion status instead of victory
+
+    # TODO: will the relevant player always be player 0?
+    task["objective"] = {
+        "completed": game_output["stats"]["0"]["rank"] == 1,
+    }
 
     if "replay" in files:
         bucket = model.get_ondemand_replay_bucket()
