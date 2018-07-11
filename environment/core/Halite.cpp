@@ -26,7 +26,7 @@ void Halite::run_game() {
         try {
             result.get();
         }
-        catch (const net::NetworkingError err) {
+        catch (const net::NetworkingError& err) {
             std::ostringstream msg;
             this->players[player_id].log_error_section("Initialization");
             this->players[player_id].log_error(err.what());

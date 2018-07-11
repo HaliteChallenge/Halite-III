@@ -5,8 +5,10 @@
 #include <exception>
 #include <string>
 
+#include "BotError.hpp"
+
 /** Thrown when a network event times out. */
-struct TimeoutError : public std::exception {
+struct TimeoutError : public BotError {
     /** The time elapsed. */
     std::chrono::milliseconds time;
 

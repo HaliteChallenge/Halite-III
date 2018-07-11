@@ -3,6 +3,8 @@
 #include "Command.hpp"
 #include "Halite.hpp"
 #include "Logging.hpp"
+#include "error/BotError.hpp"
+#include "error/NetworkingError.hpp"
 
 namespace net {
 
@@ -76,7 +78,15 @@ std::vector<Command> Networking::handle_frame(Player &player) {
         command_stream >> command;
         Logging::log("Received " + std::to_string(commands.size()) + " commands from player " + std::to_string(player.player_id), Logging::Level::Debug);
     }
-    catch (const std::exception& e) {
+    catch (const BotError& e) {
+        player.log_error(e.what());
+        if (read_input) {
+            player.log_error("Last input received was:");
+            player.log_error(received_input);
+        }
+        throw;
+    }
+    catch (const NetworkingError& e) {
         player.log_error(e.what());
         if (read_input) {
             player.log_error("Last input received was:");

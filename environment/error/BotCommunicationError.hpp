@@ -5,8 +5,10 @@
 #include <string>
 #include <utility>
 
+#include "BotError.hpp"
+
 /** Thrown when bot communication cannot be decoded. */
-class BotCommunicationError : public std::exception {
+class BotCommunicationError : public BotError {
     /** The bot input. */
     std::string bot_input;
 public:

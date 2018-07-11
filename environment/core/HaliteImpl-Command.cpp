@@ -1,7 +1,9 @@
 #include <future>
 #include <sstream>
 
+#include "BotError.hpp"
 #include "BotCommandError.hpp"
+#include "NetworkingError.hpp"
 #include "HaliteImpl.hpp"
 
 namespace hlt {
@@ -28,7 +30,11 @@ void HaliteImpl::retrieve_commands() {
         try {
             commands[player_id] = result.get();
         }
-        catch (const std::exception& e) {
+        catch (const BotError& e) {
+            // Already caught and logged in handle_frame, just kill the player
+            this->game.kill_player(player_id);
+        }
+        catch (const net::NetworkingError& e) {
             this->game.kill_player(player_id);
         }
     }
@@ -52,7 +58,7 @@ void HaliteImpl::process_commands() {
             command->act_on_map(transaction);
         }
         if (!transaction.commit()) {
-            throw BotCommandError("Invalid commands");
+            this->game.kill_player(player_id);
         }
     }
     // Add commands to replay struct for visualizer
