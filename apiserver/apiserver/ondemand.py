@@ -14,6 +14,11 @@ ONDEMAND_KIND = "ondemand"
 
 
 def key_from_user_id(user_id):
+    """
+    Create a datastore key from a user ID.
+
+    Each user has at most 1 ondemand game task.
+    """
     return gcloud_datastore.Key(
         ONDEMAND_KIND,
         user_id,
@@ -31,6 +36,9 @@ def check_status(user_id):
 
 
 def launch(user_id, opponents, environment_parameters, metadata):
+    """
+    Create a new ondemand game task.
+    """
     client = model.get_datastore_client()
     entity = gcloud_datastore.Entity(key_from_user_id(user_id))
     entity.update({
@@ -50,6 +58,9 @@ def launch(user_id, opponents, environment_parameters, metadata):
 
 
 def continue_game(user_id, num_turns, snapshot_index):
+    """
+    Request that an ondemand game be resumed.
+    """
     client = model.get_datastore_client()
     query = client.query(kind=ONDEMAND_KIND)
     query.key_filter(key_from_user_id(user_id))
@@ -107,6 +118,9 @@ TASK_MAX_RETRIES = 3
 
 
 def pending_task():
+    """
+    Look for a pending ondemand game task.
+    """
     client = model.get_datastore_client()
     current_backoff = TASK_CONFLICT_BACKOFF
 
@@ -129,6 +143,7 @@ def pending_task():
             result = list(query.fetch(limit=1))
 
         if result:
+            # Make sure tasks are only assigned once.
             with client.transaction() as xact:
                 task = client.get(result[0].key)
                 if (task["status"] == "running" and

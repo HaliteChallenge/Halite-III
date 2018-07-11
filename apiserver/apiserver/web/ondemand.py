@@ -79,6 +79,7 @@ def continue_ondemand(intended_user, *, user_id):
             message="Cannot continue ondemand game for another user.")
 
     num_turns = 1
+    # Default to resuming from the most recent snapshot, if present.
     snapshot_index = -1
 
     if flask.request.json:
