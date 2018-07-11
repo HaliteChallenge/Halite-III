@@ -3,6 +3,7 @@
 
 #include <exception>
 #include <string>
+#include <cstring>
 #include <sstream>
 
 /** Thrown when a snapshot cannot be decoded. */
