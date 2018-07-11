@@ -16,7 +16,10 @@ import * as animation from "./animation";
 
 
 export class HaliteVisualizer {
-    constructor(replay) {
+    constructor(replay, width, height) {
+        assets.VISUALIZER_SIZE = width || assets.VISUALIZER_SIZE
+        assets.VISUALIZER_HEIGHT = height || assets.VISUALIZER_HEIGHT
+
         this.replay = replay;
         this.map_width = replay.production_map.width;
         this.map_height = replay.production_map.height;
@@ -170,6 +173,12 @@ export class HaliteVisualizer {
         this._onKeyDown = null;
 
         this.application.render();
+    }
+
+    resize(width, height) {
+        this.application.renderer.resize(width, height);
+        assets.VISUALIZER_SIZE = width;
+        assets.VISUALIZER_HEIGHT = height;
     }
 
     /**

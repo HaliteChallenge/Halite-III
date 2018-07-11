@@ -1,7 +1,7 @@
 <template>
         <div class="container-fluid h-100 page_container" role="main">
                 <div class="row flex-xl-nowrap h-100 page_row">
-                        <div class="col-12 col-md-2 col-xl-1 hidden-sm hidden-xs bd-sidebar file_tree_col">
+                        <div class="col-12 col-md-2 col-lg-2 col-xl-1 hidden-sm hidden-xs bd-sidebar file_tree_col">
                                 <nav id="bd-docs-nav"><div class="bd-toc-item active">
                                         <ul class="nav bd-sidenav">
                                           <li v-for="(f, name) in editor_files" class="bd-sidenav-active" v-bind:class="{ active: name === active_file_name }">
@@ -12,7 +12,7 @@
                                         </ul>
                                 </div></nav>
                         </div>
-                        <div class="col-12 col-md-6 col-xl-7 py-md-6 pl-md-6 bd-content editor_col">
+                        <div class="col-12 col-md-6 col-lg-6 col-xl-7 py-md-6 pl-md-6 bd-content editor_col">
                                 <div class="editorArea">
                                         <div class="editorBody" id="embeddedEditor">
                                                 <div class="editorTitle">
@@ -21,10 +21,12 @@
                                         </div>
                                 </div>
                         </div>
-                        <div class="col-12 col-md-4 col-xl-4 hidden-sm hidden-xs py-md-4 pl-md-4 bd-toc replay_col">
+                        <div class="col-12 col-md-4 col-lg-4 col-xl-4 hidden-sm hidden-xs py-md-4 pl-md-4 bd-toc replay_col">
                           <div class="replay">
+                            <div class="game-replay-viewer"></div>
                           </div>
                           <div class="console">
+                            {{ terminal_text }}
                           </div>
                         </div>
                 </div>
@@ -33,6 +35,8 @@
 
 <script>
 import * as api from '../api'
+import * as libhaliteviz from '../../../libhaliteviz'
+
 
 const botLanguagePacks = {
   'Python3': {
@@ -60,6 +64,10 @@ const BOT_LANG_KEY = 'bot_language'
 const FILE_NAMES_KEY = 'file_names'
 const DARK_THEME = 'Dark'
 const RESET_MSG = 'Are you sure you want to reset your bot code to the default sample code?\n(All changes will be lost!)'
+const EX_GAME_STRING = '{"ENGINE_VERSION":"1.5.521.g6df5","GAME_CONSTANTS":{"BASE_TURN_ENERGY_LOSS":5,"BLUR_FACTOR":0.75,"DEFAULT_MAP_HEIGHT":128,"DEFAULT_MAP_WIDTH":128,"INITIAL_ENERGY":1000,"MAX_CELL_PRODUCTION":255,"MAX_ENERGY":255,"MAX_PLAYERS":16,"MAX_TURNS":300,"MIN_CELL_PRODUCTION":85,"NEW_ENTITY_ENERGY":255,"NEW_ENTITY_ENERGY_COST":1000},"REPLAY_FILE_VERSION":1,"full_frames":[{"events":[],"moves":{"0":[{"direction":"w","entity_x":0,"entity_y":1,"type":"move"}],"1":[{"direction":"e","entity_x":1,"entity_y":1,"type":"move"}]}}],"game_statistics":{"number_turns":49,"player_statistics":[{"last_turn_alive":49,"player_id":1,"rank":1,"total_production":770},{"last_turn_alive":49,"player_id":0,"rank":2,"total_production":518}]},"map_generator_seed":1531318637,"number_of_players":2,"players":[{"energy":0,"entities":[{"energy":0,"x":1,"y":1}],"factory_location":[1,1],"name":"JavaSP","player_id":1},{"energy":0,"entities":[{"energy":0,"x":0,"y":1}],"factory_location":[0,1],"name":"JavaSP","player_id":0}],"production_map":{"grid":[[{"production":14,"type":"n"},{"production":14,"type":"n"}],[{"type":"f"},{"type":"f"}]],"height":2,"map_generator":"Fractal Value Noise Tile","width":2}}'
+
+const HaliteVisualizer = libhaliteviz.HaliteVisualizer
+libhaliteviz.setAssetRoot('/assets/js/')
 
 function logError (err) {
   console.error(err)
@@ -80,6 +88,7 @@ export default {
     const lang = 'Python3'
     const theme = DARK_THEME
     const editor_files = this.editor_files === null ? [] : this.editor_files
+    const terminal_text = this.terminal_text === null ? "" : this.terminal_text
     return {
       all_bot_languages: botLanguagePacks,
       status_message: null,
@@ -88,7 +97,8 @@ export default {
       bot_lang: lang,
       selected_language: lang,
       selected_theme: theme,
-      editor_files: editor_files
+      editor_files: editor_files,
+      terminal_text: terminal_text
     }
   },
   /*
@@ -106,7 +116,15 @@ export default {
         }).bind(this))
       }
     })
-    // Restore user's bot code, or use demo code for new bot
+    console.log(jQuery('.replay'))
+    let width = jQuery('.replay').width()
+    this.visualizer = new HaliteVisualizer(JSON.parse(EX_GAME_STRING), width, width)
+    this.visualizer.attach('.game-replay-viewer')
+    window.addEventListener('resize', (function(event) {
+      width = jQuery('.replay').width()
+      console.log(width)
+      this.visualizer.resize(width, width)
+    }).bind(this), true)
   },
   methods: {
     /* Return bot language specific info */
@@ -115,8 +133,9 @@ export default {
     },
     /* Init the Orion Editor */
     create_editor: function (code) {
+      this.add_console_text("[INFO] Initializing player 0 with command ./MyBot");
       logInfo('Creating editor...')
-      const codeEdit = new orion.codeEdit({editorConfig: {wordWrap: true, annotationRuler: false}})
+      const codeEdit = new orion.codeEdit({editorConfig: {wordWrap: true, overviewRuler: false, annotationRuler: false}})
       var opts = {parent: 'embeddedEditor', contentType: this.bot_info().mimeType, contents: code}
       codeEdit.create(opts).then((editorViewer) => {
         logInfo('Initializing editor...')
@@ -303,6 +322,13 @@ export default {
     set_editor_contents: function(contents) {
       this.editorViewer.setContents(contents, this.bot_info().mimeType)
     },
+    clear_terminal_text: function() {
+      this.terminal_text = "";
+    },
+    add_console_text: function(new_text) {
+      if(this.terminal_text == undefined) this.terminal_text = ""
+      this.terminal_text += new_text
+    },
     /* Submit bot to our leaderboard */
     submit_bot: function () {
       logInfo('... starting upload')
@@ -390,18 +416,31 @@ export default {
   }
   .replay_col {
     padding: 0px;
+    display: flex;
+    flex-flow: column;
+    height: 100%;
   }
   .page_container, .page_row, .editorArea, .replay_col, .editor_col, .file_tree_col, .editorBody {
      height: 100%;
   }
 
+
+
   .replay {
     border-bottom: 1px solid #424C53;
+    flex: 0 1 auto;
+  }
+
+  .console {
+    flex: 1 1 auto;
+    padding: 15px;
+    background-color: black;
+    color: silver;
+    font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
   }
 
   .replay, .console {
     width: 100%;
-    height: 50%;
   }
 
 </style>
