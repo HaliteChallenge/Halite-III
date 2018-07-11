@@ -20,7 +20,26 @@ def check_ondemand(intended_user, *, user_id):
     if user_id != intended_user:
         raise web_util.user_mismatch_error(
             message="Cannot check ondemand game for another user.")
-    return util.response_success(ondemand.check_status(user_id) or {
+
+    # Only return certain fields from the task
+    task = ondemand.check_status(user_id)
+    if task:
+        result = {}
+
+        for field_name in ("environment_parameters",
+                           "compile_error",
+                           "error_log",
+                           "game_output",
+                           "opponents",
+                           "objective",
+                           "snapshots",
+                           "status"):
+            if field_name in task:
+                result[field_name] = task[field_name]
+
+        return util.response_success(result)
+
+    return util.response_success({
         "status": "none",
     })
 
