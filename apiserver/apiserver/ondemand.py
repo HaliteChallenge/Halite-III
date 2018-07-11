@@ -206,6 +206,8 @@ def update_task(user_id, game_output, files):
 
     if "error_log" in files:
         task["error_log"] = files["error_log"].read().decode("utf-8")
+    else:
+        task["error_log"] = None
 
     if "compile_error" in files:
         task["compile_error"] = files["compile_error"]
