@@ -171,6 +171,10 @@ int main(int argc, char *argv[]) {
         replay_message << "Map seed was " << game.replay_struct.map_generator_seed << std::endl
                        << "Opening a file at " << output_filename << std::endl;
 
+        // JSON results info, used by backend
+        nlohmann::json results;
+        results["error_logs"] = nlohmann::json::object();
+
         for (const auto &[player_id, player] : game.players) {
             if (player.crashed) {
                 std::stringstream logname_buf;
@@ -190,6 +194,8 @@ int main(int argc, char *argv[]) {
                     log_file.open(log_filepath, std::ios_base::out);
                 }
 
+                results["error_logs"][std::to_string(player_id)] = log_filepath;
+
                 log_file.write(player.error_log.c_str(), player.error_log.size());
 
                 replay_message << "Player " << player_id << " crashed. "
@@ -200,7 +206,6 @@ int main(int argc, char *argv[]) {
         Logging::log(replay_message.str());
 
         if (json_results_switch.getValue()) {
-            nlohmann::json results;
             results["replay"] = output_filename;
             results["map_width"] = map_width;
             results["map_height"] = map_height;
@@ -211,8 +216,6 @@ int main(int argc, char *argv[]) {
             for (const auto& stats : game.replay_struct.game_statistics.player_statistics) {
                 results["stats"][std::to_string(stats.player_id)] = { { "rank", stats.rank } };
             }
-            // TODO: where are the error logs?
-            results["error_logs"] = nlohmann::json::object();
             std::cout << results.dump(JSON_INDENT_LEVEL) << std::endl;
         }
     }
