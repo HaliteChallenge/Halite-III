@@ -57,7 +57,6 @@ std::vector<Command> Networking::handle_frame(Player &player) {
     std::vector<Command> commands;
     std::stringstream message_stream;
     std::string received_input;
-    bool read_input = false;
 
     try {
         // Send the turn number, then each player in the game.
@@ -69,7 +68,6 @@ std::vector<Command> Networking::handle_frame(Player &player) {
         Logging::log("Turn info sent to player " + std::to_string(player.player_id), Logging::Level::Debug);
         // Get commands from the player.
         received_input = connections[player]->get_string();
-        read_input = true;
         std::istringstream command_stream(received_input);
         Command command;
         while (command_stream >> command) {
@@ -80,10 +78,10 @@ std::vector<Command> Networking::handle_frame(Player &player) {
     }
     catch (const BotError& e) {
         player.log_error(e.what());
-        if (read_input) {
-            player.log_error("Last input received was:");
-            player.log_error(received_input);
-        }
+        received_input += "\n";
+        received_input += connections[player]->read_trailing_input();
+        player.log_error("Last input received was:");
+        player.log_error(received_input);
         throw;
     }
 

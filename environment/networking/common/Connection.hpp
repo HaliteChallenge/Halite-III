@@ -54,6 +54,11 @@ public:
      */
     virtual std::string get_string() = 0;
 
+    /**
+     * Read any remaining input from the pipe.
+     */
+    virtual std::string read_trailing_input() = 0;
+
     virtual ~BaseConnection() = default;
 };
 
