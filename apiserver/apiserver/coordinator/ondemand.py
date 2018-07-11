@@ -63,10 +63,16 @@ def ondemand_result():
 
     print(game_output)
 
-    ondemand.update_task(task_user_id, game_output, {
+    files = {
         "replay": flask.request.files[replay_name],
-        # TODO: error logs
-    })
+    }
+
+    if "0" in game_output["error_logs"]:
+        filepath = game_output["error_logs"]["0"]
+        filename = os.path.basename(filepath)
+        files["error_log"] = flask.request.files[filename]
+
+    ondemand.update_task(task_user_id, game_output, files)
 
     return util.response_success()
 

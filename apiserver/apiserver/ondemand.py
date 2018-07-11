@@ -187,6 +187,9 @@ def update_task(user_id, game_output, files):
         blob = gcloud_storage.Blob(replay_key, bucket, chunk_size=262144)
         blob.upload_from_file(files["replay"])
 
+    if "error_log" in files:
+        task["error_log"] = files["error_log"].read().decode("utf-8")
+
     if "compile_error" in files:
         task["compile_error"] = files["compile_error"]
     else:
