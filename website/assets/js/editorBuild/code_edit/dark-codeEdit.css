@@ -183,7 +183,7 @@
 	background-color: rgba(16,106,91,0.99);
 }
 .editorTheme .textviewLeftRuler {
-	border-right: 1px solid #424C53;
+	border-right: none;
 }
 .editorTheme .textviewRightRuler {
 	border-left: 1px solid #424C53;

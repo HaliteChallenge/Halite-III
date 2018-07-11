@@ -384,6 +384,7 @@ export default {
   }
   .editor_col {
     padding: 0px;	
+    padding-left: 10px;
     margin-top: 0px;
     border-right: 1px solid #424C53;
   }
