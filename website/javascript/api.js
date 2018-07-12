@@ -135,7 +135,7 @@ export function get_season1_stats (userId) {
 
 export function get_editor_file_list (userId) {
   return $.get({
-    url: `${API_SERVER_URL}/user/${userId}/editor`,
+    url: `${API_SERVER_URL}/editor/${userId}`,
     xhrFields: {
       withCredentials: true
     }
@@ -144,7 +144,7 @@ export function get_editor_file_list (userId) {
 
 export function get_editor_file (userId, file_name) {
   return $.get({
-    url: `${API_SERVER_URL}/user/${userId}/editor/source_file/`+encodeURIComponent(file_name),
+    url: `${API_SERVER_URL}/editor/${userId}/file/`+encodeURIComponent(file_name),
     xhrFields: {
       withCredentials: true
     }
@@ -153,7 +153,7 @@ export function get_editor_file (userId, file_name) {
 
 export function create_editor_file_space (userId, language) {
   return $.get({
-    url: `${API_SERVER_URL}/user/${userId}/editor/${language}`,
+    url: `${API_SERVER_URL}/editor/${userId}/${language}`,
 	method: 'POST',
     xhrFields: {
       withCredentials: true
@@ -172,7 +172,7 @@ export function update_source_file (user_id, file_name, file_contents, progress_
     progress_callback(1)
   }, false)
   xhr.withCredentials = true
-  xhr.open('POST', `${API_SERVER_URL}/user/${user_id}/editor/source_file/${encodeURIComponent(file_name)}`)
+  xhr.open('POST', `${API_SERVER_URL}/editor/${user_id}/file/${encodeURIComponent(file_name)}`)
 
   const form_data = new FormData()
   form_data.append('name', 'sourceFile')
