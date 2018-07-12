@@ -44,7 +44,7 @@ def get_user_file(intended_user, file_id, *, user_id):
 
     return response
 
-@web_api.route("/user/<int:intended_user>/editor/<string: language>", methods=["POST"])
+@web_api.route("/user/<int:intended_user>/editor/<string:language>", methods=["POST"])
 @util.cross_origin(methods=["POST"])
 @api_util.requires_login(accept_key=True, association=True)
 def create_user_filespace(intended_user, language, *, user_id):
