@@ -132,7 +132,7 @@ export default {
       },
       fetchHackathon: function () {
         api.me().then((me) => {
-          api.getUserHackathons(me.user_id).then((hackathons) => {
+          api.get_user_hackathons(me.user_id).then((hackathons) => {
             const hackathonId = hackathons[0].hackathon_id
             this.hackathonId = hackathonId
             this.isGlobalActive = false

@@ -336,7 +336,7 @@ export function reset_api_key () {
   })
 }
 
-export function registerHackathon (code) {
+export function register_hackathon (code) {
   const me = me_cached()
   if (!me) {
     return Promise.reject({
@@ -354,7 +354,7 @@ export function registerHackathon (code) {
   })
 }
 
-export function getHackathon (id) {
+export function get_hackathon (id) {
   return $.get({
     url: `${API_SERVER_URL}/hackathon/${id}`,
     xhrFields: {
@@ -363,7 +363,7 @@ export function getHackathon (id) {
   })
 }
 
-export function getUserHackathons (userId) {
+export function get_user_hackathons (userId) {
   return $.get({
     url: `${API_SERVER_URL}/user/${userId}/hackathon`,
     xhrFields: {
@@ -372,7 +372,7 @@ export function getUserHackathons (userId) {
   })
 }
 
-export function getHackathons () {
+export function get_hackathons () {
   return $.get({
     url: `${API_SERVER_URL}/hackathon`,
     xhrFields: {
@@ -380,7 +380,7 @@ export function getHackathons () {
   })
 }
 
-export function getUserHistory (userId) {
+export function get_user_history (userId) {
   return $.get({
     url: `${API_SERVER_URL}/user/${userId}/history`,
     xhrFields: {
@@ -389,7 +389,7 @@ export function getUserHistory (userId) {
   })
 }
 
-export function invitefriend (email) {
+export function invite_friend (email) {
   return $.post({
     url: `${API_SERVER_URL}/invitation/user/` + email
   })
