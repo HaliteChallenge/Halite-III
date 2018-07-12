@@ -1,6 +1,6 @@
 ---
 layout: base_new
-no_header: editor
+no_header: true
 stoc: false
 full_width: true
 permalink: /editor

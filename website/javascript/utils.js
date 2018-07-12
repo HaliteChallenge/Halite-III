@@ -2,6 +2,8 @@
 
 import Message from './templates/Message.vue'
 import Vue from 'vue'
+import * as api from './api'
+import UserProfileBar from './templates/UserProfileBar.vue'
 
 export function tierClass (tier) {
   const lvl = { 'Bronze': 5, 'Silver': 4, 'Gold': 3, 'Platinum': 2, 'Diamond': 1 }
@@ -19,6 +21,25 @@ export function gaEvent (category, action, label) {
     eventLabel: label
   })
 }
+
+export function initUserProfileNav() {
+  console.trace()
+  api.me().then((me) => {
+    if (me) {
+      $('.not-logged-in').hide()
+      $('.navbar-signin').hide()
+      new Vue({
+        el: '#user-profile-bar-container',
+        render: (h) => h(UserProfileBar, { props: { baseUrl: _global.baseUrl } })
+      })
+
+      if (me.is_new_user === true && window.location.pathname !== '/create-account') {
+        window.location.replace('/create-account')
+      }
+    }
+  });
+}
+
 
 export const Alert = {
   show: function (message = 'there is an error', type = 'error', auto_hide = false) {

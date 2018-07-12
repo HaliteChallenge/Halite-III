@@ -30,6 +30,8 @@ import View404 from './templates/404.vue'
 import _ from '../vendor_assets/bootstrap-sass-3.3.7/assets/javascripts/bootstrap'
 
 import * as api from './api'
+import * as utils from './utils'
+
 
 Vue.use(require('vue-moment'))
 Vue.use(require('vue-cookie'))
@@ -176,20 +178,10 @@ window.mobileAndTabletcheck = function() {
   return check;
 };
 
-api.me().then((me) => {
-  if (me) {
-    $('.not-logged-in').hide()
-    $('.navbar-signin').hide()
-    new Vue({
-      el: '#user-profile-bar-container',
-      render: (h) => h(UserProfileBar, { props: { baseUrl: _global.baseUrl } })
-    })
 
-    if (me.is_new_user === true && window.location.pathname !== '/create-account') {
-      window.location.replace('/create-account')
-    }
-  }
-});
+if ($('#user-profile-bar-container').length) {
+  utils.initUserProfileNav();
+}
 
 window.refreshStickyTable = function () {
   const calcCol = () => {
