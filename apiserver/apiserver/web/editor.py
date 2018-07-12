@@ -10,7 +10,7 @@ from . import util as api_util
 from .blueprint import web_api
 
 # Get a list of users file names
-@web_api.route("/user/<int:intended_user>/source_file", methods=["GET"])
+@web_api.route("/user/<int:intended_user>/editor/", methods=["GET"])
 @util.cross_origin(methods=["GET"])
 @api_util.requires_login(accept_key=True, association=True)
 def list_user_files(intended_user, *, user_id):
@@ -21,7 +21,7 @@ def list_user_files(intended_user, *, user_id):
     return flask.jsonify([a.name[len(str(intended_user))+1:] for a in editor_bucket.list_blobs(prefix=str(intended_user)) if a.name[:-1] != str(intended_user)])
 
 
-@web_api.route("/user/<int:intended_user>/source_file/<path:file_id>", methods=["GET"])
+@web_api.route("/user/<int:intended_user>/editor/source_file/<path:file_id>", methods=["GET"])
 @util.cross_origin(methods=["GET"])
 @api_util.requires_login(accept_key=True, association=True)
 def get_user_file(intended_user, file_id, *, user_id):
@@ -44,7 +44,7 @@ def get_user_file(intended_user, file_id, *, user_id):
 
     return response
 
-@web_api.route("/user/<int:intended_user>/source_file/<string:language>", methods=["POST"])
+@web_api.route("/user/<int:intended_user>/editor/<string: language>", methods=["POST"])
 @util.cross_origin(methods=["POST"])
 @api_util.requires_login(accept_key=True, association=True)
 def create_user_filespace(intended_user, language, *, user_id):
@@ -57,15 +57,15 @@ def create_user_filespace(intended_user, language, *, user_id):
         starter_bucket = model.get_starter_bucket()
         sub_blobs = [b for b in starter_bucket.list_blobs(prefix=language)]
         if len(sub_blobs) == 0:
-            return util.APIError(400, message='Selected language is unavailable')
+            raise util.APIError(400, message='Selected language is unavailable')
         for sub_blob in sub_blobs:
             starter_bucket.copy_blob(sub_blob,
                     editor_bucket,
                     '%s/%s' % (str(intended_user), '/'.join(sub_blob.name.split('/')[1:])))
         return flask.jsonify(['/'.join(sub_blob.name.split('/')[1:]) for sub_blob in sub_blobs])
-    return util.APIError(400, message='User workspace already created')
+    raise util.APIError(400, message='User workspace already created')
 
-@web_api.route("/user/<int:intended_user>/source_file/<path:file_id>", methods=["POST"])
+@web_api.route("/user/<int:intended_user>/editor/source_file/<path:file_id>", methods=["POST"])
 @util.cross_origin(methods=["POST"])
 @api_util.requires_login(accept_key=True, association=True)
 def change_user_file(intended_user, file_id, *, user_id):
