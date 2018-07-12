@@ -12,7 +12,7 @@ Flask-Cors==3.0.3
 Flask-OAuthlib==0.9.4
 google-api-core==1.2.1
 google-api-python-client==1.6.2
-google-auth==1.0.1
+google-auth==1.5.0
 google-auth-httplib2==0.0.2
 google-cloud-core==0.28.1
 google-cloud-datastore==1.6.0
@@ -30,8 +30,8 @@ oauth2client==4.1.1
 oauthlib==2.0.2
 passlib==1.7.1
 protobuf==3.3.0
-pyasn1==0.2.3
-pyasn1-modules==0.0.9
+pyasn1==0.4.3
+pyasn1-modules==0.2.2
 pycountry==17.5.14
 pycparser==2.17
 PyMySQL==0.7.11
