@@ -52,6 +52,13 @@ def create_ondemand(intended_user, *, user_id):
         raise web_util.user_mismatch_error(
             message="Cannot start ondemand game for another user.")
 
+
+    if "opponents" not in flask.request.json:
+        raise util.APIError(400, message="Opponents array is required.")
+
+    if not flask.request.json["opponents"]:
+        raise util.APIError(400, message="Non-empty opponents array is required.")
+
     opponents = []
     for opponent in flask.request.json["opponents"]:
         opponents.append({
