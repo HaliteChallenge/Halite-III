@@ -11,10 +11,11 @@
             <ul>
                 <li
                     v-for="(step, index) in steps"
-                    v-bind:class="{ active: index == walkthroughProgress[0] }"
+                    v-bind:class="{ active: index == progress }"
+                    v-on:click="switchTo(index)"
                 >
                     <h2>{{step.title}}</h2>
-                    <p v-if="index == walkthroughProgress[0]">
+                    <p v-if="index == progress">
                         {{step.description}}
                     </p>
                 </li>
@@ -22,7 +23,11 @@
         </div>
 
         <div class="walkthrough-content">
-            <slot v-bind:walkthrough-progress="walkthroughProgress"></slot>
+            <slot
+                v-bind:progress="progress"
+                v-bind:step-name="steps[progress].name"
+            >
+            </slot>
         </div>
     </section>
 </template>
@@ -33,14 +38,16 @@
         props: ["title", "steps"],
         data: function () {
             return {
-                walkthroughProgress: [0],
+                progress: 0,
             };
         },
         mounted: function () {
 
         },
         methods: {
-
+            switchTo: function(index) {
+                this.progress = index;
+            }
         },
     };
 </script>
@@ -70,6 +77,14 @@
                 > li.active {
                     > h2 {
                         color: #FFBE00;
+                        background: rgba(255, 190, 0, 0.1);
+                    }
+                }
+
+                > li:hover {
+                    cursor: pointer;
+
+                    > h2 {
                         background: rgba(255, 190, 0, 0.1);
                     }
                 }
