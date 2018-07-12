@@ -424,8 +424,6 @@ export default {
      height: 100%;
   }
 
-
-
   .replay {
     border-bottom: 1px solid #424C53;
     flex: 0 1 auto;
@@ -437,6 +435,7 @@ export default {
     background-color: black;
     color: silver;
     font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+    font-size: 10pt;
   }
 
   .replay, .console {
