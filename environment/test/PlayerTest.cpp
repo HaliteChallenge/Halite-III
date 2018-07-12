@@ -78,7 +78,7 @@ SCENARIO("Player operators are semantically correct", "[player_operators]") {
 
 SCENARIO("Players are encoded to JSON and bot serial format correctly", "[player_serial]") {
     GIVEN("A player") {
-        auto entity = make_entity<PlayerEntity>(1, 128);
+        auto entity = make_entity<Entity>(1, 128);
         Player player(1, "player", 2, {{3, 4}}, {{{0, 0}, entity}});
         WHEN("player is serialized to JSON") {
             nlohmann::json json;
@@ -111,7 +111,7 @@ SCENARIO("Players and entities interact correctly", "[player_entities]") {
     Player player = player_factory.new_player("./bot");
     WHEN("entity added") {
         const auto BASE_ENERGY = 100;
-        std::shared_ptr<hlt::PlayerEntity> entity = hlt::make_entity<hlt::PlayerEntity>(player.player_id, BASE_ENERGY);
+        std::shared_ptr<hlt::Entity> entity = hlt::make_entity<hlt::Entity>(player.player_id, BASE_ENERGY);
         Location location = {0, 0};
         player.add_entity(location, entity);
         THEN("entity is stored by player, has correct energy") {
@@ -127,7 +127,7 @@ SCENARIO("Players and entities interact correctly", "[player_entities]") {
         }
         WHEN("entity at different location added") {
             Location location2 = {1, 1};
-            std::shared_ptr<hlt::PlayerEntity> entity2 = hlt::make_entity<hlt::PlayerEntity>(player.player_id, BASE_ENERGY);
+            std::shared_ptr<hlt::Entity> entity2 = hlt::make_entity<hlt::Entity>(player.player_id, BASE_ENERGY);
             player.add_entity(location2, entity2);
             THEN ("both entities exist with original energy") {
                 REQUIRE(player.entities.size() == 2);

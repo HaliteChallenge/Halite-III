@@ -1,9 +1,11 @@
 #ifndef GAMEEVENT_HPP
 #define GAMEEVENT_HPP
 
-#include "nlohmann/json_fwd.hpp"
 #include "Location.hpp"
 #include "Entity.hpp"
+#include "Player.hpp"
+
+#include "nlohmann/json_fwd.hpp"
 
 namespace hlt {
 

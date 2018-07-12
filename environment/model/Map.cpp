@@ -60,17 +60,6 @@ dimension_type Map::distance(const Location &from, const Location &to) const {
 }
 
 /**
- * Convert an encoded Map from JSON format.
- * @param json The JSON.
- * @param[out] map The converted Map.
- */
-void from_json(const nlohmann::json &json, Map &map) {
-    map = {FIELD_FROM_JSON(width),
-           FIELD_FROM_JSON(height),
-           FIELD_FROM_JSON(grid)};
-}
-
-/**
  * Write a Map to bot serial format.
  * @param ostream The output stream.
  * @param map The Map to write.
@@ -82,7 +71,7 @@ std::ostream &operator<<(std::ostream &os, const Map &map) {
     // Output the cells one after another.
     for (const auto &row : map.grid) {
         for (const auto &cell : row) {
-            os << cell;
+            os << *cell;
         }
     }
     return os;

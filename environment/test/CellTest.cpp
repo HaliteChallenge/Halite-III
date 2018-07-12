@@ -33,7 +33,7 @@ SCENARIO("Cell constructor initializes member variables", "[cell]") {
             hlt::PlayerFactory player_factory{};
             Player player = player_factory.new_player("./bot");
             const auto BASE_ENERGY = 100;
-            std::shared_ptr<PlayerEntity> entity = hlt::make_entity<PlayerEntity>(player.player_id, BASE_ENERGY);
+            std::shared_ptr<Entity> entity = hlt::make_entity<Entity>(player.player_id, BASE_ENERGY);
             normal_cell->add_entity(player, entity);
             THEN("entity is stored by cell, has correct energy, owner") {
                 REQUIRE(normal_cell->entities[player.player_id] == entity);
@@ -48,7 +48,7 @@ SCENARIO("Cell constructor initializes member variables", "[cell]") {
             }
             WHEN("different player's entity added") {
                 Player player2 = player_factory.new_player("./bot2");
-                std::shared_ptr<PlayerEntity> entity2 = hlt::make_entity<PlayerEntity>(player2.player_id, BASE_ENERGY);
+                std::shared_ptr<Entity> entity2 = hlt::make_entity<Entity>(player2.player_id, BASE_ENERGY);
                 normal_cell->add_entity(player2, entity2);
                 THEN ("both entities exist with original energy") {
                     REQUIRE(normal_cell->entities.size() == 2);

@@ -12,10 +12,10 @@ void BasicGenerator::generate(Map &map, std::vector<Location> &factories) {
     for (dimension_type y = 0; y < map.height; y++) {
         for (dimension_type x = 0; x < map.width; x++) {
             if (players-- > 0) {
-                map.at(x, y) = make_cell<FactoryCell>();
+                map.at(x, y) = std::make_unique<FactoryCell>();
                 factories.emplace_back(x, y);
             } else {
-                map.at(x, y) = make_cell<NormalCell>(PRODUCTION);
+                map.at(x, y) = std::make_unique<NormalCell>(PRODUCTION);
             }
         }
     }

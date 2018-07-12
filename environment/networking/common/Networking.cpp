@@ -28,7 +28,7 @@ void Networking::initialize_player(Player &player) {
     // Send each player's ID and factory location
     for (const auto &[player_id, other_player] : game.players) {
         message_stream << player_id
-                       << " " << other_player.factories.front()
+                       << " " << other_player.factory
                        << std::endl;
     }
     // Send the map
@@ -51,7 +51,7 @@ void Networking::initialize_player(Player &player) {
  * @param player The player to communicate with.
  * @return The commands from the player.
  */
-std::vector<Command> Networking::handle_frame(const Player &player) {
+std::vector<std::unique_ptr<Command>> Networking::handle_frame(const Player &player) {
     std::stringstream message_stream;
     // Send the turn number, then each player in the game.
     message_stream << game.turn_number << std::endl;
@@ -62,8 +62,8 @@ std::vector<Command> Networking::handle_frame(const Player &player) {
     Logging::log("Turn info sent to player " + std::to_string(player.player_id), Logging::Level::Debug);
     // Get commands from the player.
     std::istringstream command_stream(connections[player]->get_string());
-    std::vector<Command> commands;
-    Command command;
+    std::vector<std::unique_ptr<Command>> commands;
+    std::unique_ptr<Command> command;
     while (command_stream >> command) {
         commands.push_back(std::move(command));
     }

@@ -77,7 +77,7 @@ void FractalValueNoiseTileGenerator::generate(Map &map, std::vector<Location> &f
     for (dimension_type y = 0; y < tile_height; y++) {
         for (dimension_type x = 0; x < tile_width; x++) {
             region[y][x] *= MAX_CELL_PRODUCTION / max_value;
-            tile.at(x, y) = make_cell<NormalCell>(round(region[y][x]));
+            tile.at(x, y) = std::make_unique<NormalCell>(round(region[y][x]));
         }
     }
 

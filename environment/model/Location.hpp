@@ -40,8 +40,8 @@ std::istream &operator>>(std::istream &istream, Direction &direction);
 
 /** Type of a location. */
 struct Location {
-    dimension_type x; /**< The x-coordinate. */
-    dimension_type y; /**< The y-coordinate. */
+    dimension_type x{}; /**< The x-coordinate. */
+    dimension_type y{}; /**< The y-coordinate. */
 
     /**
      * Compare to another Location by equality.

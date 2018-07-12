@@ -7,8 +7,9 @@
 #include "Generator.hpp"
 #include "Halite.hpp"
 #include "Logging.hpp"
-#include "replay/Snapshot.hpp"
-#include "error/SnapshotError.hpp"
+#include "Snapshot.hpp"
+#include "SnapshotError.hpp"
+#include "Units.hpp"
 
 #include "version.hpp"
 
@@ -130,9 +131,9 @@ int main(int argc, char *argv[]) {
 
     std::vector<hlt::Player> players;
     players.reserve(bot_commands.size());
-    hlt::PlayerFactory player_factory;
+    Factory<hlt::Player> player_factory;
     for (const auto &command : bot_commands) {
-        players.push_back(player_factory.new_player(command));
+        players.push_back(player_factory.make(command));
     }
 
     std::string replay_directory = replay_arg.getValue();
@@ -154,21 +155,21 @@ int main(int argc, char *argv[]) {
         char time_string[MAX_DATE_STRING_LENGTH];
         std::strftime(time_string, MAX_DATE_STRING_LENGTH, "%Y%m%d-%H%M%S%z", localtime);
         filename_buf << "replay-" << std::string(time_string);
-        filename_buf << "-" << game.replay_struct.map_generator_seed;
+        filename_buf << "-" << game.replay.map_generator_seed;
         filename_buf << "-" << game.game_map.width;
         filename_buf << "-" << game.game_map.height << ".hlt";
         auto filename = filename_buf.str();
         std::string output_filename = replay_directory + "Replays/" + filename;
         bool enable_compression = !no_compression_switch.getValue();
         try {
-            game.replay_struct.output(output_filename, enable_compression);
+            game.replay.output(output_filename, enable_compression);
         }
         catch (std::runtime_error& e) {
             output_filename = replay_directory + filename;
-            game.replay_struct.output(output_filename, enable_compression);
+            game.replay.output(output_filename, enable_compression);
         }
         std::stringstream replay_message;
-        replay_message << "Map seed was " << game.replay_struct.map_generator_seed << std::endl
+        replay_message << "Map seed was " << game.replay.map_generator_seed << std::endl
                        << "Opening a file at " << output_filename << std::endl;
         Logging::log(replay_message.str());
 
@@ -182,7 +183,7 @@ int main(int argc, char *argv[]) {
             // TODO: put the actual generator here
             results["map_generator"] = "default";
             results["stats"] = nlohmann::json::object();
-            for (const auto& stats : game.replay_struct.game_statistics.player_statistics) {
+            for (const auto& stats : game.replay.game_statistics.player_statistics) {
                 results["stats"][std::to_string(stats.player_id)] = { { "rank", stats.rank } };
             }
             // TODO: where are the error logs?

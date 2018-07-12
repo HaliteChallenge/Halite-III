@@ -4,7 +4,6 @@ namespace hlt {
 
 /**
  * Determine whether the game has ended.
- *
  * @return True if the game has ended.
  */
 bool HaliteImpl::game_ended() const {
@@ -23,9 +22,8 @@ bool HaliteImpl::game_ended() const {
 
 /**
  * Construct HaliteImpl from game interface.
- *
  * @param game The game interface.
  */
-HaliteImpl::HaliteImpl(Halite &game) : game(game), ownership_grid(game.game_map.height, game.game_map.width) {}
+HaliteImpl::HaliteImpl(Halite &game) : game(game) {}
 
 }

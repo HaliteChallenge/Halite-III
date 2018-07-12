@@ -77,7 +77,7 @@ TEST_CASE("Replay object created and converted to json as expected by visualizer
     for (auto &player : players) {
         player.factories.push_back(factories.back());
         factories.pop_back();
-        player.entities[player.factories.front()] = make_entity<PlayerEntity>(player.player_id, GAME_CONSTANTS.NEW_ENTITY_ENERGY);
+        player.entities[player.factories.front()] = make_entity<Entity>(player.player_id, GAME_CONSTANTS.NEW_ENTITY_ENERGY);
         player_map[player.player_id] = player;
     }
 

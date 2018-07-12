@@ -36,7 +36,7 @@ struct Replay {
     static constexpr auto ENGINE_VERSION = HALITE_VERSION;      /**< Version of the game engine */
 
     size_t number_of_players;                                   /**< Number of players in this game */
-    std::unordered_map<Player::id_type, Player> players{};                                  /**< List of players at start of game, including factory location and initial entities */
+    std::unordered_map<Player::id_type, Player> players{};      /**< List of players at start of game, including factory location and initial entities */
     std::vector<hlt::Turn> full_frames{};                       /**< Turn information: first element = first frame/turn. Length is game_statistics.number_turns */
 
     unsigned int map_generator_seed;                            /**< Seed used in random number generator for map */

@@ -7,7 +7,7 @@ namespace hlt {
 
 /** Communicate with bots to obtain commands for next step. */
 void HaliteImpl::retrieve_commands() {
-    std::unordered_map<Player::id_type, std::future<std::vector<Command>>> results;
+    std::unordered_map<Player::id_type, std::future<std::vector<std::unique_ptr<Command>>>> results;
     for (auto &[player_id, player] : game.players) {
         results[player_id] = std::async(std::launch::async,
                                         [&game = this->game, &player = player] {
@@ -22,24 +22,8 @@ void HaliteImpl::retrieve_commands() {
 /** Process the effects of commands. */
 void HaliteImpl::process_commands() {
     for (const auto &[player_id, command_list] : commands) {
-        auto transaction = CommandTransaction(game.game_map, game.players[player_id]);
-        transaction.set_callback([&frames = game.replay_struct.full_frames](auto event) {
-            // Create new game event for replay file,
-            // regardless of whether spawn creates a new entity or adds to an old entity
-            // Ensure full frames has been initialized (ie don't do this before first turn)
-            if (!frames.empty()) {
-                frames.back().events.push_back(std::move(event));
-            }
-        });
-        for (const auto &command : command_list) {
-            command->act_on_map(transaction);
-        }
-        if (!transaction.commit()) {
-            throw BotCommandError("Invalid commands");
-        }
+        // TODO: implement
     }
-    // Add commands to replay struct for visualizer
-    game.replay_struct.full_frames.back().moves = std::move(commands);
 }
 
 }

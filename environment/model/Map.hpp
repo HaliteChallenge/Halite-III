@@ -11,7 +11,6 @@
 #include "Entity.hpp"
 #include "Grid.hpp"
 #include "Location.hpp"
-#include "Auction.hpp"
 
 namespace hlt {
 
@@ -22,7 +21,7 @@ class Generator;
 }
 
 /** The map of cells. */
-class Map : public Grid<Cell> {
+class Map : public Grid<std::unique_ptr<Cell>> {
     friend class Halite;
 
     /** The name of the map generator used to generate the map. */
@@ -31,9 +30,6 @@ class Map : public Grid<Cell> {
 public:
     /** The number of neighbors of each cell on the map grid. */
     static constexpr auto NEIGHBOR_COUNT = 4;
-
-    long factory_count = 0;                                     /**< The number of factories on the map. */
-    std::unordered_map<Location, Auction> factories_for_sale{}; /**< Factories up for sale. */
 
     /**
      * Convert a Map to JSON format.

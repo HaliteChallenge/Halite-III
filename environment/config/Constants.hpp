@@ -1,15 +1,11 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
+#include "Units.hpp"
+
 #include "nlohmann/json_fwd.hpp"
 
 namespace hlt {
-
-/** The type of dimension values across all Halite classes using dimension. */
-using dimension_type = long;
-
-/** The type of energy/production values across all Halite classes. */
-using energy_type = long;
 
 /**
  * Gameplay constants that may be tweaked, though they should be at their
@@ -36,7 +32,7 @@ struct Constants {
     double FACTOR_EXP_2 = 1.5; // Determines final spikiness of map. Higher values weight towards 0.
     /*
     The two FACTOR_EXP constants do related things but they are not the same.
-    FACTOR_EXP_1 exponentiates the distribution used to seed the randomness. 
+    FACTOR_EXP_1 exponentiates the distribution used to seed the randomness.
     FACTOR_EXP_2 exponentiates the final distribution just prior to normalization.
     Broadly, both will give spikier maps. However (and perhaps counterintuitively), using
     FACTOR_EXP_1 will give maps that have more individual, small-scale spikes. Conversely,

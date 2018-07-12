@@ -16,24 +16,10 @@ namespace hlt {
  * Convert an Entity to JSON format.
  * @param[out] json The output JSON.
  * @param entity The entity to convert.
- * @param include_owner If true, add the owner ID to the JSON.
  */
-void to_json(nlohmann::json &json, const PlayerEntity &entity, bool include_owner) {
-    if (include_owner) {
-        json = {FIELD_TO_JSON(owner_id), FIELD_TO_JSON(energy)};
-    } else {
-        json = {FIELD_TO_JSON(energy)};
-    }
-}
-
-/**
- * Convert an encoded Entity from JSON format.
- * @param json The JSON.
- * @param[out] entity The converted entity.
- */
-void from_json(const nlohmann::json &json, PlayerEntity &entity) {
-    entity = {FIELD_FROM_JSON(owner_id),
-              FIELD_FROM_JSON(energy)};
+void to_json(nlohmann::json &json, const Entity &entity) {
+    json = {FIELD_TO_JSON(id),
+            FIELD_TO_JSON(energy)};
 }
 
 /**
@@ -42,9 +28,9 @@ void from_json(const nlohmann::json &json, PlayerEntity &entity) {
  * @param entity The entity to write.
  * @return The output stream.
  */
-std::ostream &operator<<(std::ostream &ostream, const PlayerEntity &entity) {
-    // Output the entity owner ID then its energy.
-    return ostream << entity.owner_id << " " << entity.energy << std::endl;
+std::ostream &operator<<(std::ostream &ostream, const Entity &entity) {
+    // Output the entity ID, then energy.
+    return ostream << entity.id << " " << entity.energy << std::endl;
 }
 
 }

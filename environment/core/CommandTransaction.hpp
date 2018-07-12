@@ -3,6 +3,7 @@
 
 #include <functional>
 
+#include "Command.hpp"
 #include "Location.hpp"
 #include "GameEvent.hpp"
 
@@ -14,54 +15,41 @@ class Map;
 
 /** Transactions that execute a series of player commands atomically. */
 class CommandTransaction {
-    std::vector<std::tuple<Location, Location>> move_commands{};     /** The move command buffer. */
-    std::vector<std::tuple<Location, energy_type>> spawn_commands{}; /** The spawn command buffer. */
-    Map &_map;                                 /** Mutable map reference. */
-    Player &_player;                           /** Mutable player reference. */
     std::function<void(GameEvent)> callback{}; /** Event callback. */
 
 public:
-    const Map &map;         /** The game map to update. */
-    const Player &player;   /** The player executing the commands. */
+    const Map &map;       /** The game map to update. */
+    const Player &player; /** The player executing the commands. */
+
+    std::vector<DumpCommand> dump_commands{};           /** The dump command buffer. */
+    std::vector<ConstructCommand> construct_commands{}; /** The construct command buffer. */
+    std::vector<MoveCommand> move_commands{};           /** The move command buffer. */
+    std::vector<SpawnCommand> spawn_commands{};         /** The spawn command buffer. */
 
     /**
      * Construct CommandTransaction from Map and Player.
      * @param map The Map to update.
      * @param player The Player.
      */
-    explicit CommandTransaction(Map &map, Player &player) : _map(map), _player(player), map(map), player(player) {}
+    explicit CommandTransaction(Map &map, Player &player) : map(map), player(player) {}
 
     /**
      * Set a callback for GameEvents generated during the transaction commit.
      * @param callback The callback to set.
      */
-    void set_callback(const std::function<void(GameEvent)> &callback);
+    void set_callback(std::function<void(GameEvent)> &&callback) { this->callback = callback; }
+
+    /**
+     * Check whether the commit can succeed without executing it.
+     * @return True if the commit can succeed.
+     */
+    bool check() const;
 
     /**
      * Attempt to commit the transaction.
      * @return True if the commit succeeded.
      */
     bool commit();
-
-    /**
-     * Add an entity move to the transaction.
-     *
-     * @param from The source location of the entity.
-     * @param to The destination location of the entity.
-     */
-    void move_entity(const Location &from, const Location &to) {
-        move_commands.emplace_back(from, to);
-    }
-
-    /**
-     * Add an entity spawn to the transaction.
-     *
-     * @param factory The factory location to spawn from.
-     * @param energy The amount of energy to spawn with.
-     */
-    void spawn_entity(const Location & factory, const energy_type & energy) {
-        spawn_commands.emplace_back(factory, energy);
-    }
 };
 
 }

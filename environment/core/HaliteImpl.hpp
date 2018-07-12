@@ -5,7 +5,6 @@
 
 #include "Halite.hpp"
 #include "Replay.hpp"
-#include "OwnershipGrid.hpp"
 
 namespace hlt {
 
@@ -16,11 +15,8 @@ class HaliteImpl final {
     /** The game interface. */
     Halite &game;
 
-    /** Representation of the map grid containing ownership information. */
-    OwnershipGrid ownership_grid;
-
     /** Current commands per player. */
-    std::unordered_map<Player::id_type, std::vector<Command>> commands;
+    std::unordered_map<Player::id_type, std::vector<std::unique_ptr<Command>>> commands;
 
     /**
      * Determine whether the game has ended.
@@ -34,22 +30,6 @@ class HaliteImpl final {
 
     /** Process the effects of retrieved commands. */
     void process_commands();
-
-    /** Process all entity lifecycle events for this turn. */
-    void process_entities();
-
-    /**
-     * Determine minimum purchase price for factories at start of game
-     * @return minimum purchase price
-     */
-    energy_type initial_minimum_price();
-
-    /**
-     * Execute initial factory division, including dealing with ties. This function will deal with processing commands from
-     * players and sending them info after each tie break
-     * Will assign players' their initial factory.
-     */
-    void initial_factory_assignment();
 
     /**
      * Update a player's statistics after a single turn. This will update their total game production, their last turn
@@ -68,65 +48,6 @@ class HaliteImpl final {
 
     /** Update the energy/production of each player by calculating ownership of each cell in the current turn. */
     void process_production();
-
-    /**
-     * Initialized ownership grid with locations of sprites. Assigns each cell to be owned by the sprite on it or determines
-     * that there is a tie if two sprites share a cell. Initializes search_cells queue with cells with sprites on them.
-     *
-     * @param search_cells Queue of cells that have been assigned an owner. After a cell's owner has been determined, it is added
-     * to search_cells for the purpose of searching its neighbors.
-     */
-    void initialize_owner_search_from_sprites(std::queue<Location> &search_cells);
-
-    /**
-     * Run modified BFS algorithm to determine owner (or tie) of each cell. Assumes that search cells has been initialized
-     * with locations with sprites on them.
-     *
-     * @param search_cells Queue of cells that have been assigned an owner. After a cell's owner has been determined, it is added
-     * to search cells to search the neighbors of said cells.
-     */
-    void run_initialized_owner_search(std::queue<Location> &search_cells);
-
-    /**
-     * Grant production from owned cells on this turn to players.
-     * Calculates total production gained on this turn for each player before adding to players' totals.
-     */
-    void update_production_from_ownership();
-
-    /**
-     * Determines the proper owner of a cell (or that the cell has tied ownership).
-     * Assumes cell_location neighbors at least one owned cell.
-     *
-     * @param cell_location Location of cell to determine ownership.
-     */
-    void determine_cell_ownership(const Location &cell_location);
-
-    /**
-     * Determine whether multiple entities are on a cell.
-     * @param location The location of the cell.
-     * @return True if greater than 1 entity is on the cell.
-     */
-    bool multiple_entities_on_cell(const Location &location) const;
-
-    /**
-     * Process production granting for a cell with tied ownership
-     * (i.e. multiple equidistant sprites of different players).
-     * @param cell_location Location object with details of cell with equidistant sprites.
-     * @param close_entities Entities calculated to be at the same closest distance to relevant cell.
-     * @param turn_player_production Mapping from player ID to production energy they gain during the turn.
-     *     Will be updated to grant production of current cell to player that wins the tie.
-     */
-    void process_tie(const Location &cell_location, std::unordered_set<std::shared_ptr<PlayerEntity>> &close_entities,
-                     std::unordered_map<Player::id_type, energy_type> &turn_player_production);
-
-    /**
-     * Process the search initialization for a cell with colliding entities
-     * (i.e. entities from multiple different players on one cell).
-     *
-     * @param cell_location Location of cell with colliding entities.
-     * @return Resulting owner for this cell.
-     */
-    Player::id_type process_collision(const Location &cell_location);
 
 public:
     /**

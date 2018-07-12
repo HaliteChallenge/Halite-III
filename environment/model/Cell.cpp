@@ -3,10 +3,8 @@
 
 /** The JSON key for cell type. */
 constexpr auto JSON_TYPE_KEY = "type";
-/** The JSON key for production. */
-constexpr auto JSON_PRODUCTION_KEY = "production";
-/** The JSON key for energy factor. */
-constexpr auto JSON_ENERGY_FACTOR_KEY = "energy_factor";
+/** The JSON key for energy. */
+constexpr auto JSON_ENERGY_KEY = "energy";
 
 namespace hlt {
 
@@ -15,28 +13,7 @@ namespace hlt {
  * @param[out] json The output JSON.
  * @param cell The cell to convert.
  */
-void to_json(nlohmann::json &json, const Cell &cell) { cell->to_json(json); }
-
-/**
- * Convert an encoded Cell from JSON format.
- * @param json The JSON.
- * @param[out] cell The converted cell.
- */
-void from_json(const nlohmann::json &json, Cell &cell) {
-    // The type field determines the Cell subclass that will be instantiated.
-    const std::string &type = json.at(JSON_TYPE_KEY);
-    if (type == NormalCell::CELL_TYPE_NAME) {
-        cell = make_cell<NormalCell>(json);
-    } else if (type == ObstacleCell::CELL_TYPE_NAME) {
-        cell = make_cell<ObstacleCell>(json);
-    } else if (type == EnergyFactorCell::CELL_TYPE_NAME) {
-        cell = make_cell<EnergyFactorCell>(json);
-    } else if (type == FactoryCell::CELL_TYPE_NAME) {
-        cell = make_cell<FactoryCell>(json);
-    } else {
-        throw JsonError(json);
-    }
-}
+void to_json(nlohmann::json &json, const std::unique_ptr<Cell> &cell) { cell->to_json(json); }
 
 /**
  * Write a Cell to bot serial format.
@@ -45,55 +22,16 @@ void from_json(const nlohmann::json &json, Cell &cell) {
  * @return The output stream.
  */
 std::ostream &operator<<(std::ostream &ostream, const Cell &cell) {
-    return ostream << cell->to_bot_serial() << std::endl;
+    return ostream << cell.to_bot_serial() << std::endl;
 }
-
-/**
- * Find an entity by player.
- * @param player The player to search.
- * @return The entity for that player, or null if not found.
- */
-std::shared_ptr<PlayerEntity> BaseCell::find_entity(const Player &player) const {
-    if (auto entity_iterator = entities.find(player.player_id); entity_iterator != entities.end()) {
-        return entity_iterator->second;
-    } else {
-        return std::shared_ptr<PlayerEntity>();
-    }
-}
-
-/**
- * Add a new entity by player. No entity must exist for that player.
- * @param player The player for the entity.
- * @param entity The entity to add.
- */
-void BaseCell::add_entity(const Player &player, std::shared_ptr<PlayerEntity> entity) {
-    entities[player.player_id] = entity;
-}
-
-/**
- * Remove an entity by player.
- * @param player The player of the entity.
- * @return The entity for that player.
- */
-std::shared_ptr<PlayerEntity> BaseCell::remove_entity(const Player &player) {
-    auto found = std::move(entities[player.player_id]);
-    entities.erase(player.player_id);
-    return found;
-}
-
-/**
- * Create ProductionCell from JSON.
- * @param json The JSON.
- */
-ProductionCell::ProductionCell(const nlohmann::json &json) : _production(json.at(JSON_PRODUCTION_KEY)) {}
 
 /**
  * Convert a NormalCell to JSON format.
  * @param[out] json The JSON output.
  */
 void NormalCell::to_json(nlohmann::json &json) const {
-    json = {{JSON_TYPE_KEY,       CELL_TYPE_NAME},
-            {JSON_PRODUCTION_KEY, production()}};
+    json = {{JSON_TYPE_KEY,   Name::Normal},
+            {JSON_ENERGY_KEY, energy()}};
 }
 
 /**
@@ -101,7 +39,7 @@ void NormalCell::to_json(nlohmann::json &json) const {
  * @return The formatted output.
  */
 std::string NormalCell::to_bot_serial() const {
-    return std::string(CELL_TYPE_NAME) + " " + std::to_string(production());
+    return to_string(Name::Normal) + " " + std::to_string(energy());
 }
 
 /**
@@ -109,8 +47,8 @@ std::string NormalCell::to_bot_serial() const {
  * @param[out] json The JSON output.
  */
 void ObstacleCell::to_json(nlohmann::json &json) const {
-    json = {{JSON_TYPE_KEY,       CELL_TYPE_NAME},
-            {JSON_PRODUCTION_KEY, production()}};
+    json = {{JSON_TYPE_KEY,   Name::Obstacle},
+            {JSON_ENERGY_KEY, energy()}};
 }
 
 /**
@@ -118,48 +56,21 @@ void ObstacleCell::to_json(nlohmann::json &json) const {
  * @return The formatted output.
  */
 std::string ObstacleCell::to_bot_serial() const {
-    return std::string(CELL_TYPE_NAME) + " " + std::to_string(production());
+    return to_string(Name::Obstacle) + " " + std::to_string(energy());
 }
-
-/**
- * Convert an EnergyFactorCell to JSON format.
- * @param[out] json The JSON output.
- */
-void EnergyFactorCell::to_json(nlohmann::json &json) const {
-    json = {{JSON_TYPE_KEY,          CELL_TYPE_NAME},
-            {JSON_PRODUCTION_KEY,    production()},
-            {JSON_ENERGY_FACTOR_KEY, _energy_factor}};
-}
-
-/**
- * Convert a EnergyFactorCell to bot serial format.
- * @return The formatted output.
- */
-std::string EnergyFactorCell::to_bot_serial() const {
-    return std::string(CELL_TYPE_NAME) + " " +
-           std::to_string(production()) + " " +
-           std::to_string(_energy_factor);
-}
-
-/**
- * Create EnergyFactorCell from JSON.
- * @param json The JSON.
- */
-EnergyFactorCell::EnergyFactorCell(const nlohmann::json &json) :
-        ProductionCell(json), _energy_factor(json.at(JSON_ENERGY_FACTOR_KEY)) {}
 
 /**
  * Convert a FactoryCell to JSON format.
  * @param[out] json The JSON output.
  */
 void FactoryCell::to_json(nlohmann::json &json) const {
-    json = {{JSON_TYPE_KEY, CELL_TYPE_NAME}};
+    json = {{JSON_TYPE_KEY, Name::Factory}};
 }
 
 /**
  * Convert a FactoryCell to bot serial format.
  * @return The formatted output.
  */
-std::string FactoryCell::to_bot_serial() const { return CELL_TYPE_NAME; }
+std::string FactoryCell::to_bot_serial() const { return to_string(Name::Factory); }
 
 }

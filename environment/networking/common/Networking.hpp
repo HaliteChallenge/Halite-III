@@ -57,7 +57,7 @@ public:
      * @param player The player to communicate with.
      * @return The commands from the player.
      */
-    std::vector<hlt::Command> handle_frame(const hlt::Player &player);
+    std::vector<std::unique_ptr<hlt::Command>> handle_frame(const hlt::Player &player);
 
     /**
      * Initialize Networking from configuration and Halite game.

@@ -8,7 +8,7 @@ using namespace hlt;
 
 SCENARIO("Player Entity constructor initializes member variables", "[entity]") {
     GIVEN("An entity with owner and energy") {
-        PlayerEntity entity(0, 10);
+        Entity entity(0, 10);
         REQUIRE(entity.owner_id == 0);
         REQUIRE(entity.energy == 10);
         WHEN("converted to json") {

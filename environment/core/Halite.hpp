@@ -22,18 +22,18 @@ class Halite final {
     friend class HaliteImpl;
 
 public:
-    unsigned long turn_number{};                                                    /**< The turn number. */
-    std::unordered_map<Player::id_type, Player> players;                            /**< Map from player ID to player. */
-    Map game_map;                                                                   /**< The game map. */
-    std::unordered_map<Location, std::shared_ptr<IndependentEntity>> map_entities;  /**< The independent entities on the map */
-    GameStatistics game_statistics;                                                 /**< The statistics of the game. */
-    Replay replay_struct;                                                           /**< Replay class to collect info for visualizer. */
+    unsigned long turn_number{};                          /**< The turn number. */
+    std::unordered_map<Player::id_type, Player> players;  /**< Map from player ID to player. */
+    std::unordered_map<Entity::id_type, Entity> entities; /**< Map from entity ID to entity. */
+    Map game_map;                                         /**< The game map. */
+    GameStatistics game_statistics;                       /**< The statistics of the game. */
+    Replay replay;                                        /**< Replay instance to collect info for visualizer. */
 
 private:
-    Config config;                          /**< The game configuration. */
-    mapgen::MapParameters parameters;       /**< The map parameters. */
-    net::Networking networking;             /**< The networking suite. */
-    std::unique_ptr<HaliteImpl> impl;       /**< The pointer to implementation. */
+    Config config;                    /**< The game configuration. */
+    mapgen::MapParameters parameters; /**< The map parameters. */
+    net::Networking networking;       /**< The networking suite. */
+    std::unique_ptr<HaliteImpl> impl; /**< The pointer to implementation. */
 
 public:
     /**
@@ -51,7 +51,12 @@ public:
 
     /** Run the game. */
     void run_game();
-    void load_snapshot(const Snapshot& snapshot);
+
+    /**
+     * Load a snapshot.
+     * @param snapshot The snapshot.
+     */
+    void load_snapshot(const Snapshot &snapshot);
 
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();
