@@ -10,7 +10,7 @@ from . import util as api_util
 from .blueprint import web_api
 
 # Get a list of users file names
-@web_api.route("/user/<int:intended_user>/editor/", methods=["GET"])
+@web_api.route("/user/<int:intended_user>/editor", methods=["GET"])
 @util.cross_origin(methods=["GET"])
 @api_util.requires_login(accept_key=True, association=True)
 def list_user_files(intended_user, *, user_id):
