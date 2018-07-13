@@ -27,25 +27,27 @@
                 <div style='margin-top: 61px' class="body">
                   <div class="container-fluid h-100 page_container">
                           <div class="row flex-xl-nowrap h-100 page_row">
-                                  <div class="col-12 col-md-2 col-lg-2 col-xl-1 hidden-sm hidden-xs bd-sidebar file_tree_col">
-                                          <nav id="bd-docs-nav"><div class="bd-toc-item active">
-                                                  <ul class="nav bd-sidenav">
-                                                    <li v-for="(f, name) in editor_files" class="bd-sidenav-active" v-bind:class="{ active: name === active_file_name }">
-                                                      <a v-on:click="file_selected(name)">
-                                                        {{ name }}
-                                                      </a>
-                                                    </li>
-                                                  </ul>
-                                          </div></nav>
-                                  </div>
-                                  <div class="col-12 col-md-6 col-lg-6 col-xl-7 py-md-6 pl-md-6 bd-content editor_col">
-                                          <div class="editorArea">
-                                                  <div class="editorBody" id="embeddedEditor">
-                                                          <div class="editorTitle">
-                                                                  <span id = "progressMessageDiv">Loading language tooling plugins...</span>
-                                                          </div>
-                                                  </div>
-                                          </div>
+                                  <div class="col-12 col-md-8 col-lg-8 col-xl-8 py-md-8 pl-md-8 bd-content big_col">
+                                      <div class="file_tree_col">
+                                            <nav id="bd-docs-nav"><div class="bd-toc-item active">
+                                                    <ul class="nav bd-sidenav">
+                                                      <li v-for="(f, name) in editor_files" class="bd-sidenav-active tree_files" v-bind:class="{ active: name === active_file_name }">
+                                                        <a v-on:click="file_selected(name)">
+                                                          {{ name }}
+                                                        </a>
+                                                      </li>
+                                                    </ul>
+                                            </div></nav>
+                                      </div>
+                                      <div class="editor_col">
+                                        <div class="editorArea">
+                                                <div class="editorBody" id="embeddedEditor">
+                                                        <div class="editorTitle">
+                                                                <span id = "progressMessageDiv">Loading language tooling plugins...</span>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                      </div>
                                   </div>
                                   <div class="col-12 col-md-4 col-lg-4 col-xl-4 hidden-sm hidden-xs py-md-4 pl-md-4 bd-toc replay_col">
                                     <div class="replay">
@@ -441,10 +443,16 @@ export default {
   }
   .file_tree_col {
     padding: 0px;	
+    width: 150px;
     border-right: 1px solid #424C53;
+    float: left;
+  }
+  .tree_files {
+    font-size: 12pt;
   }
   .editor_col {
     padding: 0px;	
+    width: 100%;
     padding-left: 10px;
     margin-top: 0px;
     border-right: 1px solid #424C53;
@@ -455,7 +463,7 @@ export default {
     flex-flow: column;
     height: 100%;
   }
-  .main, .page_container, .page_row, .editorArea, .replay_col, .editor_col, .file_tree_col, .editorBody {
+  .main, .page_container, .page_row, .editorArea, .replay_col, .big_col, .editor_col, .file_tree_col, .editorBody {
      height: 100%;
   }
 
