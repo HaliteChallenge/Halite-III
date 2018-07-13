@@ -1,6 +1,17 @@
 <template>
-    <Walkthrough title="Beginner Tutorial" v-bind:steps="steps">
-        <template slot-scope="walkthrough">
+    <Walkthrough title="Beginner Tutorial">
+        <template slot="steps">
+            <Step title="Initialization" name="initialization">
+                <p>This is how we talk about initialization.</p>
+                <p>This is how we talk about initialization.</p>
+            </Step>
+            <Step title="Movement" name="movement">
+                <p>This is how we talk about initialization.</p>
+                <p>This is how we talk about initialization.</p>
+            </Step>
+        </template>
+
+        <template slot="content" slot-scope="walkthrough">
             <CodeTutorialStepper
                 v-bind:progress="walkthrough.progress"
                 v-bind:step-name="walkthrough.stepName"
@@ -11,34 +22,18 @@
 
 <script>
     import Walkthrough from "./Walkthrough.vue";
+    import WalkthroughStep from "./WalkthroughStep.vue";
     import CodeTutorialStepper from "./CodeTutorialStepper.vue";
 
     export default {
         name: "beginner-tutorial",
         components: {
             "Walkthrough": Walkthrough,
+            "Step": WalkthroughStep,
             "CodeTutorialStepper": CodeTutorialStepper,
         },
         data: function () {
-            return {
-                steps: [
-                    {
-                        title: "Initialization",
-                        name: "initialization",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Issuing Commands",
-                        name: "commands",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Issuing Commands",
-                        name: "commands",
-                        description: "Description.",
-                    },
-                ],
-            };
+            return {};
         },
         mounted: function () {
 

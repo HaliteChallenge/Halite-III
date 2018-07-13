@@ -3,23 +3,19 @@
      explanatory text (and possibly substeps), while indicating this
      information to a wrapped component.
    ------------------>
+<!--
 <template>
     <section class="walkthrough">
         <div class="walkthrough-nav">
             <h1>{{title}}</h1>
-            <!-- TODO: this will have to get factored out -->
-            <ul ref="stepsContainer">
-                <li
-                    v-for="(step, index) in steps"
-                    v-bind:class="{ active: index == progress }"
-                    v-on:click="switchTo(index)"
+            <section class="steps" ref="stepsContainer">
+                <slot
+                    v-if="steps[progress]"
+                    name="steps"
+                    v-bind:activeStep="steps[progress].name"
                 >
-                    <h2>{{step.title}}</h2>
-                    <p>
-                        {{step.description}}
-                    </p>
-                </li>
-            </ul>
+                </slot>
+            </section>
             <nav>
                 <button
                     v-on:click="prevStep"
@@ -36,6 +32,8 @@
 
         <div class="walkthrough-content">
             <slot
+                v-if="steps[progress]"
+                name="content"
                 v-bind:progress="progress"
                 v-bind:step-name="steps[progress].name"
             >
@@ -43,23 +41,38 @@
         </div>
     </section>
 </template>
+-->
 
 <script>
     export default {
         name: "walkthrough",
-        props: ["title", "steps"],
-        data: function () {
+        props: ["title"],
+        data: function() {
             return {
                 progress: 0,
+                steps: [],
             };
         },
-        mounted: function () {
+        created: function() {
+            let i = 0;
+            for (const node of this.$slots.steps) {
+                if (node.tag && node.tag.endsWith("walkthrough-step")) {
+                    i += 1;
+                    const step = Object.assign({}, node.componentOptions.propsData);
+                    step.body = node.componentOptions.children;
+                    this.steps.push(step);
+                }
+            }
+        },
+        mounted: function() {
             if (window.history.state && history.state.progress) {
                 this.switchTo(history.state.progress, false);
             }
             else {
                 this.switchTo(0, false);
             }
+            // Make sure we overwrite data once in render func
+            this.$forceUpdate();
 
             window.addEventListener("popstate", (e) => {
                 if (e.state && typeof e.state.progress !== "undefined") {
@@ -67,9 +80,53 @@
                 }
             });
         },
+        render: function(h) {
+            console.log(this.$slots);
+            return h("section", {
+                class: "walkthrough",
+            }, [
+                h("section", {
+                    class: "walkthrough-nav"
+                }, [
+                    h("h1", this.title),
+                    h("section", {
+                        class: "steps",
+                        ref: "stepsContainer",
+                    }, this.$slots.steps
+                           .filter((node) => node.tag && node.tag.endsWith("walkthrough-step"))
+                           .map((step, index) => {
+                               if (step.child) {
+                                   step.child.active = index === this.progress;
+                               }
+                               return step;
+                           })),
+                    h("nav", [
+                        h("button", {
+                            on: {
+                                click: this.prevStep,
+                            },
+                        }, "Back"),
+                        h("button", {
+                            on: {
+                                click: this.nextStep,
+                            },
+                        }, "Next"),
+                    ])
+                ]),
+
+                h("section", {
+                    class: "walkthrough-content"
+                }, [
+                    this.$scopedSlots.content({
+                        progress: this.progress,
+                        stepName: this.steps[this.progress].name,
+                    })
+                ]),
+            ]);
+        },
         methods: {
             switchTo: function(index, addState=true) {
-                this.progress = Math.min(this.steps.length, Math.max(0, index));
+                this.progress = Math.min(this.steps.length - 1, Math.max(0, index));
                 if (addState) {
                     window.history.pushState({
                         progress: this.progress,
@@ -99,7 +156,8 @@
             flex-direction: column;
             flex: 1 0;
             border-right: 1px solid #474951;
-            max-width: 15em;
+            min-width: 30em;
+            max-width: 30em;
 
             > h1 {
                 margin: 0;
@@ -118,47 +176,17 @@
                 }
             }
 
-            > ul {
+            > .steps {
                 flex: 1 0;
                 list-style-type: none;
                 overflow-y: scroll;
                 margin: 0;
                 padding: 0;
-
-                > li {
-                    /* TODO: don't hardcode color */
-                    border-top: 1px solid #474951;
-                    color: #b9b8b8;
-                    max-height: 2em;
-                    overflow: hidden;
-
-                    > h2 {
-                        margin: 0;
-                        transition: 0.3s all ease-in-out;
-                    }
-                }
-
-                > li.active {
-                    max-height: 10em;
-
-                    > h2 {
-                        color: #FFBE00;
-                        background: rgba(255, 190, 0, 0.1);
-                    }
-                }
-
-                > li:hover {
-                    cursor: pointer;
-
-                    > h2 {
-                        background: rgba(255, 190, 0, 0.1);
-                    }
-                }
             }
         }
 
         > .walkthrough-content {
-            flex: 3 0;
+            flex: 2 0;
         }
     }
 </style>
