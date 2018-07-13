@@ -158,4 +158,10 @@
     .walkthrough {
         height: calc(100vh - 61px); /* TODO: Need to keep in sync with layout */
     }
+
+    .walkthrough-nav {
+        h1, h2, p {
+            padding-left: 0.25em;
+        }
+    }
 </style>

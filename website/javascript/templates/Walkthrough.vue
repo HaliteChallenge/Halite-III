@@ -15,7 +15,7 @@
                     v-on:click="switchTo(index)"
                 >
                     <h2>{{step.title}}</h2>
-                    <p v-if="index == progress">
+                    <p>
                         {{step.description}}
                     </p>
                 </li>
@@ -122,12 +122,19 @@
                     /* TODO: don't hardcode color */
                     border-top: 1px solid #474951;
                     color: #b9b8b8;
+                    transition: 0.3s all ease-in-out;
+                    max-height: 2em;
+                    overflow: hidden;
+
                     > h2 {
                         margin: 0;
+                        transition: 0.3s all ease-in-out;
                     }
                 }
 
                 > li.active {
+                    max-height: 10em;
+
                     > h2 {
                         color: #FFBE00;
                         background: rgba(255, 190, 0, 0.1);
