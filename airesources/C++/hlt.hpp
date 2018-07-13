@@ -1,19 +1,22 @@
 #pragma once
 
 #include <string>
+#include <sstream>
 #include <iostream>
 #include <array>
 #include <vector>
 #include <unordered_map>
-#include <exception>
+#include <unordered_set>
 #include <fstream>
 
-#define ENERGY_COST 1000
-#define MAX_ENERGY 255
-
-typedef long energy_type;
+typedef long halite_type;
 typedef long id_type;
 typedef long dimension_type;
+
+namespace hlt {
+static constexpr halite_type MAX_HALITE = 65535;
+static constexpr halite_type SHIP_COST = 65536;
+}
 
 struct Logging {
 private:
@@ -42,7 +45,12 @@ namespace hlt {
 struct Location {
 	dimension_type x, y;
 	bool operator==(const Location & l) const { return x == l.x && y == l.y; }
+	bool operator!=(const Location & l) const { return x != l.x || y != l.y; }
 };
+static std::ostream & operator<<(std::ostream & ostream, const Location & l) {
+	ostream << l.x << ' ' << l.y;
+	return ostream;
+}
 static std::istream & operator>>(std::istream & istream, Location & l) {
 	istream >> l.x >> l.y;
 	return istream;
@@ -60,89 +68,44 @@ struct hash<hlt::Location> {
 namespace hlt {
 
 enum class Direction : char {
-    STILL = 'o',
     NORTH = 'n',
     EAST = 'e',
     SOUTH = 's',
     WEST = 'w'
 };
-static const std::array<Direction, 5> DIRECTIONS = { Direction::STILL, Direction::NORTH, Direction::EAST, Direction::SOUTH, Direction::WEST };
+static std::ostream & operator<<(std::ostream & ostream, const Direction & direction) { return ostream << static_cast<char>(direction); }
 static const std::array<Direction, 4> CARDINALS = { Direction::NORTH, Direction::EAST, Direction::SOUTH, Direction::WEST };
-typedef std::unordered_map<Location, Direction> Moves;
-static std::ostream & operator<<(std::ostream & ostream, const Moves & moves) {
-	for(auto &[location, direction] : moves) {
-		if(direction != Direction::STILL) {
-			ostream << "m " << location.x << ' ' << location.y << ' ' << static_cast<char>(direction) << ' ';
-		}
-	}
-	return ostream;
-}
-
-struct Entity {
-    id_type owner_id; /**< ID of the owner. */
-    energy_type energy;       /**< Energy of the entity. */
-};
-static std::istream & operator>>(std::istream & istream, Entity & entity) {
-    istream >> entity.owner_id >> entity.energy;
-    istream.get(); // Take up the newline
-    return istream;
-}
-typedef std::unordered_map<Location, hlt::Entity> Entities;
 
 struct Player {
 	id_type player_id;
-	energy_type energy;
-	Location factory_location;
-	Entities entities;
-	// Adds accounting for entity merging. Prefer this when modifying the state.
-	void add_entity(const Location & location, const Entity & entity) {
-		auto entity_iterator = entities.find(location);
-		// If the player already has an entity there, merge
-	    if (entity_iterator != entities.end()) entity_iterator->second.energy += entity.energy;
-	    // Otherwise, move this entity there
-	    else entities[location] = entity;
-	}
+	halite_type halite;
+	Location shipyard;
+	std::unordered_map<Location, halite_type> ships;
+	std::unordered_set<Location> dropoffs;
 };
 static std::istream & operator>>(std::istream & istream, Player & player) {
-	long num_entities;
-    istream >> player.player_id >> num_entities >> player.energy;
-    player.entities.clear();
-    for(int i = 0; i < num_entities; i++) {
+	long num_ships, num_dropoffs;
+    istream >> player.player_id >> num_ships >> num_dropoffs >> player.halite;
+    player.ships.clear();
+    player.dropoffs.clear();
+    for(int i = 0; i < num_ships; i++) {
     	Location l;
-    	Entity e;
-    	istream >> l >> e;
-    	player.entities[l] = e;
+    	halite_type h;
+    	istream >> l >> h;
+    	player.ships[l] = h;
+    }
+    for(int i = 0; i < num_dropoffs; i++) {
+    	Location l;
+    	istream >> l;
+    	player.dropoffs.insert(l);
     }
     return istream;
 }
-typedef std::unordered_map<int, Player> Players;
-
-struct Cell {
-	long production;
-	bool passable;
-	long energy_factor;
-};
-static std::istream &operator>>(std::istream & istream, Cell & cell) {
-	// Reset, then read
-	cell = { 0, true, 0 };
-	char c;
-	do {
-		c = istream.get();
-	} while(c != 'n' && c != 'o' && c != 'e' && c != 'f');
-	if(c == 'n') istream >> cell.production;
-	else if(c == 'o') {
-		istream >> cell.production;
-		cell.passable = false;
-	}
-	else if(c == 'e') istream >> cell.production >> cell.energy_factor;
-	else if(c == 'f'); // Do nothing
-	else throw std::runtime_error("https://i.imgflip.com/28gy3a.jpg");
-	return istream;
-}
+typedef std::unordered_map<id_type, Player> Players;
 
 struct Map {
 	dimension_type width, height;
-	std::vector< std::vector<Cell> > grid;
+	std::vector< std::vector<halite_type> > grid;
 	dimension_type distance(const Location & l1, const Location & l2) const {
 	    const dimension_type x_dist = std::abs(l2.x - l1.x);
 	    const dimension_type y_dist = std::abs(l2.y - l1.y);
@@ -167,10 +130,16 @@ struct Map {
 	    }
 	    return l;
 	}
+	halite_type & operator[](const Location & l) {
+		return grid[l.y][l.x];
+	}
+	const halite_type & operator[](const Location & l) const {
+		return grid[l.y][l.x];
+	}
 };
 static std::istream &operator>>(std::istream & istream, Map & map) {
 	istream >> map.width >> map.height;
-	map.grid = std::vector< std::vector<Cell> >(map.height, std::vector<Cell>(map.width));
+	map.grid = std::vector< std::vector<halite_type> >(map.height, std::vector<halite_type>(map.width));
 	for (auto & row : map.grid) for (auto & cell : row) istream >> cell;
 	return istream;
 }
@@ -180,14 +149,15 @@ static void getInit(Map & map, Players & players, id_type & playerID) {
 	std::cin >> num_players >> playerID;
 	for(int i = 0; i < num_players; i++) {
 		id_type id;
-		Location factory_location;
-		std::cin >> id >> factory_location;
-		players[id] = { id, 0, factory_location, Entities{} };
+		Location shipyard;
+		std::cin >> id >> shipyard;
+		players[id] = { id, 0, shipyard };
 	}
 	std::cin >> map;
 }
 
 static void sendInit(const std::string & name) {
+	std::cout.sync_with_stdio(0);
 	if(name.size() < 1) std::cout << ' ' << std::endl;
 	else std::cout << name << std::endl;
 }
@@ -198,15 +168,29 @@ static long getFrame(Players & players) {
 	for(unsigned int i = 0; i < players.size(); i++) {
 		Player p;
 		std::cin >> p;
-		p.factory_location = players[p.player_id].factory_location;
+		p.shipyard = players[p.player_id].shipyard;
 		players[p.player_id] = p;
 	}
 	return turn_number;
 }
 
-static void sendFrame(const Moves & moves, const energy_type & spawn_energy = 0) {
-	std::cout << moves;
-	if(spawn_energy > 0) std::cout << "g " << spawn_energy << ' ';
-	std::cout << std::endl;
+namespace detail {
+static std::ostringstream _moves;
+}
+static void move(const Location & loc, Direction d) {
+	detail::_moves << "m " << loc << ' ' << d << ' ';
+}
+static void spawn(const halite_type & halite) {
+	detail::_moves << "g " << halite << ' ';
+}
+static void dump(const Location & loc, const halite_type & halite) {
+	detail::_moves << "d " << loc << ' ' << halite << ' ';
+}
+static void construct(const Location & loc) {
+	detail::_moves << "c " << loc << ' ';
+}
+static void sendFrame() {
+	std::cout << detail::_moves.str() << std::endl;
+	std::ostringstream().swap(detail::_moves);
 }
 }
