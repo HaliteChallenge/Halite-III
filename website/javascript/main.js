@@ -26,6 +26,7 @@ import Play from './templates/Play.vue'
 import Settings from './templates/Settings.vue'
 import View404 from './templates/404.vue'
 import BeginnerTutorial from './templates/BeginnerTutorial.vue'
+import CodeTutorial from './templates/CodeTutorial.vue'
 
 // Include bootstrap.js - do not remove
 import _ from '../vendor_assets/bootstrap-sass-3.3.7/assets/javascripts/bootstrap'
@@ -174,7 +175,13 @@ window.views = {
       el: '#beginner-tutorial-container',
       render: (h) => h(BeginnerTutorial, { props: { baseUrl: _global.baseUrl } })
     })
-  }
+  },
+  CodeTutorial: function () {
+    new Vue({
+      el: '#code-tutorial-container',
+      render: (h) => h(CodeTutorial, { props: { baseUrl: _global.baseUrl } })
+    })
+  },
 }
 
 window.mobileAndTabletcheck = function() {
