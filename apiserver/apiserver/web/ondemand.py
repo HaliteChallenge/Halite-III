@@ -3,6 +3,7 @@ Coordinator API for running games on-demand (e.g. for the web editor
 and tutorial).
 """
 import io
+import re
 
 import flask
 import google.cloud.exceptions as gcloud_exceptions
@@ -44,6 +45,10 @@ def check_ondemand(intended_user, *, user_id):
     })
 
 
+# Validate bot names
+BOT_NAME_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9-_]*$")
+
+
 @web_api.route("/ondemand/<int:intended_user>", methods=["POST"])
 @util.cross_origin(methods=["GET", "POST", "PUT"])
 @web_util.requires_login(accept_key=False)
@@ -59,8 +64,27 @@ def create_ondemand(intended_user, *, user_id):
     if not flask.request.json["opponents"]:
         raise util.APIError(400, message="Non-empty opponents array is required.")
 
-    opponents = []
+    # Validate unique usernames
+    opponents = [{
+        "name": "my-bot",
+        "bot_id": "self",
+    }]
+    usernames = set(["my-bot"])
     for opponent in flask.request.json["opponents"]:
+        if not BOT_NAME_RE.match(opponent["name"]):
+            raise util.APIError(
+                400,
+                message="Invalid bot name {}".format(opponent["name"]))
+        if opponent["name"] in usernames:
+            raise util.APIError(
+                400,
+                message="Duplicate bot name {}".format(opponent["name"]))
+
+        if opponent["bot_id"] != "self" and not opponent["bot_id"].isdigit():
+            raise util.APIError(
+                400,
+                message="Bot ID must be number or 'self'.")
+
         opponents.append({
             "name": opponent["name"],
             "bot_id": opponent["bot_id"],
