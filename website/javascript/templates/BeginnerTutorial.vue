@@ -151,6 +151,7 @@
 
 <style lang="scss">
     .container[role="main"] {
+        margin: 0;
         padding: 0;
     }
 

@@ -20,6 +20,18 @@
                     </p>
                 </li>
             </ul>
+            <nav>
+                <button
+                    v-on:click="prevStep"
+                >
+                    Back
+                </button>
+                <button
+                    v-on:click="nextStep"
+                >
+                    Next
+                </button>
+            </nav>
         </div>
 
         <div class="walkthrough-content">
@@ -47,7 +59,13 @@
         methods: {
             switchTo: function(index) {
                 this.progress = index;
-            }
+            },
+            nextStep: function() {
+                this.progress = Math.min(this.steps.length, this.progress + 1);
+            },
+            prevStep: function() {
+                this.progress = Math.max(0, this.progress - 1);
+            },
         },
     };
 </script>
@@ -57,12 +75,32 @@
         display: flex;
 
         > .walkthrough-nav {
+            display: flex;
+            flex-direction: column;
             flex: 1 0;
             border-right: 1px solid #474951;
-            overflow-y: scroll;
+            max-width: 15em;
+
+            > h1 {
+                margin: 0;
+                flex: 0 0;
+            }
+
+            > nav {
+                flex: 0 1 2em;
+                display: flex;
+                flex-direction: row;
+
+                button {
+                    flex: 1;
+                    color: #000;
+                }
+            }
 
             > ul {
+                flex: 1 0;
                 list-style-type: none;
+                overflow-y: scroll;
                 margin: 0;
                 padding: 0;
 
