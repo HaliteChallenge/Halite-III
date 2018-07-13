@@ -154,7 +154,7 @@ export function get_editor_file (userId, file_name) {
 export function create_editor_file_space (userId, language) {
   return $.get({
     url: `${API_SERVER_URL}/user/${userId}/editor/${language}`,
-	method: 'POST',
+    method: 'POST',
     xhrFields: {
       withCredentials: true
     }
@@ -188,6 +188,48 @@ export function update_source_file (user_id, file_name, file_contents, progress_
         const response = JSON.parse(e.target.responseText)
         reject(response)
       }
+    }
+  })
+}
+
+export function start_ondemand_task(userId) {
+  return $.get({
+    url: `${API_SERVER_URL}/ondemand/${userId}`,
+    data: JSON.stringify({opponents: []}),
+    contentType: 'application/json',
+    method: 'POST',
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
+
+export function update_ondemand_task(userId, num_turns) {
+  return $.get({
+    url: `${API_SERVER_URL}/ondemand/${userId}`,
+    method: 'PUT',
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
+
+export function get_ondemand_status(userId) {
+  return $.get({
+    url: `${API_SERVER_URL}/ondemand/${userId}`,
+    method: 'GET',
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
+
+export function get_ondemand_replay(userId) {
+  return $.get({
+    url: `${API_SERVER_URL}/ondemand/${userId}/replay`,
+    method: 'POST',
+    xhrFields: {
+      withCredentials: true
     }
   })
 }

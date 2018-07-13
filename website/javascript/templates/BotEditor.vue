@@ -337,7 +337,11 @@ export default {
       return true
     },
     run_ondemand_game: function() {
-
+      let user_id = this.user_id
+      api.start_ondemand_task(user_id).then(function(_) {
+        console.log(_)
+        return api.update_ondemand_task(user_id, 5000).then((a) => console.log(a))
+      })
     },
     save_current_file: function() {
       logInfo('Saving bot file to gcloud storage')
