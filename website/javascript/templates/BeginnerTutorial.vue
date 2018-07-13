@@ -161,7 +161,7 @@
 
     .walkthrough-nav {
         h1, h2, p {
-            padding-left: 0.25em;
+            padding-left: 0.5rem !important;
         }
     }
 </style>
