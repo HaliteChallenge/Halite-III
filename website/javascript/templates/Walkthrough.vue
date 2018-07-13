@@ -59,6 +59,7 @@
         > .walkthrough-nav {
             flex: 1 0;
             border-right: 1px solid #474951;
+            overflow-y: scroll;
 
             > ul {
                 list-style-type: none;

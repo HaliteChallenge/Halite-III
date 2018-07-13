@@ -32,6 +32,107 @@
                         name: "fleet",
                         description: "This is your fleet.",
                     },
+                    {
+                        title: "The Seas of Halite",
+                        name: "seas",
+                        description: "Description.",
+                    },
+                    {
+                        title: "Your Fleet",
+                        name: "fleet",
+                        description: "This is your fleet.",
+                    },
+                    {
+                        title: "The Seas of Halite",
+                        name: "seas",
+                        description: "Description.",
+                    },
+                    {
+                        title: "Your Fleet",
+                        name: "fleet",
+                        description: "This is your fleet.",
+                    },
+                    {
+                        title: "The Seas of Halite",
+                        name: "seas",
+                        description: "Description.",
+                    },
+                    {
+                        title: "Your Fleet",
+                        name: "fleet",
+                        description: "This is your fleet.",
+                    },
+                    {
+                        title: "The Seas of Halite",
+                        name: "seas",
+                        description: "Description.",
+                    },
+                    {
+                        title: "Your Fleet",
+                        name: "fleet",
+                        description: "This is your fleet.",
+                    },
+                    {
+                        title: "The Seas of Halite",
+                        name: "seas",
+                        description: "Description.",
+                    },
+                    {
+                        title: "Your Fleet",
+                        name: "fleet",
+                        description: "This is your fleet.",
+                    },
+                    {
+                        title: "The Seas of Halite",
+                        name: "seas",
+                        description: "Description.",
+                    },
+                    {
+                        title: "Your Fleet",
+                        name: "fleet",
+                        description: "This is your fleet.",
+                    },
+                    {
+                        title: "The Seas of Halite",
+                        name: "seas",
+                        description: "Description.",
+                    },
+                    {
+                        title: "Your Fleet",
+                        name: "fleet",
+                        description: "This is your fleet.",
+                    },
+                    {
+                        title: "The Seas of Halite",
+                        name: "seas",
+                        description: "Description.",
+                    },
+                    {
+                        title: "Your Fleet",
+                        name: "fleet",
+                        description: "This is your fleet.",
+                    },
+                    {
+                        title: "The Seas of Halite",
+                        name: "seas",
+                        description: "Description.",
+                    },
+                    {
+                        title: "Your Fleet",
+                        name: "fleet",
+                        description: "This is your fleet.",
+                    },
+                    {
+                        title: "The Seas of Halite",
+                        name: "seas",
+                        description: "Description.",
+                    },
+                    {
+                        title: "Your Fleet",
+                        name: "fleet",
+                        description: "This is your fleet.",
+                    },
+
                 ],
             };
         },
@@ -46,4 +147,14 @@
 
 <style lang="scss" scoped>
 
+</style>
+
+<style lang="scss">
+    .container[role="main"] {
+        padding: 0;
+    }
+
+    .walkthrough {
+        height: calc(100vh - 61px); /* TODO: Need to keep in sync with layout */
+    }
 </style>
