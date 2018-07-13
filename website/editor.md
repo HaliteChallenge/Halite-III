@@ -1,6 +1,6 @@
 ---
 layout: base_new
-no_header: editor
+no_header: true
 stoc: false
 full_width: true
 permalink: /editor
@@ -26,15 +26,13 @@ additional_css: ["built-codeEdit", "dark-codeEdit"]
 		height: calc(100% - 71px);
 	}
 	::-webkit-scrollbar {
-		border-left: 1px solid #424C53;
+		width: 8px;
 		background-color: #25242f; 
 	}
 	::-webkit-scrollbar-thumb {
 		background-color: #26343F; 
-		border-radius: 10px;
+		border-radius: 3px;
+		width: 100%;
 		border: 0.5px solid #30414f;
-	}
-	::-webkit-scrollbar-thumb:hover {
-		background-color: #26343F; 
 	}
 </style>

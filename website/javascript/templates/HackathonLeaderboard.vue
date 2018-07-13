@@ -80,7 +80,7 @@ export default {
       const params = new URLSearchParams(window.location.search)
       this.hackathon_id = params.get('hackathon_id')
       this.update_filter(true)
-      api.getHackathon(this.hackathon_id).then((hackathon) => {
+      api.get_hackathon(this.hackathon_id).then((hackathon) => {
         this.hackathon = hackathon
       }, (xhr) => {
         this.hackathon.title = 'Not found/not allowed to view'

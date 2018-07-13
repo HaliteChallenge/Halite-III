@@ -1,40 +1,69 @@
 <template>
-        <div class="container-fluid h-100 page_container" role="main">
-                <div class="row flex-xl-nowrap h-100 page_row">
-                        <div class="col-12 col-md-2 col-lg-2 col-xl-1 hidden-sm hidden-xs bd-sidebar file_tree_col">
-                                <nav id="bd-docs-nav"><div class="bd-toc-item active">
-                                        <ul class="nav bd-sidenav">
-                                          <li v-for="(f, name) in editor_files" class="bd-sidenav-active" v-bind:class="{ active: name === active_file_name }">
-                                            <a v-on:click="file_selected(name)">
-                                              {{ name }}
-                                            </a>
-                                          </li>
-                                        </ul>
-                                </div></nav>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6 col-xl-7 py-md-6 pl-md-6 bd-content editor_col">
-                                <div class="editorArea">
-                                        <div class="editorBody" id="embeddedEditor">
-                                                <div class="editorTitle">
-                                                        <span id = "progressMessageDiv">Loading language tooling plugins...</span>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
-                        <div class="col-12 col-md-4 col-lg-4 col-xl-4 hidden-sm hidden-xs py-md-4 pl-md-4 bd-toc replay_col">
-                          <div class="replay">
-                            <div class="game-replay-viewer"></div>
+        <div class="main" role="main">
+              <header class="navbar navbar-inverse navbar-fixed-top unloaded">
+                  <div class="container-fluid">
+                    <div class="navbar-header">
+                      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </button>
+                      <a class="navbar-brand" href="/">
+                        <img alt="Halite" src="/assets/images/full_logo.svg">
+                      </a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a v-on:click="save_current_file()"><span>Save</span><i class="xline xline-bottom"></i></a></li>
+                            <li><a v-on:click="run_ondemand_game()"><span>Run</span><i class="xline xline-bottom"></i></a></li>
+                            <li><a v-on:click="download_bot()"><span>Download</span><i class="xline xline-bottom"></i></a></li>
+                            <li><a v-on:click="submit_bot()"><span>Submit</span><i class="xline xline-bottom"></i></a></li>
+                        </ul>
+                    </div>
+                    <div id="user-profile-bar-container"></div>
+                  </div>
+                </header>
+                <div style='margin-top: 61px' class="body">
+                  <div class="container-fluid h-100 page_container">
+                          <div class="row flex-xl-nowrap h-100 page_row">
+                                  <div class="col-12 col-md-2 col-lg-2 col-xl-1 hidden-sm hidden-xs bd-sidebar file_tree_col">
+                                          <nav id="bd-docs-nav"><div class="bd-toc-item active">
+                                                  <ul class="nav bd-sidenav">
+                                                    <li v-for="(f, name) in editor_files" class="bd-sidenav-active" v-bind:class="{ active: name === active_file_name }">
+                                                      <a v-on:click="file_selected(name)">
+                                                        {{ name }}
+                                                      </a>
+                                                    </li>
+                                                  </ul>
+                                          </div></nav>
+                                  </div>
+                                  <div class="col-12 col-md-6 col-lg-6 col-xl-7 py-md-6 pl-md-6 bd-content editor_col">
+                                          <div class="editorArea">
+                                                  <div class="editorBody" id="embeddedEditor">
+                                                          <div class="editorTitle">
+                                                                  <span id = "progressMessageDiv">Loading language tooling plugins...</span>
+                                                          </div>
+                                                  </div>
+                                          </div>
+                                  </div>
+                                  <div class="col-12 col-md-4 col-lg-4 col-xl-4 hidden-sm hidden-xs py-md-4 pl-md-4 bd-toc replay_col">
+                                    <div class="replay">
+                                      <div class="game-replay-viewer"></div>
+                                    </div>
+                                    <div class="console">
+                                      {{ terminal_text }}
+                                    </div>
+                                  </div>
                           </div>
-                          <div class="console">
-                            {{ terminal_text }}
-                          </div>
-                        </div>
-                </div>
+                  </div>
+              </div>
         </div>
 </template>
 
 <script>
 import * as api from '../api'
+import * as utils from '../utils'
 import * as libhaliteviz from '../../../libhaliteviz'
 
 
@@ -77,10 +106,6 @@ function logInfo (msg) {
   if (logVerbose) console.log(msg)
 }
 
-function copyZip (zipPromise) {
-  return zipPromise.then((zip) => zip.generateAsync({type: 'blob'}))
-    .then(JSZip.loadAsync)
-}
 
 export default {
   name: 'bot_editor',
@@ -91,6 +116,7 @@ export default {
     const terminal_text = this.terminal_text === null ? "" : this.terminal_text
     return {
       all_bot_languages: botLanguagePacks,
+      base_url: '',
       status_message: null,
       logged_in: false,
       editorViewer: null,
@@ -105,6 +131,7 @@ export default {
   Run on view mount. Grab our user credentials from the API and then create editor.
   */
   mounted: function () {
+    utils.initUserProfileNav();
     api.me().then((me) => {
       if (me !== null) {
         this.user_id = me.user_id
@@ -287,10 +314,11 @@ export default {
     },
     /* Return a zip file object with our starter pack files + our mybot file */
     get_user_zip_promise: function () {
-      return copyZip(this.get_starter_zip()).then((zip) => {
-        return zip.file(this.bot_info().fileName, this.get_editor_code())
-          .generateAsync({type: 'blob'})
-      })
+      let zip = new JSZip();
+      for(let name in this.editor_files) {
+        zip.file(name, this.editor_files[name].contents)
+      }
+      return zip.generateAsync({type: 'blob'})
     },
     /* Load code into editor; either saved code or default */
     reload_code: function (use_default = false) {
@@ -307,6 +335,9 @@ export default {
         this.reload_code(true)
       }
       return true
+    },
+    run_ondemand_game: function() {
+
     },
     save_current_file: function() {
       logInfo('Saving bot file to gcloud storage')
@@ -398,7 +429,7 @@ export default {
     color: black
   }
 
-  .container-fluid {
+  .page_container {
     margin-right: 0px;
     margin-left: 0px;
     padding-left: 0px;
@@ -420,11 +451,9 @@ export default {
     flex-flow: column;
     height: 100%;
   }
-  .page_container, .page_row, .editorArea, .replay_col, .editor_col, .file_tree_col, .editorBody {
+  .main, .page_container, .page_row, .editorArea, .replay_col, .editor_col, .file_tree_col, .editorBody {
      height: 100%;
   }
-
-
 
   .replay {
     border-bottom: 1px solid #424C53;
@@ -437,6 +466,7 @@ export default {
     background-color: black;
     color: silver;
     font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+    font-size: 10pt;
   }
 
   .replay, .console {

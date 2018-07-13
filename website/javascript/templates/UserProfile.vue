@@ -893,7 +893,7 @@
           })
         },
         fetchHackathon: function () {
-          api.getUserHackathons(this.user.user_id).then(hackathons => {
+          api.get_user_hackathons(this.user.user_id).then(hackathons => {
             if (hackathons && hackathons instanceof Array) {
               this.hackathons = hackathons.filter((h) => {
                 return h.participant == true
@@ -902,7 +902,7 @@
           })
         },
         fetchhistory: function () {
-          api.getUserHistory(this.user.user_id).then(history => {
+          api.get_user_history(this.user.user_id).then(history => {
             if (history && history instanceof Array) {
               history.sort(function (a, b) { return parseInt(b.bot_version) - parseInt(a.bot_version) })
               this.userHistory = history

@@ -364,7 +364,7 @@
            this.gaData('invite-error', 'click-to-invite', 'home')
          } else {
            let content = document.getElementById('intmpid').value
-           api.invitefriend(content).then(status => {
+           api.invite_friend(content).then(status => {
              document.getElementById('invitestatus').style.color = 'green'
              document.getElementById('invitestatus').textContent = 'Invitation sent...'
              this.gaData('invite-success', 'click-to-invite', 'home')

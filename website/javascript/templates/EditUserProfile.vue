@@ -322,7 +322,7 @@ export default {
           this.gaData('account', 'edit-profile-error', 'edit-profile-flow')
         }).then(() => {
           if (this.hackathon_code) {
-            api.registerHackathon(this.hackathon_code).then((response) => {
+            api.register_hackathon(this.hackathon_code).then((response) => {
               let message = "You've signed up for the hackathon, Check your user profile to see your Hackathons"
               if (response.responseJSON && response.responseJSON.message) {
                 message = response.responseJSON.message
