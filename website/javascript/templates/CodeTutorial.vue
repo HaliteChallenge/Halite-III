@@ -4,8 +4,35 @@
             <Step title="Initialization" name="initialization">
                 <p>This is how we talk about initialization.</p>
                 <p>This is how we talk about initialization.</p>
+                <p>Complete these tasks:</p>
+                <ol>
+                    <li><p>Step lorem ipsum text goes here</p></li>
+                    <li><p>Step</p></li>
+                    <li><p>Step lorem ipsum text goes here</p></li>
+                    <li><p>Step lorem ipsum text goes here</p></li>
+                    <li><p>Step lorem ipsum text goes here</p></li>
+                    <li><p>Step lorem ipsum text goes here</p></li>
+                    <li><p>Step lorem ipsum text goes here</p></li>
+                    <li><p>Step lorem ipsum text goes here</p></li>
+                </ol>
             </Step>
             <Step title="Movement" name="movement">
+                <p>This is how we talk about initialization.</p>
+                <p>This is how we talk about initialization.</p>
+            </Step>
+            <Step title="Filtration" name="filtration">
+                <p>This is how we talk about initialization.</p>
+                <p>This is how we talk about initialization.</p>
+            </Step>
+            <Step title="Shipyards" name="shipyards">
+                <p>This is how we talk about initialization.</p>
+                <p>This is how we talk about initialization.</p>
+            </Step>
+            <Step title="Tunneling" name="tunneling">
+                <p>This is how we talk about initialization.</p>
+                <p>This is how we talk about initialization.</p>
+            </Step>
+            <Step title="Dropoff Zones" name="dropoffs">
                 <p>This is how we talk about initialization.</p>
                 <p>This is how we talk about initialization.</p>
             </Step>

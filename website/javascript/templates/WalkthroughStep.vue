@@ -2,7 +2,11 @@
      A single step in a walkthrough.
    ------------------>
 <template>
-    <section class="step" v-bind:class="{ active }">
+    <section
+        class="step"
+        v-bind:class="{ active }"
+        v-on:click="switchTo"
+    >
         <h2>{{title}}</h2>
         <slot></slot>
     </section>
@@ -15,6 +19,7 @@
         data: function() {
             return {
                 active: false,
+                switchTo: () => {},
             };
         },
         computed: {
@@ -27,7 +32,7 @@
         /* TODO: don't hardcode color */
         border-top: 1px solid #474951;
         color: #b9b8b8;
-        max-height: 2em;
+        height: 2em;
         overflow: hidden;
 
         > h2 {
@@ -37,8 +42,7 @@
     }
 
     .step.active {
-        max-height: 10em;
-
+        height: auto;
         > h2 {
             color: #FFBE00;
             background: rgba(255, 190, 0, 0.1);

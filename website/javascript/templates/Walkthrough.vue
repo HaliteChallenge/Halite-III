@@ -81,7 +81,6 @@
             });
         },
         render: function(h) {
-            console.log(this.$slots);
             return h("section", {
                 class: "walkthrough",
             }, [
@@ -97,6 +96,7 @@
                            .map((step, index) => {
                                if (step.child) {
                                    step.child.active = index === this.progress;
+                                   step.child.switchTo = () => this.switchTo(index);
                                }
                                return step;
                            })),

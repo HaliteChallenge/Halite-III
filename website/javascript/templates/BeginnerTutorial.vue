@@ -1,6 +1,11 @@
 <template>
-    <Walkthrough title="Beginner Tutorial" v-bind:steps="steps">
-        <template slot-scope="walkthrough">
+    <Walkthrough title="Beginner Tutorial">
+        <template slot="steps">
+            <Step title="The Seas of Halite" name="seas">
+                <p>Lorem ipsum</p>
+            </Step>
+        </template>
+        <template slot="content" slot-scope="walkthrough">
             <BeginnerTutorialStepper
                 v-bind:progress="walkthrough.progress"
                 v-bind:step-name="walkthrough.stepName"
@@ -20,121 +25,7 @@
             "BeginnerTutorialStepper": BeginnerTutorialStepper,
         },
         data: function () {
-            return {
-                steps: [
-                    {
-                        title: "The Seas of Halite",
-                        name: "seas",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Your Fleet",
-                        name: "fleet",
-                        description: "This is your fleet.",
-                    },
-                    {
-                        title: "The Seas of Halite",
-                        name: "seas",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Your Fleet",
-                        name: "fleet",
-                        description: "This is your fleet.",
-                    },
-                    {
-                        title: "The Seas of Halite",
-                        name: "seas",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Your Fleet",
-                        name: "fleet",
-                        description: "This is your fleet.",
-                    },
-                    {
-                        title: "The Seas of Halite",
-                        name: "seas",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Your Fleet",
-                        name: "fleet",
-                        description: "This is your fleet.",
-                    },
-                    {
-                        title: "The Seas of Halite",
-                        name: "seas",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Your Fleet",
-                        name: "fleet",
-                        description: "This is your fleet.",
-                    },
-                    {
-                        title: "The Seas of Halite",
-                        name: "seas",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Your Fleet",
-                        name: "fleet",
-                        description: "This is your fleet.",
-                    },
-                    {
-                        title: "The Seas of Halite",
-                        name: "seas",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Your Fleet",
-                        name: "fleet",
-                        description: "This is your fleet.",
-                    },
-                    {
-                        title: "The Seas of Halite",
-                        name: "seas",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Your Fleet",
-                        name: "fleet",
-                        description: "This is your fleet.",
-                    },
-                    {
-                        title: "The Seas of Halite",
-                        name: "seas",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Your Fleet",
-                        name: "fleet",
-                        description: "This is your fleet.",
-                    },
-                    {
-                        title: "The Seas of Halite",
-                        name: "seas",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Your Fleet",
-                        name: "fleet",
-                        description: "This is your fleet.",
-                    },
-                    {
-                        title: "The Seas of Halite",
-                        name: "seas",
-                        description: "Description.",
-                    },
-                    {
-                        title: "Your Fleet",
-                        name: "fleet",
-                        description: "This is your fleet.",
-                    },
-
-                ],
-            };
+            return {};
         },
         mounted: function () {
 
