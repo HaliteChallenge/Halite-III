@@ -54,17 +54,31 @@
             };
         },
         mounted: function () {
+            if (window.history.state && history.state.progress) {
+                this.switchTo(history.state.progress);
+            }
+            else {
+                this.switchTo(0);
+            }
 
+            window.addEventListener("popstate", (e) => {
+                if (e.state && typeof e.state.progress !== "undefined") {
+                    this.switchTo(e.state.progress);
+                }
+            });
         },
         methods: {
             switchTo: function(index) {
-                this.progress = index;
+                this.progress = Math.min(this.steps.length, Math.max(0, index));
+                window.history.pushState({
+                    progress: this.progress,
+                }, this.steps[this.progress], `#tutorial-${this.progress}`);
             },
             nextStep: function() {
-                this.progress = Math.min(this.steps.length, this.progress + 1);
+                this.switchTo(this.progress + 1);
             },
             prevStep: function() {
-                this.progress = Math.max(0, this.progress - 1);
+                this.switchTo(this.progress - 1);
             },
         },
     };
