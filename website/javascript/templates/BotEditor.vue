@@ -143,6 +143,8 @@ export default {
           this.active_file_name = this.bot_info().fileName
           this.create_editor(this.get_active_file_code())
         }).bind(this))
+      } else {
+        window.location.href = '/';
       }
     })
     console.log(jQuery('.replay'))
