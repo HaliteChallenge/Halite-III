@@ -1,6 +1,5 @@
 <template>
     <section>
-        <p>{{progress}} - {{stepName}}</p>
         <BotEditor />
     </section>
 </template>

@@ -16,12 +16,14 @@
 
 <script>
     import Walkthrough from "./Walkthrough.vue";
+    import WalkthroughStep from "./WalkthroughStep.vue";
     import BeginnerTutorialStepper from "./BeginnerTutorialStepper.vue";
 
     export default {
         name: "beginner-tutorial",
         components: {
             "Walkthrough": Walkthrough,
+            "Step": WalkthroughStep,
             "BeginnerTutorialStepper": BeginnerTutorialStepper,
         },
         data: function () {
@@ -44,6 +46,7 @@
     .container[role="main"] {
         margin: 0;
         padding: 0;
+        width: 100%;
     }
 
     .walkthrough {
