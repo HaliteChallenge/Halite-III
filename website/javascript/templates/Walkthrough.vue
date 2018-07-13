@@ -55,24 +55,26 @@
         },
         mounted: function () {
             if (window.history.state && history.state.progress) {
-                this.switchTo(history.state.progress);
+                this.switchTo(history.state.progress, false);
             }
             else {
-                this.switchTo(0);
+                this.switchTo(0, false);
             }
 
             window.addEventListener("popstate", (e) => {
                 if (e.state && typeof e.state.progress !== "undefined") {
-                    this.switchTo(e.state.progress);
+                    this.switchTo(e.state.progress, false);
                 }
             });
         },
         methods: {
-            switchTo: function(index) {
+            switchTo: function(index, addState=true) {
                 this.progress = Math.min(this.steps.length, Math.max(0, index));
-                window.history.pushState({
-                    progress: this.progress,
-                }, this.steps[this.progress], `#tutorial-${this.progress}`);
+                if (addState) {
+                    window.history.pushState({
+                        progress: this.progress,
+                    }, this.steps[this.progress], `#tutorial-${this.progress}`);
+                }
             },
             nextStep: function() {
                 this.switchTo(this.progress + 1);
