@@ -8,7 +8,7 @@
         <div class="walkthrough-nav">
             <h1>{{title}}</h1>
             <!-- TODO: this will have to get factored out -->
-            <ul>
+            <ul ref="stepsContainer">
                 <li
                     v-for="(step, index) in steps"
                     v-bind:class="{ active: index == progress }"
@@ -75,6 +75,10 @@
                         progress: this.progress,
                     }, this.steps[this.progress], `#tutorial-${this.progress}`);
                 }
+
+                const container = this.$refs.stepsContainer;
+                // TODO: don't hardcode 32 (=2em)
+                container.scrollTop = 32 * this.progress;
             },
             nextStep: function() {
                 this.switchTo(this.progress + 1);
@@ -124,7 +128,6 @@
                     /* TODO: don't hardcode color */
                     border-top: 1px solid #474951;
                     color: #b9b8b8;
-                    transition: 0.3s all ease-in-out;
                     max-height: 2em;
                     overflow: hidden;
 
