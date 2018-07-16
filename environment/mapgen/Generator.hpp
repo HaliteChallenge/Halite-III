@@ -15,6 +15,14 @@ enum class MapType {
     Fractal
 };
 
+/**
+ * Read a MapType from command line input.
+ * @param istream The input stream.
+ * @param[out] type The MapType to read.
+ * @return The input stream.
+ */
+std::istream &operator>>(std::istream &istream, MapType &type);
+
 /** Parameters for map generation. */
 struct MapParameters {
     MapType type;               /**< Type of the map. */
@@ -43,9 +51,15 @@ public:
     /**
      * Generate a map.
      * @param[out] map The map to generate.
-     * @param[out] factories The factories generated on the map. Length must be >= number of players.
      */
-    virtual void generate(Map &map, std::vector<Location> &factories) = 0;
+    virtual void generate(Map &map) = 0;
+
+    /**
+     * Generate a map based on parameters.
+     * @param[out] map The map to generate.
+     * @param parameters The parameters to use.
+     */
+    static void generate(Map &map, const MapParameters &parameters);
 };
 
 }

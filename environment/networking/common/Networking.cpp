@@ -32,7 +32,7 @@ void Networking::initialize_player(Player &player) {
                        << std::endl;
     }
     // Send the map
-    message_stream << game.game_map;
+    message_stream << game.map;
     connection->send_string(message_stream.str());
     Logging::log("Init message sent to player " + std::to_string(player.id));
     // Receive a name from the player.

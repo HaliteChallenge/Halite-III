@@ -27,6 +27,12 @@ std::array<Location, Map::NEIGHBOR_COUNT> Map::get_neighbors(const Location &loc
              {x, (y - 1 + height) % height}}};
 }
 
+void to_json(nlohmann::json &json, const Map &map) {
+    json = {FIELD_TO_JSON(height),
+            FIELD_TO_JSON(width),
+            FIELD_TO_JSON(grid)};
+}
+
 /**
  * Calculate the Manhattan distance between two cells on a grid.
  *
@@ -34,13 +40,6 @@ std::array<Location, Map::NEIGHBOR_COUNT> Map::get_neighbors(const Location &loc
  * @param to The location of the second cell.
  * @return The Manhattan distance between the cells, calculated on a wrap-around map.
  */
-void to_json(nlohmann::json &json, const Map &map) {
-    json = {FIELD_TO_JSON(height),
-            FIELD_TO_JSON(width),
-            FIELD_TO_JSON(map_generator),
-            FIELD_TO_JSON(grid)};
-}
-
 dimension_type Map::distance(const Location &from, const Location &to) const {
     const auto [from_x, from_y] = from;
     const auto [to_x, to_y] = to;
@@ -61,7 +60,7 @@ std::ostream &operator<<(std::ostream &os, const Map &map) {
     // Output the cells one after another.
     for (const auto &row : map.grid) {
         for (const auto &cell : row) {
-            os << *cell;
+            os << cell;
         }
     }
     return os;

@@ -21,7 +21,7 @@ void HaliteImpl::retrieve_commands() {
 
 /** Process the effects of commands. */
 void HaliteImpl::process_commands() {
-    CommandTransaction transaction{game.game_map};
+    CommandTransaction transaction{game.map};
     for (const auto &[player_id, command_list] : commands) {
         auto &player = game.players.find(player_id)->second;
         for (const auto &command : command_list) {

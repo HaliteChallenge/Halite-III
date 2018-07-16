@@ -13,20 +13,12 @@
 
 namespace hlt {
 
-class Halite;
-
-namespace mapgen {
-class Generator;
-}
-
 /** The map of cells. */
-class Map : public Grid<std::unique_ptr<Cell>> {
-    friend class Halite;
-
-    /** The name of the map generator used to generate the map. */
-    std::string map_generator = "none";
-
+class Map : public Grid<Cell> {
 public:
+    /** The factories on this Map. */
+    std::vector<Location> factories;
+
     /** The number of neighbors of each cell on the map grid. */
     static constexpr auto NEIGHBOR_COUNT = 4;
 
@@ -77,19 +69,6 @@ public:
      * @param height The height.
      */
     Map(dimension_type width, dimension_type height) : Grid(width, height) {}
-
-private:
-    /**
-     * Create a Map from dimensions and grid.
-     * @param width The width.
-     * @param height The height.
-     * @param grid The grid. Must be of correct dimensions.
-     */
-    Map(dimension_type width, dimension_type height, grid_type grid) {
-        this->width = width;
-        this->height = height;
-        this->grid = std::move(grid);
-    }
 };
 
 }

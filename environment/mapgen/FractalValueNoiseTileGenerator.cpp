@@ -29,7 +29,7 @@ std::vector< std::vector<double> > FractalValueNoiseTileGenerator::generateSmoot
     return smoothed_source;
 }
 
-void FractalValueNoiseTileGenerator::generate(Map &map, std::vector<Location> &factories) {
+void FractalValueNoiseTileGenerator::generate(Map &map) {
     auto tile = Map(tile_width, tile_height);
 
     std::vector< std::vector<double> > source_noise(tile_height, std::vector<double>(tile_width, 0));
@@ -77,7 +77,7 @@ void FractalValueNoiseTileGenerator::generate(Map &map, std::vector<Location> &f
     for (dimension_type y = 0; y < tile_height; y++) {
         for (dimension_type x = 0; x < tile_width; x++) {
             region[y][x] *= MAX_CELL_PRODUCTION / max_value;
-            tile.at(x, y) = std::make_unique<NormalCell>(round(region[y][x]));
+            tile.at(x, y).energy = static_cast<energy_type>(round(region[y][x]));
         }
     }
 
@@ -85,7 +85,7 @@ void FractalValueNoiseTileGenerator::generate(Map &map, std::vector<Location> &f
     const auto factory_pos_y = static_cast<dimension_type>((rng() % tile_height));
 
     // Use superclass function to copy the tile over the entire map, including placing all factories
-    tile_map(map, factory_pos_y, factory_pos_x, tile, factories);
+    tile_map(map, factory_pos_y, factory_pos_x, tile);
 }
 
 }

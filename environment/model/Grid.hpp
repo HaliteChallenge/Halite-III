@@ -5,13 +5,12 @@
 
 namespace hlt {
 
-class Map;
-
-/** Template for classes representing grids indexable along two dimensions. */
+/**
+ * Template for classes representing grids indexable along two dimensions.
+ * @tparam Entry The type of entries in the grid.
+ */
 template<class Entry>
 class Grid {
-    friend void to_json(nlohmann::json &json, const Map &map);
-
 protected:
     /** The type of the grid. */
     using grid_type = std::vector<std::vector<Entry>>;

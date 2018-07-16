@@ -2,9 +2,11 @@
 #define HALITE_SNAPSHOT_HPP
 
 #include <string>
-
-#include "error/SnapshotError.hpp"
-#include "mapgen/Generator.hpp"
+#include <unordered_map>
+#include <utility>
+#include "Player.hpp"
+#include "SnapshotError.hpp"
+#include "Generator.hpp"
 
 namespace hlt {
 
@@ -15,7 +17,7 @@ struct PlayerSnapshot {
 };
 
 struct Snapshot {
-    mapgen::MapParameters map_param;
+    mapgen::MapParameters map_param{};
     std::unordered_map<Player::id_type, PlayerSnapshot> players;
 
     static Snapshot from_str(const std::string& snapshot);
@@ -25,7 +27,7 @@ struct Snapshot {
      */
     Snapshot(mapgen::MapParameters map_param,
              std::unordered_map<Player::id_type, PlayerSnapshot> players) :
-        map_param{map_param}, players{players} {}
+        map_param{map_param}, players{std::move(players)} {}
 
     Snapshot() = default;
 

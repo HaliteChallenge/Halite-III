@@ -12,7 +12,7 @@ private:
 public:
     std::string name() const override { return "basic"; }
 
-    void generate(Map &map, std::vector<Location> &factories) override;
+    void generate(Map &map) override;
 
     /**
      * Construct BasicGenerator from parameters.

@@ -1,6 +1,8 @@
 #ifndef LOCATION_HPP
 #define LOCATION_HPP
 
+#include <functional>
+
 #include "Constants.hpp"
 
 #include "util.hpp"
@@ -85,6 +87,7 @@ struct Location {
     /** The default constructor. */
     Location() = default;
 };
+
 }
 
 namespace std {
@@ -95,4 +98,5 @@ struct hash<hlt::Location> {
     }
 };
 }
+
 #endif // LOCATION_HPP
