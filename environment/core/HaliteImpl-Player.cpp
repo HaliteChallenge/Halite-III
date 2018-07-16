@@ -37,4 +37,19 @@ void HaliteImpl::rank_players() {
     }
 }
 
+/**
+ * Kill a player, for example if they performed an illegal behavior.
+ * @param id The ID of the player to kill.
+ */
+void HaliteImpl::kill_player(Player::id_type id) {
+    for (auto command_iterator = commands.begin(); command_iterator != commands.end();) {
+        if (command_iterator->first == id) {
+            command_iterator = commands.erase(command_iterator);
+        } else {
+            command_iterator++;
+        }
+    }
+    // TODO: complete
+}
+
 }

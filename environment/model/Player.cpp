@@ -19,12 +19,10 @@ void to_json(nlohmann::json &json, const Player::Entities entities) {
     // Entities are a mapping from location to entity object
     // We want the json for an entity to include both the location and the details stored in the entity object
     json = nlohmann::json::array();
-    for (const auto &[location, entity] : entities) {
+    for (const auto &[id, location_entity] : entities) {
+        const auto &[_, entity] = location_entity;
         nlohmann::json entity_json;
         to_json(entity_json, entity);
-        nlohmann::json location_json;
-        to_json(location_json, location);
-        entity_json.insert(location_json.begin(), location_json.end());
         json.push_back(entity_json);
     }
 }
@@ -52,11 +50,46 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
     // Output player ID, number of entities, and current energy.
     ostream << player.id << " " << player.entities.size() << " " << player.energy << std::endl;
     // Output a list of entities.
-    for (const auto &[location, entity] : player.entities) {
-        auto [x, y] = location;
-        ostream << x << " " << y << " " << entity;
+    for (const auto &[id, location_entity] : player.entities) {
+        auto [location, entity] = location_entity;
+        ostream << id << " " << location << " " << entity;
     }
     return ostream;
+}
+
+/**
+ * Get the location of an entity.
+ * @param id The entity ID.
+ * @return The entity location.
+ */
+Location Player::get_entity_location(Entity::id_type id) const {
+    return entities.find(id)->second.first;
+}
+
+/**
+ * Get an entity by ID.
+ * @param id The entity ID.
+ * @return The entity.
+ */
+Entity &Player::get_entity(Entity::id_type id) {
+    return entities.find(id)->second.second;
+}
+
+/**
+ * Get whether the player has an entity.
+ * @param id The entity ID.
+ * @return True if the player has the entity, false otherwise.
+ */
+bool Player::has_entity(Entity::id_type id) const {
+    return entities.find(id) == entities.end();
+}
+
+/**
+ * Remove an entity by ID.
+ * @param id The entity ID.
+ */
+void Player::remove_entity(Entity::id_type id) {
+    entities.erase(id);
 }
 
 }

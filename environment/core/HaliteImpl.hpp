@@ -46,6 +46,12 @@ class HaliteImpl final {
      */
     void rank_players();
 
+    /**
+     * Kill a player, for example if they performed an illegal behavior.
+     * @param id The ID of the player to kill.
+     */
+    void kill_player(Player::id_type id);
+
     /** Update the energy/production of each player by calculating ownership of each cell in the current turn. */
     void process_production();
 

@@ -99,32 +99,12 @@ void DumpCommand::to_json(nlohmann::json &json) const {
 }
 
 /**
- * Perform the dump on the Map.
- * @param map The Map.
- */
-void DumpCommand::act(const Map &map) const {
-    // TODO: implement
-    (void)map;
-}
-
-/**
  * Convert a ConstructCommand to JSON format.
  * @param[out] json The JSON output.
  */
 void ConstructCommand::to_json(nlohmann::json &json) const {
     json = {{JSON_TYPE_KEY,   Name::Construct},
             {JSON_ENTITY_KEY, entity}};
-}
-
-/**
- * Perform the construct on Map and Player.
- * @param map The Map.
- * @param player The Player.
- */
-void ConstructCommand::act(const Map &map, const Player &player) const {
-    // TODO: implement
-    (void)map;
-    (void)player;
 }
 
 }
