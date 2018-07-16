@@ -26,5 +26,8 @@
 </script>
 
 <style lang="scss" scoped>
-
+    .body {
+        /* Override inline style */
+        margin-top: 0 !important;
+    }
 </style>
