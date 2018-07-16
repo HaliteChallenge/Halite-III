@@ -27,6 +27,8 @@ import Settings from './templates/Settings.vue'
 import View404 from './templates/404.vue'
 import BeginnerTutorial from './templates/BeginnerTutorial.vue'
 import CodeTutorial from './templates/CodeTutorial.vue'
+import WalkthroughSubsteps from "./templates/WalkthroughSubsteps.vue"
+import WalkthroughSubstep from "./templates/WalkthroughSubstep.vue"
 
 // Include bootstrap.js - do not remove
 import _ from '../vendor_assets/bootstrap-sass-3.3.7/assets/javascripts/bootstrap'
@@ -38,6 +40,8 @@ import * as utils from './utils'
 Vue.use(require('vue-moment'))
 Vue.use(require('vue-cookie'))
 Vue.use(require('element-ui'))
+Vue.component('walkthrough-substeps', WalkthroughSubsteps)
+Vue.component('walkthrough-substep', WalkthroughSubstep)
 
 window.views = {
   Associate: function () {

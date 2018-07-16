@@ -6,22 +6,28 @@
                     Halite is played on a grid, which wraps around at
                     the edges. (Thus, the map is the surface of a torus.)
                 </p>
-                <h3>Tasks</h3>
-                <ol>
-                    <li>Drag the map around and observe the wrapping.</li>
-                    <li>Zoom in to examine the map more closely.</li>
-                    <li>Reset the map to its initial state.</li>
-                </ol>
+                <walkthrough-substeps>
+                    <walkthrough-substep>
+                        Drag the map around and observe the wrapping.
+                    </walkthrough-substep>
+                    <walkthrough-substep>
+                        Zoom in to examine the map more closely.
+                    </walkthrough-substep>
+                    <walkthrough-substep>
+                        Reset the map to its initial state.
+                    </walkthrough-substep>
+                </walkthrough-substeps>
             </Step>
             <Step title="Saltwater" name="salt">
                 <p>
                     In these seas are vast quantities of the material
                     known as <em>halite</em>.
                 </p>
-                <h3>Tasks</h3>
-                <ol>
-                    <li>Click on a cell and observe how much halite is present.</li>
-                </ol>
+                <walkthrough-substeps>
+                    <walkthrough-substep>
+                        Click on a cell and observe how much halite is present.
+                    </walkthrough-substep>
+                </walkthrough-substeps>
             </Step>
             <Step title="Admiral" name="admiral">
                 <p>
@@ -40,10 +46,11 @@
                     halite changes the viscosity of the seas and makes
                     propulsion difficult.)
                 </p>
-                <h3>Tasks</h3>
-                <ol>
-                    <li>Click on a ship and observe how much halite it has.</li>
-                </ol>
+                <walkthrough-substeps>
+                    <walkthrough-substep>
+                        Click on a ship and observe how much halite it has.
+                    </walkthrough-substep>
+                </walkthrough-substeps>
             </Step>
         </template>
         <template slot="content" slot-scope="walkthrough">
