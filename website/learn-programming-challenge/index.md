@@ -15,9 +15,7 @@ additional_css: ["built-codeEdit", "dark-codeEdit"]
 
 <div id="onboarding-container"></div>
 
-### NOTE: The 2017-2018 season of Halite II has ended and submissions have closed. You can still create an account to be alerted when we launch the next season, and you can always play offline.
-
-Welcome to the Halite II competition!  If you’re here, that means you’re excited to make your first bot and get on the Halite II beta leaderboard. Let's get you set up!
+Welcome to the Halite III alpha!  If you’re here, that means you’re excited to make your first bot and get on the Halite III alpha leaderboard. Let's get you set up!
 
 ### 1) SIGN UP
 
@@ -25,19 +23,9 @@ First, you need to [sign up via Github][login] and create a user profile.
 
 ### 2) WATCH A FEW GAMES
 
-Next, get a feel for how to play the game. Here's one of our favorite videos:
+Next, get a feel for how to play the game. Check out some user profiles, where you'll find recently played games.
 
-<div class="static-container text-center">
-  <img style="width: 80%;height: auto;" src="/assets/images/gifs/Oct-16-2017%2015-23-13%20intro.gif" alt="First Halite game video">
-</div>
-<br/>
-<br/>
-
-[Watch the whole game here.][david game]
-
-To find more games, check out some user profiles, where you'll find recently played games.
-
-You might also want to [browse the game rules][game rules], but it helps to watch some videos first.  
+You might also want to [browse the game rules][game rules], but it helps to watch some videos first.
 
 ### 3) DOWNLOAD A BOT
 
@@ -48,8 +36,6 @@ The game environment and starter kit are bundled together, so you should be all 
 ### 4) SUBMIT THE STARTER BOT
 
 A great way to get going with the game is to just go ahead and [submit][play] the starter bot you downloaded and then going to your [user profile][profile] to see how you've done.
-
-We've created a lot of other documents for you to learn how to play Halite. If you've made it through all these steps, a great next resource is our guide to [improving the basic bot][improve bot].
 
 ### May the best bot win!
 
