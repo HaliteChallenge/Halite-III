@@ -7,6 +7,7 @@ NUM_BOTS=4
 ## Create a user to be used by the worker exclusively.
 sudo groupadd bots
 sudo useradd -m worker -U -G bots -s /bin/bash
+sudo useradd -m bot_compilation -U -G bots -s /bin/bash
 for i in $(seq 0 $((NUM_BOTS-1))); do
     sudo groupadd bots_$i
     sudo usermod -aG bots_$i worker
