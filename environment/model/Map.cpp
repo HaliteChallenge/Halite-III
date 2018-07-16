@@ -1,7 +1,5 @@
 #include "Map.hpp"
 
-#include "nlohmann/json.hpp"
-
 /** Convert a field to JSON. */
 #define FIELD_TO_JSON(x) {#x, map.x}
 

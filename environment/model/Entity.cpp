@@ -1,7 +1,5 @@
 #include "Entity.hpp"
 
-#include "nlohmann/json.hpp"
-
 /** A JSON key and value corresponding to a field. */
 #define FIELD_TO_JSON(x) {#x, entity.x}
 

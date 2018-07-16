@@ -1,8 +1,6 @@
 #include <future>
 
 #include "Constants.hpp"
-#include "BlurTileGenerator.hpp"
-#include "FractalValueNoiseTileGenerator.hpp"
 #include "Halite.hpp"
 #include "HaliteImpl.hpp"
 #include "Logging.hpp"
@@ -12,7 +10,7 @@ namespace hlt {
 /** Run the game. */
 void Halite::run_game() {
     const auto &constants = Constants::get();
-    std::unordered_map<Player::id_type, std::future<void>> results;
+    std::unordered_map<Player::id_type, std::future<void>> results{};
     for (auto &[player_id, player] : players) {
         results[player_id] = std::async(std::launch::async,
                                         [&networking = networking, &player = player] {
@@ -82,9 +80,9 @@ Halite::Halite(const Config &config,
     replay.game_statistics = game_statistics;
 }
 
-void Halite::load_snapshot(const Snapshot& snapshot) {
+void Halite::load_snapshot(const Snapshot &snapshot) {
     // TODO: implement
-    (void)snapshot;
+    (void) snapshot;
 }
 
 /**
@@ -93,8 +91,18 @@ void Halite::load_snapshot(const Snapshot& snapshot) {
  * @param id The player ID.
  * @return The player.
  */
-Player &Halite::get_player(Player::id_type id) {
+Player &Halite::get_player(const Player::id_type &id) {
     return players.find(id)->second;
+}
+
+/**
+ * Get the owner of an entity.
+ *
+ * @param id The entity ID.
+ * @return The owner of the entity.
+ */
+Player &Halite::get_owner(const Entity::id_type &id) {
+    return owners.find(id)->second;
 }
 
 /**
@@ -103,8 +111,37 @@ Player &Halite::get_player(Player::id_type id) {
  * @param id The entity ID.
  * @return The entity.
  */
-Entity &Halite::get_entity(Entity::id_type id) {
+Entity &Halite::get_entity(const Entity::id_type &id) {
     return entities.find(id)->second;
+}
+
+/**
+ * Obtain a new entity.
+ *
+ * @param energy The energy of the entity.
+ * @param player The owner of the player.
+ * @param location The location of the entity.
+ * @return The new entity.
+ */
+Entity &Halite::new_entity(energy_type energy, Player &player, Location location) {
+    auto entity = entity_factory.make(energy);
+    entities.emplace(entity.id, entity);
+    auto &inside = entities.find(entity.id)->second;
+    player.add_entity(inside, location);
+    map.at(location).entity = inside.id;
+    return inside;
+}
+
+/**
+ * Delete an entity by ID.
+ *
+ * @param id The ID of the entity.
+ */
+void Halite::delete_entity(const Entity::id_type &id) {
+    // Guard against aliasing
+    auto copy = id;
+    entities.erase(copy);
+    owners.erase(copy);
 }
 
 /** Default destructor is defined where HaliteImpl is complete. */

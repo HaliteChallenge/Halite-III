@@ -3,8 +3,6 @@
 #include "Entity.hpp"
 #include "Player.hpp"
 
-#include "nlohmann/json.hpp"
-
 /** A JSON key and value corresponding to a field. */
 #define FIELD_TO_JSON(x) {#x, player.x}
 
@@ -62,7 +60,7 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
  * @param id The entity ID.
  * @return The entity location.
  */
-Location Player::get_entity_location(Entity::id_type id) const {
+Location Player::get_entity_location(const Entity::id_type &id) const {
     return entities.find(id)->second.first;
 }
 
@@ -71,7 +69,7 @@ Location Player::get_entity_location(Entity::id_type id) const {
  * @param id The entity ID.
  * @return The entity.
  */
-Entity &Player::get_entity(Entity::id_type id) {
+Entity &Player::get_entity(const Entity::id_type &id) {
     return entities.find(id)->second.second;
 }
 
@@ -80,7 +78,7 @@ Entity &Player::get_entity(Entity::id_type id) {
  * @param id The entity ID.
  * @return True if the player has the entity, false otherwise.
  */
-bool Player::has_entity(Entity::id_type id) const {
+bool Player::has_entity(const Entity::id_type &id) const {
     return entities.find(id) == entities.end();
 }
 
@@ -88,8 +86,17 @@ bool Player::has_entity(Entity::id_type id) const {
  * Remove an entity by ID.
  * @param id The entity ID.
  */
-void Player::remove_entity(Entity::id_type id) {
+void Player::remove_entity(const Entity::id_type &id) {
     entities.erase(id);
+}
+
+/**
+ * Add an entity.
+ * @param entity The entity to add.
+ * @param location The location of the entity.
+ */
+void Player::add_entity(Entity &entity, Location location) {
+    entities.emplace(entity.id, std::pair<Location, std::reference_wrapper<Entity>>(location, entity));
 }
 
 }

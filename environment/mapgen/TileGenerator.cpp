@@ -1,12 +1,10 @@
 #include "TileGenerator.hpp"
 
-#include <cassert>
-
 namespace hlt {
 namespace mapgen {
 
 void TileGenerator::tile_map(Map &map, const dimension_type factory_y, const dimension_type factory_x,
-                            const Map &tile) {
+                             const Map &tile) {
     // Copy the tile over the map
     for (dimension_type player_row = 0; player_row < num_tile_rows; ++player_row) {
         for (dimension_type player_col = 0; player_col < num_tile_cols; ++player_col) {

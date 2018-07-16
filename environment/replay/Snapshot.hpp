@@ -20,14 +20,14 @@ struct Snapshot {
     mapgen::MapParameters map_param{};
     std::unordered_map<Player::id_type, PlayerSnapshot> players;
 
-    static Snapshot from_str(const std::string& snapshot);
+    static Snapshot from_str(const std::string &snapshot);
 
     /**
      * Create snapshot from parameters
      */
     Snapshot(mapgen::MapParameters map_param,
              std::unordered_map<Player::id_type, PlayerSnapshot> players) :
-        map_param{map_param}, players{std::move(players)} {}
+            map_param{map_param}, players{std::move(players)} {}
 
     Snapshot() = default;
 

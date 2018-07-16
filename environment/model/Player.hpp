@@ -15,9 +15,6 @@ namespace hlt {
 struct Player : public virtual Enumerated<Player> {
     friend class Factory<Player>;
 
-    /** Type of Player IDs. */
-    using id_type = long;
-
     /** Type of the Entity map of a player, where keys are entity IDs. */
     using Entities = std::unordered_map<Entity::id_type, std::pair<Location, std::reference_wrapper<Entity>>>;
 
@@ -32,27 +29,34 @@ struct Player : public virtual Enumerated<Player> {
      * @param id The entity ID.
      * @return True if the player has the entity, false otherwise.
      */
-    bool has_entity(Entity::id_type id) const;
+    bool has_entity(const Entity::id_type &id) const;
+
+    /**
+     * Add an entity.
+     * @param entity The entity to add.
+     * @param location The location of the entity.
+     */
+    void add_entity(Entity &entity, Location location);
 
     /**
      * Remove an entity by ID.
      * @param id The entity ID.
      */
-    void remove_entity(Entity::id_type id);
+    void remove_entity(const Entity::id_type &id);
 
     /**
      * Get the location of an entity.
      * @param id The entity ID.
      * @return The entity location.
      */
-    Location get_entity_location(Entity::id_type id) const;
+    Location get_entity_location(const Entity::id_type &id) const;
 
     /**
      * Get an entity by ID.
      * @param id The entity ID.
      * @return The entity.
      */
-    Entity &get_entity(Entity::id_type id);
+    Entity &get_entity(const Entity::id_type &id);
 
     /**
      * Convert a Player to JSON format.
@@ -84,7 +88,8 @@ private:
 
 namespace std {
 template<>
-struct hash<hlt::Player> : hash<Enumerated<hlt::Player>> {};
+struct hash<hlt::Player> : hash<Enumerated<hlt::Player>> {
+};
 }
 
 #endif /* PLAYER_H */

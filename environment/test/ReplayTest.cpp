@@ -1,19 +1,10 @@
 #include "catch.hpp"
 
-#include <cstdlib>
-#include <ctime>
-#include <string.h>
-
 #include "nlohmann/json.hpp"
 
 #include "Replay.hpp"
-#include "Statistics.hpp"
-#include "Constants.hpp"
-#include "Command.hpp"
-#include "GameEvent.hpp"
 #include "Generator.hpp"
 #include "FractalValueNoiseTileGenerator.hpp"
-#include "Player.hpp"
 
 using namespace hlt;
 
@@ -41,7 +32,8 @@ TEST_CASE("Replay object created and converted to json as expected by visualizer
         stats.player_statistics.emplace_back(player.player_id);
         auto total_production = 0;
         for (int i = 0; i < TOTAL_TURNS; ++i) {
-            auto turn_production = rand() % (GAME_CONSTANTS.MAX_CELL_PRODUCTION - GAME_CONSTANTS.MIN_CELL_PRODUCTION) + GAME_CONSTANTS.MAX_CELL_PRODUCTION;
+            auto turn_production = rand() % (GAME_CONSTANTS.MAX_CELL_PRODUCTION - GAME_CONSTANTS.MIN_CELL_PRODUCTION) +
+                                   GAME_CONSTANTS.MAX_CELL_PRODUCTION;
             stats.player_statistics.back().turn_productions.push_back(turn_production);
             total_production += turn_production;
             stats.player_statistics.back().last_turn_alive = i;
@@ -77,7 +69,8 @@ TEST_CASE("Replay object created and converted to json as expected by visualizer
     for (auto &player : players) {
         player.factories.push_back(factories.back());
         factories.pop_back();
-        player.entities[player.factories.front()] = make_entity<Entity>(player.player_id, GAME_CONSTANTS.NEW_ENTITY_ENERGY);
+        player.entities[player.factories.front()] = make_entity<Entity>(player.player_id,
+                                                                        GAME_CONSTANTS.NEW_ENTITY_ENERGY);
         player_map[player.player_id] = player;
     }
 
@@ -114,7 +107,8 @@ TEST_CASE("Replay object created and converted to json as expected by visualizer
             Location location{x, y};
             switch (i % 3) {
             case 0:
-                replay.full_frames.back().events.push_back(std::make_unique<SpawnEvent>(location, GAME_CONSTANTS.NEW_ENTITY_ENERGY, player.player_id));
+                replay.full_frames.back().events.push_back(
+                        std::make_unique<SpawnEvent>(location, GAME_CONSTANTS.NEW_ENTITY_ENERGY, player.player_id));
                 break;
             case 1:
                 replay.full_frames.back().events.push_back(std::make_unique<DeathEvent>(location, player.player_id));
@@ -135,12 +129,13 @@ TEST_CASE("Replay object created and converted to json as expected by visualizer
             REQUIRE_NOTHROW(replay_json["production_map"].at("grid"));
 
             for (dimension_type row = 0; row < MAP_HEIGHT; ++row) {
-                for (dimension_type col = 0; col < MAP_WIDTH; ++ col) {
+                for (dimension_type col = 0; col < MAP_WIDTH; ++col) {
                     REQUIRE_NOTHROW(replay_json["production_map"]["grid"].at(row).at(col));
                     REQUIRE_NOTHROW(replay_json["production_map"]["grid"].at(row).at(col).at("type"));
                     if (replay_json["production_map"]["grid"][row][col]["type"] == "n") {
                         REQUIRE_NOTHROW(replay_json["production_map"]["grid"][row][col].at("production"));
-                        REQUIRE(replay_json["production_map"]["grid"][row][col].at("production") == replay.production_map.at(col, row)->production());
+                        REQUIRE(replay_json["production_map"]["grid"][row][col].at("production") ==
+                                replay.production_map.at(col, row)->production());
                     }
                 }
             }
@@ -161,7 +156,7 @@ TEST_CASE("Replay object created and converted to json as expected by visualizer
                 REQUIRE(player_json.at("factory_location").at("y") == player_map[player_id].factories.front().y);
             }
 
-            SECTION( "Entity json format" ) {
+            SECTION("Entity json format") {
                 for (const auto player_json : replay_json["players"]) {
                     REQUIRE_NOTHROW(player_json.at("entities"));
                     const auto entities_json = player_json["entities"];
@@ -169,8 +164,10 @@ TEST_CASE("Replay object created and converted to json as expected by visualizer
                         REQUIRE_NOTHROW(entity.at("x"));
                         REQUIRE_NOTHROW(entity.at("y"));
                         REQUIRE_NOTHROW(entity.at("energy"));
-                        Location entity_location{entity.at("x").get<dimension_type>(), entity.at("y").get<dimension_type>()};
-                        REQUIRE(entity.at("energy").get<energy_type>() == players[player_json.at("player_id").get<Player::id_type>()].entities[entity_location]->energy);
+                        Location entity_location{entity.at("x").get<dimension_type>(),
+                                                 entity.at("y").get<dimension_type>()};
+                        REQUIRE(entity.at("energy").get<energy_type>() == players[player_json.at(
+                                "player_id").get<Player::id_type>()].entities[entity_location]->energy);
                     }
                 }
             }

@@ -4,9 +4,6 @@
 #include "BotCommunicationError.hpp"
 #include "Command.hpp"
 
-#include "util.hpp"
-#include "nlohmann/json.hpp"
-
 /** The JSON key for command type. */
 constexpr auto JSON_TYPE_KEY = "type";
 /** The JSON key for entity location. */
@@ -59,7 +56,7 @@ std::istream &operator>>(std::istream &istream, std::unique_ptr<Command> &comman
         }
         case Command::Name::Dump: {
             Entity::id_type entity;
-            energy_type energy;
+            energy_type energy{};
             istream >> entity >> energy;
             command = std::make_unique<DumpCommand>(entity, energy);
             break;

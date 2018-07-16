@@ -188,7 +188,7 @@ int main(int argc, char *argv[]) {
             results["map_generator"] = "default";
             results["stats"] = nlohmann::json::object();
             for (const auto& stats : replay.game_statistics.player_statistics) {
-                results["stats"][std::to_string(stats.player_id)] = { { "rank", stats.rank } };
+                results["stats"][std::string(stats.player_id)] = { { "rank", stats.rank } };
             }
             // TODO: where are the error logs?
             results["error_logs"] = nlohmann::json::object();

@@ -44,7 +44,7 @@ public:
 class SpawnEvent : public BaseEvent {
     energy_type energy;                                     /**< Energy granted to entity or of new entity in spawn */
     Player::id_type owner_id;                               /**< Id of player spawning entity */
-    Player::id_type id;                                     /**< ID of spawned entity */
+    Entity::id_type id;                                     /**< ID of spawned entity */
     static constexpr auto GAME_EVENT_TYPE_NAME = "spawn";   /**< Name of event */
 
 public:
@@ -62,14 +62,14 @@ public:
      * @param energy Energy associated with spawn
      * @param owner_id Id of owner who spawned this entity
      */
-    SpawnEvent(Location location, energy_type energy, Player::id_type owner_id, Player::id_type id) :
+    SpawnEvent(Location location, energy_type energy, Player::id_type owner_id, Entity::id_type id) :
             BaseEvent(location), energy(energy), owner_id(owner_id), id(id) {};
     ~SpawnEvent() override = default;
 };
 
 /** An event for entity deaths */
 class CollisionEvent : public BaseEvent {
-    std::vector<Player::id_type> ships;   /**< ids of entities involved in the collision */
+    std::vector<Entity::id_type> ships;   /**< ids of entities involved in the collision */
     static constexpr auto GAME_EVENT_TYPE_NAME = "shipwreck"; /**< Name of event */
 
 public:
@@ -84,14 +84,14 @@ public:
      * @param location Location of entity death
      * @param owner_id Owner of dying entity
      */
-    CollisionEvent(Location location, std::vector<Player::id_type> ships) : BaseEvent(location), ships(ships) {};
+    CollisionEvent(Location location, std::vector<Entiy::id_type> ships) : BaseEvent(location), ships(ships) {};
     ~CollisionEvent() override  = default;
 };
 
 /** An event for Dropoff construction */
 class ConstructionEvent : public BaseEvent {
     Player::id_type owner_id;   /**< ID of owner of dropoff point */
-    Player::id_type id;   /**< ID of ship being transformed into dropoff */
+    Entity::id_type id;   /**< ID of ship being transformed into dropoff */
     static constexpr auto GAME_EVENT_TYPE_NAME = "shipwreck"; /**< Name of event */
 
 public:
@@ -106,7 +106,7 @@ public:
      * @param location Location of entity death
      * @param owner_id Owner of dying entity
      */
-    ConstructionEvent(Location location, Player::id_type owner_id, Player::id_type id) :
+    ConstructionEvent(Location location, Player::id_type owner_id, Entity::id_type id) :
             BaseEvent(location), owner_id(owner_id), id(id) {};
     ~ConstructionEvent() override  = default;
 };
