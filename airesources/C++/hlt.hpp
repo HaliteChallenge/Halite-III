@@ -76,12 +76,22 @@ enum class Direction : char {
 static std::ostream & operator<<(std::ostream & ostream, const Direction & direction) { return ostream << static_cast<char>(direction); }
 static const std::array<Direction, 4> CARDINALS = { Direction::NORTH, Direction::EAST, Direction::SOUTH, Direction::WEST };
 
+struct Ship {
+	id_type id;
+	Location location;
+	halite_type halite;
+};
+struct Dropoff {
+	id_type id;
+	Location location;
+};
+
 struct Player {
 	id_type player_id;
 	halite_type halite;
 	Location shipyard;
-	std::unordered_map<Location, halite_type> ships;
-	std::unordered_set<Location> dropoffs;
+	std::unordered_map<id_type, Ship> ships;
+	std::unordered_map<id_type, Dropoff> dropoffs;
 };
 static std::istream & operator>>(std::istream & istream, Player & player) {
 	long num_ships, num_dropoffs;
@@ -89,15 +99,17 @@ static std::istream & operator>>(std::istream & istream, Player & player) {
     player.ships.clear();
     player.dropoffs.clear();
     for(int i = 0; i < num_ships; i++) {
+    	id_type id;
     	Location l;
     	halite_type h;
-    	istream >> l >> h;
-    	player.ships[l] = h;
+    	istream >> id >> l >> h;
+    	player.ships[id] = { id, l, h };
     }
     for(int i = 0; i < num_dropoffs; i++) {
+    	id_type id;
     	Location l;
-    	istream >> l;
-    	player.dropoffs.insert(l);
+    	istream >> id >> l;
+    	player.dropoffs[id] = { id, l };
     }
     return istream;
 }
@@ -177,17 +189,17 @@ static long getFrame(Players & players) {
 namespace detail {
 static std::ostringstream _moves;
 }
-static void move(const Location & loc, Direction d) {
-	detail::_moves << "m " << loc << ' ' << d << ' ';
+static void move(const id_type & id, Direction d) {
+	detail::_moves << "m " << id << ' ' << d << ' ';
 }
 static void spawn(const halite_type & halite) {
 	detail::_moves << "g " << halite << ' ';
 }
-static void dump(const Location & loc, const halite_type & halite) {
-	detail::_moves << "d " << loc << ' ' << halite << ' ';
+static void dump(const id_type & id, const halite_type & halite) {
+	detail::_moves << "d " << id << ' ' << halite << ' ';
 }
-static void construct(const Location & loc) {
-	detail::_moves << "c " << loc << ' ';
+static void construct(const id_type & id) {
+	detail::_moves << "c " << id << ' ';
 }
 static void sendFrame() {
 	std::cout << detail::_moves.str() << std::endl;
