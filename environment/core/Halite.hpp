@@ -58,6 +58,22 @@ public:
      */
     void load_snapshot(const Snapshot &snapshot);
 
+    /**
+     * Get a player by ID.
+     *
+     * @param id The player ID.
+     * @return The player.
+     */
+    Player &get_player(Player::id_type id);
+
+    /**
+     * Get an entity by ID.
+     *
+     * @param id The entity ID.
+     * @return The entity.
+     */
+    Entity &get_entity(Entity::id_type id);
+
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();
 };

@@ -8,7 +8,6 @@
 
 #include "Cell.hpp"
 #include "Constants.hpp"
-#include "Entity.hpp"
 #include "Grid.hpp"
 #include "Location.hpp"
 
@@ -39,14 +38,6 @@ public:
     friend void to_json(nlohmann::json &json, const Map &map);
 
     /**
-     * Convert this map to JSON format.
-     * Included in addition to above to gain access to grid member of super class
-     *
-     * @param[out] json The output JSON.
-     */
-    void to_json(nlohmann::json &json) const;
-
-    /**
      * Given a location of a cell, return its neighbors.
      * @param location The location of the cell we want the neighbors of.
      * @return Array of neighbor locations.
@@ -64,13 +55,6 @@ public:
      * @return The Manhattan distance between the cells, calculated on a wrap-around map.
      */
     dimension_type distance(const Location &from, const Location &to) const;
-
-    /**
-     * Convert an encoded Map from JSON format.
-     * @param json The JSON.
-     * @param[out] map The converted Map.
-     */
-    friend void from_json(const nlohmann::json &json, Map &map);
 
     /**
      * Write a Map to bot serial format.

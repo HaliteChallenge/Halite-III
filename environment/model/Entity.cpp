@@ -2,8 +2,6 @@
 
 #include "nlohmann/json.hpp"
 
-using namespace std::literals::string_literals;
-
 /** A JSON key and value corresponding to a field. */
 #define FIELD_TO_JSON(x) {#x, entity.x}
 

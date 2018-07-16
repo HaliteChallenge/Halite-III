@@ -79,11 +79,11 @@ void MoveCommand::to_json(nlohmann::json &json) const {
             {JSON_DIRECTION_KEY, direction}};
 }
 
-void MoveCommand::add_to_transaction(CommandTransaction &transaction) const {
-    // TODO: implement
-    (void)transaction;
-}
-
+/**
+ * Perform the move on Map and Player.
+ * @param map The Map.
+ * @param player The Player.
+ */
 void MoveCommand::act(Map &map, Player &player) const {
     // TODO: implement
     (void)map;
@@ -99,11 +99,11 @@ void SpawnCommand::to_json(nlohmann::json &json) const {
             {JSON_ENERGY_KEY, energy}};
 }
 
-void SpawnCommand::add_to_transaction(CommandTransaction &transaction) const {
-    // TODO: implement
-    (void)transaction;
-}
-
+/**
+ * Perform the spawn on Map and Player.
+ * @param map The Map.
+ * @param player The Player.
+ */
 void SpawnCommand::act(Map &map, Player &player) const {
     // TODO: implement
     (void)map;
@@ -120,9 +120,13 @@ void DumpCommand::to_json(nlohmann::json &json) const {
             {JSON_ENERGY_KEY, energy}};
 }
 
-void DumpCommand::add_to_transaction(CommandTransaction &transaction) const {
+/**
+ * Perform the dump on the Map.
+ * @param map The Map.
+ */
+void DumpCommand::act(const Map &map) const {
     // TODO: implement
-    (void)transaction;
+    (void)map;
 }
 
 /**
@@ -134,9 +138,15 @@ void ConstructCommand::to_json(nlohmann::json &json) const {
             {JSON_ENTITY_KEY, entity}};
 }
 
-void ConstructCommand::add_to_transaction(CommandTransaction &transaction) const {
+/**
+ * Perform the construct on Map and Player.
+ * @param map The Map.
+ * @param player The Player.
+ */
+void ConstructCommand::act(const Map &map, const Player &player) const {
     // TODO: implement
-    (void)transaction;
+    (void)map;
+    (void)player;
 }
 
 }

@@ -18,13 +18,13 @@ constexpr auto NAME_MAX_LENGTH = 30;
  * @param player The player to communicate with.
  */
 void Networking::initialize_player(Player &player) {
-    Logging::log("Initializing player " + std::to_string(player.player_id) + " with command " + player.command);
+    Logging::log("Initializing player " + std::to_string(player.id) + " with command " + player.command);
     auto connection = connection_factory.new_connection(player.command);
     std::stringstream message_stream;
-    Logging::log("Sending init message to player " + std::to_string(player.player_id));
+    Logging::log("Sending init message to player " + std::to_string(player.id));
     // Send the number of players and player ID
     message_stream << game.players.size()
-                   << " " << player.player_id << std::endl;
+                   << " " << player.id << std::endl;
     // Send each player's ID and factory location
     for (const auto &[player_id, other_player] : game.players) {
         message_stream << player_id
@@ -34,10 +34,10 @@ void Networking::initialize_player(Player &player) {
     // Send the map
     message_stream << game.game_map;
     connection->send_string(message_stream.str());
-    Logging::log("Init message sent to player " + std::to_string(player.player_id));
+    Logging::log("Init message sent to player " + std::to_string(player.id));
     // Receive a name from the player.
     player.name = connection->get_string().substr(0, NAME_MAX_LENGTH);
-    Logging::log("Init message received from player " + std::to_string(player.player_id) + ", name: " + player.name);
+    Logging::log("Init message received from player " + std::to_string(player.id) + ", name: " + player.name);
     {
         std::lock_guard<std::mutex> guard(connections_mutex);
         connections[player] = std::move(connection);
@@ -59,7 +59,7 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(const Player &pla
         message_stream << other_player;
     }
     connections[player]->send_string(message_stream.str());
-    Logging::log("Turn info sent to player " + std::to_string(player.player_id), Logging::Level::Debug);
+    Logging::log("Turn info sent to player " + std::to_string(player.id), Logging::Level::Debug);
     // Get commands from the player.
     std::istringstream command_stream(connections[player]->get_string());
     std::vector<std::unique_ptr<Command>> commands;
@@ -68,7 +68,8 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(const Player &pla
         commands.push_back(std::move(command));
     }
     command_stream >> command;
-    Logging::log("Received " + std::to_string(commands.size()) + " commands from player " + std::to_string(player.player_id), Logging::Level::Debug);
+    Logging::log("Received " + std::to_string(commands.size()) +
+                 " commands from player " + std::to_string(player.id), Logging::Level::Debug);
     return commands;
 }
 

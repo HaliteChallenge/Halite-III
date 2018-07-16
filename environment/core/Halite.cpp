@@ -80,12 +80,13 @@ Halite::Halite(const Config &config,
     generator->generate(game_map, factories);
 
     const auto &constants = Constants::get();
-    for (const auto &player : players) {
-        this->players[player.player_id] = player;
-        this->players[player.player_id].factory = factories.back();
+    for (const auto &new_player : players) {
+        auto &player = get_player(new_player.id);
+        player = new_player;
+        player.factory = factories.back();
         factories.pop_back();
-        this->players[player.player_id].energy = constants.INITIAL_ENERGY;
-        game_statistics.player_statistics.emplace_back(player.player_id);
+        player.energy = constants.INITIAL_ENERGY;
+        game_statistics.player_statistics.emplace_back(player.id);
     }
 
     replay.game_statistics = game_statistics;
@@ -94,6 +95,26 @@ Halite::Halite(const Config &config,
 void Halite::load_snapshot(const Snapshot& snapshot) {
     // TODO: implement
     (void)snapshot;
+}
+
+/**
+ * Get a player by ID.
+ *
+ * @param id The player ID.
+ * @return The player.
+ */
+Player &Halite::get_player(Player::id_type id) {
+    return players.find(id)->second;
+}
+
+/**
+ * Get an entity by ID.
+ *
+ * @param id The entity ID.
+ * @return The entity.
+ */
+Entity &Halite::get_entity(Entity::id_type id) {
+    return entities.find(id)->second;
 }
 
 /** Default destructor is defined where HaliteImpl is complete. */

@@ -1,9 +1,13 @@
-#ifndef FACTORY_HPP
-#define FACTORY_HPP
+#ifndef ENUMERATED_HPP
+#define ENUMERATED_HPP
 
 #include <utility>
 
-/** Interface for classes exporting a numeric ID type. */
+/**
+ * Mixin for classes exporting a numeric ID type.
+ * @tparam T The class to which to add the ID.
+ */
+template<class T>
 class Enumerated {
 public:
     /** ID type. */
@@ -15,8 +19,11 @@ public:
     /** Instance ID. */
     id_type id;
 
-    /** Default constructor. */
-    Enumerated() = default;
+    /** Test two instances for equality. */
+    bool operator==(const Enumerated<T> &other) const { return id == other.id; }
+
+    /** Order two instances by ID. */
+    bool operator<(const Enumerated<T> &other) const { return id < other.id; }
 
     /**
      * Construct with ID.
@@ -24,6 +31,15 @@ public:
      */
     explicit Enumerated(id_type id) : id(id) {}
 };
+
+namespace std {
+template<class T>
+struct hash<Enumerated<T>> {
+    size_t operator()(const Enumerated<T> &object) const {
+        return (size_t) object.id;
+    }
+};
+}
 
 /**
  * Generic factory class that creates classes with an enumerated ID.
@@ -46,4 +62,4 @@ public:
     }
 };
 
-#endif // FACTORY_HPP
+#endif // ENUMERATED_HPP
