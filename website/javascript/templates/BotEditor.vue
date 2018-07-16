@@ -102,7 +102,6 @@ export default {
     const terminal_text = this.terminal_text === null ? "" : this.terminal_text
     return {
       all_bot_languages: botLanguagePacks,
-      base_url: '',
       status_message: null,
       logged_in: false,
       editorViewer: null,

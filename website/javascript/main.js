@@ -47,7 +47,7 @@ window.views = {
   BotEditorPage: function () {
     new Vue({
       el: '#bot-editor-container',
-      render: (h) => h(BotEditorPage)
+      render: (h) => h(BotEditorPage, { props: { baseUrl: _global.baseUrl } })
     })
   },
   FinalsStatus: function () {
