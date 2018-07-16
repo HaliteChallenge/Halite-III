@@ -87,6 +87,7 @@ bool MoveTransaction::check() {
                 return false;
             }
         }
+        // TODO: check that the energy is sufficient to move off the source
     }
     return true;
 }
@@ -136,6 +137,7 @@ void MoveTransaction::commit() {
             map.at(destination).entity = entity_id;
             // Give it back to the owner.
             game.get_owner(entity_id).add_entity(game.get_entity(entity_id), destination);
+            // TODO: decrease energy on the moved entity
         }
     }
 }
