@@ -33,10 +33,6 @@
                     <p><a href="/learn-programming-challenge/downloads-and-starter-kits/submit-bot">Learn more</a></p>
                 </div>
                 <Upload :logged-in="loggedIn" :showMessage="showMessage"></Upload>
-                <div class="upload-note text-center">
-                    <h2>advanced submission options</h2>
-                    <p>You can also submit a bot using our <a href="/learn-programming-challenge/halite-cli-and-tools/halite-client-tools">Halite Client Tools</a></p>
-                </div>
             </div>
 
         </div>
@@ -55,10 +51,6 @@
               :progress="uploadProgress"
               :message="uploadMessage">
             </halite-upload-zone>
-            <div class="upload-note text-center">
-              <h2>advanced replay options</h2>
-              <p>You can also replay via the <a href="/learn-programming-challenge/downloads-and-starter-kits">Offline Game Visualizer</a>.</p>
-            </div>
           </div>
         </div>
       </div>
