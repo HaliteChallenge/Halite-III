@@ -28,8 +28,8 @@ struct CellInfo {
 
     friend void to_json(nlohmann::json &json, const CellInfo &cell_info);
 
-    CellInfo(Location location,  std::shared_ptr<Cell> cell) :
-        x(location.x), y(location.y), production(cell->energy()) {}
+    CellInfo(Location location, Cell cell) :
+        x(location.x), y(location.y), production(cell.energy) {}
 };
 
 struct EntityInfo {

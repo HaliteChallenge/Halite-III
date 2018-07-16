@@ -27,7 +27,7 @@ void to_json(nlohmann::json &json, const GameEvent &gameEvent);
 class BaseEvent {
 
 public:
-    Location location{};      /**< Location of event  */
+    Location location;      /**< Location of event  */
 
     /**
      * JSON encoding function, dispatched on game event subtypes.
