@@ -24,7 +24,7 @@
         <div id="user-profile-bar-container"></div>
       </div>
     </header>
-    <BotEditor ref="editor_pane"/>
+    <BotEditor ref="editor_pane" :baseUrl="baseUrl"/>
   </div>
 </template>
 
@@ -37,11 +37,9 @@
 export default {
   name: 'bot_editor_page',
   props: ['baseUrl'],
+  components: {BotEditor},
   data: function () {
     return {}
-  },
-   components: {
-    BotEditor
   },
   mounted: function () {
     utils.initUserProfileNav();
