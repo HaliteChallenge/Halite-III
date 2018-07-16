@@ -10,7 +10,7 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="/">
-            <img alt="Halite" :src="`${baseUrl}/assets/images/full_logo.svg">
+            <img alt="Halite" :src="`${baseUrl}/assets/images/full_logo.svg`">
           </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
