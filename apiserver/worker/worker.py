@@ -182,7 +182,7 @@ def setupParticipant(user_index, user, temp_dir):
     """
     Download and set up the bot for a game participant.
     """
-    # TODO: include username to deal with duplicate bots
+    # Include username to deal with duplicate bots
     bot_dir = "{}_{}_{}".format(user["user_id"], user["bot_id"], user["username"])
     bot_dir = os.path.join(temp_dir, bot_dir)
     os.mkdir(bot_dir)
@@ -212,16 +212,18 @@ def setupParticipant(user_index, user, temp_dir):
     # https://superuser.com/questions/102253/how-to-make-files-created-in-a-directory-owned-by-directory-group
 
     bot_user = "bot_{}".format(user_index)
+    bot_group = "bots_{}".format(user_index)
     bot_cgroup = "bot_{}".format(user_index)
 
     # We want 775 so that the bot can create files still; leading 2
     # is equivalent to g+s which forces new files to be owned by the
     # group
-    give_ownership(bot_dir, "bots", 0o2775)
+    give_ownership(bot_dir, bot_group, 0o2775)
 
     bot_command = BOT_COMMAND.format(
         cgroup=bot_cgroup,
         bot_dir=bot_dir,
+        bot_group=bot_group,
         bot_user=bot_user,
         runfile=RUNFILE,
     )

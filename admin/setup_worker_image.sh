@@ -7,6 +7,10 @@ NUM_BOTS=4
 ## Create a user to be used by the worker exclusively.
 sudo groupadd bots
 sudo useradd -m worker -U -G bots -s /bin/bash
+for i in $(seq 0 $((NUM_BOTS-1))); do
+    sudo groupadd bots_$i
+    sudo usermod -aG bots_$i worker
+done
 
 ## Add necessary repositories for Node.js.
 # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
@@ -167,6 +171,7 @@ sudo useradd -m bot_compilation -G bots
 ## No access to 10. addresses (which are our own servers)
 ## We are giving them general network access (to download dependencies)
 sudo iptables -A OUTPUT -d 10.0.0.0/8 -m owner --uid-owner bot_compilation -j DROP
+sudo iptables -A OUTPUT -d 127.0.0.0/8 -m owner --uid-owner bot_compilation -j DROP
 ## Grant sudo access to the worker as this user.
 sudo sh -c "echo \"worker ALL=(bot_compilation) NOPASSWD: ALL\" > /etc/sudoers.d/worker_bot_compilation"
 ## Grant sudo access to the cgroup fixer script as root.
@@ -176,7 +181,7 @@ sudo chmod 0400 /etc/sudoers.d/worker_bot_compilation
 ## Create four users to isolate bots.
 for i in $(seq 0 $((NUM_BOTS-1))); do
     USERNAME="bot_${i}"
-    sudo useradd -m -g bots ${USERNAME}
+    sudo useradd -m -g bots_${i} ${USERNAME}
     ## Deny all network access to this user.
     sudo iptables -A OUTPUT -m owner --uid-owner ${USERNAME} -j DROP
     ## Grant sudo access to the worker.
