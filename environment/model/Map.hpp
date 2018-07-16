@@ -8,26 +8,17 @@
 
 #include "Cell.hpp"
 #include "Constants.hpp"
-#include "Entity.hpp"
 #include "Grid.hpp"
 #include "Location.hpp"
 
 namespace hlt {
 
-class Halite;
-
-namespace mapgen {
-class Generator;
-}
-
 /** The map of cells. */
-class Map : public Grid<std::unique_ptr<Cell>> {
-    friend class Halite;
-
-    /** The name of the map generator used to generate the map. */
-    std::string map_generator = "none";
-
+class Map : public Grid<Cell> {
 public:
+    /** The factories on this Map. */
+    std::vector<Location> factories;
+
     /** The number of neighbors of each cell on the map grid. */
     static constexpr auto NEIGHBOR_COUNT = 4;
 
@@ -37,14 +28,6 @@ public:
      * @param map The Map to convert.
      */
     friend void to_json(nlohmann::json &json, const Map &map);
-
-    /**
-     * Convert this map to JSON format.
-     * Included in addition to above to gain access to grid member of super class
-     *
-     * @param[out] json The output JSON.
-     */
-    void to_json(nlohmann::json &json) const;
 
     /**
      * Given a location of a cell, return its neighbors.
@@ -64,13 +47,6 @@ public:
      * @return The Manhattan distance between the cells, calculated on a wrap-around map.
      */
     dimension_type distance(const Location &from, const Location &to) const;
-
-    /**
-     * Convert an encoded Map from JSON format.
-     * @param json The JSON.
-     * @param[out] map The converted Map.
-     */
-    friend void from_json(const nlohmann::json &json, Map &map);
 
     /**
      * Write a Map to bot serial format.
@@ -93,19 +69,6 @@ public:
      * @param height The height.
      */
     Map(dimension_type width, dimension_type height) : Grid(width, height) {}
-
-private:
-    /**
-     * Create a Map from dimensions and grid.
-     * @param width The width.
-     * @param height The height.
-     * @param grid The grid. Must be of correct dimensions.
-     */
-    Map(dimension_type width, dimension_type height, grid_type grid) {
-        this->width = width;
-        this->height = height;
-        this->grid = std::move(grid);
-    }
 };
 
 }

@@ -2,12 +2,12 @@
 #define ENTITY_H
 
 #include "Constants.hpp"
-#include "Factory.hpp"
+#include "Enumerated.hpp"
 
 namespace hlt {
 
 /** A player-affiliated entity placed on the Halite map. */
-struct Entity : public Enumerated {
+struct Entity : public virtual Enumerated<Entity> {
     friend class Factory<Entity>;
 
     /** Energy of the entity. */
@@ -27,8 +27,6 @@ struct Entity : public Enumerated {
      * @return The output stream.
      */
     friend std::ostream &operator<<(std::ostream &ostream, const Entity &entity);
-
-    Entity() = default;
 
 private:
     /**

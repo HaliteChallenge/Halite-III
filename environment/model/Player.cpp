@@ -8,9 +8,6 @@
 /** A JSON key and value corresponding to a field. */
 #define FIELD_TO_JSON(x) {#x, player.x}
 
-/** Get a field from JSON. */
-#define FIELD_FROM_JSON(x) json.at(#x)
-
 namespace hlt {
 
 /**
@@ -38,7 +35,7 @@ void to_json(nlohmann::json &json, const Player::Entities entities) {
  * @param player The Player to convert.
  */
 void to_json(nlohmann::json &json, const Player &player) {
-    json = {FIELD_TO_JSON(player_id),
+    json = {FIELD_TO_JSON(id),
             FIELD_TO_JSON(name),
             FIELD_TO_JSON(energy),
             FIELD_TO_JSON(factory),
@@ -53,33 +50,13 @@ void to_json(nlohmann::json &json, const Player &player) {
  */
 std::ostream &operator<<(std::ostream &ostream, const Player &player) {
     // Output player ID, number of entities, and current energy.
-    ostream << player.player_id << " " << player.entities.size() << " " << player.energy << std::endl;
+    ostream << player.id << " " << player.entities.size() << " " << player.energy << std::endl;
     // Output a list of entities.
     for (const auto &[location, entity] : player.entities) {
         auto [x, y] = location;
         ostream << x << " " << y << " " << entity;
     }
     return ostream;
-}
-
-/**
- * Add a new entity by location. No entity must exist at that location.
- * @param location The location for the entity.
- * @param entity The entity to add.
- */
-void Player::add_entity(const Location &location, const Entity &entity) {
-    entities[location] = entity;
-}
-
-/**
- * Remove an entity by location.
- * @param location The location of the entity.
- * @return The entity there.
- */
-Entity Player::remove_entity(const Location &location) {
-    auto found = entities[location];
-    entities.erase(location);
-    return found;
 }
 
 }

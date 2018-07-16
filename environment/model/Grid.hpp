@@ -5,7 +5,10 @@
 
 namespace hlt {
 
-/** Template for classes representing grids indexable along two dimensions. */
+/**
+ * Template for classes representing grids indexable along two dimensions.
+ * @tparam Entry The type of entries in the grid.
+ */
 template<class Entry>
 class Grid {
 protected:

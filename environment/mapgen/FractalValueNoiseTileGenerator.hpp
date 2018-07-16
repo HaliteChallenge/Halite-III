@@ -21,9 +21,8 @@ public:
     /**
      * Generate a map.
      * @param[out] map The map to generate.
-     * @param[out] factories The factories generated on the map. Length must be >= number of players.
      */
-    void generate(Map &map, std::vector<Location> &factories) override;
+    void generate(Map &map) override;
 
     /**
      * Construct BlurTileGenerator from parameters.

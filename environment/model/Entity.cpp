@@ -2,13 +2,8 @@
 
 #include "nlohmann/json.hpp"
 
-using namespace std::literals::string_literals;
-
 /** A JSON key and value corresponding to a field. */
 #define FIELD_TO_JSON(x) {#x, entity.x}
-
-/** Get a field from JSON. */
-#define FIELD_FROM_JSON(x) json.at(#x)
 
 namespace hlt {
 
