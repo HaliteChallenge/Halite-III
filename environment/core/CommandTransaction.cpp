@@ -32,6 +32,7 @@ void DumpTransaction::commit() {
             auto &entity = game.get_entity(command.entity);
             entity.energy -= command.energy;
             Location location = player.get_entity_location(command.entity);
+            // TODO: if location is factory or drop zone, act accordingly
             map.at(location).energy += command.energy;
         }
     }
