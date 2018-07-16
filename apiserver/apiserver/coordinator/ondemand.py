@@ -19,22 +19,23 @@ def ondemand_task():
         result["challenge"] = None
         result["task_user_id"] = task.key.id
 
-        users = [
-            {
-                "user_id": task.key.id,
-                "bot_id": "editor",
-                "username": "my-editor-bot",
-                "requires_compilation": True,
-                "version_number": 1,
-            },
-        ]
+        users = []
         for opponent in task["opponents"]:
-            users.append({
-                "user_id": "gym",
-                "bot_id": opponent["bot_id"],
-                "username": opponent["name"],
-                "version_number": 1,
-            })
+            if opponent["bot_id"] == "self":
+                users.append({
+                    "user_id": task.key.id,
+                    "bot_id": "editor",
+                    "username": opponent["name"],
+                    "requires_compilation": True,
+                    "version_number": 1,
+                })
+            else:
+                users.append({
+                    "user_id": "gym",
+                    "bot_id": opponent["bot_id"],
+                    "username": opponent["name"],
+                    "version_number": 1,
+                })
 
         result["users"] = users
 

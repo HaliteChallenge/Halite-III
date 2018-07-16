@@ -182,7 +182,8 @@ def setupParticipant(user_index, user, temp_dir):
     """
     Download and set up the bot for a game participant.
     """
-    bot_dir = "{}_{}".format(user["user_id"], user["bot_id"])
+    # TODO: include username to deal with duplicate bots
+    bot_dir = "{}_{}_{}".format(user["user_id"], user["bot_id"], user["username"])
     bot_dir = os.path.join(temp_dir, bot_dir)
     os.mkdir(bot_dir)
     archive.unpack(backend.storeBotLocally(user["user_id"],
