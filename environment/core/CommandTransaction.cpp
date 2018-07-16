@@ -64,6 +64,7 @@ void ConstructTransaction::commit() {
         for (const ConstructCommand &command : constructs) {
             auto &cell = map.at(player.get_entity_location(command.entity));
             cell.is_dropoff = true;
+            cell.energy = 0;
             cell.entity = Entity::None;
             player.remove_entity(command.entity);
             game.delete_entity(command.entity);
