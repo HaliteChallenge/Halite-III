@@ -19,13 +19,17 @@ class HaliteImpl;
 
 /** Halite game interface, exposing the top level of the game. */
 class Halite final {
+    template<class K, class V>
+    using id_map = std::unordered_map<typename K::id_type, V>;
+
     /** Type of storage maps from IDs to objects. */
     template<class T>
-    using Store = std::unordered_map<typename T::id_type, T>;
+    using Store = id_map<T, T>;
 
     /** Mappings from ID to objects, also serving as owners for Player and Entity. */
-    Store<Player> players;            /**< Map from player ID to player. */
-    Store<Entity> entities;           /**< Map from entity ID to entity. */
+    Store<Player> players;                                 /**< Map from player ID to player. */
+    Store<Entity> entities;                                /**< Map from entity ID to entity. */
+    id_map<Entity, std::reference_wrapper<Player>> owners; /**< Map from entity ID to entity owner. */
 
     /** Game object factories. */
     Factory<Player> player_factory;   /**< The player factory. */
@@ -81,7 +85,32 @@ public:
      * @param id The player ID.
      * @return The player.
      */
-    Player &get_player(Player::id_type id);
+    Player &get_player(const Player::id_type &id);
+
+    /**
+     * Get the owner of an entity.
+     *
+     * @param id The entity ID.
+     * @return The owner of the entity.
+     */
+    Player &get_owner(const Entity::id_type &id);
+
+    /**
+     * Obtain a new entity.
+     *
+     * @param energy The energy of the entity.
+     * @param player The owner of the player.
+     * @param location The location of the entity.
+     * @return The new entity.
+     */
+    Entity &new_entity(energy_type energy, Player &player, Location location);
+
+    /**
+     * Delete an entity by ID.
+     *
+     * @param id The ID of the entity.
+     */
+    void delete_entity(const Entity::id_type &id);
 
     /**
      * Get an entity by ID.
@@ -89,7 +118,7 @@ public:
      * @param id The entity ID.
      * @return The entity.
      */
-    Entity &get_entity(Entity::id_type id);
+    Entity &get_entity(const Entity::id_type &id);
 
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();

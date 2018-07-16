@@ -1,7 +1,66 @@
 #ifndef ENUMERATED_HPP
 #define ENUMERATED_HPP
 
+#include <iostream>
 #include <utility>
+
+#include "nlohmann/json.hpp"
+
+/** The internal ID type. */
+using id_value_type = long;
+
+/**
+ * Type for IDs, ensuring IDs of different objects are not interchangeable.
+ * No accidentally using Entity IDs for Players, or vice versa!
+ * Should take no more memory than id_value_type to store.
+ *
+ * @tparam The class to which these IDs belong.
+ */
+template<class T>
+struct id_type {
+    /** Internal value. */
+    id_value_type value;
+
+    /** Equality test. */
+    friend bool operator==(const id_type &first, const id_type &second) { return first.value == second.value; }
+
+    /** Inequality test. */
+    friend bool operator!=(const id_type &first, const id_type &second) { return !(first == second); }
+
+    /** Comparison function. */
+    friend bool operator<(const id_type &first, const id_type &second) { return first.value < second.value; }
+
+    /** Stream input. */
+    friend std::istream &operator>>(std::istream &istream, id_type &id) {
+        return istream >> id.value;
+    }
+
+    /** Stream output. */
+    friend std::ostream &operator<<(std::ostream &ostream, const id_type &id) {
+        return ostream << id.value;
+    }
+
+    /** JSON serialization. */
+    friend void to_json(nlohmann::json &json, const id_type &id) {
+        nlohmann::to_json(json, id.value);
+    }
+
+    /** JSON deserialization. */
+    friend void from_json(const nlohmann::json &json, id_type &id) {
+        nlohmann::from_json(json, id.value);
+    }
+
+    /** String conversion. */
+    explicit operator std::string() const {
+        return std::to_string(value);
+    }
+
+    /** Default constructor. */
+    id_type() = default;
+
+    /** Explicit constructor. */
+    explicit id_type(id_value_type value) : value(value) {}
+};
 
 /**
  * Mixin for classes exporting a numeric ID type.
@@ -10,11 +69,11 @@
 template<class T>
 class Enumerated {
 public:
-    /** ID type. */
-    using id_type = long;
+    /** Alias for ID type. */
+    using id_type = id_type<T>;
 
     /** Sentinel value for ID type. */
-    static constexpr id_type None = 0;
+    static constexpr id_type None{};
 
     /** Instance ID. */
     id_type id;
@@ -34,9 +93,16 @@ public:
 
 namespace std {
 template<class T>
+struct hash<id_type<T>> {
+    size_t operator()(const id_type<T> &object) const {
+        return (size_t) object.value;
+    }
+};
+
+template<class T>
 struct hash<Enumerated<T>> {
     size_t operator()(const Enumerated<T> &object) const {
-        return (size_t) object.id;
+        return (size_t) object.id.value;
     }
 };
 }
@@ -48,7 +114,7 @@ struct hash<Enumerated<T>> {
 template<class T>
 class Factory {
     /** The last ID allocated. */
-    typename T::id_type last_id = T::None;
+    id_value_type last_id = T::None.value;
 public:
     /**
      * Construct the object with a new ID.
@@ -58,7 +124,7 @@ public:
      */
     template<typename... Args>
     T make(Args &&...args) {
-        return T(++last_id, std::forward<Args>(args)...);
+        return T(id_type<T>(++last_id), std::forward<Args>(args)...);
     }
 };
 

@@ -91,8 +91,18 @@ void Halite::load_snapshot(const Snapshot& snapshot) {
  * @param id The player ID.
  * @return The player.
  */
-Player &Halite::get_player(Player::id_type id) {
+Player &Halite::get_player(const Player::id_type &id) {
     return players.find(id)->second;
+}
+
+/**
+ * Get the owner of an entity.
+ *
+ * @param id The entity ID.
+ * @return The owner of the entity.
+ */
+Player &Halite::get_owner(const Entity::id_type &id) {
+    return owners.find(id)->second;
 }
 
 /**
@@ -101,8 +111,37 @@ Player &Halite::get_player(Player::id_type id) {
  * @param id The entity ID.
  * @return The entity.
  */
-Entity &Halite::get_entity(Entity::id_type id) {
+Entity &Halite::get_entity(const Entity::id_type &id) {
     return entities.find(id)->second;
+}
+
+/**
+ * Obtain a new entity.
+ *
+ * @param energy The energy of the entity.
+ * @param player The owner of the player.
+ * @param location The location of the entity.
+ * @return The new entity.
+ */
+Entity &Halite::new_entity(energy_type energy, Player &player, Location location) {
+    auto entity = entity_factory.make(energy);
+    entities.emplace(entity.id, entity);
+    auto &inside = entities.find(entity.id)->second;
+    player.add_entity(inside, location);
+    map.at(location).entity = inside.id;
+    return inside;
+}
+
+/**
+ * Delete an entity by ID.
+ *
+ * @param id The ID of the entity.
+ */
+void Halite::delete_entity(const Entity::id_type &id) {
+    // Guard against aliasing
+    auto copy = id;
+    entities.erase(copy);
+    owners.erase(copy);
 }
 
 /** Default destructor is defined where HaliteImpl is complete. */

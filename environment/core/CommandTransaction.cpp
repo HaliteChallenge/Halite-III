@@ -1,3 +1,5 @@
+#include <unordered_set>
+
 #include "Command.hpp"
 #include "Halite.hpp"
 
@@ -59,7 +61,9 @@ void ConstructTransaction::commit() {
     for (auto &[player_id, constructs] : commands) {
         auto &player = game.get_player(player_id);
         for (const ConstructCommand &command : constructs) {
-            map.at(player.get_entity_location(command.entity)).is_dropoff = true;
+            auto &cell = map.at(player.get_entity_location(command.entity));
+            cell.is_dropoff = true;
+            cell.entity = Entity::None;
             player.remove_entity(command.entity);
             player.energy -= cost;
         }
@@ -71,13 +75,66 @@ void ConstructTransaction::commit() {
  * @return False if the transaction may not be committed.
  */
 bool MoveTransaction::check() {
-    // TODO: implement
+    for (const auto &[player_id, moves] : commands) {
+        auto &player = game.get_player(player_id);
+        for (const MoveCommand &command : moves) {
+            // Entity is not valid
+            if (!player.has_entity(command.entity)) {
+                _offender = player_id;
+                return false;
+            }
+        }
+    }
     return true;
 }
 
 /** If the transaction may be committed, commit the transaction. */
 void MoveTransaction::commit() {
-    // TODO: implement
+    // Map from destination location to all the entities that want to go there.
+    std::unordered_map<Location, std::vector<Entity::id_type>> destinations;
+    // Lift each entity that is moving from the grid.
+    for (auto &[player_id, moves] : commands) {
+        auto &player = game.get_player(player_id);
+        for (const MoveCommand &command : moves) {
+            const auto &[entity_id, direction] = command;
+            auto location = player.get_entity_location(entity_id);
+            // Remove the entity from its source
+            auto &source = map.at(location);
+            source.entity = Entity::None;
+            map.move_location(location, direction);
+            // Mark it as interested in the destination.
+            destinations[location].emplace_back(entity_id);
+            // Take it from its owner.
+            // Do not mark the entity as removed in the game yet.
+            game.get_owner(entity_id).remove_entity(entity_id);
+        }
+    }
+    // If there are already unmoving entities at the destination, lift them off too.
+    for (auto &[destination, _] : destinations) {
+        auto &cell = map.at(destination);
+        if (cell.entity != Entity::None) {
+            destinations[destination].emplace_back(cell.entity);
+            game.get_owner(cell.entity).remove_entity(cell.entity);
+            cell.entity = Entity::None;
+        }
+    }
+    // If only one entity is interested in a destination, place it there.
+    // Otherwise, destroy all interested entities.
+    static constexpr auto MAX_ENTITIES_PER_CELL = 1;
+    for (auto &[destination, entities] : destinations) {
+        if (entities.size() > MAX_ENTITIES_PER_CELL) {
+            // Destroy all interested entities.
+            for (auto &entity_id : entities) {
+                game.delete_entity(entity_id);
+            }
+        } else {
+            auto &entity_id = entities.front();
+            // Place it on the map.
+            map.at(destination).entity = entity_id;
+            // Give it back to the owner.
+            game.get_owner(entity_id).add_entity(game.get_entity(entity_id), destination);
+        }
+    }
 }
 
 /**
@@ -85,13 +142,36 @@ void MoveTransaction::commit() {
  * @return False if the transaction may not be committed.
  */
 bool SpawnTransaction::check() {
-    // TODO: implement
+    // Only one spawn per turn
+    std::unordered_set<Player::id_type> occurrences;
+    for (const auto &[player, _] : commands) {
+        if (const auto &[__, inserted] = occurrences.emplace(player); !inserted) {
+            _offender = player;
+            return false;
+        }
+    }
     return true;
 }
 
 /** If the transaction may be committed, commit the transaction. */
 void SpawnTransaction::commit() {
-    // TODO: implement
+    const auto &constants = Constants::get();
+    auto cost = constants.NEW_ENTITY_ENERGY_COST;
+    auto energy = constants.NEW_ENTITY_ENERGY;
+    for (const auto &[player_id, _] : commands) {
+        auto &player = game.get_player(player_id);
+        player.energy -= cost;
+        auto &cell = map.at(player.factory);
+        if (cell.entity == Entity::None) {
+            cell.entity = game.new_entity(energy, player, player.factory).id;
+        } else {
+            // There is a collision
+            auto &owner = game.get_owner(cell.entity);
+            owner.remove_entity(cell.entity);
+            game.delete_entity(cell.entity);
+            cell.entity = Entity::None;
+        }
+    }
 }
 
 /**

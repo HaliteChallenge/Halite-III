@@ -17,10 +17,10 @@ void to_json(nlohmann::json &json, const Turn &turn) {
     nlohmann::json moves_json;
     nlohmann::json energy_json;
     for (auto &[player_id, commands] : turn.moves) {
-        moves_json[std::to_string(player_id)] = commands;
+        moves_json[std::string(player_id)] = commands;
     }
     for (auto &[player_id, energy] : turn.energy) {
-        energy_json[std::to_string(player_id)] = energy;
+        energy_json[std::string(player_id)] = energy;
     }
     json["moves"] = moves_json;
     json["energy"] = energy_json;
