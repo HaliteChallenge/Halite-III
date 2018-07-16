@@ -3,9 +3,9 @@
 #include "BotCommandError.hpp"
 #include "BotCommunicationError.hpp"
 #include "Command.hpp"
-#include "JsonError.hpp"
 
 #include "util.hpp"
+#include "nlohmann/json.hpp"
 
 /** The JSON key for command type. */
 constexpr auto JSON_TYPE_KEY = "type";

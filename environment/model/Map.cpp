@@ -5,9 +5,6 @@
 /** Convert a field to JSON. */
 #define FIELD_TO_JSON(x) {#x, map.x}
 
-/** Get a field from JSON. */
-#define FIELD_FROM_JSON(x) json.at(#x)
-
 namespace hlt {
 
 /**
