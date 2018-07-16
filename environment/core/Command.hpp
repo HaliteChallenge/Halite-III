@@ -71,8 +71,8 @@ std::istream &operator>>(std::istream &istream, std::unique_ptr<Command> &comman
 /** Command for moving an entity in a direction. */
 class MoveCommand : public virtual Command, public Transactable<MoveCommand> {
 public:
-    const Location entity;      /**< The location of the entity. */
-    const Direction direction;  /**< The direction in which to move. */
+    const Entity::id_type entity; /**< The location of the entity. */
+    const Direction direction;    /**< The direction in which to move. */
 
     /**
      * Convert a MoveCommand to JSON format.
@@ -81,18 +81,11 @@ public:
     void to_json(nlohmann::json &json) const override;
 
     /**
-     * Perform the move on Map and Player.
-     * @param map The Map.
-     * @param player The Player.
-     */
-    void act(Map &map, Player &player) const;
-
-    /**
      * Create MoveCommand from entity and direction.
      * @param entity The location of the entity.
      * @param direction The direction.
      */
-    MoveCommand(Location entity, Direction direction) : entity(entity), direction(direction) {}
+    MoveCommand(Entity::id_type entity, Direction direction) : entity(entity), direction(direction) {}
 };
 
 /** Command for spawning an entity. */
@@ -108,13 +101,6 @@ public:
     void to_json(nlohmann::json &json) const override;
 
     /**
-     * Perform the spawn on Map and Player.
-     * @param map The Map.
-     * @param player The Player.
-     */
-    void act(Map &map, Player &player) const;
-
-    /**
      * Create SpawnCommand from energy.
      * @param energy The energy to use.
      */
@@ -123,8 +109,8 @@ public:
 
 class DumpCommand : public virtual Command, public Transactable<DumpCommand> {
 public:
-    const Location entity;    /**< The entity from which to dump. */
-    const energy_type energy; /**< The amount to dump. */
+    const Entity::id_type entity; /**< The entity from which to dump. */
+    const energy_type energy;     /**< The amount to dump. */
 
     /**
      * Convert a DumpCommand to JSON format.
@@ -143,14 +129,14 @@ public:
      * @param entity The entity from which to dump.
      * @param energy The amount of energy to dump.
      */
-    DumpCommand(Location entity, energy_type energy) : entity(entity), energy(energy) {}
+    DumpCommand(Entity::id_type entity, energy_type energy) : entity(entity), energy(energy) {}
 };
 
 /** Command to construct a drop zone. */
 class ConstructCommand : public virtual Command, public Transactable<ConstructCommand> {
 public:
     /** The entity to use to construct. */
-    const Location entity;
+    const Entity::id_type entity;
 
     /**
      * Convert a ConstructCommand to JSON format.
@@ -169,7 +155,7 @@ public:
      * Construct ConstructCommand from entity.
      * @param entity The entity to convert.
      */
-    explicit ConstructCommand(Location entity) : entity(entity) {}
+    explicit ConstructCommand(Entity::id_type entity) : entity(entity) {}
 };
 
 }

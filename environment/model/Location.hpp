@@ -76,9 +76,6 @@ struct Location {
      * @param y The y-coordinate.
      */
     Location(dimension_type x, dimension_type y) : x(x), y(y) {}
-
-    /** The default constructor. */
-    Location() = default;
 };
 
 }

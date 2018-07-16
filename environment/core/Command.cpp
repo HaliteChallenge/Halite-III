@@ -37,7 +37,7 @@ std::istream &operator>>(std::istream &istream, std::unique_ptr<Command> &comman
     if (istream >> command_type) {
         switch (command_type) {
         case Command::Name::Move: {
-            Location entity;
+            Entity::id_type entity;
             Direction direction;
             istream >> entity >> direction;
             command = std::make_unique<MoveCommand>(entity, direction);
@@ -50,14 +50,14 @@ std::istream &operator>>(std::istream &istream, std::unique_ptr<Command> &comman
             break;
         }
         case Command::Name::Dump: {
-            Location entity;
+            Entity::id_type entity;
             energy_type energy;
             istream >> entity >> energy;
             command = std::make_unique<DumpCommand>(entity, energy);
             break;
         }
         case Command::Name::Construct: {
-            Location entity;
+            Entity::id_type entity;
             istream >> entity;
             command = std::make_unique<ConstructCommand>(entity);
             break;
@@ -80,34 +80,12 @@ void MoveCommand::to_json(nlohmann::json &json) const {
 }
 
 /**
- * Perform the move on Map and Player.
- * @param map The Map.
- * @param player The Player.
- */
-void MoveCommand::act(Map &map, Player &player) const {
-    // TODO: implement
-    (void)map;
-    (void)player;
-}
-
-/**
  * Convert a SpawnCommand to JSON format.
  * @param[out] json The JSON output.
  */
 void SpawnCommand::to_json(nlohmann::json &json) const {
     json = {{JSON_TYPE_KEY,   Name::Spawn},
             {JSON_ENERGY_KEY, energy}};
-}
-
-/**
- * Perform the spawn on Map and Player.
- * @param map The Map.
- * @param player The Player.
- */
-void SpawnCommand::act(Map &map, Player &player) const {
-    // TODO: implement
-    (void)map;
-    (void)player;
 }
 
 /**
