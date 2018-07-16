@@ -10,14 +10,14 @@
                 <div class="command_icon"><a><span class="glyphicon glyphicon-folder-open"></span></a></div>
                 <div class="command_icon"><a><span class="glyphicon glyphicon-pencil"></span></a></div>
                 <div class="command_center_right">
-                  <div class="command_icon"><a @click="open_delete_modal(active_file_name)"><span class="glyphicon glyphicon-trash"></span></a></div>
+                  <div class="command_icon"><a @click="open_delete_modal(active_file)"><span class="glyphicon glyphicon-trash"></span></a></div>
                 </div>
               </div>
             </div>
             <nav class="tree_nav"><div class="bd-toc-item active">
               <ul class="nav bd-sidenav">
-                <li v-for="(f, name) in editor_files" class="bd-sidenav-active tree_files" v-bind:class="{ active: name === active_file_name }">
-                  <a v-on:click="file_selected(name)">
+                <li v-for="(f, name) in editor_files" class="bd-sidenav-active tree_files" v-bind:class="{ active: f === active_file }">
+                  <a v-on:click="file_selected(f)">
                     {{ name }}
                   </a>
                 </li>
@@ -104,6 +104,7 @@ export default {
     const lang = 'Python3'
     const theme = DARK_THEME
     return {
+      active_file: {name: '', contents: ''},
       all_bot_languages: botLanguagePacks,
       status_message: null,
       logged_in: false,
@@ -112,6 +113,7 @@ export default {
       selected_language: lang,
       selected_theme: theme,
       editor_files: [],
+      file_tree: [],
       terminal_text: "",
       is_new_file_modal_open: false,
       is_delete_modal_open: false,
@@ -124,7 +126,8 @@ export default {
         this.logged_in = true
         this.load_code().then((function(editor_files) {
           this.editor_files = editor_files
-          this.active_file_name = this.bot_info().fileName
+          this.active_file = _.find(this.editor_files, {name: this.bot_info().fileName})
+          console.log(this.active_file)
           this.create_editor(this.get_active_file_code())
         }).bind(this))
       } else {
@@ -221,16 +224,17 @@ export default {
         let editor_files = {}
         for(let a = 0; a < names.length; a++) {
           let name = names[a]
-          editor_files[name] = {contents: values.shift()}
+          editor_files[name] = {name: name, contents: values.shift()}
         }
         return editor_files
       })
     },
-    file_selected: function(sel_file_name) {
+    file_selected: function(sel_file) {
+      console.log(sel_file)
       this.save_current_file()
-      this.editor_files[this.active_file_name].contents = this.get_editor_code()
-      this.set_editor_contents(this.editor_files[sel_file_name].contents)
-      this.active_file_name = sel_file_name
+      this.active_file.contents = this.get_editor_code()
+      this.set_editor_contents(sel_file.contents)
+      this.active_file = sel_file
     },
     load_code: function () {
       // Restore user's bot code, or use demo code for new bot
@@ -255,7 +259,7 @@ export default {
       }).bind(this)).then(function(file_promise) {
         return file_promise.then(function(file_contents) {
           let editor_files =  file_contents.reduce(function(prev, cur) {
-            prev[cur.name] = {contents: cur.contents}
+            prev[cur.name] = {name: cur.name, contents: cur.contents}
             return prev
           }, {})
           return editor_files
@@ -272,7 +276,7 @@ export default {
       }, logError)
     },
     get_active_file_code: function() {
-      return this.editor_files[this.active_file_name].contents
+      return this.active_file.contents
     },
     /* Return a string of the code currently in the editor */
     get_editor_code: function () {
@@ -317,17 +321,18 @@ export default {
     close_new_file_modal: function() { this.is_new_file_modal_open = false; },
 
     delete_file: function() {
-      api.delete_source_file(this.user_id, this.delete_file_name)
-      delete this.editor_files[this.delete_file_name]
-      if(this.delete_file_name === this.active_file_name) {
-        let new_file_name = Object.keys(this.editor_files)[0]
-        this.set_editor_contents(this.editor_files[new_file_name].contents)
-        this.active_file_name = new_file_name
+      api.delete_source_file(this.user_id, this.file_to_delete.file_name)
+      let need_file_switch = this.file_to_delete === this.active_file
+      delete this.file_to_delete
+      if(need_file_switch) {
+        let new_file = _.find(this.editor_files)
+        this.set_editor_contents(new_file.contents)
+        this.active_file = new_file
       }
       this.close_delete_modal()
     },
-    open_delete_modal: function(delete_file_name) { 
-      this.delete_file_name = delete_file_name;
+    open_delete_modal: function(file_to_delete) { 
+      this.file_to_delete = file_to_delete;
       this.is_delete_modal_open = true; 
     },
     close_delete_modal: function() { this.is_delete_modal_open = false; },
@@ -358,10 +363,10 @@ export default {
     save_current_file: function() {
       logInfo('Saving bot file to gcloud storage')
       this.update_editor_files()
-      this.save_file(this.active_file_name)
+      this.save_file(this.active_file)
     },
-    save_file: function(name) { 
-      api.update_source_file(this.user_id, name, this.editor_files[name].contents, function(){}).then((function() {
+    save_file: function(file) { 
+      api.update_source_file(this.user_id, file.name, file.contents, function(){}).then((function() {
         logInfo('success')
         this.allSaved = true;
       }).bind(this), function(response) {
@@ -418,7 +423,7 @@ export default {
       })
     },
     update_editor_files: function() {
-      this.editor_files[this.active_file_name].contents = this.editorViewer.editor.getModel().getText()
+      this.active_file.contents = this.editorViewer.editor.getModel().getText()
     }
   }
 }
