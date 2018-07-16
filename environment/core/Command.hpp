@@ -61,6 +61,13 @@ class Transactable : public virtual Command {
 void to_json(nlohmann::json &json, const Command &command);
 
 /**
+ * Convert a Command ptr to JSON format.
+ * @param[out] json The output JSON.
+ * @param command The command to convert.
+ */
+void to_json(nlohmann::json &json, const std::unique_ptr<Command> &command);
+
+/**
  * Read a Command from bot serial format.
  * @param istream The input stream.
  * @param[out] command The command to read.

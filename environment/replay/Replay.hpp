@@ -13,13 +13,49 @@
 #include "GameEvent.hpp"
 #include "../version.hpp"
 #include "Constants.hpp"
+#include "Cell.hpp"
+#include "Enumerated.hpp"
 
 namespace hlt {
 
+/**
+ * Data struct to store information about cells changed in a turn
+ */
+struct CellInfo {
+    dimension_type x;           /**< x position of the cell. */
+    dimension_type y;           /**< y position of the cell. */
+    energy_type production;     /**< New production value of cell. */
+
+    friend void to_json(nlohmann::json &json, const CellInfo &cell_info);
+
+    CellInfo(Location location,  std::shared_ptr<Cell> cell) :
+        x(location.x), y(location.y), production(cell->energy()) {}
+};
+
+struct EntityInfo {
+    dimension_type x;
+    dimension_type y;
+    energy_type energy;
+
+    friend void to_json(nlohmann::json &json, const EntityInfo &entity_info);
+
+    /**
+     * Construct entity info from location and entity
+     * @param location Location of entity
+     * @param entity Entity  we are interested in
+     */
+    EntityInfo(Location location, std::shared_ptr<Entity> entity) :
+            x(location.x), y(location.y), energy(entity->energy) {}
+
+};
+
 struct Turn {
-    std::unordered_map<Player::id_type, std::vector<Command>> moves;    /**< Mapping from player id to the commands they issued this turn */
+    using Entities = std::unordered_map<Player::id_type, EntityInfo>;
+    std::unordered_map<Player::id_type, std::vector<std::unique_ptr<Command>>> moves;    /**< Mapping from player id to the commands they issued this turn */
     std::unordered_map<Player::id_type, energy_type> energy;            /**< Mapping from player id to the energy they ended the turn with */
     std::vector<GameEvent> events;                                      /**< Events occurring this turn (spawns, deaths, etc) for replay */
+    std::vector<CellInfo> cells;                                        /**< Cells that changed on this turn */
+    std::unordered_map<Player::id_type, Entities> entities;             /**< Current entities and their information. */
 
     /**
      * Convert turn to JSON format.

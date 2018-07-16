@@ -27,20 +27,24 @@ void to_json(nlohmann::json &json, const GameEvent &gameEvent);
 class BaseEvent {
 
 public:
+    Location location{};      /**< Location of event  */
+
     /**
      * JSON encoding function, dispatched on game event subtypes.
      * @param[out] json The JSON output.
      */
     virtual void to_json(nlohmann::json &json) const = 0;
 
+    BaseEvent(Location location) : location(location) {};
+
     virtual ~BaseEvent() = default;
 };
 
 /** An event for entity spawning */
 class SpawnEvent : public BaseEvent {
-    Location location;      /**< Location of spawn */
-    energy_type energy;     /**< Energy granted to entity or of new entity in spawn */
-    Player::id_type owner_id;       /**< Id of player spawning entity */
+    energy_type energy;                                     /**< Energy granted to entity or of new entity in spawn */
+    Player::id_type owner_id;                               /**< Id of player spawning entity */
+    Player::id_type id;                                     /**< ID of spawned entity */
     static constexpr auto GAME_EVENT_TYPE_NAME = "spawn";   /**< Name of event */
 
 public:
@@ -58,16 +62,15 @@ public:
      * @param energy Energy associated with spawn
      * @param owner_id Id of owner who spawned this entity
      */
-    SpawnEvent(Location location, energy_type energy, Player::id_type owner_id) :
-            location(std::move(location)), energy(energy), owner_id(owner_id) {};
+    SpawnEvent(Location location, energy_type energy, Player::id_type owner_id, Player::id_type id) :
+            BaseEvent(location), energy(energy), owner_id(owner_id), id(id) {};
     ~SpawnEvent() override = default;
 };
 
 /** An event for entity deaths */
-class DeathEvent : public BaseEvent {
-    Location location;  /**< Location of entity death */
-    Player::id_type owner_id;   /**< Owner of dying entity */
-    static constexpr auto GAME_EVENT_TYPE_NAME = "death"; /**< Name of event */
+class CollisionEvent : public BaseEvent {
+    std::vector<Player::id_type> ships;   /**< ids of entities involved in the collision */
+    static constexpr auto GAME_EVENT_TYPE_NAME = "shipwreck"; /**< Name of event */
 
 public:
     /**
@@ -81,8 +84,31 @@ public:
      * @param location Location of entity death
      * @param owner_id Owner of dying entity
      */
-    DeathEvent(Location location, Player::id_type owner_id) : location(std::move(location)), owner_id(owner_id) {};
-    ~DeathEvent() override  = default;
+    CollisionEvent(Location location, std::vector<Player::id_type> ships) : BaseEvent(location), ships(ships) {};
+    ~CollisionEvent() override  = default;
+};
+
+/** An event for Dropoff construction */
+class ConstructionEvent : public BaseEvent {
+    Player::id_type owner_id;   /**< ID of owner of dropoff point */
+    Player::id_type id;   /**< ID of ship being transformed into dropoff */
+    static constexpr auto GAME_EVENT_TYPE_NAME = "shipwreck"; /**< Name of event */
+
+public:
+    /**
+     * Convert death event to json format
+     * @param[out] json JSON to be filled with death event
+     */
+    void to_json(nlohmann::json &json) const override;
+
+    /**
+     * Create death event from location and owner id
+     * @param location Location of entity death
+     * @param owner_id Owner of dying entity
+     */
+    ConstructionEvent(Location location, Player::id_type owner_id, Player::id_type id) :
+            BaseEvent(location), owner_id(owner_id), id(id) {};
+    ~ConstructionEvent() override  = default;
 };
 
 }

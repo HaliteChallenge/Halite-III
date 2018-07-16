@@ -4,8 +4,32 @@
 /** A JSON key and value corresponding to a field. */
 #define TURN_FIELD_TO_JSON(x) {#x, turn.x}
 #define REPLAY_FIELD_TO_JSON(x) {#x, replay->x}
+#define INFO_FIELD_TO_JSON(x) {#x, info.x}
 
 namespace hlt {
+
+/**
+* Convert cell information to JSON format.
+* @param[out] json The output JSON.
+* @param info The cell info to convert.
+*/
+void to_json(nlohmann::json &json, const CellInfo &info) {
+    json = {INFO_FIELD_TO_JSON(x),
+            INFO_FIELD_TO_JSON(y),
+            INFO_FIELD_TO_JSON(production)};
+}
+
+/**
+* Convert cell information to JSON format.
+* @param[out] json The output JSON.
+* @param info The cell info to convert.
+*/
+void to_json(nlohmann::json &json, const EntityInfo &info) {
+    json = {INFO_FIELD_TO_JSON(x),
+            INFO_FIELD_TO_JSON(y),
+            INFO_FIELD_TO_JSON(energy)};
+}
+
 
 /**
  * Convert turn information to JSON format.
@@ -13,22 +37,31 @@ namespace hlt {
  * @param stats The turn to convert.
  */
 void to_json(nlohmann::json &json, const Turn &turn) {
-    json = {TURN_FIELD_TO_JSON(events)};
+    json = {TURN_FIELD_TO_JSON(events),
+            TURN_FIELD_TO_JSON(cells)};
     nlohmann::json moves_json;
     nlohmann::json energy_json;
+    nlohmann::json entities_json;
+
     for (auto &[player_id, commands] : turn.moves) {
         moves_json[std::to_string(player_id)] = commands;
     }
     for (auto &[player_id, energy] : turn.energy) {
         energy_json[std::to_string(player_id)] = energy;
     }
+
+    for (auto &[player_id, entities_map] : turn.entities) {
+        nlohmann::json player_entity_json;
+        for (auto &[entity_id, entity_info] : entities_map) {
+            player_entity_json[std::to_string(entity_id)] = entity_info;
+        }
+        entities_json[std::to_string(player_id)] = player_entity_json;
+    }
     json["moves"] = moves_json;
     json["energy"] = energy_json;
+    json["entities"] = entities_json;
 }
 
-// Reserve space for constants to use in json functions
-constexpr unsigned long Replay::REPLAY_FILE_VERSION;
-constexpr char const *Replay::ENGINE_VERSION;
 
 /**
  * Create json format for replay struct ptr
