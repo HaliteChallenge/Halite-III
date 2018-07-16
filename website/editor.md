@@ -5,7 +5,7 @@ stoc: false
 full_width: true
 permalink: /editor
 menu: editor
-mount_views: ["BotEditor"]
+mount_views: ["BotEditorPage"]
 additional_js: ["FileSaver.min", "jszip.min", "jszip-utils.min", "editorBuild/code_edit/built-codeEdit.min"]
 additional_css: ["built-codeEdit", "dark-codeEdit"]
 ---
