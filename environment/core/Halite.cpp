@@ -48,47 +48,35 @@ void Halite::run_game() {
  * Constructor for the main game.
  *
  * @param config The configuration options for the game.
- * @param parameters The map generation parameters.
+ * @param map The game map.
  * @param networking_config The networking configuration.
  * @param players The list of players.
+ * @param game_statistics The game statistics to use.
+ * @param replay The game replay to use.
  */
 Halite::Halite(const Config &config,
-               const mapgen::MapParameters &parameters,
+               Map &map,
                const net::NetworkingConfig &networking_config,
-               std::vector<Player> players) :
-        game_map(parameters.width, parameters.height),
-        replay(this->game_statistics, parameters.num_players, parameters.seed, this->game_map),
+               const std::vector<std::string> &player_commands,
+               GameStatistics &game_statistics,
+               Replay &replay) :
+        map(map),
+        game_statistics(game_statistics),
+        replay(replay),
         config(config),
-        parameters(parameters),
         networking(net::Networking(networking_config, *this)),
         impl(std::make_unique<HaliteImpl>(*this)) {
-    std::unique_ptr<mapgen::Generator> generator;
-    switch (parameters.type) {
-    case mapgen::MapType::Basic:
-        generator = std::make_unique<mapgen::BasicGenerator>(parameters);
-        break;
-    case mapgen::MapType::BlurTile:
-        generator = std::make_unique<mapgen::BlurTileGenerator>(parameters);
-        break;
-    case mapgen::MapType::Fractal:
-        generator = std::make_unique<mapgen::FractalValueNoiseTileGenerator>(parameters);
-        break;
-    }
-    game_map.map_generator = generator->name();
-    std::vector<Location> factories;
-    factories.reserve(players.size());
-    generator->generate(game_map, factories);
-
     const auto &constants = Constants::get();
-    for (const auto &new_player : players) {
-        auto &player = get_player(new_player.id);
-        player = new_player;
-        player.factory = factories.back();
-        factories.pop_back();
+    players.reserve(player_commands.size());
+    assert(map.factories.size() >= player_commands.size());
+    auto factory_iterator = map.factories.begin();
+    for (const auto &command : player_commands) {
+        auto &factory = *factory_iterator++;
+        auto player = player_factory.make(factory, command);
         player.energy = constants.INITIAL_ENERGY;
         game_statistics.player_statistics.emplace_back(player.id);
+        players.emplace(player.id, player);
     }
-
     replay.game_statistics = game_statistics;
 }
 
