@@ -85,7 +85,7 @@ public:
      * @param entity The location of the entity.
      * @param direction The direction.
      */
-    MoveCommand(Entity::id_type entity, Direction direction) : entity(entity), direction(direction) {}
+    MoveCommand(const Entity::id_type &entity, Direction direction) : entity(entity), direction(direction) {}
 };
 
 /** Command for spawning an entity. */
@@ -123,7 +123,7 @@ public:
      * @param entity The entity from which to dump.
      * @param energy The amount of energy to dump.
      */
-    DumpCommand(Entity::id_type entity, energy_type energy) : entity(entity), energy(energy) {}
+    DumpCommand(const Entity::id_type &entity, energy_type energy) : entity(entity), energy(energy) {}
 };
 
 /** Command to construct a drop zone. */
@@ -142,7 +142,7 @@ public:
      * Construct ConstructCommand from entity.
      * @param entity The entity to convert.
      */
-    explicit ConstructCommand(Entity::id_type entity) : entity(entity) {}
+    explicit ConstructCommand(const Entity::id_type &entity) : entity(entity) {}
 };
 
 }

@@ -7,7 +7,7 @@ namespace hlt {
 
 /** Communicate with bots to obtain commands for next step. */
 void HaliteImpl::retrieve_commands() {
-    std::unordered_map<Player::id_type, std::future<std::vector<std::unique_ptr<Command>>>> results;
+    std::unordered_map<Player::id_type, std::future<std::vector<std::unique_ptr<Command>>>> results{};
     for (auto &[player_id, player] : game.players) {
         results[player_id] = std::async(std::launch::async,
                                         [&game = this->game, &player = player] {

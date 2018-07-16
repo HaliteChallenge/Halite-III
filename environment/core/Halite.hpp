@@ -19,6 +19,7 @@ class HaliteImpl;
 
 /** Halite game interface, exposing the top level of the game. */
 class Halite final {
+    /** Type of maps from ID to arbitrary value. */
     template<class K, class V>
     using id_map = std::unordered_map<typename K::id_type, V>;
 
@@ -44,11 +45,13 @@ class Halite final {
     Replay &replay;                   /**< Replay instance to collect info for visualizer. */
 
     /** Configuration. */
-    Config config;                        /**< The game configuration. */
+    Config config;                    /**< The game configuration. */
 
     /** Friend classes have full access to game state. */
     friend class net::Networking;
+
     friend class HaliteImpl;
+
     net::Networking networking;       /**< The networking suite. */
     std::unique_ptr<HaliteImpl> impl; /**< The pointer to implementation. */
 

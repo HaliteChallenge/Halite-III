@@ -1,7 +1,6 @@
 #include "BasicGenerator.hpp"
 #include "BlurTileGenerator.hpp"
 #include "FractalValueNoiseTileGenerator.hpp"
-#include "Generator.hpp"
 
 namespace hlt {
 namespace mapgen {

@@ -11,7 +11,8 @@ class SnapshotError : public std::exception {
     int position;
 
 public:
-    explicit SnapshotError(const std::string description, int position) : description{description}, position{position} {}
+    explicit SnapshotError(const std::string description, int position) : description{description},
+                                                                          position{position} {}
 
     /**
      * Get the exception description.

@@ -1,8 +1,6 @@
 #include <future>
 
 #include "Constants.hpp"
-#include "BlurTileGenerator.hpp"
-#include "FractalValueNoiseTileGenerator.hpp"
 #include "Halite.hpp"
 #include "HaliteImpl.hpp"
 #include "Logging.hpp"
@@ -12,7 +10,7 @@ namespace hlt {
 /** Run the game. */
 void Halite::run_game() {
     const auto &constants = Constants::get();
-    std::unordered_map<Player::id_type, std::future<void>> results;
+    std::unordered_map<Player::id_type, std::future<void>> results{};
     for (auto &[player_id, player] : players) {
         results[player_id] = std::async(std::launch::async,
                                         [&networking = networking, &player = player] {
@@ -80,9 +78,9 @@ Halite::Halite(const Config &config,
     replay.game_statistics = game_statistics;
 }
 
-void Halite::load_snapshot(const Snapshot& snapshot) {
+void Halite::load_snapshot(const Snapshot &snapshot) {
     // TODO: implement
-    (void)snapshot;
+    (void) snapshot;
 }
 
 /**

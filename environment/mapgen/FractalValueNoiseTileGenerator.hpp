@@ -14,7 +14,9 @@ namespace mapgen {
  */
 class FractalValueNoiseTileGenerator : public TileGenerator {
 private:
-    std::vector< std::vector<double> > generateSmoothNoise(const std::vector< std::vector<double> > & source_noise, dimension_type wavelength) const;
+    std::vector<std::vector<double> >
+    generateSmoothNoise(const std::vector<std::vector<double> > &source_noise, dimension_type wavelength) const;
+
 public:
     std::string name() const override { return "Fractal Value Noise Tile"; };
 

@@ -88,7 +88,8 @@ private:
 
 namespace std {
 template<>
-struct hash<hlt::Player> : hash<Enumerated<hlt::Player>> {};
+struct hash<hlt::Player> : hash<Enumerated<hlt::Player>> {
+};
 }
 
 #endif /* PLAYER_H */

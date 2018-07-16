@@ -14,7 +14,7 @@ using id_value_type = long;
  * No accidentally using Entity IDs for Players, or vice versa!
  * Should take no more memory than id_value_type to store.
  *
- * @tparam The class to which these IDs belong.
+ * @tparam T The class to which these IDs belong.
  */
 template<class T>
 struct id_type {

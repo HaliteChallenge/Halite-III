@@ -142,10 +142,11 @@ public:
 
 /** Transaction for all commands. */
 class CommandTransaction : public BaseTransaction {
-    /** Count of occurrences per player * entity pair, to catch duplicates. */
+    /** Count of occurrences per player-entity pair, to catch duplicates. */
     std::unordered_map<Player, std::unordered_map<Entity::id_type, int>> occurrences;
     /** Total expenses per player. */
     std::unordered_map<Player, energy_type> expenses;
+
 public:
     DumpTransaction dump_transaction;           /**< The DumpCommand transaction. */
     ConstructTransaction construct_transaction; /**< The ConstructCommand transaction. */
@@ -153,8 +154,8 @@ public:
     SpawnTransaction spawn_transaction;         /**< The SpawnCommand transaction. */
 
     /** All of the transactions, in commit order. */
-    std::vector<std::reference_wrapper<BaseTransaction>> all_transactions{dump_transaction, construct_transaction,
-                                                                          move_transaction, spawn_transaction};
+    std::vector<std::reference_wrapper<BaseTransaction>> all_transactions
+            {dump_transaction, construct_transaction, move_transaction, spawn_transaction};
 
     /**
      * Add a DumpCommand to the transaction.
