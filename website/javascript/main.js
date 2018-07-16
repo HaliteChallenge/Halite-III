@@ -4,7 +4,7 @@ import Vue from 'vue'
 import 'url-search-params-polyfill'
 import 'element-ui/lib/theme-default/index.css'
 import Associate from './templates/Associate.vue'
-import BotEditor from './templates/BotEditor.vue'
+import BotEditorPage from './templates/BotEditorPage.vue'
 import FinalsStatus from './templates/FinalsStatus.vue'
 import GameFeed from './templates/GameFeed.vue'
 import HackathonLeaderboard from './templates/HackathonLeaderboard.vue'
@@ -44,10 +44,10 @@ window.views = {
       render: (h) => h(Associate)
     })
   },
-  BotEditor: function () {
+  BotEditorPage: function () {
     new Vue({
       el: '#bot-editor-container',
-      render: (h) => h(BotEditor)
+      render: (h) => h(BotEditorPage)
     })
   },
   FinalsStatus: function () {
