@@ -44,8 +44,8 @@ struct EntityInfo {
      * @param location Location of entity
      * @param entity Entity  we are interested in
      */
-    EntityInfo(Location location, std::shared_ptr<Entity> entity) :
-            x(location.x), y(location.y), energy(entity->energy) {}
+    EntityInfo(Location location, const Entity &entity) :
+            x(location.x), y(location.y), energy(entity.energy) {}
 
 };
 
@@ -55,7 +55,7 @@ struct Turn {
     std::unordered_map<Player::id_type, energy_type> energy;            /**< Mapping from player id to the energy they ended the turn with */
     std::vector<GameEvent> events;                                      /**< Events occurring this turn (spawns, deaths, etc) for replay */
     std::vector<CellInfo> cells;                                        /**< Cells that changed on this turn */
-    std::unordered_map<Player::id_type, Entities> entities;             /**< Current entities and their information. */
+    std::unordered_map<Player::id_type, Entities> entities{};             /**< Current entities and their information. */
 
     /**
      * Convert turn to JSON format.
@@ -63,6 +63,9 @@ struct Turn {
      * @param stats The turn to convert.
      */
     friend void to_json(nlohmann::json &json, const Turn &turn);
+
+    // TODO: update to take in entity store if players no longer have direct entity access
+    void add_entities(std::unordered_map<Player::id_type, Player> &players);
 };
 
 struct Replay {

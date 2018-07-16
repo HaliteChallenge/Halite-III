@@ -17,10 +17,12 @@ void HaliteImpl::retrieve_commands() {
     for (auto &[player_id, result] : results) {
         commands[player_id] = result.get();
     }
+    //TODO: add commands to replay struct here?
 }
 
 /** Process the effects of commands. */
 void HaliteImpl::process_commands() {
+    // todo: add callbacks for collisions, constructs, and spawns
     CommandTransaction transaction{game.map};
     for (const auto &[player_id, command_list] : commands) {
         auto &player = game.players.find(player_id)->second;

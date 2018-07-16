@@ -62,6 +62,19 @@ void to_json(nlohmann::json &json, const Turn &turn) {
     json["entities"] = entities_json;
 }
 
+/**
+ * Stores the turn info of all entities
+ * @param players: Player store at start of turn
+ */
+void Turn::add_entities(std::unordered_map<Player::id_type, Player> &players) {
+    for (const auto &[player_id, player] : players) {
+        for (const auto &[location, entity] : player.entities) {
+            const EntityInfo entity_info = {location, entity};
+            entities[player_id].insert( {{entity.id, entity_info}} );
+        }
+    }
+}
+
 
 /**
  * Create json format for replay struct ptr
