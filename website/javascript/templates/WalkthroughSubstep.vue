@@ -3,7 +3,11 @@
    ------------------>
 <template>
     <li>
-        <input type="checkbox" disabled />
+        <input
+            type="checkbox"
+            disabled
+            v-bind:checked="substeps[this.name]"
+        />
         <slot></slot>
     </li>
 </template>
@@ -11,13 +15,14 @@
 <script>
     export default {
         name: "walkthrough-substep",
-        props: [],
+        props: ["name"],
+        inject: ["substeps"],
         data: function() {
             return {
             };
         },
         computed: {
-        }
+        },
     };
 </script>
 

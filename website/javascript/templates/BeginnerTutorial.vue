@@ -7,13 +7,13 @@
                     the edges. (Thus, the map is the surface of a torus.)
                 </p>
                 <walkthrough-substeps>
-                    <walkthrough-substep>
+                    <walkthrough-substep name="seas-pan">
                         Drag the map around and observe the wrapping.
                     </walkthrough-substep>
-                    <walkthrough-substep>
+                    <walkthrough-substep name="seas-zoom">
                         Zoom in to examine the map more closely.
                     </walkthrough-substep>
-                    <walkthrough-substep>
+                    <walkthrough-substep name="seas-reset">
                         Reset the map to its initial state.
                     </walkthrough-substep>
                 </walkthrough-substeps>

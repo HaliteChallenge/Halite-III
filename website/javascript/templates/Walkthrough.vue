@@ -51,6 +51,15 @@
             return {
                 progress: 0,
                 steps: [],
+                substeps: {},
+            };
+        },
+        provide() {
+            return {
+                substeps: this.substeps,
+                completeSubstep: (substep) => {
+                    this.$set(this.substeps, substep, true);
+                },
             };
         },
         created: function() {
