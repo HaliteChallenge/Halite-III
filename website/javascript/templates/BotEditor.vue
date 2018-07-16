@@ -29,15 +29,25 @@
                           <div class="row flex-xl-nowrap h-100 page_row">
                                   <div class="col-12 col-md-8 col-lg-8 col-xl-8 py-md-8 pl-md-8 bd-content big_col">
                                       <div class="file_tree_col">
-                                            <nav id="bd-docs-nav"><div class="bd-toc-item active">
-                                                    <ul class="nav bd-sidenav">
-                                                      <li v-for="(f, name) in editor_files" class="bd-sidenav-active tree_files" v-bind:class="{ active: name === active_file_name }">
-                                                        <a v-on:click="file_selected(name)">
-                                                          {{ name }}
-                                                        </a>
-                                                      </li>
-                                                    </ul>
-                                            </div></nav>
+                                          <div class="file_command_center_cont">
+                                            <div class="file_command_center">
+                                              <div class="command_icon"><a><span class="glyphicon glyphicon-file"></span></a></div>
+                                              <div class="command_icon"><a><span class="glyphicon glyphicon-folder-open"></span></a></div>
+                                              <div class="command_icon"><a><span class="glyphicon glyphicon-pencil"></span></a></div>
+                                              <div class="command_center_right">
+                                                <div class="command_icon"><a><span class="glyphicon glyphicon-trash"></span></a></div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <nav class="tree_nav"><div class="bd-toc-item active">
+                                                  <ul class="nav bd-sidenav">
+                                                    <li v-for="(f, name) in editor_files" class="bd-sidenav-active tree_files" v-bind:class="{ active: name === active_file_name }">
+                                                      <a v-on:click="file_selected(name)">
+                                                        {{ name }}
+                                                      </a>
+                                                    </li>
+                                                  </ul>
+                                          </div></nav>
                                       </div>
                                       <div class="editor_col">
                                         <div class="editorArea">
@@ -51,7 +61,7 @@
                                   </div>
                                   <div class="col-12 col-md-4 col-lg-4 col-xl-4 hidden-sm hidden-xs py-md-4 pl-md-4 bd-toc replay_col">
                                     <div class="replay">
-                                      <div class="game-replay-viewer"></div>
+                                      <div class="game_replay_viewer"></div>
                                     </div>
                                     <div class="console">
                                       {{ terminal_text }}
@@ -150,7 +160,7 @@ export default {
     console.log(jQuery('.replay'))
     let width = jQuery('.replay').width()
     this.visualizer = new HaliteVisualizer(JSON.parse(EX_GAME_STRING), width, width)
-    this.visualizer.attach('.game-replay-viewer')
+    this.visualizer.attach('.game_replay_viewer')
     window.addEventListener('resize', (function(event) {
       width = jQuery('.replay').width()
       console.log(width)
@@ -443,27 +453,89 @@ export default {
     padding-left: 0px;
     padding-right: 0px; 
   }
+
+  .big_col {
+    margin: 0px;
+    padding: 0px;
+  }
+
+  .editor_col {
+    padding: 0px;	
+    display: flex;
+    flex-grow: 1;
+    padding-left: 10px;
+    margin-top: 0px;
+    border-right: 1px solid #424C53;
+    flex-grow: 100; 
+  }
+
+  .editorArea  {
+    width: 100%;
+  }  
+
   .file_tree_col {
     padding: 0px;	
     width: 150px;
     border-right: 1px solid #424C53;
     float: left;
+    display: flex;
+    flex-flow: column;
   }
+
   .tree_files {
     font-size: 12pt;
   }
-  .editor_col {
-    padding: 0px;	
+
+  .file_command_center_cont {
     width: 100%;
-    padding-left: 10px;
-    margin-top: 0px;
-    border-right: 1px solid #424C53;
+    padding-top: 8px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #424C53;
+    background-color: #202325;
   }
+
+  .file_command_center {
+    width: 100%;
+    padding-left: 3px;
+    padding-right: 3px;
+    display: flex;
+    flex-flow: row;
+  }
+
+  .command_center_right{
+    width: 100%;
+    float: right;
+    flex: 1;
+    text-align: right;
+  }
+
+  .command_center_right > div {
+    text-align: right;
+    float: right;
+  }
+
+  .command_icon {
+    display: inline;
+    margin-left: 3px;
+    margin-right: 3px;
+  }
+
+  .command_icon a {
+    font-size: 16px;
+    display: inline;
+    position: relative;
+    color: orange;
+    height: auto;
+  }
+
+  .tree_nav {
+    flex: 1;
+  }
+
   .replay_col {
     padding: 0px;
     display: flex;
     flex-flow: column;
-    height: 100%;
   }
   .main, .page_container, .page_row, .editorArea, .replay_col, .big_col, .editor_col, .file_tree_col, .editorBody {
      height: 100%;
@@ -471,7 +543,13 @@ export default {
 
   .replay {
     border-bottom: 1px solid #424C53;
-    flex: 0 1 auto;
+    height: auto;
+    min-height: auto;
+  }
+
+  .game_replay_viewer {
+    height: auto;
+    width: 100%;
   }
 
   .console {

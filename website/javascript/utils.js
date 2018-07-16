@@ -23,7 +23,6 @@ export function gaEvent (category, action, label) {
 }
 
 export function initUserProfileNav() {
-  console.trace()
   api.me().then((me) => {
     if (me) {
       $('.not-logged-in').hide()
