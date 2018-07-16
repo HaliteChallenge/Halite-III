@@ -2,7 +2,48 @@
     <Walkthrough title="Beginner Tutorial">
         <template slot="steps">
             <Step title="The Seas of Halite" name="seas">
-                <p>Lorem ipsum</p>
+                <p>
+                    Halite is played on a grid, which wraps around at
+                    the edges. (Thus, the map is the surface of a torus.)
+                </p>
+                <h3>Tasks</h3>
+                <ol>
+                    <li>Drag the map around and observe the wrapping.</li>
+                    <li>Zoom in to examine the map more closely.</li>
+                    <li>Reset the map to its initial state.</li>
+                </ol>
+            </Step>
+            <Step title="Saltwater" name="salt">
+                <p>
+                    In these seas are vast quantities of the material
+                    known as <em>halite</em>.
+                </p>
+                <h3>Tasks</h3>
+                <ol>
+                    <li>Click on a cell and observe how much halite is present.</li>
+                </ol>
+            </Step>
+            <Step title="Admiral" name="admiral">
+                <p>
+                    Your vessels can filter this halite from the
+                    water. Your goal is to go forth and bring back as
+                    much halite as possible.
+                </p>
+            </Step>
+            <Step title="A Vessel" name="vessel">
+                <p>
+                    Each vessel has a certain amount of halite, which
+                    is both its cargo and its fuel. They may move in
+                    the cardinal directions&mdash;north, south, east,
+                    and west&mdash;at a price proportional to how much
+                    halite is in the cell they are moving out of. (Dissolved
+                    halite changes the viscosity of the seas and makes
+                    propulsion difficult.)
+                </p>
+                <h3>Tasks</h3>
+                <ol>
+                    <li>Click on a ship and observe how much halite it has.</li>
+                </ol>
             </Step>
         </template>
         <template slot="content" slot-scope="walkthrough">
