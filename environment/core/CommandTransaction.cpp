@@ -65,6 +65,7 @@ void ConstructTransaction::commit() {
             cell.is_dropoff = true;
             cell.entity = Entity::None;
             player.remove_entity(command.entity);
+            game.delete_entity(command.entity);
             player.energy -= cost;
         }
     }
