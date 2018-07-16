@@ -23,17 +23,20 @@ void HaliteImpl::retrieve_commands() {
 /** Process the effects of commands. */
 void HaliteImpl::process_commands() {
     // todo: add callbacks for collisions, constructs, and spawns
-    CommandTransaction transaction{game.map};
-    for (const auto &[player_id, command_list] : commands) {
-        auto &player = game.players.find(player_id)->second;
-        for (const auto &command : command_list) {
-            command->add_to_transaction(player, transaction);
+    while (!commands.empty()) {
+        CommandTransaction transaction{game, game.map};
+        for (const auto &[player_id, command_list] : commands) {
+            auto &player = game.players.find(player_id)->second;
+            for (const auto &command : command_list) {
+                command->add_to_transaction(player, transaction);
+            }
         }
-    }
-    if (transaction.check()) {
-        transaction.commit();
-    } else {
-        // TODO: handle error
+        if (transaction.check()) {
+            transaction.commit();
+            break;
+        } else {
+            kill_player(transaction.offender());
+        }
     }
 }
 

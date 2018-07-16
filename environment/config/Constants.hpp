@@ -20,12 +20,14 @@ struct Constants {
     dimension_type DEFAULT_MAP_HEIGHT = 128;    /**< The default height of generated maps. */
 
     energy_type MAX_CELL_PRODUCTION = 100;      /**< The maximum maximum amount of production on a cell. */
-    energy_type MIN_CELL_PRODUCTION = 40;        /**< The minimum maximum amount of production on a cell. */
+    energy_type MIN_CELL_PRODUCTION = 40;       /**< The minimum maximum amount of production on a cell. */
     energy_type MAX_ENERGY = 255;               /**< The maximum amount of energy per entity. */
     energy_type NEW_ENTITY_ENERGY_COST = 1000;  /**< The amount of production which equals one energy. */
     energy_type NEW_ENTITY_ENERGY = 255;        /**< The starting energy of a new entity. */
     energy_type BASE_TURN_ENERGY_LOSS = 1;      /**< The base energy decrease of an entity per turn. */
-    energy_type INITIAL_ENERGY = 255000;          /**< The initial amount of energy for a player. */
+    energy_type INITIAL_ENERGY = 255000;        /**< The initial amount of energy for a player. */
+
+    energy_type DROPOFF_COST = 1000;            /**< The cost of a dropoff construction. */
 
     double PERSISTENCE = 0.7; // Determines relative weight of local vs global features.
     double FACTOR_EXP_1 = 1.5; // Determines initial spikiness of map. Higher values weight towards 0.

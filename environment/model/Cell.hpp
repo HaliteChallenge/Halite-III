@@ -11,11 +11,9 @@ namespace hlt {
 
 /** Cell on the Halite map. */
 struct Cell {
-    /** Energy of this Cell. */
-    energy_type energy{};
-
-    /** Entity on this Cell. */
-    Entity::id_type entity = Entity::None;
+    energy_type energy{};                   /**< Energy of this Cell. */
+    Entity::id_type entity = Entity::None;  /**< Entity on this Cell. */
+    bool is_dropoff = false;                /**< Whether this Cell is a dropoff. */
 
     /**
      * Convert a Cell to JSON format.

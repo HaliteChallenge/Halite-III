@@ -126,12 +126,6 @@ public:
     void to_json(nlohmann::json &json) const override;
 
     /**
-     * Perform the dump on the Map.
-     * @param map The Map.
-     */
-    void act(const Map &map) const;
-
-    /**
      * Construct DumpCommand from entity and energy.
      * @param entity The entity from which to dump.
      * @param energy The amount of energy to dump.
@@ -150,13 +144,6 @@ public:
      * @param[out] json The JSON output.
      */
     void to_json(nlohmann::json &json) const override;
-
-    /**
-     * Perform the construct on Map and Player.
-     * @param map The Map.
-     * @param player The Player.
-     */
-    void act(const Map &map, const Player &player) const;
 
     /**
      * Construct ConstructCommand from entity.

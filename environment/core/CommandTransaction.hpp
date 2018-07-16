@@ -5,25 +5,28 @@
 
 #include "Location.hpp"
 #include "GameEvent.hpp"
+#include "Player.hpp"
 
 namespace hlt {
 
-class Map;
+class Halite;
 
-struct Player;
+class Map;
 
 /** Base transaction class independent of commands. */
 class BaseTransaction {
 protected:
     std::function<void(GameEvent)> callback;    /**< The game event callback. */
-    Map &map;                                   /**< The game map. */
+    Halite &game;                               /**< The game object. */
+    Map &map;                                   /**< The Map. */
+    Player::id_type _offender = Player::None;   /**< Player that prevents transaction from committing. */
 public:
     /**
-     * Construct BaseTransaction from Map.
-     * @param map The Map to update.
-     * @param player The Player.
+     * Construct BaseTransaction from game object and Map.
+     * @param game The game object.
+     * @param map The Map.
      */
-    explicit BaseTransaction(Map &map) : map(map) {}
+    explicit BaseTransaction(Halite &game, Map &map) : game(game), map(map) {}
 
     /**
      * Set a callback for GameEvents generated during the transaction commit.
@@ -35,7 +38,13 @@ public:
      * Check if the transaction may be committed without actually committing.
      * @return False if the transaction may not be committed.
      */
-    virtual bool check() const = 0;
+    virtual bool check() = 0;
+
+    /**
+     * Get the ID of the player that is preventing the transaction from committing.
+     * @return ID of offender if there is one, or Player::None otherwise.
+     */
+    Player::id_type offender() const { return _offender; }
 
     /** If the transaction may be committed, commit the transaction. */
     virtual void commit() = 0;
@@ -49,7 +58,7 @@ template<class Command>
 class Transaction : public BaseTransaction {
 protected:
     using Commands = std::vector<std::reference_wrapper<const Command>>; /**< The type of the player command list. */
-    std::unordered_map<Player, Commands> commands;                       /**< The stored commands per player. */
+    std::unordered_map<Player::id_type, Commands> commands;              /**< The stored commands per player. */
 public:
     using BaseTransaction::BaseTransaction;
 
@@ -59,7 +68,7 @@ public:
      * @param command The command to be executed.
      */
     void add_command(Player &player, const Command &command) {
-        commands[player].emplace_back(command);
+        commands[player.id].emplace_back(command);
     }
 };
 
@@ -80,7 +89,7 @@ public:
      * Check if the transaction may be committed without actually committing.
      * @return False if the transaction may not be committed.
      */
-    bool check() const override;
+    bool check() override;
 
     /** If the transaction may be committed, commit the transaction. */
     void commit() override;
@@ -95,7 +104,7 @@ public:
      * Check if the transaction may be committed without actually committing.
      * @return False if the transaction may not be committed.
      */
-    bool check() const override;
+    bool check() override;
 
     /** If the transaction may be committed, commit the transaction. */
     void commit() override;
@@ -110,7 +119,7 @@ public:
      * Check if the transaction may be committed without actually committing.
      * @return False if the transaction may not be committed.
      */
-    bool check() const override;
+    bool check() override;
 
     /** If the transaction may be committed, commit the transaction. */
     void commit() override;
@@ -125,7 +134,7 @@ public:
      * Check if the transaction may be committed without actually committing.
      * @return False if the transaction may not be committed.
      */
-    bool check() const override;
+    bool check() override;
 
     /** If the transaction may be committed, commit the transaction. */
     void commit() override;
@@ -133,13 +142,17 @@ public:
 
 /** Transaction for all commands. */
 class CommandTransaction : public BaseTransaction {
+    /** Count of occurrences per player * entity pair, to catch duplicates. */
+    std::unordered_map<Player, std::unordered_map<Entity::id_type, int>> occurrences;
+    /** Total expenses per player. */
+    std::unordered_map<Player, energy_type> expenses;
 public:
     DumpTransaction dump_transaction;           /**< The DumpCommand transaction. */
     ConstructTransaction construct_transaction; /**< The ConstructCommand transaction. */
     MoveTransaction move_transaction;           /**< The MoveCommand transaction. */
     SpawnTransaction spawn_transaction;         /**< The SpawnCommand transaction. */
 
-    /** All of the transactions. */
+    /** All of the transactions, in commit order. */
     std::vector<std::reference_wrapper<BaseTransaction>> all_transactions{dump_transaction, construct_transaction,
                                                                           move_transaction, spawn_transaction};
 
@@ -175,21 +188,22 @@ public:
      * Check if the transaction may be committed without actually committing.
      * @return False if the transaction may not be committed.
      */
-    bool check() const override;
+    bool check() override;
 
     /** If the transaction may be committed, commit the transaction. */
     void commit() override;
 
     /**
-     * Construct CommandTransaction from Map.
+     * Construct CommandTransaction from game object and map.
+     * @param game The game object.
      * @param map The Map.
      */
-    explicit CommandTransaction(Map &map) :
-            BaseTransaction(map),
-            dump_transaction(map),
-            construct_transaction(map),
-            move_transaction(map),
-            spawn_transaction(map) {}
+    explicit CommandTransaction(Halite &game, Map &map) :
+            BaseTransaction(game, map),
+            dump_transaction(game, map),
+            construct_transaction(game, map),
+            move_transaction(game, map),
+            spawn_transaction(game, map) {}
 };
 
 }

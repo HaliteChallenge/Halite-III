@@ -18,14 +18,41 @@ struct Player : public virtual Enumerated<Player> {
     /** Type of Player IDs. */
     using id_type = long;
 
-    /** Type of the Entity map of a player, where keys are entity locations. */
-    using Entities = std::unordered_map<Location, Entity>;
+    /** Type of the Entity map of a player, where keys are entity IDs. */
+    using Entities = std::unordered_map<Entity::id_type, std::pair<Location, std::reference_wrapper<Entity>>>;
 
-    std::string name;             /**< The name of the player. */
-    energy_type energy{};         /**< The amount of energy stockpiled by the player. */
-    Location factory;             /**< The factory location of the player. */
-    Entities entities{};          /**< Mapping from location of entity to entity */
-    std::string command;          /**< The bot command for the player. */
+    std::string name;     /**< The name of the player. */
+    energy_type energy{}; /**< The amount of energy stockpiled by the player. */
+    Location factory;     /**< The factory location of the player. */
+    Entities entities{};  /**< Mapping from location of entity to entity */
+    std::string command;  /**< The bot command for the player. */
+
+    /**
+     * Get whether the player has an entity.
+     * @param id The entity ID.
+     * @return True if the player has the entity, false otherwise.
+     */
+    bool has_entity(Entity::id_type id) const;
+
+    /**
+     * Remove an entity by ID.
+     * @param id The entity ID.
+     */
+    void remove_entity(Entity::id_type id);
+
+    /**
+     * Get the location of an entity.
+     * @param id The entity ID.
+     * @return The entity location.
+     */
+    Location get_entity_location(Entity::id_type id) const;
+
+    /**
+     * Get an entity by ID.
+     * @param id The entity ID.
+     * @return The entity.
+     */
+    Entity &get_entity(Entity::id_type id);
 
     /**
      * Convert a Player to JSON format.
