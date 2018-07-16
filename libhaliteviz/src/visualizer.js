@@ -127,16 +127,16 @@ export class HaliteVisualizer {
             factory.attach(this.factoryContainer);
 
             // Add players'initial entities to list and map
-            for (let entity_json of this.replay.players[i].entities) {
-                let entity_object = {"x" : entity_json.x, "y" : entity_json.y, "energy" : entity_json.energy, "owner": this.replay.players[i].player_id};
-                let new_entity = new playerSprite(this, entity_object);
-                if (typeof this.entities[new_entity.y][new_entity.x] === "undefined") {
-                    this.entities[new_entity.y][new_entity.x] = {};
-                }
-                this.entities[new_entity.y][new_entity.x][new_entity.owner] = new_entity;
-                this.entities_list.push(new_entity);
-                new_entity.attach(this.entityContainer);
-            }
+            // for (let entity_json of this.replay.players[i].entities) {
+            //     let entity_object = {"x" : entity_json.x, "y" : entity_json.y, "energy" : entity_json.energy, "owner": this.replay.players[i].player_id};
+            //     let new_entity = new playerSprite(this, entity_object);
+            //     if (typeof this.entities[new_entity.y][new_entity.x] === "undefined") {
+            //         this.entities[new_entity.y][new_entity.x] = {};
+            //     }
+            //     this.entities[new_entity.y][new_entity.x][new_entity.owner] = new_entity;
+            //     this.entities_list.push(new_entity);
+            //     new_entity.attach(this.entityContainer);
+            // }
 
             // TODO: Re-add fish with herding logic
             // const fish = new Fish(this.replay.constants, scale, (kind, args) => this.onSelect(kind, args));
@@ -186,7 +186,7 @@ export class HaliteVisualizer {
         ].join(","));
 
         const spritesByOwner = [];
-        for (const sprite of this.entities_list) {
+        for (const sprite of Object.values(this.entities_dict)) {
             if (!sprite) continue;
             if (!spritesByOwner[sprite.owner]) {
                 spritesByOwner[sprite.owner] = [];
@@ -424,7 +424,6 @@ export class HaliteVisualizer {
 
         // Spawn entities (info from replay file), then process deaths
         this.process_entity_events();
-        //this.process_entity_energy_loss();
     }
 
     /** Update/rerender after panning. */
