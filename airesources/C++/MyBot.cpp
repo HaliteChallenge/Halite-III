@@ -18,7 +18,7 @@ int main() {
     while(true) {
         // Get the newest frame.
         unsigned int turn_number = hlt::getFrame(players);
-
+        // For each of our ships
         for(auto &[loc, halite] : players[myID].ships) {
             // If we're on our shipyard and have enough halite, dump it.
             if(loc == players[myID].shipyard && halite > hlt::MAX_HALITE / 4) {
