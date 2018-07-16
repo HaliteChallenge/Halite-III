@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys, copy
+from collections import namedtuple
 
 MAX_HALITE = 65535
 SHIP_COST = 65536
@@ -8,12 +9,15 @@ SHIP_COST = 65536
 base_players = None # Need to remember this
 _moves = ""
 
+Ship = namedtuple('Ship', ['id', 'location', 'halite'])
+Dropoff = namedtuple('Ship', ['id', 'location'])
+
 class Player(object):
     def __init__(self, shipyard):
         self.shipyard = shipyard
         self.halite = 0
         self.ships = {}
-        self.dropoffs = set()
+        self.dropoffs = {}
 
 def get_init():
     global base_players
@@ -44,27 +48,27 @@ def get_frame():
         player, num_ships, num_dropoffs, halite = map(int, input().split())
         players[player].halite = halite
         players[player].ships = {}
-        players[player].dropoffs = set()
+        players[player].dropoffs = {}
         for _ in range(num_ships):
-            x, y, halite = map(int, input().split())
-            players[player].ships[(x, y)] = halite
+            ship_id, x, y, halite = map(int, input().split())
+            players[player].ships[ship_id] = Ship(ship_id, (x, y), halite)
         for _ in range(num_dropoffs):
-            x, y, halite = map(int, input().split())
-            players[player].dropoffs.add((x, y))
+            dropoff_id, x, y = map(int, input().split())
+            players[player].dropoffs[dropoff_id] = Dropoff(dropoff_id, (x, y))
     return turn_number, players
 
-def move(loc, d):
+def move(ship_id, d):
     global _moves
-    _moves += "m " + str(loc[0]) + ' ' + str(loc[1]) + ' ' + d + ' '
+    _moves += "m " + str(ship_id) + ' ' + d + ' '
 def spawn(halite):
     global _moves
     _moves += "g " + str(halite) + ' '
-def dump(loc, halite):
+def dump(ship_id, halite):
     global _moves
-    _moves += "d " + str(loc[0]) + ' ' + str(loc[1]) + ' ' + str(halite) + ' '
-def construct(loc):
+    _moves += "d " + str(ship_id) + ' ' + str(halite) + ' '
+def construct(ship_id):
     global _moves
-    _moves += "c " + str(loc[0]) + ' ' + str(loc[1]) + ' '
+    _moves += "c " + str(ship_id) + ' '
 def send_frame():
     global _moves
     print(_moves)
