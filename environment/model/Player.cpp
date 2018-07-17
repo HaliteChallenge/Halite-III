@@ -14,10 +14,10 @@ namespace hlt {
  * @param player The Player to convert.
  */
 void to_json(nlohmann::json &json, const Player &player) {
-    json = {FIELD_TO_JSON(id),
+    json = {{"player_id", player.id},
             FIELD_TO_JSON(name),
             FIELD_TO_JSON(energy),
-            FIELD_TO_JSON(factory),
+            {"factory_location", player.factory},
             FIELD_TO_JSON(entities)};
 }
 
