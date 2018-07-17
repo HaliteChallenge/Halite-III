@@ -28,31 +28,84 @@
             </Step>
             <Step title="Basic Movement" name="basic-movement">
                 <p>
-                    Now let's move your ship around. TODO: what code?
+                    Now let's move your ship around. The code in <span
+                    class="tutorial-highlight">red</span> builds up a
+                    set of moves by iterating through each ship you
+                    have. The code in <span
+                    class="tutorial-highlight-alt">yellow</span> then
+                    sends those moves to the engine, ending your turn.
                 </p>
-            </Step>
-            <Step title="Random Movement" name="shipyards">
                 <p>
-                    Ships can move north, south, east, or west, as
-                    you'll recall. Have the bot move the ship randomly
-                    in each direction.
+                    Right now, the bot moves ships around
+                    randomly. Try changing it to do something like
+                    moving the ship always west.
                 </p>
             </Step>
             <Step title="Halite Filtration" name="tunneling">
                 <p>
+                    Moving around burns a lot of halite! Let's have
+                    the ship actually collect halite from the
+                    sea. Ships will automatically collect halite when
+                    they are not told to move.
                 </p>
+                <p>
+                    Python: convert the dictionary comprehension to an
+                    actual loop. Then, add some criteria to decide if
+                    the ship should move. For instance, you might stop
+                    the ship if its cargo/fuel is below a certain
+                    level, or if the tile you're on is especially
+                    rich. Some APIs that might help:
+                </p>
+                <ul>
+                    <li><code>game_map.foo</code></li>
+                    <li><code>entity.bar</code></li>
+                </ul>
             </Step>
             <Step title="Depositing Halite" name="dropoffs">
                 <p>
+                    Your ship now carries and collects halite, but
+                    it's not of much use to you until it's brought
+                    back to port. Let's add another condition: if the
+                    ship has too much halite, start moving it towards
+                    the shipyard.
                 </p>
+                <p>
+                    Python: add the following check:
+                </p>
+                <pre>
+code block
+this is actually kind of annoying,
+because without state, the ship
+will go above the threshold, move,
+fall below the threshold, then
+start doing something else again
+                </pre>
             </Step>
             <Step title="Better Movement" name="dropoffs">
                 <p>
+                    By now, you've probably noticed that your ships
+                    aren't moving very efficiently. Recall that moving
+                    off of a tile costs you halite proportional to how
+                    rich it is.
                 </p>
             </Step>
             <Step title="Carrier Has Arrived" name="dropoffs">
                 <p>
-                    One ship does not make a fleet.
+                    One ship does not make a fleet. Besides issuing
+                    movement commands to ships, you can also
+                    commission new ships&mdash;for an appropriate fee,
+                    of course. Building a new ship costs 255 halite,
+                    plus the initial amount of fuel for the ship.
+                    For now, let's build ships whenever possible.
+                </p>
+                <p>
+                    Python: add the following code:
+                </p>
+                <p>
+                    Of course, in a real match, you'll want to think
+                    about whether you should be hoarding halite or
+                    spending it, because ultimately, the winner is the
+                    one with the most halite in the bank.
                 </p>
             </Step>
         </template>

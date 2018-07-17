@@ -34,6 +34,7 @@
                         .doReady((editor) => {
                             editor.clearHighlights();
                             editor.highlightContaining("moves");
+                            editor.highlightContaining("send_frame", "tutorial-highlight-alt");
                         });
                 }
                 else {

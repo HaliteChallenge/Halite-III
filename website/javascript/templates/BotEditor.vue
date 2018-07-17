@@ -292,7 +292,7 @@ export default {
         annotationModel.removeAnnotation(annotation);
       }
     },
-    highlightContaining: function(text) {
+    highlightContaining: function(text, klass="tutorial-highlight") {
       const editor = this.editorViewer.editor
       const view = editor.getTextView()
       const viewModel = view.getModel()
@@ -307,8 +307,7 @@ export default {
           title: "",
           type: "tutorial.highlight",
           html: "",
-          style: { styleClass: "tutorial-highlight" },
-          lineStyle: { styleClass: "tutorial-highlight" },
+          lineStyle: { styleClass: klass },
         },
       ])
     },
@@ -593,5 +592,8 @@ export default {
 <style lang="scss">
 .tutorial-highlight {
   background: red !important;
+}
+.tutorial-highlight-alt {
+  background: yellow !important;
 }
 </style>
