@@ -112,6 +112,19 @@ export default {
       terminal_text: terminal_text
     }
   },
+  props: {
+    tutorial: {
+      default: false,
+      type: Boolean,
+    }
+  },
+  created: function() {
+    // Create promise so callers can use our methods without having to
+    // check whether we're ready
+    this.ready = new Promise((resolve) => {
+      this._readyResolve = resolve;
+    });
+  },
   mounted: function () {
     api.me().then((me) => {
       if (me !== null) {
@@ -151,8 +164,16 @@ export default {
         logInfo('Initializing editor...')
         this.editorViewer = editorViewer
         const editor = editorViewer.editor
-        
+
         editor.setAnnotationRulerVisible(false);
+
+        if (this.tutorial) {
+          // https://wiki.eclipse.org/Orion/How_Tos/Code_Edit#How_to_highlight_a_line_in_the_editor_and_set_cursor_on_that_line
+          // Set up annotations so we can highlight lines
+          const annoStyler = editor.getAnnotationStyler()
+          annoStyler.addAnnotationType("tutorial.highlight")
+          editor.getAnnotationRuler().addAnnotationType("tutorial.highlight")
+        }
 
         // make sure we're using the correct color theme
 
@@ -195,7 +216,12 @@ export default {
 
         jQuery('.textview').addClass('editorTheme')
         logInfo('Editor ready!')
+        this._readyResolve();
       })
+    },
+    // Schedule a function to be called when we're ready
+    doReady: function(f) {
+      this.ready.then(() => f(this));
     },
     /*Export bots to a zip file for local storage by user*/
     download_bot: function () {
@@ -256,6 +282,25 @@ export default {
           return editor_files
         })
       })
+    },
+    highlightContaining: function(text) {
+      const editor = this.editorViewer.editor
+      const view = editor.getTextView()
+      const viewModel = view.getModel()
+      const annotationModel = editor.getAnnotationModel()
+      const lineStart = editor.mapOffset(viewModel.getLineStart(6))
+      const lineEnd = editor.mapOffset(viewModel.getLineEnd(6))
+      annotationModel.replaceAnnotations([], [
+        {
+          start: lineStart,
+          end: lineEnd,
+          title: "",
+          type: "tutorial.highlight",
+          html: "",
+          style: { styleClass: "tutorial-highlight" },
+          lineStyle: { styleClass: "tutorial-highlight" },
+        },
+      ])
     },
     /* Return MyBot file of the starter bot in string format */
     load_default_code: function () {
@@ -533,5 +578,10 @@ export default {
 .replay, .console {
   width: 100%;
 }
+</style>
 
+<style lang="scss">
+.tutorial-highlight {
+  background: red;
+}
 </style>

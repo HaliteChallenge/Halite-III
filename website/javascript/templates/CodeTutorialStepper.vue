@@ -1,7 +1,5 @@
 <template>
-    <section>
-        <BotEditor />
-    </section>
+    <BotEditor ref="editor" v-bind:tutorial="true" />
 </template>
 
 <script>
@@ -22,6 +20,14 @@
         methods: {
 
         },
+        watch: {
+            stepName: function(newStep, oldStep) {
+                if (newStep === "initialization") {
+                    this.$refs.editor
+                        .doReady((editor) => editor.highlightContaining("MyPythonBot"));
+                }
+            },
+        }
     };
 </script>
 
@@ -29,5 +35,6 @@
     .body {
         /* Override inline style */
         margin-top: 0 !important;
+        height: 100%;
     }
 </style>
