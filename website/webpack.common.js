@@ -1,3 +1,4 @@
+const webpack = require("webpack");
 const path = require("path");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
@@ -5,6 +6,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = {
     entry: ['babel-polyfill', './javascript/main.js'],
     output: {
+        publicPath: "/assets/js/",
         path: path.resolve(__dirname, "assets/js/"),
         filename: "bundle.js",
     },
@@ -42,5 +44,8 @@ module.exports = {
     },
     plugins: [
         new VueLoaderPlugin(),
+        new webpack.DefinePlugin({
+            'process.env.ASSET_PATH': JSON.stringify("/assets/js/")
+        }),
     ],
 };

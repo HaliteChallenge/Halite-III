@@ -52,7 +52,6 @@
 <script>
   import * as api from '../api'
   import * as utils from '../utils'
-  import * as libhaliteviz from '../../../libhaliteviz'
   import InputModal from './InputModal.vue'
   import CheckModal from './CheckModal.vue'
 
@@ -84,8 +83,6 @@
   const RESET_MSG = 'Are you sure you want to reset your bot code to the default sample code?\n(All changes will be lost!)'
   const EX_GAME_STRING = '{"ENGINE_VERSION":"1.5.521.g6df5","GAME_CONSTANTS":{"BASE_TURN_ENERGY_LOSS":5,"BLUR_FACTOR":0.75,"DEFAULT_MAP_HEIGHT":128,"DEFAULT_MAP_WIDTH":128,"INITIAL_ENERGY":1000,"MAX_CELL_PRODUCTION":255,"MAX_ENERGY":255,"MAX_PLAYERS":16,"MAX_TURNS":300,"MIN_CELL_PRODUCTION":85,"NEW_ENTITY_ENERGY":255,"NEW_ENTITY_ENERGY_COST":1000},"REPLAY_FILE_VERSION":1,"full_frames":[{"events":[],"moves":{"0":[{"direction":"w","entity_x":0,"entity_y":1,"type":"move"}],"1":[{"direction":"e","entity_x":1,"entity_y":1,"type":"move"}]}}],"game_statistics":{"number_turns":49,"player_statistics":[{"last_turn_alive":49,"player_id":1,"rank":1,"total_production":770},{"last_turn_alive":49,"player_id":0,"rank":2,"total_production":518}]},"map_generator_seed":1531318637,"number_of_players":2,"players":[{"energy":0,"entities":[{"energy":0,"x":1,"y":1}],"factory_location":[1,1],"name":"JavaSP","player_id":1},{"energy":0,"entities":[{"energy":0,"x":0,"y":1}],"factory_location":[0,1],"name":"JavaSP","player_id":0}],"production_map":{"grid":[[{"production":14,"type":"n"},{"production":14,"type":"n"}],[{"type":"f"},{"type":"f"}]],"height":2,"map_generator":"Fractal Value Noise Tile","width":2}}'
 
-  const HaliteVisualizer = libhaliteviz.HaliteVisualizer
-  libhaliteviz.setAssetRoot('/assets/js/')
 
   function logError (err) {
     console.error(err)
@@ -133,13 +130,19 @@ export default {
     })
     console.log(jQuery('.replay'))
     let width = jQuery('.replay').width()
-    this.visualizer = new HaliteVisualizer(JSON.parse(EX_GAME_STRING), width, width)
-    this.visualizer.attach('.game_replay_viewer')
-    window.addEventListener('resize', (function(event) {
-      width = jQuery('.replay').width()
-      console.log(width)
-      this.visualizer.resize(width, width)
-    }).bind(this), true)
+
+    import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
+                                 .then((libhaliteviz) => {
+                                   const visualizer = new libhaliteviz.HaliteVisualizer(this.replay)
+                                   this.visualizer = new HaliteVisualizer(JSON.parse(EX_GAME_STRING), width, width)
+                                   this.visualizer.attach('.game_replay_viewer')
+                                   window.addEventListener('resize', (function(event) {
+                                     width = jQuery('.replay').width()
+                                     console.log(width)
+                                     this.visualizer.resize(width, width)
+                                   }).bind(this), true)
+                                 });
+
   },
   methods: {
     /* Return bot language specific info */
