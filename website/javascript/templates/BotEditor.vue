@@ -16,11 +16,15 @@
             </div>
             <nav class="tree_nav"><div class="bd-toc-item active">
               <ul class="nav bd-sidenav">
-                <li v-for="(f, name) in editor_files" class="bd-sidenav-active tree_files" v-bind:class="{ active: f === active_file }">
+                <!--<li v-for="(f, name) in editor_files" class="bd-sidenav-active tree_files" v-bind:class="{ active: f === active_file }">
                   <a v-on:click="file_selected(f)">
                     {{ name }}
                   </a>
-                </li>
+                </li>-->
+                <TreeElement
+                  :obj="editor_files" 
+                  :depth="-1"
+                  @event_file_selected="file_selected"></TreeElement>
               </ul>
             </div></nav>
           </div>
@@ -55,6 +59,7 @@
   import * as libhaliteviz from '../../../libhaliteviz'
   import InputModal from './InputModal.vue'
   import CheckModal from './CheckModal.vue'
+  import TreeElement from './TreeElement.vue'
 
   const botLanguagePacks = {
     'Python3': {
@@ -95,11 +100,31 @@
     if (logVerbose) console.log(msg)
   }
 
+  function parse_to_file_tree(files) {
+    let file_tree = {}
+    for(let file_name in files) {
+      let components = file_name.split('/')
+      for(let a = 0; a < components.length-1; a++) { // target for setting to {}
+        let current_obj = file_tree
+        for(let b = 0; b < a; b++) {
+          current_obj = current_obj[b]
+        }
+        if(current_obj[components[a]] === undefined) current_obj[components[a]] = {}
+      }
+      let current_obj = file_tree
+      for(let b = 0; b < components.length-1; b++) {
+        current_obj = current_obj[components[b]]
+      }
+      current_obj[components[components.length-1]] = files[file_name]
+    }
+    //return files
+    return file_tree
+  }
 
 export default {
   name: 'bot_editor',
   props: ['baseUrl'],
-  components: { InputModal, CheckModal },
+  components: { InputModal, CheckModal, TreeElement},
   data: function () {
     const lang = 'Python3'
     const theme = DARK_THEME
@@ -125,22 +150,19 @@ export default {
         this.user_id = me.user_id
         this.logged_in = true
         this.load_code().then((function(editor_files) {
-          this.editor_files = editor_files
-          this.active_file = _.find(this.editor_files, {name: this.bot_info().fileName})
-          console.log(this.active_file)
+          this.active_file = _.find(editor_files, {name: this.bot_info().fileName})
+          this.editor_files = parse_to_file_tree(editor_files)
           this.create_editor(this.get_active_file_code())
         }).bind(this))
       } else {
         window.location.href = '/';
       }
     })
-    console.log(jQuery('.replay'))
     let width = jQuery('.replay').width()
     this.visualizer = new HaliteVisualizer(JSON.parse(EX_GAME_STRING), width, width)
     this.visualizer.attach('.game_replay_viewer')
     window.addEventListener('resize', (function(event) {
       width = jQuery('.replay').width()
-      console.log(width)
       this.visualizer.resize(width, width)
     }).bind(this), true)
   },
@@ -226,13 +248,15 @@ export default {
           let name = names[a]
           editor_files[name] = {name: name, contents: values.shift()}
         }
-        return editor_files
+        return parse_to_file_tree(editor_files)
       })
     },
     file_selected: function(sel_file) {
       console.log(sel_file)
-      this.save_current_file()
-      this.active_file.contents = this.get_editor_code()
+      if(this.active_file !== null) {
+        this.save_current_file()
+        this.active_file.contents = this.get_editor_code()
+      }
       this.set_editor_contents(sel_file.contents)
       this.active_file = sel_file
     },
@@ -242,7 +266,7 @@ export default {
       return (startCode === null) ? this.load_default_code() : Promise.resolve(startCode)
     },
     load_user_code: function() {
-      function get_files_with_list(ctx, file_list) {
+      function api_get_files_with_list(ctx, file_list) {
         return Promise.all(file_list.map(
           (file_name) => (api.get_editor_file(ctx.user_id, file_name).then(
             (contents) => ({contents: contents, name: file_name})))
@@ -250,10 +274,10 @@ export default {
       }
       return api.get_editor_file_list(this.user_id).then((function(file_list) {
         if(file_list !== []) {
-          return get_files_with_list(this, file_list)
+          return api_get_files_with_list(this, file_list)
         } else { // if no workspace create one and then pull our files down
           api.create_editor_file_space(this.user_id, 'Python').then((function(file_list) {
-            return get_files_with_list(this, file_list)
+            return api_get_files_with_list(this, file_list)
           }).bind(this))
         }
       }).bind(this)).then(function(file_promise) {
@@ -262,7 +286,7 @@ export default {
             prev[cur.name] = {name: cur.name, contents: cur.contents}
             return prev
           }, {})
-          return editor_files
+          return parse_to_file_tree(editor_files)
         })
       })
     },
@@ -276,7 +300,7 @@ export default {
       }, logError)
     },
     get_active_file_code: function() {
-      return this.active_file.contents
+      return this.active_file == null ? "" : this.active_file.contents
     },
     /* Return a string of the code currently in the editor */
     get_editor_code: function () {
@@ -313,23 +337,34 @@ export default {
       return zip.generateAsync({type: 'blob'})
     },
     create_new_file: function(name) {
-      this.editor_files[name] = {contents: ""}
-      this.file_selected(name)
+      this.$set(this.editor_files, name, {name: name, contents: ""})
+      this.file_selected(this.editor_files[name])
       this.close_new_file_modal()
     },
     open_new_file_modal: function() { this.is_new_file_modal_open = true; },
     close_new_file_modal: function() { this.is_new_file_modal_open = false; },
 
     delete_file: function() {
-      api.delete_source_file(this.user_id, this.file_to_delete.file_name)
+      api.delete_source_file(this.user_id, this.file_to_delete.name)
       let need_file_switch = this.file_to_delete === this.active_file
-      delete this.file_to_delete
+      this.delete_from_tree(this.editor_files, this.file_to_delete)
       if(need_file_switch) {
-        let new_file = _.find(this.editor_files)
-        this.set_editor_contents(new_file.contents)
-        this.active_file = new_file
+        this.set_editor_contents("")
+        this.active_file = null
       }
       this.close_delete_modal()
+    },
+    delete_from_tree: function(files, elem) {
+      for(let name in files) {
+        if(files[name] === elem) {
+          this.$delete(files, name)
+          return
+        }
+
+        if(typeof files[name].contents !== 'string') {
+          this.delete_from_tree(files[name], elem)
+        }
+      }
     },
     open_delete_modal: function(file_to_delete) { 
       this.file_to_delete = file_to_delete;
@@ -341,7 +376,7 @@ export default {
     reload_code: function (use_default = false) {
       const codePromise = use_default ? this.load_default_code() : this.load_code()
       return codePromise.then((editor_files) => {
-        this.editor_files = editor_files
+        this.editor_files = parse_to_file_tree(editor_files)
         this.set_editor_contents(this.get_active_file_code())
       })
     },
@@ -362,8 +397,10 @@ export default {
     },
     save_current_file: function() {
       logInfo('Saving bot file to gcloud storage')
-      this.update_editor_files()
-      this.save_file(this.active_file)
+      if(this.active_file !== null) {
+        this.update_editor_files()
+        this.save_file(this.active_file)
+      }
     },
     save_file: function(file) { 
       api.update_source_file(this.user_id, file.name, file.contents, function(){}).then((function() {
@@ -382,7 +419,7 @@ export default {
       this.terminal_text = "";
     },
     add_console_text: function(new_text) {
-      if(this.terminal_text == undefined) this.terminal_text = ""
+      if(this.terminal_text === undefined) this.terminal_text = ""
         this.terminal_text += new_text
     },
     /* Submit bot to our leaderboard */
@@ -487,10 +524,6 @@ export default {
   float: left;
   display: flex;
   flex-flow: column;
-}
-
-.tree_files {
-  font-size: 12pt;
 }
 
 .file_command_center_cont {
