@@ -65,7 +65,7 @@ struct Turn {
     friend void to_json(nlohmann::json &json, const Turn &turn);
 
     // TODO: update to take in entity store if players no longer have direct entity access
-    void add_entities(std::unordered_map<Player::id_type, Player> &players);
+    void add_entities(Store &store);
 };
 
 struct Replay {
@@ -79,7 +79,7 @@ struct Replay {
     std::vector<hlt::Turn> full_frames{};                       /**< Turn information: first element = first frame/turn. Length is game_statistics.number_turns */
 
     unsigned int map_generator_seed;                            /**< Seed used in random number generator for map */
-    Map &production_map;                                        /**< Map of cells game was played on, including factory and other cells. Struct incldues name of map generator */
+    const Map production_map;                                   /**< Map of cells game was played on, including factory and other cells. Struct incldues name of map generator */
 
     /**
      * Create json format for replay struct ptr
@@ -115,7 +115,7 @@ struct Replay {
      * @param seed Seed for random number generator for map
      * @param production_map Initialized map for game play
      */
-    Replay(GameStatistics &game_statistics, size_t number_of_players, unsigned int seed, Map &production_map) :
+    Replay(GameStatistics &game_statistics, size_t number_of_players, unsigned int seed, const Map production_map) :
             game_statistics(game_statistics), number_of_players(number_of_players),
             map_generator_seed(seed), production_map(production_map) {}
 

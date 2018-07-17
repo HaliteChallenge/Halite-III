@@ -39,7 +39,7 @@ void HaliteImpl::process_commands() {
         if (transaction.check()) {
             // All commands are successful.
             transaction.commit();
-            // add player commands to replay
+            // add player commands to replay and note players still alive
             game.replay.full_frames.back().moves = std::move(commands);
             for (auto &player_statistics : game.replay.game_statistics.player_statistics) {
                 if (commands.find(player_statistics.player_id) != commands.end()) player_statistics.last_turn_alive = game.turn_number;

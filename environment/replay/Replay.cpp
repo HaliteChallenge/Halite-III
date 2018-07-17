@@ -66,12 +66,11 @@ void to_json(nlohmann::json &json, const Turn &turn) {
  * Stores the turn info of all entities
  * @param players: Player store at start of turn
  */
-void Turn::add_entities(std::unordered_map<Player::id_type, Player> &players) {
-    for (const auto &[player_id, player] : players) {
-        for (const auto &[entity, location] : player.entities) {
-            const EntityInfo entity_info = {location, entity};
-            entities[player_id].insert( {{entity.id, entity_info}} );
-        }
+void Turn::add_entities(Store &store) {
+    for (const auto &[entity_id, entity] : store.entities) {
+        const auto location = store.get_player(entity.owner).get_entity_location(entity.id);
+        const EntityInfo entity_info = {location, entity};
+        entities[entity.owner].insert( {{entity.id, entity_info}} );
     }
 }
 

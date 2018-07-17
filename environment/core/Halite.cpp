@@ -29,7 +29,7 @@ void Halite::run_game() {
         // Create new turn struct for replay file, to be filled by further turn actions
         replay.full_frames.emplace_back();
         // Add state of entities at start of turn
-        replay.full_frames.back().add_entities(this->players);
+        replay.full_frames.back().add_entities(store);
         impl->retrieve_commands();
         impl->process_commands();
         impl->process_production();
