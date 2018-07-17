@@ -23,10 +23,10 @@ void Networking::initialize_player(Player &player) {
     std::stringstream message_stream;
     Logging::log("Sending init message to player " + std::string(player.id));
     // Send the number of players and player ID
-    message_stream << game.players.size()
+    message_stream << game.store.players.size()
                    << " " << player.id << std::endl;
     // Send each player's ID and factory location
-    for (const auto &[player_id, other_player] : game.players) {
+    for (const auto &[player_id, other_player] : game.store.players) {
         message_stream << player_id
                        << " " << other_player.factory
                        << std::endl;
@@ -56,7 +56,7 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(const Player &pla
     // TODO: send map? entities?
     // Send the turn number, then each player in the game.
     message_stream << game.turn_number << std::endl;
-    for (const auto &[_, other_player] : game.players) {
+    for (const auto &[_, other_player] : game.store.players) {
         message_stream << other_player;
     }
     connections[player]->send_string(message_stream.str());

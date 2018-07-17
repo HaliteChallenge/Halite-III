@@ -30,7 +30,8 @@ void to_json(nlohmann::json &json, const Constants &constants) {
             FIELD_TO_JSON(PERSISTENCE),
             FIELD_TO_JSON(FACTOR_EXP_1),
             FIELD_TO_JSON(FACTOR_EXP_2),
-            FIELD_TO_JSON(DROPOFF_COST)};
+            FIELD_TO_JSON(DROPOFF_COST),
+            FIELD_TO_JSON(MOVE_COST_RATIO)};
 }
 
 /**
@@ -53,7 +54,8 @@ void from_json(const nlohmann::json &json, Constants &constants) {
                  FIELD_FROM_JSON(PERSISTENCE),
                  FIELD_FROM_JSON(FACTOR_EXP_1),
                  FIELD_FROM_JSON(FACTOR_EXP_2),
-                 FIELD_FROM_JSON(DROPOFF_COST)};
+                 FIELD_FROM_JSON(DROPOFF_COST),
+                 FIELD_FROM_JSON(MOVE_COST_RATIO)};
 }
 
 }
