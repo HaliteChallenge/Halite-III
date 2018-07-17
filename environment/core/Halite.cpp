@@ -10,7 +10,13 @@ namespace hlt {
 /** Run the game. */
 void Halite::run_game() {
     const auto &constants = Constants::get();
-    std::unordered_map<Player::id_type, std::future<void>> results{};
+
+    // Zero the energy on factories.
+    for (auto &[_, player] : store.players) {
+        map.at(player.factory).energy = 0;
+    }
+
+    id_map<Player, std::future<void>> results{};
     for (auto &[player_id, player] : store.players) {
         results[player_id] = std::async(std::launch::async,
                                         [&networking = networking, &player = player] {
@@ -28,9 +34,7 @@ void Halite::run_game() {
         Logging::log("Starting turn " + std::to_string(this->turn_number));
         // Create new turn struct for replay file, to be filled by further turn actions
         replay.full_frames.emplace_back();
-        impl->retrieve_commands();
-        impl->process_commands();
-        impl->process_production();
+        impl->process_turn();
 
         if (impl->game_ended()) {
             break;

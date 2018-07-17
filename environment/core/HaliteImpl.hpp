@@ -15,21 +15,12 @@ class HaliteImpl final {
     /** The game interface. */
     Halite &game;
 
-    /** Current commands per player. */
-    id_map<Player, std::vector<std::unique_ptr<Command>>> commands;
-
     /**
      * Determine whether the game has ended.
      *
      * @return True if the game has ended.
      */
     bool game_ended() const;
-
-    /** Communicate with bots to obtain commands for next step. */
-    void retrieve_commands();
-
-    /** Process the effects of retrieved commands. */
-    void process_commands();
 
     /**
      * Update a player's statistics after a single turn. This will update their total game production, their last turn
@@ -46,14 +37,8 @@ class HaliteImpl final {
      */
     void rank_players();
 
-    /**
-     * Kill a player, for example if they performed an illegal behavior.
-     * @param id The ID of the player to kill.
-     */
-    void kill_player(Player::id_type id);
-
-    /** Update the energy/production of each player by calculating ownership of each cell in the current turn. */
-    void process_production();
+    /** Retrieve and process commands, and update the game state for the current turn. */
+    void process_turn();
 
 public:
     /**

@@ -23,7 +23,9 @@ protected:
     Map &map;                                      /**< The game map. */
 
 public:
-    std::unordered_set<Player::id_type> offenders; /**< Players that prevent transaction from committing. */
+    std::unordered_set<Player::id_type> offenders;         /**< Players that prevent transaction from committing. */
+    std::unordered_set<Entity::id_type> changed_entities;  /**< Remaining entities that have been acted upon. */
+    std::unordered_set<Location> changed_cells;            /**< Cells that have been updated. */
 
     /**
      * Construct BaseTransaction from Store and Map.
