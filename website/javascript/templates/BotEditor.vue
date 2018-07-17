@@ -7,7 +7,7 @@
             <div class="file_command_center_cont">
               <div class="file_command_center">
                 <div class="command_icon"><a @click="open_new_file_modal()"><span class="glyphicon glyphicon-file"></span></a></div>
-                <div class="command_icon"><a><span class="glyphicon glyphicon-folder-open"></span></a></div>
+                <div class="command_icon"><a @click="open_new_folder_modal()"><span class="glyphicon glyphicon-folder-open"></span></a></div>
                 <div class="command_icon"><a><span class="glyphicon glyphicon-pencil"></span></a></div>
                 <div class="command_center_right">
                   <div class="command_icon"><a @click="open_delete_modal(active_file)"><span class="glyphicon glyphicon-trash"></span></a></div>
@@ -49,6 +49,7 @@
       </div>
     </div>
     <InputModal ref="new_file_modal" :baseUrl="baseUrl" :isOn="is_new_file_modal_open" :createCallback="create_new_file" :closeCallback="close_new_file_modal" title_text="New File" cancel_text="Cancel" accept_text="Create"></InputModal>
+    <InputModal ref="new_folder_modal" :baseUrl="baseUrl" :isOn="is_new_folder_modal_open" :createCallback="create_new_folder" :closeCallback="close_new_folder_modal" title_text="New Folder" cancel_text="Cancel" accept_text="Create"></InputModal>
     <CheckModal ref="delete_modal" :baseUrl="baseUrl" :isOn="is_delete_modal_open" :yesCallback="delete_file" :noCallback="close_delete_modal" title_text="Delete File" cancel_text="Cancel" accept_text="Delete" body_text="This will delete your file permanently!!!"></CheckModal>
   </div>
 </template>
@@ -141,6 +142,7 @@ export default {
       file_tree: [],
       terminal_text: "",
       is_new_file_modal_open: false,
+      is_new_folder_modal_open: false,
       is_delete_modal_open: false,
     }
   },
@@ -343,6 +345,14 @@ export default {
     },
     open_new_file_modal: function() { this.is_new_file_modal_open = true; },
     close_new_file_modal: function() { this.is_new_file_modal_open = false; },
+
+    create_new_folder: function(name) {
+      this.$set(this.editor_files, name, {})
+      this.close_new_folder_modal()
+    },
+    open_new_folder_modal: function() { this.is_new_folder_modal_open = true; },
+    close_new_folder_modal: function() { this.is_new_folder_modal_open = false; },
+
 
     delete_file: function() {
       api.delete_source_file(this.user_id, this.file_to_delete.name)
