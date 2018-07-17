@@ -7,8 +7,10 @@
 #include "Generator.hpp"
 #include "Halite.hpp"
 #include "Logging.hpp"
+#include "Replay.hpp"
 #include "Snapshot.hpp"
 #include "SnapshotError.hpp"
+#include "Statistics.hpp"
 #include "Units.hpp"
 
 #include "version.hpp"

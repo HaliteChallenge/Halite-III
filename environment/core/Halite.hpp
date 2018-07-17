@@ -1,22 +1,19 @@
 #ifndef HALITE_H
 #define HALITE_H
 
-#include "BasicGenerator.hpp"
-#include "Command.hpp"
 #include "Config.hpp"
-#include "Generator.hpp"
-#include "Map.hpp"
 #include "Networking.hpp"
-#include "Player.hpp"
-#include "Location.hpp"
-#include "Statistics.hpp"
-#include "Replay.hpp"
-#include "Snapshot.hpp"
 #include "Store.hpp"
 
 namespace hlt {
 
+struct GameStatistics;
+
 class HaliteImpl;
+
+struct Replay;
+
+struct Snapshot;
 
 /** Halite game interface, exposing the top level of the game. */
 class Halite final {

@@ -15,6 +15,9 @@ class HaliteImpl final {
     /** The game interface. */
     Halite &game;
 
+    /** Run the game. */
+    void run_game();
+
     /**
      * Determine whether the game has ended.
      *

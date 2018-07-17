@@ -1,50 +1,19 @@
 #include <future>
 
+#include "BasicGenerator.hpp"
+#include "Command.hpp"
 #include "Constants.hpp"
+#include "Generator.hpp"
 #include "Halite.hpp"
 #include "HaliteImpl.hpp"
-#include "Logging.hpp"
+#include "Map.hpp"
+#include "Player.hpp"
+#include "Location.hpp"
+#include "Statistics.hpp"
+#include "Replay.hpp"
+#include "Snapshot.hpp"
 
 namespace hlt {
-
-/** Run the game. */
-void Halite::run_game() {
-    const auto &constants = Constants::get();
-
-    // Zero the energy on factories.
-    for (auto &[_, player] : store.players) {
-        map.at(player.factory).energy = 0;
-    }
-
-    id_map<Player, std::future<void>> results{};
-    for (auto &[player_id, player] : store.players) {
-        results[player_id] = std::async(std::launch::async,
-                                        [&networking = networking, &player = player] {
-                                            networking.initialize_player(player);
-                                        });
-    }
-    for (auto &[_, result] : results) {
-        result.get();
-    }
-    replay.players.insert(store.players.begin(), store.players.end());
-    replay.full_frames.emplace_back();
-    Logging::log("Player initialization complete.");
-
-    for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
-        Logging::log("Starting turn " + std::to_string(this->turn_number));
-        // Create new turn struct for replay file, to be filled by further turn actions
-        replay.full_frames.emplace_back();
-        impl->process_turn();
-
-        if (impl->game_ended()) {
-            break;
-        }
-    }
-    game_statistics.number_turns = this->turn_number;
-
-    impl->rank_players();
-    Logging::log("Game has ended after " + std::to_string(turn_number) + " turns.");
-}
 
 /**
  * Constructor for the main game.
@@ -86,6 +55,11 @@ Halite::Halite(const Config &config,
 void Halite::load_snapshot(const Snapshot &snapshot) {
     // TODO: implement
     (void) snapshot;
+}
+
+/** Run the game. */
+void Halite::run_game() {
+    impl->run_game();
 }
 
 /** Default destructor is defined where HaliteImpl is complete. */
