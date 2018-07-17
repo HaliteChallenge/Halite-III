@@ -176,26 +176,28 @@ bool SpawnTransaction::check() {
 void SpawnTransaction::commit() {
     const auto &constants = Constants::get();
     auto cost = constants.NEW_ENTITY_ENERGY_COST;
-    for (const auto &[player_id, spawn_command] : commands) {
-        auto &player = game.get_player(player_id);
-        auto energy = spawn_command.energy;
-        player.energy -= (cost + energy);
-        auto &cell = map.at(player.factory);
-        if (cell.entity == Entity::None) {
-            cell.entity = game.new_entity(energy, player, player.factory).id;
-            if (callback) {
-                callback(std::make_unique<SpawnEvent>(player.factory, energy, player_id, cell.entity));
+    for (const auto &[player_id, spawns] : commands) {
+        for (const SpawnCommand &spawn : spawns) {
+            auto &player = game.get_player(player_id);
+            auto energy = spawn.energy;
+            player.energy -= (cost + energy);
+            auto &cell = map.at(player.factory);
+            if (cell.entity == Entity::None) {
+                cell.entity = game.new_entity(energy, player, player.factory).id;
+                if (callback) {
+                    callback(std::make_unique<SpawnEvent>(player.factory, energy, player_id, cell.entity));
+                }
+            } else {
+                // There is a collision
+                auto &owner = game.get_owner(cell.entity);
+                owner.remove_entity(cell.entity);
+                if (callback) {
+                    std::vector<Entity::id_type> collision_ids = {cell.entity};
+                    callback(std::make_unique<CollisionEvent>(player.factory, collision_ids));
+                }
+                game.delete_entity(cell.entity);
+                cell.entity = Entity::None;
             }
-        } else {
-            // There is a collision
-            auto &owner = game.get_owner(cell.entity);
-            owner.remove_entity(cell.entity);
-            if (callback) {
-                std::vector<Entity::id_type> collision_ids = {cell.entity};
-                callback(std::make_unique<CollisionEvent>(player.factory, collision_ids));
-            }
-            game.delete_entity(cell.entity);
-            cell.entity = Entity::None;
         }
     }
 }
