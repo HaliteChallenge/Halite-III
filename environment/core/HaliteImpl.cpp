@@ -45,13 +45,14 @@ void HaliteImpl::run_game() {
         result.get();
     }
     game.replay.players.insert(game.store.players.begin(), game.store.players.end());
-    game.replay.full_frames.emplace_back();
     Logging::log("Player initialization complete.");
 
     for (game.turn_number = 0; game.turn_number < constants.MAX_TURNS; game.turn_number++) {
         Logging::log("Starting turn " + std::to_string(game.turn_number));
         // Create new turn struct for replay file, to be filled by further turn actions
         game.replay.full_frames.emplace_back();
+        // Add state of entities at start of turn
+        game.replay.full_frames.back().add_entities(game.store);
         process_turn();
 
         if (game_ended()) {
