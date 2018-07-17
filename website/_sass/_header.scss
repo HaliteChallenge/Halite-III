@@ -67,7 +67,7 @@ header.unloaded{
   .navbar-collapse.collapse {
     display: none !important;
     padding-bottom: 0;
-    overflow: auto !important; 
+    overflow: auto !important;
     &.in{
       display: block !important;
     }
@@ -80,20 +80,20 @@ header.unloaded{
     position: relative;
     padding: 5px;
     min-height: 50px;
-    color: #b9b8b8;
+    color: #000;
     text-transform: uppercase;
   }
 }
 
 .navbar-inverse{
   $g-color: #b9b8b8;
-  background-color: $gray-bg;
-  color: $foreground;
+  background-color: #FFF;
+  color: #000;
   .navbar-nav{
     li a {
       position: relative;
       min-height: 50px;
-      color: $g-color;
+      color: #000;
       text-transform: uppercase;
       padding: 15px 3px;
       @media (max-width: $mobile-breakpoint){
@@ -110,6 +110,10 @@ header.unloaded{
           display: none;
         }
       }
+
+      &:hover {
+          color: #20bfc1 !important;
+      }
     }
     li.active{
       .xline-bottom{
@@ -121,8 +125,7 @@ header.unloaded{
           background-color: transparent;
         }
         span{
-          color: #FFBE00;
-          background-color: rgba(255,190,0,0.1);
+          background-color: #20bfc1;
         }
       }
     }
@@ -132,13 +135,13 @@ header.unloaded{
 header.navbar{
   border-bottom: 1px solid $border;
   height: 61px;
-  background-color: rgb(37, 36, 47);
+  background: #FFF;
   @media (min-width: $screen-md-min){
     min-height: 50px;
   }
   @media (max-width: $mobile-breakpoint){
     #submitbutton{
-      display: none !important;   
+      display: none !important;
     }
   }
   .not-logged-in{
@@ -224,13 +227,6 @@ header.navbar{
               transform: translateX(-3px);
               opacity: 0;
             }
-            &:hover{
-              background-color: $gray-bg;
-              color: #FFF;
-              .line-bottom{
-                opacity: 1;
-              }
-            }
           }
         }
       }
@@ -285,10 +281,7 @@ header.navbar{
               }
             }
             .button{
-              background-image: url(../images/register_bg.png);
-              background-size: contain;
-              background-position: center;
-              background-repeat: no-repeat;
+                background: #FFF;
               padding: 5px 20px;
               width: 190px;
               margin-left: auto;
@@ -336,10 +329,7 @@ header.navbar{
   }
 
   .navbar-right{
-    background-image: url("../images/register_bg.png");
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+                background: #FFF;
     padding: 5px 20px;
     display: none;
     margin-right: 0;

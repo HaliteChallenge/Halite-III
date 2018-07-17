@@ -6,7 +6,7 @@
                 <p class="d1 c-org font-headline">MAY THE BEST BOT WIN</p>
                 <div v-if="!me_in" class="not-me ha-button-container">
                     <div class="hidden-xs hidden-sm">
-                        <a class="ha-button" href="/learn-programming-challenge"><span>GET STARTED</span></a>
+                        <a class="ha-button" href="/learn-programming-challenge"><span>Get Started</span></a>
                     </div>
                     <div class="visible-xs visible-sm">
                         <a class="ha-button" href="https://api.halite.io/v1/login/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;"><span>SIGN UP</span></a>
@@ -25,12 +25,12 @@
                     <div class="line-container"><i class="xline xline-top"></i></div>
                     <div class="ha-button-container no-bg-button">
                         <div>
-                            <a class="ha-button" href="/learn-programming-challenge/basic-game-rules/the-halite-codex"><span>READ THE CODEX</span></a>
+                            <a class="ha-button" href="/learn-programming-challenge/basic-game-rules"><span>Read the Codex</span></a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-offset-2 col-md-4 bot-2">
-                    <img :src="`${baseUrl}/assets/images/temp/bot_2.png`"/>
+                    <img :src="`${baseUrl}/assets/images/temp/bot_1.png`"/>
                 </div>
            </div>
             <div class="col-md-12 ha-line">
