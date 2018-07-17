@@ -16,6 +16,15 @@ class HaliteImpl final {
     Halite &game;
 
     /**
+     * Initialize the game.
+     * @param player_commands The list of player commands.
+     */
+    void initialize_game(const std::vector<std::string> &player_commands);
+
+    /** Run the game. */
+    void run_game();
+
+    /**
      * Determine whether the game has ended.
      *
      * @return True if the game has ended.

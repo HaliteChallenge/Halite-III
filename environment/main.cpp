@@ -7,8 +7,10 @@
 #include "Generator.hpp"
 #include "Halite.hpp"
 #include "Logging.hpp"
+#include "Replay.hpp"
 #include "Snapshot.hpp"
 #include "SnapshotError.hpp"
+#include "Statistics.hpp"
 #include "Units.hpp"
 
 #include "version.hpp"
@@ -144,9 +146,9 @@ int main(int argc, char *argv[]) {
     hlt::GameStatistics game_statistics;
     hlt::Replay replay{game_statistics, map_parameters.num_players, map_parameters.seed, map};
 
-    hlt::Halite game(config, map, networking_config, bot_commands, game_statistics, replay);
+    hlt::Halite game(config, map, networking_config, game_statistics, replay);
     game.load_snapshot(snapshot);
-    game.run_game();
+    game.run_game(bot_commands);
 
     // Output replay file for visualizer
     if (!no_replay_switch.getValue()) {
@@ -188,7 +190,7 @@ int main(int argc, char *argv[]) {
             results["map_generator"] = "default";
             results["stats"] = nlohmann::json::object();
             for (const auto& stats : replay.game_statistics.player_statistics) {
-                results["stats"][std::string(stats.player_id)] = { { "rank", stats.rank } };
+                results["stats"][to_string(stats.player_id)] = { { "rank", stats.rank } };
             }
             // TODO: where are the error logs?
             results["error_logs"] = nlohmann::json::object();

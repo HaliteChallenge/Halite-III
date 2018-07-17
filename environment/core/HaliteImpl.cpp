@@ -1,8 +1,68 @@
 #include <future>
 
 #include "HaliteImpl.hpp"
+#include "Logging.hpp"
 
 namespace hlt {
+
+/**
+ * Initialize the game.
+ * @param player_commands The list of player commands.
+ */
+void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands) {
+    const auto &constants = Constants::get();
+    auto &players = game.store.players;
+    players.reserve(player_commands.size());
+    assert(game.map.factories.size() >= player_commands.size());
+    auto factory_iterator = game.map.factories.begin();
+    for (const auto &command : player_commands) {
+        auto &factory = *factory_iterator++;
+        auto player = game.store.player_factory.make(factory, command);
+        player.energy = constants.INITIAL_ENERGY;
+        game.game_statistics.player_statistics.emplace_back(player.id);
+        players.emplace(player.id, player);
+    }
+    game.replay.game_statistics = game.game_statistics;
+
+    // Zero the energy on factories.
+    for (auto &[_, player] : game.store.players) {
+        game.map.at(player.factory).energy = 0;
+    }
+}
+
+/** Run the game. */
+void HaliteImpl::run_game() {
+    const auto &constants = Constants::get();
+
+    id_map<Player, std::future<void>> results{};
+    for (auto &[player_id, player] : game.store.players) {
+        results[player_id] = std::async(std::launch::async,
+                                        [&networking = game.networking, &player = player] {
+                                            networking.initialize_player(player);
+                                        });
+    }
+    for (auto &[_, result] : results) {
+        result.get();
+    }
+    game.replay.players.insert(game.store.players.begin(), game.store.players.end());
+    game.replay.full_frames.emplace_back();
+    Logging::log("Player initialization complete.");
+
+    for (game.turn_number = 0; game.turn_number < constants.MAX_TURNS; game.turn_number++) {
+        Logging::log("Starting turn " + std::to_string(game.turn_number));
+        // Create new turn struct for replay file, to be filled by further turn actions
+        game.replay.full_frames.emplace_back();
+        process_turn();
+
+        if (game_ended()) {
+            break;
+        }
+    }
+    game.game_statistics.number_turns = game.turn_number;
+
+    rank_players();
+    Logging::log("Game has ended after " + std::to_string(game.turn_number) + " turns.");
+}
 
 /** Retrieve and process commands, and update the game state for the current turn. */
 void HaliteImpl::process_turn() {

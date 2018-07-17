@@ -52,8 +52,8 @@ struct id_type final {
     }
 
     /** String conversion. */
-    explicit operator std::string() const {
-        return std::to_string(value);
+    friend std::string to_string(const id_type &id) {
+        return std::to_string(id.value);
     }
 
     /** Default constructor. */
