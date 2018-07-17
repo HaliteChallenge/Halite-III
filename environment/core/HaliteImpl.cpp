@@ -82,7 +82,6 @@ void HaliteImpl::process_turn() {
 
     // Process valid player commands, removing players if they submit invalid ones.
     std::unordered_set<Entity::id_type> changed_entities;
-    std::unordered_set<Location> changed_cells;
     while (!commands.empty()) {
         CommandTransaction transaction{game.store, game.map};
         transaction.set_callback([&frames = game.replay.full_frames](auto event) {
@@ -101,7 +100,7 @@ void HaliteImpl::process_turn() {
             // All commands are successful.
             transaction.commit();
             changed_entities = std::move(transaction.changed_entities);
-            changed_cells = std::move(transaction.changed_cells);
+            game.store.changed_cells = std::move(transaction.changed_cells);
             // add player commands to replay and note players still alive
             game.replay.full_frames.back().moves = std::move(commands);
             for (auto &player_statistics : game.replay.game_statistics.player_statistics) {
@@ -134,7 +133,7 @@ void HaliteImpl::process_turn() {
             // TODO: maximum capacity of ship
             entity.energy += extracted;
             cell.energy -= extracted;
-            changed_cells.emplace(location);
+            game.store.changed_cells.emplace(location);
         }
     }
     // TODO: replay now has access to changed_entities and changed_cells

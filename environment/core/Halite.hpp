@@ -17,6 +17,7 @@ struct Snapshot;
 
 /** Halite game interface, exposing the top level of the game. */
 class Halite final {
+    /** Transient game state. */
     unsigned long turn_number{};      /**< The turn number. */
     Store store;                      /**< The entity store. */
 
