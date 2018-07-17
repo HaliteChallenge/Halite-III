@@ -47,8 +47,10 @@ void HaliteImpl::process_commands() {
 
             break;
         } else {
-            // Remove this player and their commands, and try again.
-            kill_player(transaction.offender());
+            for (auto &offender : transaction.offenders) {
+                // Remove this player and their commands.
+                kill_player(offender);
+            }
         }
     }
 }

@@ -47,12 +47,12 @@ bool DumpTransaction::check() {
             const auto &[entity_id, energy] = command;
             // Entity is not found or has too little energy
             if (!player.has_entity(entity_id) || store.get_entity(entity_id).energy < energy) {
-                _offender = player_id;
-                return false;
+                offenders.emplace(player_id);
+                break;
             }
         }
     }
-    return true;
+    return offenders.empty();
 }
 
 /** If the transaction may be committed, commit the transaction. */
@@ -74,18 +74,15 @@ bool ConstructTransaction::check() {
     for (const auto &[player_id, constructs] : commands) {
         auto &player = store.get_player(player_id);
         for (const ConstructCommand &command : constructs) {
-            // Entity is not valid
-            if (!player.has_entity(command.entity)) {
-                _offender = player_id;
-                return false;
-            }
-            // Cell is already owned
-            if (map.at(player.get_entity_location(command.entity)).owner != Player::None) {
-                return false;
+            // Entity is not valid or cell is already owned
+            if (!player.has_entity(command.entity) ||
+                map.at(player.get_entity_location(command.entity)).owner != Player::None) {
+                offenders.emplace(player_id);
+                break;
             }
         }
     }
-    return true;
+    return offenders.empty();
 }
 
 /** If the transaction may be committed, commit the transaction. */
@@ -123,17 +120,18 @@ bool MoveTransaction::check() {
         for (const MoveCommand &command : moves) {
             // Entity is not valid
             if (!player.has_entity(command.entity)) {
-                _offender = player_id;
-                return false;
+                offenders.emplace(player_id);
+                break;
             }
             // Entity does not have enough energy
             energy_type required = map.at(player.get_entity_location(command.entity)).energy / cost;
             if (store.get_entity(command.entity).energy < required) {
-                return false;
+                offenders.emplace(player_id);
+                break;
             }
         }
     }
-    return true;
+    return offenders.empty();
 }
 
 /** If the transaction may be committed, commit the transaction. */
@@ -204,13 +202,12 @@ void MoveTransaction::commit() {
 bool SpawnTransaction::check() {
     // Only one spawn per turn
     std::unordered_set<Player::id_type> occurrences;
-    for (const auto &[player, _] : commands) {
-        if (const auto &[__, inserted] = occurrences.emplace(player); !inserted) {
-            _offender = player;
-            return false;
+    for (const auto &[player_id, _] : commands) {
+        if (const auto &[__, inserted] = occurrences.emplace(player_id); !inserted) {
+            offenders.emplace(player_id);
         }
     }
-    return true;
+    return offenders.empty();
 }
 
 /** If the transaction may be committed, commit the transaction. */
@@ -288,11 +285,12 @@ void CommandTransaction::add_command(Player &player, const SpawnCommand &command
  * @return False if the transaction may not be committed.
  */
 bool CommandTransaction::check() {
+    bool success = true;
     // Check that expenses are not too high
     for (const auto &[player, expense] : expenses) {
         if (expense > player.energy) {
-            _offender = player.id;
-            return false;
+            offenders.emplace(player.id);
+            success = false;
         }
     }
     // Check that each entity is operated on at most once
@@ -300,18 +298,19 @@ bool CommandTransaction::check() {
     for (const auto &[player, entities] : occurrences) {
         for (const auto &[_, number] : entities) {
             if (number > MAX_MOVES_PER_ENTITY) {
-                _offender = player.id;
-                return false;
+                offenders.emplace(player.id);
+                success = false;
             }
         }
     }
     // Check that each transaction can succeed individually
     for (BaseTransaction &transaction : all_transactions) {
         if (!transaction.check()) {
-            return false;
+            offenders.insert(transaction.offenders.begin(), transaction.offenders.end());
+            success = false;
         }
     }
-    return true;
+    return success;
 }
 
 /** If the transaction may be committed, commit the transaction. */

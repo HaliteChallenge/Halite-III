@@ -2,6 +2,7 @@
 #define TRANSACTION_HPP
 
 #include <functional>
+#include <unordered_set>
 
 #include "GameEvent.hpp"
 #include "Location.hpp"
@@ -17,11 +18,13 @@ class Map;
 /** Base transaction class independent of commands. */
 class BaseTransaction {
 protected:
-    std::function<void(GameEvent)> callback;    /**< The game event callback. */
-    Store &store;                               /**< The game store. */
-    Map &map;                                   /**< The game map. */
-    Player::id_type _offender = Player::None;   /**< Player that prevents transaction from committing. */
+    std::function<void(GameEvent)> callback;       /**< The game event callback. */
+    Store &store;                                  /**< The game store. */
+    Map &map;                                      /**< The game map. */
+
 public:
+    std::unordered_set<Player::id_type> offenders; /**< Players that prevent transaction from committing. */
+
     /**
      * Construct BaseTransaction from Store and Map.
      * @param store The Store.
@@ -40,12 +43,6 @@ public:
      * @return False if the transaction may not be committed.
      */
     virtual bool check() = 0;
-
-    /**
-     * Get the ID of the player that is preventing the transaction from committing.
-     * @return ID of offender if there is one, or Player::None otherwise.
-     */
-    Player::id_type offender() const { return _offender; }
 
     /** If the transaction may be committed, commit the transaction. */
     virtual void commit() = 0;
