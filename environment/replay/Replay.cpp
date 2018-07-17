@@ -74,7 +74,6 @@ void Turn::add_entities(Store &store) {
     }
 }
 
-
 /**
  * Create json format for replay struct ptr
  * Ptr argument is useful for output replay function, which will pass the replay struct as "this"
