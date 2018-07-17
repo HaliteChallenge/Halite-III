@@ -53,9 +53,9 @@ void to_json(nlohmann::json &json, const Turn &turn) {
     for (auto &[player_id, entities_map] : turn.entities) {
         nlohmann::json player_entity_json;
         for (auto &[entity_id, entity_info] : entities_map) {
-            player_entity_json[std::to_string(entity_id)] = entity_info;
+            player_entity_json[std::string(entity_id)] = entity_info;
         }
-        entities_json[std::to_string(player_id)] = player_entity_json;
+        entities_json[std::string(player_id)] = player_entity_json;
     }
     json["moves"] = moves_json;
     json["energy"] = energy_json;
@@ -68,9 +68,9 @@ void to_json(nlohmann::json &json, const Turn &turn) {
  */
 void Turn::add_entities(std::unordered_map<Player::id_type, Player> &players) {
     for (const auto &[player_id, player] : players) {
-        for (const auto &[location, entity] : player.entities) {
-            const EntityInfo entity_info = {location, entity};
-            entities[player_id].insert( {{entity.id, entity_info}} );
+        for (const auto &[entity_id, location_entity_pair] : player.entities) {
+            const EntityInfo entity_info = {location_entity_pair.first, location_entity_pair.second};
+            entities[player_id].insert( {{entity_id, entity_info}} );
         }
     }
 }

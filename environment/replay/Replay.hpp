@@ -50,7 +50,7 @@ struct EntityInfo {
 };
 
 struct Turn {
-    using Entities = std::unordered_map<Player::id_type, EntityInfo>;
+    using Entities = std::unordered_map<Entity::id_type, EntityInfo>;
     std::unordered_map<Player::id_type, std::vector<std::unique_ptr<Command>>> moves;    /**< Mapping from player id to the commands they issued this turn */
     std::unordered_map<Player::id_type, energy_type> energy;            /**< Mapping from player id to the energy they ended the turn with */
     std::vector<GameEvent> events;                                      /**< Events occurring this turn (spawns, deaths, etc) for replay */

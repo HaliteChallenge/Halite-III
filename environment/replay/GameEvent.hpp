@@ -84,7 +84,7 @@ public:
      * @param location Location of entity death
      * @param owner_id Owner of dying entity
      */
-    CollisionEvent(Location location, std::vector<Entiy::id_type> ships) : BaseEvent(location), ships(ships) {};
+    CollisionEvent(Location location, std::vector<Entity::id_type> ships) : BaseEvent(location), ships(ships) {};
     ~CollisionEvent() override  = default;
 };
 

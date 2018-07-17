@@ -25,6 +25,12 @@ void HaliteImpl::process_commands() {
     // todo: add callbacks for collisions, constructs, and spawns
     while (!commands.empty()) {
         CommandTransaction transaction{game, game.map};
+        transaction.set_callback([&frames = game.replay.full_frames](auto event) {
+            // Create new game event for replay file. Ensure turn has been initialized before adding a game event
+            if (frames.size() > 0) {
+                frames.back().events.push_back(std::move(event));
+            }
+        });
         for (const auto &[player_id, command_list] : commands) {
             auto &player = game.players.find(player_id)->second;
             for (const auto &command : command_list) {

@@ -62,10 +62,14 @@ void ConstructTransaction::commit() {
     for (auto &[player_id, constructs] : commands) {
         auto &player = game.get_player(player_id);
         for (const ConstructCommand &command : constructs) {
-            auto &cell = map.at(player.get_entity_location(command.entity));
+            auto location = player.get_entity_location(command.entity);
+            auto &cell = map.at(location);
             cell.is_dropoff = true;
             cell.energy = 0;
             cell.entity = Entity::None;
+            if (callback) {
+                callback(std::make_unique<ConstructionEvent>(location, player_id, command.entity));
+            }
             player.remove_entity(command.entity);
             game.delete_entity(command.entity);
             player.energy -= cost;
@@ -127,9 +131,14 @@ void MoveTransaction::commit() {
     static constexpr auto MAX_ENTITIES_PER_CELL = 1;
     for (auto &[destination, entities] : destinations) {
         if (entities.size() > MAX_ENTITIES_PER_CELL) {
-            // Destroy all interested entities.
+            // Destroy all interested entities and collect them in replay info
+            std::vector<Entity::id_type> collision_ids;
             for (auto &entity_id : entities) {
+                collision_ids.push_back(entity_id);
                 game.delete_entity(entity_id);
+            }
+            if (callback) {
+                callback(std::make_unique<CollisionEvent>(destination, collision_ids));
             }
         } else {
             auto &entity_id = entities.front();
@@ -169,10 +178,17 @@ void SpawnTransaction::commit() {
         auto &cell = map.at(player.factory);
         if (cell.entity == Entity::None) {
             cell.entity = game.new_entity(energy, player, player.factory).id;
+            if (callback) {
+                callback(std::make_unique<SpawnEvent>(player.factory, energy, player_id, cell.entity));
+            }
         } else {
             // There is a collision
             auto &owner = game.get_owner(cell.entity);
             owner.remove_entity(cell.entity);
+            if (callback) {
+                std::vector<Entity::id_type> collision_ids = {cell.entity};
+                callback(std::make_unique<CollisionEvent>(player.factory, collision_ids));
+            }
             game.delete_entity(cell.entity);
             cell.entity = Entity::None;
         }
