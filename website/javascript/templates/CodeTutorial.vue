@@ -22,7 +22,8 @@
                     At the beginning of a match, the engine sends you
                     the initial map state and your bot ID. You need to
                     send back your bot's name. Edit the starter bot
-                    and name it as you please.
+                    and name it as you please&mdash;look at the
+                    highlighted line.
                 </p>
             </Step>
             <Step title="Basic Movement" name="basic-movement">

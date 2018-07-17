@@ -283,13 +283,23 @@ export default {
         })
       })
     },
+    clearHighlights: function() {
+      const editor = this.editorViewer.editor
+      const annotationModel = editor.getAnnotationModel()
+      const annotations = annotationModel.getAnnotations();
+      while (annotations.hasNext()) {
+        const annotation = annotations.next();
+        annotationModel.removeAnnotation(annotation);
+      }
+    },
     highlightContaining: function(text) {
       const editor = this.editorViewer.editor
       const view = editor.getTextView()
       const viewModel = view.getModel()
       const annotationModel = editor.getAnnotationModel()
-      const lineStart = editor.mapOffset(viewModel.getLineStart(6))
-      const lineEnd = editor.mapOffset(viewModel.getLineEnd(6))
+      const lineNumber = view.getLineAtOffset(view.getText().indexOf(text))
+      const lineStart = editor.mapOffset(viewModel.getLineStart(lineNumber))
+      const lineEnd = editor.mapOffset(viewModel.getLineEnd(lineNumber))
       annotationModel.replaceAnnotations([], [
         {
           start: lineStart,
@@ -582,6 +592,6 @@ export default {
 
 <style lang="scss">
 .tutorial-highlight {
-  background: red;
+  background: red !important;
 }
 </style>

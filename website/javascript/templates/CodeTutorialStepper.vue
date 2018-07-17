@@ -24,7 +24,23 @@
             stepName: function(newStep, oldStep) {
                 if (newStep === "initialization") {
                     this.$refs.editor
-                        .doReady((editor) => editor.highlightContaining("MyPythonBot"));
+                        .doReady((editor) => {
+                            editor.clearHighlights();
+                            editor.highlightContaining("MyPythonBot");
+                        });
+                }
+                else if (newStep === "basic-movement") {
+                    this.$refs.editor
+                        .doReady((editor) => {
+                            editor.clearHighlights();
+                            editor.highlightContaining("moves");
+                        });
+                }
+                else {
+                    this.$refs.editor
+                        .doReady((editor) => {
+                            editor.clearHighlights();
+                        });
                 }
             },
         }
