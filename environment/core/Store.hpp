@@ -19,8 +19,9 @@ class Store {
     id_map<Player, Player> players;         /**< Map from player ID to player. */
     id_map<Entity, Entity> entities;        /**< Map from entity ID to entity. */
 
-    Factory<Player> player_factory; /**< The player factory. */
-    Factory<Entity> entity_factory; /**< The entity factory. */
+    Factory<Player> player_factory;   /**< The player factory. */
+    Factory<Entity> entity_factory;   /**< The entity factory. */
+    Factory<Dropoff> dropoff_factory; /**< The dropoff factory. */
 
 public:
     /**
@@ -47,6 +48,13 @@ public:
      * @return The new entity.
      */
     Entity &new_entity(energy_type energy, const Player::id_type &owner);
+
+    /**
+     * Obtain a new dropoff.
+     * @param location The location of the dropoff.
+     * @return The new dropoff.
+     */
+    Dropoff new_dropoff(Location location);
 
     /**
      * Delete an entity by ID.
