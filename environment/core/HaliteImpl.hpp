@@ -15,6 +15,12 @@ class HaliteImpl final {
     /** The game interface. */
     Halite &game;
 
+    /**
+     * Initialize the game.
+     * @param player_commands The list of player commands.
+     */
+    void initialize_game(const std::vector<std::string> &player_commands);
+
     /** Run the game. */
     void run_game();
 

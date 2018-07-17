@@ -43,19 +43,20 @@ public:
      * @param config The configuration options for the game.
      * @param map The game map.
      * @param networking_config The networking configuration.
-     * @param player_commands The list of player commands.
      * @param game_statistics The game statistics to use.
      * @param replay The game replay to use.
      */
     Halite(const Config &config,
            Map &map,
            const net::NetworkingConfig &networking_config,
-           const std::vector<std::string> &player_commands,
            GameStatistics &game_statistics,
            Replay &replay);
 
-    /** Run the game. */
-    void run_game();
+    /**
+     * Run the game.
+     * @param player_commands The list of player commands.
+     */
+    void run_game(const std::vector<std::string> &player_commands);
 
     /**
      * Load a snapshot.

@@ -146,9 +146,9 @@ int main(int argc, char *argv[]) {
     hlt::GameStatistics game_statistics;
     hlt::Replay replay{game_statistics, map_parameters.num_players, map_parameters.seed, map};
 
-    hlt::Halite game(config, map, networking_config, bot_commands, game_statistics, replay);
+    hlt::Halite game(config, map, networking_config, game_statistics, replay);
     game.load_snapshot(snapshot);
-    game.run_game();
+    game.run_game(bot_commands);
 
     // Output replay file for visualizer
     if (!no_replay_switch.getValue()) {

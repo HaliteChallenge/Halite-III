@@ -5,14 +5,34 @@
 
 namespace hlt {
 
-/** Run the game. */
-void HaliteImpl::run_game() {
+/**
+ * Initialize the game.
+ * @param player_commands The list of player commands.
+ */
+void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands) {
     const auto &constants = Constants::get();
+    auto &players = game.store.players;
+    players.reserve(player_commands.size());
+    assert(game.map.factories.size() >= player_commands.size());
+    auto factory_iterator = game.map.factories.begin();
+    for (const auto &command : player_commands) {
+        auto &factory = *factory_iterator++;
+        auto player = game.store.player_factory.make(factory, command);
+        player.energy = constants.INITIAL_ENERGY;
+        game.game_statistics.player_statistics.emplace_back(player.id);
+        players.emplace(player.id, player);
+    }
+    game.replay.game_statistics = game.game_statistics;
 
     // Zero the energy on factories.
     for (auto &[_, player] : game.store.players) {
         game.map.at(player.factory).energy = 0;
     }
+}
+
+/** Run the game. */
+void HaliteImpl::run_game() {
+    const auto &constants = Constants::get();
 
     id_map<Player, std::future<void>> results{};
     for (auto &[player_id, player] : game.store.players) {
