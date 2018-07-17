@@ -21,8 +21,10 @@ struct Constants {
 
     energy_type MAX_CELL_PRODUCTION = 512;      /**< The maximum maximum amount of production on a cell. */
     energy_type MIN_CELL_PRODUCTION = 1;       /**< The minimum maximum amount of production on a cell. */
+    // TODO: ship max capacity
     energy_type MAX_ENERGY = 255;               /**< The maximum amount of energy per entity. */
     energy_type NEW_ENTITY_ENERGY_COST = 256;  /**< The amount of production which equals one energy. */
+    // TODO: split this cost into the fixed and variable portions
     energy_type NEW_ENTITY_ENERGY = 255;        /**< The starting energy of a new entity. */
     energy_type BASE_TURN_ENERGY_LOSS = 1;      /**< The base energy decrease of an entity per turn. */
     energy_type INITIAL_ENERGY = 512;        /**< The initial amount of energy for a player. */
@@ -30,6 +32,7 @@ struct Constants {
     energy_type DROPOFF_COST = 512;            /**< The cost of a dropoff construction. */
     unsigned long MOVE_COST_RATIO = 20;         /**< The cost of a move is the source's energy divided by this. */
     unsigned long DROPOFF_PENALTY_RATIO = 4;   /**< The cost ratio of using another player's dropoff. */
+    unsigned long EXTRACT_RATIO = 10;           /**< The ratio of energy extracted from a cell per turn. */
 
     double PERSISTENCE = 0.7; // Determines relative weight of local vs global features.
     double FACTOR_EXP_1 = 1.5; // Determines initial spikiness of map. Higher values weight towards 0.

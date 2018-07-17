@@ -61,7 +61,10 @@ void DumpTransaction::commit() {
         auto &player = store.get_player(player_id);
         for (const DumpCommand &command : dumps) {
             auto &entity = store.get_entity(command.entity);
-            dump_energy(store, entity, map.at(player.get_entity_location(command.entity)), command.energy);
+            const auto location = player.get_entity_location(command.entity);
+            dump_energy(store, entity, map.at(location), command.energy);
+            changed_cells.emplace(location);
+            changed_entities.emplace(command.entity);
         }
     }
 }
@@ -92,15 +95,17 @@ void ConstructTransaction::commit() {
         auto &player = store.get_player(player_id);
         for (const ConstructCommand &command : constructs) {
             const auto entity = command.entity;
-            auto location = player.get_entity_location(entity);
+            const auto location = player.get_entity_location(entity);
             auto &cell = map.at(location);
             // Mark as owned, clear contents of cell
             cell.owner = player_id;
+            player.dropoffs.emplace_back(location);
             cell.energy = 0;
             cell.entity = Entity::None;
             if (callback) {
                 callback(std::make_unique<ConstructionEvent>(location, player_id, command.entity));
             }
+            changed_cells.emplace(location);
             player.remove_entity(entity);
             store.delete_entity(entity);
             // Charge player
@@ -185,12 +190,14 @@ void MoveTransaction::commit() {
             if (callback) {
                 callback(std::make_unique<CollisionEvent>(destination, collision_ids));
             }
+            changed_cells.emplace(destination);
         } else {
             auto &entity_id = entities.front();
             // Place it on the map.
             cell.entity = entity_id;
             // Give it back to the owner.
             store.get_player(store.get_entity(entity_id).owner).add_entity(entity_id, destination);
+            changed_entities.emplace(entity_id);
         }
     }
 }
@@ -317,6 +324,8 @@ bool CommandTransaction::check() {
 void CommandTransaction::commit() {
     for (BaseTransaction &transaction : all_transactions) {
         transaction.commit();
+        changed_entities.insert(transaction.changed_entities.begin(), transaction.changed_entities.end());
+        changed_cells.insert(transaction.changed_cells.begin(), transaction.changed_cells.end());
     }
 }
 
