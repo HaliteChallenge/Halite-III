@@ -14,7 +14,7 @@
 namespace hlt {
 
 /** The map of cells. */
-class Map : public Grid<Cell> {
+class Map final : public Grid<Cell> {
 public:
     /** The factories on this Map. */
     std::vector<Location> factories;

@@ -5,6 +5,11 @@
 
 namespace hlt {
 
+BaseTransaction::~BaseTransaction() = default;
+
+template<class T>
+Transaction<T>::~Transaction() = default;
+
 /**
  * Check if the transaction may be committed without actually committing.
  * @return False if the transaction may not be committed.
@@ -15,7 +20,7 @@ bool DumpTransaction::check() {
         for (const DumpCommand &command : dumps) {
             const auto &[entity_id, energy] = command;
             // Entity is not found or has too little energy
-            if (!player.has_entity(entity_id) || player.get_entity(entity_id).energy < energy) {
+            if (!player.has_entity(entity_id) || game.get_entity(entity_id).energy < energy) {
                 _offender = player_id;
                 return false;
             }
@@ -136,7 +141,7 @@ void MoveTransaction::commit() {
             // Place it on the map.
             map.at(destination).entity = entity_id;
             // Give it back to the owner.
-            game.get_owner(entity_id).add_entity(game.get_entity(entity_id), destination);
+            game.get_owner(entity_id).add_entity(entity_id, destination);
             // TODO: decrease energy on the moved entity
         }
     }

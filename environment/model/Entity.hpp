@@ -7,7 +7,7 @@
 namespace hlt {
 
 /** A player-affiliated entity placed on the Halite map. */
-struct Entity : public virtual Enumerated<Entity> {
+struct Entity final : public Enumerated<Entity> {
     friend class Factory<Entity>;
 
     /** Energy of the entity. */

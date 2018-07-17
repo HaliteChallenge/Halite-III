@@ -6,7 +6,7 @@
 namespace net {
 
 /** Connections based on Windows processes and pipes. */
-class WinConnection : public BaseConnection {
+class WinConnection final : public BaseConnection {
 public:
     /**
      * Initialize a WinConnection to a new process using a command.

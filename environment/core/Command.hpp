@@ -1,11 +1,11 @@
 #ifndef COMMAND_HPP
 #define COMMAND_HPP
 
-#include "CommandTransaction.hpp"
 #include "Entity.hpp"
 #include "Location.hpp"
 #include "Map.hpp"
 #include "Player.hpp"
+#include "Transaction.hpp"
 
 #include "nlohmann/json_fwd.hpp"
 
@@ -41,16 +41,20 @@ public:
 
 /** Statically polymorphic mixin for commands that may be added to a transaction. */
 template<class T>
-class Transactable : public virtual Command {
+class TransactableCommand : public Command {
+public:
     /**
      * Add the command to a transaction.
      * @param player The player executing the command.
      * @param transaction The command transaction to act on.
      */
-    void add_to_transaction(Player &player, CommandTransaction &transaction) const override {
+    void add_to_transaction(Player &player, CommandTransaction &transaction) const final {
         // Invoke overload resolution on CommandTransaction::add_command
         transaction.add_command(player, static_cast<const T &>(*this));
     }
+
+    /** Virtual destructor. */
+    ~TransactableCommand() override = 0;
 };
 
 /**
@@ -69,7 +73,7 @@ void to_json(nlohmann::json &json, const Command &command);
 std::istream &operator>>(std::istream &istream, std::unique_ptr<Command> &command);
 
 /** Command for moving an entity in a direction. */
-class MoveCommand : public virtual Command, public Transactable<MoveCommand> {
+class MoveCommand final : public TransactableCommand<MoveCommand> {
 public:
     const Entity::id_type entity; /**< The location of the entity. */
     const Direction direction;    /**< The direction in which to move. */
@@ -89,7 +93,7 @@ public:
 };
 
 /** Command for spawning an entity. */
-class SpawnCommand : public virtual Command, public Transactable<SpawnCommand> {
+class SpawnCommand final : public TransactableCommand<SpawnCommand> {
 public:
     /** The amount of energy to give the new entity. */
     const energy_type energy;
@@ -107,7 +111,7 @@ public:
     explicit SpawnCommand(energy_type energy) : energy(energy) {}
 };
 
-class DumpCommand : public virtual Command, public Transactable<DumpCommand> {
+class DumpCommand final : public TransactableCommand<DumpCommand> {
 public:
     const Entity::id_type entity; /**< The entity from which to dump. */
     const energy_type energy;     /**< The amount to dump. */
@@ -127,7 +131,7 @@ public:
 };
 
 /** Command to construct a drop zone. */
-class ConstructCommand : public virtual Command, public Transactable<ConstructCommand> {
+class ConstructCommand final : public TransactableCommand<ConstructCommand> {
 public:
     /** The entity to use to construct. */
     const Entity::id_type entity;

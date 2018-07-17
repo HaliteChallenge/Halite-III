@@ -9,23 +9,6 @@
 namespace hlt {
 
 /**
- * Convert a Player's entities to JSON format.
- * @param[out] json The output JSON.
- * @param entities The entities to convert.
- */
-void to_json(nlohmann::json &json, const Player::Entities entities) {
-    // Entities are a mapping from location to entity object
-    // We want the json for an entity to include both the location and the details stored in the entity object
-    json = nlohmann::json::array();
-    for (const auto &[id, location_entity] : entities) {
-        const auto &[_, entity] = location_entity;
-        nlohmann::json entity_json;
-        to_json(entity_json, entity);
-        json.push_back(entity_json);
-    }
-}
-
-/**
  * Convert a Player to JSON format.
  * @param[out] json The output JSON.
  * @param player The Player to convert.
@@ -61,16 +44,7 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
  * @return The entity location.
  */
 Location Player::get_entity_location(const Entity::id_type &id) const {
-    return entities.find(id)->second.first;
-}
-
-/**
- * Get an entity by ID.
- * @param id The entity ID.
- * @return The entity.
- */
-Entity &Player::get_entity(const Entity::id_type &id) {
-    return entities.find(id)->second.second;
+    return entities.find(id)->second;
 }
 
 /**
@@ -91,12 +65,20 @@ void Player::remove_entity(const Entity::id_type &id) {
 }
 
 /**
- * Add an entity.
- * @param entity The entity to add.
+ * Add an entity by ID.
+ * @param id The entity ID to add.
  * @param location The location of the entity.
  */
-void Player::add_entity(Entity &entity, Location location) {
-    entities.emplace(entity.id, std::pair<Location, std::reference_wrapper<Entity>>(location, entity));
+void Player::add_entity(const Entity::id_type &id, Location location) {
+    entities.emplace(id, location);
+}
+
+/**
+ * Get whether this player is alive.
+ * @return True if the player is alive, false otherwise.
+ */
+bool Player::is_alive() const {
+    return !entities.empty();
 }
 
 }

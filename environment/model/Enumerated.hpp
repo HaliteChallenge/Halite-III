@@ -2,6 +2,7 @@
 #define ENUMERATED_HPP
 
 #include <iostream>
+#include <unordered_map>
 #include <utility>
 
 #include "nlohmann/json.hpp"
@@ -17,7 +18,7 @@ using id_value_type = long;
  * @tparam T The class to which these IDs belong.
  */
 template<class T>
-struct id_type {
+struct id_type final {
     /** Internal value. */
     id_value_type value;
 
@@ -89,7 +90,13 @@ public:
      * @param id The ID.
      */
     explicit Enumerated(id_type id) : id(id) {}
+
+    /** Virtual destructor. */
+    virtual ~Enumerated() = 0;
 };
+
+template<class T>
+Enumerated<T>::~Enumerated() = default;
 
 namespace std {
 template<class T>
@@ -107,12 +114,16 @@ struct hash<Enumerated<T>> {
 };
 }
 
+/** Type of maps from ID to arbitrary value. */
+template<class K, class V>
+using id_map = std::unordered_map<typename K::id_type, V>;
+
 /**
  * Generic factory class that creates classes with an enumerated ID.
  * @tparam T The class to instantiate.
  */
 template<class T>
-class Factory {
+class Factory final {
     /** The last ID allocated. */
     id_value_type last_id = T::None.value;
 public:
