@@ -77,6 +77,10 @@ void HaliteImpl::process_turn() {
         }
     }
     // TODO: replay now has access to changed_entities and changed_cells
+    game.replay.full_frames.back().add_cells(game.map, changed_cells);
+    for (const auto [player_id, player] : game.store.players) {
+        game.replay.full_frames.back().energy.insert( {{player_id, player.energy}} );
+    }
 }
 
 /**

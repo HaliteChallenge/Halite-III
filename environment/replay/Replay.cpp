@@ -63,14 +63,26 @@ void to_json(nlohmann::json &json, const Turn &turn) {
 }
 
 /**
- * Stores the turn info of all entities
- * @param players: Player store at start of turn
+ * Given the game store, reformat and store entity state at start of turn in replay
+ * param store The game store at the start of the turn
  */
 void Turn::add_entities(Store &store) {
     for (const auto &[entity_id, entity] : store.entities) {
         const auto location = store.get_player(entity.owner).get_entity_location(entity.id);
         const EntityInfo entity_info = {location, entity};
         entities[entity.owner].insert( {{entity.id, entity_info}} );
+    }
+}
+
+/**
+ * Add cells changed on this turn to the replay file
+ * @param map The game map (to access cell energy)
+ * @param cells The locations of changed cells
+ */
+void Turn::add_cells(Map &map, std::unordered_set<Location> changed_cells){
+    for (const auto location : changed_cells) {
+        const auto cell = map.at(location);
+        this->cells.emplace_back(location, cell);
     }
 }
 

@@ -64,8 +64,18 @@ struct Turn {
      */
     friend void to_json(nlohmann::json &json, const Turn &turn);
 
-    // TODO: update to take in entity store if players no longer have direct entity access
+    /**
+     * Given the game store, reformat and store entity state at start of turn in replay
+     * param store The game store at the start of the turn
+     */
     void add_entities(Store &store);
+
+    /**
+     * Add cells changed on this turn to the replay file
+     * @param map The game map (to access cell energy)
+     * @param cells The locations of changed cells
+     */
+    void add_cells(Map &map, std::unordered_set<Location> changed_cells);
 };
 
 struct Replay {
