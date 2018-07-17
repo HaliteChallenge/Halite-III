@@ -34,7 +34,7 @@ export class Map {
             this.productions[row] = new Array(this.cols);
             for (let col = 0; col < this.cols; col++) {
                 let cell = replay.production_map.grid[row][col];
-                this.productions[row][col] = cell["type"] === "n" ? cell.production : 0;
+                this.productions[row][col] = cell.energy;
             }
         }
 
