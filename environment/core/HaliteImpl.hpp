@@ -16,7 +16,7 @@ class HaliteImpl final {
     Halite &game;
 
     /** Current commands per player. */
-    Halite::id_map<Player, std::vector<std::unique_ptr<Command>>> commands;
+    id_map<Player, std::vector<std::unique_ptr<Command>>> commands;
 
     /**
      * Determine whether the game has ended.

@@ -19,10 +19,6 @@ class HaliteImpl;
 
 /** Halite game interface, exposing the top level of the game. */
 class Halite final {
-    /** Type of maps from ID to arbitrary value. */
-    template<class K, class V>
-    using id_map = std::unordered_map<typename K::id_type, V>;
-
     /** Type of storage maps from IDs to objects. */
     template<class T>
     using Store = id_map<T, T>;

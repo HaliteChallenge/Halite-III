@@ -104,6 +104,9 @@ public:
     const Entry &operator[](const Location &location) const {
         return at(location);
     }
+
+    /** Virtual destructor. */
+    virtual ~Grid() = default;
 };
 
 }

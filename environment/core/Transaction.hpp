@@ -1,10 +1,10 @@
-#ifndef COMMANDTRANSACTION_HPP
-#define COMMANDTRANSACTION_HPP
+#ifndef TRANSACTION_HPP
+#define TRANSACTION_HPP
 
 #include <functional>
 
-#include "Location.hpp"
 #include "GameEvent.hpp"
+#include "Location.hpp"
 #include "Player.hpp"
 
 namespace hlt {
@@ -48,6 +48,9 @@ public:
 
     /** If the transaction may be committed, commit the transaction. */
     virtual void commit() = 0;
+
+    /** Virtual destructor. */
+    virtual ~BaseTransaction() = 0;
 };
 
 /**
@@ -70,6 +73,9 @@ public:
     void add_command(Player &player, const Command &command) {
         commands[player.id].emplace_back(command);
     }
+
+    /** Virtual destructor. */
+    ~Transaction() override = 0;
 };
 
 class DumpCommand;
@@ -81,7 +87,7 @@ class MoveCommand;
 class SpawnCommand;
 
 /** Transaction for DumpCommand. */
-class DumpTransaction : public Transaction<DumpCommand> {
+class DumpTransaction final : public Transaction<DumpCommand> {
 public:
     using Transaction::Transaction;
 
@@ -96,7 +102,7 @@ public:
 };
 
 /** Transaction for ConstructCommand. */
-class ConstructTransaction : public Transaction<ConstructCommand> {
+class ConstructTransaction final : public Transaction<ConstructCommand> {
 public:
     using Transaction::Transaction;
 
@@ -111,7 +117,7 @@ public:
 };
 
 /** Transaction for MoveCommand. */
-class MoveTransaction : public Transaction<MoveCommand> {
+class MoveTransaction final : public Transaction<MoveCommand> {
 public:
     using Transaction::Transaction;
 
@@ -126,7 +132,7 @@ public:
 };
 
 /** Transaction for SpawnCommand. */
-class SpawnTransaction : public Transaction<SpawnCommand> {
+class SpawnTransaction final : public Transaction<SpawnCommand> {
 public:
     using Transaction::Transaction;
 
@@ -141,7 +147,7 @@ public:
 };
 
 /** Transaction for all commands. */
-class CommandTransaction : public BaseTransaction {
+class CommandTransaction final : public BaseTransaction {
     /** Count of occurrences per player-entity pair, to catch duplicates. */
     std::unordered_map<Player, std::unordered_map<Entity::id_type, int>> occurrences;
     /** Total expenses per player. */
@@ -209,4 +215,4 @@ public:
 
 }
 
-#endif // COMMANDTRANSACTION_HPP
+#endif // TRANSACTION_HPP

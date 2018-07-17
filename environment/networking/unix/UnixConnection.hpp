@@ -9,7 +9,7 @@
 namespace net {
 
 /** Connections based on UNIX processes and pipes. */
-class UnixConnection : public BaseConnection {
+class UnixConnection final : public BaseConnection {
 private:
     static constexpr auto READ_BUFFER_SIZE = 256; /**< The buffer size for reading from bots. */
     std::array<char, READ_BUFFER_SIZE> buffer{};  /**< The bot read buffer. */

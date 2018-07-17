@@ -12,17 +12,21 @@
 namespace hlt {
 
 /** Representation of a Halite player. */
-struct Player : public virtual Enumerated<Player> {
+class Player final : public Enumerated<Player> {
     friend class Factory<Player>;
+    id_map<Entity, Location> entities{};  /**< Mapping from entity to location. */
 
-    /** Type of the Entity map of a player, where keys are entity IDs. */
-    using Entities = std::unordered_map<Entity::id_type, std::pair<Location, std::reference_wrapper<Entity>>>;
+public:
+    std::string name;          /**< The name of the player. */
+    const Location factory;    /**< The factory location of the player. */
+    energy_type energy{};      /**< The amount of energy stockpiled by the player. */
+    const std::string command; /**< The bot command for the player. */
 
-    std::string name;     /**< The name of the player. */
-    energy_type energy{}; /**< The amount of energy stockpiled by the player. */
-    Location factory;     /**< The factory location of the player. */
-    Entities entities{};  /**< Mapping from location of entity to entity */
-    std::string command;  /**< The bot command for the player. */
+    /**
+     * Get whether this player is alive.
+     * @return True if the player is alive, false otherwise.
+     */
+    bool is_alive() const;
 
     /**
      * Get whether the player has an entity.
@@ -32,11 +36,11 @@ struct Player : public virtual Enumerated<Player> {
     bool has_entity(const Entity::id_type &id) const;
 
     /**
-     * Add an entity.
-     * @param entity The entity to add.
+     * Add an entity by ID.
+     * @param id The entity ID to add.
      * @param location The location of the entity.
      */
-    void add_entity(Entity &entity, Location location);
+    void add_entity(const Entity::id_type &id, Location location);
 
     /**
      * Remove an entity by ID.
@@ -50,13 +54,6 @@ struct Player : public virtual Enumerated<Player> {
      * @return The entity location.
      */
     Location get_entity_location(const Entity::id_type &id) const;
-
-    /**
-     * Get an entity by ID.
-     * @param id The entity ID.
-     * @return The entity.
-     */
-    Entity &get_entity(const Entity::id_type &id);
 
     /**
      * Convert a Player to JSON format.

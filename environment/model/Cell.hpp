@@ -10,7 +10,7 @@
 namespace hlt {
 
 /** Cell on the Halite map. */
-struct Cell {
+struct Cell final {
     energy_type energy{};                   /**< Energy of this Cell. */
     Entity::id_type entity = Entity::None;  /**< Entity on this Cell. */
     bool is_dropoff = false;                /**< Whether this Cell is a dropoff. */

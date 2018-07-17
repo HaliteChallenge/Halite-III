@@ -34,7 +34,7 @@ void to_json(nlohmann::json &json, const Direction &direction);
 std::istream &operator>>(std::istream &istream, Direction &direction);
 
 /** Type of a location. */
-struct Location {
+struct Location final {
     dimension_type x{}; /**< The x-coordinate. */
     dimension_type y{}; /**< The y-coordinate. */
 

@@ -15,6 +15,9 @@ constexpr auto JSON_ENERGY_KEY = "energy";
 
 namespace hlt {
 
+template<class T>
+TransactableCommand<T>::~TransactableCommand() = default;
+
 /**
  * Convert a Command to JSON format.
  * @param[out] json The output JSON.

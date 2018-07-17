@@ -20,8 +20,8 @@ void Halite::run_game() {
     for (auto &[_, result] : results) {
         result.get();
     }
-    replay.players = this->players;
-    //replay.full_frames.emplace_back();
+
+    replay.players.insert(this->players.begin(), this->players.end());
     Logging::log("Player initialization complete.");
 
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
@@ -64,7 +64,7 @@ Halite::Halite(const Config &config,
         game_statistics(game_statistics),
         replay(replay),
         config(config),
-        networking(net::Networking(networking_config, *this)),
+        networking(networking_config, *this),
         impl(std::make_unique<HaliteImpl>(*this)) {
     const auto &constants = Constants::get();
     players.reserve(player_commands.size());
@@ -127,7 +127,7 @@ Entity &Halite::new_entity(energy_type energy, Player &player, Location location
     auto entity = entity_factory.make(energy);
     entities.emplace(entity.id, entity);
     auto &inside = entities.find(entity.id)->second;
-    player.add_entity(inside, location);
+    player.add_entity(inside.id, location);
     map.at(location).entity = inside.id;
     return inside;
 }

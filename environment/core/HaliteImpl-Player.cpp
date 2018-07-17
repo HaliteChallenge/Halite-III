@@ -11,7 +11,7 @@ namespace hlt {
 void HaliteImpl::update_player_stats(std::unordered_map<Player::id_type, energy_type> &productions) {
     for (PlayerStatistics &player_stats : game.game_statistics.player_statistics) {
         // Player with sprites is still alive, so mark as alive on this turn and add production gained
-        if (!game.get_player(player_stats.player_id).entities.empty()) {
+        if (game.get_player(player_stats.player_id).is_alive()) {
             player_stats.last_turn_alive = game.turn_number;
             player_stats.turn_productions.push_back(productions[player_stats.player_id]);
             player_stats.total_production += productions[player_stats.player_id];
