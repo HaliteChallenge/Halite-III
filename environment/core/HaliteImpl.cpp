@@ -136,7 +136,6 @@ void HaliteImpl::process_turn() {
             game.store.changed_cells.emplace(location);
         }
     }
-    // TODO: replay now has access to changed_entities and changed_cells
     game.replay.full_frames.back().add_cells(game.map, game.store.changed_cells);
     for (const auto [player_id, player] : game.store.players) {
         game.replay.full_frames.back().energy.insert( {{player_id, player.energy}} );
@@ -150,7 +149,7 @@ void HaliteImpl::process_turn() {
 bool HaliteImpl::game_ended() const {
     long num_alive_players = 0;
     for (auto &&[_, player] : game.store.players) {
-        // TODO: implement edge case of last player being unable to produce
+        // TODO: check that this is correct
         if (player.is_alive()) {
             num_alive_players++;
         }
