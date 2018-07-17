@@ -12,6 +12,7 @@
 #include "Statistics.hpp"
 #include "Replay.hpp"
 #include "Snapshot.hpp"
+#include "Store.hpp"
 
 namespace hlt {
 
@@ -19,21 +20,8 @@ class HaliteImpl;
 
 /** Halite game interface, exposing the top level of the game. */
 class Halite final {
-    /** Type of storage maps from IDs to objects. */
-    template<class T>
-    using Store = id_map<T, T>;
-
-    /** Mappings from ID to objects, also serving as owners for Player and Entity. */
-    Store<Player> players;                                 /**< Map from player ID to player. */
-    Store<Entity> entities;                                /**< Map from entity ID to entity. */
-    id_map<Entity, std::reference_wrapper<Player>> owners; /**< Map from entity ID to entity owner. */
-
-    /** Game object factories. */
-    Factory<Player> player_factory;   /**< The player factory. */
-    Factory<Entity> entity_factory;   /**< The entity factory. */
-
-    /** Transient game state. */
     unsigned long turn_number{};      /**< The turn number. */
+    Store store;                      /**< The entity store. */
 
     /** External game state. */
     Map &map;                         /**< The game map. */
@@ -77,47 +65,6 @@ public:
      * @param snapshot The snapshot.
      */
     void load_snapshot(const Snapshot &snapshot);
-
-    /**
-     * Get a player by ID.
-     *
-     * @param id The player ID.
-     * @return The player.
-     */
-    Player &get_player(const Player::id_type &id);
-
-    /**
-     * Get the owner of an entity.
-     *
-     * @param id The entity ID.
-     * @return The owner of the entity.
-     */
-    Player &get_owner(const Entity::id_type &id);
-
-    /**
-     * Obtain a new entity.
-     *
-     * @param energy The energy of the entity.
-     * @param player The owner of the player.
-     * @param location The location of the entity.
-     * @return The new entity.
-     */
-    Entity &new_entity(energy_type energy, Player &player, Location location);
-
-    /**
-     * Delete an entity by ID.
-     *
-     * @param id The ID of the entity.
-     */
-    void delete_entity(const Entity::id_type &id);
-
-    /**
-     * Get an entity by ID.
-     *
-     * @param id The entity ID.
-     * @return The entity.
-     */
-    Entity &get_entity(const Entity::id_type &id);
 
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();

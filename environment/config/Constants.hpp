@@ -28,6 +28,8 @@ struct Constants {
     energy_type INITIAL_ENERGY = 255000;        /**< The initial amount of energy for a player. */
 
     energy_type DROPOFF_COST = 1000;            /**< The cost of a dropoff construction. */
+    unsigned long MOVE_COST_RATIO = 10;         /**< The cost of a move is the source's energy divided by this. */
+    unsigned long DROPOFF_PENALTY_RATIO = 10;   /**< The cost ratio of using another player's dropoff. */
 
     double PERSISTENCE = 0.7; // Determines relative weight of local vs global features.
     double FACTOR_EXP_1 = 1.5; // Determines initial spikiness of map. Higher values weight towards 0.

@@ -11,16 +11,42 @@ template<class T>
 Transaction<T>::~Transaction() = default;
 
 /**
+ * Dump energy onto a cell.
+ *
+ * @param store The game store.
+ * @param entity The entity dumping energy.
+ * @param cell The cell at which to dump.
+ * @param energy The dumped amount of energy.
+ */
+void dump_energy(Store &store, Entity &entity, Cell &cell, energy_type energy) {
+    // Decrease the entity's energy.
+    entity.energy -= energy;
+    if (cell.owner == Player::None) {
+        // Just dump directly onto the cell.
+        cell.energy += energy;
+    } else if (cell.owner == entity.owner) {
+        // The owner gets all the energy.
+        store.get_player(entity.owner).energy += energy;
+    } else {
+        // The energy is split.
+        energy_type penalty = energy / Constants::get().DROPOFF_PENALTY_RATIO;
+        energy -= penalty;
+        store.get_player(entity.owner).energy += energy;
+        store.get_player(cell.owner).energy += penalty;
+    }
+}
+
+/**
  * Check if the transaction may be committed without actually committing.
  * @return False if the transaction may not be committed.
  */
 bool DumpTransaction::check() {
     for (const auto &[player_id, dumps] : commands) {
-        auto &player = game.get_player(player_id);
+        auto &player = store.get_player(player_id);
         for (const DumpCommand &command : dumps) {
             const auto &[entity_id, energy] = command;
             // Entity is not found or has too little energy
-            if (!player.has_entity(entity_id) || game.get_entity(entity_id).energy < energy) {
+            if (!player.has_entity(entity_id) || store.get_entity(entity_id).energy < energy) {
                 _offender = player_id;
                 return false;
             }
@@ -32,13 +58,10 @@ bool DumpTransaction::check() {
 /** If the transaction may be committed, commit the transaction. */
 void DumpTransaction::commit() {
     for (const auto &[player_id, dumps] : commands) {
-        auto &player = game.get_player(player_id);
+        auto &player = store.get_player(player_id);
         for (const DumpCommand &command : dumps) {
-            auto &entity = game.get_entity(command.entity);
-            entity.energy -= command.energy;
-            Location location = player.get_entity_location(command.entity);
-            // TODO: if location is factory or drop zone, act accordingly
-            map.at(location).energy += command.energy;
+            auto &entity = store.get_entity(command.entity);
+            dump_energy(store, entity, map.at(player.get_entity_location(command.entity)), command.energy);
         }
     }
 }
@@ -49,11 +72,15 @@ void DumpTransaction::commit() {
  */
 bool ConstructTransaction::check() {
     for (const auto &[player_id, constructs] : commands) {
-        auto &player = game.get_player(player_id);
+        auto &player = store.get_player(player_id);
         for (const ConstructCommand &command : constructs) {
             // Entity is not valid
             if (!player.has_entity(command.entity)) {
                 _offender = player_id;
+                return false;
+            }
+            // Cell is already owned
+            if (map.at(player.get_entity_location(command.entity)).owner != Player::None) {
                 return false;
             }
         }
@@ -65,18 +92,21 @@ bool ConstructTransaction::check() {
 void ConstructTransaction::commit() {
     auto cost = Constants::get().DROPOFF_COST;
     for (auto &[player_id, constructs] : commands) {
-        auto &player = game.get_player(player_id);
+        auto &player = store.get_player(player_id);
         for (const ConstructCommand &command : constructs) {
-            auto location = player.get_entity_location(command.entity);
+            const auto entity = command.entity;
+            auto location = player.get_entity_location(entity);
             auto &cell = map.at(location);
-            cell.is_dropoff = true;
+            // Mark as owned, clear contents of cell
+            cell.owner = player_id;
             cell.energy = 0;
             cell.entity = Entity::None;
             if (callback) {
                 callback(std::make_unique<ConstructionEvent>(location, player_id, command.entity));
             }
-            player.remove_entity(command.entity);
-            game.delete_entity(command.entity);
+            player.remove_entity(entity);
+            store.delete_entity(entity);
+            // Charge player
             player.energy -= cost;
         }
     }
@@ -87,39 +117,47 @@ void ConstructTransaction::commit() {
  * @return False if the transaction may not be committed.
  */
 bool MoveTransaction::check() {
+    auto cost = Constants::get().MOVE_COST_RATIO;
     for (const auto &[player_id, moves] : commands) {
-        auto &player = game.get_player(player_id);
+        auto &player = store.get_player(player_id);
         for (const MoveCommand &command : moves) {
             // Entity is not valid
             if (!player.has_entity(command.entity)) {
                 _offender = player_id;
                 return false;
             }
+            // Entity does not have enough energy
+            energy_type required = map.at(player.get_entity_location(command.entity)).energy / cost;
+            if (store.get_entity(command.entity).energy < required) {
+                return false;
+            }
         }
-        // TODO: check that the energy is sufficient to move off the source
     }
     return true;
 }
 
 /** If the transaction may be committed, commit the transaction. */
 void MoveTransaction::commit() {
+    auto cost = Constants::get().MOVE_COST_RATIO;
     // Map from destination location to all the entities that want to go there.
     std::unordered_map<Location, std::vector<Entity::id_type>> destinations;
     // Lift each entity that is moving from the grid.
     for (auto &[player_id, moves] : commands) {
-        auto &player = game.get_player(player_id);
+        auto &player = store.get_player(player_id);
         for (const MoveCommand &command : moves) {
             const auto &[entity_id, direction] = command;
             auto location = player.get_entity_location(entity_id);
-            // Remove the entity from its source
             auto &source = map.at(location);
+            // Decrease the entity's energy.
+            store.get_entity(entity_id).energy -= source.energy / cost;
+            // Remove the entity from its source.
             source.entity = Entity::None;
             map.move_location(location, direction);
             // Mark it as interested in the destination.
             destinations[location].emplace_back(entity_id);
             // Take it from its owner.
             // Do not mark the entity as removed in the game yet.
-            game.get_owner(entity_id).remove_entity(entity_id);
+            store.get_player(store.get_entity(entity_id).owner).remove_entity(entity_id);
         }
     }
     // If there are already unmoving entities at the destination, lift them off too.
@@ -127,7 +165,7 @@ void MoveTransaction::commit() {
         auto &cell = map.at(destination);
         if (cell.entity != Entity::None) {
             destinations[destination].emplace_back(cell.entity);
-            game.get_owner(cell.entity).remove_entity(cell.entity);
+            store.get_player(store.get_entity(cell.entity).owner).remove_entity(cell.entity);
             cell.entity = Entity::None;
         }
     }
@@ -135,12 +173,16 @@ void MoveTransaction::commit() {
     // Otherwise, destroy all interested entities.
     static constexpr auto MAX_ENTITIES_PER_CELL = 1;
     for (auto &[destination, entities] : destinations) {
+        auto &cell = map.at(destination);
         if (entities.size() > MAX_ENTITIES_PER_CELL) {
             // Destroy all interested entities and collect them in replay info
             std::vector<Entity::id_type> collision_ids;
             for (auto &entity_id : entities) {
                 collision_ids.push_back(entity_id);
-                game.delete_entity(entity_id);
+                // Dump the energy.
+                auto &entity = store.get_entity(entity_id);
+                dump_energy(store, entity, cell, entity.energy);
+                store.delete_entity(entity_id);
             }
             if (callback) {
                 callback(std::make_unique<CollisionEvent>(destination, collision_ids));
@@ -148,10 +190,9 @@ void MoveTransaction::commit() {
         } else {
             auto &entity_id = entities.front();
             // Place it on the map.
-            map.at(destination).entity = entity_id;
+            cell.entity = entity_id;
             // Give it back to the owner.
-            game.get_owner(entity_id).add_entity(entity_id, destination);
-            // TODO: decrease energy on the moved entity
+            store.get_player(store.get_entity(entity_id).owner).add_entity(entity_id, destination);
         }
     }
 }
@@ -178,24 +219,22 @@ void SpawnTransaction::commit() {
     auto cost = constants.NEW_ENTITY_ENERGY_COST;
     for (const auto &[player_id, spawns] : commands) {
         for (const SpawnCommand &spawn : spawns) {
-            auto &player = game.get_player(player_id);
+            auto &player = store.get_player(player_id);
             auto energy = spawn.energy;
             player.energy -= (cost + energy);
             auto &cell = map.at(player.factory);
             if (cell.entity == Entity::None) {
-                cell.entity = game.new_entity(energy, player, player.factory).id;
-                if (callback) {
-                    callback(std::make_unique<SpawnEvent>(player.factory, energy, player_id, cell.entity));
-                }
+                auto &entity = store.new_entity(energy, player.id);
+                player.add_entity(entity.id, player.factory);
+                cell.entity = entity.id;
             } else {
-                // There is a collision
-                auto &owner = game.get_owner(cell.entity);
-                owner.remove_entity(cell.entity);
                 if (callback) {
                     std::vector<Entity::id_type> collision_ids = {cell.entity};
                     callback(std::make_unique<CollisionEvent>(player.factory, collision_ids));
                 }
-                game.delete_entity(cell.entity);
+                // There is a collision, destroy the existing.
+                store.get_player(store.get_entity(cell.entity).owner).remove_entity(cell.entity);
+                store.delete_entity(cell.entity);
                 cell.entity = Entity::None;
             }
         }

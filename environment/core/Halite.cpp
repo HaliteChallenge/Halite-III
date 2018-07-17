@@ -11,7 +11,7 @@ namespace hlt {
 void Halite::run_game() {
     const auto &constants = Constants::get();
     std::unordered_map<Player::id_type, std::future<void>> results{};
-    for (auto &[player_id, player] : players) {
+    for (auto &[player_id, player] : store.players) {
         results[player_id] = std::async(std::launch::async,
                                         [&networking = networking, &player = player] {
                                             networking.initialize_player(player);
@@ -21,7 +21,7 @@ void Halite::run_game() {
         result.get();
     }
 
-    replay.players.insert(this->players.begin(), this->players.end());
+    replay.players.insert(store.players.begin(), store.players.end());
     Logging::log("Player initialization complete.");
 
     for (this->turn_number = 0; this->turn_number < constants.MAX_TURNS; this->turn_number++) {
@@ -67,12 +67,13 @@ Halite::Halite(const Config &config,
         networking(networking_config, *this),
         impl(std::make_unique<HaliteImpl>(*this)) {
     const auto &constants = Constants::get();
+    auto &players = store.players;
     players.reserve(player_commands.size());
     assert(map.factories.size() >= player_commands.size());
     auto factory_iterator = map.factories.begin();
     for (const auto &command : player_commands) {
         auto &factory = *factory_iterator++;
-        auto player = player_factory.make(factory, command);
+        auto player = store.player_factory.make(factory, command);
         player.energy = constants.INITIAL_ENERGY;
         game_statistics.player_statistics.emplace_back(player.id);
         players.emplace(player.id, player);
@@ -83,65 +84,6 @@ Halite::Halite(const Config &config,
 void Halite::load_snapshot(const Snapshot &snapshot) {
     // TODO: implement
     (void) snapshot;
-}
-
-/**
- * Get a player by ID.
- *
- * @param id The player ID.
- * @return The player.
- */
-Player &Halite::get_player(const Player::id_type &id) {
-    return players.find(id)->second;
-}
-
-/**
- * Get the owner of an entity.
- *
- * @param id The entity ID.
- * @return The owner of the entity.
- */
-Player &Halite::get_owner(const Entity::id_type &id) {
-    return owners.find(id)->second;
-}
-
-/**
- * Get an entity by ID.
- *
- * @param id The entity ID.
- * @return The entity.
- */
-Entity &Halite::get_entity(const Entity::id_type &id) {
-    return entities.find(id)->second;
-}
-
-/**
- * Obtain a new entity.
- *
- * @param energy The energy of the entity.
- * @param player The owner of the player.
- * @param location The location of the entity.
- * @return The new entity.
- */
-Entity &Halite::new_entity(energy_type energy, Player &player, Location location) {
-    auto entity = entity_factory.make(energy);
-    entities.emplace(entity.id, entity);
-    auto &inside = entities.find(entity.id)->second;
-    player.add_entity(inside.id, location);
-    map.at(location).entity = inside.id;
-    return inside;
-}
-
-/**
- * Delete an entity by ID.
- *
- * @param id The ID of the entity.
- */
-void Halite::delete_entity(const Entity::id_type &id) {
-    // Guard against aliasing
-    auto copy = id;
-    entities.erase(copy);
-    owners.erase(copy);
 }
 
 /** Default destructor is defined where HaliteImpl is complete. */

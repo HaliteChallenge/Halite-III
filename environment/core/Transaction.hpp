@@ -6,6 +6,7 @@
 #include "GameEvent.hpp"
 #include "Location.hpp"
 #include "Player.hpp"
+#include "Store.hpp"
 
 namespace hlt {
 
@@ -17,16 +18,16 @@ class Map;
 class BaseTransaction {
 protected:
     std::function<void(GameEvent)> callback;    /**< The game event callback. */
-    Halite &game;                               /**< The game object. */
-    Map &map;                                   /**< The Map. */
+    Store &store;                               /**< The game store. */
+    Map &map;                                   /**< The game map. */
     Player::id_type _offender = Player::None;   /**< Player that prevents transaction from committing. */
 public:
     /**
-     * Construct BaseTransaction from game object and Map.
-     * @param game The game object.
+     * Construct BaseTransaction from Store and Map.
+     * @param store The Store.
      * @param map The Map.
      */
-    explicit BaseTransaction(Halite &game, Map &map) : game(game), map(map) {}
+    explicit BaseTransaction(Store &store, Map &map) : store(store), map(map) {}
 
     /**
      * Set a callback for GameEvents generated during the transaction commit.
@@ -201,16 +202,16 @@ public:
     void commit() override;
 
     /**
-     * Construct CommandTransaction from game object and map.
-     * @param game The game object.
+     * Construct CommandTransaction from Store and map.
+     * @param store The Store.
      * @param map The Map.
      */
-    explicit CommandTransaction(Halite &game, Map &map) :
-            BaseTransaction(game, map),
-            dump_transaction(game, map),
-            construct_transaction(game, map),
-            move_transaction(game, map),
-            spawn_transaction(game, map) {}
+    explicit CommandTransaction(Store &store, Map &map) :
+            BaseTransaction(store, map),
+            dump_transaction(store, map),
+            construct_transaction(store, map),
+            move_transaction(store, map),
+            spawn_transaction(store, map) {}
 };
 
 }

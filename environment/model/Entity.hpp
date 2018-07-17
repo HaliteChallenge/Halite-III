@@ -6,12 +6,17 @@
 
 namespace hlt {
 
+// Forward declare to avoid circular header dependency.
+class Player;
+
+using player_id_type = id_type<Player>;
+
 /** A player-affiliated entity placed on the Halite map. */
 struct Entity final : public Enumerated<Entity> {
     friend class Factory<Entity>;
 
-    /** Energy of the entity. */
-    energy_type energy;
+    const player_id_type owner; /**< Owner of the entity. */
+    energy_type energy;         /**< Energy of the entity. */
 
     /**
      * Convert an Entity to JSON format.
@@ -30,11 +35,12 @@ struct Entity final : public Enumerated<Entity> {
 
 private:
     /**
-     * Create Entity from ID and energy.
+     * Create Entity from ID, owner ID, and energy.
      * @param id The entity ID.
+     * @param owner The owner ID.
      * @param energy The energy.
      */
-    Entity(id_type id, energy_type energy) : Enumerated(id), energy(energy) {}
+    Entity(id_type id, player_id_type owner, energy_type energy) : Enumerated(id), owner(owner), energy(energy) {}
 };
 
 }
