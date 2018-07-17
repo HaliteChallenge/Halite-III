@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <utility>
 
+#include "Dropoff.hpp"
 #include "Entity.hpp"
 #include "Enumerated.hpp"
 #include "Location.hpp"
@@ -19,7 +20,7 @@ class Player final : public Enumerated<Player> {
 public:
     std::string name;               /**< The name of the player. */
     const Location factory;         /**< The factory location of the player. */
-    std::vector<Location> dropoffs; /**< The dropoffs this player owns. */
+    std::vector<Dropoff> dropoffs;  /**< The dropoffs this player owns. */
     energy_type energy{};           /**< The amount of energy stockpiled by the player. */
     const std::string command;      /**< The bot command for the player. */
 

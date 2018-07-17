@@ -99,7 +99,7 @@ void ConstructTransaction::commit() {
             auto &cell = map.at(location);
             // Mark as owned, clear contents of cell
             cell.owner = player_id;
-            player.dropoffs.emplace_back(location);
+            player.dropoffs.emplace_back(store.new_dropoff(location));
             cell.energy = 0;
             cell.entity = Entity::None;
             changed_cells.emplace(location);

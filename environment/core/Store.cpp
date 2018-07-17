@@ -43,4 +43,13 @@ void Store::delete_entity(const Entity::id_type id) {
     entities.erase(id);
 }
 
+/**
+ * Obtain a new dropoff.
+ * @param location The location of the dropoff.
+ * @return The new dropoff.
+ */
+Dropoff Store::new_dropoff(Location location) {
+    return dropoff_factory.make(location);
+}
+
 }
