@@ -28,12 +28,23 @@ void to_json(nlohmann::json &json, const Player &player) {
  * @return The output stream.
  */
 std::ostream &operator<<(std::ostream &ostream, const Player &player) {
-    // Output player ID, number of entities, and current energy.
-    ostream << player.id << " " << player.entities.size() << " " << player.energy << std::endl;
+    // Output player ID, number of entities, number of dropoffs, and current energy.
+    ostream << player.id
+            << " " << player.entities.size()
+            << " " << player.dropoffs.size()
+            << " " << player.energy
+            << std::endl;
     // Output a list of entities.
     for (const auto &[id, location_entity] : player.entities) {
         auto [location, entity] = location_entity;
-        ostream << id << " " << location << " " << entity;
+        ostream << id
+                << " " << location
+                << " " << entity
+                << std::endl;
+    }
+    // Output a list of dropoffs.
+    for (const auto &dropoff : player.dropoffs) {
+        ostream << dropoff << std::endl;
     }
     return ostream;
 }

@@ -1,6 +1,8 @@
 #ifndef STORE_HPP
 #define STORE_HPP
 
+#include <unordered_set>
+
 #include "Player.hpp"
 
 namespace net {
@@ -15,12 +17,14 @@ class Store {
     friend class HaliteImpl;
     friend class net::Networking;
 
-    id_map<Player, Player> players;         /**< Map from player ID to player. */
-    id_map<Entity, Entity> entities;        /**< Map from entity ID to entity. */
+    id_map<Player, Player> players;  /**< Map from player ID to player. */
+    id_map<Entity, Entity> entities; /**< Map from entity ID to entity. */
 
     Factory<Player> player_factory;   /**< The player factory. */
     Factory<Entity> entity_factory;   /**< The entity factory. */
     Factory<Dropoff> dropoff_factory; /**< The dropoff factory. */
+
+    std::unordered_set<Location> changed_cells{}; /**< The cells changed on the last turn. */
 
 public:
     /**

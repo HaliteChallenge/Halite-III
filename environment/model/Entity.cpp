@@ -23,7 +23,7 @@ void to_json(nlohmann::json &json, const Entity &entity) {
  */
 std::ostream &operator<<(std::ostream &ostream, const Entity &entity) {
     // Output the entity ID, then energy.
-    return ostream << entity.id << " " << entity.energy << std::endl;
+    return ostream << entity.id << " " << entity.energy;
 }
 
 }

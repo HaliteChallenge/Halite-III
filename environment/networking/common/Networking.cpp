@@ -53,11 +53,15 @@ void Networking::initialize_player(Player &player) {
  */
 std::vector<std::unique_ptr<Command>> Networking::handle_frame(const Player &player) {
     std::stringstream message_stream;
-    // TODO: send map? entities?
     // Send the turn number, then each player in the game.
     message_stream << game.turn_number << std::endl;
     for (const auto &[_, other_player] : game.store.players) {
         message_stream << other_player;
+    }
+    // Send the changed cells.
+    message_stream << game.store.changed_cells.size() << std::endl;
+    for (const auto &location : game.store.changed_cells) {
+        message_stream << location << game.map.at(location).energy << std::endl;
     }
     connections[player]->send_string(message_stream.str());
     Logging::log("Turn info sent to player " + to_string(player.id), Logging::Level::Debug);

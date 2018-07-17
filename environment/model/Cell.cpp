@@ -12,7 +12,7 @@ namespace hlt {
  * @return The output stream.
  */
 std::ostream &operator<<(std::ostream &ostream, const Cell &cell) {
-    return ostream << std::to_string(cell.energy) << std::endl;
+    return ostream << std::to_string(cell.energy);
 }
 
 /**

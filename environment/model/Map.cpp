@@ -55,8 +55,9 @@ std::ostream &operator<<(std::ostream &os, const Map &map) {
     // Output the cells one after another.
     for (const auto &row : map.grid) {
         for (const auto &cell : row) {
-            os << cell;
+            os << cell << " ";
         }
+        os << std::endl;
     }
     return os;
 }
