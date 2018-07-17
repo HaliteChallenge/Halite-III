@@ -6,8 +6,8 @@
 
 /** The JSON key for command type. */
 constexpr auto JSON_TYPE_KEY = "type";
-/** The JSON key for entity location. */
-constexpr auto JSON_ENTITY_KEY = "entity";
+/** The JSON key for entity id. */
+constexpr auto JSON_ENTITY_KEY = "id";
 /** The JSON key for direction. */
 constexpr auto JSON_DIRECTION_KEY = "direction";
 /** The JSON key for energy. */

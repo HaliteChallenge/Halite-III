@@ -71,7 +71,7 @@ struct Turn {
 struct Replay {
     GameStatistics &game_statistics;                            /**< Statistics for the game (inlcudes number of turns) */
     const Constants &GAME_CONSTANTS = Constants::get();         /**< Constants used in this game */
-    static constexpr unsigned long REPLAY_FILE_VERSION = 2;     /**< Replay file version (updated as this struct or serialization changes) */
+    static constexpr unsigned long REPLAY_FILE_VERSION = 3;     /**< Replay file version (updated as this struct or serialization changes) */
     static constexpr auto ENGINE_VERSION = HALITE_VERSION;      /**< Version of the game engine */
 
     size_t number_of_players;                                   /**< Number of players in this game */

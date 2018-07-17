@@ -17,12 +17,10 @@ void HaliteImpl::retrieve_commands() {
     for (auto &[player_id, result] : results) {
         commands[player_id] = result.get();
     }
-    //TODO: add commands to replay struct here?
 }
 
 /** Process the effects of commands. */
 void HaliteImpl::process_commands() {
-    // todo: add callbacks for collisions, constructs, and spawns
     while (!commands.empty()) {
         CommandTransaction transaction{game, game.map};
         transaction.set_callback([&frames = game.replay.full_frames](auto event) {
@@ -39,6 +37,12 @@ void HaliteImpl::process_commands() {
         }
         if (transaction.check()) {
             transaction.commit();
+            // add player commands to replay
+            game.replay.full_frames.back().moves = std::move(commands);
+            for (auto &player_statistics : game.replay.game_statistics.player_statistics) {
+                if (commands.find(player_statistics.player_id) != commands.end()) player_statistics.last_turn_alive = game.turn_number;
+            }
+
             break;
         } else {
             kill_player(transaction.offender());
