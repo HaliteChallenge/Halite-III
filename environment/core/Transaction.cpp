@@ -176,10 +176,10 @@ bool SpawnTransaction::check() {
 void SpawnTransaction::commit() {
     const auto &constants = Constants::get();
     auto cost = constants.NEW_ENTITY_ENERGY_COST;
-    auto energy = constants.NEW_ENTITY_ENERGY;
-    for (const auto &[player_id, _] : commands) {
+    for (const auto &[player_id, spawn_command] : commands) {
         auto &player = game.get_player(player_id);
-        player.energy -= cost;
+        auto energy = spawn_command.energy;
+        player.energy -= (cost + energy);
         auto &cell = map.at(player.factory);
         if (cell.entity == Entity::None) {
             cell.entity = game.new_entity(energy, player, player.factory).id;
@@ -238,6 +238,7 @@ void CommandTransaction::add_command(Player &player, const MoveCommand &command)
  */
 void CommandTransaction::add_command(Player &player, const SpawnCommand &command) {
     expenses[player] += Constants::get().NEW_ENTITY_ENERGY_COST;
+    expenses[player] += command.energy;
     spawn_transaction.add_command(player, command);
 }
 

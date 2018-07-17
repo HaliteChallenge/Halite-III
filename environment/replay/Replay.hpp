@@ -55,7 +55,7 @@ struct Turn {
     std::unordered_map<Player::id_type, energy_type> energy;            /**< Mapping from player id to the energy they ended the turn with */
     std::vector<GameEvent> events;                                      /**< Events occurring this turn (spawns, deaths, etc) for replay */
     std::vector<CellInfo> cells;                                        /**< Cells that changed on this turn */
-    std::unordered_map<Player::id_type, Entities> entities{};             /**< Current entities and their information. */
+    std::unordered_map<Player::id_type, Entities> entities{};           /**< Current entities and their information. */
 
     /**
      * Convert turn to JSON format.

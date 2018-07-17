@@ -68,9 +68,9 @@ void to_json(nlohmann::json &json, const Turn &turn) {
  */
 void Turn::add_entities(std::unordered_map<Player::id_type, Player> &players) {
     for (const auto &[player_id, player] : players) {
-        for (const auto &[entity_id, location_entity_pair] : player.entities) {
-            const EntityInfo entity_info = {location_entity_pair.first, location_entity_pair.second};
-            entities[player_id].insert( {{entity_id, entity_info}} );
+        for (const auto &[entity, location] : player.entities) {
+            const EntityInfo entity_info = {location, entity};
+            entities[player_id].insert( {{entity.id, entity_info}} );
         }
     }
 }
