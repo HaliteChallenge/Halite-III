@@ -6,8 +6,8 @@
 
 /** The JSON key for command type. */
 constexpr auto JSON_TYPE_KEY = "type";
-/** The JSON key for entity location. */
-constexpr auto JSON_ENTITY_KEY = "entity";
+/** The JSON key for entity id. */
+constexpr auto JSON_ENTITY_KEY = "id";
 /** The JSON key for direction. */
 constexpr auto JSON_DIRECTION_KEY = "direction";
 /** The JSON key for energy. */
@@ -24,6 +24,14 @@ TransactableCommand<T>::~TransactableCommand() = default;
  * @param command The command to convert.
  */
 void to_json(nlohmann::json &json, const Command &command) { command.to_json(json); }
+
+/**
+ * Convert a Command ptr to JSON format.
+ * @param[out] json The output JSON.
+ * @param command The command to convert.
+ */
+
+void to_json(nlohmann::json &json, const std::unique_ptr<Command> &command) { command->to_json(json); }
 
 /**
  * Read a Command from bot serial format.

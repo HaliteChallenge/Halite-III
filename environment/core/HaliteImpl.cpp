@@ -45,13 +45,14 @@ void HaliteImpl::run_game() {
         result.get();
     }
     game.replay.players.insert(game.store.players.begin(), game.store.players.end());
-    game.replay.full_frames.emplace_back();
     Logging::log("Player initialization complete.");
 
     for (game.turn_number = 0; game.turn_number < constants.MAX_TURNS; game.turn_number++) {
         Logging::log("Starting turn " + std::to_string(game.turn_number));
         // Create new turn struct for replay file, to be filled by further turn actions
         game.replay.full_frames.emplace_back();
+        // Add state of entities at start of turn
+        game.replay.full_frames.back().add_entities(game.store);
         process_turn();
 
         if (game_ended()) {
@@ -83,6 +84,12 @@ void HaliteImpl::process_turn() {
     std::unordered_set<Entity::id_type> changed_entities;
     while (!commands.empty()) {
         CommandTransaction transaction{game.store, game.map};
+        transaction.set_callback([&frames = game.replay.full_frames](auto event) {
+            // Create new game event for replay file. Ensure turn has been initialized before adding a game event
+            if (frames.size() > 0) {
+                frames.back().events.push_back(std::move(event));
+            }
+        });
         for (const auto &[player_id, command_list] : commands) {
             auto &player = game.store.players.find(player_id)->second;
             for (const auto &command : command_list) {
@@ -94,6 +101,11 @@ void HaliteImpl::process_turn() {
             transaction.commit();
             changed_entities = std::move(transaction.changed_entities);
             game.store.changed_cells = std::move(transaction.changed_cells);
+            // add player commands to replay and note players still alive
+            game.replay.full_frames.back().moves = std::move(commands);
+            for (auto &player_statistics : game.replay.game_statistics.player_statistics) {
+                if (commands.find(player_statistics.player_id) != commands.end()) player_statistics.last_turn_alive = game.turn_number;
+            }
             break;
         } else {
             for (auto &offender : transaction.offenders) {
@@ -125,6 +137,10 @@ void HaliteImpl::process_turn() {
         }
     }
     // TODO: replay now has access to changed_entities and changed_cells
+    game.replay.full_frames.back().add_cells(game.map, changed_cells);
+    for (const auto [player_id, player] : game.store.players) {
+        game.replay.full_frames.back().energy.insert( {{player_id, player.energy}} );
+    }
 }
 
 /**

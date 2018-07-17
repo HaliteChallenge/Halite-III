@@ -16,6 +16,7 @@ class Store {
     friend class Halite;
     friend class HaliteImpl;
     friend class net::Networking;
+    friend struct Turn;
 
     id_map<Player, Player> players;  /**< Map from player ID to player. */
     id_map<Entity, Entity> entities; /**< Map from entity ID to entity. */

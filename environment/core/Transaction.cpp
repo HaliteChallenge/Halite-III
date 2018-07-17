@@ -102,6 +102,9 @@ void ConstructTransaction::commit() {
             player.dropoffs.emplace_back(store.new_dropoff(location));
             cell.energy = 0;
             cell.entity = Entity::None;
+            if (callback) {
+                callback(std::make_unique<ConstructionEvent>(location, player_id, command.entity));
+            }
             changed_cells.emplace(location);
             player.remove_entity(entity);
             store.delete_entity(entity);
@@ -175,12 +178,17 @@ void MoveTransaction::commit() {
     for (auto &[destination, entities] : destinations) {
         auto &cell = map.at(destination);
         if (entities.size() > MAX_ENTITIES_PER_CELL) {
-            // Destroy all interested entities.
+            // Destroy all interested entities and collect them in replay info
+            std::vector<Entity::id_type> collision_ids;
             for (auto &entity_id : entities) {
+                collision_ids.push_back(entity_id);
                 // Dump the energy.
                 auto &entity = store.get_entity(entity_id);
                 dump_energy(store, entity, cell, entity.energy);
                 store.delete_entity(entity_id);
+            }
+            if (callback) {
+                callback(std::make_unique<CollisionEvent>(destination, collision_ids));
             }
             changed_cells.emplace(destination);
         } else {
@@ -213,21 +221,26 @@ bool SpawnTransaction::check() {
 void SpawnTransaction::commit() {
     const auto &constants = Constants::get();
     auto cost = constants.NEW_ENTITY_ENERGY_COST;
-    auto energy = constants.NEW_ENTITY_ENERGY;
-    for (const auto &[player_id, _] : commands) {
-        auto &player = store.get_player(player_id);
-        player.energy -= cost;
-        auto &cell = map.at(player.factory);
-        if (cell.entity == Entity::None) {
-            auto &entity = store.new_entity(energy, player.id);
-            player.add_entity(entity.id, player.factory);
-            cell.entity = entity.id;
-            changed_entities.emplace(entity.id);
-        } else {
-            // There is a collision, destroy the existing.
-            store.get_player(store.get_entity(cell.entity).owner).remove_entity(cell.entity);
-            store.delete_entity(cell.entity);
-            cell.entity = Entity::None;
+    for (const auto &[player_id, spawns] : commands) {
+        for (const SpawnCommand &spawn : spawns) {
+            auto &player = store.get_player(player_id);
+            auto energy = spawn.energy;
+            player.energy -= (cost + energy);
+            auto &cell = map.at(player.factory);
+            if (cell.entity == Entity::None) {
+                auto &entity = store.new_entity(energy, player.id);
+                player.add_entity(entity.id, player.factory);
+                cell.entity = entity.id;
+            } else {
+                if (callback) {
+                    std::vector<Entity::id_type> collision_ids = {cell.entity};
+                    callback(std::make_unique<CollisionEvent>(player.factory, collision_ids));
+                }
+                // There is a collision, destroy the existing.
+                store.get_player(store.get_entity(cell.entity).owner).remove_entity(cell.entity);
+                store.delete_entity(cell.entity);
+                cell.entity = Entity::None;
+            }
         }
     }
 }
@@ -270,6 +283,7 @@ void CommandTransaction::add_command(Player &player, const MoveCommand &command)
  */
 void CommandTransaction::add_command(Player &player, const SpawnCommand &command) {
     expenses[player] += Constants::get().NEW_ENTITY_ENERGY_COST;
+    expenses[player] += command.energy;
     spawn_transaction.add_command(player, command);
 }
 
