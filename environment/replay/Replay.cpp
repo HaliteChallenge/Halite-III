@@ -53,9 +53,9 @@ void to_json(nlohmann::json &json, const Turn &turn) {
     for (auto &[player_id, entities_map] : turn.entities) {
         nlohmann::json player_entity_json;
         for (auto &[entity_id, entity_info] : entities_map) {
-            player_entity_json[std::string(entity_id)] = entity_info;
+            player_entity_json[to_string(entity_id)] = entity_info;
         }
-        entities_json[std::string(player_id)] = player_entity_json;
+        entities_json[to_string(player_id)] = player_entity_json;
     }
     json["moves"] = moves_json;
     json["energy"] = energy_json;

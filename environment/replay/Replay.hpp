@@ -15,6 +15,7 @@
 #include "Constants.hpp"
 #include "Cell.hpp"
 #include "Enumerated.hpp"
+#include "Store.hpp"
 
 namespace hlt {
 
