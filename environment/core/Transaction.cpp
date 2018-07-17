@@ -11,6 +11,32 @@ template<class T>
 Transaction<T>::~Transaction() = default;
 
 /**
+ * Dump energy onto a cell.
+ *
+ * @param store The game store.
+ * @param entity The entity dumping energy.
+ * @param cell The cell at which to dump.
+ * @param energy The dumped amount of energy.
+ */
+void dump_energy(Store &store, Entity &entity, Cell &cell, energy_type energy) {
+    // Decrease the entity's energy.
+    entity.energy -= energy;
+    if (cell.owner == Player::None) {
+        // Just dump directly onto the cell.
+        cell.energy += energy;
+    } else if (cell.owner == entity.owner) {
+        // The owner gets all the energy.
+        store.get_player(entity.owner).energy += energy;
+    } else {
+        // The energy is split.
+        energy_type penalty = energy / Constants::get().DROPOFF_PENALTY_RATIO;
+        energy -= penalty;
+        store.get_player(entity.owner).energy += energy;
+        store.get_player(cell.owner).energy += penalty;
+    }
+}
+
+/**
  * Check if the transaction may be committed without actually committing.
  * @return False if the transaction may not be committed.
  */
@@ -35,10 +61,7 @@ void DumpTransaction::commit() {
         auto &player = store.get_player(player_id);
         for (const DumpCommand &command : dumps) {
             auto &entity = store.get_entity(command.entity);
-            entity.energy -= command.energy;
-            Location location = player.get_entity_location(command.entity);
-            // TODO: if location is factory or drop zone, act accordingly
-            map.at(location).energy += command.energy;
+            dump_energy(store, entity, map.at(player.get_entity_location(command.entity)), command.energy);
         }
     }
 }
@@ -130,7 +153,7 @@ void MoveTransaction::commit() {
             destinations[location].emplace_back(entity_id);
             // Take it from its owner.
             // Do not mark the entity as removed in the game yet.
-            store.get_player(store.get_owner(entity_id)).remove_entity(entity_id);
+            store.get_player(store.get_entity(entity_id).owner).remove_entity(entity_id);
         }
     }
     // If there are already unmoving entities at the destination, lift them off too.
@@ -138,7 +161,7 @@ void MoveTransaction::commit() {
         auto &cell = map.at(destination);
         if (cell.entity != Entity::None) {
             destinations[destination].emplace_back(cell.entity);
-            store.get_player(store.get_owner(cell.entity)).remove_entity(cell.entity);
+            store.get_player(store.get_entity(cell.entity).owner).remove_entity(cell.entity);
             cell.entity = Entity::None;
         }
     }
@@ -150,7 +173,9 @@ void MoveTransaction::commit() {
         if (entities.size() > MAX_ENTITIES_PER_CELL) {
             // Destroy all interested entities.
             for (auto &entity_id : entities) {
-                // TODO: Dump the energy.
+                // Dump the energy.
+                auto &entity = store.get_entity(entity_id);
+                dump_energy(store, entity, cell, entity.energy);
                 store.delete_entity(entity_id);
             }
         } else {
@@ -158,7 +183,7 @@ void MoveTransaction::commit() {
             // Place it on the map.
             cell.entity = entity_id;
             // Give it back to the owner.
-            store.get_player(store.get_owner(entity_id)).add_entity(entity_id, destination);
+            store.get_player(store.get_entity(entity_id).owner).add_entity(entity_id, destination);
         }
     }
 }
@@ -194,7 +219,7 @@ void SpawnTransaction::commit() {
             cell.entity = entity.id;
         } else {
             // There is a collision, destroy the existing.
-            store.get_player(store.get_owner(cell.entity)).remove_entity(cell.entity);
+            store.get_player(store.get_entity(cell.entity).owner).remove_entity(cell.entity);
             store.delete_entity(cell.entity);
             cell.entity = Entity::None;
         }

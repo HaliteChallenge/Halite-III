@@ -17,7 +17,6 @@ class Store {
 
     id_map<Player, Player> players;         /**< Map from player ID to player. */
     id_map<Entity, Entity> entities;        /**< Map from entity ID to entity. */
-    id_map<Entity, Player::id_type> owners; /**< Map from entity ID to owner. */
 
     Factory<Player> player_factory; /**< The player factory. */
     Factory<Entity> entity_factory; /**< The entity factory. */
@@ -30,14 +29,6 @@ public:
      * @return The player.
      */
     Player &get_player(const Player::id_type &id);
-
-    /**
-     * Get the owner of an entity.
-     *
-     * @param id The entity ID.
-     * @return The owner of the entity.
-     */
-    Player::id_type get_owner(const Entity::id_type &id);
 
     /**
      * Get an entity by ID.

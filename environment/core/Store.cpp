@@ -13,16 +13,6 @@ Player &Store::get_player(const Player::id_type &id) {
 }
 
 /**
- * Get the owner of an entity.
- *
- * @param id The entity ID.
- * @return The owner of the entity.
- */
-Player::id_type Store::get_owner(const Entity::id_type &id) {
-    return owners.find(id)->second;
-}
-
-/**
  * Get an entity by ID.
  *
  * @param id The entity ID.
@@ -40,10 +30,8 @@ Entity &Store::get_entity(const Entity::id_type &id) {
  * @return The new entity.
  */
 Entity &Store::new_entity(energy_type energy, const Player::id_type &owner) {
-    auto entity = entity_factory.make(energy);
-    entities.emplace(entity.id, entity);
-    owners.emplace(entity.id, owner);
-    return entities.find(entity.id)->second;
+    auto entity = entity_factory.make(owner, energy);
+    return entities.emplace(entity.id, entity).first->second;
 }
 
 /**
@@ -53,7 +41,6 @@ Entity &Store::new_entity(energy_type energy, const Player::id_type &owner) {
  */
 void Store::delete_entity(const Entity::id_type id) {
     entities.erase(id);
-    owners.erase(id);
 }
 
 }
