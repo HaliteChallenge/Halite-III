@@ -1,7 +1,7 @@
 <template>
   <div class="leaderboard-container">
     <div class="panel panel-stats">
-      <div class="panel-heading" role="tab" id="heading_player_details">
+      <div class="panel-heading" role="tab" id="heading_player_details" style="display: none">
         <a data-toggle="collapse" id="toggle_filter" href="#panel_filter" @click="toggleFilter" aria-expanded="true" aria-controls="panel_filter">
           <i class="xline xline-top"></i>
           <h4>Filters</h4>
@@ -9,7 +9,7 @@
           <i class="xline xline-bottom"></i>
         </a>
       </div>
-      <div class="panel-collapse collapse in" role="tabpanel" id="panel_filter" aria-labelledby="panel_filter">
+      <div class="panel-collapse collapse in" role="tabpanel" id="panel_filter" aria-labelledby="panel_filter" style="display: none">
         <form class="leaderboard-filter-form" v-on:submit="on_update_filter">
           <div class="form-header">
             <div class="filter-handler" v-if="filter_handle_view==='normal'">

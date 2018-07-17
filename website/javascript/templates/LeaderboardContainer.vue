@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="panel panel-stats">
+    <div class="panel panel-stats" style="display: none">
       <div class="panel-heading" role="tab" id="heading_player_details">
         <a data-toggle="collapse" id="toggle_metric" href="#panel_metric" @click="toggleStats" aria-expanded="true" aria-controls="panel_metric">
           <i class="xline xline-top"></i>
@@ -90,7 +90,7 @@ export default {
 
       // determine whether the collapseable summary panel should be collapsed
       this.setupCollapseStats()
-    }, 
+    },
     data: function () {
       return {
         hackathonId: null,

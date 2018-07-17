@@ -219,7 +219,7 @@
 }
 
 .leaderboard-stats, .leaderboard-explore{
-  background-color: #1c1a27;
+  background-color: #FFF;
   padding: 20px;
 }
 .leaderboard-explore{
@@ -262,17 +262,14 @@
 
     }
     &-value{
-      font-family: $font-heading;
       font-size: 36px;
       line-height: 1em;
-      color: #ECFFFB;
       letter-spacing: 1px;
       margin-bottom: 0;
     }
     &-caption{
       font-size: 14px;
       line-height: 1em;
-      color: #C2D1D0;
       letter-spacing: 0.5px;
       margin-bottom: 0;
       width: 100px;

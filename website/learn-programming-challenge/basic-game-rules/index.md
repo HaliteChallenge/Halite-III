@@ -5,11 +5,14 @@ toc: false
 description: Get an introduction to the rules of the game to win the Halite AI Programming Challenge.
 sort_key: 0
 ---
-Halite III, codenamed Shipyard, is a game of strategy and production. Players command fleets of ships, using them to filter halite from the seas. They compete to have the most halite, and are ranked by the amount of halite collected at the end of the game (300 turns). Shipyard is played on a symmetric rectangular grid, which wraps around at both edges.
 
-Players start the game with a base, called their shipyard, and a single ship. Ships filter halite from the water. Halite is both their fuel and their cargo, as they spend it to move from square to square, and must also bring it back to the shipyard, in order to have the resources to construct more ships. Ships collect 10% of the halite present on a site when actively filtering, burn an amount of cargo equal to 5% of the halite present on a site to move off of it, and can carry only a limited amount. They may also dump halite onto the map.
+Halite III, codenamed Shipyard, is a game of strategy and production. Players command fleets of ships, using them to filter halite from the seas. They compete to have the most halite, and are ranked by the amount of halite collected at the end of the game (300 turns). Shipyard is played on a symmetric rectangular grid of square cells, which wraps around at both edges.
 
-Additionally, players can spend a large amount of halite to convert a ship to a drop-off site (dropoff for short), giving another place where ships can deposit collected halite, in order to increase the efficiency of the others sailing the halite seas. Ships pay no fee when using their own dropoff sites; when using another player’s dropoff, they pay a 25% tax on delivered cargo, paid to the player who constructed the site.
+Players have a base, called their shipyard; a fleet of ships; and a store of halite. They start with their base and 512 halite in their store. Ships carry a cargo of halite, which also serves as fuel; there is a TO BE DETERMINED cap on how much halite a ship can carry at a given time. They spend halite to move around the board along cardinal directions (N/S/E/W), one cell at a time; this costs them fuel/halite equal to 5% of the halite present at the location they are moving off of. If they instead remain still, they collect halite from the cell they are on, collecting 10% of the available halite per turn (rounded to the nearest integer). Ships may also choose to dump halite into the sea. Each player starts with a single ship, located at their shipyard. If two ships collide, both are destroyed; their cargo is deposited as halite on the cell they tried to move to.
+
+The shipyard is at a fixed location and does not move. Ships may move on top of the shipyard; if they dump halite onto this location, the halite is added to the store and the player may spend it. They spend 256 halite to construct a ship, plus however much halite they choose to put as the initial fuel/cargo level.
+
+Additionally, players can spend 512 halite to convert a ship to a drop-off site (dropoff for short), giving another place where ships can deposit collected halite, in order to increase the efficiency of the others sailing the halite seas. Ships pay no fee when using their own dropoff sites; when using another player’s dropoff, they pay a 25% tax on delivered cargo, paid to the player who constructed the site.
 
 ## Map at Game Start
 

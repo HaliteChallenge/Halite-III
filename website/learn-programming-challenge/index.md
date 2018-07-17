@@ -1,6 +1,6 @@
 ---
 layout: doc_page
-title: Learn How to Get Started with Halite
+title: Get Started with Halite
 breadcrumb: Learn
 toc: false
 menu: learn
