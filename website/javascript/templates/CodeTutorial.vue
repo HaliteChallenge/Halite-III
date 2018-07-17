@@ -89,7 +89,7 @@ start doing something else again
                     rich it is.
                 </p>
             </Step>
-            <Step title="Carrier Has Arrived" name="dropoffs">
+            <Step title="Carrier Has Arrived" name="carrier">
                 <p>
                     One ship does not make a fleet. Besides issuing
                     movement commands to ships, you can also
@@ -106,6 +106,19 @@ start doing something else again
                     about whether you should be hoarding halite or
                     spending it, because ultimately, the winner is the
                     one with the most halite in the bank.
+                </p>
+            </Step>
+            <Step title="Start Playing!" name="submit">
+                <p>
+                    You're all done! Let's submit your bot:
+                </p>
+                <button>
+                    Upload
+                </button>
+                <p>
+                    You'll get an email once your bot is processed and
+                    starts playing. Look at <a href="#">your
+                    profile</a> to watch your games!
                 </p>
             </Step>
         </template>
