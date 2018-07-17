@@ -1,8 +1,10 @@
 #ifndef TRANSACTION_HPP
 #define TRANSACTION_HPP
 
+#include <functional>
 #include <unordered_set>
 
+#include "GameEvent.hpp"
 #include "Location.hpp"
 #include "Player.hpp"
 
@@ -17,6 +19,7 @@ class Store;
 /** Base transaction class independent of commands. */
 class BaseTransaction {
 protected:
+    std::function<void(GameEvent)> callback;       /**< The game event callback. */
     Store &store;                                  /**< The game store. */
     Map &map;                                      /**< The game map. */
 
@@ -31,6 +34,12 @@ public:
      * @param map The Map.
      */
     explicit BaseTransaction(Store &store, Map &map) : store(store), map(map) {}
+
+    /**
+     * Set a callback for GameEvents generated during the transaction commit.
+     * @param callback The callback to set.
+     */
+    void set_callback(std::function<void(GameEvent)> &&callback) { this->callback = callback; }
 
     /**
      * Check if the transaction may be committed without actually committing.
