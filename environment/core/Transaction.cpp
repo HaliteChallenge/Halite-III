@@ -44,9 +44,9 @@ bool DumpTransaction::check() {
     for (const auto &[player_id, dumps] : commands) {
         auto &player = store.get_player(player_id);
         for (const DumpCommand &command : dumps) {
-            const auto &[entity_id, energy] = command;
             // Entity is not found or has too little energy
-            if (!player.has_entity(entity_id) || store.get_entity(entity_id).energy < energy) {
+            if (!player.has_entity(command.entity)
+                || store.get_entity(command.entity).energy < command.energy) {
                 offenders.emplace(player_id);
                 break;
             }
@@ -148,19 +148,18 @@ void MoveTransaction::commit() {
     for (auto &[player_id, moves] : commands) {
         auto &player = store.get_player(player_id);
         for (const MoveCommand &command : moves) {
-            const auto &[entity_id, direction] = command;
-            auto location = player.get_entity_location(entity_id);
+            auto location = player.get_entity_location(command.entity);
             auto &source = map.at(location);
             // Decrease the entity's energy.
-            store.get_entity(entity_id).energy -= source.energy / cost;
+            store.get_entity(command.entity).energy -= source.energy / cost;
             // Remove the entity from its source.
             source.entity = Entity::None;
-            map.move_location(location, direction);
+            map.move_location(location, command.direction);
             // Mark it as interested in the destination.
-            destinations[location].emplace_back(entity_id);
+            destinations[location].emplace_back(command.entity);
             // Take it from its owner.
             // Do not mark the entity as removed in the game yet.
-            store.get_player(store.get_entity(entity_id).owner).remove_entity(entity_id);
+            store.get_player(store.get_entity(command.entity).owner).remove_entity(command.entity);
         }
     }
     // If there are already unmoving entities at the destination, lift them off too.

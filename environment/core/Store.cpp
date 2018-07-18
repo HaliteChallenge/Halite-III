@@ -9,7 +9,9 @@ namespace hlt {
  * @return The player.
  */
 Player &Store::get_player(const Player::id_type &id) {
-    return players.find(id)->second;
+    auto iterator = players.find(id);
+    assert(iterator != players.end());
+    return iterator->second;
 }
 
 /**
@@ -19,7 +21,9 @@ Player &Store::get_player(const Player::id_type &id) {
  * @return The entity.
  */
 Entity &Store::get_entity(const Entity::id_type &id) {
-    return entities.find(id)->second;
+    auto iterator = entities.find(id);
+    assert(iterator != entities.end());
+    return iterator->second;
 }
 
 /**
@@ -40,7 +44,9 @@ Entity &Store::new_entity(energy_type energy, const Player::id_type &owner) {
  * @param id The ID of the entity.
  */
 void Store::delete_entity(const Entity::id_type id) {
-    entities.erase(id);
+    auto iterator = entities.find(id);
+    assert(iterator != entities.end());
+    entities.erase(iterator);
 }
 
 /**

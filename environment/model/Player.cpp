@@ -43,7 +43,9 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
  * @return The entity location.
  */
 Location Player::get_entity_location(const Entity::id_type &id) const {
-    return entities.find(id)->second;
+    auto iterator = entities.find(id);
+    assert(iterator != entities.end());
+    return iterator->second;
 }
 
 /**
@@ -60,7 +62,9 @@ bool Player::has_entity(const Entity::id_type &id) const {
  * @param id The entity ID.
  */
 void Player::remove_entity(const Entity::id_type &id) {
-    entities.erase(id);
+    auto iterator = entities.find(id);
+    assert(iterator != entities.end());
+    entities.erase(iterator);
 }
 
 /**
@@ -69,6 +73,7 @@ void Player::remove_entity(const Entity::id_type &id) {
  * @param location The location of the entity.
  */
 void Player::add_entity(const Entity::id_type &id, Location location) {
+    assert(!has_entity(id));
     entities.emplace(id, location);
 }
 
