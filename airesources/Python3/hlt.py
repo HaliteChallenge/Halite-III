@@ -98,6 +98,24 @@ class GameMap:
     def __getitem__(self, row):
         return self.cells[row]
 
+    def location_with_offset(self, location, direction):
+        dx = 0
+        dy = 0
+
+        if direction == "n":
+            dy = -1
+        elif direction == "s":
+            dy = 1
+        elif direction == "w":
+            dx = -1
+        elif direction == "e":
+            dx = 1
+
+        return (
+            (location[0] + dx + self.width) % self.width,
+            (location[1] + dy + self.height) % self.height,
+        )
+
 
 class MoveSet:
     def __init__(self):
