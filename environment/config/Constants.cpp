@@ -59,7 +59,7 @@ void from_json(const nlohmann::json &json, Constants &constants) {
                  FIELD_FROM_JSON(EXTRACT_RATIO),
                  FIELD_FROM_JSON(PERSISTENCE),
                  FIELD_FROM_JSON(FACTOR_EXP_1),
-                 FIELD_FROM_JSON(FACTOR_EXP_2),};
+                 FIELD_FROM_JSON(FACTOR_EXP_2)};
 }
 
 }
