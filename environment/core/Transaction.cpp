@@ -123,12 +123,6 @@ bool MoveTransaction::check() {
                 offenders.emplace(player_id);
                 break;
             }
-            // Entity does not have enough energy
-            energy_type required = map.at(player.get_entity_location(command.entity)).energy / cost;
-            if (store.get_entity(command.entity).energy < required) {
-                offenders.emplace(player_id);
-                break;
-            }
         }
     }
     return offenders.empty();
@@ -145,8 +139,15 @@ void MoveTransaction::commit() {
         for (const MoveCommand &command : moves) {
             auto location = player.get_entity_location(command.entity);
             auto &source = map.at(location);
+            // Check if entity has enough energy
+            energy_type required = source.energy / cost;
+            auto &entity = store.get_entity(command.entity);
+            if (entity.energy < required) {
+                // Entity does not have enough energy, ignore command.
+                continue;
+            }
             // Decrease the entity's energy.
-            store.get_entity(command.entity).energy -= source.energy / cost;
+            entity.energy -= required;
             // Remove the entity from its source.
             source.entity = Entity::None;
             map.move_location(location, command.direction);
@@ -154,7 +155,7 @@ void MoveTransaction::commit() {
             destinations[location].emplace_back(command.entity);
             // Take it from its owner.
             // Do not mark the entity as removed in the game yet.
-            store.get_player(store.get_entity(command.entity).owner).remove_entity(command.entity);
+            store.get_player(entity.owner).remove_entity(command.entity);
         }
     }
     // If there are already unmoving entities at the destination, lift them off too.
