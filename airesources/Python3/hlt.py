@@ -24,16 +24,17 @@ def get_init():
     num_players, my_id = map(int, input().split())
     players = {}
     for _ in range(num_players):
-        player, shipyard_x, shipyard_x = map(int, input().split())
-        players[player] = Player((shipyard_x, shipyard_x))
+        player, shipyard_x, shipyard_y = map(int, input().split())
+        players[player] = Player((shipyard_x, shipyard_y))
     base_players = copy.copy(players)
 
     map_w, map_h = map(int, input().split())
     game_map = [[None for _ in range(map_w)] for _ in range(map_h)]
 
     for y in range(map_h):
+        row_cells = [int(cell) for cell in input().split()]
         for x in range(map_w):
-            game_map[y][x] = int(input())
+            game_map[y][x] = row_cells[x]
 
     return game_map, players, my_id
 
