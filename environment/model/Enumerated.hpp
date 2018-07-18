@@ -18,49 +18,49 @@ using id_value_type = long;
  * @tparam T The class to which these IDs belong.
  */
 template<class T>
-struct id_type final {
+struct class_id final {
     /** Internal value. */
     id_value_type value;
 
     /** Equality test. */
-    friend bool operator==(const id_type &first, const id_type &second) { return first.value == second.value; }
+    friend bool operator==(const class_id &first, const class_id &second) { return first.value == second.value; }
 
     /** Inequality test. */
-    friend bool operator!=(const id_type &first, const id_type &second) { return !(first == second); }
+    friend bool operator!=(const class_id &first, const class_id &second) { return !(first == second); }
 
     /** Comparison function. */
-    friend bool operator<(const id_type &first, const id_type &second) { return first.value < second.value; }
+    friend bool operator<(const class_id &first, const class_id &second) { return first.value < second.value; }
 
     /** Stream input. */
-    friend std::istream &operator>>(std::istream &istream, id_type &id) {
+    friend std::istream &operator>>(std::istream &istream, class_id &id) {
         return istream >> id.value;
     }
 
     /** Stream output. */
-    friend std::ostream &operator<<(std::ostream &ostream, const id_type &id) {
+    friend std::ostream &operator<<(std::ostream &ostream, const class_id &id) {
         return ostream << id.value;
     }
 
     /** JSON serialization. */
-    friend void to_json(nlohmann::json &json, const id_type &id) {
+    friend void to_json(nlohmann::json &json, const class_id &id) {
         nlohmann::to_json(json, id.value);
     }
 
     /** JSON deserialization. */
-    friend void from_json(const nlohmann::json &json, id_type &id) {
+    friend void from_json(const nlohmann::json &json, class_id &id) {
         nlohmann::from_json(json, id.value);
     }
 
     /** String conversion. */
-    friend std::string to_string(const id_type &id) {
+    friend std::string to_string(const class_id &id) {
         return std::to_string(id.value);
     }
 
     /** Default constructor. */
-    id_type() = default;
+    class_id() = default;
 
     /** Explicit constructor. */
-    explicit id_type(id_value_type value) : value(value) {}
+    explicit class_id(id_value_type value) : value(value) {}
 };
 
 /**
@@ -71,7 +71,7 @@ template<class T>
 class Enumerated {
 public:
     /** Alias for ID type. */
-    using id_type = id_type<T>;
+    using id_type = class_id<T>;
 
     /** Sentinel value for ID type. */
     static constexpr id_type None{};
@@ -100,8 +100,8 @@ Enumerated<T>::~Enumerated() = default;
 
 namespace std {
 template<class T>
-struct hash<id_type<T>> {
-    size_t operator()(const id_type<T> &object) const {
+struct hash<class_id<T>> {
+    size_t operator()(const class_id<T> &object) const {
         return (size_t) object.value;
     }
 };
@@ -135,7 +135,7 @@ public:
      */
     template<typename... Args>
     T make(Args &&...args) {
-        return T(id_type<T>(++last_id), std::forward<Args>(args)...);
+        return T(class_id<T>(++last_id), std::forward<Args>(args)...);
     }
 };
 

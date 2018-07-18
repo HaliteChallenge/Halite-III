@@ -13,10 +13,9 @@
 namespace hlt {
 
 /** Representation of a Halite player. */
-class Player final : public Enumerated<Player> {
+struct Player final : public Enumerated<Player> {
     friend class Factory<Player>;
 
-public:
     std::string name;               /**< The name of the player. */
     const Location factory;         /**< The factory location of the player. */
     std::vector<Dropoff> dropoffs;  /**< The dropoffs this player owns. */

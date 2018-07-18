@@ -9,7 +9,7 @@ namespace hlt {
 // Forward declare to avoid circular header dependency.
 class Player;
 
-using player_id_type = id_type<Player>;
+using player_id_type = class_id<Player>;
 
 /** A player-affiliated entity placed on the Halite map. */
 struct Entity final : public Enumerated<Entity> {
