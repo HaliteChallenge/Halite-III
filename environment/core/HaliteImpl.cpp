@@ -77,6 +77,7 @@ void HaliteImpl::process_turn() {
                                         });
     }
     for (auto &[player_id, result] : results) {
+        game.store.players.at(player_id).log_error_section("Turn " + std::to_string(game.turn_number));
         try {
             commands[player_id] = result.get();
         }
