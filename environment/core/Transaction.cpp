@@ -225,6 +225,7 @@ void SpawnTransaction::commit() {
                 auto &entity = store.new_entity(energy, player.id);
                 player.add_entity(entity.id, player.factory);
                 cell.entity = entity.id;
+                changed_entities.emplace(entity.id);
                 if (callback) {
                     callback(std::make_unique<SpawnEvent>(player.factory, energy, player.id, entity.id));
                 }
