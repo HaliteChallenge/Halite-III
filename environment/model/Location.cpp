@@ -77,14 +77,4 @@ std::ostream &operator<<(std::ostream &ostream, const Location &location) {
     return ostream << location.x << " " << location.y;
 }
 
-/**
- * Read a Location from bot serial format.
- * @param istream The input stream.
- * @param[out] location The location to read.
- * @return The input stream.
- */
-std::istream &operator>>(std::istream &istream, Location &location) {
-    return istream >> location.x >> location.y;
-}
-
 }
