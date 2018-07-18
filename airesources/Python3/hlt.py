@@ -56,6 +56,12 @@ def get_frame():
         for _ in range(num_dropoffs):
             dropoff_id, x, y = map(int, input().split())
             players[player].dropoffs[dropoff_id] = Dropoff(dropoff_id, (x, y))
+
+    # Get changed cells
+    num_changed_cells = int(input())
+    for _ in range(num_changed_cells):
+        input()
+
     return turn_number, players
 
 def move(ship_id, d):
