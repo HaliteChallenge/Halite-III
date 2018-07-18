@@ -162,9 +162,9 @@ export class Map {
      * @param owner_grid: grid of owners of clls
      */
     update(updated_cells) {
-        this.owners = owner_grid;
         // update cell productions
-        for (let cell_info in updated_cells) {
+        for (let cell_index = 0; cell_index < updated_cells.length; cell_index++) {
+            let cell_info = updated_cells[cell_index]
             this.productions[cell_info.y][cell_info.x] = cell_info.production;
         }
         // Redraw map cells, both for new production colors and possible resizing due to zooming
