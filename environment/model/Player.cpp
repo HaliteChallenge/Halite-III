@@ -52,7 +52,7 @@ Location Player::get_entity_location(const Entity::id_type &id) const {
  * @return True if the player has the entity, false otherwise.
  */
 bool Player::has_entity(const Entity::id_type &id) const {
-    return entities.find(id) == entities.end();
+    return entities.find(id) != entities.end();
 }
 
 /**

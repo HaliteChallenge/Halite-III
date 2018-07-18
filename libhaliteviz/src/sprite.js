@@ -97,25 +97,30 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         let y_move = 0;
         // Move the sprite according to move commands and redraw in new location
         if (this.visualizer.frame < this.visualizer.replay.full_frames.length) {
-            let entity_record = this.visualizer.replay.full_frames[this.visualizer.frame].entities[this.owner_id][this.id];
+            // Sprite spawned this turn, does not exist in entities struct at start of turn
+            if (command.type === "g") {
+                this.updatePosition();
+                return;
+            }
+            let entity_record = this.visualizer.replay.full_frames[this.visualizer.frame].entities[this.owner][this.id];
             this.energy = entity_record.energy;
-            if (command.type === "move") {
-                if (move.direction === "n") {
+            if (command.type === "m") {
+                if (command.direction === "n") {
                     direction = Math.PI;
                     x_move = 0;
                     y_move = -1;
                 }
-                if (move.direction === "e") {
+                if (command.direction === "e") {
                     direction = Math.PI / 2;
                     x_move = 1;
                     y_move = 0;
                 }
-                if (move.direction === "s") {
+                if (command.direction === "s") {
                     direction = 0;
                     x_move = 0;
                     y_move = 1;
                 }
-                if (move.direction === "w") {
+                if (command.direction === "w") {
                     direction = -Math.PI / 2;
                     x_move = -1;
                     y_move = 0;
@@ -126,11 +131,11 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                 this.x = (entity_record.x + x_move * this.visualizer.time + this.map_width) % this.map_width;
                 this.y = (entity_record.y + y_move * this.visualizer.time + this.map_height) % this.map_height;
 
-            }  else if (command.type === "dump") {
+            }  else if (command.type === "d") {
                 // TODO
-            } else if (command.type === "mine") {
+            } else if (command.type === "m") {
                 // TODO
-            } else if (command.type === "construct") {
+            } else if (command.type === "c") {
                 // TODO
             }
         }

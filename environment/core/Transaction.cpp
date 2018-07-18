@@ -231,6 +231,9 @@ void SpawnTransaction::commit() {
                 auto &entity = store.new_entity(energy, player.id);
                 player.add_entity(entity.id, player.factory);
                 cell.entity = entity.id;
+                if (callback) {
+                    callback(std::make_unique<SpawnEvent>(player.factory, energy, player.id, entity.id));
+                }
             } else {
                 if (callback) {
                     std::vector<Entity::id_type> collision_ids = {cell.entity};
@@ -326,6 +329,12 @@ void CommandTransaction::commit() {
         transaction.commit();
         changed_entities.insert(transaction.changed_entities.begin(), transaction.changed_entities.end());
         changed_cells.insert(transaction.changed_cells.begin(), transaction.changed_cells.end());
+    }
+}
+
+void CommandTransaction::set_callback(std::function<void(GameEvent)> callback) {
+    for (BaseTransaction &transaction : all_transactions) {
+        transaction.set_callback(callback);
     }
 }
 

@@ -197,3 +197,4 @@ void HaliteImpl::rank_players() {
 HaliteImpl::HaliteImpl(Halite &game) : game(game) {}
 
 }
+

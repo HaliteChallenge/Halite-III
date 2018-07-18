@@ -39,7 +39,7 @@ public:
      * Set a callback for GameEvents generated during the transaction commit.
      * @param callback The callback to set.
      */
-    void set_callback(std::function<void(GameEvent)> &&callback) { this->callback = callback; }
+    virtual void set_callback(std::function<void(GameEvent)> callback) = 0;
 
     /**
      * Check if the transaction may be committed without actually committing.
@@ -75,6 +75,12 @@ public:
         commands[player.id].emplace_back(command);
     }
 
+    /**
+     * Set a callback for GameEvents generated during the transaction commit.
+     * @param callback The callback to set.
+     */
+    void set_callback(std::function<void(GameEvent)> callback) override { this->callback = callback; }
+
     /** Virtual destructor. */
     ~Transaction() override = 0;
 };
@@ -100,6 +106,7 @@ public:
 
     /** If the transaction may be committed, commit the transaction. */
     void commit() override;
+
 };
 
 /** Transaction for ConstructCommand. */
@@ -200,6 +207,12 @@ public:
 
     /** If the transaction may be committed, commit the transaction. */
     void commit() override;
+
+    /**
+     * Set a callback for GameEvents generated during the transaction commit.
+     * @param callback The callback to set.
+     */
+    void set_callback(std::function<void(GameEvent)> callback) override;
 
     /**
      * Construct CommandTransaction from Store and map.
