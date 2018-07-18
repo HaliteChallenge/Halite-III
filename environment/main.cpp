@@ -132,8 +132,6 @@ int main(int argc, char *argv[]) {
         config.seed = map_parameters.seed;
     }
 
-    // TODO: override names
-
     net::NetworkingConfig networking_config{};
     networking_config.ignore_timeout = timeout_switch.getValue();
 
@@ -149,6 +147,15 @@ int main(int argc, char *argv[]) {
     hlt::Halite game(config, map, networking_config, game_statistics, replay);
     game.load_snapshot(snapshot);
     game.run_game(bot_commands);
+
+    const auto& overrides = override_args.getValue();
+    auto idx = 0;
+    for (const auto& name : overrides) {
+        if (idx < static_cast<int>(replay.players.size())) {
+            replay.players.at(hlt::Player::id_type{idx + 1}).name = name;
+        }
+        idx++;
+    }
 
     // Output replay file for visualizer
     if (!no_replay_switch.getValue()) {
