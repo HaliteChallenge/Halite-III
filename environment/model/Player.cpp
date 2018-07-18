@@ -82,7 +82,7 @@ void Player::add_entity(const Entity::id_type &id, Location location) {
  * @return True if the player is alive, false otherwise.
  */
 bool Player::is_alive() const {
-    return !crashed && !entities.empty();
+    return !crashed;
 }
 
 void Player::log_error_section(const std::string& section_name) {
