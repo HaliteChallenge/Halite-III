@@ -16,7 +16,7 @@ def rand_map_size():
     base_size = random.choice(map_sizes)
     # Always generate 1:1 aspect ratio
     # TODO: don't hardcode
-    map_width = map_height = 256 if random.random() > 0.5 else 128
+    map_width = map_height = 128 if random.random() > 0.5 else 96
 
     # Width, height
     return max(map_width, map_height), min(map_width, map_height)
@@ -30,7 +30,11 @@ def serve_game_task(conn, has_gpu=False):
             return result
 
     # Only allow 2 or 4 player games
-    player_count = 2 if random.random() > 0.5 else 4
+    player_count = 2
+    if random.random() > 0.5:
+        player_count = 4
+    elif random.random() > 0.5:
+        player_count = 8
 
     # If there is a GPU, only take bots from players who qualify for the GPU.
     # Else, do not run games for players who qualify for one.
