@@ -35,6 +35,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
 
         this.owner = record.owner;
         this.energy = record.energy;
+        this.id = record.id;
         this.x = record.x;
         this.y = record.y;
 
@@ -90,50 +91,50 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
      * @param record
      */
 
-    update() {
+    update(command) {
         let direction = 0;
         let x_move = 0;
         let y_move = 0;
         // Move the sprite according to move commands and redraw in new location
         if (this.visualizer.frame < this.visualizer.replay.full_frames.length) {
-            let moves = this.visualizer.replay.full_frames[this.visualizer.frame].moves || {};
-            let player_moves = moves[this.owner] || [];
-            for (let move_idx = 0; move_idx < player_moves.length; move_idx++) {
-                let move = player_moves[move_idx];
-                if (move && move.type === "move" && move.entity_x === this.x && move.entity_y === this.y) {
-                    if (move.direction === "n") {
-                        direction = Math.PI;
-                        x_move = 0;
-                        y_move = -1;
-                    }
-                    if (move.direction === "e") {
-                        direction = Math.PI / 2;
-                        x_move = 1;
-                        y_move = 0;
-                    }
-                    if (move.direction === "s") {
-                        direction = 0;
-                        x_move = 0;
-                        y_move = 1;
-                    }
-                    if (move.direction === "w") {
-                        direction = -Math.PI / 2;
-                        x_move = -1;
-                        y_move = 0;
-                    }
-                    this.sprite.rotation = direction;
-
-                    // Use wrap around map in determining movement
-                    this.x = (this.x + x_move + this.map_width) % this.map_width;
-                    this.y = (this.y + y_move + this.map_height) % this.map_height;
-
-                    this.updatePosition();
-
-                    // Sprite can only move once, so after reaching move pertaining to this sprite, exit
-                    return;
+            let entity_record = this.visualizer.replay.full_frames[this.visualizer.frame].entities[this.owner_id][this.id];
+            this.energy = entity_record.energy;
+            if (command.type === "move") {
+                if (move.direction === "n") {
+                    direction = Math.PI;
+                    x_move = 0;
+                    y_move = -1;
                 }
+                if (move.direction === "e") {
+                    direction = Math.PI / 2;
+                    x_move = 1;
+                    y_move = 0;
+                }
+                if (move.direction === "s") {
+                    direction = 0;
+                    x_move = 0;
+                    y_move = 1;
+                }
+                if (move.direction === "w") {
+                    direction = -Math.PI / 2;
+                    x_move = -1;
+                    y_move = 0;
+                }
+                this.sprite.rotation = direction;
+
+                // Use wrap around map in determining movement, interpolate between moves with visualizer time
+                this.x = (entity_record.x + x_move * this.visualizer.time + this.map_width) % this.map_width;
+                this.y = (entity_record.y + y_move * this.visualizer.time + this.map_height) % this.map_height;
+
+            }  else if (command.type === "dump") {
+                // TODO
+            } else if (command.type === "mine") {
+                // TODO
+            } else if (command.type === "construct") {
+                // TODO
             }
         }
+        this.updatePosition();
     }
 
      updatePosition() {
