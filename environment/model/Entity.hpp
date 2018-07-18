@@ -7,7 +7,7 @@
 namespace hlt {
 
 // Forward declare to avoid circular header dependency.
-class Player;
+struct Player;
 
 using player_id_type = class_id<Player>;
 
