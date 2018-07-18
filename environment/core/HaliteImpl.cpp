@@ -43,8 +43,14 @@ void HaliteImpl::run_game() {
                                             networking.initialize_player(player);
                                         });
     }
-    for (auto &[_, result] : results) {
-        result.get();
+    for (auto &[player_id, result] : results) {
+        game.store.players.at(player_id).log_error_section("Initialization Phase");
+        try {
+            result.get();
+        }
+        catch (const BotError& e) {
+            game.kill_player(player_id);
+        }
     }
     game.replay.players.insert(game.store.players.begin(), game.store.players.end());
     Logging::log("Player initialization complete.");
@@ -73,13 +79,21 @@ void HaliteImpl::process_turn() {
     id_map<Player, Commands> commands{};
     id_map<Player, std::future<Commands>> results{};
     for (auto &[player_id, player] : game.store.players) {
-        results[player_id] = std::async(std::launch::async,
-                                        [&game = this->game, &player = player] {
-                                            return game.networking.handle_frame(player);
-                                        });
+        if (player.is_alive()) {
+            results[player_id] = std::async(std::launch::async,
+                                            [&game = this->game, &player = player] {
+                                                return game.networking.handle_frame(player);
+                                            });
+        }
     }
     for (auto &[player_id, result] : results) {
-        commands[player_id] = result.get();
+        game.store.players.at(player_id).log_error_section("Turn " + std::to_string(game.turn_number));
+        try {
+            commands[player_id] = result.get();
+        }
+        catch (const BotError& e) {
+            game.kill_player(player_id);
+        }
     }
 
     // Process valid player commands, removing players if they submit invalid ones.

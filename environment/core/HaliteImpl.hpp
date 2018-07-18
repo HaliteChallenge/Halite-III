@@ -5,6 +5,7 @@
 
 #include "Halite.hpp"
 #include "Replay.hpp"
+#include "BotError.hpp"
 
 namespace hlt {
 
