@@ -50,6 +50,18 @@ void Halite::kill_player(const Player::id_type& player_id) {
     auto& player = store.get_player(player_id);
     player.crashed = true;
 
+    auto &entities = player.entities;
+    std::vector<Entity::id_type> to_delete;
+    for (const auto& [entity_id, location] : entities) {
+        auto& cell = map.at(location);
+        player.remove_entity(cell.entity);
+        cell.entity = Entity::None;
+        to_delete.push_back(entity_id);
+    }
+
+    for (const auto& entity_id : to_delete) {
+        store.delete_entity(entity_id);
+    }
 }
 
 const Player& Halite::get_player(Player::id_type player_id) {
