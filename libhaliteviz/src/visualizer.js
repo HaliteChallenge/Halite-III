@@ -439,10 +439,7 @@ export class HaliteVisualizer {
     /** Update/rerender after panning. */
     panRender() {
         for (const [ entity_id, entity ] of Object.entries(this.entity_dict)) {
-            if (this.current_commands[entity.owner]
-                && this.current_commands[entity.owner][entity_id]) {
-                entity.update(this.current_commands[entity.owner][entity_id]);
-            }
+            entity.updatePosition();
         }
 
         for (const factory of this.factories) {
