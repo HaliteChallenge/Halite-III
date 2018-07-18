@@ -39,9 +39,9 @@ void to_json(nlohmann::json &json, const EntityInfo &info) {
 void to_json(nlohmann::json &json, const Turn &turn) {
     json = {TURN_FIELD_TO_JSON(events),
             TURN_FIELD_TO_JSON(cells)};
-    nlohmann::json moves_json;
-    nlohmann::json energy_json;
-    nlohmann::json entities_json;
+    nlohmann::json moves_json = nlohmann::json::object();
+    nlohmann::json energy_json = nlohmann::json::object();
+    nlohmann::json entities_json = nlohmann::json::object();
 
     for (auto &[player_id, commands] : turn.moves) {
         moves_json[to_string(player_id)] = commands;
@@ -51,7 +51,7 @@ void to_json(nlohmann::json &json, const Turn &turn) {
     }
 
     for (auto &[player_id, entities_map] : turn.entities) {
-        nlohmann::json player_entity_json;
+        nlohmann::json player_entity_json = nlohmann::json::object();
         for (auto &[entity_id, entity_info] : entities_map) {
             player_entity_json[to_string(entity_id)] = entity_info;
         }
@@ -67,6 +67,10 @@ void to_json(nlohmann::json &json, const Turn &turn) {
  * param store The game store at the start of the turn
  */
 void Turn::add_entities(Store &store) {
+    // Initialize each player to have no entities
+    for (const auto &[player_id, _player] : store.players) {
+        entities[player_id] = {};
+    }
     for (const auto &[entity_id, entity] : store.entities) {
         const auto location = store.get_player(entity.owner).get_entity_location(entity.id);
         const EntityInfo entity_info = {location, entity};

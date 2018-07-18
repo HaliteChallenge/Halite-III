@@ -419,17 +419,21 @@ export class HaliteVisualizer {
         // Update all move_commands
         this.process_entity_commands();
 
+        // Spawn entities (info from replay file), then process deaths
+        this.process_entity_events();
+
         // Process map ownership
         this.baseMap.update(this.replay.full_frames[this.frame].cells);
 
-        // Spawn entities (info from replay file), then process deaths
-        this.process_entity_events();
     }
 
     /** Update/rerender after panning. */
     panRender() {
-        for (const sprite of Object.values(this.entities_dict)) {
-            if (sprite) sprite.updatePosition();
+        for (const [ entity_id, entity ] of Object.entries(this.entity_dict)) {
+            if (this.current_commands[entity.owner]
+                && this.current_commands[entity.owner][entity_id]) {
+                entity.update(this.current_commands[entity.owner][entity_id]);
+            }
         }
 
         for (const factory of this.factories) {
@@ -456,12 +460,13 @@ export class HaliteVisualizer {
      */
     process_entity_commands() {
         this.current_commands = {};
-        for (let player_id in Object.keys(this.replay.full_frames[this.frame].moves)) {
+        for (let player_id in this.replay.full_frames[this.frame].moves) {
             // TODO check desired and actual type of player_id
             this.current_commands[player_id] = {};
-            for (let command in this.replay.full_frames[this.frame].moves[player_id]) {
+            for (let command_key in this.replay.full_frames[this.frame].moves[player_id]) {
+                let command = this.replay.full_frames[this.frame].moves[player_id][command_key];
                 const command_type = command.type;
-                if (command_type === "move" || command_type === "dump" || command_type === "construct") {
+                if (command_type === "m" || command_type === "d" || command_type === "c") {
                     this.current_commands[player_id][command.id] = command;
                 }
             }
@@ -507,7 +512,7 @@ export class HaliteVisualizer {
                         new animation.PlanetExplosionFrameAnimation(
                             event, delayTime, cellSize, this.entityContainer));
                     // Store spawn as command so that entity knows not to mine this turn
-                    this.current_commands[event.owner_id][event.id] = {"type" : "spawn"};
+                    this.current_commands[event.owner_id][event.id] = {"type" : "g"};
                 }
                 else if (event.type === "construct") {
                     /// TODO: create new sprite class for dropoffs, construct one, add to list (dict?) of dropoffs
@@ -543,13 +548,14 @@ export class HaliteVisualizer {
         // for (let fish of this.fish) {
         //     fish.update(this.time, dt);
         // }
-        for (let entity_id in Object.keys(this.entity_dict)) {
-            let entity = this.entity_dict[entity];
-            if (this.current_commands[entity.owner_id].hasOwnProperty(entity_id)) {
-                entity.update(this.current_commands[entity.owner_id][entity_id]);
+        for (let entity_id in this.entity_dict) {
+            let entity = this.entity_dict[entity_id];
+            if (this.current_commands.hasOwnProperty(entity.owner)
+                && this.current_commands[entity.owner].hasOwnProperty(entity_id)) {
+                entity.update(this.current_commands[entity.owner][entity_id]);
             } else {
                 // no command implies entity is mining
-                entity.update({"type" : "mine"})
+                entity.update({"type" : "m"})
             }
         }
 

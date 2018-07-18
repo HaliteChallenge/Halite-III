@@ -21,7 +21,7 @@ SCENARIO("Cell constructor initializes member variables", "[cell]") {
             std::stringstream stream;
             stream << normal_cell;
             THEN("output correct production value") {
-                REQUIRE(stream.str() == "10\n");
+                REQUIRE(stream.str() == "10");
             }
         }
     }

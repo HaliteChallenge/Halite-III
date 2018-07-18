@@ -17,16 +17,16 @@ int main() {
 
     while(true) {
         // Get the newest frame.
-        unsigned int turn_number = hlt::getFrame(players);
+        unsigned int turn_number = hlt::getFrame(map, players);
         // For each of our ships
         for(auto &[id, ship] : players[myID].ships) {
             // If we're on our shipyard and have enough halite, dump it.
             if(ship.location == players[myID].shipyard && ship.halite > hlt::MAX_HALITE / 4) {
                 hlt::dump(id, ship.halite);
             }
-            // Otherwise, check if there's a reasonable amount of halite on the square.
+            // Otherwise, check if there's a reasonable amount of halite on the square and we have capacity.
             // If so, extract halite. If not, move randomly.
-            else if(map[ship.location] > hlt::MAX_HALITE / 10) {
+            else if(map[ship.location] > hlt::MAX_HALITE/10 && hlt::MAX_HALITE-ship.halite >= map[ship.location]/10) {
                 continue; // Do nothing, which is to say, extract halite.
             }
             else {
