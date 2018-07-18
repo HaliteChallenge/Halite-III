@@ -533,13 +533,13 @@ export class HaliteVisualizer {
                     // Temporarily draw as factory
                     const dropoff_base = {"x" : event.location.x, "y" : event.location.y, "owner" : event.owner_id};
                     const dropoff = new Factory(this, dropoff_base, this.replay.constants,
-                        scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
+                        this.camera.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
                     this.dropoffs.push(dropoff);
                     dropoff.attach(this.factoryContainer);
 
                     // delete entity sprite as it is no longer a ship
-                    this.entities_dict[event.id].destroy();
-                    delete this.entities_dict[event.id];
+                    this.entity_dict[event.id].destroy();
+                    delete this.entity_dict[event.id];
                 }
                 else {
                     console.log(event);
