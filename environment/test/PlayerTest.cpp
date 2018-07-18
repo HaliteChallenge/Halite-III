@@ -44,18 +44,18 @@ SCENARIO("Players are initialized correctly", "[player]") {
             AND_THEN("it should have the entity location") {
                 REQUIRE(player.get_entity_location(entity1) == location1);
             }
-        }
-        Location location2{2, 2};
-        AND_WHEN("another entity is added") {
-            player.add_entity(entity2, location2);
-            THEN("it should have both entities") {
-                REQUIRE(player.has_entity(entity1));
-                REQUIRE(player.has_entity(entity2));
-                REQUIRE(player.entities.size() == 2);
-            }
-            AND_THEN("it should have both entity locations") {
-                REQUIRE(player.get_entity_location(entity1) == location1);
-                REQUIRE(player.get_entity_location(entity2) == location2);
+            Location location2{2, 2};
+            AND_WHEN("another entity is added") {
+                player.add_entity(entity2, location2);
+                THEN("it should have both entities") {
+                    REQUIRE(player.has_entity(entity1));
+                    REQUIRE(player.has_entity(entity2));
+                    REQUIRE(player.entities.size() == 2);
+                }
+                AND_THEN("it should have both entity locations") {
+                    REQUIRE(player.get_entity_location(entity1) == location1);
+                    REQUIRE(player.get_entity_location(entity2) == location2);
+                }
             }
         }
     }
