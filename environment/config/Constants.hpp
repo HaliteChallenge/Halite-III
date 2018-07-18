@@ -14,7 +14,7 @@ namespace hlt {
  * Supports serialization to and deserialization from JSON.
  */
 struct Constants {
-    unsigned long MAX_TURNS = 300;              /**< The maximum number of turns. */
+    unsigned long MAX_TURNS = 500;              /**< The maximum number of turns. */
     unsigned long MAX_PLAYERS = 16;             /**< The maximum number of players. */
     dimension_type DEFAULT_MAP_WIDTH = 128;     /**< The default width of generated maps. */
     dimension_type DEFAULT_MAP_HEIGHT = 128;    /**< The default height of generated maps. */
