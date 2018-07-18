@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 import sys, copy
+import logging
 from collections import namedtuple
 
-MAX_HALITE = 65535
-SHIP_COST = 256
+MAX_HALITE = 1000
+SHIP_COST = 1000
 
 Ship = namedtuple('Ship', ['id', 'location', 'halite'])
 Dropoff = namedtuple('Ship', ['id', 'location'])
@@ -23,6 +24,12 @@ class Bot:
 
         self.my_id = my_id
 
+        logging.basicConfig(
+            filename="bot-{}.log".format(my_id),
+            filemode="w",
+            level=logging.DEBUG,
+        )
+
         players = {}
         for _ in range(num_players):
             player, shipyard_x, shipyard_y = map(int, input().split())
@@ -37,7 +44,7 @@ class Bot:
             for x in range(map_w):
                 game_map[y][x] = row_cells[x]
 
-        self.game_map = game_map
+        self.game_map = GameMap(game_map, map_w, map_h)
 
         return game_map, players, my_id
 
@@ -83,7 +90,9 @@ class Player:
 
 
 class GameMap:
-    def __init__(self, cells):
+    def __init__(self, cells, width, height):
+        self.width = width
+        self.height = height
         self.cells = cells
 
     def __getitem__(self, row):
