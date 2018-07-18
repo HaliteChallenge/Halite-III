@@ -77,10 +77,12 @@ void HaliteImpl::process_turn() {
     id_map<Player, Commands> commands{};
     id_map<Player, std::future<Commands>> results{};
     for (auto &[player_id, player] : game.store.players) {
-        results[player_id] = std::async(std::launch::async,
-                                        [&game = this->game, &player = player] {
-                                            return game.networking.handle_frame(player);
-                                        });
+        if (player.is_alive()) {
+            results[player_id] = std::async(std::launch::async,
+                                            [&game = this->game, &player = player] {
+                                                return game.networking.handle_frame(player);
+                                            });
+        }
     }
     for (auto &[player_id, result] : results) {
         game.store.players.at(player_id).log_error_section("Turn " + std::to_string(game.turn_number));
