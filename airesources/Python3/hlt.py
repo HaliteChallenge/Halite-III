@@ -4,7 +4,7 @@ import sys, copy
 from collections import namedtuple
 
 MAX_HALITE = 65535
-SHIP_COST = 65536
+SHIP_COST = 256
 
 base_players = None # Need to remember this
 _moves = ""
