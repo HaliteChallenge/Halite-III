@@ -73,7 +73,7 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(const Player &pla
     // Send the changed cells.
     message_stream << game.store.changed_cells.size() << std::endl;
     for (const auto &location : game.store.changed_cells) {
-        message_stream << location << game.map.at(location).energy << std::endl;
+        message_stream << location << " " << game.map.at(location).energy << std::endl;
     }
     connections[player]->send_string(message_stream.str());
     Logging::log("Turn info sent to player " + to_string(player.id), Logging::Level::Debug);
