@@ -178,22 +178,53 @@ int main(int argc, char *argv[]) {
         std::stringstream replay_message;
         replay_message << "Map seed was " << replay.map_generator_seed << std::endl
                        << "Opening a file at " << output_filename << std::endl;
+
+        // JSON results info, used by backend
+        nlohmann::json results;
+        results["error_logs"] = nlohmann::json::object();
+
+        for (const auto &[player_id, player] : replay.players) {
+            if (player.crashed) {
+                std::stringstream logname_buf;
+                logname_buf << "errorlog-" << std::string(time_string)
+                            << "-" << replay.map_generator_seed
+                            << "-" << map_width
+                            << "-" << map_height
+                            << "-" << player_id
+                            << ".log";
+                const auto log_filename = logname_buf.str();
+                auto log_filepath = replay_directory + "Replays/" + log_filename;
+
+                std::ofstream log_file;
+                log_file.open(log_filepath, std::ios_base::out);
+                if (!log_file.is_open()) {
+                    log_filepath = replay_directory + log_filename;
+                    log_file.open(log_filepath, std::ios_base::out);
+                }
+
+                results["error_logs"][to_string(player_id)] = log_filepath;
+
+                log_file.write(player.error_log.c_str(), player.error_log.size());
+
+                replay_message << "Player " << player_id << " crashed. "
+                               << "Writing a log at " << log_filepath << std::endl;
+            }
+        }
+
         Logging::log(replay_message.str());
 
         if (json_results_switch.getValue()) {
-            nlohmann::json results;
             results["replay"] = output_filename;
             results["map_width"] = map_width;
             results["map_height"] = map_height;
             results["map_seed"] = config.seed;
             // TODO: put the actual generator here
             results["map_generator"] = "default";
+            results["final_snapshot"] = game.to_snapshot();
             results["stats"] = nlohmann::json::object();
             for (const auto& stats : replay.game_statistics.player_statistics) {
                 results["stats"][to_string(stats.player_id)] = { { "rank", stats.rank } };
             }
-            // TODO: where are the error logs?
-            results["error_logs"] = nlohmann::json::object();
             std::cout << results.dump(JSON_INDENT_LEVEL) << std::endl;
         }
     }

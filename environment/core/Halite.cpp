@@ -1,4 +1,5 @@
 #include <future>
+#include <sstream>
 
 #include "Halite.hpp"
 #include "HaliteImpl.hpp"
@@ -41,6 +42,34 @@ void Halite::load_snapshot(const Snapshot &snapshot) {
 void Halite::run_game(const std::vector<std::string> &player_commands) {
     impl->initialize_game(player_commands);
     impl->run_game();
+}
+
+void Halite::kill_player(Player::id_type player_id) {
+    auto& player = store.get_player(player_id);
+    player.crashed = true;
+
+    auto &entities = player.entities;
+    for (auto entity_iterator = entities.begin(); entity_iterator != entities.end();) {
+        auto [entity_id, location] = *entity_iterator;
+        auto& cell = map.at(location);
+        player.remove_entity(cell.entity);
+        cell.entity = Entity::None;
+    }
+}
+
+// TODO: move this to parser too
+constexpr auto SNAPSHOT_FIELD_DELIMITER = ";";
+constexpr auto SNAPSHOT_LIST_DELIMITER = ",";
+constexpr auto SNAPSHOT_SUBFIELD_DELIMITER = "-";
+
+std::string Halite::to_snapshot() {
+    std::stringstream output;
+
+    output << HALITE_VERSION << SNAPSHOT_FIELD_DELIMITER;
+
+    // TODO:
+
+    return output.str();
 }
 
 /** Default destructor is defined where HaliteImpl is complete. */

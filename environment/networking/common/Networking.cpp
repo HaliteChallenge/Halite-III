@@ -3,6 +3,8 @@
 #include "Command.hpp"
 #include "Halite.hpp"
 #include "Logging.hpp"
+#include "error/BotError.hpp"
+#include "error/NetworkingError.hpp"
 
 namespace net {
 
@@ -51,7 +53,7 @@ void Networking::initialize_player(Player &player) {
  * @param player The player to communicate with.
  * @return The commands from the player.
  */
-std::vector<std::unique_ptr<Command>> Networking::handle_frame(const Player &player) {
+std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
     std::stringstream message_stream;
     // Send the turn number, then each player in the game.
     message_stream << game.turn_number << std::endl;
@@ -75,18 +77,29 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(const Player &pla
     for (const auto &location : game.store.changed_cells) {
         message_stream << location << " " << game.map.at(location).energy << std::endl;
     }
-    connections[player]->send_string(message_stream.str());
-    Logging::log("Turn info sent to player " + to_string(player.id), Logging::Level::Debug);
-    // Get commands from the player.
-    std::istringstream command_stream(connections[player]->get_string());
+
     std::vector<std::unique_ptr<Command>> commands;
-    std::unique_ptr<Command> command;
-    while (command_stream >> command) {
-        commands.push_back(std::move(command));
+    try {
+        connections[player]->send_string(message_stream.str());
+        Logging::log("Turn info sent to player " + to_string(player.id), Logging::Level::Debug);
+        // Get commands from the player.
+        std::istringstream command_stream(connections[player]->get_string());
+        std::unique_ptr<Command> command;
+        while (command_stream >> command) {
+            commands.push_back(std::move(command));
+        }
+        command_stream >> command;
+        Logging::log("Received " + std::to_string(commands.size()) +
+                     " commands from player " + to_string(player.id), Logging::Level::Debug);
     }
-    command_stream >> command;
-    Logging::log("Received " + std::to_string(commands.size()) +
-                 " commands from player " + to_string(player.id), Logging::Level::Debug);
+    catch (const BotError& e) {
+        player.log_error(e.what());
+        const auto& received_input = connections[player]->read_trailing_input();
+        player.log_error("Last input received was:");
+        player.log_error(received_input);
+        throw;
+    }
+
     return commands;
 }
 

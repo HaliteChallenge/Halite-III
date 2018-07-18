@@ -125,7 +125,7 @@ std::string WinConnection::get_string() {
                 auto current_time = high_resolution_clock::now();
                 auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
                 if (remaining < milliseconds::zero()) {
-                    throw TimeoutError(config.timeout);
+                    throw TimeoutError("when reading string", config.timeout, result);
                 }
             }
             PeekNamedPipe(read_pipe, nullptr, 0, nullptr, &bytes_available, nullptr);
@@ -134,7 +134,7 @@ std::string WinConnection::get_string() {
         DWORD chars_read;
         auto success = ReadFile(read_pipe, &buffer, 1, &chars_read, nullptr);
         if (!success || chars_read < 1) {
-            throw NetworkingError("Could not read from pipe");
+            throw NetworkingError("Could not read from pipe", result);
         }
         if (buffer == '\n') {
             break;
