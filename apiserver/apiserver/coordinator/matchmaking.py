@@ -11,12 +11,11 @@ from .. import config, model, util
 def rand_map_size():
     # Pick map size. Duplicate entries are used to weight the
     # probability of a particular size
-    map_sizes = [80, 80, 88, 88, 96, 96, 96, 104, 104, 104, 104,
-                 112, 112, 112, 120, 120, 128, 128]
+    map_sizes = [32, 48, 64, 96, 128]
     base_size = random.choice(map_sizes)
-    # Always generate 1:1 aspect ratio
-    # TODO: don't hardcode
-    map_width = map_height = 128 if random.random() > 0.5 else 96
+    # TODO: make visualizer work with non-square ratios so we can
+    # assign them
+    map_width = map_height = base_size
 
     # Width, height
     return max(map_width, map_height), min(map_width, map_height)
@@ -33,8 +32,6 @@ def serve_game_task(conn, has_gpu=False):
     player_count = 2
     if random.random() > 0.5:
         player_count = 4
-    elif random.random() > 0.5:
-        player_count = 8
 
     # If there is a GPU, only take bots from players who qualify for the GPU.
     # Else, do not run games for players who qualify for one.
