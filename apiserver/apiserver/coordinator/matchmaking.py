@@ -14,9 +14,9 @@ def rand_map_size():
     map_sizes = [80, 80, 88, 88, 96, 96, 96, 104, 104, 104, 104,
                  112, 112, 112, 120, 120, 128, 128]
     base_size = random.choice(map_sizes)
-    # Always generate 3:2 aspect ratio
-    map_width = 3 * base_size
-    map_height = 2 * base_size
+    # Always generate 1:1 aspect ratio
+    # TODO: don't hardcode
+    map_width = map_height = 256 if random.random() > 0.5 else 128
 
     # Width, height
     return max(map_width, map_height), min(map_width, map_height)
