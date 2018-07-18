@@ -83,7 +83,7 @@ export class ShipExplosionFrameAnimation extends SpritesheetFrameAnimation {
             sizeFactor: 5,
             x: event.location.x,
             y: event.location.y,
-            tintColor: assets.PLAYER_COLORS[event.owner_id],
+            tintColor: assets.EXPLOSION_COLOR,
             delayTime: delayTime,
             cellSize: cellSize,
             container: container,

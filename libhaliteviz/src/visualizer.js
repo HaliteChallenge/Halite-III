@@ -501,7 +501,8 @@ export class HaliteVisualizer {
                         new animation.ShipExplosionFrameAnimation(
                             event, delayTime, cellSize, this.entityContainer));
                     // Remove all entities involved in crash
-                    for (const entity_id of event.ships) {
+                    for (let index = 0; index < event.ships.length; index++) {
+                        let entity_id = event.ships[index];
                         this.entity_dict[entity_id].destroy();
                         delete this.entity_dict[entity_id];
                     }
