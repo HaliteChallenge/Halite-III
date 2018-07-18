@@ -46,3 +46,13 @@
 <style lang="scss" scoped>
 
 </style>
+
+<style lang="scss">
+    .sidebar, .game-heading, .xline {
+        display: none;
+    }
+
+    .game-replay, .game-replay-viewer, .visuallizer-container {
+        padding: 0 !important;
+    }
+</style>
