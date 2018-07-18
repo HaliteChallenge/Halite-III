@@ -15,6 +15,7 @@ private:
     std::array<char, READ_BUFFER_SIZE> buffer{};  /**< The bot read buffer. */
     std::string current_read;                     /**< Accumulated last read, waiting for a newline. */
     std::deque<std::string> message_queue;        /**< Queue for messages that have not been retrieved. */
+
 public:
     /**
      * Initialize a UnixConnection to a new process using a command.
@@ -38,6 +39,11 @@ public:
      * @throws NetworkingError on error while reading.
      */
     std::string get_string() override;
+
+    /**
+     * Read any remaining input from the pipe.
+     */
+    std::string read_trailing_input() override;
 
     /** Destroy the UnixConnection, terminating the subprocess if there is one. */
     ~UnixConnection() noexcept override;
