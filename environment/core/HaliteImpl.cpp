@@ -77,7 +77,12 @@ void HaliteImpl::process_turn() {
                                         });
     }
     for (auto &[player_id, result] : results) {
-        commands[player_id] = result.get();
+        try {
+            commands[player_id] = result.get();
+        }
+        catch (const BotError& e) {
+            game.kill_player(player_id);
+        }
     }
 
     // Process valid player commands, removing players if they submit invalid ones.

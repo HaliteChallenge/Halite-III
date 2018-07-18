@@ -79,11 +79,13 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
     }
 
     std::vector<std::unique_ptr<Command>> commands;
+    std::string received_input;
     try {
         connections[player]->send_string(message_stream.str());
         Logging::log("Turn info sent to player " + to_string(player.id), Logging::Level::Debug);
         // Get commands from the player.
-        std::istringstream command_stream(connections[player]->get_string());
+        received_input = connections[player]->get_string();
+        std::istringstream command_stream(received_input);
         std::unique_ptr<Command> command;
         while (command_stream >> command) {
             commands.push_back(std::move(command));
@@ -94,7 +96,8 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
     }
     catch (const BotError& e) {
         player.log_error(e.what());
-        const auto& received_input = connections[player]->read_trailing_input();
+        received_input += '\n';
+        received_input += connections[player]->read_trailing_input();
         player.log_error("Last input received was:");
         player.log_error(received_input);
         throw;

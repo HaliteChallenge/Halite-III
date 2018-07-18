@@ -183,7 +183,8 @@ int main(int argc, char *argv[]) {
         nlohmann::json results;
         results["error_logs"] = nlohmann::json::object();
 
-        for (const auto &[player_id, player] : replay.players) {
+        for (const auto &[player_id, _] : replay.players) {
+            const auto& player = game.get_player(player_id);
             if (player.crashed) {
                 std::stringstream logname_buf;
                 logname_buf << "errorlog-" << std::string(time_string)

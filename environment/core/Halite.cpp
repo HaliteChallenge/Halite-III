@@ -57,6 +57,10 @@ void Halite::kill_player(Player::id_type player_id) {
     }
 }
 
+const Player& Halite::get_player(Player::id_type player_id) {
+    return store.get_player(player_id);
+}
+
 // TODO: move this to parser too
 constexpr auto SNAPSHOT_FIELD_DELIMITER = ";";
 constexpr auto SNAPSHOT_LIST_DELIMITER = ",";
