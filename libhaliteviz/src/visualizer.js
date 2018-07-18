@@ -4,7 +4,6 @@ const extraFilters = require("pixi-extra-filters");
 
 import {playerSprite} from "./sprite";
 import {Factory} from "./factory";
-import {Fish} from "./fish";
 import {Map} from "./map";
 import Camera from "./camera";
 import * as statistics from "./statistics";
@@ -99,16 +98,11 @@ export class HaliteVisualizer {
         this.mapContainer = new PIXI.Container();
         this.factoryContainer = new PIXI.Container();
         this.entityContainer = new PIXI.Container();
-        this.fishContainer = new PIXI.Container();
 
-        // Store entities both in list for easy iteration and in 2d array to understand spatial relationships
-        this.entities = Array.from(Array(this.map_height), () => new Array(this.map_width));
-        this.entities_list = [];
         this.entity_dict = {};
         this.current_commands = {};
         this.factories = [];
         this.dropoffs = [];
-        this.fish = [];
 
         this.camera = new Camera(
             scale, this.panRender.bind(this),
@@ -128,31 +122,11 @@ export class HaliteVisualizer {
                 scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
             this.factories.push(factory);
             factory.attach(this.factoryContainer);
-
-            // Add players'initial entities to list and map
-            // for (let entity_json of this.replay.players[i].entities) {
-            //     let entity_object = {"x" : entity_json.x, "y" : entity_json.y, "energy" : entity_json.energy, "owner": this.replay.players[i].player_id};
-            //     let new_entity = new playerSprite(this, entity_object);
-            //     if (typeof this.entities[new_entity.y][new_entity.x] === "undefined") {
-            //         this.entities[new_entity.y][new_entity.x] = {};
-            //     }
-            //     this.entities[new_entity.y][new_entity.x][new_entity.owner] = new_entity;
-            //     this.entities_list.push(new_entity);
-            //     new_entity.attach(this.entityContainer);
-            // }
-
-            // TODO: Re-add fish with herding logic
-            // const fish = new Fish(this.replay.constants, scale, (kind, args) => this.onSelect(kind, args));
-            // this.fish.push(fish);
-            // fish.attach(this.fishContainer);
         }
-
-        // Prerender the points of interest once, and keep it as a texture
 
         this.container.addChild(this.mapContainer);
         this.container.addChild(this.factoryContainer);
         this.container.addChild(this.entityContainer);
-        this.container.addChild(this.fishContainer);
 
         this.application.stage.addChild(this.container);
         this.application.stage.addChild(this.letterbox);
@@ -425,6 +399,8 @@ export class HaliteVisualizer {
             factory.update();
         }
 
+        this.remove_invalid_entities();
+
         // Update all move_commands
         this.process_entity_commands();
 
@@ -456,6 +432,18 @@ export class HaliteVisualizer {
             this.application.render();
         }
         this.onUpdate();
+    }
+
+    /**
+     * Remove entities that shouldn't be here anymore (due to
+     * scrubbing).
+     */
+    remove_invalid_entities() {
+        for (const [entity_id, entity] of Object.entries(this.entity_dict)) {
+            if (!this.replay.full_frames[this.frame].entities[entity.owner][entity_id]) {
+                delete this.entity_dict[entity_id];
+            }
+        }
     }
 
     /**
@@ -550,11 +538,6 @@ export class HaliteVisualizer {
      * @param dt
      */
     draw(dt=0) {
-        // TODO: update fish with herding mechanism
-        // just let the fish wander
-        // for (let fish of this.fish) {
-        //     fish.update(this.time, dt);
-        // }
         for (let entity_id in this.entity_dict) {
             let entity = this.entity_dict[entity_id];
             if (this.current_commands.hasOwnProperty(entity.owner)
@@ -562,7 +545,7 @@ export class HaliteVisualizer {
                 entity.update(this.current_commands[entity.owner][entity_id]);
             } else {
                 // no command implies entity is mining
-                entity.update({"type" : "m"})
+                entity.update({"type" : "m"});
             }
         }
 
