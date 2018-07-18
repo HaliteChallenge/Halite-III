@@ -35,14 +35,25 @@ void Networking::initialize_player(Player &player) {
     }
     // Send the map
     message_stream << game.map;
-    connection->send_string(message_stream.str());
-    Logging::log("Init message sent to player " + to_string(player.id));
-    // Receive a name from the player.
-    player.name = connection->get_string().substr(0, NAME_MAX_LENGTH);
-    Logging::log("Init message received from player " + to_string(player.id) + ", name: " + player.name);
+
     {
         std::lock_guard<std::mutex> guard(connections_mutex);
         connections[player] = std::move(connection);
+    }
+
+    try {
+        connections[player]->send_string(message_stream.str());
+        Logging::log("Init message sent to player " + to_string(player.id));
+        // Receive a name from the player.
+        player.name = connections[player]->get_string().substr(0, NAME_MAX_LENGTH);
+        Logging::log("Init message received from player " + to_string(player.id) + ", name: " + player.name);
+    }
+    catch (const BotError& e) {
+        player.log_error(e.what());
+        const auto received_input = connections[player]->read_trailing_input();
+        player.log_error("Last input received was:");
+        player.log_error(received_input);
+        throw;
     }
 }
 

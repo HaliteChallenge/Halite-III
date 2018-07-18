@@ -41,8 +41,14 @@ void HaliteImpl::run_game() {
                                             networking.initialize_player(player);
                                         });
     }
-    for (auto &[_, result] : results) {
-        result.get();
+    for (auto &[player_id, result] : results) {
+        game.store.players.at(player_id).log_error_section("Initialization Phase");
+        try {
+            result.get();
+        }
+        catch (const BotError& e) {
+            game.kill_player(player_id);
+        }
     }
     game.replay.players.insert(game.store.players.begin(), game.store.players.end());
     Logging::log("Player initialization complete.");

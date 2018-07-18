@@ -4,6 +4,7 @@
 #include "Halite.hpp"
 #include "HaliteImpl.hpp"
 #include "Snapshot.hpp"
+#include "Logging.hpp"
 
 namespace hlt {
 
@@ -44,7 +45,8 @@ void Halite::run_game(const std::vector<std::string> &player_commands) {
     impl->run_game();
 }
 
-void Halite::kill_player(Player::id_type player_id) {
+void Halite::kill_player(const Player::id_type& player_id) {
+    Logging::log("Killing player " + to_string(player_id));
     auto& player = store.get_player(player_id);
     player.crashed = true;
 
