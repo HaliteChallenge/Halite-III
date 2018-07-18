@@ -22,7 +22,7 @@ void to_json(nlohmann::json &json, const Player &player) {
 }
 
 /**
- * Write a Player to bot serial format.
+ * Write a Player to bot serial format. Only can write header due to game store of entities
  * @param ostream The output stream.
  * @param player The Player to write.
  * @return The output stream.
@@ -34,18 +34,6 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
             << " " << player.dropoffs.size()
             << " " << player.energy
             << std::endl;
-    // Output a list of entities.
-    for (const auto &[id, location_entity] : player.entities) {
-        auto [location, entity] = location_entity;
-        ostream << id
-                << " " << location
-                << " " << entity
-                << std::endl;
-    }
-    // Output a list of dropoffs.
-    for (const auto &dropoff : player.dropoffs) {
-        ostream << dropoff << std::endl;
-    }
     return ostream;
 }
 

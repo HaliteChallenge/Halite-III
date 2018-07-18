@@ -32,12 +32,12 @@ class HaliteImpl final {
     bool game_ended() const;
 
     /**
-     * Update a player's statistics after a single turn. This will update their total game production, their last turn
-     * alive if they are still alive, and the production for that turn.
+     * Update a player's statistics after a single turn. This will update their current game production and their last turn
+     * alive if they are still alive.
      *
      * @param productions Mapping from player ID to the production they gained in the current turn.
      */
-    void update_player_stats(std::unordered_map<Player::id_type, energy_type> &productions);
+    void update_player_stats(Player::id_type player);
 
     /**
      * Update players' rankings based on their final turn alive, then break ties with production totals in final turn.

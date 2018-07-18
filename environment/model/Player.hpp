@@ -15,7 +15,6 @@ namespace hlt {
 /** Representation of a Halite player. */
 class Player final : public Enumerated<Player> {
     friend class Factory<Player>;
-    id_map<Entity, Location> entities{};  /**< Mapping from entity to location. */
 
 public:
     std::string name;               /**< The name of the player. */
@@ -23,6 +22,7 @@ public:
     std::vector<Dropoff> dropoffs;  /**< The dropoffs this player owns. */
     energy_type energy{};           /**< The amount of energy stockpiled by the player. */
     const std::string command;      /**< The bot command for the player. */
+    id_map<Entity, Location> entities{};  /**< Mapping from entity to location. */
 
     /**
      * Get whether this player is alive.

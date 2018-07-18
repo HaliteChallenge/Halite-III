@@ -57,6 +57,18 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(const Player &pla
     message_stream << game.turn_number << std::endl;
     for (const auto &[_, other_player] : game.store.players) {
         message_stream << other_player;
+        // Output a list of entities.
+        for (const auto &[entity_id, location] : player.entities) {
+            const auto entity_iterator = game.store.entities.find(entity_id);
+            message_stream << entity_id
+                    << " " << location
+                    << " " << entity_iterator->second.energy
+                    << std::endl;
+        }
+        // Output a list of dropoffs.
+        for (const auto &dropoff : player.dropoffs) {
+            message_stream << dropoff << std::endl;
+        }
     }
     // Send the changed cells.
     message_stream << game.store.changed_cells.size() << std::endl;
