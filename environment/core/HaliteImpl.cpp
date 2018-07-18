@@ -24,9 +24,11 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
     }
     game.replay.game_statistics = game.game_statistics;
 
-    // Zero the energy on factories.
-    for (auto &[_, player] : game.store.players) {
-        game.map.at(player.factory).energy = 0;
+    // Zero the energy on factories and mark as owned.
+    for (auto &[player_id, player] : game.store.players) {
+        auto &factory = game.map.at(player.factory);
+        factory.energy = 0;
+        factory.owner = player_id;
     }
 }
 
