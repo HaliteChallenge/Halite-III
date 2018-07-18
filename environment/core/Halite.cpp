@@ -50,13 +50,6 @@ void Halite::kill_player(const Player::id_type& player_id) {
     auto& player = store.get_player(player_id);
     player.crashed = true;
 
-    auto &entities = player.entities;
-    for (auto entity_iterator = entities.begin(); entity_iterator != entities.end();) {
-        auto [entity_id, location] = *entity_iterator;
-        auto& cell = map.at(location);
-        player.remove_entity(cell.entity);
-        cell.entity = Entity::None;
-    }
 }
 
 const Player& Halite::get_player(Player::id_type player_id) {
