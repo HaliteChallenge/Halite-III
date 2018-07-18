@@ -1,19 +1,17 @@
 #include "TileGenerator.hpp"
 
-#include <cassert>
-
 namespace hlt {
 namespace mapgen {
 
 void TileGenerator::tile_map(Map &map, const dimension_type factory_y, const dimension_type factory_x,
-                            const Map &tile, std::vector<Location> &factories) {
+                             const Map &tile) {
     // Copy the tile over the map
     for (dimension_type player_row = 0; player_row < num_tile_rows; ++player_row) {
         for (dimension_type player_col = 0; player_col < num_tile_cols; ++player_col) {
             for (dimension_type tile_row = 0; tile_row < tile_height; ++tile_row) {
                 for (dimension_type tile_col = 0; tile_col < tile_width; ++tile_col) {
-                    map.at(player_col * tile_width + tile_col, player_row * tile_height + tile_row) =
-                            make_cell<NormalCell>(tile.at(tile_col, tile_row)->production());
+                    map.at(player_col * tile_width + tile_col, player_row * tile_height + tile_row).energy =
+                            tile.at(tile_col, tile_row).energy;
                 }
             }
         }
@@ -23,9 +21,9 @@ void TileGenerator::tile_map(Map &map, const dimension_type factory_y, const dim
     for (unsigned long player_idx = 0; player_idx < num_players; player_idx++) {
         const dimension_type player_factory_x = (player_idx % num_tile_cols) * tile_width + factory_x;
         const dimension_type player_factory_y = (player_idx / num_tile_cols) * tile_height + factory_y;
-        map.at(player_factory_x, player_factory_y) = make_cell<FactoryCell>();
+        map.at(player_factory_x, player_factory_y).energy = 0;
 
-        factories.emplace_back(player_factory_x, player_factory_y);
+        map.factories.emplace_back(player_factory_x, player_factory_y);
     }
 }
 

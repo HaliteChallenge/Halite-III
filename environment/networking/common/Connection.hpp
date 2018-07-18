@@ -37,8 +37,6 @@ protected:
     Process process{};         /** The process. */
     NetworkingConfig config{}; /** The networking configuration. */
 
-    BaseConnection() = default;
-
 public:
     /**
      * Send a string along this connection.
@@ -54,6 +52,7 @@ public:
      */
     virtual std::string get_string() = 0;
 
+    /** Virtual destructor. */
     virtual ~BaseConnection() = default;
 };
 
@@ -62,7 +61,7 @@ using Connection = std::unique_ptr<BaseConnection>;
 
 /** Generic factory class for connections across platforms. */
 template<class OSConnection>
-class ConnectionFactory {
+class ConnectionFactory final {
 private:
     /** The networking configuration. */
     NetworkingConfig config;
