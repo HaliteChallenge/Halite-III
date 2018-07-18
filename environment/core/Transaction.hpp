@@ -51,7 +51,7 @@ public:
     virtual void commit() = 0;
 
     /** Virtual destructor. */
-    virtual ~BaseTransaction() = 0;
+    virtual ~BaseTransaction() = default;
 };
 
 /**
@@ -82,7 +82,7 @@ public:
     void set_callback(std::function<void(GameEvent)> callback) override { this->callback = callback; }
 
     /** Virtual destructor. */
-    ~Transaction() override = 0;
+    ~Transaction() override = default;
 };
 
 class DumpCommand;

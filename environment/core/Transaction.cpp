@@ -5,11 +5,6 @@
 
 namespace hlt {
 
-BaseTransaction::~BaseTransaction() = default;
-
-template<class T>
-Transaction<T>::~Transaction() = default;
-
 /**
  * Dump energy onto a cell.
  *
