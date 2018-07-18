@@ -65,18 +65,18 @@ int main(int argc, char *argv[]) {
 
     cmd.parse(argc, argv);
 
-    // If requested, print constants and exit
-    if (print_constants_switch.getValue()) {
-        std::cout << nlohmann::json(constants).dump() << std::endl;
-        return 0;
-    }
-
     // Update the game constants
     if (constants_arg.isSet()) {
         std::ifstream constants_file(constants_arg.getValue());
         nlohmann::json constants_json;
         constants_file >> constants_json;
         from_json(constants_json, constants);
+    }
+
+    // If requested, print constants and exit
+    if (print_constants_switch.getValue()) {
+        std::cout << nlohmann::json(constants).dump() << std::endl;
+        return 0;
     }
 
     if (turn_limit_arg.isSet()) {

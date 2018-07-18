@@ -20,7 +20,7 @@ struct Constants {
     dimension_type DEFAULT_MAP_HEIGHT = 128;    /**< The default height of generated maps. */
 
     energy_type MAX_CELL_PRODUCTION = 1000;      /**< The maximum maximum amount of production on a cell. */
-    energy_type MIN_CELL_PRODUCTION = 1;       /**< The minimum maximum amount of production on a cell. */
+    energy_type MIN_CELL_PRODUCTION = 900;       /**< The minimum maximum amount of production on a cell. */
     // TODO: ship max capacity
     energy_type MAX_ENERGY = 1000;               /**< The maximum amount of energy per entity. */
     energy_type NEW_ENTITY_ENERGY_COST = 1000;  /**< The amount of production which equals one energy. */
