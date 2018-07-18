@@ -3,14 +3,14 @@
 
 $gray-bg: #25242f;
 $dark-gray: #30242F;
-$foreground: #ECFFFB;
+$foreground: #000;
 $foreground-2: #b9b8b8;
 $foreground-light: rgba(236,255, 251,0.5);
-$yellow: #FFBE00;
+$yellow: #20bfc1;
 $border: #474951;
-$font-heading: "Teko";
 $font-body: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-$font-headline: "Teko";
+$font-heading: $font-body;
+$font-headline: $font-body;
 $screen-llg-min: 1400px;
 $error: #FF2D55;
 $yellow-hover: #F1A703;

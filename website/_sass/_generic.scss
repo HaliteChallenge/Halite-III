@@ -1,5 +1,5 @@
 html{
-  background-image: url("/assets/images/site_bg.jpg");
+  background: #20bfc1;
   background-attachment: fixed;
   background-size: cover;
   @media (max-width: $screen-sm-min){
@@ -10,7 +10,7 @@ html{
 body{
   font-family: $font-body;
   background-color: transparent;
-  color: #ECFFFB;
+  color: $foreground;
   font-size: 1.6rem;
 
   > .body {
@@ -29,7 +29,7 @@ a{
   }
 }
 .hl{
-  color: #FFBE00; 
+  color: #FFBE00;
 }
 
 h1, h2, h3{
@@ -253,7 +253,8 @@ input:focus{
   margin-right: 0;
 }
 .font-headline{
-  font-family: Teko !important;
+  // font-family: Teko !important;
+    font-weight: 300;
 }
 
 /** form **/
@@ -315,7 +316,7 @@ input:focus{
   display: flex;
   align-items: center;
   .hex-li-content{
-    
+
   }
   .hex-bullet{
     display: inline-block;
@@ -338,12 +339,9 @@ input:focus{
 .ha-button-container{
   margin-left: auto;
   margin-right: auto;
-  font-family: "Teko";
-  font-size: 2rem;
-  background-image: url("/assets/images/register_bg.png");
-  background-size: 100% 40px;
-  background-position: center;
-  background-repeat: no-repeat;
+  font-size: 1.5rem;
+  background: #FFF;
+  border-radius: 10px;
   padding: 5px 20px;
   cursor: pointer;
   display: inline-block;
@@ -370,10 +368,6 @@ input:focus{
 }
 
 .no-bg-button{
-  background-image: url("/assets/images/button-clear.png");
-  span{
-    color: $yellow;
-  }
 }
 
 .intrinsic-container {
@@ -381,17 +375,17 @@ input:focus{
   height: 0;
   overflow: hidden;
 }
- 
+
 /* 16x9 Aspect Ratio */
 .intrinsic-container-16x9 {
   padding-bottom: 56.25%;
 }
- 
+
 /* 4x3 Aspect Ratio */
 .intrinsic-container-4x3 {
   padding-bottom: 75%;
 }
- 
+
 .intrinsic-container iframe {
   position: absolute;
   top:0;

@@ -93,8 +93,8 @@ sudo -iu bot_compilation sh -c 'curl https://repo.continuum.io/miniconda/Minicon
 curl -s get.sdkman.io | sudo -iu bot_compilation bash
 cat <<EOF | sudo -iu bot_compilation tee -a /home/bot_compilation/.profile
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/worker/.sdkman"
-[[ -s "/home/worker/.sdkman/bin/sdkman-init.sh" ]] && source "/home/bot_compilation/.sdkman/bin/sdkman-init.sh"
+export SDKMAN_DIR="/home/bot_compilation/.sdkman"
+[[ -s "/home/bot_compilation/.sdkman/bin/sdkman-init.sh" ]] && source "/home/bot_compilation/.sdkman/bin/sdkman-init.sh"
 EOF
 sudo -iu bot_compilation sdk install groovy
 

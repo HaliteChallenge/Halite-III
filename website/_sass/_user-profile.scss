@@ -14,7 +14,7 @@
     margin-bottom: 15px;
   }
   a{
-    color: $yellow;
+    color: $foreground;
     text-decoration: none;
     cursor: pointer;
     &:hover{
@@ -201,19 +201,19 @@
 
   .table-leader {
     thead > tr > th {
-      background-color: #1c1a27;
+      background-color: #FFF;
     }
     tbody > tr > td {
-      background-color: #000;
+      background-color: #FFF;
     }
     tbody > tr > td.old-bot-odd{
-      background-color: #211f2e;
+      background-color: #FFF;
     }
     tbody > tr > td.old-bot-even{
-      background-color: #282538;
+      background-color: #FFF;
     }
     tbody > tr > td.challenge{
-      background-color: #1c1c13;
+      background-color: #FFF;
     }
     .winner {
       color: #20A257;
@@ -255,7 +255,7 @@
         letter-spacing: 1px;
       }
       @media (max-width: $screen-sm-max){
-        margin-bottom: 10px;    
+        margin-bottom: 10px;
       }
     }
   }
