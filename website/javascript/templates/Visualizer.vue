@@ -124,13 +124,6 @@
       <div class="col-md-4 sidebar hidden-xs hidden-sm" v-if="!isMobile">
         <div class="game-stats-widget">
           <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-              <a href="#player_stats" v-on:click="gaData('visualizer','click-player-stats','gameplay')" aria-controls="player_stats" role="tab" data-toggle="tab">
-                <i class="xline xline-top"></i>
-                <span>Player stats</span>
-                <i class="xline xline-bottom"></i>
-              </a>
-            </li>
             <li role="presentation">
               <a href="#game_stats" v-on:click="gaData('visualizer','click-game-stats','gameplay')" aria-controls="game_stats" role="tab" data-toggle="tab">
                 <i class="xline xline-top"></i>
@@ -141,11 +134,6 @@
           </ul>
           <!-- Tab panes -->
           <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="player_stats">
-              <div id="player_stats_pane">
-                <PlayerStatsPane :players="players" :statistics="statistics" :userlink="userlink"></PlayerStatsPane>
-              </div>
-            </div>
             <div role="tabpanel" class="tab-pane" id="game_stats">
               <div id="map_stats_pane">
                 <table class="map-stats-props">
@@ -188,6 +176,9 @@
                 <h4>player details</h4>
                 <span class="toggle-icon chevron"></span>
                 <i class="xline xline-bottom"></i>
+                <div v-for="(energy, player) in players">
+                    Player {{player}} has {{energy}} energy
+                </div>
               </a>
             </div>
             <div class="panel-collapse collapse" :class="{'in': showPlayerDetailPanel}" role="tabpanel" :aria-expanded="showPlayerDetailPanel.toString()" id="widget_player_details" aria-labelledby="heading_player_details">
@@ -476,6 +467,7 @@
         const camera = visualizer.camera
         this.pan.x = (camera.cols - camera.pan.x) % camera.cols
         this.pan.y = (camera.rows - camera.pan.y) % camera.rows
+          this.players = visualizer.replay.full_frames[this.frame].energy
       }
       visualizer.onPlay = () => {
         this.playing = true
