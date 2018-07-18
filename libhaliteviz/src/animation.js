@@ -64,8 +64,8 @@ export class PlanetExplosionFrameAnimation extends SpritesheetFrameAnimation {
         super({
             sheet: assets.PLANET_EXPLOSION_SHEET,
             sizeFactor: 8,
-            x: event.location[0],
-            y: event.location[1],
+            x: event.location.x,
+            y: event.location.y,
             tintColor: assets.PLAYER_COLORS[event.owner_id],
             delayTime: delayTime,
             cellSize: cellSize,
@@ -81,8 +81,8 @@ export class ShipExplosionFrameAnimation extends SpritesheetFrameAnimation {
         super({
             sheet: assets.SHIP_EXPLOSION_SHEET,
             sizeFactor: 5,
-            x: event.location[0],
-            y: event.location[1],
+            x: event.location.x,
+            y: event.location.y,
             tintColor: assets.PLAYER_COLORS[event.owner_id],
             delayTime: delayTime,
             cellSize: cellSize,
