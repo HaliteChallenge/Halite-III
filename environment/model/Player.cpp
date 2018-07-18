@@ -22,7 +22,7 @@ void to_json(nlohmann::json &json, const Player &player) {
 }
 
 /**
- * Write a Player to bot serial format. Only can write header due to game store of entities
+ * Write a Player to bot serial format.
  * @param ostream The output stream.
  * @param player The Player to write.
  * @return The output stream.
