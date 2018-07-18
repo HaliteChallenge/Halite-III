@@ -128,8 +128,20 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                 this.sprite.rotation = direction;
 
                 // Use wrap around map in determining movement, interpolate between moves with visualizer time
-                this.x = (entity_record.x + x_move * this.visualizer.time + this.map_width) % this.map_width;
-                this.y = (entity_record.y + y_move * this.visualizer.time + this.map_height) % this.map_height;
+                // Use a bit of easing on the time to make it look nicer
+                // (cubic in/out easing)
+                let t = this.visualizer.time;
+                t /= 0.5;
+                if (t < 1) {
+                    t = t*t*t/2;
+                }
+                else {
+                    t -= 2;
+                    t = (t*t*t + 2)/2;
+                }
+
+                this.x = (entity_record.x + x_move * t + this.map_width) % this.map_width;
+                this.y = (entity_record.y + y_move * t + this.map_height) % this.map_height;
 
             }  else if (command.type === "d") {
                 // TODO
