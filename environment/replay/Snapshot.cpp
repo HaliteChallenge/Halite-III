@@ -1,7 +1,5 @@
 #include "Snapshot.hpp"
 
-#include <sstream>
-
 #include "../version.hpp"
 
 /**
@@ -9,11 +7,10 @@
  * present. Otherwise, throw an exception. The string stream might be
  * a subset of the overall string stream, so use pos as an offset.
  */
-void ignore_delimiter(std::istringstream& iss, char delim, int pos) {
+void ignore_delimiter(std::istringstream &iss, char delim, int pos) {
     if (iss.peek() == delim) {
         iss.ignore();
-    }
-    else {
+    } else {
         std::stringstream msg;
         msg << "Expected "
             << delim
@@ -25,42 +22,42 @@ void ignore_delimiter(std::istringstream& iss, char delim, int pos) {
 
 namespace hlt {
 
-Snapshot Snapshot::from_str(const std::string& snapshot) {
+Snapshot Snapshot::from_str(const std::string &snapshot) {
     std::istringstream iss{snapshot};
     std::string buf;
 
     if (!std::getline(iss, buf, ';')) {
         throw SnapshotError(
-            "EOF while parsing engine version from snapshot",
-            snapshot.size()
+                "EOF while parsing engine version from snapshot",
+                snapshot.size()
         );
     }
     if (buf != HALITE_VERSION) {
         throw SnapshotError(
-            "Halite engine version does not match",
-            iss.tellg()
+                "Halite engine version does not match",
+                iss.tellg()
         );
     }
 
     if (!std::getline(iss, buf, ';')) {
         throw SnapshotError(
-            "EOF while parsing mapgen parameters from snapshot",
-            snapshot.size()
+                "EOF while parsing mapgen parameters from snapshot",
+                snapshot.size()
         );
     }
     std::string mapbuf;
     std::istringstream mapiss{buf};
     if (!std::getline(mapiss, mapbuf, ',')) {
         throw SnapshotError(
-            "EOF while parsing mapgen algorithm",
-            snapshot.size()
+                "EOF while parsing mapgen algorithm",
+                snapshot.size()
         );
     }
     // TODO: parse all mapgen algorithms
     if (mapbuf != "Fractal Value Noise Tile") {
         throw SnapshotError(
-            "Unrecognized mapgen algorithm",
-            iss.tellg()
+                "Unrecognized mapgen algorithm",
+                iss.tellg()
         );
     }
     dimension_type width;
@@ -77,11 +74,11 @@ Snapshot Snapshot::from_str(const std::string& snapshot) {
     mapiss >> seed;
 
     auto map_params = mapgen::MapParameters{
-        mapgen::MapType::Fractal,
-        seed,
-        width,
-        height,
-        num_players,
+            mapgen::MapType::Fractal,
+            seed,
+            width,
+            height,
+            num_players,
     };
 
     std::unordered_map<Player::id_type, PlayerSnapshot> players;

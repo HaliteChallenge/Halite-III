@@ -2,43 +2,28 @@
 #define ENTITY_H
 
 #include "Constants.hpp"
-#include "Player.hpp"
+#include "Enumerated.hpp"
 
 namespace hlt {
 
-/**
- * Factory method for Entities to hide the constructor from clients.
- *
- * @tparam EntityType The class of the Entity.
- * Currently we only have the class entity, but use templating to permit expansion of Entity types
- * @tparam Args The types of the arguments to the Entity constructor.
- * @param args The arguments to the Entity constructor.
- * @return The newly constructed Entity.
- */
-template<class EntityType, typename... Args>
-std::shared_ptr<EntityType> make_entity(Args &&... args) {
-    return std::make_shared<EntityType>(std::forward<Args>(args)...);
-}
+// Forward declare to avoid circular header dependency.
+struct Player;
+
+using player_id_type = class_id<Player>;
 
 /** A player-affiliated entity placed on the Halite map. */
-struct PlayerEntity {
-    Player::id_type owner_id{}; /**< ID of the owner. */
-    energy_type energy{};       /**< Energy of the entity. */
+struct Entity final : public Enumerated<Entity> {
+    friend class Factory<Entity>;
+
+    const player_id_type owner; /**< Owner of the entity. */
+    energy_type energy;         /**< Energy of the entity. */
 
     /**
      * Convert an Entity to JSON format.
      * @param[out] json The output JSON.
      * @param entity The entity to convert.
-     * @param include_owner If true, add the owner ID to the JSON.
      */
-    friend void to_json(nlohmann::json &json, const PlayerEntity &entity, bool include_owner);
-
-    /**
-     * Convert an encoded Entity from JSON format.
-     * @param json The JSON.
-     * @param[out] entity The converted entity.
-     */
-    friend void from_json(const nlohmann::json &json, PlayerEntity &entity);
+    friend void to_json(nlohmann::json &json, const Entity &entity);
 
     /**
      * Write an Entity to bot serial format.
@@ -46,22 +31,17 @@ struct PlayerEntity {
      * @param entity The entity to write.
      * @return The output stream.
      */
-    friend std::ostream &operator<<(std::ostream &ostream, const PlayerEntity &entity);
+    friend std::ostream &operator<<(std::ostream &ostream, const Entity &entity);
 
-    /** Default constructor is required by JSON deserialization. */
-    PlayerEntity() = default;
-
+private:
     /**
-     * Create Entity from owner ID, and energy.
-     * @param owner_id The owner ID.
-     * @param energy The energy of the entity
+     * Create Entity from ID, owner ID, and energy.
+     * @param id The entity ID.
+     * @param owner The owner ID.
+     * @param energy The energy.
      */
-    PlayerEntity(Player::id_type owner_id, energy_type energy) :
-            owner_id(owner_id), energy(energy) {}
+    Entity(id_type id, player_id_type owner, energy_type energy) : Enumerated(id), owner(owner), energy(energy) {}
 };
-
-/** This redeclaration only serves to bind the default argument. */
-void to_json(nlohmann::json &json, const PlayerEntity &entity, bool include_owner = true);
 
 }
 

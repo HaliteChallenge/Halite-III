@@ -1,15 +1,11 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
+#include "Units.hpp"
+
 #include "nlohmann/json_fwd.hpp"
 
 namespace hlt {
-
-/** The type of dimension values across all Halite classes using dimension. */
-using dimension_type = long;
-
-/** The type of energy/production values across all Halite classes. */
-using energy_type = long;
 
 /**
  * Gameplay constants that may be tweaked, though they should be at their
@@ -23,20 +19,27 @@ struct Constants {
     dimension_type DEFAULT_MAP_WIDTH = 128;     /**< The default width of generated maps. */
     dimension_type DEFAULT_MAP_HEIGHT = 128;    /**< The default height of generated maps. */
 
-    energy_type MAX_CELL_PRODUCTION = 100;      /**< The maximum maximum amount of production on a cell. */
-    energy_type MIN_CELL_PRODUCTION = 40;        /**< The minimum maximum amount of production on a cell. */
-    energy_type MAX_ENERGY = 255;               /**< The maximum amount of energy per entity. */
+    energy_type MAX_CELL_PRODUCTION = 1000;      /**< The maximum maximum amount of production on a cell. */
+    energy_type MIN_CELL_PRODUCTION = 1;       /**< The minimum maximum amount of production on a cell. */
+    // TODO: ship max capacity
+    energy_type MAX_ENERGY = 1000;               /**< The maximum amount of energy per entity. */
     energy_type NEW_ENTITY_ENERGY_COST = 1000;  /**< The amount of production which equals one energy. */
-    energy_type NEW_ENTITY_ENERGY = 255;        /**< The starting energy of a new entity. */
+    // TODO: split this cost into the fixed and variable portions
+    energy_type NEW_ENTITY_ENERGY = 0;        /**< The starting energy of a new entity. */
     energy_type BASE_TURN_ENERGY_LOSS = 1;      /**< The base energy decrease of an entity per turn. */
-    energy_type INITIAL_ENERGY = 255000;          /**< The initial amount of energy for a player. */
+    energy_type INITIAL_ENERGY = 1000;        /**< The initial amount of energy for a player. */
+
+    energy_type DROPOFF_COST = 10000;            /**< The cost of a dropoff construction. */
+    unsigned long MOVE_COST_RATIO = 20;         /**< The cost of a move is the source's energy divided by this. */
+    unsigned long DROPOFF_PENALTY_RATIO = 4;   /**< The cost ratio of using another player's dropoff. */
+    unsigned long EXTRACT_RATIO = 10;           /**< The ratio of energy extracted from a cell per turn. */
 
     double PERSISTENCE = 0.7; // Determines relative weight of local vs global features.
     double FACTOR_EXP_1 = 1.5; // Determines initial spikiness of map. Higher values weight towards 0.
     double FACTOR_EXP_2 = 1.5; // Determines final spikiness of map. Higher values weight towards 0.
     /*
     The two FACTOR_EXP constants do related things but they are not the same.
-    FACTOR_EXP_1 exponentiates the distribution used to seed the randomness. 
+    FACTOR_EXP_1 exponentiates the distribution used to seed the randomness.
     FACTOR_EXP_2 exponentiates the final distribution just prior to normalization.
     Broadly, both will give spikier maps. However (and perhaps counterintuitively), using
     FACTOR_EXP_1 will give maps that have more individual, small-scale spikes. Conversely,

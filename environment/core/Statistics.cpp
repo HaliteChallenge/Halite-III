@@ -1,12 +1,7 @@
 #include "Statistics.hpp"
 
-#include "nlohmann/json.hpp"
-
 /** A JSON key and value corresponding to a field. */
 #define FIELD_TO_JSON(x) {#x, stats.x}
-
-/** Get a field from JSON. */
-#define FIELD_FROM_JSON(x) json.at(#x)
 
 namespace hlt {
 
@@ -39,7 +34,7 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
     json = {FIELD_TO_JSON(player_id),
             FIELD_TO_JSON(rank),
             FIELD_TO_JSON(last_turn_alive),
-            FIELD_TO_JSON(total_production)};
+            {"final_production", stats.turn_productions.back()}};
 }
 
 /**

@@ -34,7 +34,7 @@ export class Map {
             this.productions[row] = new Array(this.cols);
             for (let col = 0; col < this.cols; col++) {
                 let cell = replay.production_map.grid[row][col];
-                this.productions[row][col] = cell["type"] === "n" ? cell.production : 0;
+                this.productions[row][col] = cell.energy;
             }
         }
 
@@ -84,6 +84,8 @@ export class Map {
                 cell.height = this.scale;
                 cell.position.x = col * this.scale;
                 cell.position.y = row * this.scale;
+                const [ base, baseOpacity ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
+                cell.tint = alphaBlend(base, this.renderer.backgroundColor, baseOpacity);
                 this.cells.push(cell);
                 this.tintMap.addChild(cell);
             }
@@ -159,16 +161,18 @@ export class Map {
      * Update the fish display based on the current frame and time.
      * @param owner_grid: grid of owners of clls
      */
-    update(owner_grid) {
-        this.owners = owner_grid;
-        // Use the given grid to texture the map
+    update(updated_cells) {
+        // update cell productions
+        for (let cell_index = 0; cell_index < updated_cells.length; cell_index++) {
+            let cell_info = updated_cells[cell_index]
+            this.productions[cell_info.y][cell_info.x] = cell_info.production;
+        }
+        // Redraw map cells, both for new production colors and possible resizing due to zooming
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
                 const [ base, baseOpacity ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
-                const [ color, opacity ] = this.ownerToColor(owner_grid, row, col, this.constants.MAX_CELL_PRODUCTION);
                 const cell = this.cells[row * this.cols + col];
-                const tintedBase = alphaBlend(base, this.renderer.backgroundColor, baseOpacity);
-                cell.tint = alphaBlend(color, tintedBase, opacity);
+                cell.tint = alphaBlend(base, this.renderer.backgroundColor, baseOpacity);
                 cell.width = this.scale;
                 cell.height = this.scale;
                 const [ cellX, cellY ] = this.camera.worldToCamera(col, row);
