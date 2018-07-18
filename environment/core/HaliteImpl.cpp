@@ -85,10 +85,8 @@ void HaliteImpl::process_turn() {
     while (!commands.empty()) {
         CommandTransaction transaction{game.store, game.map};
         transaction.set_callback([&frames = game.replay.full_frames](auto event) {
-            // Create new game event for replay file. Ensure turn has been initialized before adding a game event
-            if (frames.size() > 0) {
-                frames.back().events.push_back(std::move(event));
-            }
+            // Create new game event for replay file.
+            frames.back().events.push_back(std::move(event));
         });
         for (const auto &[player_id, command_list] : commands) {
             auto &player = game.store.players.find(player_id)->second;
