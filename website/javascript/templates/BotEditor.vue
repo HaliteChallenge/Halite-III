@@ -6,11 +6,11 @@
           <div class="file_tree_col">
             <div class="file_command_center_cont">
               <div class="file_command_center">
-                <div class="command_icon"><a><span class="glyphicon glyphicon-file"></span></a></div>
+                <div class="command_icon"><a @click="open_new_file_modal()"><span class="glyphicon glyphicon-file"></span></a></div>
                 <div class="command_icon"><a><span class="glyphicon glyphicon-folder-open"></span></a></div>
                 <div class="command_icon"><a><span class="glyphicon glyphicon-pencil"></span></a></div>
                 <div class="command_center_right">
-                  <div class="command_icon"><a><span class="glyphicon glyphicon-trash"></span></a></div>
+                  <div class="command_icon"><a @click="open_delete_modal(active_file_name)"><span class="glyphicon glyphicon-trash"></span></a></div>
                 </div>
               </div>
             </div>
@@ -44,6 +44,8 @@
         </div>
       </div>
     </div>
+    <InputModal ref="new_file_modal" :baseUrl="baseUrl" :isOn="is_new_file_modal_open" :createCallback="create_new_file" :closeCallback="close_new_file_modal" title_text="New File" cancel_text="Cancel" accept_text="Create"></InputModal>
+    <CheckModal ref="delete_modal" :baseUrl="baseUrl" :isOn="is_delete_modal_open" :yesCallback="delete_file" :noCallback="close_delete_modal" title_text="Delete File" cancel_text="Cancel" accept_text="Delete" body_text="This will delete your file permanently!!!"></CheckModal>
   </div>
 </template>
 
@@ -51,7 +53,8 @@
   import * as api from '../api'
   import * as utils from '../utils'
   import * as libhaliteviz from '../../../libhaliteviz'
-
+  import InputModal from './InputModal.vue'
+  import CheckModal from './CheckModal.vue'
 
   const botLanguagePacks = {
     'Python3': {
@@ -95,11 +98,11 @@
 
 export default {
   name: 'bot_editor',
+  props: ['baseUrl'],
+  components: { InputModal, CheckModal },
   data: function () {
     const lang = 'Python3'
     const theme = DARK_THEME
-    const editor_files = this.editor_files === null ? [] : this.editor_files
-    const terminal_text = this.terminal_text === null ? "" : this.terminal_text
     return {
       all_bot_languages: botLanguagePacks,
       status_message: null,
@@ -108,8 +111,10 @@ export default {
       bot_lang: lang,
       selected_language: lang,
       selected_theme: theme,
-      editor_files: editor_files,
-      terminal_text: terminal_text
+      editor_files: [],
+      terminal_text: "",
+      is_new_file_modal_open: false,
+      is_delete_modal_open: false,
     }
   },
   props: {
@@ -357,6 +362,30 @@ export default {
       }
       return zip.generateAsync({type: 'blob'})
     },
+    create_new_file: function(name) {
+      this.editor_files[name] = {contents: ""}
+      this.file_selected(name)
+      this.close_new_file_modal()
+    },
+    open_new_file_modal: function() { this.is_new_file_modal_open = true; },
+    close_new_file_modal: function() { this.is_new_file_modal_open = false; },
+
+    delete_file: function() {
+      api.delete_source_file(this.user_id, this.delete_file_name)
+      delete this.editor_files[this.delete_file_name]
+      if(this.delete_file_name === this.active_file_name) {
+        let new_file_name = Object.keys(this.editor_files)[0]
+        this.set_editor_contents(this.editor_files[new_file_name].contents)
+        this.active_file_name = new_file_name
+      }
+      this.close_delete_modal()
+    },
+    open_delete_modal: function(delete_file_name) { 
+      this.delete_file_name = delete_file_name;
+      this.is_delete_modal_open = true; 
+    },
+    close_delete_modal: function() { this.is_delete_modal_open = false; },
+
     /* Load code into editor; either saved code or default */
     reload_code: function (use_default = false) {
       const codePromise = use_default ? this.load_default_code() : this.load_code()
@@ -383,13 +412,17 @@ export default {
     save_current_file: function() {
       logInfo('Saving bot file to gcloud storage')
       this.update_editor_files()
-      api.update_source_file(this.user_id, this.active_file_name, this.editor_files[this.active_file_name].contents, function(){}).then((function() {
+      this.save_file(this.active_file_name)
+    },
+    save_file: function(name) { 
+      api.update_source_file(this.user_id, name, this.editor_files[name].contents, function(){}).then((function() {
         logInfo('success')
         this.allSaved = true;
       }).bind(this), function(response) {
         logInfo(response)
       })
     },
+
     /* Set the contents of our edior */
     set_editor_contents: function(contents) {
       this.editorViewer.setContents(contents, this.bot_info().mimeType)

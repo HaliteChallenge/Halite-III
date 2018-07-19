@@ -28,7 +28,7 @@
     a, > span{
       display: block;
       padding: 0 10px;
-      color: $yellow;
+      color: $foreground;
     }
   }
 }
@@ -45,9 +45,9 @@
     > a, > span{
       padding: 10px 0;
       display: block;
+      color: $foreground;
       font-size: 14px;
       line-height: 1.3em;
-      color: $foreground;
       text-transform: uppercase;
       text-decoration: none;
       > span{
@@ -58,7 +58,6 @@
     > a:hover{
       > span{
         background: rgba(255, 190, 0, 0.1);
-        color: $yellow;
         text-decoration: none;
       }
     }
@@ -66,7 +65,6 @@
     &.active{
       > a > span{
         background: rgba(255, 190, 0, 0.1);
-        color: $yellow;
         text-decoration: none;
       }
     }

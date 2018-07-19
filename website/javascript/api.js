@@ -192,6 +192,16 @@ export function update_source_file (user_id, file_name, file_contents, progress_
   })
 }
 
+export function delete_source_file (userId, file_name) {
+  return $.get({
+    url: `${API_SERVER_URL}/editor/${userId}/file/${encodeURIComponent(file_name)}`,
+    method: 'DELETE',
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
+
 export function start_ondemand_task(userId) {
   return $.get({
     url: `${API_SERVER_URL}/ondemand/${userId}`,

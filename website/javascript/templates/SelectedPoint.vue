@@ -10,12 +10,8 @@
                     <td>{{info.location}}</td>
                 </tr>
                 <tr>
-                    <td>Cell Production:</td>
-                    <td>{{info.production}}</td>
-                </tr>
-                <tr>
-                    <td>Cell Owner:</td>
-                    <td>{{info.owner}}</td>
+                    <td>Dissolved Halite:</td>
+                    <td>{{info.energy}}</td>
                 </tr>
             </table>
         </div>
@@ -30,8 +26,7 @@ export default {
      info: function () {
        const info = {
          location: `${this.selectedPoint.x}, ${this.selectedPoint.y}`,
-         production: this.selectedPoint.production,
-         owner: this.selectedPoint.owner
+         energy: this.selectedPoint.energy,
        }
 
        return info

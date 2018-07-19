@@ -65,6 +65,15 @@ public:
      */
     void load_snapshot(const Snapshot &snapshot);
 
+    /** Remove a player from the game. */
+    void kill_player(const Player::id_type& player_id);
+
+    /** Get a player from the game. Used for writing error logs */
+    const Player& get_player(Player::id_type player_id);
+
+    /** Generate a snapshot string from current game state. */
+    std::string to_snapshot();
+
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();
 };

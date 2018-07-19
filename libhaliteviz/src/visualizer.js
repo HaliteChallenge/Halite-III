@@ -2,9 +2,8 @@ const PIXI = require("pixi.js");
 const $ = require("jquery");
 const extraFilters = require("pixi-extra-filters");
 
-import {playerSprite} from "./sprite";
+import Ship from "./sprite";
 import {Factory} from "./factory";
-import {Fish} from "./fish";
 import {Map} from "./map";
 import Camera from "./camera";
 import * as statistics from "./statistics";
@@ -17,8 +16,9 @@ import * as animation from "./animation";
 
 export class HaliteVisualizer {
     constructor(replay, width, height) {
-        assets.VISUALIZER_SIZE = width || assets.VISUALIZER_SIZE
-        assets.VISUALIZER_HEIGHT = height || assets.VISUALIZER_HEIGHT
+        window.replay = replay;
+        this.width = width || assets.BASE_VISUALIZER_WIDTH;
+        this.height = height || assets.BASE_VISUALIZER_HEIGHT;
 
         this.replay = replay;
         this.map_width = replay.production_map.width;
@@ -51,8 +51,7 @@ export class HaliteVisualizer {
         });
 
         this.application = new PIXI.Application(
-            assets.VISUALIZER_SIZE,
-            assets.VISUALIZER_HEIGHT,
+            this.width, this.height,
             {
                 backgroundColor: 0x222222,
             }
@@ -65,10 +64,10 @@ export class HaliteVisualizer {
         // (since for large textures, image decode and GPU upload take a while)
         assets.prepareAll(this.application.renderer, this.application.renderer.plugins.prepare);
 
-        // Scale things to fit exactly in the visible area
-        let scale = assets.VISUALIZER_HEIGHT / (this.map_height * assets.CELL_SIZE);
-        if (this.map_width * scale * assets.CELL_SIZE > assets.VISUALIZER_SIZE) {
-            scale = assets.VISUALIZER_SIZE / (this.map_width * assets.CELL_SIZE);
+        // Set initial scale so things fit exactly in the visible area
+        let scale = this.height / (this.map_height * assets.CELL_SIZE);
+        if (this.map_width * scale * assets.CELL_SIZE > this.width) {
+            scale = this.width / (this.map_width * assets.CELL_SIZE);
         }
 
         this.container = new PIXI.Container();
@@ -78,43 +77,34 @@ export class HaliteVisualizer {
         this.letterbox = new PIXI.Graphics();
         if (this.container.position.y > 0) {
             this.letterbox.beginFill(0xFFFFFF);
-            this.letterbox.drawRect(0, 0, assets.VISUALIZER_SIZE, this.container.position.y);
+            this.letterbox.drawRect(0, 0, this.width, this.container.position.y);
             this.letterbox.drawRect(
                 0,
                 this.container.position.y + this.map_height * scale * assets.CELL_SIZE,
-                assets.VISUALIZER_SIZE,
+                this.width,
                 this.container.position.y);
         }
         if (this.container.position.x > 0) {
             this.letterbox.beginFill(0xFFFFFF);
-            this.letterbox.drawRect(0, 0, this.container.position.x, assets.VISUALIZER_HEIGHT);
+            this.letterbox.drawRect(0, 0, this.container.position.x, this.height);
             this.letterbox.drawRect(
                 this.container.position.x + this.map_width * scale * assets.CELL_SIZE,
                 0,
                 this.container.position.x,
-                assets.VISUALIZER_HEIGHT);
+                this.height);
         }
 
 
         this.mapContainer = new PIXI.Container();
         this.factoryContainer = new PIXI.Container();
         this.entityContainer = new PIXI.Container();
-        this.fishContainer = new PIXI.Container();
 
-        // Store entities both in list for easy iteration and in 2d array to understand spatial relationships
-        this.entities = Array.from(Array(this.map_height), () => new Array(this.map_width));
-        this.entities_list = [];
         this.entity_dict = {};
         this.current_commands = {};
         this.factories = [];
         this.dropoffs = [];
-        this.fish = [];
 
-        this.camera = new Camera(
-            scale, this.panRender.bind(this),
-            this.replay.production_map.width,
-            this.replay.production_map.height
-        );
+        this.camera = new Camera(this, scale);
 
         // Generate base map with visualziation of production squares
         this.baseMap = new Map(this.replay, this.replay.GAME_CONSTANTS, this.camera,
@@ -128,31 +118,11 @@ export class HaliteVisualizer {
                 scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
             this.factories.push(factory);
             factory.attach(this.factoryContainer);
-
-            // Add players'initial entities to list and map
-            // for (let entity_json of this.replay.players[i].entities) {
-            //     let entity_object = {"x" : entity_json.x, "y" : entity_json.y, "energy" : entity_json.energy, "owner": this.replay.players[i].player_id};
-            //     let new_entity = new playerSprite(this, entity_object);
-            //     if (typeof this.entities[new_entity.y][new_entity.x] === "undefined") {
-            //         this.entities[new_entity.y][new_entity.x] = {};
-            //     }
-            //     this.entities[new_entity.y][new_entity.x][new_entity.owner] = new_entity;
-            //     this.entities_list.push(new_entity);
-            //     new_entity.attach(this.entityContainer);
-            // }
-
-            // TODO: Re-add fish with herding logic
-            // const fish = new Fish(this.replay.constants, scale, (kind, args) => this.onSelect(kind, args));
-            // this.fish.push(fish);
-            // fish.attach(this.fishContainer);
         }
-
-        // Prerender the points of interest once, and keep it as a texture
 
         this.container.addChild(this.mapContainer);
         this.container.addChild(this.factoryContainer);
         this.container.addChild(this.entityContainer);
-        this.container.addChild(this.fishContainer);
 
         this.application.stage.addChild(this.container);
         this.application.stage.addChild(this.letterbox);
@@ -176,8 +146,9 @@ export class HaliteVisualizer {
 
     resize(width, height) {
         this.application.renderer.resize(width, height);
-        assets.VISUALIZER_SIZE = width;
-        assets.VISUALIZER_HEIGHT = height;
+        this.width = width;
+        this.height = height;
+        // TODO: redo initial scale, letterboxing
     }
 
     /**
@@ -425,29 +396,29 @@ export class HaliteVisualizer {
             factory.update();
         }
 
+        this.remove_invalid_entities();
+
         // Update all move_commands
         this.process_entity_commands();
+
+        // Spawn entities (info from replay file), then process deaths
+        this.process_entity_events();
 
         // Process map ownership
         this.baseMap.update(this.replay.full_frames[this.frame].cells);
 
-        // Spawn entities (info from replay file), then process deaths
-        this.process_entity_events();
     }
 
     /** Update/rerender after panning. */
     panRender() {
-        for (const sprite of Object.values(this.entities_dict)) {
-            if (sprite) sprite.updatePosition();
-        }
+        this.draw();
+        // for (const factory of this.factories) {
+        //     factory.update();
+        // }
 
-        for (const factory of this.factories) {
-            factory.update();
-        }
-
-        for (const dropoff of this.dropoffs) {
-            dropoff.update();
-        }
+        // for (const dropoff of this.dropoffs) {
+        //     dropoff.update();
+        // }
 
         this.baseMap.update([]);
 
@@ -458,6 +429,41 @@ export class HaliteVisualizer {
     }
 
     /**
+     * Remove entities that shouldn't be here anymore (due to
+     * scrubbing).
+     */
+    remove_invalid_entities() {
+        if (!this.currentFrame) return;
+
+        for (const [entity_id, entity] of Object.entries(this.entity_dict)) {
+            if (!this.currentFrame.entities[entity.owner][entity_id]) {
+                const sprite = this.entity_dict[entity_id];
+                sprite.destroy();
+                delete this.entity_dict[entity_id];
+            }
+        }
+
+        // Spawn entities that don't yet exist when we're panning
+        for (const [ownerId, ships] of Object.entries(this.currentFrame.entities)) {
+            for (const [entityId, ship] of Object.entries(ships)) {
+                if (!this.entity_dict[entityId]) {
+                    const record = {
+                        x: ship.x,
+                        y: ship.y,
+                        energy: ship.energy,
+                        owner: ownerId,
+                        id: entityId,
+                    };
+                    this.entity_dict[entityId] = new Ship(this, record);
+                    this.entity_dict[entityId].attach(this.entityContainer);
+                }
+            }
+        }
+
+        // TODO: do the same for dropoffs
+    }
+
+    /**
      * Moves all entities for a turn
      * First removes all entities from map, then has each entity independently calculate its new location from this turn's
      * commands, the re-adds entities to map, merging in the process. This order ensures that merges happen only after all
@@ -465,12 +471,13 @@ export class HaliteVisualizer {
      */
     process_entity_commands() {
         this.current_commands = {};
-        for (let player_id in Object.keys(this.replay.full_frames[this.frame].moves)) {
+        for (let player_id in this.replay.full_frames[this.frame].moves) {
             // TODO check desired and actual type of player_id
             this.current_commands[player_id] = {};
-            for (let command in this.replay.full_frames[this.frame].moves[player_id]) {
+            for (let command_key in this.replay.full_frames[this.frame].moves[player_id]) {
+                let command = this.replay.full_frames[this.frame].moves[player_id][command_key];
                 const command_type = command.type;
-                if (command_type === "move" || command_type === "dump" || command_type === "construct") {
+                if (command_type === "m" || command_type === "d" || command_type === "c") {
                     this.current_commands[player_id][command.id] = command;
                 }
             }
@@ -496,27 +503,38 @@ export class HaliteVisualizer {
                         new animation.ShipExplosionFrameAnimation(
                             event, delayTime, cellSize, this.entityContainer));
                     // Remove all entities involved in crash
-                    for (let entity_id in ships) {
-                        this.entity_dict[entity_id].destroy();
-                        delete this.entity_dict[entity_id];
+                    for (let index = 0; index < event.ships.length; index++) {
+                        const entity_id = event.ships[index];
+                        // Might not actually exist when we're panning
+                        if (this.entity_dict[entity_id]) {
+                            this.entity_dict[entity_id].destroy();
+                            delete this.entity_dict[entity_id];
+                        }
                     }
 
                 }
                 else if (event.type === "spawn") {
                     // Create a new entity, add to map, and merge as needed
-                    let entity_object = {"x" : event.location.x, "y" : event.location.y,
-                                        "energy" : event.energy, "owner": event.owner_id, "id" : event.id};
-                    let new_entity = new playerSprite(this, entity_object);
+                    const entity_object = {
+                        x: event.location.x,
+                        y: event.location.y,
+                        energy: event.energy,
+                        owner: event.owner_id,
+                        id: event.id,
+                    };
 
-                    this.entity_dict[event.id] = new_entity;
-                    new_entity.attach(this.entityContainer);
+                    if (!this.entity_dict[event.id]) {
+                        const new_entity = new Ship(this, entity_object);
+                        this.entity_dict[event.id] = new_entity;
+                        new_entity.attach(this.entityContainer);
+                    }
 
                     // TODO: use new Halite 3 spawn animation
                     this.animationQueue.push(
                         new animation.PlanetExplosionFrameAnimation(
                             event, delayTime, cellSize, this.entityContainer));
                     // Store spawn as command so that entity knows not to mine this turn
-                    this.current_commands[event.owner_id][event.id] = {"type" : "spawn"};
+                    this.current_commands[event.owner_id][event.id] = {"type" : "g"};
                 }
                 else if (event.type === "construct") {
                     /// TODO: create new sprite class for dropoffs, construct one, add to list (dict?) of dropoffs
@@ -527,13 +545,13 @@ export class HaliteVisualizer {
                     // Temporarily draw as factory
                     const dropoff_base = {"x" : event.location.x, "y" : event.location.y, "owner" : event.owner_id};
                     const dropoff = new Factory(this, dropoff_base, this.replay.constants,
-                        scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
+                        this.camera.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
                     this.dropoffs.push(dropoff);
                     dropoff.attach(this.factoryContainer);
 
                     // delete entity sprite as it is no longer a ship
-                    this.entities_dict[event.id].destroy();
-                    delete this.entities_dict[event.id];
+                    this.entity_dict[event.id].destroy();
+                    delete this.entity_dict[event.id];
                 }
                 else {
                     console.log(event);
@@ -547,19 +565,25 @@ export class HaliteVisualizer {
      * @param dt
      */
     draw(dt=0) {
-        // TODO: update fish with herding mechanism
-        // just let the fish wander
-        // for (let fish of this.fish) {
-        //     fish.update(this.time, dt);
-        // }
-        for (let entity_id in Object.keys(this.entity_dict)) {
-            let entity = this.entity_dict[entity];
-            if (this.current_commands[entity.owner_id].hasOwnProperty(entity_id)) {
-                entity.update(this.current_commands[entity.owner_id][entity_id]);
+        for (const factory of this.factories) {
+            factory.draw();
+        }
+
+        for (const dropoff of this.dropoffs) {
+            dropoff.draw();
+        }
+
+        for (const entity_id in this.entity_dict) {
+            const entity = this.entity_dict[entity_id];
+            if (this.current_commands.hasOwnProperty(entity.owner)
+                && this.current_commands[entity.owner].hasOwnProperty(entity_id)) {
+                entity.update(this.current_commands[entity.owner][entity_id]);
             } else {
                 // no command implies entity is mining
-                entity.update({"type" : "mine"})
+                entity.update({"type" : "m"});
             }
+
+            entity.draw();
         }
 
         // dt comes from Pixi ticker, and the unit is essentially frames

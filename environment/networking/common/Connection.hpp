@@ -1,13 +1,6 @@
 #ifndef CONNECTION_HPP
 #define CONNECTION_HPP
 
-#ifdef _WIN32
-#include <windows.h>
-#include <tchar.h>
-#include <stdio.h>
-#include <strsafe.h>
-#endif
-
 #include <unordered_map>
 
 #include "NetworkingConfig.hpp"
@@ -15,26 +8,9 @@
 
 namespace net {
 
-/** The type of a process. */
-#ifdef _WIN32
-using Process = HANDLE;
-#else
-using Process = pid_t;
-#endif
-
-/** The type of a pipe endpoint. */
-#ifdef _WIN32
-using Pipe = HANDLE;
-#else
-using Pipe = int;
-#endif
-
 /** Abstract structure containing both ends of pipe to bot. */
 class BaseConnection {
 protected:
-    Pipe read_pipe{};          /** The read pipe. */
-    Pipe write_pipe{};         /** The write pipe. */
-    Process process{};         /** The process. */
     NetworkingConfig config{}; /** The networking configuration. */
 
 public:
@@ -51,6 +27,18 @@ public:
      * @throws NetworkingError on error while reading.
      */
     virtual std::string get_string() = 0;
+
+    /**
+     * Read any remaining input from the pipe.
+     * @return The remaining input.
+     */
+    virtual std::string read_trailing_input();
+
+    /**
+     * Get the error output from this connection.
+     * @return The error output.
+     */
+    virtual std::string get_errors() = 0;
 
     /** Virtual destructor. */
     virtual ~BaseConnection() = default;

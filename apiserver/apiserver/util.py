@@ -32,10 +32,11 @@ def cross_origin(*args, **kwargs):
     kwargs["origins"] = config.CORS_ORIGINS
     kwargs["supports_credentials"] = True
     kwargs["allow_headers"] = ["Origin", "Accept", "Content-Type"]
+    kwargs["methods"] = ["GET", "POST", "PUT", "OPTIONS", "DELETE"]
     return flask_cross_origin(*args, **kwargs)
 
 
-@cross_origin(methods=["GET", "POST", "PUT", "OPTIONS"])
+@cross_origin(methods=["GET", "POST", "PUT", "OPTIONS", "DELETE"])
 def handle_api_error(error):
     """
     The Flask error handler for APIErrors. Use with @app.errorhandler.

@@ -30,9 +30,15 @@ def get_user_file(intended_user, file_id, *, user_id):
             message="Cannot list files for another user.")
     bucket = model.get_editor_bucket()
 
-    blob = gcloud_storage.Blob('%s/%s' % (intended_user, file_id), bucket, chunk_size=262144)
     buffer = io.BytesIO()
-    blob.download_to_file(buffer)
+
+    # Google throws an error for 0 byte files, we circumvent this
+    try:
+        blob = gcloud_storage.Blob('%s/%s' % (intended_user, file_id), bucket, chunk_size=262144)
+        blob.download_to_file(buffer)
+    except:
+        pass
+
     buffer.seek(0)
     response = flask.make_response(flask.send_file(
         buffer,
@@ -98,3 +104,18 @@ def validate_file_submission():
     uploaded_file.seek(0)
     return uploaded_file
 
+
+@web_api.route("/editor/<int:intended_user>/file/<path:file_id>", methods=["DELETE"])
+@util.cross_origin(methods=["DELETE"])
+@api_util.requires_login(accept_key=True, association=True)
+def delete_user_file(intended_user, file_id, *, user_id):
+    if user_id != intended_user:
+        raise api_util.user_mismatch_error(
+            message="Cannot list files for another user.")
+
+    bucket = model.get_editor_bucket()
+
+    blob = gcloud_storage.Blob('%s/%s' % (intended_user, file_id), bucket, chunk_size=262144)
+    blob.delete()
+
+    return util.response_success()

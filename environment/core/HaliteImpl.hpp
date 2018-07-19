@@ -5,6 +5,7 @@
 
 #include "Halite.hpp"
 #include "Replay.hpp"
+#include "BotError.hpp"
 
 namespace hlt {
 
@@ -37,7 +38,7 @@ class HaliteImpl final {
      *
      * @param productions Mapping from player ID to the production they gained in the current turn.
      */
-    void update_player_stats(Player::id_type player);
+    void update_player_stats();
 
     /**
      * Update players' rankings based on their final turn alive, then break ties with production totals in final turn.

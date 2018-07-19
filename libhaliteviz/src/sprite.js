@@ -4,9 +4,9 @@ import * as assets from "./assets";
 import {CELL_SIZE, PLAYER_COLORS} from "./assets";
 
 /**
- * Manages a Sprite on screen.
+ * Manages a ship on screen.
  */
- export class playerSprite {
+export default class Ship {
     /**
      *
      * @param visualizer The visualizer object
@@ -23,7 +23,6 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);
 
         this.sprite = new PIXI.Sprite(spriteTexture);
-        this.sprite.zOrder= -1;
 
         this.container = null;
         this.visualizer = visualizer;
@@ -31,7 +30,6 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         // Store map size to make movement easier
         this.map_width = this.visualizer.replay.production_map.width;
         this.map_height = this.visualizer.replay.production_map.height;
-        this.energy_loss = this.visualizer.replay.GAME_CONSTANTS.BASE_TURN_ENERGY_LOSS;
 
         this.owner = record.owner;
         this.energy = record.energy;
@@ -56,9 +54,21 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         const pixelY = this.visualizer.camera.scale * CELL_SIZE * this.y + this.visualizer.camera.scale * CELL_SIZE / 2;
         this.sprite.position.x = pixelX;
         this.sprite.position.y = pixelY;
+
+        this.sprite.interactive = true;
+        this.sprite.buttonMode = true;
+        this.sprite.on("pointerdown", (e) => {
+            const localCoords = e.data.global;
+            const [ x, y ] = this.visualizer.camera.scaledToScreen(localCoords.x, localCoords.y);
+            const [ cellX, cellY ] = this.visualizer.camera.screenToWorld(x, y);
+            this.visualizer.onSelect("ship", {
+                owner: this.owner,
+                id: this.id,
+            });
+        });
     }
 
-     /**
+    /**
      * Add the sprite to the visualizer.
      * @param container {PIXI.Container} to use for the sprite
      */
@@ -74,7 +84,6 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         this.container.removeChild(this.sprite);
     }
 
-
     /**
      * TODO: update with selection of sprites
      */
@@ -88,64 +97,111 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
 
     /**
      * Update this sprite's display with the latest state from the replay.
-     * @param record
+     * @param command
      */
-
     update(command) {
         let direction = 0;
         let x_move = 0;
         let y_move = 0;
         // Move the sprite according to move commands and redraw in new location
         if (this.visualizer.frame < this.visualizer.replay.full_frames.length) {
-            let entity_record = this.visualizer.replay.full_frames[this.visualizer.frame].entities[this.owner_id][this.id];
+            // Sprite spawned this turn, does not exist in entities struct at start of turn
+            if (command.type === "g") {
+                return;
+            }
+            const entity_record = this.visualizer.replay
+                  .full_frames[this.visualizer.frame]
+                  .entities[this.owner][this.id];
             this.energy = entity_record.energy;
-            if (command.type === "move") {
-                if (move.direction === "n") {
+
+            if (command.type === "m") {
+                if (command.direction === "n") {
                     direction = Math.PI;
                     x_move = 0;
                     y_move = -1;
                 }
-                if (move.direction === "e") {
+                else if (command.direction === "e") {
                     direction = Math.PI / 2;
                     x_move = 1;
                     y_move = 0;
                 }
-                if (move.direction === "s") {
+                else if (command.direction === "s") {
                     direction = 0;
                     x_move = 0;
                     y_move = 1;
                 }
-                if (move.direction === "w") {
+                else if (command.direction === "w") {
                     direction = -Math.PI / 2;
                     x_move = -1;
                     y_move = 0;
                 }
                 this.sprite.rotation = direction;
 
-                // Use wrap around map in determining movement, interpolate between moves with visualizer time
-                this.x = (entity_record.x + x_move * this.visualizer.time + this.map_width) % this.map_width;
-                this.y = (entity_record.y + y_move * this.visualizer.time + this.map_height) % this.map_height;
+                // To prevent "glitching" when a move is recorded that
+                // isn't processed (because there wasn't enough
+                // energy, for instance), we interpolate with the next
+                // frame's position where available.
+                if (this.visualizer.frame < this.visualizer.replay.full_frames.length - 1) {
+                    const next_frame = this.visualizer.replay
+                          .full_frames[this.visualizer.frame + 1];
+                    if (next_frame.entities[this.owner] &&
+                        next_frame.entities[this.owner][this.id]) {
+                        const next_record = next_frame.entities[this.owner][this.id];
+                        x_move = next_record.x - entity_record.x;
+                        y_move = next_record.y - entity_record.y;
 
-            }  else if (command.type === "dump") {
+                        // Wraparound
+                        if (x_move > 1) {
+                            x_move = -1;
+                        }
+                        else if (x_move < -1) {
+                            x_move = 1;
+                        }
+                        if (y_move > 1) {
+                            y_move = -1;
+                        }
+                        else if (y_move < -1) {
+                            y_move = 1;
+                        }
+                    }
+                }
+
+                // Use wrap around map in determining movement,
+                // interpolate between moves with visualizer time
+                // Use a bit of easing on the time to make it look
+                // nicer (cubic in/out easing)
+                let t = this.visualizer.time;
+                t /= 0.5;
+                if (t < 1) {
+                    t = t*t*t/2;
+                }
+                else {
+                    t -= 2;
+                    t = (t*t*t + 2)/2;
+                }
+
+                this.x = (entity_record.x + x_move * t + this.map_width) % this.map_width;
+                this.y = (entity_record.y + y_move * t + this.map_height) % this.map_height;
+
+            }  else if (command.type === "d") {
                 // TODO
-            } else if (command.type === "mine") {
+            } else if (command.type === "m") {
                 // TODO
-            } else if (command.type === "construct") {
+            } else if (command.type === "c") {
                 // TODO
             }
         }
-        this.updatePosition();
     }
 
-     updatePosition() {
-         // Determine pixel location from grid location, then move sprite
-         const size = this.visualizer.camera.scale * CELL_SIZE;
-         // Account for camera panning
-         const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(this.x, this.y);
-         const pixelX = size * cellX + this.visualizer.camera.scale * CELL_SIZE / 2;
-         const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
-         this.sprite.position.x = pixelX;
-         this.sprite.position.y = pixelY;
-         this.sprite.width = this.sprite.height = size;
-     }
+    draw() {
+        // Determine pixel location from grid location, then move sprite
+        const size = this.visualizer.camera.scale * CELL_SIZE;
+        // Account for camera panning
+        const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(this.x, this.y);
+        const pixelX = size * cellX + this.visualizer.camera.scale * CELL_SIZE / 2;
+        const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
+        this.sprite.position.x = pixelX;
+        this.sprite.position.y = pixelY;
+        this.sprite.width = this.sprite.height = size;
+    }
 }

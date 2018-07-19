@@ -5,6 +5,8 @@
 
 #include "nlohmann/json_fwd.hpp"
 
+int main(int argc, char *argv[]);
+
 namespace hlt {
 
 /**
@@ -14,24 +16,22 @@ namespace hlt {
  * Supports serialization to and deserialization from JSON.
  */
 struct Constants {
-    unsigned long MAX_TURNS = 300;              /**< The maximum number of turns. */
+    friend int ::main(int argc, char *argv[]);
+
+    unsigned long MAX_TURNS = 500;              /**< The maximum number of turns. */
     unsigned long MAX_PLAYERS = 16;             /**< The maximum number of players. */
     dimension_type DEFAULT_MAP_WIDTH = 128;     /**< The default width of generated maps. */
     dimension_type DEFAULT_MAP_HEIGHT = 128;    /**< The default height of generated maps. */
 
-    energy_type MAX_CELL_PRODUCTION = 1000;      /**< The maximum maximum amount of production on a cell. */
-    energy_type MIN_CELL_PRODUCTION = 1;       /**< The minimum maximum amount of production on a cell. */
-    // TODO: ship max capacity
-    energy_type MAX_ENERGY = 1000;               /**< The maximum amount of energy per entity. */
-    energy_type NEW_ENTITY_ENERGY_COST = 1000;  /**< The amount of production which equals one energy. */
-    // TODO: split this cost into the fixed and variable portions
-    energy_type NEW_ENTITY_ENERGY = 0;        /**< The starting energy of a new entity. */
-    energy_type BASE_TURN_ENERGY_LOSS = 1;      /**< The base energy decrease of an entity per turn. */
-    energy_type INITIAL_ENERGY = 1000;        /**< The initial amount of energy for a player. */
+    energy_type MAX_CELL_PRODUCTION = 1000;     /**< The maximum maximum amount of production on a cell. */
+    energy_type MIN_CELL_PRODUCTION = 900;      /**< The minimum maximum amount of production on a cell. */
+    energy_type MAX_ENERGY = 1000;              /**< The maximum amount of energy per entity. */
+    energy_type NEW_ENTITY_ENERGY_COST = 1000;  /**< The base cost of a new entity. */
+    energy_type INITIAL_ENERGY = 1000;          /**< The initial amount of energy for a player. */
 
-    energy_type DROPOFF_COST = 10000;            /**< The cost of a dropoff construction. */
+    energy_type DROPOFF_COST = 10000;           /**< The cost of a dropoff construction. */
     unsigned long MOVE_COST_RATIO = 20;         /**< The cost of a move is the source's energy divided by this. */
-    unsigned long DROPOFF_PENALTY_RATIO = 4;   /**< The cost ratio of using another player's dropoff. */
+    unsigned long DROPOFF_PENALTY_RATIO = 4;    /**< The cost ratio of using another player's dropoff. */
     unsigned long EXTRACT_RATIO = 10;           /**< The ratio of energy extracted from a cell per turn. */
 
     double PERSISTENCE = 0.7; // Determines relative weight of local vs global features.
@@ -48,16 +48,6 @@ struct Constants {
     */
 
     static constexpr double BLUR_FACTOR = 0.75; // Not part of canon, needed to compile
-
-    /**
-     * Get a mutable reference to the singleton constants.
-     * @return Mutable reference to the singleton constants.
-     */
-    static Constants &get_mut() {
-        // Guaranteed initialized only once by C++11
-        static Constants instance;
-        return instance;
-    }
 
     /**
      * Get the singleton constants.
@@ -85,6 +75,16 @@ struct Constants {
 private:
     /** Hide the default constructor. */
     Constants() = default;
+
+    /**
+     * Get a mutable reference to the singleton constants.
+     * @return Mutable reference to the singleton constants.
+     */
+    static Constants &get_mut() {
+        // Guaranteed initialized only once by C++11
+        static Constants instance;
+        return instance;
+    }
 };
 
 }

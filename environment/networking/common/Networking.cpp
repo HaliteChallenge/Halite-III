@@ -3,6 +3,8 @@
 #include "Command.hpp"
 #include "Halite.hpp"
 #include "Logging.hpp"
+#include "error/BotError.hpp"
+#include "error/NetworkingError.hpp"
 
 namespace net {
 
@@ -33,14 +35,27 @@ void Networking::initialize_player(Player &player) {
     }
     // Send the map
     message_stream << game.map;
-    connection->send_string(message_stream.str());
-    Logging::log("Init message sent to player " + to_string(player.id));
-    // Receive a name from the player.
-    player.name = connection->get_string().substr(0, NAME_MAX_LENGTH);
-    Logging::log("Init message received from player " + to_string(player.id) + ", name: " + player.name);
+
     {
         std::lock_guard<std::mutex> guard(connections_mutex);
         connections[player] = std::move(connection);
+    }
+
+    try {
+        connections[player]->send_string(message_stream.str());
+        Logging::log("Init message sent to player " + to_string(player.id));
+        // Receive a name from the player.
+        player.name = connections[player]->get_string().substr(0, NAME_MAX_LENGTH);
+        Logging::log("Init message received from player " + to_string(player.id) + ", name: " + player.name);
+    }
+    catch (const BotError& e) {
+        player.log_error(e.what());
+        const auto received_input = connections[player]->read_trailing_input();
+        player.log_error("Last input received was:");
+        player.log_error(received_input);
+        player.log_error("Bot error output was:");
+        player.log_error(connections[player]->get_errors());
+        throw;
     }
 }
 
@@ -51,14 +66,14 @@ void Networking::initialize_player(Player &player) {
  * @param player The player to communicate with.
  * @return The commands from the player.
  */
-std::vector<std::unique_ptr<Command>> Networking::handle_frame(const Player &player) {
+std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
     std::stringstream message_stream;
     // Send the turn number, then each player in the game.
     message_stream << game.turn_number << std::endl;
     for (const auto &[_, other_player] : game.store.players) {
         message_stream << other_player;
         // Output a list of entities.
-        for (const auto &[entity_id, location] : player.entities) {
+        for (const auto &[entity_id, location] : other_player.entities) {
             const auto entity_iterator = game.store.entities.find(entity_id);
             message_stream << entity_id
                     << " " << location
@@ -66,7 +81,7 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(const Player &pla
                     << std::endl;
         }
         // Output a list of dropoffs.
-        for (const auto &dropoff : player.dropoffs) {
+        for (const auto &dropoff : other_player.dropoffs) {
             message_stream << dropoff << std::endl;
         }
     }
@@ -75,18 +90,34 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(const Player &pla
     for (const auto &location : game.store.changed_cells) {
         message_stream << location << " " << game.map.at(location).energy << std::endl;
     }
-    connections[player]->send_string(message_stream.str());
-    Logging::log("Turn info sent to player " + to_string(player.id), Logging::Level::Debug);
-    // Get commands from the player.
-    std::istringstream command_stream(connections[player]->get_string());
+
     std::vector<std::unique_ptr<Command>> commands;
-    std::unique_ptr<Command> command;
-    while (command_stream >> command) {
-        commands.push_back(std::move(command));
+    std::string received_input;
+    try {
+        connections[player]->send_string(message_stream.str());
+        Logging::log("Turn info sent to player " + to_string(player.id), Logging::Level::Debug);
+        // Get commands from the player.
+        received_input = connections[player]->get_string();
+        std::istringstream command_stream(received_input);
+        std::unique_ptr<Command> command;
+        while (command_stream >> command) {
+            commands.push_back(std::move(command));
+        }
+        command_stream >> command;
+        Logging::log("Received " + std::to_string(commands.size()) +
+                     " commands from player " + to_string(player.id), Logging::Level::Debug);
     }
-    command_stream >> command;
-    Logging::log("Received " + std::to_string(commands.size()) +
-                 " commands from player " + to_string(player.id), Logging::Level::Debug);
+    catch (const BotError& e) {
+        player.log_error(e.what());
+        received_input += '\n';
+        received_input += connections[player]->read_trailing_input();
+        player.log_error("Last input received was:");
+        player.log_error(received_input);
+        player.log_error("Bot error output was:");
+        player.log_error(connections[player]->get_errors());
+        throw;
+    }
+
     return commands;
 }
 

@@ -48,14 +48,12 @@ export class Map {
         this.tintMap.hitArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
         this.tintMap.on("pointerdown", (e) => {
             const localCoords = e.data.global;
-            // Adjust coordinates to account for canvas scaling
-            const zoom = parseFloat($('.game-replay-viewer').find('>canvas').css('zoom'));
-            const [ cellX, cellY ] = this.camera.screenToWorld(
-                localCoords.x / zoom, localCoords.y / zoom);
-            const production = this.productions[cellY][cellX];
-            const owner = this.owners !== null ? this.owners[cellX][cellY].owner : -1;
-            onSelect("point", { x: cellX, y: cellY, production: production,
-                owner: owner});
+            const [ x, y ] = this.camera.scaledToScreen(localCoords.x, localCoords.y);
+            const [ cellX, cellY ] = this.camera.screenToWorld(x, y);
+            onSelect("point", {
+                x: cellX,
+                y: cellY,
+            });
         });
 
         // Generate the texture for a single map cell (16x16 white
