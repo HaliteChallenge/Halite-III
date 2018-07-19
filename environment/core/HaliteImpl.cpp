@@ -134,14 +134,22 @@ void HaliteImpl::process_turn() {
     }
 
     const auto ratio = Constants::get().EXTRACT_RATIO;
+    const auto max_energy = Constants::get().MAX_ENERGY;
     for (auto &[entity_id, entity] : game.store.entities) {
-        if (changed_entities.find(entity_id) == changed_entities.end()) {
+        if (changed_entities.find(entity_id) == changed_entities.end()
+            && entity.energy < max_energy) {
             // Allow this entity to extract
             const auto location = game.store.get_player(entity.owner).get_entity_location(entity_id);
             auto &cell = game.map.at(location);
-            auto extracted = cell.energy / ratio;
-            // TODO: edge case here when the energy is small
-            // TODO: maximum capacity of ship
+            energy_type extracted = cell.energy / ratio;
+            // If energy is small, give it all to the entity.
+            if (extracted == 0 && cell.energy > 0) {
+                extracted = cell.energy;
+            }
+            // Do not allow entity to exceed capacity.
+            if (max_energy - entity.energy < extracted) {
+                extracted = max_energy - entity.energy;
+            }
             entity.energy += extracted;
             cell.energy -= extracted;
             game.store.changed_cells.emplace(location);
