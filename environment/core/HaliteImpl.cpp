@@ -150,8 +150,8 @@ void HaliteImpl::process_turn() {
     game.replay.full_frames.back().add_cells(game.map, game.store.changed_cells);
     for (const auto [player_id, player] : game.store.players) {
         game.replay.full_frames.back().energy.insert( {{player_id, player.energy}} );
-        update_player_stats(player_id);
     }
+    update_player_stats();
 }
 
 /**
@@ -178,12 +178,13 @@ bool HaliteImpl::game_ended() const {
  *
  * @param productions Mapping from player ID to the production they gained in the current turn.
  */
-void HaliteImpl::update_player_stats(Player::id_type player) {
+void HaliteImpl::update_player_stats() {
     for (PlayerStatistics &player_stats : game.game_statistics.player_statistics) {
         // Player with sprites is still alive, so mark as alive on this turn and add production gained
-        if (game.store.get_player(player_stats.player_id).is_alive()) {
+        const auto& player_id = player_stats.player_id;
+        if (game.store.get_player(player_id).is_alive()) {
             player_stats.last_turn_alive = game.turn_number;
-            player_stats.turn_productions.push_back(game.store.get_player(player).energy);
+            player_stats.turn_productions.push_back(game.store.get_player(player_id).energy);
         } else {
             player_stats.turn_productions.push_back(0);
         }
@@ -213,4 +214,3 @@ void HaliteImpl::rank_players() {
 HaliteImpl::HaliteImpl(Halite &game) : game(game) {}
 
 }
-
