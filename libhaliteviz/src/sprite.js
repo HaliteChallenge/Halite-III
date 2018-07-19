@@ -141,6 +141,20 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                         const next_record = next_frame.entities[this.owner][this.id];
                         x_move = next_record.x - entity_record.x;
                         y_move = next_record.y - entity_record.y;
+
+                        // Wraparound
+                        if (x_move > 1) {
+                            x_move = -1;
+                        }
+                        else if (x_move < -1) {
+                            x_move = 1;
+                        }
+                        if (y_move > 1) {
+                            y_move = -1;
+                        }
+                        else if (y_move < -1) {
+                            y_move = 1;
+                        }
                     }
                 }
 
