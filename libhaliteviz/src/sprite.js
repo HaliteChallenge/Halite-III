@@ -88,9 +88,8 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
 
     /**
      * Update this sprite's display with the latest state from the replay.
-     * @param record
+     * @param command
      */
-
     update(command) {
         let direction = 0;
         let x_move = 0;
@@ -102,34 +101,53 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                 this.updatePosition();
                 return;
             }
-            let entity_record = this.visualizer.replay.full_frames[this.visualizer.frame].entities[this.owner][this.id];
+            const entity_record = this.visualizer.replay
+                  .full_frames[this.visualizer.frame]
+                  .entities[this.owner][this.id];
             this.energy = entity_record.energy;
+
             if (command.type === "m") {
                 if (command.direction === "n") {
                     direction = Math.PI;
                     x_move = 0;
                     y_move = -1;
                 }
-                if (command.direction === "e") {
+                else if (command.direction === "e") {
                     direction = Math.PI / 2;
                     x_move = 1;
                     y_move = 0;
                 }
-                if (command.direction === "s") {
+                else if (command.direction === "s") {
                     direction = 0;
                     x_move = 0;
                     y_move = 1;
                 }
-                if (command.direction === "w") {
+                else if (command.direction === "w") {
                     direction = -Math.PI / 2;
                     x_move = -1;
                     y_move = 0;
                 }
                 this.sprite.rotation = direction;
 
-                // Use wrap around map in determining movement, interpolate between moves with visualizer time
-                // Use a bit of easing on the time to make it look nicer
-                // (cubic in/out easing)
+                // To prevent "glitching" when a move is recorded that
+                // isn't processed (because there wasn't enough
+                // energy, for instance), we interpolate with the next
+                // frame's position where available.
+                if (this.visualizer.frame < this.visualizer.replay.full_frames.length - 1) {
+                    const next_frame = this.visualizer.replay
+                          .full_frames[this.visualizer.frame + 1];
+                    if (next_frame.entities[this.owner] &&
+                        next_frame.entities[this.owner][this.id]) {
+                        const next_record = next_frame.entities[this.owner][this.id];
+                        x_move = next_record.x - entity_record.x;
+                        y_move = next_record.y - entity_record.y;
+                    }
+                }
+
+                // Use wrap around map in determining movement,
+                // interpolate between moves with visualizer time
+                // Use a bit of easing on the time to make it look
+                // nicer (cubic in/out easing)
                 let t = this.visualizer.time;
                 t /= 0.5;
                 if (t < 1) {
