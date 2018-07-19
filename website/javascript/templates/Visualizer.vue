@@ -710,7 +710,25 @@
       },
       selectedPoint: function () {
         if (this.selected.kind === 'point') {
-          return this.selected
+            // TODO: this is inefficient AF
+            for (let i = this.frame; i >= 0; i--) {
+                const frame = this.replay.full_frames[i];
+                for (const cell of frame.cells) {
+                    if (cell.x == this.selected.x && cell.y == this.selected.y) {
+                        return {
+                            energy: cell.production,
+                            x: this.selected.x,
+                            y: this.selected.y,
+                        };
+                    }
+                }
+            }
+            const cell = this.replay.production_map.grid[this.selected.x][this.selected.y];
+            return {
+                energy: cell.energy,
+                x: this.selected.x,
+                y: this.selected.y,
+            };
         }
         return null
       },
