@@ -3,6 +3,13 @@
         <template slot="steps">
             <Step title="The Seas of Halite" name="seas">
                 <p>
+                    This is the game visualizer. In Halite, the game
+                    engine communicates with the bots and runs the
+                    game; at the end, a replay of what happened is
+                    generated. You then watch the replay with the
+                    visualizer.
+                </p>
+                <p>
                     Halite is played on a grid, which wraps around at
                     the edges. (Thus, the map is the surface of a torus.)
                 </p>
@@ -40,7 +47,10 @@
             <Step title="Saltwater" name="salt">
                 <p>
                     In these seas are vast quantities of the material
-                    known as <em>halite</em>.
+                    known as <em>halite</em>. The visualizer shows
+                    areas with more halite dissolved in the water with
+                    red colors, and areas with less halite with blue
+                    colors.
                 </p>
                 <walkthrough-substeps>
                     <walkthrough-substep>

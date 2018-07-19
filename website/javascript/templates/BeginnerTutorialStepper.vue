@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section :class="`step-${stepName}`">
         <Visualizer
             v-if="replay"
             v-bind:replay="replay"
@@ -42,11 +42,29 @@
 </script>
 
 <style lang="scss" scoped>
-
+    section {
+        color: #000;
+    }
 </style>
 
 <style lang="scss">
-    .sidebar, .game-heading, .xline {
+    .game-replay-share {
+        display: none;
+    }
+
+    .step-seas, .step-time, .step-salt {
+        .game-replay-progress, .replay-btn:not(.reset-btn) {
+            display: none;
+        }
+    }
+
+    .step-seas, .step-time {
+        .sidebar {
+            display: none;
+        }
+    }
+
+    .game-heading, .xline {
         display: none;
     }
 

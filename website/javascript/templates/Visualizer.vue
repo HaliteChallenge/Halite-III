@@ -59,7 +59,7 @@
                 <span class="replay-btn">
                   <a href="javascript:;" @click="nextFrame"><span class="icon-next"></span></a>
                 </span>
-                <span class="replay-btn" style="text-align: center">
+                <span class="replay-btn reset-btn" style="text-align: center">
                   <a href="javascript:;" @click="resetView" title="Reset zoom/pan"><span class="icon-lightning"></span></a>
                 </span>
                 <span class="replay-btn" style="text-align: center">

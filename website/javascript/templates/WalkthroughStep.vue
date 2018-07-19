@@ -31,12 +31,12 @@
     .step {
         /* TODO: don't hardcode color */
         border-top: 1px solid #474951;
-        color: #b9b8b8;
-        height: 2em;
+        height: 2.5em;
         overflow: hidden;
 
         > h2 {
             margin: 0;
+            padding-top: 0.5rem;
             transition: 0.3s all ease-in-out;
         }
     }

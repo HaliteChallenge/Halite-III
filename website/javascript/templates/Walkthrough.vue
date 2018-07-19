@@ -143,8 +143,8 @@
                 }
 
                 const container = this.$refs.stepsContainer;
-                // TODO: don't hardcode 32 (=2em)
-                container.scrollTop = 32 * this.progress;
+                // TODO: don't hardcode 40 (=2.5em)
+                container.scrollTop = 40 * this.progress;
             },
             nextStep: function() {
                 this.switchTo(this.progress + 1);
