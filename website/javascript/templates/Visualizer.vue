@@ -738,31 +738,11 @@
       tierClass: tierClass,
       getPlayers: async function () {
         if (!this.replay) return []
-
-        //let ranks = {}
-
-        // for (let player of Object.keys(this.replay.game_statistics.player_statistics)) {
-        //   let id = player.player_id
-        //   ranks[id].index = parseInt(id)
-        //   ranks[id].botname = this.replay.players[id]
-        //   ranks[id].name = this.replay.players[id].name
-        //   if (this.game) {
-        //     let player = {}
-        //     Object.getOwnPropertyNames(this.game.players).map(userId => {
-        //       if (this.game.players[userId].player_index == id) {
-        //         player = this.game.players[userId]
-        //         player.id = userId
-        //       }
-        //     })
-        //     ranks[id].id = player.player_id
-        //   } else {
-        //       ranks[id].version = null
-        //   }
-        // }
         return this.replay.game_statistics.player_statistics
                    .map((p, idx) => {
                      const player = Object.assign({}, p);
                      player.name = this.replay.players[idx].name;
+                     player.index = idx;
                      return player;
                    })
       },
