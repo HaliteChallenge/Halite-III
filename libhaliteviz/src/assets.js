@@ -8,7 +8,7 @@ export const STATS_SIZE = 20;
 export const CELL_SIZE = 1;
 
 export const PLAYER_COLORS = [0xff0000, 0x00FF00, 0xBA55D3, 0xffae42,
-                                0xbd00db, 0xFF69B4, 0xFFFF00, 0x009900,
+                                0xFF69B4, 0xbd00db, 0xFFFF00, 0x009900,
                                 0xFF8C00, 0xff0000, 0x00FF00, 0xBA55D3,
                                 0xffae42, 0xbd00db, 0xFF69B4, 0xFFFF00];
 export const EXPLOSION_COLOR = 0xb7b7b7;
