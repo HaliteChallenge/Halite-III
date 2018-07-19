@@ -2,7 +2,7 @@ const PIXI = require("pixi.js");
 const $ = require("jquery");
 const extraFilters = require("pixi-extra-filters");
 
-import {playerSprite} from "./sprite";
+import Ship from "./sprite";
 import {Factory} from "./factory";
 import {Map} from "./map";
 import Camera from "./camera";
@@ -410,17 +410,14 @@ export class HaliteVisualizer {
 
     /** Update/rerender after panning. */
     panRender() {
-        for (const [ entity_id, entity ] of Object.entries(this.entity_dict)) {
-            entity.updatePosition();
-        }
+        this.draw();
+        // for (const factory of this.factories) {
+        //     factory.update();
+        // }
 
-        for (const factory of this.factories) {
-            factory.update();
-        }
-
-        for (const dropoff of this.dropoffs) {
-            dropoff.update();
-        }
+        // for (const dropoff of this.dropoffs) {
+        //     dropoff.update();
+        // }
 
         this.baseMap.update([]);
 
@@ -493,7 +490,7 @@ export class HaliteVisualizer {
                     // Create a new entity, add to map, and merge as needed
                     let entity_object = {"x" : event.location.x, "y" : event.location.y,
                                         "energy" : event.energy, "owner": event.owner_id, "id" : event.id};
-                    let new_entity = new playerSprite(this, entity_object);
+                    let new_entity = new Ship(this, entity_object);
 
                     this.entity_dict[event.id] = new_entity;
                     new_entity.attach(this.entityContainer);
@@ -534,8 +531,12 @@ export class HaliteVisualizer {
      * @param dt
      */
     draw(dt=0) {
-        for (let entity_id in this.entity_dict) {
-            let entity = this.entity_dict[entity_id];
+        for (const factory of this.factories) {
+            factory.draw();
+        }
+
+        for (const entity_id in this.entity_dict) {
+            const entity = this.entity_dict[entity_id];
             if (this.current_commands.hasOwnProperty(entity.owner)
                 && this.current_commands[entity.owner].hasOwnProperty(entity_id)) {
                 entity.update(this.current_commands[entity.owner][entity_id]);
@@ -543,6 +544,8 @@ export class HaliteVisualizer {
                 // no command implies entity is mining
                 entity.update({"type" : "m"});
             }
+
+            entity.draw();
         }
 
         // dt comes from Pixi ticker, and the unit is essentially frames

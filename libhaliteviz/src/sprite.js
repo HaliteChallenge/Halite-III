@@ -4,9 +4,9 @@ import * as assets from "./assets";
 import {CELL_SIZE, PLAYER_COLORS} from "./assets";
 
 /**
- * Manages a Sprite on screen.
+ * Manages a ship on screen.
  */
- export class playerSprite {
+export default class Ship {
     /**
      *
      * @param visualizer The visualizer object
@@ -23,7 +23,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);
 
         this.sprite = new PIXI.Sprite(spriteTexture);
-        this.sprite.zOrder= -1;
+        this.sprite.zOrder = -1;
 
         this.container = null;
         this.visualizer = visualizer;
@@ -31,7 +31,6 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         // Store map size to make movement easier
         this.map_width = this.visualizer.replay.production_map.width;
         this.map_height = this.visualizer.replay.production_map.height;
-        this.energy_loss = this.visualizer.replay.GAME_CONSTANTS.BASE_TURN_ENERGY_LOSS;
 
         this.owner = record.owner;
         this.energy = record.energy;
@@ -58,7 +57,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         this.sprite.position.y = pixelY;
     }
 
-     /**
+    /**
      * Add the sprite to the visualizer.
      * @param container {PIXI.Container} to use for the sprite
      */
@@ -98,7 +97,6 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         if (this.visualizer.frame < this.visualizer.replay.full_frames.length) {
             // Sprite spawned this turn, does not exist in entities struct at start of turn
             if (command.type === "g") {
-                this.updatePosition();
                 return;
             }
             const entity_record = this.visualizer.replay
@@ -183,18 +181,17 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
                 // TODO
             }
         }
-        this.updatePosition();
     }
 
-     updatePosition() {
-         // Determine pixel location from grid location, then move sprite
-         const size = this.visualizer.camera.scale * CELL_SIZE;
-         // Account for camera panning
-         const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(this.x, this.y);
-         const pixelX = size * cellX + this.visualizer.camera.scale * CELL_SIZE / 2;
-         const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
-         this.sprite.position.x = pixelX;
-         this.sprite.position.y = pixelY;
-         this.sprite.width = this.sprite.height = size;
-     }
+    draw() {
+        // Determine pixel location from grid location, then move sprite
+        const size = this.visualizer.camera.scale * CELL_SIZE;
+        // Account for camera panning
+        const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(this.x, this.y);
+        const pixelX = size * cellX + this.visualizer.camera.scale * CELL_SIZE / 2;
+        const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
+        this.sprite.position.x = pixelX;
+        this.sprite.position.y = pixelY;
+        this.sprite.width = this.sprite.height = size;
+    }
 }
