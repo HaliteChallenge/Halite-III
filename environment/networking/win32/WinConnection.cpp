@@ -145,4 +145,12 @@ std::string WinConnection::get_string() {
     return result;
 }
 
+/**
+ * Get the error output from this connection.
+ * @return The error output.
+ */
+std::string WinConnection::get_errors() {
+    return std::string();
+}
+
 }

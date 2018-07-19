@@ -53,6 +53,8 @@ void Networking::initialize_player(Player &player) {
         const auto received_input = connections[player]->read_trailing_input();
         player.log_error("Last input received was:");
         player.log_error(received_input);
+        player.log_error("Bot error output was:");
+        player.log_error(connections[player]->get_errors());
         throw;
     }
 }
@@ -111,6 +113,8 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
         received_input += connections[player]->read_trailing_input();
         player.log_error("Last input received was:");
         player.log_error(received_input);
+        player.log_error("Bot error output was:");
+        player.log_error(connections[player]->get_errors());
         throw;
     }
 
