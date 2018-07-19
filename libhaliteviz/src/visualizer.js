@@ -434,6 +434,8 @@ export class HaliteVisualizer {
     remove_invalid_entities() {
         for (const [entity_id, entity] of Object.entries(this.entity_dict)) {
             if (!this.replay.full_frames[this.frame].entities[entity.owner][entity_id]) {
+                const sprite = this.entity_dict[entity_id];
+                sprite.destroy();
                 delete this.entity_dict[entity_id];
             }
         }
@@ -488,12 +490,19 @@ export class HaliteVisualizer {
                 }
                 else if (event.type === "spawn") {
                     // Create a new entity, add to map, and merge as needed
-                    let entity_object = {"x" : event.location.x, "y" : event.location.y,
-                                        "energy" : event.energy, "owner": event.owner_id, "id" : event.id};
-                    let new_entity = new Ship(this, entity_object);
+                    const entity_object = {
+                        x: event.location.x,
+                        y: event.location.y,
+                        energy: event.energy,
+                        owner: event.owner_id,
+                        id: event.id,
+                    };
 
-                    this.entity_dict[event.id] = new_entity;
-                    new_entity.attach(this.entityContainer);
+                    if (!this.entity_dict[event.id]) {
+                        const new_entity = new Ship(this, entity_object);
+                        this.entity_dict[event.id] = new_entity;
+                        new_entity.attach(this.entityContainer);
+                    }
 
                     // TODO: use new Halite 3 spawn animation
                     this.animationQueue.push(
@@ -533,6 +542,10 @@ export class HaliteVisualizer {
     draw(dt=0) {
         for (const factory of this.factories) {
             factory.draw();
+        }
+
+        for (const dropoff of this.dropoffs) {
+            dropoff.draw();
         }
 
         for (const entity_id in this.entity_dict) {
