@@ -46,7 +46,7 @@
                         const patch = function(obj, prop, cb) {
                             const orig = obj[prop];
                             obj[prop] = function(...args) {
-                                cb();
+                                cb(...args);
                                 return orig.apply(this, args);
                             }.bind(obj);
                         };
@@ -59,6 +59,11 @@
                         });
                         patch(visualizer.camera, "reset", () => {
                             this.completeSubstep("seas-reset");
+                        });
+                        patch(visualizer, "onSelect", (kind) => {
+                            if (this.stepName === "salt" && kind === "point") {
+                                this.completeSubstep("salt-halite");
+                            }
                         });
 
                         this.boundEvents = true;
@@ -91,6 +96,10 @@
     .step-seas, .step-time {
         .sidebar {
             display: none;
+        }
+
+        canvas {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
     }
 

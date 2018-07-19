@@ -42,7 +42,7 @@
                     colors.
                 </p>
                 <walkthrough-substeps>
-                    <walkthrough-substep>
+                    <walkthrough-substep name="salt-halite">
                         Click on a cell and observe how much halite is present.
                     </walkthrough-substep>
                 </walkthrough-substeps>
