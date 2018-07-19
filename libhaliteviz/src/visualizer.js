@@ -16,8 +16,8 @@ import * as animation from "./animation";
 
 export class HaliteVisualizer {
     constructor(replay, width, height) {
-        assets.VISUALIZER_SIZE = width || assets.VISUALIZER_SIZE
-        assets.VISUALIZER_HEIGHT = height || assets.VISUALIZER_HEIGHT
+        this.width = width || assets.BASE_VISUALIZER_WIDTH;
+        this.height = height || assets.BASE_VISUALIZER_HEIGHT;
 
         this.replay = replay;
         this.map_width = replay.production_map.width;
@@ -50,8 +50,7 @@ export class HaliteVisualizer {
         });
 
         this.application = new PIXI.Application(
-            assets.VISUALIZER_SIZE,
-            assets.VISUALIZER_HEIGHT,
+            this.width, this.height,
             {
                 backgroundColor: 0x222222,
             }
@@ -64,10 +63,10 @@ export class HaliteVisualizer {
         // (since for large textures, image decode and GPU upload take a while)
         assets.prepareAll(this.application.renderer, this.application.renderer.plugins.prepare);
 
-        // Scale things to fit exactly in the visible area
-        let scale = assets.VISUALIZER_HEIGHT / (this.map_height * assets.CELL_SIZE);
-        if (this.map_width * scale * assets.CELL_SIZE > assets.VISUALIZER_SIZE) {
-            scale = assets.VISUALIZER_SIZE / (this.map_width * assets.CELL_SIZE);
+        // Set initial scale so things fit exactly in the visible area
+        let scale = this.height / (this.map_height * assets.CELL_SIZE);
+        if (this.map_width * scale * assets.CELL_SIZE > this.width) {
+            scale = this.width / (this.map_width * assets.CELL_SIZE);
         }
 
         this.container = new PIXI.Container();
@@ -77,21 +76,21 @@ export class HaliteVisualizer {
         this.letterbox = new PIXI.Graphics();
         if (this.container.position.y > 0) {
             this.letterbox.beginFill(0xFFFFFF);
-            this.letterbox.drawRect(0, 0, assets.VISUALIZER_SIZE, this.container.position.y);
+            this.letterbox.drawRect(0, 0, this.width, this.container.position.y);
             this.letterbox.drawRect(
                 0,
                 this.container.position.y + this.map_height * scale * assets.CELL_SIZE,
-                assets.VISUALIZER_SIZE,
+                this.width,
                 this.container.position.y);
         }
         if (this.container.position.x > 0) {
             this.letterbox.beginFill(0xFFFFFF);
-            this.letterbox.drawRect(0, 0, this.container.position.x, assets.VISUALIZER_HEIGHT);
+            this.letterbox.drawRect(0, 0, this.container.position.x, this.height);
             this.letterbox.drawRect(
                 this.container.position.x + this.map_width * scale * assets.CELL_SIZE,
                 0,
                 this.container.position.x,
-                assets.VISUALIZER_HEIGHT);
+                this.height);
         }
 
 
@@ -104,11 +103,7 @@ export class HaliteVisualizer {
         this.factories = [];
         this.dropoffs = [];
 
-        this.camera = new Camera(
-            scale, this.panRender.bind(this),
-            this.replay.production_map.width,
-            this.replay.production_map.height
-        );
+        this.camera = new Camera(this, scale);
 
         // Generate base map with visualziation of production squares
         this.baseMap = new Map(this.replay, this.replay.GAME_CONSTANTS, this.camera,
@@ -150,8 +145,9 @@ export class HaliteVisualizer {
 
     resize(width, height) {
         this.application.renderer.resize(width, height);
-        assets.VISUALIZER_SIZE = width;
-        assets.VISUALIZER_HEIGHT = height;
+        this.width = width;
+        this.height = height;
+        // TODO: redo initial scale, letterboxing
     }
 
     /**

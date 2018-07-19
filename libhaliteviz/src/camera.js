@@ -1,10 +1,8 @@
-import * as assets from "./assets";
-
 export default class Camera {
-    constructor(initScale, panRender, cols, rows) {
-        this.cols = cols;
-        this.rows = rows;
-        this.panRender = panRender;
+    constructor(visualizer, initScale) {
+        this.visualizer = visualizer;
+        this.cols = visualizer.replay.production_map.width;
+        this.rows = visualizer.replay.production_map.height;
         this.dragBase = [ 0, 0 ];
         this.dragging = false;
         this.mouseDown = false;
@@ -23,7 +21,7 @@ export default class Camera {
         this.pan.y = 0;
         this.pixelPan.x = 0;
         this.pixelPan.y = 0;
-        this.panRender();
+        this.visualizer.panRender();
     }
 
     attach(view) {
@@ -56,8 +54,8 @@ export default class Camera {
 
         const sign = e.wheelDelta >= 0 ? 1 : -1;
         const delta = sign * Math.max(1, Math.min(2, Math.abs(e.wheelDelta) / 150));
-        const percentX = (e.offsetX + 0.5 * this.scale) / assets.VISUALIZER_SIZE;
-        const percentY = (e.offsetY + 0.5 * this.scale) / assets.VISUALIZER_HEIGHT;
+        const percentX = (e.offsetX + 0.5 * this.scale) / this.visualizer.width;
+        const percentY = (e.offsetY + 0.5 * this.scale) / this.visualizer.height;
 
         this.zoomBy(percentX, percentY, delta);
     }
@@ -65,15 +63,15 @@ export default class Camera {
     zoomBy(anchorX, anchorY, delta) {
         // Try to keep point under mouse fixed
         const [ centerX, centerY ] = this.screenToWorld(
-            anchorX * assets.VISUALIZER_SIZE,
-            anchorY * assets.VISUALIZER_HEIGHT
+            anchorX * this.visualizer.width,
+            anchorY * this.visualizer.height
         );
 
         this.scale += delta;
         this.scale = Math.min(10 * this.initScale, Math.max(this.initScale, this.scale));
 
-        const viewWidth = assets.VISUALIZER_SIZE / this.scale;
-        const viewHeight = assets.VISUALIZER_HEIGHT / this.scale;
+        const viewWidth = this.visualizer.width / this.scale;
+        const viewHeight = this.visualizer.height / this.scale;
         const viewLeft = centerX - anchorX * viewWidth;
         const viewTop = centerY - anchorY * viewHeight;
 
@@ -85,7 +83,7 @@ export default class Camera {
         this.pixelPan.x = this.pan.x * this.scale;
         this.pixelPan.y = this.pan.y * this.scale;
 
-        this.panRender();
+        this.visualizer.panRender();
     }
 
     onDragStart(e) {
@@ -113,7 +111,7 @@ export default class Camera {
             this.pixelPan.y = (this.pixelPan.y + fullHeight) % fullHeight;
             this.pan.x = Math.round(this.pixelPan.x / this.scale);
             this.pan.y = Math.round(this.pixelPan.y / this.scale);
-            this.panRender();
+            this.visualizer.panRender();
         }
     }
 
@@ -126,7 +124,7 @@ export default class Camera {
         this.pixelPan.x = this.pan.x * this.scale;
         this.pixelPan.y = this.pan.y * this.scale;
 
-        this.panRender();
+        this.visualizer.panRender();
     }
 
     onDragStop(e) {
