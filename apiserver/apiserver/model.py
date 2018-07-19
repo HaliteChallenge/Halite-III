@@ -253,10 +253,31 @@ def hackathon_ranked_bots_users_query(hackathon_id, *, alias="hackathon_ranked_b
     ).alias(alias)
 
 
+def cached(f):
+    """Decorator for nullary functions that caches their result."""
+    __cache = None
+
+    def __cached_internal():
+        nonlocal __cache
+
+        if __cache is None:
+            __cache = f()
+
+        return __cache
+
+    return __cached_internal
+
+
+@cached
 def get_storage_client():
     return gcloud_storage.Client(project=config.GCLOUD_PROJECT)
 
 
+# If we reconstruct the client each time, that creates a new metadata
+# request (to get the service account credentials). These requests
+# don't seem to be closed properly (by google-auth?), leading to our
+# process running out of fds. Instead, cache the client per process.
+@cached
 def get_datastore_client():
     return gcloud_datastore.Client(project=config.GCLOUD_PROJECT)
 

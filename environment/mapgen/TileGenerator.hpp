@@ -31,10 +31,9 @@ protected:
      * @param factory_y, factory_x: On a tile, the y and x coordinate a factory should be placed
      * @param tile: A filled map of a single tile. Dimensions tile_height, tile_width. All cells should already be
      * initialized, but no factories should be placed
-     * @param[out] factories: Destination for factories that will be placed on the map.
      */
     void tile_map(Map &map, dimension_type factory_y, dimension_type factory_x,
-                  const Map &tile, std::vector<Location> &factories);
+                  const Map &tile);
 
 public:
     /** name is function to allow for possibly dynamically named subclasses */

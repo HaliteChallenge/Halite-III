@@ -5,12 +5,18 @@
 
 namespace hlt {
 
-/** Template for classes representing grids indexable along two dimensions. */
+/**
+ * Template for classes representing grids indexable along two dimensions.
+ * @tparam Entry The type of entries in the grid.
+ */
 template<class Entry>
 class Grid {
-protected:
+public:
     /** The type of the grid. */
     using grid_type = std::vector<std::vector<Entry>>;
+
+    dimension_type width{};   /**< The width of the grid. */
+    dimension_type height{};  /**< The height of the grid. */
 
     /** The internal data storage. */
     grid_type grid;
@@ -29,10 +35,6 @@ protected:
 
     /** Default constructor. */
     Grid() = default;
-
-public:
-    dimension_type width{};   /**< The width of the grid. */
-    dimension_type height{};  /**< The height of the grid. */
 
     /**
      * Convert a Grid to JSON format.
@@ -102,6 +104,9 @@ public:
     const Entry &operator[](const Location &location) const {
         return at(location);
     }
+
+    /** Virtual destructor. */
+    virtual ~Grid() = default;
 };
 
 }
