@@ -32,17 +32,6 @@
                     commands, which are then processed. This repeats
                     for 300 turns.
                 </p>
-                <walkthrough-substeps>
-                    <walkthrough-substep name="seas-pan">
-                        Drag the map around and observe the wrapping.
-                    </walkthrough-substep>
-                    <walkthrough-substep name="seas-zoom">
-                        Zoom in to examine the map more closely.
-                    </walkthrough-substep>
-                    <walkthrough-substep name="seas-reset">
-                        Reset the map to its initial state.
-                    </walkthrough-substep>
-                </walkthrough-substeps>
             </Step>
             <Step title="Saltwater" name="salt">
                 <p>

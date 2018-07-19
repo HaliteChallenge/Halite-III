@@ -1,6 +1,7 @@
 <template>
     <section :class="`step-${stepName}`">
         <Visualizer
+            ref="visualizer"
             v-if="replay"
             v-bind:replay="replay"
             v-bind:game="game"
@@ -27,7 +28,7 @@
                 game: null,
             };
         },
-        mounted: function () {
+        mounted: function() {
             window.fetch("/assets/replay.hlt")
                   .then((req) => req.arrayBuffer())
                   .then((buf) => libhaliteviz.parseReplay(buf))
@@ -36,7 +37,36 @@
                   });
         },
         methods: {
+        },
+        updated: function() {
+            if (!this.boundEvents) {
+                this.$nextTick(function() {
+                    if (this.$refs.visualizer) {
+                        const visualizer = this.$refs.visualizer.getVisualizer();
+                        const patch = function(obj, prop, cb) {
+                            const orig = obj[prop];
+                            obj[prop] = function(...args) {
+                                cb();
+                                return orig.apply(this, args);
+                            }.bind(obj);
+                        };
 
+                        patch(visualizer.camera, "panByPixel", () => {
+                            this.completeSubstep("seas-pan");
+                        });
+                        patch(visualizer.camera, "zoomBy", () => {
+                            this.completeSubstep("seas-zoom");
+                        });
+                        patch(visualizer.camera, "reset", () => {
+                            this.completeSubstep("seas-reset");
+                        });
+
+                        this.boundEvents = true;
+                    }
+                });
+            }
+        },
+        watch: {
         },
     };
 </script>

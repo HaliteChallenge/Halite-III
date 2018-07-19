@@ -107,18 +107,22 @@ export default class Camera {
         }
 
         if (this.dragging) {
-            this.pixelPan.x += dx;
-            this.pixelPan.y += dy;
-
-            const fullWidth = this.scale * this.cols;
-            const fullHeight = this.scale * this.rows;
             this.dragBase = [ e.offsetX, e.offsetY ];
-            this.pixelPan.x = (this.pixelPan.x + fullWidth) % fullWidth;
-            this.pixelPan.y = (this.pixelPan.y + fullHeight) % fullHeight;
-            this.pan.x = Math.round(this.pixelPan.x / this.scale);
-            this.pan.y = Math.round(this.pixelPan.y / this.scale);
-            this.visualizer.panRender();
+            this.panByPixel(dx, dy);
         }
+    }
+
+    panByPixel(dx, dy) {
+        this.pixelPan.x += dx;
+        this.pixelPan.y += dy;
+
+        const fullWidth = this.scale * this.cols;
+        const fullHeight = this.scale * this.rows;
+        this.pixelPan.x = (this.pixelPan.x + fullWidth) % fullWidth;
+        this.pixelPan.y = (this.pixelPan.y + fullHeight) % fullHeight;
+        this.pan.x = Math.round(this.pixelPan.x / this.scale);
+        this.pan.y = Math.round(this.pixelPan.y / this.scale);
+        this.visualizer.panRender();
     }
 
     panBy(dx, dy) {

@@ -472,6 +472,9 @@
       }
 
       const visualizer = new HaliteVisualizer(this.replay, this.width, this.height)
+      this.getVisualizer = function() {
+        return visualizer
+      }
       const storedSpeedIndex = sessionStorage.getItem('halite-replaySpeed')
       if (storedSpeedIndex) {
         const speedIndex = parseInt(storedSpeedIndex)
