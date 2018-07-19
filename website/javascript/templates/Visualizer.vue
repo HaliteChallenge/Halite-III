@@ -214,7 +214,7 @@
         </div>
       </div>
     </div>
-    <div class="post-game-dashboard hidden-xs hidden-sm" v-if="!isMobile">
+    <div class="post-game-dashboard hidden-xs hidden-sm" v-if="!isMobile && dashboard">
       <div class="panel-group" aria-multiselectable="true">
           <div class="panel panel-stats">
             <div class="panel-heading" role="tab" id="heading_player_details">
@@ -359,7 +359,32 @@
 
   export default {
     name: 'haliteTV',
-    props: ['game', 'replay', 'makeUserLink', 'getUserProfileImage'],
+    props: {
+      game: Object,
+      replay: Object,
+      makeUserLink: Function,
+      getUserProfileImage: Function,
+      width: {
+        default: 700,
+        required: false,
+        type: Number
+      },
+      height: {
+        default: 700,
+        required: false,
+        type: Number
+      },
+      dashboard: {
+        required: false,
+        default: true,
+        type: Boolean,
+      },
+      autoplay: {
+        required: false,
+        default: true,
+        type: Boolean,
+      },
+    },
     data: function () {
       return {
         baseUrl: '',
@@ -446,7 +471,7 @@
         this.isHoliday = false;
       }
 
-      const visualizer = new HaliteVisualizer(this.replay)
+      const visualizer = new HaliteVisualizer(this.replay, this.width, this.height)
       const storedSpeedIndex = sessionStorage.getItem('halite-replaySpeed')
       if (storedSpeedIndex) {
         const speedIndex = parseInt(storedSpeedIndex)
@@ -488,8 +513,9 @@
         this.gaData('visualizer', 'click-map-objects', 'gameplay')
       }
       visualizer.attach('.game-replay-viewer')
+
       // play the replay - delay a bit to make sure assets load/are rendered
-      window.setTimeout(function() { visualizer.play() }, 500);
+      if (this.autoplay) window.setTimeout(function() { visualizer.play() }, 500);
 
       // action
       this.playVideo = (e) => {
@@ -609,7 +635,6 @@
       setTimeout(() => {
         this.$refs.slider.refresh();
       }, 2000);
-
     },
     computed: {
       statistics: function () {

@@ -4,14 +4,11 @@
             v-if="replay"
             v-bind:replay="replay"
             v-bind:game="game"
+            :dashboard="false"
+            :width="500"
+            :height="500"
+            :autoplay="false"
         />
-        <p>{{progress}}</p>
-        <p>{{stepName}}</p>
-        <template v-if="stepName === 'seas'">
-            <button v-on:click="completeSubstep('seas-pan')">Pan map</button>
-            <button v-on:click="completeSubstep('seas-zoom')">Zoom map</button>
-            <button v-on:click="completeSubstep('seas-reset')">Reset map</button>
-        </template>
     </section>
 </template>
 
@@ -32,7 +29,8 @@
         },
         mounted: function () {
             window.fetch("/assets/replay.hlt")
-                  .then((req) => req.json())
+                  .then((req) => req.arrayBuffer())
+                  .then((buf) => libhaliteviz.parseReplay(buf))
                   .then((replay) => {
                       this.replay = replay;
                   });
@@ -54,5 +52,28 @@
 
     .game-replay, .game-replay-viewer, .visuallizer-container {
         padding: 0 !important;
+    }
+
+    .visuallizer-container {
+        height: 100%;
+    }
+
+    .visuallizer-container > .row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    .visuallizer-container > .row > .col-md-8 {
+        width: 100%;
+        flex: 1 0;
+    }
+
+    .walkthrough-content {
+        height: 100%;
+        & > * {
+            height: 100%;
+        }
     }
 </style>
