@@ -32,6 +32,12 @@ export default class Camera {
         view.addEventListener("mousewheel", this.onZoom.bind(this));
     }
 
+    // Adjust coordinates to account for scaling on canvas
+    scaledToScreen(x, y) {
+        const zoom = parseFloat($('.game-replay-viewer').find('>canvas').css('zoom'));
+        return [ x / zoom, y / zoom ];
+    }
+
     screenToWorld(x, y) {
         return [
             (Math.floor(x / this.scale) - this.pan.x + this.cols) % this.cols,

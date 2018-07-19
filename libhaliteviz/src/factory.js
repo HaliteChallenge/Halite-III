@@ -45,7 +45,7 @@ export class Factory {
 
         // Rotate the factory a bit just to mix it up
         this.core.rotation = Math.random() * 2 * Math.PI;
-        this.core.interactive = true;
+        // this.core.interactive = true;
         this.core.buttonMode = true;
         this.core.on("pointerdown", (e) => {
             // When clicked, notify the visualizer

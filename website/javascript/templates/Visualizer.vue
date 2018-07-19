@@ -697,21 +697,16 @@
         return null
       },
       selectedShip: function () {
-        // if (this.selected.kind === 'ship') {
-        //   let frame = this.replay.frames[this.frame]
-        //   let state = frame.ships[this.selected.owner][this.selected.id]
-        //
-        //   if (state) {
-        //     const moves = this.replay.moves[this.frame][this.selected.owner][0];
-        //     if (moves && moves[this.selected.id] && moves[this.selected.id].type === "thrust") {
-        //       const move = moves[this.selected.id];
-        //       state.vel_x = move.magnitude * Math.cos(move.angle * Math.PI / 180);
-        //       state.vel_y = move.magnitude * Math.sin(move.angle * Math.PI / 180);
-        //     }
-        //     return state;
-        //   }
-        // }
-        return null
+          if (this.selected.kind === "ship") {
+              const frame = this.replay.full_frames[this.frame]
+              const state = frame.entities[this.selected.owner][this.selected.id]
+
+              if (state) {
+                  state.owner = this.selected.owner;
+                  state.id = this.selected.id;
+                  return state;
+              }
+          }
       },
       selectedPoint: function () {
         if (this.selected.kind === 'point') {

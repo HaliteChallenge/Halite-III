@@ -23,7 +23,6 @@ export default class Ship {
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);
 
         this.sprite = new PIXI.Sprite(spriteTexture);
-        this.sprite.zOrder = -1;
 
         this.container = null;
         this.visualizer = visualizer;
@@ -55,6 +54,18 @@ export default class Ship {
         const pixelY = this.visualizer.camera.scale * CELL_SIZE * this.y + this.visualizer.camera.scale * CELL_SIZE / 2;
         this.sprite.position.x = pixelX;
         this.sprite.position.y = pixelY;
+
+        this.sprite.interactive = true;
+        this.sprite.buttonMode = true;
+        this.sprite.on("pointerdown", (e) => {
+            const localCoords = e.data.global;
+            const [ x, y ] = this.visualizer.camera.scaledToScreen(localCoords.x, localCoords.y);
+            const [ cellX, cellY ] = this.visualizer.camera.screenToWorld(x, y);
+            this.visualizer.onSelect("ship", {
+                owner: this.owner,
+                id: this.id,
+            });
+        });
     }
 
     /**
@@ -72,7 +83,6 @@ export default class Ship {
     destroy() {
         this.container.removeChild(this.sprite);
     }
-
 
     /**
      * TODO: update with selection of sprites
