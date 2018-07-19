@@ -1,14 +1,16 @@
 package hlt;
 
 import java.util.Map;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class Networking {
-	static Player[] lastPlayers;
+    private static Player[] lastPlayers;
+    private static String moveBuffer;
+    private static int turnNumber;
 
-	private static String readLine() {
+    private static String readLine() {
         try {
             StringBuilder builder = new StringBuilder();
             int buffer;
@@ -17,8 +19,7 @@ public class Networking {
                 if (buffer == '\n') {
                     break;
                 }
-                if (buffer == '\r') {
-                    // Ignore carriage return if on windows for manual testing.
+                if (buffer == '\r') { // Ignore carriage return if on windows for manual testing.
                     continue;
                 }
                 builder = builder.append((char)buffer);
@@ -30,89 +31,96 @@ public class Networking {
         }
     }
 
-	private static String[] getSplitLine() { return readLine().split(" "); }
+    private static String[] getSplitLine() { return readLine().split(" "); }
 
-	public static GameParameters getInit() {
-		try {
-			Log.initialize(new FileWriter("Log.log"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		String[] c = getSplitLine();
-		int numPlayers = Integer.parseInt(c[0]);
-		int myID = Integer.parseInt(c[1]);
-		Player[] players = new Player[numPlayers];
-		for(int i = 0; i < numPlayers; i++) {
-			c = getSplitLine();
-			Location fl = new Location(Integer.parseInt(c[1]), Integer.parseInt(c[2]));
-			players[i] = new Player(Integer.parseInt(c[0]), 0, fl, new HashMap<Location, Entity>());
-		}
+    public static GameParameters getInit() {
+        try {
+            Log.initialize(new FileWriter("Log.log"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String[] c = getSplitLine();
+        int numPlayers = Integer.parseInt(c[0]);
+        int myID = Integer.parseInt(c[1]);
+        Player[] players = new Player[numPlayers];
+        for(int i = 0; i < numPlayers; i++) {
+            c = getSplitLine();
+            Location fl = new Location(Integer.parseInt(c[1]), Integer.parseInt(c[2]));
+            players[i] = new Player(Integer.parseInt(c[0]), 0, fl, new ArrayList<Ship>(), new ArrayList<Dropoff>());
+        }
 
-		c = getSplitLine();
-		int width = Integer.parseInt(c[0]);
-		int height = Integer.parseInt(c[1]);
-		Cell[][] grid = new Cell[height][width];
-		for(int y=0; y<height; y++) {
-			for(int x=0; x<width; x++) {
-				c = getSplitLine();
-				if(c[0].equals("f")) {
-					grid[y][x] = new Cell(0, true, 1);
-				} else {
-					grid[y][x] = new Cell(Integer.parseInt(c[1]), true, 1);
-				}
-			}
-		}
-		GameMap map = new GameMap(width, height, grid);
+        c = getSplitLine();
+        int width = Integer.parseInt(c[0]);
+        int height = Integer.parseInt(c[1]);
+        int[][] grid = new int[height][width];
+        for(int y=0; y<height; y++) {
+            for(int x=0; x<width; x++) {
+                c = getSplitLine();
+                grid[y][x] = Integer.parseInt(c[0]);
+            }
+        }
+        GameMap map = new GameMap(width, height, grid);
 
-		lastPlayers = players;
-		return new GameParameters(map, players, myID);
-	}
+        lastPlayers = players;
+        return new GameParameters(map, players, myID);
+    }
 
 
-	public static void sendInit(String name) {
-		if(name.length() < 1) System.out.println(' ');
-		else System.out.println(name);
-		System.out.flush();
-	}
-	public static Player[] getFrame() {
-		int turnNumber = Integer.parseInt(readLine());
-		String[] c;
-		for(int i=0; i<lastPlayers.length; i++) {
-			c = getSplitLine();
-			int playerID = Integer.parseInt(c[0]);
-			int numEntities = Integer.parseInt(c[1]);
-			int storedEnergy = Integer.parseInt(c[2]);
-			HashMap<Location, Entity> entities = new HashMap<Location, Entity>();
-			for(int j=0; j<numEntities; j++) {
-				c = getSplitLine();
-				entities.put(
-					new Location(Integer.parseInt(c[0]), Integer.parseInt(c[1])),
-					new Entity(playerID, Integer.parseInt(c[3])));
-			}
-			lastPlayers[playerID] = new Player(playerID,
-					storedEnergy,
-					lastPlayers[i].getFactoryLocation(),
-					entities);
-		}
-		return lastPlayers;
-	}
-	public static void sendFrame(HashMap<Location, Direction> moves, int spawnenergy) {
-		for(Map.Entry<Location, Direction> entry: moves.entrySet()) {
-			if(entry.getValue() == Direction.STILL) continue;
-			System.out.print("m ");
-			System.out.print(entry.getKey().x);
-			System.out.print(' ');
-			System.out.print(entry.getKey().y);
-			System.out.print(' ');
-			System.out.print(entry.getValue().getCharRepresent());
-			System.out.print(' ');
-		}
-		if(spawnenergy > 0) {
-			System.out.print("g ");
-			System.out.print(spawnenergy);
-			System.out.print(' ');
-		}
-		System.out.print('\n');
-		System.out.flush();
-	}
+    public static void sendInit(String name) {
+        if(name.length() < 1) System.out.println(' ');
+        else System.out.println(name);
+        System.out.flush();
+    }
+    public static Player[] getFrame() {
+        // TODO give this out
+        turnNumber = Integer.parseInt(readLine());
+        String[] c;
+        for(int i=0; i<lastPlayers.length; i++) {
+            c = getSplitLine();
+            int playerID = Integer.parseInt(c[0]);
+            int numShips = Integer.parseInt(c[1]);
+            int numDropoffs = Integer.parseInt(c[2]);
+            int halite = Integer.parseInt(c[3]);
+            ArrayList<Ship> ships = new ArrayList<Ship>();
+            ArrayList<Dropoff> dropoffs = new ArrayList<Dropoff>();
+            for(int j=0; j<numShips; j++) {
+                c = getSplitLine();
+                ships.add(new Ship(
+                    Integer.parseInt(c[0]), 
+                    new Location(Integer.parseInt(c[1]), Integer.parseInt(c[2])),
+                    Integer.parseInt(c[3])));
+            }
+            for(int j=0; j<numDropoffs; j++) {
+                c = getSplitLine();
+                dropoffs.add(new Dropoff(
+                    Integer.parseInt(c[0]), 
+                    new Location(Integer.parseInt(c[1]), Integer.parseInt(c[2]))));
+            }
+            lastPlayers[playerID] = new Player(playerID,
+                halite,
+                lastPlayers[i].getShipyardLocation(),
+                ships,
+                dropoffs);
+        }
+        return lastPlayers;
+    }
+    public static void sendFrame() {
+        System.out.println(moveBuffer);
+        System.out.flush();
+        moveBuffer = "";
+    }
+
+    public static void move(int shipID, Direction direction) {
+        moveBuffer += "m " + shipID + " " + direction.getCharRepresent() + " ";
+    }
+    public static void dump(int shipID, int haliteAmount) {
+        moveBuffer += "d " + shipID + " " + haliteAmount + " ";
+    }
+    public static void construct(int shipID) {
+        moveBuffer += "c " + shipID + " ";
+    }
+    public static void spawn(int halite) {
+        moveBuffer += "g " + halite + " ";
+    }
+    public static int getTurnNumber() { return turnNumber; }
 }

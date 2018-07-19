@@ -12,14 +12,20 @@ public class MyBot {
 		int myID = g.getMyID();
 
 		Networking.sendInit("JavaSP");	
-		HashMap<Location, Direction> moves = new HashMap<Location, Direction>();
 		while(true) {
-			moves.clear();
 			players = Networking.getFrame();
-			for(Map.Entry<Location, Entity> entry: players[myID].getEntities().entrySet()) {
-				moves.put(entry.getKey(), Direction.randomDirection());		
+			for(Ship ship: players[myID].getShips()) {
+				if(ship.getLocation() == players[myID].getShipyardLocation() 
+						&& ship.halite > Constants.MAX_HALITE / 4) {
+					ship.dumpHalite(ship.halite);
+				} else if(map.getHalite(ship.getLocation()) < Constants.MAX_HALITE / 10) {
+					ship.move(Direction.randomDirection());
+				}
 			}
-			Networking.sendFrame(moves, players[myID].getEnergy() >= 255000 ? 255 : 0);
+			if(Networking.getTurnNumber() <= 200 && players[myID].getHalite() >= Constants.SHIP_COST)  {
+				Networking.spawn(0);
+			}
+			Networking.sendFrame();
 		}
 	}
 }
