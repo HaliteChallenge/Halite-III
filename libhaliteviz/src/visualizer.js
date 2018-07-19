@@ -16,6 +16,7 @@ import * as animation from "./animation";
 
 export class HaliteVisualizer {
     constructor(replay, width, height) {
+        window.replay = replay;
         this.width = width || assets.BASE_VISUALIZER_WIDTH;
         this.height = height || assets.BASE_VISUALIZER_HEIGHT;
 
@@ -432,13 +433,34 @@ export class HaliteVisualizer {
      * scrubbing).
      */
     remove_invalid_entities() {
+        if (!this.currentFrame) return;
+
         for (const [entity_id, entity] of Object.entries(this.entity_dict)) {
-            if (!this.replay.full_frames[this.frame].entities[entity.owner][entity_id]) {
+            if (!this.currentFrame.entities[entity.owner][entity_id]) {
                 const sprite = this.entity_dict[entity_id];
                 sprite.destroy();
                 delete this.entity_dict[entity_id];
             }
         }
+
+        // Spawn entities that don't yet exist when we're panning
+        for (const [ownerId, ships] of Object.entries(this.currentFrame.entities)) {
+            for (const [entityId, ship] of Object.entries(ships)) {
+                if (!this.entity_dict[entityId]) {
+                    const record = {
+                        x: ship.x,
+                        y: ship.y,
+                        energy: ship.energy,
+                        owner: ownerId,
+                        id: entityId,
+                    };
+                    this.entity_dict[entityId] = new Ship(this, record);
+                    this.entity_dict[entityId].attach(this.entityContainer);
+                }
+            }
+        }
+
+        // TODO: do the same for dropoffs
     }
 
     /**
@@ -482,9 +504,12 @@ export class HaliteVisualizer {
                             event, delayTime, cellSize, this.entityContainer));
                     // Remove all entities involved in crash
                     for (let index = 0; index < event.ships.length; index++) {
-                        let entity_id = event.ships[index];
-                        this.entity_dict[entity_id].destroy();
-                        delete this.entity_dict[entity_id];
+                        const entity_id = event.ships[index];
+                        // Might not actually exist when we're panning
+                        if (this.entity_dict[entity_id]) {
+                            this.entity_dict[entity_id].destroy();
+                            delete this.entity_dict[entity_id];
+                        }
                     }
 
                 }
