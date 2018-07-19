@@ -49,9 +49,10 @@
             </Step>
             <Step title="Admiral" name="admiral">
                 <p>
-                    Your vessels can filter this halite from the
-                    water. Your goal is to go forth and bring back as
-                    much halite as possible.
+                    You command a fleet of ships, which are capable of
+                    filtering halite from the water. Your goal is to
+                    go forth and bring back as much halite as
+                    possible.
                 </p>
             </Step>
             <Step title="Shipyard" name="shipyard">

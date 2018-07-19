@@ -15,6 +15,7 @@
 
 <script>
     import * as libhaliteviz from '../../../libhaliteviz'
+    import * as tween from "../tween";
     import Visualizer from "./Visualizer.vue";
 
     export default {
@@ -37,6 +38,47 @@
                   });
         },
         methods: {
+            updateVisibility: function(stepName) {
+                if (!this.$refs.visualizer) {
+                    return;
+                }
+                const visualizer = this.$refs.visualizer.getVisualizer();
+                visualizer.factoryContainer.visible =
+                    stepName !== "seas" &&
+                    stepName !== "time" &&
+                    stepName !== "salt" &&
+                    stepName !== "admiral";
+                visualizer.entityContainer.visible =
+                    stepName !== "seas" &&
+                    stepName !== "time" &&
+                    stepName !== "salt";
+                visualizer.render();
+
+                if (stepName === "admiral") {
+                    tween.driveWhile(
+                        () => visualizer.camera.scale > visualizer.camera.initScale,
+                        (dt) => visualizer.camera.zoomBy(0.5, 0.5, -dt / 10000)
+                    )
+                         .then(() => tween.driveWhile(
+                             () => (visualizer.camera.pan.x !== 5 ||
+                                    visualizer.camera.pan.y !== 1),
+                             (dt) => {
+                                 if (visualizer.camera.pan.x !== 5) {
+                                     visualizer.camera.panByPixel(dt / 1000, 0);
+                                 }
+                                 if (visualizer.camera.pan.y !== 1) {
+                                     visualizer.camera.panByPixel(0, dt / 1000);
+                                 }
+                             }
+                         ))
+                         .then(() => tween.driveWhile(
+                             () => visualizer.camera.scale < 40,
+                             (dt) => {
+                                 visualizer.camera.zoomBy(0.5, 0.5, dt / 10000);
+                             }
+                         ));
+                }
+            },
         },
         updated: function() {
             if (!this.boundEvents) {
@@ -66,12 +108,17 @@
                             }
                         });
 
+                        this.updateVisibility(this.stepName);
+
                         this.boundEvents = true;
                     }
                 });
             }
         },
         watch: {
+            stepName: function(newValue) {
+                this.updateVisibility(newValue);
+            },
         },
     };
 </script>
