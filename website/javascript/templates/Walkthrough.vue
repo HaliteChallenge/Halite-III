@@ -165,8 +165,8 @@
             flex-direction: column;
             flex: 1 0;
             border-right: 1px solid #474951;
-            min-width: 30em;
-            max-width: 30em;
+            min-width: 20em;
+            max-width: 25em;
 
             > h1 {
                 margin: 0;

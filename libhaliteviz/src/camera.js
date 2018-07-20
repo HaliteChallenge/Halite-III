@@ -96,6 +96,29 @@ export default class Camera {
         if (e.which === 1) {
             this.dragBase = [ e.offsetX, e.offsetY ];
             this.mouseDown = true;
+
+            // Also compute selection
+            const [ worldX, worldY ] = this.screenToWorld(
+                ...this.scaledToScreen(e.offsetX, e.offsetY));
+
+            // TODO: add factory selection
+            let selected = false;
+            for (const ship of Object.values(this.visualizer.entity_dict)) {
+                if (Math.floor(ship.x) === worldX &&
+                    Math.floor(ship.y) === worldY) {
+                    this.visualizer.onSelect("ship", {
+                        owner: ship.owner,
+                        id: ship.id,
+                    });
+                    selected = true;
+                }
+            }
+            if (!selected) {
+                this.visualizer.onSelect("point", {
+                    x: worldX,
+                    y: worldY,
+                });
+            }
         }
     }
 

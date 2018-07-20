@@ -30,7 +30,7 @@
                     The game progresses in turns: each turn, every
                     player is sent the current game state, they issue
                     commands, which are then processed. This repeats
-                    for 300 turns.
+                    for 500 turns.
                 </p>
             </Step>
             <Step title="Saltwater" name="salt">

@@ -55,17 +55,6 @@ export default class Ship {
         this.sprite.position.x = pixelX;
         this.sprite.position.y = pixelY;
 
-        this.sprite.interactive = true;
-        this.sprite.buttonMode = true;
-        this.sprite.on("pointerdown", (e) => {
-            const localCoords = e.data.global;
-            const [ x, y ] = this.visualizer.camera.scaledToScreen(localCoords.x, localCoords.y);
-            const [ cellX, cellY ] = this.visualizer.camera.screenToWorld(x, y);
-            this.visualizer.onSelect("ship", {
-                owner: this.owner,
-                id: this.id,
-            });
-        });
     }
 
     /**

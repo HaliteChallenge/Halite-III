@@ -176,8 +176,9 @@
                 <h4>player details</h4>
                 <span class="toggle-icon chevron"></span>
                 <i class="xline xline-bottom"></i>
-                <div v-for="(energy, player) in players">
-                    Player {{player}} has {{energy}} energy
+                <div v-for="player in players">
+                    <span :class="`color-${player.player_id}`">{{player.name}}</span>
+                    has {{player.current_energy}} energy
                 </div>
               </a>
             </div>
@@ -495,7 +496,11 @@
         const camera = visualizer.camera
         this.pan.x = (camera.cols - camera.pan.x) % camera.cols
         this.pan.y = (camera.rows - camera.pan.y) % camera.rows
-          this.players = visualizer.replay.full_frames[this.frame].energy
+        if (visualizer.currentFrame) {
+          for (const player of this.players) {
+            player.current_energy = visualizer.currentFrame.energy[player.player_id]
+          }
+        }
       }
       visualizer.onPlay = () => {
         this.playing = true
@@ -509,7 +514,6 @@
         this.selected.owner = args.owner
         this.selected.x = args.x
         this.selected.y = args.y
-        this.selected.production = args.production
         this.showObjectPanel = true
         visualizer.onUpdate()
         this.$forceUpdate()
@@ -725,16 +729,29 @@
         return null
       },
       selectedShip: function () {
-          if (this.selected.kind === "ship") {
-              const frame = this.replay.full_frames[this.frame]
-              const state = frame.entities[this.selected.owner][this.selected.id]
+        if (this.selected.kind === "ship") {
+          const frame = this.replay.full_frames[this.frame]
+          const state = frame.entities[this.selected.owner][this.selected.id]
 
-              if (state) {
-                  state.owner = this.selected.owner;
-                  state.id = this.selected.id;
-                  return state;
-              }
+          if (state) {
+            state.owner = this.selected.owner;
+            state.id = this.selected.id;
+            return state;
           }
+
+          // Not yet spawned, look for event
+          for (const event of frame.events) {
+            if (event.type === "spawn" &&
+                event.owner_id === this.selected.owner &&
+                event.id === this.selected.id) {
+              return Object.assign({}, this.selected, {
+                x: event.location.x,
+                y: event.location.y,
+                energy: event.energy,
+              });
+            }
+          }
+        }
       },
       selectedPoint: function () {
         if (this.selected.kind === 'point') {
@@ -789,7 +806,7 @@
       },
       getSortedPlayers: async function () {
         const players = await this.getPlayers()
-        this.players = players
+        this.players = players.map(p => { p.current_energy = 1000; return p })
         this.sortedPlayers = _.sortBy(players, ['rank'])
 
         const selectedPlayers = []

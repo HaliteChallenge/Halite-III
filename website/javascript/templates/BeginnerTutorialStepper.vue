@@ -157,12 +157,16 @@
             display: none;
         }
 
+        .visuallizer-container > .row > .col-md-8 {
+            width: 100%;
+        }
+
         canvas {
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
     }
 
-    .game-heading, .xline {
+    .game-heading, #heading_player_details, .game-stats-widget {
         display: none;
     }
 
@@ -179,10 +183,11 @@
         justify-content: center;
         align-items: center;
         height: 100%;
+        width: calc(100% - 2em);
+        margin: 0 auto;
     }
 
     .visuallizer-container > .row > .col-md-8 {
-        width: 100%;
         flex: 1 0;
     }
 

@@ -44,18 +44,6 @@ export class Map {
             tint: true,
         });
 
-        this.tintMap.interactive = true;
-        this.tintMap.hitArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
-        this.tintMap.on("pointerdown", (e) => {
-            const localCoords = e.data.global;
-            const [ x, y ] = this.camera.scaledToScreen(localCoords.x, localCoords.y);
-            const [ cellX, cellY ] = this.camera.screenToWorld(x, y);
-            onSelect("point", {
-                x: cellX,
-                y: cellY,
-            });
-        });
-
         // Generate the texture for a single map cell (16x16 white
         // square with a 2 pixel 70% black border blended on top)
         // Could probably be replaced with a real texture
