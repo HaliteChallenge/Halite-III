@@ -54,18 +54,6 @@ export default class Ship {
         const pixelY = this.visualizer.camera.scale * CELL_SIZE * this.y + this.visualizer.camera.scale * CELL_SIZE / 2;
         this.sprite.position.x = pixelX;
         this.sprite.position.y = pixelY;
-
-        this.sprite.interactive = true;
-        this.sprite.buttonMode = true;
-        this.sprite.on("pointerdown", (e) => {
-            const localCoords = e.data.global;
-            const [ x, y ] = this.visualizer.camera.scaledToScreen(localCoords.x, localCoords.y);
-            const [ cellX, cellY ] = this.visualizer.camera.screenToWorld(x, y);
-            this.visualizer.onSelect("ship", {
-                owner: this.owner,
-                id: this.id,
-            });
-        });
     }
 
     /**
@@ -112,6 +100,10 @@ export default class Ship {
             const entity_record = this.visualizer.replay
                   .full_frames[this.visualizer.frame]
                   .entities[this.owner][this.id];
+            if (!entity_record) {
+                return;
+            }
+
             this.energy = entity_record.energy;
 
             if (command.type === "m") {
