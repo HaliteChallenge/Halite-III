@@ -103,7 +103,7 @@ void SymmetricalTile::tile_map(hlt::Map &map, hlt::dimension_type factory_y, hlt
                                const hlt::Map &tile) {
     // Put factory in the center (ish) of tile
     const dimension_type factory_pos_x = tile.width / 2;
-    const dimension_type factory_pos_y = tile.width / 2;
+    const dimension_type factory_pos_y = tile.height / 2;
     (void) factory_y, (void) factory_x;
 
     // copy tile and factory onto map
