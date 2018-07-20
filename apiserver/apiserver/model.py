@@ -199,7 +199,7 @@ def ranked_users_query(alias="ranked_users"):
         ranked_bots.c.bot_rank.label("rank"),
     ]).select_from(
         users.join(ranked_bots, ranked_bots.c.user_id == users.c.id)
-    ).group_by(users.c.id).alias(alias)
+    ).group_by(users.c.id, users.c.username, ranked_bots.c.bot_rank).alias(alias)
 
 
 # Total number of ranked users that have played a game

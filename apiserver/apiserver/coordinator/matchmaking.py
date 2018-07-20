@@ -120,7 +120,7 @@ def serve_game_task(conn, has_gpu=False):
     ).limit(mu_rank_limit).alias("muranktable")
 
     # Select more bots than needed, discard ones from same player
-    query = close_players.select().order_by(sqlfunc.rand()) \
+    query = close_players.select().order_by(sqlfunc.random()) \
         .limit(player_count * 2)
     potential_players = conn.execute(query).fetchall()
     players = [seed_player]
@@ -295,7 +295,7 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
     user_id = model.game_participants.c.user_id
     bot_id = model.game_participants.c.bot_id
 
-    gamers_last_play = sqlalchemy.sql.select([
+    columns = [
         max_time,
         ranked_users.c.user_id,
         model.ranked_bots_users.c.bot_id,
@@ -305,8 +305,9 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
         model.ranked_bots_users.c.mu,
         # The database isn't smart enough to know that there is only one rank
         # value for a given (user_id, bot_id).
-        sqlfunc.any_value(model.ranked_bots_users.c.rank).label('rank'),
-    ]).select_from(
+        model.ranked_bots_users.c.rank.label('rank'),
+    ]
+    gamers_last_play = sqlalchemy.sql.select(columns).select_from(
         ranked_users.join(
             model.ranked_bots_users,
             (model.ranked_bots_users.c.user_id
@@ -322,7 +323,11 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
                == model.game_participants.c.bot_id),
             isouter=True
         )
-    ).group_by(ranked_users.c.user_id, model.ranked_bots_users.c.bot_id
+    ).group_by(ranked_users.c.user_id, model.ranked_bots_users.c.bot_id,
+               ranked_users.c.username, ranked_users.c.rank,
+               model.ranked_bots_users.c.num_submissions,
+               model.ranked_bots_users.c.mu,
+               model.ranked_bots_users.c.rank,
     ).reduce_columns().alias("temptable")
 
     # Of those users, select ones with under 400 games, preferring
@@ -352,7 +357,7 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
 
     if restrictions:
         # Then sort them randomly and take one
-        query = potential_players.select().order_by(sqlfunc.rand()).limit(1)
+        query = potential_players.select().order_by(sqlfunc.random()).limit(1)
     else:
         query = potential_players.select().limit(1)
 
@@ -369,12 +374,12 @@ def find_newbie_seed_player(conn, ranked_users, seed_filter):
     sqlfunc = sqlalchemy.sql.func
     game_curve = 1 / (model.bots.c.games_played + 1)
     # weight the curve between half and full weight
-    rand_factor = 0.5 + (sqlfunc.rand() * 0.5)
+    rand_factor = 0.5 + (sqlfunc.random() * 0.5)
     # Since the curve is cut in half every doubling of games, this means a bot
     # will always be chosen ahead of any bots that have more than twice the
     # number of games
     ordering = rand_factor * -game_curve
-    query = sqlalchemy.sql.select([
+    columns = [
         ranked_users.c.user_id,
         model.bots.c.id.label("bot_id"),
         ranked_users.c.username,
@@ -382,7 +387,8 @@ def find_newbie_seed_player(conn, ranked_users, seed_filter):
         ranked_users.c.rank.label("player_rank"),
         model.bots.c.version_number,
         model.bots.c.mu,
-    ]).select_from(
+    ]
+    query = sqlalchemy.sql.select(columns).select_from(
         model.ranked_bots_users.join(
             model.bots,
             (model.ranked_bots_users.c.user_id == model.bots.c.user_id) &
@@ -394,8 +400,7 @@ def find_newbie_seed_player(conn, ranked_users, seed_filter):
     ).where(
         (model.bots.c.compile_status == model.CompileStatus.SUCCESSFUL.value) &
         seed_filter
-    ).order_by(ordering).limit(20).reduce_columns().alias("seed_query").select(
-    ).order_by(sqlfunc.rand())
+    ).order_by(ordering).limit(20).reduce_columns().alias("seed_query").select().order_by(sqlfunc.random())
 
     return conn.execute(query).first()
 
