@@ -323,9 +323,6 @@ def store_game_stats(conn, game_output, stats, game_id, users):
     conn.execute(model.game_stats.insert().values(
         game_id=game_id,
         turns_total=stats.turns_total,
-        planets_destroyed=stats.planets_destroyed,
-        ships_produced=stats.ships_produced,
-        ships_destroyed=stats.ships_destroyed
     ))
 
     # Use player_tag to get the correct user_id from replay
@@ -336,13 +333,6 @@ def store_game_stats(conn, game_output, stats, game_id, users):
                 game_id=game_id,
                 user_id=user["user_id"],
                 bot_id=user["bot_id"],
-                planets_controlled=stats.players[player_tag].planets_controlled,
-                ships_produced=stats.players[player_tag].ships_produced,
-                ships_alive=stats.players[player_tag].ships_alive,
-                ships_alive_ratio=stats.players[player_tag].ships_alive_ratio,
-                ships_relative_ratio=stats.players[player_tag].ships_relative_ratio,
-                planets_destroyed=stats.players[player_tag].planets_destroyed,
-                attacks_total=stats.players[player_tag].attacks_total
             ))
 
 
@@ -386,9 +376,7 @@ def parse_replay(replay):
     # TODO: compute and record interesting stats
     for player_tag in stats.players.keys():
         # TODO: compute and record new interesting stats
-        stats.players[player_tag].ships_alive = 0
-        stats.players[player_tag].ships_alive_ratio = 1.0
-        stats.players[player_tag].ships_relative_ratio = 1.0
+        pass
 
     return stats
 
