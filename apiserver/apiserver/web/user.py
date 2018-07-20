@@ -578,9 +578,12 @@ def update_user(intended_user_id, *, user_id):
         message.append("Please check your inbox for your verification email.")
 
     with model.engine.connect() as conn:
-        conn.execute(model.users.update().where(
-            model.users.c.id == user_id
-        ).values(**update))
+        # Don't execute update if no values to update (SQLAlchemy
+        # generates invalid SQL)
+        if update:
+            conn.execute(model.users.update().where(
+                model.users.c.id == user_id
+            ).values(**update))
 
         user_data = conn.execute(sqlalchemy.sql.select(["*"]).select_from(
             model.users.join(
