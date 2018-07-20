@@ -177,8 +177,7 @@ ranked_bots_users = sqlalchemy.sql.select([
     ranked_bots.c.score,
     ranked_bots.c.language,
     ranked_bots.c.update_time,
-    # Perform a no-op operation so we can label the column easily
-    sqlalchemy.cast(sqlalchemy.sql.text("ranked_bots.bot_rank"), sqlalchemy.Integer).label("rank"),
+    ranked_bots.c.bot_rank.label("rank"),
     ranked_bots.c.compile_status,
 ]).select_from(ranked_bots.join(
     users,
@@ -197,7 +196,7 @@ def ranked_users_query(alias="ranked_users"):
         users.c.id.label("user_id"),
         users.c.username,
         # Perform a no-op operation so we can label the column easily
-        _func.min(sqlalchemy.sql.text("ranked_bots.bot_rank")).label("rank"),
+        ranked_bots.c.bot_rank.label("rank"),
     ]).select_from(
         users.join(ranked_bots, ranked_bots.c.user_id == users.c.id)
     ).group_by(users.c.id).alias(alias)
@@ -245,7 +244,7 @@ def hackathon_ranked_bots_users_query(hackathon_id, *, alias="hackathon_ranked_b
         local_rank.c.language,
         ranked_bots.c.update_time,
         # Perform a no-op operation so we can label the column easily
-        sqlalchemy.cast(sqlalchemy.sql.text("local_rank.local_rank"), sqlalchemy.Integer).label("local_rank"),
+        local_rank.c.local_rank.label("local_rank"),
         ranked_bots.c.compile_status,
     ]).select_from(
         ranked_bots.join(
