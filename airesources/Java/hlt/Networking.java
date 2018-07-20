@@ -6,8 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Networking {
-    private static Player[] lastPlayers;
+    private static Player[] players;
+    private static GameMap map;
     private static String moveBuffer = "";
+    private static int myID;
     private static int turnNumber;
 
     private static String readLine() {
@@ -33,7 +35,7 @@ public class Networking {
 
     private static String[] getSplitLine() { return readLine().split(" "); }
 
-    public static GameParameters getInit() {
+    public static void consumeInit() {
         try {
             Log.initialize(new FileWriter("Log.log"));
         } catch (IOException e) {
@@ -41,8 +43,8 @@ public class Networking {
         }
         String[] c = getSplitLine();
         int numPlayers = Integer.parseInt(c[0]);
-        int myID = Integer.parseInt(c[1]);
-        Player[] players = new Player[numPlayers];
+        myID = Integer.parseInt(c[1]);
+        players = new Player[numPlayers];
         for(int i = 0; i < numPlayers; i++) {
             c = getSplitLine();
             Location fl = new Location(Integer.parseInt(c[1]), Integer.parseInt(c[2]));
@@ -59,10 +61,7 @@ public class Networking {
                 grid[y][x] = Integer.parseInt(c[x]);
             }
         }
-        GameMap map = new GameMap(width, height, grid);
-
-        lastPlayers = players;
-        return new GameParameters(map, players, myID);
+        map = new GameMap(width, height, grid);
     }
 
 
@@ -71,11 +70,11 @@ public class Networking {
         else System.out.println(name);
         System.out.flush();
     }
-    public static Player[] getFrame() {
+    public static void consumeFrame() {
         // TODO give this out
         turnNumber = Integer.parseInt(readLine());
         String[] c;
-        for(int i=0; i<lastPlayers.length; i++) {
+        for(int i=0; i<players.length; i++) {
             c = getSplitLine();
             int playerID = Integer.parseInt(c[0]);
             int numShips = Integer.parseInt(c[1]);
@@ -96,13 +95,17 @@ public class Networking {
                     Integer.parseInt(c[0]), 
                     new Location(Integer.parseInt(c[1]), Integer.parseInt(c[2]))));
             }
-            lastPlayers[playerID] = new Player(playerID,
+            players[playerID] = new Player(playerID,
                 halite,
-                lastPlayers[i].getShipyardLocation(),
+                players[i].getShipyardLocation(),
                 ships,
                 dropoffs);
         }
-        return lastPlayers;
+        int numChangedCells = Integer.parseInt(readLine());
+        for(int i=0; i<numChangedCells; i++) {
+            c = getSplitLine();
+            map.setSquare(Integer.parseInt(c[0]), Integer.parseInt(c[1]), Integer.parseInt(c[2]));
+        }
     }
     public static void sendFrame() {
         System.out.println(moveBuffer);
@@ -123,4 +126,7 @@ public class Networking {
         moveBuffer += "g " + halite + " ";
     }
     public static int getTurnNumber() { return turnNumber; }
+    public static int getMyID() { return myID; }
+    public static GameMap getMap() { return map; }
+    public static Player[] getPlayers() { return players; }
 }

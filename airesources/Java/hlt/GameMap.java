@@ -22,6 +22,10 @@ public class GameMap {
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
 
+	public void setSquare(int x, int y, int halite) { 
+		grid[y][x] = halite;	
+	}
+
 
 	public Location getLocation(Location l, Direction d) {
 	    if(d == Direction.NORTH) {
