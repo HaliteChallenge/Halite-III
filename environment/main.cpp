@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
     auto idx = 0;
     for (const auto& name : overrides) {
         if (idx < static_cast<int>(replay.players.size())) {
-            replay.players.at(hlt::Player::id_type{idx + 1}).name = name;
+            replay.players.at(hlt::Player::id_type{idx}).name = name;
         }
         idx++;
     }
