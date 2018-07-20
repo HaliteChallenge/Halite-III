@@ -5,11 +5,6 @@
 
 namespace hlt {
 
-BaseTransaction::~BaseTransaction() = default;
-
-template<class T>
-Transaction<T>::~Transaction() = default;
-
 /**
  * Dump energy onto a cell.
  *
@@ -44,9 +39,9 @@ bool DumpTransaction::check() {
     for (const auto &[player_id, dumps] : commands) {
         auto &player = store.get_player(player_id);
         for (const DumpCommand &command : dumps) {
-            const auto &[entity_id, energy] = command;
             // Entity is not found or has too little energy
-            if (!player.has_entity(entity_id) || store.get_entity(entity_id).energy < energy) {
+            if (!player.has_entity(command.entity)
+                || store.get_entity(command.entity).energy < command.energy) {
                 offenders.emplace(player_id);
                 break;
             }
@@ -128,12 +123,6 @@ bool MoveTransaction::check() {
                 offenders.emplace(player_id);
                 break;
             }
-            // Entity does not have enough energy
-            energy_type required = map.at(player.get_entity_location(command.entity)).energy / cost;
-            if (store.get_entity(command.entity).energy < required) {
-                offenders.emplace(player_id);
-                break;
-            }
         }
     }
     return offenders.empty();
@@ -148,19 +137,25 @@ void MoveTransaction::commit() {
     for (auto &[player_id, moves] : commands) {
         auto &player = store.get_player(player_id);
         for (const MoveCommand &command : moves) {
-            const auto &[entity_id, direction] = command;
-            auto location = player.get_entity_location(entity_id);
+            auto location = player.get_entity_location(command.entity);
             auto &source = map.at(location);
+            // Check if entity has enough energy
+            energy_type required = source.energy / cost;
+            auto &entity = store.get_entity(command.entity);
+            if (entity.energy < required) {
+                // Entity does not have enough energy, ignore command.
+                continue;
+            }
             // Decrease the entity's energy.
-            store.get_entity(entity_id).energy -= source.energy / cost;
+            entity.energy -= required;
             // Remove the entity from its source.
             source.entity = Entity::None;
-            map.move_location(location, direction);
+            map.move_location(location, command.direction);
             // Mark it as interested in the destination.
-            destinations[location].emplace_back(entity_id);
+            destinations[location].emplace_back(command.entity);
             // Take it from its owner.
             // Do not mark the entity as removed in the game yet.
-            store.get_player(store.get_entity(entity_id).owner).remove_entity(entity_id);
+            store.get_player(entity.owner).remove_entity(command.entity);
         }
     }
     // If there are already unmoving entities at the destination, lift them off too.
@@ -231,6 +226,10 @@ void SpawnTransaction::commit() {
                 auto &entity = store.new_entity(energy, player.id);
                 player.add_entity(entity.id, player.factory);
                 cell.entity = entity.id;
+                changed_entities.emplace(entity.id);
+                if (callback) {
+                    callback(std::make_unique<SpawnEvent>(player.factory, energy, player.id, entity.id));
+                }
             } else {
                 if (callback) {
                     std::vector<Entity::id_type> collision_ids = {cell.entity};
@@ -326,6 +325,12 @@ void CommandTransaction::commit() {
         transaction.commit();
         changed_entities.insert(transaction.changed_entities.begin(), transaction.changed_entities.end());
         changed_cells.insert(transaction.changed_cells.begin(), transaction.changed_cells.end());
+    }
+}
+
+void CommandTransaction::set_callback(std::function<void(GameEvent)> callback) {
+    for (BaseTransaction &transaction : all_transactions) {
+        transaction.set_callback(callback);
     }
 }
 

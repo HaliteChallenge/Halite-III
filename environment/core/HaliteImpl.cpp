@@ -24,9 +24,11 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
     }
     game.replay.game_statistics = game.game_statistics;
 
-    // Zero the energy on factories.
-    for (auto &[_, player] : game.store.players) {
-        game.map.at(player.factory).energy = 0;
+    // Zero the energy on factories and mark as owned.
+    for (auto &[player_id, player] : game.store.players) {
+        auto &factory = game.map.at(player.factory);
+        factory.energy = 0;
+        factory.owner = player_id;
     }
 }
 
@@ -41,8 +43,14 @@ void HaliteImpl::run_game() {
                                             networking.initialize_player(player);
                                         });
     }
-    for (auto &[_, result] : results) {
-        result.get();
+    for (auto &[player_id, result] : results) {
+        game.store.players.at(player_id).log_error_section("Initialization Phase");
+        try {
+            result.get();
+        }
+        catch (const BotError& e) {
+            game.kill_player(player_id);
+        }
     }
     game.replay.players.insert(game.store.players.begin(), game.store.players.end());
     Logging::log("Player initialization complete.");
@@ -71,13 +79,21 @@ void HaliteImpl::process_turn() {
     id_map<Player, Commands> commands{};
     id_map<Player, std::future<Commands>> results{};
     for (auto &[player_id, player] : game.store.players) {
-        results[player_id] = std::async(std::launch::async,
-                                        [&game = this->game, &player = player] {
-                                            return game.networking.handle_frame(player);
-                                        });
+        if (player.is_alive()) {
+            results[player_id] = std::async(std::launch::async,
+                                            [&game = this->game, &player = player] {
+                                                return game.networking.handle_frame(player);
+                                            });
+        }
     }
     for (auto &[player_id, result] : results) {
-        commands[player_id] = result.get();
+        game.store.players.at(player_id).log_error_section("Turn " + std::to_string(game.turn_number));
+        try {
+            commands[player_id] = result.get();
+        }
+        catch (const BotError& e) {
+            game.kill_player(player_id);
+        }
     }
 
     // Process valid player commands, removing players if they submit invalid ones.
@@ -85,10 +101,8 @@ void HaliteImpl::process_turn() {
     while (!commands.empty()) {
         CommandTransaction transaction{game.store, game.map};
         transaction.set_callback([&frames = game.replay.full_frames](auto event) {
-            // Create new game event for replay file. Ensure turn has been initialized before adding a game event
-            if (frames.size() > 0) {
-                frames.back().events.push_back(std::move(event));
-            }
+            // Create new game event for replay file.
+            frames.back().events.push_back(std::move(event));
         });
         for (const auto &[player_id, command_list] : commands) {
             auto &player = game.store.players.find(player_id)->second;
@@ -120,14 +134,22 @@ void HaliteImpl::process_turn() {
     }
 
     const auto ratio = Constants::get().EXTRACT_RATIO;
+    const auto max_energy = Constants::get().MAX_ENERGY;
     for (auto &[entity_id, entity] : game.store.entities) {
-        if (changed_entities.find(entity_id) == changed_entities.end()) {
+        if (changed_entities.find(entity_id) == changed_entities.end()
+            && entity.energy < max_energy) {
             // Allow this entity to extract
             const auto location = game.store.get_player(entity.owner).get_entity_location(entity_id);
             auto &cell = game.map.at(location);
-            auto extracted = cell.energy / ratio;
-            // TODO: edge case here when the energy is small
-            // TODO: maximum capacity of ship
+            energy_type extracted = cell.energy / ratio;
+            // If energy is small, give it all to the entity.
+            if (extracted == 0 && cell.energy > 0) {
+                extracted = cell.energy;
+            }
+            // Do not allow entity to exceed capacity.
+            if (max_energy - entity.energy < extracted) {
+                extracted = max_energy - entity.energy;
+            }
             entity.energy += extracted;
             cell.energy -= extracted;
             game.store.changed_cells.emplace(location);
@@ -136,8 +158,8 @@ void HaliteImpl::process_turn() {
     game.replay.full_frames.back().add_cells(game.map, game.store.changed_cells);
     for (const auto [player_id, player] : game.store.players) {
         game.replay.full_frames.back().energy.insert( {{player_id, player.energy}} );
-        update_player_stats(player_id);
     }
+    update_player_stats();
 }
 
 /**
@@ -164,12 +186,13 @@ bool HaliteImpl::game_ended() const {
  *
  * @param productions Mapping from player ID to the production they gained in the current turn.
  */
-void HaliteImpl::update_player_stats(Player::id_type player) {
+void HaliteImpl::update_player_stats() {
     for (PlayerStatistics &player_stats : game.game_statistics.player_statistics) {
         // Player with sprites is still alive, so mark as alive on this turn and add production gained
-        if (game.store.get_player(player_stats.player_id).is_alive()) {
+        const auto& player_id = player_stats.player_id;
+        if (game.store.get_player(player_id).is_alive()) {
             player_stats.last_turn_alive = game.turn_number;
-            player_stats.turn_productions.push_back(game.store.get_player(player).energy);
+            player_stats.turn_productions.push_back(game.store.get_player(player_id).energy);
         } else {
             player_stats.turn_productions.push_back(0);
         }

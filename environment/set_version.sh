@@ -17,3 +17,4 @@ if [ "$VERSION" != "$HEADER_VERSION" ] ; then
     sed -i.bak "s/\(#define HALITE_VERSION \"\)[^\"]*\"/\1$VERSION\"/" version.hpp
     rm version.hpp.bak
 fi
+echo $VERSION

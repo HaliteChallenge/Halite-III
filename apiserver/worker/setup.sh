@@ -24,4 +24,4 @@ if [ -f /home/worker/fix_cgroups.sh ]; then
 fi
 
 # Start the worker
-screen -S worker -d -m /bin/bash -c "python3 worker.py"
+screen -S worker -d -m /bin/bash -c "python3 worker.py $1"

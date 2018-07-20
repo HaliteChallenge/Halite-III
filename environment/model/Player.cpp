@@ -22,7 +22,7 @@ void to_json(nlohmann::json &json, const Player &player) {
 }
 
 /**
- * Write a Player to bot serial format. Only can write header due to game store of entities
+ * Write a Player to bot serial format.
  * @param ostream The output stream.
  * @param player The Player to write.
  * @return The output stream.
@@ -43,7 +43,9 @@ std::ostream &operator<<(std::ostream &ostream, const Player &player) {
  * @return The entity location.
  */
 Location Player::get_entity_location(const Entity::id_type &id) const {
-    return entities.find(id)->second;
+    auto iterator = entities.find(id);
+    assert(iterator != entities.end());
+    return iterator->second;
 }
 
 /**
@@ -52,7 +54,7 @@ Location Player::get_entity_location(const Entity::id_type &id) const {
  * @return True if the player has the entity, false otherwise.
  */
 bool Player::has_entity(const Entity::id_type &id) const {
-    return entities.find(id) == entities.end();
+    return entities.find(id) != entities.end();
 }
 
 /**
@@ -60,7 +62,9 @@ bool Player::has_entity(const Entity::id_type &id) const {
  * @param id The entity ID.
  */
 void Player::remove_entity(const Entity::id_type &id) {
-    entities.erase(id);
+    auto iterator = entities.find(id);
+    assert(iterator != entities.end());
+    entities.erase(iterator);
 }
 
 /**
@@ -69,6 +73,7 @@ void Player::remove_entity(const Entity::id_type &id) {
  * @param location The location of the entity.
  */
 void Player::add_entity(const Entity::id_type &id, Location location) {
+    assert(!has_entity(id));
     entities.emplace(id, location);
 }
 
@@ -77,7 +82,18 @@ void Player::add_entity(const Entity::id_type &id, Location location) {
  * @return True if the player is alive, false otherwise.
  */
 bool Player::is_alive() const {
-    return !entities.empty();
+    return !crashed;
+}
+
+void Player::log_error_section(const std::string& section_name) {
+    error_log.append(section_name);
+    error_log.append("\n");
+    error_log.append("================================================================\n");
+}
+
+void Player::log_error(const std::string& text) {
+    error_log.append(text);
+    error_log.append("\n");
 }
 
 }

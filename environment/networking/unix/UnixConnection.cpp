@@ -36,10 +36,12 @@ UnixConnection::UnixConnection(const std::string &command, NetworkingConfig conf
     this->config = config;
     int write_pipe[PIPE_PAIR];
     int read_pipe[PIPE_PAIR];
+    int error_pipe[PIPE_PAIR];
     // Ignore SIGPIPE, as we want to detect bot exit gracefully.
     signal(SIGPIPE, SIG_IGN);
     CHECK(pipe(write_pipe));
     CHECK(pipe(read_pipe));
+    CHECK(pipe(error_pipe));
     // Make the write pipe non-blocking
     CHECK(fcntl(write_pipe[PIPE_TAIL], F_SETFL, O_NONBLOCK));
 
@@ -56,8 +58,9 @@ UnixConnection::UnixConnection(const std::string &command, NetworkingConfig conf
         CHECK(dup2(write_pipe[PIPE_HEAD], STDIN_FILENO));
         CHECK(close(write_pipe[PIPE_HEAD]));
         CHECK(dup2(read_pipe[PIPE_TAIL], STDOUT_FILENO));
-        CHECK(dup2(read_pipe[PIPE_TAIL], STDERR_FILENO));
         CHECK(close(read_pipe[PIPE_TAIL]));
+        CHECK(dup2(error_pipe[PIPE_TAIL], STDERR_FILENO));
+        CHECK(close(error_pipe[PIPE_TAIL]));
 
         // Execute the command
         CHECK(execl("/bin/sh", "sh", "-c", command.c_str(), nullptr));
@@ -70,6 +73,8 @@ UnixConnection::UnixConnection(const std::string &command, NetworkingConfig conf
     close(read_pipe[PIPE_TAIL]);
     this->write_pipe = write_pipe[PIPE_TAIL];
     close(write_pipe[PIPE_HEAD]);
+    this->error_pipe = error_pipe[PIPE_HEAD];
+    close(error_pipe[PIPE_TAIL]);
     process = pid;
 }
 
@@ -98,7 +103,7 @@ void UnixConnection::send_string(const std::string &message) {
             auto current_time = high_resolution_clock::now();
             auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
             if (remaining < milliseconds::zero()) {
-                throw TimeoutError(config.timeout);
+                throw TimeoutError("when sending string", config.timeout, "");
             }
         }
         ssize_t chars_written = write(write_pipe, message_ptr, chars_remaining);
@@ -144,7 +149,8 @@ std::string UnixConnection::get_string() {
             auto current_time = high_resolution_clock::now();
             auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
             if (remaining < milliseconds::zero()) {
-                throw TimeoutError(config.timeout);
+                // TODO: continue and read remainder of input
+                throw TimeoutError("when reading string", config.timeout, current_read);
             }
             struct timeval timeout{};
             auto sec = duration_cast<seconds>(remaining);
@@ -156,7 +162,8 @@ std::string UnixConnection::get_string() {
             // Read from the pipe, as many as we can into the buffer
             auto bytes_read = read(read_pipe, buffer.begin(), buffer.size());
             if (bytes_read < 0) {
-                throw NetworkingError("Read failed");
+                // TODO: continue and read remainder of input
+                throw NetworkingError("Read failed", current_read);
             }
             // Iterator one past the last read character
             auto read_end = buffer.begin() + bytes_read;
@@ -191,6 +198,27 @@ std::string UnixConnection::get_string() {
             }
         }
     }
+}
+
+/**
+ * Get the error output from this connection.
+ * @return The error output.
+ */
+std::string UnixConnection::get_errors() {
+    std::string result;
+    fd_set set;
+    FD_ZERO(&set);
+    assert(error_pipe <= FD_SETSIZE);
+    FD_SET(error_pipe, &set);
+    auto selection_result = select(error_pipe + NFDS_OFFSET, &set, nullptr, nullptr, nullptr);
+    if (selection_result > 0) {
+        ssize_t bytes_read = 0;
+        while ((bytes_read = read(error_pipe, buffer.begin(), buffer.size())) > 0) {
+            auto read_end = buffer.begin() + bytes_read;
+            result += std::string(buffer.begin(), read_end);
+        }
+    }
+    return result;
 }
 
 }

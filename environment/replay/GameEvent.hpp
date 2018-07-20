@@ -92,7 +92,7 @@ public:
 class ConstructionEvent : public BaseEvent {
     Player::id_type owner_id;   /**< ID of owner of dropoff point */
     Entity::id_type id;   /**< ID of ship being transformed into dropoff */
-    static constexpr auto GAME_EVENT_TYPE_NAME = "shipwreck"; /**< Name of event */
+    static constexpr auto GAME_EVENT_TYPE_NAME = "construct"; /**< Name of event */
 
 public:
     /**

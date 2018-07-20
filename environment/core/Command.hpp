@@ -2,7 +2,6 @@
 #define COMMAND_HPP
 
 #include "Entity.hpp"
-#include "Location.hpp"
 #include "Map.hpp"
 #include "Player.hpp"
 #include "Transaction.hpp"

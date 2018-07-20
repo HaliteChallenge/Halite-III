@@ -183,7 +183,7 @@ export default {
 
       const getHackathonPromise = () => {
         if (this.hackathon_id) {
-          return api.getHackathon(this.hackathon_id).then(hackathon => {
+          return api.get_hackathon(this.hackathon_id).then(hackathon => {
             const beginDate = moment(hackathon.start_date).format('MMM Do, YYYY: HH:mm')
             const endDate = moment(hackathon.end_date).format('MMM Do, YYYY: HH:mm')
             this.hackathon = Object.assign(mockHackathon, {
@@ -208,7 +208,7 @@ export default {
       }
       const isJoinHackathon = (userId) => {
         if(this.hackathon_id){
-          return api.getUserHackathons(userId).then((hackathons)=>{
+          return api.get_user_hackathons(userId).then((hackathons)=>{
             let isIn = _.findIndex(hackathons, (item) => { return item.hackathon_id == this.hackathon_id && item.participant === true })
             if(isIn !== -1){
               this.isInHackathon = true

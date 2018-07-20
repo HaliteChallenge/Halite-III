@@ -135,7 +135,7 @@ export function get_season1_stats (userId) {
 
 export function get_editor_file_list (userId) {
   return $.get({
-    url: `${API_SERVER_URL}/user/${userId}/source_file`,
+    url: `${API_SERVER_URL}/editor/${userId}`,
     xhrFields: {
       withCredentials: true
     }
@@ -144,7 +144,7 @@ export function get_editor_file_list (userId) {
 
 export function get_editor_file (userId, file_name) {
   return $.get({
-    url: `${API_SERVER_URL}/user/${userId}/source_file/`+encodeURIComponent(file_name),
+    url: `${API_SERVER_URL}/editor/${userId}/file/`+encodeURIComponent(file_name),
     xhrFields: {
       withCredentials: true
     }
@@ -153,8 +153,8 @@ export function get_editor_file (userId, file_name) {
 
 export function create_editor_file_space (userId, language) {
   return $.get({
-    url: `${API_SERVER_URL}/user/${userId}/source_file/${language}`,
-	method: 'POST',
+    url: `${API_SERVER_URL}/editor/${userId}/${language}`,
+    method: 'POST',
     xhrFields: {
       withCredentials: true
     }
@@ -172,7 +172,7 @@ export function update_source_file (user_id, file_name, file_contents, progress_
     progress_callback(1)
   }, false)
   xhr.withCredentials = true
-  xhr.open('POST', `${API_SERVER_URL}/user/${user_id}/source_file/${encodeURIComponent(file_name)}`)
+  xhr.open('POST', `${API_SERVER_URL}/editor/${user_id}/file/${encodeURIComponent(file_name)}`)
 
   const form_data = new FormData()
   form_data.append('name', 'sourceFile')
@@ -188,6 +188,58 @@ export function update_source_file (user_id, file_name, file_contents, progress_
         const response = JSON.parse(e.target.responseText)
         reject(response)
       }
+    }
+  })
+}
+
+export function delete_source_file (userId, file_name) {
+  return $.get({
+    url: `${API_SERVER_URL}/editor/${userId}/file/${encodeURIComponent(file_name)}`,
+    method: 'DELETE',
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
+
+export function start_ondemand_task(userId) {
+  return $.get({
+    url: `${API_SERVER_URL}/ondemand/${userId}`,
+    data: JSON.stringify({opponents: []}),
+    contentType: 'application/json',
+    method: 'POST',
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
+
+export function update_ondemand_task(userId, num_turns) {
+  return $.get({
+    url: `${API_SERVER_URL}/ondemand/${userId}`,
+    method: 'PUT',
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
+
+export function get_ondemand_status(userId) {
+  return $.get({
+    url: `${API_SERVER_URL}/ondemand/${userId}`,
+    method: 'GET',
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
+
+export function get_ondemand_replay(userId) {
+  return $.get({
+    url: `${API_SERVER_URL}/ondemand/${userId}/replay`,
+    method: 'POST',
+    xhrFields: {
+      withCredentials: true
     }
   })
 }
@@ -336,7 +388,7 @@ export function reset_api_key () {
   })
 }
 
-export function registerHackathon (code) {
+export function register_hackathon (code) {
   const me = me_cached()
   if (!me) {
     return Promise.reject({
@@ -354,7 +406,7 @@ export function registerHackathon (code) {
   })
 }
 
-export function getHackathon (id) {
+export function get_hackathon (id) {
   return $.get({
     url: `${API_SERVER_URL}/hackathon/${id}`,
     xhrFields: {
@@ -363,7 +415,7 @@ export function getHackathon (id) {
   })
 }
 
-export function getUserHackathons (userId) {
+export function get_user_hackathons (userId) {
   return $.get({
     url: `${API_SERVER_URL}/user/${userId}/hackathon`,
     xhrFields: {
@@ -372,7 +424,7 @@ export function getUserHackathons (userId) {
   })
 }
 
-export function getHackathons () {
+export function get_hackathons () {
   return $.get({
     url: `${API_SERVER_URL}/hackathon`,
     xhrFields: {
@@ -380,7 +432,7 @@ export function getHackathons () {
   })
 }
 
-export function getUserHistory (userId) {
+export function get_user_history (userId) {
   return $.get({
     url: `${API_SERVER_URL}/user/${userId}/history`,
     xhrFields: {
@@ -389,7 +441,7 @@ export function getUserHistory (userId) {
   })
 }
 
-export function invitefriend (email) {
+export function invite_friend (email) {
   return $.post({
     url: `${API_SERVER_URL}/invitation/user/` + email
   })

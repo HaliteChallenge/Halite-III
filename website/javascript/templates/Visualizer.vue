@@ -124,13 +124,6 @@
       <div class="col-md-4 sidebar hidden-xs hidden-sm" v-if="!isMobile">
         <div class="game-stats-widget">
           <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-              <a href="#player_stats" v-on:click="gaData('visualizer','click-player-stats','gameplay')" aria-controls="player_stats" role="tab" data-toggle="tab">
-                <i class="xline xline-top"></i>
-                <span>Player stats</span>
-                <i class="xline xline-bottom"></i>
-              </a>
-            </li>
             <li role="presentation">
               <a href="#game_stats" v-on:click="gaData('visualizer','click-game-stats','gameplay')" aria-controls="game_stats" role="tab" data-toggle="tab">
                 <i class="xline xline-top"></i>
@@ -141,11 +134,6 @@
           </ul>
           <!-- Tab panes -->
           <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="player_stats">
-              <div id="player_stats_pane">
-                <PlayerStatsPane :players="players" :statistics="statistics" :userlink="userlink"></PlayerStatsPane>
-              </div>
-            </div>
             <div role="tabpanel" class="tab-pane" id="game_stats">
               <div id="map_stats_pane">
                 <table class="map-stats-props">
@@ -188,6 +176,9 @@
                 <h4>player details</h4>
                 <span class="toggle-icon chevron"></span>
                 <i class="xline xline-bottom"></i>
+                <div v-for="(energy, player) in players">
+                    Player {{player}} has {{energy}} energy
+                </div>
               </a>
             </div>
             <div class="panel-collapse collapse" :class="{'in': showPlayerDetailPanel}" role="tabpanel" :aria-expanded="showPlayerDetailPanel.toString()" id="widget_player_details" aria-labelledby="heading_player_details">
@@ -437,7 +428,7 @@
     mounted: function () {
       this.getSortedPlayers()
       this.sliderOptions = Object.assign(this.sliderOptions, {
-        max: this.replay.game_statistics.number_turns - 1,
+        max: this.replay.game_statistics.number_turns,
         value: this.frame
       })
 
@@ -476,6 +467,7 @@
         const camera = visualizer.camera
         this.pan.x = (camera.cols - camera.pan.x) % camera.cols
         this.pan.y = (camera.rows - camera.pan.y) % camera.rows
+          this.players = visualizer.replay.full_frames[this.frame].energy
       }
       visualizer.onPlay = () => {
         this.playing = true
@@ -705,25 +697,38 @@
         return null
       },
       selectedShip: function () {
-        // if (this.selected.kind === 'ship') {
-        //   let frame = this.replay.frames[this.frame]
-        //   let state = frame.ships[this.selected.owner][this.selected.id]
-        //
-        //   if (state) {
-        //     const moves = this.replay.moves[this.frame][this.selected.owner][0];
-        //     if (moves && moves[this.selected.id] && moves[this.selected.id].type === "thrust") {
-        //       const move = moves[this.selected.id];
-        //       state.vel_x = move.magnitude * Math.cos(move.angle * Math.PI / 180);
-        //       state.vel_y = move.magnitude * Math.sin(move.angle * Math.PI / 180);
-        //     }
-        //     return state;
-        //   }
-        // }
-        return null
+          if (this.selected.kind === "ship") {
+              const frame = this.replay.full_frames[this.frame]
+              const state = frame.entities[this.selected.owner][this.selected.id]
+
+              if (state) {
+                  state.owner = this.selected.owner;
+                  state.id = this.selected.id;
+                  return state;
+              }
+          }
       },
       selectedPoint: function () {
         if (this.selected.kind === 'point') {
-          return this.selected
+            // TODO: this is inefficient AF
+            for (let i = this.frame; i >= 0; i--) {
+                const frame = this.replay.full_frames[i];
+                for (const cell of frame.cells) {
+                    if (cell.x == this.selected.x && cell.y == this.selected.y) {
+                        return {
+                            energy: cell.production,
+                            x: this.selected.x,
+                            y: this.selected.y,
+                        };
+                    }
+                }
+            }
+            const cell = this.replay.production_map.grid[this.selected.x][this.selected.y];
+            return {
+                energy: cell.energy,
+                x: this.selected.x,
+                y: this.selected.y,
+            };
         }
         return null
       },
@@ -746,31 +751,11 @@
       tierClass: tierClass,
       getPlayers: async function () {
         if (!this.replay) return []
-
-        //let ranks = {}
-
-        // for (let player of Object.keys(this.replay.game_statistics.player_statistics)) {
-        //   let id = player.player_id
-        //   ranks[id].index = parseInt(id)
-        //   ranks[id].botname = this.replay.players[id]
-        //   ranks[id].name = this.replay.players[id].name
-        //   if (this.game) {
-        //     let player = {}
-        //     Object.getOwnPropertyNames(this.game.players).map(userId => {
-        //       if (this.game.players[userId].player_index == id) {
-        //         player = this.game.players[userId]
-        //         player.id = userId
-        //       }
-        //     })
-        //     ranks[id].id = player.player_id
-        //   } else {
-        //       ranks[id].version = null
-        //   }
-        // }
         return this.replay.game_statistics.player_statistics
                    .map((p, idx) => {
                      const player = Object.assign({}, p);
                      player.name = this.replay.players[idx].name;
+                     player.index = idx;
                      return player;
                    })
       },
