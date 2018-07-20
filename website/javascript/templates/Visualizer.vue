@@ -200,10 +200,10 @@
               <div v-if="selectedPlanet">
                 <SelectedPlanet :selected-planet="selectedPlanet" :players="players"></SelectedPlanet>
               </div>
-              <div v-else-if="selectedShip">
+              <div v-if="selectedShip">
                 <SelectedShip :selected-ship="selectedShip" :players="players"></SelectedShip>
               </div>
-              <div v-else-if="selectedPoint">
+              <div v-if="selectedPoint">
                 <SelectedPoint :selected-point="selectedPoint" :players="players"></SelectedPoint>
               </div>
               <div class="message-box" v-else>
@@ -754,26 +754,31 @@
         }
       },
       selectedPoint: function () {
-        if (this.selected.kind === 'point') {
-            // TODO: this is inefficient AF
-            for (let i = this.frame; i >= 0; i--) {
-                const frame = this.replay.full_frames[i];
-                for (const cell of frame.cells) {
-                    if (cell.x == this.selected.x && cell.y == this.selected.y) {
-                        return {
-                            energy: cell.production,
-                            x: this.selected.x,
-                            y: this.selected.y,
-                        };
-                    }
-                }
+        if (this.selected.kind === 'point' ||
+            this.selected.kind === 'ship') {
+          if (this.selected.kind === 'ship' && this.selectedShip) {
+            this.selected.x = this.selectedShip.x;
+            this.selected.y = this.selectedShip.y;
+          }
+          // TODO: this is inefficient AF
+          for (let i = this.frame; i >= 0; i--) {
+            const frame = this.replay.full_frames[i];
+            for (const cell of frame.cells) {
+              if (cell.x == this.selected.x && cell.y == this.selected.y) {
+                return {
+                  energy: cell.production,
+                  x: this.selected.x,
+                  y: this.selected.y,
+                };
+              }
             }
-            const cell = this.replay.production_map.grid[this.selected.x][this.selected.y];
-            return {
-                energy: cell.energy,
-                x: this.selected.x,
-                y: this.selected.y,
-            };
+          }
+          const cell = this.replay.production_map.grid[this.selected.x][this.selected.y];
+          return {
+            energy: cell.energy,
+            x: this.selected.x,
+            y: this.selected.y,
+          };
         }
         return null
       },

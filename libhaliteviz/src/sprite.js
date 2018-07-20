@@ -54,7 +54,6 @@ export default class Ship {
         const pixelY = this.visualizer.camera.scale * CELL_SIZE * this.y + this.visualizer.camera.scale * CELL_SIZE / 2;
         this.sprite.position.x = pixelX;
         this.sprite.position.y = pixelY;
-
     }
 
     /**
