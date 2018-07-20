@@ -11,7 +11,7 @@
       </tr>
       <tr>
         <td>Owner:</td>
-        <td :class="`color-${selectedShip.owner}`">{{info.owner}}</td>
+        <td :class="`color-${selectedShip.owner + 1}`">{{info.owner}}</td>
       </tr>
       <tr>
         <td>Ship ID:</td>

@@ -177,7 +177,7 @@
                 <span class="toggle-icon chevron"></span>
                 <i class="xline xline-bottom"></i>
                 <div v-for="player in players">
-                    <span :class="`color-${player.player_id}`">{{player.name}}</span>
+                    <span :class="`color-${player.index + 1}`">{{player.name}}</span>
                     has {{player.current_energy}} energy
                 </div>
               </a>
