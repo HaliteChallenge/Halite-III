@@ -134,8 +134,20 @@
         display: none;
     }
 
+    .step-seas {
+        .game-replay-progress {
+            display: none;
+        }
+    }
+
+    .step-time {
+        .game-replay-progress {
+            animation: reveal 4s;
+        }
+    }
+
     .step-seas, .step-time, .step-salt {
-        .game-replay-progress, .replay-btn:not(.reset-btn) {
+        .replay-btn:not(.reset-btn) {
             display: none;
         }
     }
@@ -178,6 +190,30 @@
         height: 100%;
         & > * {
             height: 100%;
+        }
+    }
+
+    @keyframes reveal {
+        0% {
+            opacity: 0;
+            background-color: rgba(255, 255, 255, 0);
+        }
+
+        25% {
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0);
+        }
+
+        50% {
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        75% {
+            background-color: rgba(255, 255, 255, 0);
+        }
+
+        100% {
+            background-color: rgba(255, 255, 255, 1);
         }
     }
 </style>
