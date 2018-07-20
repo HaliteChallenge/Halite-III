@@ -47,7 +47,7 @@ hackathon_snapshot = sqlalchemy.Table("hackathon_snapshot", metadata, autoload=T
 challenges = sqlalchemy.Table("challenge", metadata, autoload=True)
 challenge_participants = sqlalchemy.Table("challenge_participant", metadata, autoload=True)
 
-def ranked_bots_query(variable="rank", alias="ranked_bots"):
+def ranked_bots_query(alias="ranked_bots"):
     """
     Builds a query that ranks all bots.
 
@@ -57,7 +57,6 @@ def ranked_bots_query(variable="rank", alias="ranked_bots"):
     Unfortunately, MySQL does not support SQL variables in views.
     """
     return sqlalchemy.sql.select([
-        sqlalchemy.sql.text("(@{v}:=@{v} + 1) AS bot_rank".format(v=variable)),
         bots.c.user_id,
         bots.c.id.label("bot_id"),
         bots.c.mu,
@@ -68,9 +67,10 @@ def ranked_bots_query(variable="rank", alias="ranked_bots"):
         bots.c.language,
         bots.c.update_time,
         bots.c.compile_status,
-    ]).select_from(bots).select_from(sqlalchemy.sql.select([
-        sqlalchemy.sql.text("@{}:=0".format(variable))
-    ]).alias("rn")).order_by(bots.c.score.desc()).alias(alias)
+        sqlalchemy.sql.func.rank().over(
+            order_by=bots.c.score.desc()
+        ).label("bot_rank"),
+    ]).select_from(bots).order_by(bots.c.score.desc()).alias(alias)
 
 
 def hackathon_ranked_bots_query(hackathon_id,
@@ -128,13 +128,13 @@ all_users = sqlalchemy.sql.select([
     users.c.email.label("personal_email"),
     users.c.is_email_good,
     users.c.is_gpu_enabled,
-    _func.coalesce(_func.count(), 0).label("num_bots"),
+    _func.count(ranked_bots.c.user_id).label("num_bots"),
     _func.coalesce(_func.sum(ranked_bots.c.games_played), 0).label("num_games"),
     _func.coalesce(_func.sum(ranked_bots.c.version_number), 0).label("num_submissions"),
     _func.coalesce(_func.max(ranked_bots.c.score), 0).label("score"),
     _func.coalesce(_func.max(ranked_bots.c.sigma), 0).label("sigma"),
     _func.coalesce(_func.max(ranked_bots.c.mu), 0).label("mu"),
-    _func.coalesce(_func.min(sqlalchemy.sql.text("ranked_bots.bot_rank"))).label("rank"),
+    _func.coalesce(_func.min(ranked_bots.c.bot_rank)).label("rank"),
 ]).select_from(users.join(
     ranked_bots,
     ranked_bots.c.user_id == users.c.id,
@@ -143,7 +143,19 @@ all_users = sqlalchemy.sql.select([
     organizations,
     organizations.c.id == users.c.organization_id,
     isouter=True
-)).group_by(users.c.id).alias("all_users")
+)).group_by(
+    users.c.id,
+    users.c.username,
+    users.c.player_level,
+    users.c.organization_id,
+    organizations.c.organization_name,
+    users.c.country_code,
+    users.c.country_subdivision_code,
+    users.c.github_email,
+    users.c.email,
+    users.c.is_email_good,
+    users.c.is_gpu_enabled,
+).alias("all_users")
 
 
 # All submitted bots, ranked with user info
