@@ -4,9 +4,9 @@ import * as assets from "./assets";
 import {CELL_SIZE, PLAYER_COLORS} from "./assets";
 
 /**
- * Manages a Sprite on screen.
+ * Manages a ship on screen.
  */
- export class playerSprite {
+export default class Ship {
     /**
      *
      * @param visualizer The visualizer object
@@ -23,7 +23,6 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);
 
         this.sprite = new PIXI.Sprite(spriteTexture);
-        this.sprite.zOrder= -1;
 
         this.container = null;
         this.visualizer = visualizer;
@@ -31,10 +30,10 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         // Store map size to make movement easier
         this.map_width = this.visualizer.replay.production_map.width;
         this.map_height = this.visualizer.replay.production_map.height;
-        this.energy_loss = this.visualizer.replay.GAME_CONSTANTS.BASE_TURN_ENERGY_LOSS;
 
         this.owner = record.owner;
         this.energy = record.energy;
+        this.id = record.id;
         this.x = record.x;
         this.y = record.y;
 
@@ -57,7 +56,7 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         this.sprite.position.y = pixelY;
     }
 
-     /**
+    /**
      * Add the sprite to the visualizer.
      * @param container {PIXI.Container} to use for the sprite
      */
@@ -73,7 +72,6 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         this.container.removeChild(this.sprite);
     }
 
-
     /**
      * TODO: update with selection of sprites
      */
@@ -87,64 +85,115 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
 
     /**
      * Update this sprite's display with the latest state from the replay.
-     * @param record
+     * @param command
      */
-
-    update() {
+    update(command) {
         let direction = 0;
         let x_move = 0;
         let y_move = 0;
         // Move the sprite according to move commands and redraw in new location
         if (this.visualizer.frame < this.visualizer.replay.full_frames.length) {
-            let moves = this.visualizer.replay.full_frames[this.visualizer.frame].moves;
-            let player_moves = moves[this.owner];
-            for (let move_idx = 0; move_idx < player_moves.length; move_idx++) {
-                let move = player_moves[move_idx];
-                if (move && move.type === "move" && move.entity_x === this.x && move.entity_y === this.y) {
-                    if (move.direction === "n") {
-                        direction = Math.PI;
-                        x_move = 0;
-                        y_move = -1;
-                    }
-                    if (move.direction === "e") {
-                        direction = Math.PI / 2;
-                        x_move = 1;
-                        y_move = 0;
-                    }
-                    if (move.direction === "s") {
-                        direction = 0;
-                        x_move = 0;
-                        y_move = 1;
-                    }
-                    if (move.direction === "w") {
-                        direction = -Math.PI / 2;
-                        x_move = -1;
-                        y_move = 0;
-                    }
-                    this.sprite.rotation = direction;
+            // Sprite spawned this turn, does not exist in entities struct at start of turn
+            if (command.type === "g") {
+                return;
+            }
+            const entity_record = this.visualizer.replay
+                  .full_frames[this.visualizer.frame]
+                  .entities[this.owner][this.id];
+            if (!entity_record) {
+                return;
+            }
 
-                    // Use wrap around map in determining movement
-                    this.x = (this.x + x_move + this.map_width) % this.map_width;
-                    this.y = (this.y + y_move + this.map_height) % this.map_height;
+            this.energy = entity_record.energy;
 
-                    this.updatePosition();
-
-                    // Sprite can only move once, so after reaching move pertaining to this sprite, exit
-                    return;
+            if (command.type === "m") {
+                if (command.direction === "n") {
+                    direction = Math.PI;
+                    x_move = 0;
+                    y_move = -1;
                 }
+                else if (command.direction === "e") {
+                    direction = Math.PI / 2;
+                    x_move = 1;
+                    y_move = 0;
+                }
+                else if (command.direction === "s") {
+                    direction = 0;
+                    x_move = 0;
+                    y_move = 1;
+                }
+                else if (command.direction === "w") {
+                    direction = -Math.PI / 2;
+                    x_move = -1;
+                    y_move = 0;
+                }
+                this.sprite.rotation = direction;
+
+                // To prevent "glitching" when a move is recorded that
+                // isn't processed (because there wasn't enough
+                // energy, for instance), we interpolate with the next
+                // frame's position where available.
+                if (this.visualizer.frame < this.visualizer.replay.full_frames.length - 1) {
+                    const next_frame = this.visualizer.replay
+                          .full_frames[this.visualizer.frame + 1];
+                    if (next_frame.entities[this.owner] &&
+                        next_frame.entities[this.owner][this.id]) {
+                        const next_record = next_frame.entities[this.owner][this.id];
+                        x_move = next_record.x - entity_record.x;
+                        y_move = next_record.y - entity_record.y;
+
+                        // Wraparound
+                        if (x_move > 1) {
+                            x_move = -1;
+                        }
+                        else if (x_move < -1) {
+                            x_move = 1;
+                        }
+                        if (y_move > 1) {
+                            y_move = -1;
+                        }
+                        else if (y_move < -1) {
+                            y_move = 1;
+                        }
+                    }
+                }
+
+                // Use wrap around map in determining movement,
+                // interpolate between moves with visualizer time
+                // Use a bit of easing on the time to make it look
+                // nicer (cubic in/out easing)
+                let t = this.visualizer.time;
+                t /= 0.5;
+                if (t < 1) {
+                    t = t*t*t/2;
+                }
+                else {
+                    t -= 2;
+                    t = (t*t*t + 2)/2;
+                }
+
+                this.x = (entity_record.x + x_move * t + this.map_width) % this.map_width;
+                this.y = (entity_record.y + y_move * t + this.map_height) % this.map_height;
+
+            }  else if (command.type === "d") {
+                // TODO
+            } else if (command.type === "m") {
+                // TODO
+            } else if (command.type === "c") {
+                // TODO
             }
         }
     }
 
-     updatePosition() {
-         // Determine pixel location from grid location, then move sprite
-         const size = this.visualizer.camera.scale * CELL_SIZE;
-         // Account for camera panning
-         const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(this.x, this.y);
-         const pixelX = size * cellX + this.visualizer.camera.scale * CELL_SIZE / 2;
-         const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
-         this.sprite.position.x = pixelX;
-         this.sprite.position.y = pixelY;
-         this.sprite.width = this.sprite.height = size;
-     }
+    draw() {
+        // Determine pixel location from grid location, then move sprite
+        const size = this.visualizer.camera.scale * CELL_SIZE;
+        // Account for camera panning
+        const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(this.x, this.y);
+        const pixelX = size * cellX + this.visualizer.camera.scale * CELL_SIZE / 2;
+        const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
+        this.sprite.position.x = pixelX;
+        this.sprite.position.y = pixelY;
+        this.sprite.width = this.sprite.height = size;
+    }
 }

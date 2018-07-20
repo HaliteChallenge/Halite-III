@@ -162,7 +162,7 @@
 	color: #FFA83E;
 }
 .editorTheme .ruler {
-	background-color: #26343F;
+	background-color: #25242f;
 }
 .editorTheme .rulerLines {
 	color: #93A2AA;
@@ -183,7 +183,7 @@
 	background-color: rgba(16,106,91,0.99);
 }
 .editorTheme .textviewLeftRuler {
-	border-right: 1px solid #424C53;
+	border-right: none;
 }
 .editorTheme .textviewRightRuler {
 	border-left: 1px solid #424C53;
@@ -205,7 +205,7 @@
 	color: #8CD211;
 }
 .editorTheme.textview {
-	background-color: #26343F;
+	background-color: #25242f;
 	color: #07ADCF;
 	font-family: "Consolas", "Menlo", "Monaco", "Vera Mono", monospace;
 	font-size: 12px;

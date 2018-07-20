@@ -1,13 +1,9 @@
 #include "BotCommunicationError.hpp"
-#include "JsonError.hpp"
 #include "Location.hpp"
 #include "Map.hpp"
 
 /** A JSON key and value corresponding to a field. */
 #define FIELD_TO_JSON(x) {#x, location.x}
-
-/** Get a field from JSON. */
-#define FIELD_FROM_JSON(x) json.at(#x)
 
 namespace hlt {
 
@@ -42,22 +38,6 @@ bool from_char(const char direction_char, Direction &direction) {
         return true;
     default:
         return false;
-    }
-}
-
-/**
- * Convert an encoded Direction from JSON format.
- * @param json The JSON.
- * @param[out] direction The converted Direction.
- */
-void from_json(const nlohmann::json &json, Direction &direction) {
-    std::string string = json;
-    if (string.empty()) {
-        throw BotCommunicationError(string);
-    }
-    char direction_type = string.front();
-    if (!from_char(direction_type, direction)) {
-        throw JsonError(to_string(direction_type));
     }
 }
 

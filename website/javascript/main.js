@@ -4,7 +4,7 @@ import Vue from 'vue'
 import 'url-search-params-polyfill'
 import 'element-ui/lib/theme-default/index.css'
 import Associate from './templates/Associate.vue'
-import BotEditor from './templates/BotEditor.vue'
+import BotEditorPage from './templates/BotEditorPage.vue'
 import FinalsStatus from './templates/FinalsStatus.vue'
 import GameFeed from './templates/GameFeed.vue'
 import HackathonLeaderboard from './templates/HackathonLeaderboard.vue'
@@ -25,15 +25,23 @@ import Onboarding from './templates/Onboarding.vue'
 import Play from './templates/Play.vue'
 import Settings from './templates/Settings.vue'
 import View404 from './templates/404.vue'
+import BeginnerTutorial from './templates/BeginnerTutorial.vue'
+import CodeTutorial from './templates/CodeTutorial.vue'
+import WalkthroughSubsteps from "./templates/WalkthroughSubsteps.vue"
+import WalkthroughSubstep from "./templates/WalkthroughSubstep.vue"
 
 // Include bootstrap.js - do not remove
 import _ from '../vendor_assets/bootstrap-sass-3.3.7/assets/javascripts/bootstrap'
 
 import * as api from './api'
+import * as utils from './utils'
+
 
 Vue.use(require('vue-moment'))
 Vue.use(require('vue-cookie'))
 Vue.use(require('element-ui'))
+Vue.component('walkthrough-substeps', WalkthroughSubsteps)
+Vue.component('walkthrough-substep', WalkthroughSubstep)
 
 window.views = {
   Associate: function () {
@@ -42,10 +50,10 @@ window.views = {
       render: (h) => h(Associate)
     })
   },
-  BotEditor: function () {
+  BotEditorPage: function () {
     new Vue({
       el: '#bot-editor-container',
-      render: (h) => h(BotEditor)
+      render: (h) => h(BotEditorPage, { props: { baseUrl: _global.baseUrl } })
     })
   },
   FinalsStatus: function () {
@@ -167,7 +175,19 @@ window.views = {
       el: '#view404-container',
       render: (h) => h(View404, { props: { baseUrl: _global.baseUrl } })
     })
-  }
+  },
+  BeginnerTutorial: function () {
+    new Vue({
+      el: '#beginner-tutorial-container',
+      render: (h) => h(BeginnerTutorial, { props: { baseUrl: _global.baseUrl } })
+    })
+  },
+  CodeTutorial: function () {
+    new Vue({
+      el: '#code-tutorial-container',
+      render: (h) => h(CodeTutorial, { props: { baseUrl: _global.baseUrl } })
+    })
+  },
 }
 
 window.mobileAndTabletcheck = function() {
@@ -176,20 +196,10 @@ window.mobileAndTabletcheck = function() {
   return check;
 };
 
-api.me().then((me) => {
-  if (me) {
-    $('.not-logged-in').hide()
-    $('.navbar-signin').hide()
-    new Vue({
-      el: '#user-profile-bar-container',
-      render: (h) => h(UserProfileBar, { props: { baseUrl: _global.baseUrl } })
-    })
 
-    if (me.is_new_user === true && window.location.pathname !== '/create-account') {
-      window.location.replace('/create-account')
-    }
-  }
-});
+if ($('#user-profile-bar-container').length) {
+  utils.initUserProfileNav();
+}
 
 window.refreshStickyTable = function () {
   const calcCol = () => {

@@ -64,14 +64,14 @@ export class PlanetExplosionFrameAnimation extends SpritesheetFrameAnimation {
         super({
             sheet: assets.PLANET_EXPLOSION_SHEET,
             sizeFactor: 8,
-            x: event.location[0],
-            y: event.location[1],
+            x: event.location.x,
+            y: event.location.y,
             tintColor: assets.PLAYER_COLORS[event.owner_id],
             delayTime: delayTime,
             cellSize: cellSize,
             container: container,
             opacity: 0.3,
-            duration: 100,
+            duration: 200,
         });
     }
 }
@@ -80,13 +80,14 @@ export class ShipExplosionFrameAnimation extends SpritesheetFrameAnimation {
     constructor(event, delayTime, cellSize, container) {
         super({
             sheet: assets.SHIP_EXPLOSION_SHEET,
-            sizeFactor: 5,
-            x: event.location[0],
-            y: event.location[1],
-            tintColor: assets.PLAYER_COLORS[event.owner_id],
+            sizeFactor: 10,
+            x: event.location.x,
+            y: event.location.y,
+            tintColor: assets.EXPLOSION_COLOR,
             delayTime: delayTime,
             cellSize: cellSize,
             container: container,
+            duration: 150,
         });
     }
 }

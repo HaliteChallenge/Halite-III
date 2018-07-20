@@ -47,3 +47,49 @@ TEST_CASE("Direction can be converted from bot serial format", "[direction_bot_s
         REQUIRE_THROWS(std::istringstream("fail") >> direction);
     }
 }
+
+SCENARIO("Location is initialized correctly", "[location]") {
+    GIVEN("A location from coordinates") {
+        Location location{1, 2};
+        REQUIRE(location.x == 1);
+        REQUIRE(location.y == 2);
+        WHEN("location is converted to bot serial format") {
+            std::stringstream stream;
+            stream << location;
+            THEN("output is correct") {
+                REQUIRE(stream.str() == "1 2");
+            }
+        }
+        AND_WHEN("location is converted to json") {
+            nlohmann::json json;
+            to_json(json, location);
+            THEN("output is correct") {
+                nlohmann::json expected{{"x", location.x}, {"y", location.y}};
+                REQUIRE(json == expected);
+            }
+        }
+    }
+}
+
+SCENARIO("Location comparison and hashing are correct", "[location_equality]") {
+    GIVEN("Some locations") {
+        Location location1{1, 2};
+        Location location2{1, 2};
+        Location location3{2, 3};
+        WHEN("equal locations are compared") {
+            THEN("they are equal") {
+                REQUIRE(location1 == location2);
+                REQUIRE(location2 == location1);
+            }
+            AND_THEN("their hashes are equal") {
+                REQUIRE(std::hash<Location>()(location1) == std::hash<Location>()(location2));
+            }
+        }
+        AND_WHEN("unequal locations are compared") {
+            THEN("they are not equal") {
+                REQUIRE(!(location1 == location3));
+                REQUIRE(!(location2 == location3));
+            }
+        }
+    }
+}

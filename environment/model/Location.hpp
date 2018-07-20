@@ -1,6 +1,8 @@
 #ifndef LOCATION_HPP
 #define LOCATION_HPP
 
+#include <functional>
+
 #include "Constants.hpp"
 
 #include "util.hpp"
@@ -24,13 +26,6 @@ enum class Direction : char {
 void to_json(nlohmann::json &json, const Direction &direction);
 
 /**
- * Convert an encoded Direction from JSON format.
- * @param json The JSON.
- * @param[out] direction The converted Direction.
- */
-void from_json(const nlohmann::json &json, Direction &direction);
-
-/**
  * Read a Direction from bot serial format.
  * @param istream The input stream.
  * @param[out] direction The direction to read.
@@ -39,7 +34,7 @@ void from_json(const nlohmann::json &json, Direction &direction);
 std::istream &operator>>(std::istream &istream, Direction &direction);
 
 /** Type of a location. */
-struct Location {
+struct Location final {
     dimension_type x; /**< The x-coordinate. */
     dimension_type y; /**< The y-coordinate. */
 
@@ -73,9 +68,6 @@ struct Location {
      * @param y The y-coordinate.
      */
     Location(dimension_type x, dimension_type y) : x(x), y(y) {}
-
-    /** The default constructor. */
-    Location() = default;
 };
 
 }
@@ -88,4 +80,5 @@ struct hash<hlt::Location> {
     }
 };
 }
+
 #endif // LOCATION_HPP

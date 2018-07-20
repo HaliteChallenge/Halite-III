@@ -14,16 +14,17 @@ namespace mapgen {
  */
 class FractalValueNoiseTileGenerator : public TileGenerator {
 private:
-    std::vector< std::vector<double> > generateSmoothNoise(const std::vector< std::vector<double> > & source_noise, dimension_type wavelength) const;
+    std::vector<std::vector<double> >
+    generateSmoothNoise(const std::vector<std::vector<double> > &source_noise, dimension_type wavelength) const;
+
 public:
     std::string name() const override { return "Fractal Value Noise Tile"; };
 
     /**
      * Generate a map.
      * @param[out] map The map to generate.
-     * @param[out] factories The factories generated on the map. Length must be >= number of players.
      */
-    void generate(Map &map, std::vector<Location> &factories) override;
+    void generate(Map &map) override;
 
     /**
      * Construct BlurTileGenerator from parameters.

@@ -17,7 +17,6 @@ export class Factory {
     constructor(visualizer, factoryBase, constants, scale, onSelect, renderer) {
         this.visualizer = visualizer;
         this.container = null;
-        //this.overlay = null;
         this.factoryBase = factoryBase;
         this.scale = scale;
         this.constants = constants;
@@ -46,7 +45,7 @@ export class Factory {
 
         // Rotate the factory a bit just to mix it up
         this.core.rotation = Math.random() * 2 * Math.PI;
-        this.core.interactive = true;
+        // this.core.interactive = true;
         this.core.buttonMode = true;
         this.core.on("pointerdown", (e) => {
             // When clicked, notify the visualizer
@@ -68,15 +67,14 @@ export class Factory {
         this.container = container;
     }
 
-    get id() {
-        return this.owner;
-    }
-
     /**
      * Update the factory display based on the current frame and time.
      */
     //TODO: update to make factories change color when player dies
     update() {
+    }
+
+    draw() {
         const pixelsPerUnit = assets.CELL_SIZE * this.visualizer.camera.scale;
         this.core.width = this.core.height = 2 * pixelsPerUnit;
 

@@ -19,7 +19,7 @@ public class MyBot {
 			for(Map.Entry<Location, Entity> entry: players[myID].getEntities().entrySet()) {
 				moves.put(entry.getKey(), Direction.randomDirection());		
 			}
-			Networking.sendFrame(moves);
+			Networking.sendFrame(moves, players[myID].getEnergy() >= 255000 ? 255 : 0);
 		}
 	}
 }

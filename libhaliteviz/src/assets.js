@@ -2,15 +2,16 @@ const PIXI = require("pixi.js");
 
 export let ASSET_ROOT = "dist/";
 
-export const VISUALIZER_SIZE = 700;
-export const VISUALIZER_HEIGHT = 700;
+export const BASE_VISUALIZER_WIDTH = 700;
+export const BASE_VISUALIZER_HEIGHT = 700;
 export const STATS_SIZE = 20;
 export const CELL_SIZE = 1;
 
 export const PLAYER_COLORS = [0xff0000, 0x00FF00, 0xBA55D3, 0xffae42,
-                                0xbd00db, 0xFF69B4, 0xFFFF00, 0x009900,
+                                0xFF69B4, 0xbd00db, 0xFFFF00, 0x009900,
                                 0xFF8C00, 0xff0000, 0x00FF00, 0xBA55D3,
                                 0xffae42, 0xbd00db, 0xFF69B4, 0xFFFF00];
+export const EXPLOSION_COLOR = 0xb7b7b7;
 export const PLANET_COLOR = 0xb7b7b7;
 export const FISH_COLOR = 0xFFA500;
 
@@ -22,10 +23,10 @@ export const FACTORY_BASE_ALPHA = 0.8;
 
 export const MAX_PRODUCTION = 255;
 export const MAP_COLOR_LIGHT = 0x00FFFF;
-export const MAP_COLOR_MEDIUM = 0x0000FF;
-export const MAP_COLOR_DARK = 0x0000A0;
+export const MAP_COLOR_MEDIUM = 0xFF00FF;
+export const MAP_COLOR_DARK = 0xFFFF00;
 export const MAP_ALPHA = 0.1;
-export const OWNER_TINT_ALPHA = 0.4;
+export const OWNER_TINT_ALPHA = 0.25;
 export const MAP_SQUARE_SIZE = 10;
 export const LINE_COLOR = 0x000000;
 export const LINE_WIDTH = 1;

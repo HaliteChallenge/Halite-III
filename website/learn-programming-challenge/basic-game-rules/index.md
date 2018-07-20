@@ -5,68 +5,42 @@ toc: false
 description: Get an introduction to the rules of the game to win the Halite AI Programming Challenge.
 sort_key: 0
 ---
-Here is a quick overview of the rules of Halite II. If you want to get into the nitty-gritty, check out our [Game Rules Deep Dive](game-rules-deep-dive).
+
+Halite III, codenamed Shipyard, is a game of strategy and production. Players command fleets of ships, using them to filter halite from the seas. They compete to have the most halite, and are ranked by the amount of halite collected at the end of the game (300 turns). Shipyard is played on a symmetric rectangular grid of square cells, which wraps around at both edges.
+
+Players have a base, called their shipyard; a fleet of ships; and a store of halite. They start with their base and 512 halite in their store. Ships carry a cargo of halite, which also serves as fuel; there is a TO BE DETERMINED cap on how much halite a ship can carry at a given time. They spend halite to move around the board along cardinal directions (N/S/E/W), one cell at a time; this costs them fuel/halite equal to 5% of the halite present at the location they are moving off of. If they instead remain still, they collect halite from the cell they are on, collecting 10% of the available halite per turn (rounded to the nearest integer). Ships may also choose to dump halite into the sea. Each player starts with a single ship, located at their shipyard. If two ships collide, both are destroyed; their cargo is deposited as halite on the cell they tried to move to.
+
+The shipyard is at a fixed location and does not move. Ships may move on top of the shipyard; if they dump halite onto this location, the halite is added to the store and the player may spend it. They spend 256 halite to construct a ship, plus however much halite they choose to put as the initial fuel/cargo level.
+
+Additionally, players can spend 512 halite to convert a ship to a drop-off site (dropoff for short), giving another place where ships can deposit collected halite, in order to increase the efficiency of the others sailing the halite seas. Ships pay no fee when using their own dropoff sites; when using another player’s dropoff, they pay a 25% tax on delivered cargo, paid to the player who constructed the site.
 
 ## Map at Game Start
-Halite II is played on 2D map, which is set up as a continuos Cartesian plane (think of it has having x/y axes). The map is like a virtual game board, and does not wrap, meaning that game pieces can fall off the edges of the board, they don't appear on the opposite side like an old school arcade game.
 
-<div class="static-container text-center">
-    <img style="width: 100%; height: auto;" src="/assets/images/tutorial-images/map-at-game-start.png" alt="Halite Game Board at Start of Game">
-</div>
+Halite III proceeds as follows:
 
-<br>Maps are randomly and symmetrically generated, and consist of a number of planets at start. At the start, all planets are neutral and players own none of them. The sizes and locations of planets also varies map to map.
+In the initialization phase, bots are given the map, the location of their shipyards, and a single ship on top of their shipyard. They are also given time to initialize, and are expected to send back their name.
+
+Each turn, bots are sent the state of the map, and additionally the states of them and their opponents. Bots return a series of commands, of which there are four types.
+
+1. Spawn a ship from the factory with a specified amount of halite. Note that this will cost an amount greater than the specified halite, for ships have a base cost, too.
+1. Move a specified ship one square in the specified direction.
+1. Construct a dropoff point from a ship.
+1. Dump a specified amount of halite. If the ship is on top of a shipyard or dropoff, the halite is transferred there. Otherwise, it is dumped back into the sea.
+
+The game engine, upon receiving instructions from the player, will execute them in the order of dump commands, construct commands, move commands, and finally spawn commands, followed by computing the actual extraction of halite by ships. If two ships attempt to move to the same location, both are sunk and their cargo is lost. If and only if no command is issued to a ship, it will filter halite from the sea.
+
+The cost of moving a ship is 5% of the halite on the present site and is taken from the ship’s onboard store of halite (rounded to the nearest integer). Additionally, ships extract 10% of the halite on a site per turn when actively filtering (also rounded to the nearest integer).
 
 ## Starting a game
-Two or four players compete in a match. 
+
+Two or four players compete in a match.
 At the start of the game, each player will have 3 ships on the map.
 
-## Players each have a fleet of ships
-
-As mentioned, players have 3 ships at the start of the game. You move ships around the map using three commands.
-1. Ships can be commanded to move with a given angle and a velocity.
-2. Ships can also “dock” to  a planet.
-3. Ships can “undock” from a planet.
-
-This is a ship in flight:
-
-<div class="static-container text-center">
-    <img style="width: 40%; height: auto;" src="/assets/images/tutorial-images/ship-in-flight.png" alt="Halite ship in flight">
-</div>
-
-<br>The circle around the ship is its aura, which is uses to measure the offensive/defensive reach of the ship. Ships may be destroyed through battle or collision with each other and planets, and they have an initial health and lose health as they battle.
-
-<div class="static-container text-center">
-    <img style="width: 40%; height: auto;" src="/assets/images/tutorial-images/ships-in-combat.jpeg" alt="Halite ships in combat">
-</div>
-
-Ships collide when they try to occupy the same location on the map.
-
-## Planets are for producing new ships
-
-<br>Ships can 'dock' on planets to mine Halite and produce more ships. This is a ship docked to a planet:
-
-<div class="static-container text-center">
-    <img style="width: 40%; height: auto;" src="/assets/images/tutorial-images/final-composite.png" alt="Halite ship docked on a planet">
-</div>
-
-<br>Each player can dock ships simultaneously on multiple planets, but only ships from one player can dock on a particular planet at a time. The number of ships that can be docked to a planet is determined by the planet size.
-
-When a ship docks on a planet, the planet produces ships for the docked player. Planets produce at a constant rate per ship with no limit to ship production.
-
-Planets can be destroyed through ship collisions. Boom.
-
-<div class="static-container text-center">
-    <img style="width: 40%; height: auto;" src="/assets/images/tutorial-images/planet-exploding.png" alt="Halite planet explosion">
-</div>
-
 ## Win conditions
-1. A player is the sole survivor.
-2. A player occupies all planets. This means they must have a ship fully docked to all remaining planets; a ship that is in the process of docking does not count.
-3. If time runs out and neither of these conditions are met, tiebreaker rules apply:
-    - First we check to see which surviving team has produced the most ships.
-    - If still a tie, then we check to see which team has done the most battle damage (destroying ships with other ships through attacks or collision).
-    - If still a tie, a random winner will be chosen, but this outcome has a very low probability of occurring given the other winning conditions.
+The only win conditions are:
+
+1. All other players have been eliminated from the game (through bot errors), or
+1. You have the most halite stocked in your shipyard & dropoffs at the end of the 300 turns.
 
 ## Note on game rules changes
 The Two Sigma and Halite team reserves the right to make changes on game rules during the course of the game. We promise we won't do this without a very good reason that improves the competition and the fun of the game, and we will try to make any changes as backwards compatible as possible.
-

@@ -1,55 +1,78 @@
 #ifndef HALITE_H
 #define HALITE_H
 
-#include "BasicGenerator.hpp"
-#include "Command.hpp"
 #include "Config.hpp"
-#include "Generator.hpp"
-#include "Map.hpp"
 #include "Networking.hpp"
-#include "Player.hpp"
-#include "Location.hpp"
-#include "Statistics.hpp"
-#include "Replay.hpp"
+#include "Store.hpp"
 
 namespace hlt {
 
+struct GameStatistics;
+
 class HaliteImpl;
+
+struct Replay;
+
+struct Snapshot;
 
 /** Halite game interface, exposing the top level of the game. */
 class Halite final {
+    /** Transient game state. */
+    unsigned long turn_number{};      /**< The turn number. */
+    Store store;                      /**< The entity store. */
+
+    /** External game state. */
+    Map &map;                         /**< The game map. */
+    GameStatistics &game_statistics;  /**< The statistics of the game. */
+    Replay &replay;                   /**< Replay instance to collect info for visualizer. */
+
+    /** Configuration. */
+    Config config;                    /**< The game configuration. */
+
+    /** Friend classes have full access to game state. */
+    friend class net::Networking;
+
     friend class HaliteImpl;
 
-public:
-    unsigned long turn_number{};                                                    /**< The turn number. */
-    std::unordered_map<Player::id_type, Player> players;                            /**< Map from player ID to player. */
-    Map game_map;                                                                   /**< The game map. */
-    std::unordered_map<Location, std::shared_ptr<IndependentEntity>> map_entities;  /**< The independent entities on the map */
-    GameStatistics game_statistics;                                                 /**< The statistics of the game. */
-    Replay replay_struct;                                                           /**< Replay class to collect info for visualizer. */
-
-private:
-    Config config;                          /**< The game configuration. */
-    mapgen::MapParameters parameters;       /**< The map parameters. */
-    net::Networking networking;             /**< The networking suite. */
-    std::unique_ptr<HaliteImpl> impl;       /**< The pointer to implementation. */
+    net::Networking networking;       /**< The networking suite. */
+    std::unique_ptr<HaliteImpl> impl; /**< The pointer to implementation. */
 
 public:
     /**
      * Constructor for the main game.
      *
      * @param config The configuration options for the game.
-     * @param parameters The map generation parameters.
+     * @param map The game map.
      * @param networking_config The networking configuration.
-     * @param players The list of players.
+     * @param game_statistics The game statistics to use.
+     * @param replay The game replay to use.
      */
     Halite(const Config &config,
-           const mapgen::MapParameters &parameters,
+           Map &map,
            const net::NetworkingConfig &networking_config,
-           std::vector<Player> players);
+           GameStatistics &game_statistics,
+           Replay &replay);
 
-    /** Run the game. */
-    void run_game();
+    /**
+     * Run the game.
+     * @param player_commands The list of player commands.
+     */
+    void run_game(const std::vector<std::string> &player_commands);
+
+    /**
+     * Load a snapshot.
+     * @param snapshot The snapshot.
+     */
+    void load_snapshot(const Snapshot &snapshot);
+
+    /** Remove a player from the game. */
+    void kill_player(const Player::id_type& player_id);
+
+    /** Get a player from the game. Used for writing error logs */
+    const Player& get_player(Player::id_type player_id);
+
+    /** Generate a snapshot string from current game state. */
+    std::string to_snapshot();
 
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();

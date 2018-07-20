@@ -1,81 +1,141 @@
 #!/usr/bin/env python
 
 import sys, copy
+import logging
+from collections import namedtuple
 
-base_players = None # Need to remember this
+MAX_HALITE = 1000
+SHIP_COST = 1000
 
-class Cell(object):
-    def __init__(self, _type = "n", production = 0, energy_factor = 0):
-        self._type = _type
-        self.production = production
-        self.passable = self._type != 'o'
-        self.energy_factor = energy_factor
+Ship = namedtuple('Ship', ['id', 'location', 'halite'])
+Dropoff = namedtuple('Ship', ['id', 'location'])
 
-    def __str__(self):
-        return self._type + str(self.production)
 
-    def __repr__(self):
-        return str(self)
+class Bot:
+    def __init__(self):
+        self.name = None
+        self.my_id = None
+        self.players = None
+        self.base_players = None
+        self.game_map = None
 
-class Player(object):
-    def __init__(self, factory):
-        self.factory = factory
-        self.energy = 0
-        self.entities = {}
+    def get_init(self):
+        num_players, my_id = map(int, input().split())
 
-class Entity(object):
-    def __init__(self, owner, energy):
-        self.owner = owner
-        self.energy = energy
+        self.my_id = my_id
 
-    def __str__(self):
-        return "(" + str(self.owner) + ", " + str(self.energy) + ")"
+        logging.basicConfig(
+            filename="bot-{}.log".format(my_id),
+            filemode="w",
+            level=logging.DEBUG,
+        )
 
-    def __repr__(self):
-        return str(self)
+        players = {}
+        for _ in range(num_players):
+            player, shipyard_x, shipyard_y = map(int, input().split())
+            players[player] = Player((shipyard_x, shipyard_y))
+        self.base_players = copy.copy(players)
+        self.players = players
 
-def get_init():
-    global base_players
-    num_players, my_id = map(int, input().split())
-    players = {}
-    for _ in range(num_players):
-        player, factory_x, factory_y = map(int, input().split())
-        players[player] = Player((factory_x, factory_y))
-    base_players = copy.copy(players)
+        map_w, map_h = map(int, input().split())
+        game_map = [[None for _ in range(map_w)] for _ in range(map_h)]
+        for y in range(map_h):
+            row_cells = [int(cell) for cell in input().split()]
+            for x in range(map_w):
+                game_map[y][x] = row_cells[x]
 
-    map_w, map_h = map(int, input().split())
-    game_map = [[None for _ in range(map_w)] for _ in range(map_h)]
+        self.game_map = GameMap(game_map, map_w, map_h)
 
-    for y in range(map_h):
-        for x in range(map_w):
-            line = input().split()
-            _type = line[0]
-            production = 0
-            if _type != "f":
-                production = int(line[1])
-            game_map[y][x] = Cell(_type, production)
+        return game_map, players, my_id
 
-    return game_map, players, my_id
+    def send_init(self, name):
+        self.name = name
+        print(name)
+        sys.stdout.flush()
 
-def send_init(name):
-    print(name if len(name) > 0 else ' ')
-    sys.stdout.flush()
+    def get_frame(self):
+        turn_number = int(input())
+        self.players = copy.copy(self.base_players)
 
-def get_frame():
-    turn_number = int(input())
-    players = copy.copy(base_players)
-    for _ in range(len(players)):
-        player, num_entities, energy = map(int, input().split())
-        players[player].energy = energy
-        players[player].entities = {}
-        for _ in range(num_entities):
-            x, y, _, energy = map(int, input().split())
-            players[player].entities[(x, y)] = Entity(player, energy)
-    return turn_number, players
+        for _ in range(len(self.players)):
+            player, num_ships, num_dropoffs, halite = map(int, input().split())
+            self.players[player].halite = halite
+            self.players[player].ships = {}
+            self.players[player].dropoffs = {}
+            for _ in range(num_ships):
+                ship_id, x, y, halite = map(int, input().split())
+                self.players[player].ships[ship_id] = Ship(ship_id, (x, y), halite)
+            for _ in range(num_dropoffs):
+                dropoff_id, x, y = map(int, input().split())
+                self.players[player].dropoffs[dropoff_id] = Dropoff(dropoff_id, (x, y))
 
-def send_frame(moves):
-    print(" ".join(["m " + str(loc[0]) + " " + str(loc[1]) + " " + direction for loc, direction in moves.items()]))
-    sys.stdout.flush()
+        # Get changed cells
+        num_changed_cells = int(input())
+        for _ in range(num_changed_cells):
+            cell_x, cell_y, cell_energy = map(int, input().split())
+            self.game_map[cell_y][cell_x] = cell_energy
+
+        return turn_number, self.game_map, self.players, MoveSet()
+
+    def end_turn(self, commands):
+        commands.send()
+
+
+class Player:
+    def __init__(self, shipyard):
+        self.shipyard = shipyard
+        self.halite = 0
+        self.ships = {}
+        self.dropoffs = {}
+
+
+class GameMap:
+    def __init__(self, cells, width, height):
+        self.width = width
+        self.height = height
+        self.cells = cells
+
+    def __getitem__(self, row):
+        return self.cells[row]
+
+    def location_with_offset(self, location, direction):
+        dx = 0
+        dy = 0
+
+        if direction == "n":
+            dy = -1
+        elif direction == "s":
+            dy = 1
+        elif direction == "w":
+            dx = -1
+        elif direction == "e":
+            dx = 1
+
+        return (
+            (location[0] + dx + self.width) % self.width,
+            (location[1] + dy + self.height) % self.height,
+        )
+
+
+class MoveSet:
+    def __init__(self):
+        self.moves = []
+
+    def move(self, ship_id, d):
+        self.moves.extend(["m", str(ship_id), d])
+
+    def spawn(self, halite):
+        self.moves.extend(["g", str(halite)])
+
+    def dump(self, ship_id, halite):
+        self.moves.extend(["d", str(ship_id), str(halite)])
+
+    def construct(self, ship_id):
+        self.moves.extend(["c", str(ship_id)])
+
+    def send(self):
+        print(" ".join(self.moves))
+        sys.stdout.flush()
 
 # I'm not yet doing custom logging because Python's logging is
 # quite easy & comprehensive already, so it's low-priority.

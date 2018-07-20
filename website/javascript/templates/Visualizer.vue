@@ -59,8 +59,11 @@
                 <span class="replay-btn">
                   <a href="javascript:;" @click="nextFrame"><span class="icon-next"></span></a>
                 </span>
-                <span class="replay-btn" style="text-align: center">
+                <span class="replay-btn reset-btn" style="text-align: center">
                   <a href="javascript:;" @click="resetView" title="Reset zoom/pan"><span class="icon-lightning"></span></a>
+                </span>
+                <span class="replay-btn" style="text-align: center">
+                  <a href="javascript:;" @click="snapshot" title="Snapshot state"><span class="icon-lightning"></span></a>
                 </span>
                 <span class="replay-btn">
                   <a style="text-align: center; margin-bottom: 4px;" v-if="game && game.game_id" :href="replay_download_link(game.game_id)">
@@ -121,13 +124,6 @@
       <div class="col-md-4 sidebar hidden-xs hidden-sm" v-if="!isMobile">
         <div class="game-stats-widget">
           <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-              <a href="#player_stats" v-on:click="gaData('visualizer','click-player-stats','gameplay')" aria-controls="player_stats" role="tab" data-toggle="tab">
-                <i class="xline xline-top"></i>
-                <span>Player stats</span>
-                <i class="xline xline-bottom"></i>
-              </a>
-            </li>
             <li role="presentation">
               <a href="#game_stats" v-on:click="gaData('visualizer','click-game-stats','gameplay')" aria-controls="game_stats" role="tab" data-toggle="tab">
                 <i class="xline xline-top"></i>
@@ -138,11 +134,6 @@
           </ul>
           <!-- Tab panes -->
           <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="player_stats">
-              <div id="player_stats_pane">
-                <PlayerStatsPane :players="players" :statistics="statistics" :userlink="userlink"></PlayerStatsPane>
-              </div>
-            </div>
             <div role="tabpanel" class="tab-pane" id="game_stats">
               <div id="map_stats_pane">
                 <table class="map-stats-props">
@@ -185,6 +176,10 @@
                 <h4>player details</h4>
                 <span class="toggle-icon chevron"></span>
                 <i class="xline xline-bottom"></i>
+                <div v-for="player in players">
+                    <span :class="`color-${player.player_id}`">{{player.name}}</span>
+                    has {{player.current_energy}} energy
+                </div>
               </a>
             </div>
             <div class="panel-collapse collapse" :class="{'in': showPlayerDetailPanel}" role="tabpanel" :aria-expanded="showPlayerDetailPanel.toString()" id="widget_player_details" aria-labelledby="heading_player_details">
@@ -205,10 +200,10 @@
               <div v-if="selectedPlanet">
                 <SelectedPlanet :selected-planet="selectedPlanet" :players="players"></SelectedPlanet>
               </div>
-              <div v-else-if="selectedShip">
+              <div v-if="selectedShip">
                 <SelectedShip :selected-ship="selectedShip" :players="players"></SelectedShip>
               </div>
-              <div v-else-if="selectedPoint">
+              <div v-if="selectedPoint">
                 <SelectedPoint :selected-point="selectedPoint" :players="players"></SelectedPoint>
               </div>
               <div class="message-box" v-else>
@@ -220,7 +215,7 @@
         </div>
       </div>
     </div>
-    <div class="post-game-dashboard hidden-xs hidden-sm" v-if="!isMobile">
+    <div class="post-game-dashboard hidden-xs hidden-sm" v-if="!isMobile && dashboard">
       <div class="panel-group" aria-multiselectable="true">
           <div class="panel panel-stats">
             <div class="panel-heading" role="tab" id="heading_player_details">
@@ -365,7 +360,32 @@
 
   export default {
     name: 'haliteTV',
-    props: ['game', 'replay', 'makeUserLink', 'getUserProfileImage'],
+    props: {
+      game: Object,
+      replay: Object,
+      makeUserLink: Function,
+      getUserProfileImage: Function,
+      width: {
+        default: 700,
+        required: false,
+        type: Number
+      },
+      height: {
+        default: 700,
+        required: false,
+        type: Number
+      },
+      dashboard: {
+        required: false,
+        default: true,
+        type: Boolean,
+      },
+      autoplay: {
+        required: false,
+        default: true,
+        type: Boolean,
+      },
+    },
     data: function () {
       return {
         baseUrl: '',
@@ -434,7 +454,7 @@
     mounted: function () {
       this.getSortedPlayers()
       this.sliderOptions = Object.assign(this.sliderOptions, {
-        max: this.replay.game_statistics.number_turns - 1,
+        max: this.replay.game_statistics.number_turns,
         value: this.frame
       })
 
@@ -452,7 +472,10 @@
         this.isHoliday = false;
       }
 
-      const visualizer = new HaliteVisualizer(this.replay)
+      const visualizer = new HaliteVisualizer(this.replay, this.width, this.height)
+      this.getVisualizer = function() {
+        return visualizer
+      }
       const storedSpeedIndex = sessionStorage.getItem('halite-replaySpeed')
       if (storedSpeedIndex) {
         const speedIndex = parseInt(storedSpeedIndex)
@@ -473,6 +496,11 @@
         const camera = visualizer.camera
         this.pan.x = (camera.cols - camera.pan.x) % camera.cols
         this.pan.y = (camera.rows - camera.pan.y) % camera.rows
+        if (visualizer.currentFrame) {
+          for (const player of this.players) {
+            player.current_energy = visualizer.currentFrame.energy[player.player_id]
+          }
+        }
       }
       visualizer.onPlay = () => {
         this.playing = true
@@ -486,15 +514,15 @@
         this.selected.owner = args.owner
         this.selected.x = args.x
         this.selected.y = args.y
-        this.selected.production = args.production
         this.showObjectPanel = true
         visualizer.onUpdate()
         this.$forceUpdate()
         this.gaData('visualizer', 'click-map-objects', 'gameplay')
       }
       visualizer.attach('.game-replay-viewer')
+
       // play the replay - delay a bit to make sure assets load/are rendered
-      window.setTimeout(function() { visualizer.play() }, 500);
+      if (this.autoplay) window.setTimeout(function() { visualizer.play() }, 500);
 
       // action
       this.playVideo = (e) => {
@@ -520,6 +548,9 @@
         if (visualizer) {
           visualizer.camera.reset();
         }
+      }
+      this.snapshot = () => {
+        window.prompt("Copy the snapshot:", visualizer.snapshot())
       }
 
       const changeSpeed = (speed) => {
@@ -611,7 +642,6 @@
       setTimeout(() => {
         this.$refs.slider.refresh();
       }, 2000);
-
     },
     computed: {
       statistics: function () {
@@ -699,25 +729,56 @@
         return null
       },
       selectedShip: function () {
-        // if (this.selected.kind === 'ship') {
-        //   let frame = this.replay.frames[this.frame]
-        //   let state = frame.ships[this.selected.owner][this.selected.id]
-        //
-        //   if (state) {
-        //     const moves = this.replay.moves[this.frame][this.selected.owner][0];
-        //     if (moves && moves[this.selected.id] && moves[this.selected.id].type === "thrust") {
-        //       const move = moves[this.selected.id];
-        //       state.vel_x = move.magnitude * Math.cos(move.angle * Math.PI / 180);
-        //       state.vel_y = move.magnitude * Math.sin(move.angle * Math.PI / 180);
-        //     }
-        //     return state;
-        //   }
-        // }
-        return null
+        if (this.selected.kind === "ship") {
+          const frame = this.replay.full_frames[this.frame]
+          const state = frame.entities[this.selected.owner][this.selected.id]
+
+          if (state) {
+            state.owner = this.selected.owner;
+            state.id = this.selected.id;
+            return state;
+          }
+
+          // Not yet spawned, look for event
+          for (const event of frame.events) {
+            if (event.type === "spawn" &&
+                event.owner_id === this.selected.owner &&
+                event.id === this.selected.id) {
+              return Object.assign({}, this.selected, {
+                x: event.location.x,
+                y: event.location.y,
+                energy: event.energy,
+              });
+            }
+          }
+        }
       },
       selectedPoint: function () {
-        if (this.selected.kind === 'point') {
-          return this.selected
+        if (this.selected.kind === 'point' ||
+            this.selected.kind === 'ship') {
+          if (this.selected.kind === 'ship' && this.selectedShip) {
+            this.selected.x = this.selectedShip.x;
+            this.selected.y = this.selectedShip.y;
+          }
+          // TODO: this is inefficient AF
+          for (let i = this.frame; i >= 0; i--) {
+            const frame = this.replay.full_frames[i];
+            for (const cell of frame.cells) {
+              if (cell.x == this.selected.x && cell.y == this.selected.y) {
+                return {
+                  energy: cell.production,
+                  x: this.selected.x,
+                  y: this.selected.y,
+                };
+              }
+            }
+          }
+          const cell = this.replay.production_map.grid[this.selected.x][this.selected.y];
+          return {
+            energy: cell.energy,
+            x: this.selected.x,
+            y: this.selected.y,
+          };
         }
         return null
       },
@@ -740,37 +801,17 @@
       tierClass: tierClass,
       getPlayers: async function () {
         if (!this.replay) return []
-
-        //let ranks = {}
-
-        // for (let player of Object.keys(this.replay.game_statistics.player_statistics)) {
-        //   let id = player.player_id
-        //   ranks[id].index = parseInt(id)
-        //   ranks[id].botname = this.replay.players[id]
-        //   ranks[id].name = this.replay.players[id].name
-        //   if (this.game) {
-        //     let player = {}
-        //     Object.getOwnPropertyNames(this.game.players).map(userId => {
-        //       if (this.game.players[userId].player_index == id) {
-        //         player = this.game.players[userId]
-        //         player.id = userId
-        //       }
-        //     })
-        //     ranks[id].id = player.player_id
-        //   } else {
-        //       ranks[id].version = null
-        //   }
-        // }
         return this.replay.game_statistics.player_statistics
                    .map((p, idx) => {
                      const player = Object.assign({}, p);
                      player.name = this.replay.players[idx].name;
+                     player.index = idx;
                      return player;
                    })
       },
       getSortedPlayers: async function () {
         const players = await this.getPlayers()
-        this.players = players
+        this.players = players.map(p => { p.current_energy = 1000; return p })
         this.sortedPlayers = _.sortBy(players, ['rank'])
 
         const selectedPlayers = []
@@ -795,6 +836,7 @@
       changeFrame: function (event) {
       },
       resetView: function() {},
+      snapshot: function() {},
       toggleObjectPanel: function (e) {
         this.showObjectPanel = !this.showObjectPanel
         sessionStorage.setItem('halite-showMapObjectPanel', this.showObjectPanel.toString())

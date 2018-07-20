@@ -24,12 +24,12 @@ with open("config.json") as configfile:
         MAX_BOT_UPLOAD_SIZE = provided_size
 
 
-def getTask():
+def getTask(kind="task"):
     """Gets either a run or a compile task from the API"""
     params = {
         "capability": CAPABILITIES,
     }
-    content = requests.get(MANAGER_URL+"task", params=params).text
+    content = requests.get(MANAGER_URL + kind, params=params).text
 
     print("Task call %s\n" % content)
     if content == "null":
@@ -82,7 +82,7 @@ def storeBotLocally(user_id, bot_id, storage_dir, is_compile=False):
         local_zip.close()
 
         content_hash = md5(remote_zip_contents).hexdigest()
-        remote_hash = getBotHash(user_id, bot_id, is_compile)
+        remote_hash = remote_zip.headers.get("X-Hash")
         if content_hash != remote_hash:
             iterations += 1
             continue
@@ -141,12 +141,13 @@ def compileResult(user_id, bot_id, did_compile, language, errors=None):
     print("Posted compile result %s\n" % r.text)
 
 
-def gameResult(users, game_output, challenge):
+def gameResult(users, game_output, extra_metadata, url_path="game"):
     """
     POST the results of a game to the game coordinator.
     :param users:
     :param game_output: The parsed JSON result the game gives in quiet mode.
-    :param challenge: The challenge ID, or None.
+    :param challenge: A dictionary of extra metadata to pass back to
+    the coordinator.
     :return:
     """
 
@@ -159,14 +160,39 @@ def gameResult(users, game_output, challenge):
     data = {
         "users": json.dumps(users),
         "game_output": json.dumps(game_output),
-        "challenge": json.dumps(challenge),
     }
+    for key, value in extra_metadata.items():
+        data[key] = json.dumps(value)
+
     print("Uploading game result")
     print(json.dumps(users, indent=4))
     print(json.dumps(game_output, indent=4))
-    r = requests.post(MANAGER_URL+"game", data=data, files=files)
+    r = requests.post(MANAGER_URL + url_path, data=data, files=files)
 
     print("Got game result %s (GMT)\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
+    print("\n-------Game result:-----")
+    print(r.text)
+    print("------------------------\n")
+
+
+def ondemandResult(users, game_output, extra_metadata):
+    gameResult(users, game_output, extra_metadata, url_path="ondemand_result")
+
+
+def ondemandError(users, extra_metadata, language, log):
+    """
+    POST a compilation error that occurred during an ondemand game.
+    """
+
+    data = {
+        "users": json.dumps(users),
+        "language": language,
+        "log": log,
+    }
+    for key, value in extra_metadata.items():
+        data[key] = json.dumps(value)
+
+    r = requests.post(MANAGER_URL + "ondemand_compile", data=data)
     print("\n-------Game result:-----")
     print(r.text)
     print("------------------------\n")

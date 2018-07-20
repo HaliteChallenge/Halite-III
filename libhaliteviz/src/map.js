@@ -34,7 +34,7 @@ export class Map {
             this.productions[row] = new Array(this.cols);
             for (let col = 0; col < this.cols; col++) {
                 let cell = replay.production_map.grid[row][col];
-                this.productions[row][col] = cell["type"] === "n" ? cell.production : 0;
+                this.productions[row][col] = cell.energy;
             }
         }
 
@@ -44,26 +44,12 @@ export class Map {
             tint: true,
         });
 
-        this.tintMap.interactive = true;
-        this.tintMap.hitArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
-        this.tintMap.on("pointerdown", (e) => {
-            const localCoords = e.data.global;
-            // Adjust coordinates to account for canvas scaling
-            const zoom = parseFloat($('.game-replay-viewer').find('>canvas').css('zoom'));
-            const [ cellX, cellY ] = this.camera.screenToWorld(
-                localCoords.x / zoom, localCoords.y / zoom);
-            const production = this.productions[cellY][cellX];
-            const owner = this.owners !== null ? this.owners[cellX][cellY].owner : -1;
-            onSelect("point", { x: cellX, y: cellY, production: production,
-                owner: owner});
-        });
-
         // Generate the texture for a single map cell (16x16 white
         // square with a 2 pixel 70% black border blended on top)
         // Could probably be replaced with a real texture
-        const g = new PIXI.Graphics();
         const borderWidth = 1;
         const textureWidth = 16;
+        let g = new PIXI.Graphics();
         g.beginFill(0xFFFFFF, 1.0);
         g.drawRect(0, 0, textureWidth, textureWidth);
         g.beginFill(0x000000, 0.7);
@@ -73,17 +59,32 @@ export class Map {
         g.drawRect(0, borderWidth, borderWidth, textureWidth - borderWidth);
         g.drawRect(textureWidth - borderWidth, borderWidth, borderWidth, textureWidth - borderWidth);
         g.drawRect(borderWidth, textureWidth - borderWidth, textureWidth - 2*borderWidth, borderWidth);
-        const tex = renderer.generateTexture(g);
+        const normalTex = renderer.generateTexture(g);
+
+        // Now do the same, but for a highlighted map cell (white
+        // border)
+        // TODO: actually implement this
+        g = new PIXI.Graphics();
+        g.beginFill(0x999999, 1.0);
+        g.drawRect(0, 0, textureWidth, textureWidth);
+        g.beginFill(0xFFFFFF, 0.7);
+        g.drawRect(0, 0, textureWidth, borderWidth);
+        g.drawRect(0, borderWidth, borderWidth, textureWidth - borderWidth);
+        g.drawRect(textureWidth - borderWidth, borderWidth, borderWidth, textureWidth - borderWidth);
+        g.drawRect(borderWidth, textureWidth - borderWidth, textureWidth - 2*borderWidth, borderWidth);
+        const highlightTex = renderer.generateTexture(g);
 
         this.cells = [];
 
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
-                const cell = PIXI.Sprite.from(tex);
+                const cell = PIXI.Sprite.from(normalTex);
                 cell.width = this.scale;
                 cell.height = this.scale;
                 cell.position.x = col * this.scale;
                 cell.position.y = row * this.scale;
+                const [ base, baseOpacity ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
+                cell.tint = alphaBlend(base, this.renderer.backgroundColor, baseOpacity);
                 this.cells.push(cell);
                 this.tintMap.addChild(cell);
             }
@@ -104,17 +105,17 @@ export class Map {
     productionToColor(productions, row, col, MAX_PRODUCTION) {
         const production = productions[row][col];
         if (production === 0) {
-            return [assets.FACTORY_BASE_COLOR, assets.FACTORY_BASE_ALPHA];
+            return [assets.FACTORY_BASE_COLOR, 1];
         }
         let production_fraction = production / MAX_PRODUCTION;
-        if (production_fraction < 0.33) {
-            return [assets.MAP_COLOR_LIGHT, (production_fraction / 0.33)];
+        if (production_fraction <= 0.3333) {
+            return [alphaBlend(0x282828, assets.MAP_COLOR_LIGHT, 1-3*production_fraction), .75];
         }
-        else if (production_fraction < 0.66) {
-            return [assets.MAP_COLOR_MEDIUM, (production_fraction - 0.33) / 0.33];
+        else if (production_fraction <= 0.6666) {
+            return [alphaBlend(assets.MAP_COLOR_LIGHT, assets.MAP_COLOR_MEDIUM, 2-3*production_fraction), .75];
         }
         else {
-            return [assets.MAP_COLOR_DARK, (production_fraction - 0.66) / 0.34];
+            return [alphaBlend(assets.MAP_COLOR_MEDIUM, assets.MAP_COLOR_DARK, 3-3*production_fraction), .75];
         }
     }
 
@@ -133,11 +134,6 @@ export class Map {
      */
     destroy() {
         this.container.removeChild(this.tintMap);
-    }
-
-    get id() {
-        // TODO: do maps get IDs?
-        return 0;
     }
 
     /**
@@ -159,16 +155,18 @@ export class Map {
      * Update the fish display based on the current frame and time.
      * @param owner_grid: grid of owners of clls
      */
-    update(owner_grid) {
-        this.owners = owner_grid;
-        // Use the given grid to texture the map
+    update(updated_cells) {
+        // update cell productions
+        for (let cell_index = 0; cell_index < updated_cells.length; cell_index++) {
+            const cell_info = updated_cells[cell_index];
+            this.productions[cell_info.y][cell_info.x] = cell_info.production;
+        }
+        // Redraw map cells, both for new production colors and possible resizing due to zooming
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
                 const [ base, baseOpacity ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
-                const [ color, opacity ] = this.ownerToColor(owner_grid, row, col, this.constants.MAX_CELL_PRODUCTION);
                 const cell = this.cells[row * this.cols + col];
-                const tintedBase = alphaBlend(base, this.renderer.backgroundColor, baseOpacity);
-                cell.tint = alphaBlend(color, tintedBase, opacity);
+                cell.tint = alphaBlend(base, this.renderer.backgroundColor, baseOpacity);
                 cell.width = this.scale;
                 cell.height = this.scale;
                 const [ cellX, cellY ] = this.camera.worldToCamera(col, row);

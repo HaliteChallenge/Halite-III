@@ -1,5 +1,5 @@
 <template>
-  <div class="challenger-modal" :class="{'on': isOn}">
+  <div class="halite-modal" :class="{'on': isOn}">
     <div class="modal-overlay" @click="close"></div>
     <div class="modal-container">
       <a @click="close" class="close modal-close"><span class="icon-remove"></span></a>
@@ -209,7 +209,7 @@ export default{
 }
 </script>
 <style lang="scss" scoped>
-  .challenger-modal{
+  .halite-modal{
     .modal-container{
       position: relative;
     }
