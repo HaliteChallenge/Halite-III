@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Networking {
     private static Player[] lastPlayers;
-    private static String moveBuffer;
+    private static String moveBuffer = "";
     private static int turnNumber;
 
     private static String readLine() {
@@ -54,9 +54,9 @@ public class Networking {
         int height = Integer.parseInt(c[1]);
         int[][] grid = new int[height][width];
         for(int y=0; y<height; y++) {
+            c = getSplitLine();
             for(int x=0; x<width; x++) {
-                c = getSplitLine();
-                grid[y][x] = Integer.parseInt(c[0]);
+                grid[y][x] = Integer.parseInt(c[x]);
             }
         }
         GameMap map = new GameMap(width, height, grid);
@@ -111,7 +111,7 @@ public class Networking {
     }
 
     public static void move(int shipID, Direction direction) {
-        moveBuffer += "m " + shipID + " " + direction.getCharRepresent() + " ";
+        if(direction != Direction.STILL) moveBuffer += "m " + shipID + " " + direction.getCharRepresent() + " ";
     }
     public static void dump(int shipID, int haliteAmount) {
         moveBuffer += "d " + shipID + " " + haliteAmount + " ";
