@@ -113,8 +113,8 @@ def create_challenge(intended_user, *, user_id):
                 model.challenges
             ).where(
                 (model.challenges.c.issuer == user_id) &
-                (model.challenges.c.created >= sqlfunc.date_sub(
-                    sqlfunc.now(), sqlalchemy.sql.text("interval 1 day")))
+                (model.challenges.c.created >=
+                 (sqlfunc.now() - sqlalchemy.sql.text("interval '1 day'")))
             )
         ).first()[0]
 
@@ -136,8 +136,6 @@ def create_challenge(intended_user, *, user_id):
                     challenge_id=challenge_id,
                     user_id=participant,
                     points=0,
-                    ships_produced=0,
-                    attacks_made=0,
                 ))
 
         return util.response_success({

@@ -119,7 +119,7 @@ def upgrade():
                     sa.Column('created', sa.TIMESTAMP(timezone=True), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
                     sa.Column('finished', sa.TIMESTAMP(timezone=True), nullable=True),
                     sa.Column('num_games', sa.Integer(), autoincrement=False, nullable=False),
-                    sa.Column('status', sa.Enum('created', 'playing_game', 'finished', name='challenge_status'), nullable=False),
+                    sa.Column('status', sa.Enum('created', 'playing_game', 'finished', name='challenge_status'), server_default=sa.text("'created'"), nullable=False),
                     sa.Column('most_recent_game_task', sa.TIMESTAMP(timezone=True), nullable=True),
                     sa.Column('issuer', sa.Integer(), autoincrement=False, nullable=False),
                     sa.Column('winner', sa.Integer(), autoincrement=False, nullable=True),

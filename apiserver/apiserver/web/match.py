@@ -108,9 +108,6 @@ def list_matches_helper(offset, limit, participant_clause,
             model.games.c.time_played,
             model.games.c.challenge_id,
             model.game_stats.c.turns_total,
-            model.game_stats.c.planets_destroyed,
-            model.game_stats.c.ships_produced,
-            model.game_stats.c.ships_destroyed,
         ]).select_from(model.games.outerjoin(
             model.game_stats,
             (model.games.c.id == model.game_stats.c.game_id)
@@ -145,9 +142,6 @@ def list_matches_helper(offset, limit, participant_clause,
                 "replay_class": match["replay_bucket"],
                 "time_played": match["time_played"],
                 "turns_total": match["turns_total"],
-                "planets_destroyed": match["planets_destroyed"],
-                "ships_produced": match["ships_produced"],
-                "ships_destroyed": match["ships_destroyed"],
                 "challenge_id": match["challenge_id"],
                 "players": {},
             }
@@ -179,9 +173,6 @@ def list_matches():
         "time_played": model.games.c.time_played,
         "views_total": model.game_view_stats.c.views_total,
         "turns_total": model.game_stats.c.turns_total,
-        "planets_destroyed": model.game_stats.c.planets_destroyed,
-        "ships_produced": model.game_stats.c.ships_produced,
-        "ships_destroyed": model.game_stats.c.ships_destroyed,
         "challenge_id": model.games.c.challenge_id,
     }, ["timed_out"])
 

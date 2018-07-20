@@ -29,8 +29,6 @@ def make_challenge_record(challenge, participants):
         result["players"][participant["user_id"]] = {
             "username": participant["username"],
             "points": participant["points"],
-            "ships_produced": participant["ships_produced"],
-            "attacks_made": participant["attacks_made"],
             "is_issuer": participant["user_id"] == result["issuer"],
         }
 
@@ -91,8 +89,6 @@ def list_challenges_helper(offset, limit, participant_clause,
             participants = conn.execute(sqlalchemy.sql.select([
                 model.challenge_participants.c.user_id,
                 model.challenge_participants.c.points,
-                model.challenge_participants.c.ships_produced,
-                model.challenge_participants.c.attacks_made,
                 model.users.c.username,
             ]).select_from(model.challenge_participants.join(
                 model.users,
