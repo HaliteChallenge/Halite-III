@@ -60,7 +60,7 @@ def get_user_hackathons(intended_user):
             model.hackathons.c.description,
             model.hackathons.c.is_open,
         ]).where(
-            model.hackathons.c.is_open == 1
+            model.hackathons.c.is_open == sqlalchemy.true()
         )).fetchall()
 
         for hackathon in open_hackathons:
