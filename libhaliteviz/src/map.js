@@ -44,24 +44,12 @@ export class Map {
             tint: true,
         });
 
-        this.tintMap.interactive = true;
-        this.tintMap.hitArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
-        this.tintMap.on("pointerdown", (e) => {
-            const localCoords = e.data.global;
-            const [ x, y ] = this.camera.scaledToScreen(localCoords.x, localCoords.y);
-            const [ cellX, cellY ] = this.camera.screenToWorld(x, y);
-            onSelect("point", {
-                x: cellX,
-                y: cellY,
-            });
-        });
-
         // Generate the texture for a single map cell (16x16 white
         // square with a 2 pixel 70% black border blended on top)
         // Could probably be replaced with a real texture
-        const g = new PIXI.Graphics();
         const borderWidth = 1;
         const textureWidth = 16;
+        let g = new PIXI.Graphics();
         g.beginFill(0xFFFFFF, 1.0);
         g.drawRect(0, 0, textureWidth, textureWidth);
         g.beginFill(0x000000, 0.7);
@@ -71,13 +59,26 @@ export class Map {
         g.drawRect(0, borderWidth, borderWidth, textureWidth - borderWidth);
         g.drawRect(textureWidth - borderWidth, borderWidth, borderWidth, textureWidth - borderWidth);
         g.drawRect(borderWidth, textureWidth - borderWidth, textureWidth - 2*borderWidth, borderWidth);
-        const tex = renderer.generateTexture(g);
+        const normalTex = renderer.generateTexture(g);
+
+        // Now do the same, but for a highlighted map cell (white
+        // border)
+        // TODO: actually implement this
+        g = new PIXI.Graphics();
+        g.beginFill(0x999999, 1.0);
+        g.drawRect(0, 0, textureWidth, textureWidth);
+        g.beginFill(0xFFFFFF, 0.7);
+        g.drawRect(0, 0, textureWidth, borderWidth);
+        g.drawRect(0, borderWidth, borderWidth, textureWidth - borderWidth);
+        g.drawRect(textureWidth - borderWidth, borderWidth, borderWidth, textureWidth - borderWidth);
+        g.drawRect(borderWidth, textureWidth - borderWidth, textureWidth - 2*borderWidth, borderWidth);
+        const highlightTex = renderer.generateTexture(g);
 
         this.cells = [];
 
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
-                const cell = PIXI.Sprite.from(tex);
+                const cell = PIXI.Sprite.from(normalTex);
                 cell.width = this.scale;
                 cell.height = this.scale;
                 cell.position.x = col * this.scale;
@@ -135,11 +136,6 @@ export class Map {
         this.container.removeChild(this.tintMap);
     }
 
-    get id() {
-        // TODO: do maps get IDs?
-        return 0;
-    }
-
     /**
      * Return the color of the owner of a cell
      * @param owners: 2d array of the map, containing owner information
@@ -162,7 +158,7 @@ export class Map {
     update(updated_cells) {
         // update cell productions
         for (let cell_index = 0; cell_index < updated_cells.length; cell_index++) {
-            let cell_info = updated_cells[cell_index]
+            const cell_info = updated_cells[cell_index];
             this.productions[cell_info.y][cell_info.x] = cell_info.production;
         }
         // Redraw map cells, both for new production colors and possible resizing due to zooming
