@@ -11,7 +11,7 @@ namespace net {
 std::string BaseConnection::read_trailing_input() {
     std::string result;
     config.ignore_timeout = false;
-    config.timeout = std::chrono::milliseconds(0);
+    config.timeout = std::chrono::milliseconds::zero();
     while (true) {
         try {
             result += get_string();

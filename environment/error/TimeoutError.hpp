@@ -9,27 +9,31 @@
 
 /** Thrown when a network event times out. */
 struct TimeoutError : public BotError {
-    /** The time elapsed. */
-    std::string message;
-    std::string remaining_input;
-    std::chrono::milliseconds time;
-
-    std::string result;
+private:
+    std::string result;                   /**< The description buffer. */
+public:
+    const std::string message;            /**< The message. */
+    const std::chrono::milliseconds time; /**< The time elapsed. */
+    const std::string remaining_input;    /**< The remaining input. */
 
     /**
-     * Construct TimeoutError from time.
+     * Construct TimeoutError from message, time, and remaining input.
+     * @param message The message.
      * @param time The time elapsed.
+     * @param remaining_input The remaining input.
      */
-    explicit TimeoutError(const std::string& message,
+    explicit TimeoutError(std::string message,
                           std::chrono::milliseconds time,
-                          const std::string& remaining_input)
-        : message(message), remaining_input(remaining_input), time(time) {
-        result = "Timed out after ";
-        result += std::to_string(time.count());
-        result += " ms (";
-        result += message;
-        result += "). Input read:\n";
-        result += remaining_input;
+                          std::string remaining_input = "")
+            : message(std::move(message)), time(time), remaining_input(std::move(remaining_input)) {
+        std::ostringstream stream;
+        stream << "Timed out after "
+               << std::to_string(time.count())
+               << " ms ("
+               << this->message
+               << ")."
+               << std::endl;
+        result = stream.str();
     }
 
     /**

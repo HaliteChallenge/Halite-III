@@ -44,6 +44,8 @@ UnixConnection::UnixConnection(const std::string &command, NetworkingConfig conf
     CHECK(pipe(error_pipe));
     // Make the write pipe non-blocking
     CHECK(fcntl(write_pipe[PIPE_TAIL], F_SETFL, O_NONBLOCK));
+    // Make the error pipe non-blocking
+    CHECK(fcntl(error_pipe[PIPE_HEAD], F_SETFL, O_NONBLOCK));
 
     auto ppid_before_fork = getpid();
     auto pid = fork();
@@ -103,7 +105,7 @@ void UnixConnection::send_string(const std::string &message) {
             auto current_time = high_resolution_clock::now();
             auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
             if (remaining < milliseconds::zero()) {
-                throw TimeoutError("when sending string", config.timeout, "");
+                throw TimeoutError("when sending string", config.timeout);
             }
         }
         ssize_t chars_written = write(write_pipe, message_ptr, chars_remaining);
@@ -121,6 +123,37 @@ void UnixConnection::send_string(const std::string &message) {
 }
 
 /**
+ * Check a pipe to see if it has available bytes, blocking indefinitely.
+ * @param pipe The pipe to check.
+ * @return Result of select(2) on the pipe.
+ */
+int check_pipe(int pipe) {
+    fd_set set;
+    FD_ZERO(&set);
+    assert(pipe <= FD_SETSIZE);
+    FD_SET(pipe, &set);
+    return select(pipe + NFDS_OFFSET, &set, nullptr, nullptr, nullptr);
+}
+
+/**
+ * Check a pipe to see if it has available bytes, blocking until timeout.
+ * @param pipe The pipe to check.
+ * @param timeout The timeout.
+ * @return Result of select(2) on the pipe.
+ */
+int check_pipe(int pipe, std::chrono::milliseconds timeout) {
+    fd_set set;
+    FD_ZERO(&set);
+    assert(pipe <= FD_SETSIZE);
+    FD_SET(pipe, &set);
+    struct timeval timeout_struct{};
+    auto sec = std::chrono::duration_cast<std::chrono::seconds>(timeout);
+    timeout_struct.tv_sec = sec.count();
+    timeout_struct.tv_usec = (timeout - sec).count();
+    return select(pipe + NFDS_OFFSET, &set, nullptr, nullptr, &timeout_struct);
+}
+
+/**
  * Get a string from this connection.
  * @return The string read.
  * @throws NetworkingError on error while reading.
@@ -133,18 +166,13 @@ std::string UnixConnection::get_string() {
         return message;
     }
 
-    fd_set set;
-    FD_ZERO(&set);
-    assert(read_pipe <= FD_SETSIZE);
-    FD_SET(read_pipe, &set);
-
     using namespace std::chrono;
     auto initial_time = high_resolution_clock::now();
     while (true) {
         // Check if there are bytes in the pipe
-        int selection_result;
+        int selection_result = 0;
         if (config.ignore_timeout) {
-            selection_result = select(read_pipe + NFDS_OFFSET, &set, nullptr, nullptr, nullptr);
+            selection_result = check_pipe(read_pipe);
         } else {
             auto current_time = high_resolution_clock::now();
             auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
@@ -152,13 +180,11 @@ std::string UnixConnection::get_string() {
                 // TODO: continue and read remainder of input
                 throw TimeoutError("when reading string", config.timeout, current_read);
             }
-            struct timeval timeout{};
-            auto sec = duration_cast<seconds>(remaining);
-            timeout.tv_sec = sec.count();
-            timeout.tv_usec = (remaining - sec).count();
-            selection_result = select(read_pipe + NFDS_OFFSET, &set, nullptr, nullptr, &timeout);
+            selection_result = check_pipe(read_pipe, remaining);
         }
-        if (selection_result > 0) {
+        if (selection_result < 0) {
+            throw NetworkingError("Select failed", current_read);
+        } else if (selection_result > 0) {
             // Read from the pipe, as many as we can into the buffer
             auto bytes_read = read(read_pipe, buffer.begin(), buffer.size());
             if (bytes_read < 0) {
@@ -206,17 +232,11 @@ std::string UnixConnection::get_string() {
  */
 std::string UnixConnection::get_errors() {
     std::string result;
-    fd_set set;
-    FD_ZERO(&set);
-    assert(error_pipe <= FD_SETSIZE);
-    FD_SET(error_pipe, &set);
-    auto selection_result = select(error_pipe + NFDS_OFFSET, &set, nullptr, nullptr, nullptr);
-    if (selection_result > 0) {
-        ssize_t bytes_read = 0;
-        while ((bytes_read = read(error_pipe, buffer.begin(), buffer.size())) > 0) {
-            auto read_end = buffer.begin() + bytes_read;
-            result += std::string(buffer.begin(), read_end);
-        }
+    static constexpr auto MAX_STDERR_LENGTH = 1024;
+    ssize_t bytes_read = 0;
+    while ((bytes_read = read(error_pipe, buffer.begin(), buffer.size())) > 0
+           && result.size() < MAX_STDERR_LENGTH) {
+        result += std::string(buffer.begin(), buffer.begin() + bytes_read);
     }
     return result;
 }

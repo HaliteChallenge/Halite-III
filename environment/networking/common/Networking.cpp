@@ -3,8 +3,7 @@
 #include "Command.hpp"
 #include "Halite.hpp"
 #include "Logging.hpp"
-#include "error/BotError.hpp"
-#include "error/NetworkingError.hpp"
+#include "BotError.hpp"
 
 namespace net {
 
@@ -12,6 +11,28 @@ using namespace hlt;
 
 /** Maximum permissible length for user name in characters, truncated past this. */
 constexpr auto NAME_MAX_LENGTH = 30;
+
+/**
+ * Handle a player communication error.
+ * @param player The player.
+ * @param connection The player connection.
+ * @param received_input The current received input from the player.
+ */
+void handle_player_error(Player &player, Connection &connection, std::string received_input = "") {
+    try {
+        received_input += connection->read_trailing_input();
+        player.log_error("Last input received was:");
+        player.log_error(received_input);
+    } catch (...) {
+        player.log_error("Last input could not be determined.");
+    }
+    try {
+        player.log_error("Bot error output was:");
+        player.log_error(connection->get_errors());
+    } catch (...) {
+        player.log_error("Bot error output could not be determined.");
+    }
+}
 
 /**
  * Launch the bot for a player, send the initial game information to the player, and update its name.
@@ -48,13 +69,10 @@ void Networking::initialize_player(Player &player) {
         player.name = connections[player]->get_string().substr(0, NAME_MAX_LENGTH);
         Logging::log("Init message received from player " + to_string(player.id) + ", name: " + player.name);
     }
-    catch (const BotError& e) {
+    catch (const BotError &e) {
+        Logging::log("Failed to initialize player " + to_string(player.id), Logging::Level::Error);
         player.log_error(e.what());
-        const auto received_input = connections[player]->read_trailing_input();
-        player.log_error("Last input received was:");
-        player.log_error(received_input);
-        player.log_error("Bot error output was:");
-        player.log_error(connections[player]->get_errors());
+        handle_player_error(player, connections[player]);
         throw;
     }
 }
@@ -76,9 +94,9 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
         for (const auto &[entity_id, location] : other_player.entities) {
             const auto entity_iterator = game.store.entities.find(entity_id);
             message_stream << entity_id
-                    << " " << location
-                    << " " << entity_iterator->second.energy
-                    << std::endl;
+                           << " " << location
+                           << " " << entity_iterator->second.energy
+                           << std::endl;
         }
         // Output a list of dropoffs.
         for (const auto &dropoff : other_player.dropoffs) {
@@ -107,14 +125,11 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
         Logging::log("Received " + std::to_string(commands.size()) +
                      " commands from player " + to_string(player.id), Logging::Level::Debug);
     }
-    catch (const BotError& e) {
+    catch (const BotError &e) {
+        Logging::log("Failed to communicate with player " + to_string(player.id), Logging::Level::Error);
         player.log_error(e.what());
         received_input += '\n';
-        received_input += connections[player]->read_trailing_input();
-        player.log_error("Last input received was:");
-        player.log_error(received_input);
-        player.log_error("Bot error output was:");
-        player.log_error(connections[player]->get_errors());
+        handle_player_error(player, connections[player], received_input);
         throw;
     }
 
