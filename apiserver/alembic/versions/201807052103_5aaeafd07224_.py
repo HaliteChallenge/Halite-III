@@ -85,7 +85,7 @@ def upgrade():
     op.create_table('organization_email_domain',
                     sa.Column('organization_id', sa.Integer(), autoincrement=False, nullable=False),
                     sa.Column('domain', sa.Unicode(length=255), nullable=False),
-                    sa.ForeignKeyConstraint(['organization_id'], ['organization.id'], name='organization_email_domain_ibfk_1'),
+                    sa.ForeignKeyConstraint(['organization_id'], ['organization.id'], name='organization_email_domain_ibfk_1', ondelete="CASCADE"),
                     sa.PrimaryKeyConstraint('organization_id', 'domain'),
     )
 

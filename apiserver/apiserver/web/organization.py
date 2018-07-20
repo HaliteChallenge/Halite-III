@@ -92,18 +92,21 @@ def create_organization(*, user_id):
 def update_organization(org_id, *, user_id):
     fields = flask.request.get_json()
     columns = {
-        "name": model.organizations.c.organization_name,
-        "type": model.organizations.c.kind,
+        "name": "organization_name",
+        "type": "kind",
     }
 
+    record = {}
     for key in fields:
         if key not in columns:
             raise util.APIError(400, message="Cannot update '{}'".format(key))
+        record[columns[key]] = fields[key]
 
-    with model.engine.connect() as conn:
-        conn.execute(model.organizations.update().where(
-            model.organizations.c.id == org_id
-        ).values(**fields))
+    if record:
+        with model.engine.connect() as conn:
+            conn.execute(model.organizations.update().where(
+                model.organizations.c.id == org_id
+            ).values(**record))
 
     return util.response_success()
 
