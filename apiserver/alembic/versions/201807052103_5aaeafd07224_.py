@@ -198,8 +198,8 @@ def upgrade():
                     sa.Column('user_id', sa.Integer(), autoincrement=False, nullable=False),
                     sa.Column('bot_id', sa.Integer(), autoincrement=False, nullable=False),
                     sa.ForeignKeyConstraint(['game_id'], ['game.id'], name='game_bot_stat_ibfk_1', ondelete='CASCADE'),
-                    sa.ForeignKeyConstraint(['user_id', 'bot_id'], ['bot.user_id', 'bot.id'], name='fkcompid'),
-                    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='fkuserid'),
+                    sa.ForeignKeyConstraint(['user_id', 'bot_id'], ['bot.user_id', 'bot.id'], name='fkcompid', ondelete='CASCADE'),
+                    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='fkuserid', ondelete='CASCADE'),
                     sa.PrimaryKeyConstraint('game_id', 'user_id', 'bot_id'),
     )
     op.create_table('game_participant',
@@ -215,8 +215,8 @@ def upgrade():
                     sa.Column('sigma', sa.Float(), nullable=True),
                     sa.Column('leaderboard_rank', sa.Integer(), autoincrement=False, nullable=True),
                     sa.ForeignKeyConstraint(['game_id'], ['game.id'], name='game_participant_ibfk_4', ondelete='CASCADE'),
-                    sa.ForeignKeyConstraint(['user_id', 'bot_id'], ['bot.user_id', 'bot.id'], name='game_participant_ibfk_3'),
-                    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='game_participant_ibfk_2'),
+                    sa.ForeignKeyConstraint(['user_id', 'bot_id'], ['bot.user_id', 'bot.id'], name='game_participant_ibfk_3', ondelete='CASCADE'),
+                    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='game_participant_ibfk_2', ondelete='CASCADE'),
                     sa.PrimaryKeyConstraint('game_id', 'user_id', 'bot_id'),
     )
 
