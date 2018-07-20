@@ -41,7 +41,7 @@ protected:
     /** Tile a map from a single tile via repeated reflection
      *
      * @param[out] map A map tiled by the input tile. All cells in the map will be initialized.
-     * @param factory_y, factory_x: On a tile, the y and x coordinate the initial factory should be placed
+     * @param factory_y, factory_x: IGNORED - generates own factory location
      * @param tile: A filled map of a single tile with dimensions tile_height, tile_width. All cells should already be
      * initialized, but no factories should be placed
      */

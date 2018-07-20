@@ -95,12 +95,17 @@ void SymmetricalTile::flip_horizontal(Map &map, const dimension_type tile_width,
 /** Tile a map from a single tile via repeated reflection
  *
  * @param[out] map A map tiled by the input tile. All cells in the map will be initialized.
- * @param factory_y, factory_x: On a tile, the y and x coordinate the initial factory should be placed
+ * @param factory_y, factory_x: IGNORED - generates own factory location
  * @param tile: A filled map of a single tile with dimensions tile_height, tile_width. All cells should already be
  * initialized, but no factories should be placed
  */
 void SymmetricalTile::tile_map(hlt::Map &map, hlt::dimension_type factory_y, hlt::dimension_type factory_x,
                                const hlt::Map &tile) {
+    // Put factory in the center (ish) of tile
+    const dimension_type factory_pos_x = tile.width / 2;
+    const dimension_type factory_pos_y = tile.width / 2;
+    (void) factory_y, (void) factory_x;
+
     // copy tile and factory onto map
     for (dimension_type tile_row = 0; tile_row < tile_height; ++tile_row) {
         for (dimension_type tile_col = 0; tile_col < tile_width; ++tile_col) {
@@ -108,7 +113,7 @@ void SymmetricalTile::tile_map(hlt::Map &map, hlt::dimension_type factory_y, hlt
         }
     }
 
-    const Location factory = Location(factory_x, factory_y);
+    const Location factory = Location(factory_pos_x, factory_pos_y);
     map.at(factory).energy = 0;
     map.factories.push_back(factory);
 

@@ -2,6 +2,7 @@
 #define FRACTALVALUENOISETILEGENERATOR_H
 
 #include "TileGenerator.hpp"
+#include "SymmetricalTile.hpp"
 #include "Map.hpp"
 
 namespace hlt {
@@ -12,7 +13,7 @@ namespace mapgen {
  * The size of the tile is determined from the desired total height and width of the map,
  * and the number of players.
  */
-class FractalValueNoiseTileGenerator : public TileGenerator {
+class FractalValueNoiseTileGenerator : public SymmetricalTile {
 private:
     std::vector<std::vector<double> >
     generateSmoothNoise(const std::vector<std::vector<double> > &source_noise, dimension_type wavelength) const;
@@ -31,7 +32,7 @@ public:
      * @param parameters: The map generation parameters.
      */
     explicit FractalValueNoiseTileGenerator(const MapParameters &parameters) :
-            TileGenerator(parameters) {};
+            SymmetricalTile(parameters) {};
 };
 }
 }
