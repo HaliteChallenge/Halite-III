@@ -78,6 +78,12 @@
                              }
                          ));
                 }
+                else if (stepName === "collection") {
+                    tween.driveWhile(
+                        () => visualizer.camera.scale > visualizer.camera.initScale,
+                        (dt) => visualizer.camera.zoomBy(0.5, 0.5, -dt / 10000)
+                    ).then(() => visualizer.camera.reset());
+                }
             },
         },
         updated: function() {
@@ -102,9 +108,15 @@
                         patch(visualizer.camera, "reset", () => {
                             this.completeSubstep("seas-reset");
                         });
+                        patch(visualizer, "play", () => {
+                            this.completeSubstep("collection-play");
+                        });
                         patch(visualizer, "onSelect", (kind) => {
                             if (this.stepName === "salt" && kind === "point") {
                                 this.completeSubstep("salt-halite");
+                            }
+                            else if (this.stepName === "vessel" && kind === "ship") {
+                                this.completeSubstep("vessel-halite");
                             }
                         });
 
@@ -146,7 +158,7 @@
         }
     }
 
-    .step-seas, .step-time, .step-salt {
+    .step-seas, .step-time, .step-salt, .step-admiral, .step-shipyard, .step-vessel {
         .replay-btn:not(.reset-btn) {
             display: none;
         }

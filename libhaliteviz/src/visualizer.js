@@ -349,10 +349,11 @@ export class HaliteVisualizer {
             this.time = 1.0;
         }
 
-        if (this.frame >= this.replay.full_frames.length) {
+        if (this.frame > this.replay.full_frames.length) {
             this.pause();
             this.frame = this.replay.full_frames.length - 1;
             this.time = 1.0;
+            this.onUpdate();
             this.onEnd();
             return;
         }
@@ -405,8 +406,9 @@ export class HaliteVisualizer {
         this.process_entity_events();
 
         // Process map ownership
-        this.baseMap.update(this.replay.full_frames[this.frame].cells);
-
+        if (this.currentFrame) {
+            this.baseMap.update(this.currentFrame.cells);
+        }
     }
 
     /** Update/rerender after panning. */
@@ -471,11 +473,12 @@ export class HaliteVisualizer {
      */
     process_entity_commands() {
         this.current_commands = {};
-        for (let player_id in this.replay.full_frames[this.frame].moves) {
+        if (!this.currentFrame) return;
+        for (let player_id in this.currentFrame.moves) {
             // TODO check desired and actual type of player_id
             this.current_commands[player_id] = {};
-            for (let command_key in this.replay.full_frames[this.frame].moves[player_id]) {
-                let command = this.replay.full_frames[this.frame].moves[player_id][command_key];
+            for (let command_key in this.currentFrame.moves[player_id]) {
+                let command = this.currentFrame.moves[player_id][command_key];
                 const command_type = command.type;
                 if (command_type === "m" || command_type === "d" || command_type === "c") {
                     this.current_commands[player_id][command.id] = command;
@@ -492,8 +495,9 @@ export class HaliteVisualizer {
     process_entity_events() {
         // TODO: add within frame interpolation
         let delayTime = 0;
-        if (this.replay.full_frames[this.frame].events) {
-            for (let event of this.replay.full_frames[this.frame].events) {
+        if (!this.currentFrame) return;
+        if (this.currentFrame.events) {
+            for (let event of this.currentFrame.events) {
                 const cellSize = assets.CELL_SIZE;
 
                 if (event.type === "shipwreck") {

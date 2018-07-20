@@ -74,7 +74,7 @@
                     propulsion difficult.)
                 </p>
                 <walkthrough-substeps>
-                    <walkthrough-substep>
+                    <walkthrough-substep name="vessel-halite">
                         Click on a ship and observe how much halite it has.
                     </walkthrough-substep>
                 </walkthrough-substeps>
@@ -87,9 +87,9 @@
                     the waters around them every turn.
                 </p>
                 <walkthrough-substeps>
-                    <walkthrough-substep>
-                        Compare the cargo on the two ships as they
-                        collect halite for a few turns.
+                    <walkthrough-substep name="collection-play">
+                        Watch the replay and observe the map as ships
+                        collect the halite near their shipyard.
                     </walkthrough-substep>
                 </walkthrough-substeps>
             </Step>
@@ -100,6 +100,10 @@
                     overboard; if they do so while on top of their
                     shipyard, that halite will get collected by the
                     player. Otherwise, it returns to the sea.
+                </p>
+                <p>
+                    Replay the game, observing a ship's cargo as it
+                    goes around the map.
                 </p>
             </Step>
             <Step title="Drop-Off Areas" name="dropoffs">

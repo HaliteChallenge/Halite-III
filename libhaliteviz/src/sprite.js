@@ -100,6 +100,10 @@ export default class Ship {
             const entity_record = this.visualizer.replay
                   .full_frames[this.visualizer.frame]
                   .entities[this.owner][this.id];
+            if (!entity_record) {
+                return;
+            }
+
             this.energy = entity_record.energy;
 
             if (command.type === "m") {
