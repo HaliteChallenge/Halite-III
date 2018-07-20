@@ -228,7 +228,7 @@ def create_user(*, user_id):
         if user_data["verification_code"]:
             raise util.APIError(400, message="User needs to verify email.")
 
-        if user_data["is_email_good"] == 1:
+        if user_data["is_email_good"]:
             raise util.APIError(400, message="You have already successfully confirmed your membership with this organization.")
 
     org_id = body.get("organization_id")
