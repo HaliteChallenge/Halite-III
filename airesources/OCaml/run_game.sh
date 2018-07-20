@@ -1,3 +1,3 @@
 #!/bin/sh
 
-./halite -v "./MyBot.native" "./MyBot.native" "./MyBot.native" "./MyBot.native"
+./halite -vvv "./MyBot.native" "./MyBot.native" "./MyBot.native" "./MyBot.native"
