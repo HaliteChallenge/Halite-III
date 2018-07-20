@@ -14,40 +14,40 @@ namespace net {
 
 /** Generic networking exception. */
 struct NetworkingError : public BotError {
-    std::string message;
-    int recorded_errno;
-    std::string remaining_input;
+private:
+    std::string result;                /** The description buffer. */
+public:
+    const std::string message;         /** The message. */
+    const std::string remaining_input; /**< The remaining input. */
+    const int recorded_errno;          /** The captured errno. */
 
     /**
-     * Construct NetworkingError from message.
+     * Construct NetworkingError from message and remaining input.
      * @param message The message.
+     * @param remaining_input The remaining input.
      */
-    explicit NetworkingError(const std::string &message)
-        : message(message), recorded_errno(errno), remaining_input() {}
-
-    /**
-     * Construct NetworkingError from message and remaining input
-     * @param message The message.
-     * @param remaining_input Any input that the bot sent.
-     */
-    explicit NetworkingError(const std::string &message, const std::string &remaining_input)
-        : message(message), recorded_errno(errno), remaining_input(remaining_input) {}
-
-    const char *what() const noexcept override {
-        std::stringstream result;
-
-        result << "Error communicating with bot: "
-               << message
-               << ".\nerrno was: "
-               << errno
-               << " ("
-               << std::strerror(errno)
-               << ").\nRemaining bot input was:"
+    explicit NetworkingError(std::string message, std::string remaining_input = "")
+            : message(std::move(message)), remaining_input(std::move(remaining_input)), recorded_errno(errno) {
+        std::stringstream stream;
+        stream << "Error communicating with bot: "
+               << this->message
+               << "."
                << std::endl
-               << remaining_input;
+               << "errno was: "
+               << recorded_errno
+               << " ("
+               << std::strerror(recorded_errno)
+               << ")."
+               << std::endl;
+        result = stream.str();
+    }
 
-        const std::string copy = result.str();
-        return strdup(copy.c_str());
+    /**
+     * Get the exception description.
+     * @return The exception description.
+     */
+    const char *what() const noexcept override {
+        return result.c_str();
     }
 };
 
