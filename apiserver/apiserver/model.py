@@ -92,14 +92,14 @@ def hackathon_ranked_bots_query(hackathon_id,
         hackathon_snapshot.c.language,
     ]).select_from(
         hackathon_snapshot
-    ).select_from(sqlalchemy.sql.select([
-        sqlalchemy.sql.text("@{}:=0".format(variable))
-    ]).alias("rn")).where(
+    ).where(
         hackathon_snapshot.c.hackathon_id == hackathon_id
     ).order_by(hackathon_snapshot.c.score.desc()).alias("temptable")
 
     return sqlalchemy.sql.select([
-        sqlalchemy.sql.text("(@{v}:=@{v} + 1) AS local_rank".format(v=variable)),
+        sqlalchemy.sql.func.rank().over(
+            order_by=temptable.c.score.desc()
+        ).label("local_rank"),
         temptable.c.user_id,
         temptable.c.bot_id,
         temptable.c.mu,
@@ -244,7 +244,7 @@ def hackathon_ranked_bots_users_query(hackathon_id, *, alias="hackathon_ranked_b
         local_rank.c.language,
         ranked_bots.c.update_time,
         # Perform a no-op operation so we can label the column easily
-        local_rank.c.local_rank.label("local_rank"),
+        local_rank.c.local_rank,
         ranked_bots.c.compile_status,
     ]).select_from(
         ranked_bots.join(

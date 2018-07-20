@@ -293,9 +293,9 @@ def hackathon_status(start_date, end_date):
     `end_date` may be null (for ongoing hackathons).
     """
     status = "open"
-    if end_date and end_date < datetime.datetime.now():
+    if end_date and end_date < arrow.now():
         status = "closed"
-    elif start_date > datetime.datetime.now():
+    elif start_date > arrow.now():
         status = "upcoming"
     return status
 
