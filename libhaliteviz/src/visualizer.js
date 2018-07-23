@@ -415,7 +415,7 @@ export class HaliteVisualizer {
 
         // Process map ownership
         if (this.currentFrame) {
-            this.baseMap.update(this.currentFrame.cells);
+            this.baseMap.update(this.frame, this.currentFrame.cells, delta);
         }
     }
 
@@ -430,7 +430,7 @@ export class HaliteVisualizer {
         //     dropoff.update();
         // }
 
-        this.baseMap.update([]);
+        this.baseMap.update(this.frame, [], 0);
 
         if (!this.isPlaying()) {
             this.application.render();
@@ -540,12 +540,11 @@ export class HaliteVisualizer {
                         const new_entity = new Ship(this, entity_object);
                         this.entity_dict[event.id] = new_entity;
                         new_entity.attach(this.entityContainer);
+                        // TODO: use new Halite 3 spawn animation
+                        this.animationQueue.push(
+                            new animation.PlanetExplosionFrameAnimation(
+                                event, delayTime, cellSize, this.entityContainer));
                     }
-
-                    // TODO: use new Halite 3 spawn animation
-                    this.animationQueue.push(
-                        new animation.PlanetExplosionFrameAnimation(
-                            event, delayTime, cellSize, this.entityContainer));
 
                     // Store spawn as command so that entity knows not to mine this turn
                     if (!this.current_commands[event.owner_id]) {
