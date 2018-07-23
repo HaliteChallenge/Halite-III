@@ -19,6 +19,7 @@
     "jszip": "^3.1.4",
     "libhaliteviz": "file:../libhaliteviz",
     "lodash": "^4.17.4",
+    "text-encoding": "^0.6.4",
     "vue": "^2.5.2",
     "vue-cookie": "^1.1.4",
     "vue-moment": "^2.1.0",
