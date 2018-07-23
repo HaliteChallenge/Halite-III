@@ -17,7 +17,7 @@ struct Player final : public Enumerated<Player> {
     friend class Factory<Player>;
 
     std::string name;               /**< The name of the player. */
-    const Location factory;         /**< The factory location of the player. */
+    Location factory;               /**< The factory location of the player. */
     std::vector<Dropoff> dropoffs;  /**< The dropoffs this player owns. */
     energy_type energy{};           /**< The amount of energy stockpiled by the player. */
     const std::string command;      /**< The bot command for the player. */

@@ -537,7 +537,11 @@ export class HaliteVisualizer {
                     this.animationQueue.push(
                         new animation.PlanetExplosionFrameAnimation(
                             event, delayTime, cellSize, this.entityContainer));
+
                     // Store spawn as command so that entity knows not to mine this turn
+                    if (!this.current_commands[event.owner_id]) {
+                        this.current_commands[event.owner_id] = {};
+                    }
                     this.current_commands[event.owner_id][event.id] = {"type" : "g"};
                 }
                 else if (event.type === "construct") {
@@ -554,8 +558,13 @@ export class HaliteVisualizer {
                     dropoff.attach(this.factoryContainer);
 
                     // delete entity sprite as it is no longer a ship
-                    this.entity_dict[event.id].destroy();
-                    delete this.entity_dict[event.id];
+                    // entity might not exist if this is the zero
+                    // frame (which just records prior game state,
+                    // e.g. from a snapshot)
+                    if (this.entity_dict[event.id]) {
+                        this.entity_dict[event.id].destroy();
+                        delete this.entity_dict[event.id];
+                    }
                 }
                 else {
                     console.log(event);

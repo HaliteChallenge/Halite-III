@@ -145,8 +145,7 @@ int main(int argc, char *argv[]) {
     hlt::Replay replay{game_statistics, map_parameters.num_players, map_parameters.seed, map};
 
     hlt::Halite game(config, map, networking_config, game_statistics, replay);
-    game.load_snapshot(snapshot);
-    game.run_game(bot_commands);
+    game.run_game(bot_commands, snapshot);
 
     const auto& overrides = override_args.getValue();
     auto idx = 0;

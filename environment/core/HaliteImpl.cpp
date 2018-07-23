@@ -10,19 +10,53 @@ namespace hlt {
  * @param player_commands The list of player commands.
  */
 void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands,
-                                     const Snapshot& snapshot) {
+                                 const Snapshot& snapshot) {
     const auto &constants = Constants::get();
     auto &players = game.store.players;
     players.reserve(player_commands.size());
     assert(game.map.factories.size() >= player_commands.size());
+
+    // Add a 0 frame so we can record beginning-of-game state
+    game.replay.full_frames.emplace_back();
+    std::unordered_set<Location> changed_cells;
+
     auto factory_iterator = game.map.factories.begin();
+
     for (const auto &command : player_commands) {
         auto &factory = *factory_iterator++;
         auto player = game.store.player_factory.make(factory, command);
         player.energy = constants.INITIAL_ENERGY;
         game.game_statistics.player_statistics.emplace_back(player.id);
+        if (snapshot.players.find(player.id) != snapshot.players.end()) {
+            const auto &player_snapshot = snapshot.players.at(player.id);
+            player.factory = player_snapshot.factory;
+            player.energy = player_snapshot.energy;
+
+            for (const auto &[_, dropoff_location] : player_snapshot.dropoffs) {
+                auto &cell = game.map.at(dropoff_location);
+                cell.owner = player.id;
+                cell.energy = 0;
+                player.dropoffs.emplace_back(game.store.new_dropoff(dropoff_location));
+                game.replay.full_frames.back().events.push_back(
+                    std::make_unique<ConstructionEvent>(
+                        dropoff_location, player.id, Entity::id_type{0}));
+                changed_cells.insert(dropoff_location);
+            }
+
+            for (const auto &entity : player_snapshot.entities) {
+                auto &cell = game.map.at(entity.location);
+                const auto &new_entity = game.store.new_entity(entity.energy, player.id);
+                cell.entity = new_entity.id;
+                player.add_entity(new_entity.id, entity.location);
+                game.replay.full_frames.back().events.push_back(
+                    std::make_unique<SpawnEvent>(
+                        entity.location, entity.energy, player.id, cell.entity));
+            }
+        }
         players.emplace(player.id, player);
     }
+    game.replay.full_frames.back().add_cells(game.map, changed_cells);
+
     game.replay.game_statistics = game.game_statistics;
 
     // Zero the energy on factories and mark as owned.
