@@ -312,7 +312,7 @@ export default {
           }))
       }
       return api.get_editor_file_list(this.user_id)
-                .then(((file_list) => {
+                .then((file_list) => {
                   if (file_list.length > 0) {
                     return api_get_files_with_list(this, file_list)
                   }
@@ -320,7 +320,7 @@ export default {
                     return api.create_editor_file_space(this.user_id, 'Python')
                               .then((file_list) => api_get_files_with_list(this, file_list))
                   }
-                }))
+                })
                 .then((file_contents) => {
                   let editor_files =  file_contents.reduce(function(prev, cur) {
                     prev[cur.name] = {name: cur.name, contents: cur.contents}

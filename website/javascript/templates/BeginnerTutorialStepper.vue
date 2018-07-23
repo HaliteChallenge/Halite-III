@@ -142,71 +142,73 @@
 </style>
 
 <style lang="scss">
-    .game-replay-share {
-        display: none;
-    }
-
-    .step-seas {
-        .game-replay-progress {
+    .walkthrough {
+        .game-replay-share {
             display: none;
         }
-    }
 
-    .step-time {
-        .game-replay-progress {
-            animation: reveal 4s;
+        .step-seas {
+            .game-replay-progress {
+                display: none;
+            }
         }
-    }
 
-    .step-seas, .step-time, .step-salt, .step-admiral, .step-shipyard, .step-vessel {
-        .replay-btn:not(.reset-btn) {
+        .step-time {
+            .game-replay-progress {
+                animation: reveal 4s;
+            }
+        }
+
+        .step-seas, .step-time, .step-salt, .step-admiral, .step-shipyard, .step-vessel {
+            .replay-btn:not(.reset-btn) {
+                display: none;
+            }
+        }
+
+        .step-seas, .step-time {
+            .sidebar {
+                display: none;
+            }
+
+            .visuallizer-container > .row > .col-md-8 {
+                width: 100%;
+            }
+
+            canvas {
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        .game-heading, #heading_player_details, .game-stats-widget {
             display: none;
         }
-    }
 
-    .step-seas, .step-time {
-        .sidebar {
-            display: none;
+        .game-replay, .game-replay-viewer, .visuallizer-container {
+            padding: 0 !important;
+        }
+
+        .visuallizer-container {
+            height: 100%;
+        }
+
+        .visuallizer-container > .row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: calc(100% - 2em);
+            margin: 0 auto;
         }
 
         .visuallizer-container > .row > .col-md-8 {
-            width: 100%;
+            flex: 1 0;
         }
 
-        canvas {
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-        }
-    }
-
-    .game-heading, #heading_player_details, .game-stats-widget {
-        display: none;
-    }
-
-    .game-replay, .game-replay-viewer, .visuallizer-container {
-        padding: 0 !important;
-    }
-
-    .visuallizer-container {
-        height: 100%;
-    }
-
-    .visuallizer-container > .row {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-        width: calc(100% - 2em);
-        margin: 0 auto;
-    }
-
-    .visuallizer-container > .row > .col-md-8 {
-        flex: 1 0;
-    }
-
-    .walkthrough-content {
-        height: 100%;
-        & > * {
+        .walkthrough-content {
             height: 100%;
+            & > * {
+                height: 100%;
+            }
         }
     }
 
