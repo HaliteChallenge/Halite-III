@@ -65,8 +65,17 @@ Snapshot Snapshot::from_str(const std::string &snapshot) {
             num_players,
     };
 
-    std::unordered_map<Player::id_type, PlayerSnapshot> players;
+    // Parse map
+    std::vector<energy_type> map;
+    for (auto i = 0; i < width * height; i++) {
+        energy_type energy;
+        iss >> energy;
+        map.push_back(energy);
+        if (iss.peek() == SNAPSHOT_LIST_DELIMITER) iss.ignore();
+    }
+    ignore_delimiter(iss, SNAPSHOT_FIELD_DELIMITER, 0);
 
+    std::unordered_map<Player::id_type, PlayerSnapshot> players;
     for (unsigned long i = 0; i < num_players; i++) {
         Player::id_type player_id;
         energy_type energy;
@@ -123,6 +132,6 @@ Snapshot Snapshot::from_str(const std::string &snapshot) {
         if (iss) ignore_delimiter(iss, SNAPSHOT_FIELD_DELIMITER, 0);
     }
 
-    return Snapshot{map_params, players};
+    return Snapshot{map_params, map, players};
 }
 }

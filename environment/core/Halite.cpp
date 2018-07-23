@@ -76,6 +76,13 @@ std::string Halite::to_snapshot(const hlt::mapgen::MapParameters& map_parameters
            << SNAPSHOT_LIST_DELIMITER << map_parameters.seed
            << SNAPSHOT_FIELD_DELIMITER;
 
+    for (const auto &row : map.grid) {
+        for (const auto &cell : row) {
+            output << cell.energy << SNAPSHOT_LIST_DELIMITER;
+        }
+    }
+    output << SNAPSHOT_FIELD_DELIMITER;
+
     for (const auto& [player_id, player] : store.players) {
         output << player_id
                << SNAPSHOT_FIELD_DELIMITER << player.energy

@@ -37,6 +37,8 @@ struct PlayerSnapshot {
 
 struct Snapshot {
     mapgen::MapParameters map_param{};
+    // Each row laid out end-to-end
+    std::vector<energy_type> map;
     std::unordered_map<Player::id_type, PlayerSnapshot> players;
 
     static Snapshot from_str(const std::string &snapshot);
@@ -45,8 +47,9 @@ struct Snapshot {
      * Create snapshot from parameters
      */
     Snapshot(mapgen::MapParameters map_param,
+             std::vector<energy_type> map,
              std::unordered_map<Player::id_type, PlayerSnapshot> players) :
-            map_param{map_param}, players{std::move(players)} {}
+        map_param{map_param}, map{map}, players{std::move(players)} {}
 
     Snapshot() = default;
 
