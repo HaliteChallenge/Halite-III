@@ -1,12 +1,12 @@
 <template>
-    <BotEditor ref="editor" v-bind:tutorial="true" />
+    <BotEditor ref="editor" v-bind:tutorial="true" v-bind:baseUrl="baseUrl" />
 </template>
 
 <script>
     import BotEditor from "./BotEditor.vue";
     export default {
         name: "code-tutorial-stepper",
-        props: ["progress", "step-name"],
+        props: ["progress", "step-name", "baseUrl"],
         components: {
             "BotEditor": BotEditor,
         },

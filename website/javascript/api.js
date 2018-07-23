@@ -25,7 +25,7 @@ export function me_cached () {
 
 export function me () {
   if (cached_me !== null) return Promise.resolve(cached_me)
-  else if (logged_in === false) return Promise.resolve(null) 
+  else if (logged_in === false) return Promise.resolve(null)
   return $.get({
     url: `${LOGIN_SERVER_URL}/me`,
     xhrFields: {
@@ -134,21 +134,17 @@ export function get_season1_stats (userId) {
 }
 
 export function get_editor_file_list (userId) {
-  return $.get({
-    url: `${API_SERVER_URL}/editor/${userId}`,
-    xhrFields: {
-      withCredentials: true
-    }
-  })
+  const url = `${API_SERVER_URL}/editor/${userId}`
+  return window.fetch(url, {
+    credentials: 'include'
+  }).then(r => r.json())
 }
 
-export function get_editor_file (userId, file_name) {
-  return $.get({
-    url: `${API_SERVER_URL}/editor/${userId}/file/`+encodeURIComponent(file_name),
-    xhrFields: {
-      withCredentials: true
-    }
-  })
+export function get_editor_file(userId, fileName) {
+  const url = `${API_SERVER_URL}/editor/${userId}/file/${encodeURIComponent(fileName)}`;
+  return window.fetch(url, {
+    credentials: 'include'
+  }).then(r => r.text())
 }
 
 export function create_editor_file_space (userId, language) {

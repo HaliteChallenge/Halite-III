@@ -22,7 +22,7 @@
                   </a>
                 </li>-->
                 <TreeElement
-                  :obj="editor_files" 
+                  :obj="editor_files"
                   :depth="-1"
                   @event_file_selected="file_selected"></TreeElement>
               </ul>
@@ -290,33 +290,42 @@ export default {
     },
     load_code: function () {
       // Restore user's bot code, or use demo code for new bot
-      const startCode = this.load_user_code()
-      return (startCode === null) ? this.load_default_code() : Promise.resolve(startCode)
+      return this
+        .load_user_code()
+        .then((startCode) => (
+          (startCode === null) ?
+          this.load_default_code() : Promise.resolve(startCode)))
     },
     load_user_code: function() {
       function api_get_files_with_list(ctx, file_list) {
-        return Promise.all(file_list.map(
-          (file_name) => (api.get_editor_file(ctx.user_id, file_name).then(
-            (contents) => ({contents: contents, name: file_name})))
-          ))
+        return Promise.all(
+          file_list.map((file_name) => {
+            return api.get_editor_file(ctx.user_id, file_name)
+               .then((contents) => {
+                 return {
+                   contents,
+                   name: file_name
+                 }
+               })
+          }))
       }
-      return api.get_editor_file_list(this.user_id).then((function(file_list) {
-        if(file_list !== []) {
-          return api_get_files_with_list(this, file_list)
-        } else { // if no workspace create one and then pull our files down
-          api.create_editor_file_space(this.user_id, 'Python').then((function(file_list) {
-            return api_get_files_with_list(this, file_list)
-          }).bind(this))
-        }
-      }).bind(this)).then(function(file_promise) {
-        return file_promise.then(function(file_contents) {
-          let editor_files =  file_contents.reduce(function(prev, cur) {
-            prev[cur.name] = {name: cur.name, contents: cur.contents}
-            return prev
-          }, {})
-          return parse_to_file_tree(editor_files)
-        })
-      })
+      return api.get_editor_file_list(this.user_id)
+                .then(((file_list) => {
+                  if (file_list.length > 0) {
+                    return api_get_files_with_list(this, file_list)
+                  }
+                  else { // if no workspace create one and then pull our files down
+                    return api.create_editor_file_space(this.user_id, 'Python')
+                              .then((file_list) => api_get_files_with_list(this, file_list))
+                  }
+                }).bind(this))
+                .then((file_contents) => {
+                  let editor_files =  file_contents.reduce(function(prev, cur) {
+                    prev[cur.name] = {name: cur.name, contents: cur.contents}
+                    return prev
+                  }, {})
+                  return parse_to_file_tree(editor_files)
+                })
     },
     clearHighlights: function() {
       const editor = this.editorViewer.editor
@@ -369,7 +378,7 @@ export default {
         fn.cached[lang] = new Promise((resolve, reject) => {
           const starterZipPath = this.bot_info().starterZipPath
           JSZipUtils.getBinaryContent(starterZipPath, (err, data) => {
-            logInfo('Getting starter zip: ' + starterZipPath) 
+            logInfo('Getting starter zip: ' + starterZipPath)
             if (err) {
               reject(err)
               return
@@ -430,9 +439,9 @@ export default {
         }
       }
     },
-    open_delete_modal: function(file_to_delete) { 
+    open_delete_modal: function(file_to_delete) {
       this.file_to_delete = file_to_delete;
-      this.is_delete_modal_open = true; 
+      this.is_delete_modal_open = true;
     },
     close_delete_modal: function() { this.is_delete_modal_open = false; },
 
@@ -466,7 +475,7 @@ export default {
         this.save_file(this.active_file)
       }
     },
-    save_file: function(file) { 
+    save_file: function(file) {
       api.update_source_file(this.user_id, file.name, file.contents, function(){}).then((function() {
         logInfo('success')
         this.allSaved = true;
@@ -559,7 +568,7 @@ export default {
   margin-right: 0px;
   margin-left: 0px;
   padding-left: 0px;
-  padding-right: 0px; 
+  padding-right: 0px;
 }
 
 .big_col {
@@ -568,21 +577,21 @@ export default {
 }
 
 .editor_col {
-  padding: 0px;	
+  padding: 0px;
   display: flex;
   flex-grow: 1;
   padding-left: 10px;
   margin-top: 0px;
   border-right: 1px solid #424C53;
-  flex-grow: 100; 
+  flex-grow: 100;
 }
 
 .editorArea  {
   width: 100%;
-}  
+}
 
 .file_tree_col {
-  padding: 0px;	
+  padding: 0px;
   width: 150px;
   border-right: 1px solid #424C53;
   float: left;
