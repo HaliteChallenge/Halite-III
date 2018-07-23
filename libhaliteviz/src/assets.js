@@ -44,13 +44,14 @@ export let PLANET_EXPLOSION_SHEET = null;
 export let SHIP_EXPLOSION_SHEET = null;
 
 
-function loadSpritesheet(meta, textureImage, onload) {
-    const texture = PIXI.BaseTexture.fromImage(textureImage);
-    const sheet = new PIXI.Spritesheet(texture, meta);
-    sheet.parse(() => {
-        onload(sheet);
+function loadSpritesheet(meta, textureImage) {
+    return new Promise((resolve) => {
+        const texture = PIXI.BaseTexture.fromImage(textureImage);
+        const sheet = new PIXI.Spritesheet(texture, meta);
+        sheet.parse(() => {
+            resolve(sheet);
+        });
     });
-    return sheet;
 }
 
 /**
@@ -77,15 +78,18 @@ export function setAssetRoot(path) {
 
     FISH_IMAGE = ASSET_ROOT + require("../assets/fish.png");
 
-    PLANET_EXPLOSION_SHEET = loadSpritesheet(
-        require("../assets/planet-explosion.json"),
-        ASSET_ROOT + require("../assets/planet-explosion.png"),
-        () => {}
-    );
-
-    SHIP_EXPLOSION_SHEET = loadSpritesheet(
-        require("../assets/ship-explosion.json"),
-        ASSET_ROOT + require("../assets/ship-explosion.png"),
-        () => {}
-    );
+    return Promise.all([
+        loadSpritesheet(
+            require("../assets/planet-explosion.json"),
+            ASSET_ROOT + require("../assets/planet-explosion.png"),
+        ).then((sheet) => {
+            PLANET_EXPLOSION_SHEET = sheet;
+        }),
+        loadSpritesheet(
+            require("../assets/ship-explosion.json"),
+            ASSET_ROOT + require("../assets/ship-explosion.png"),
+        ).then((sheet) => {
+            SHIP_EXPLOSION_SHEET = sheet;
+        }),
+    ]);
 }

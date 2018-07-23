@@ -347,14 +347,10 @@
     return import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
       .then((libhaliteviz) => {
         // just for electron
-        if (window && window.process && window.process.type) {
-          libhaliteviz.setAssetRoot('assets/js/')
-        } else {
-          libhaliteviz.setAssetRoot('/assets/js/')
-        }
-
-        const buffer = game.replay
-        return libhaliteviz.parseReplay(buffer);
+        return libhaliteviz
+          .setAssetRoot((window && window.process && window.process.type) ?
+                        'assets/js/' : '/assets/js')
+          .then(() => libhaliteviz.parseReplay(game.replay))
       });
   };
 
@@ -474,7 +470,7 @@
 
       import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
         .then((libhaliteviz) => {
-          const visualizer = new libhaliteviz.HaliteVisualizer(this.replay)
+          const visualizer = new libhaliteviz.HaliteVisualizer(this.replay, this.width, this.height)
           this.getVisualizer = function() {
             return visualizer
           }
@@ -524,7 +520,9 @@
           }
           visualizer.attach('.game-replay-viewer')
           // play the replay - delay a bit to make sure assets load/are rendered
-          window.setTimeout(function() { visualizer.play() }, 500);
+          if (this.autoplay) {
+            window.setTimeout(function() { visualizer.play() }, 500);
+          }
 
           // action
           this.playVideo = (e) => {

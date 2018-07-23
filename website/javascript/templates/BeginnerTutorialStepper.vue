@@ -14,7 +14,6 @@
 </template>
 
 <script>
-    import * as libhaliteviz from '../../../libhaliteviz'
     import * as tween from "../tween";
     import Visualizer from "./Visualizer.vue";
 
@@ -30,12 +29,18 @@
             };
         },
         mounted: function() {
-            window.fetch("/assets/replay.hlt")
-                  .then((req) => req.arrayBuffer())
-                  .then((buf) => libhaliteviz.parseReplay(buf))
-                  .then((replay) => {
-                      this.replay = replay;
-                  });
+            Promise.all([
+                import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz"),
+                window.fetch("/assets/replay.hlt"),
+            ]).then(([ libhaliteviz, req ]) => Promise.all([
+                Promise.resolve(libhaliteviz),
+                req.arrayBuffer(),
+            ])).then(([ libhaliteviz, buf ]) =>
+                libhaliteviz.setAssetRoot("/assets/js")
+                            .then(() => libhaliteviz.parseReplay(buf))
+            ).then((replay) => {
+                this.replay = replay;
+            });
         },
         methods: {
             updateVisibility: function(stepName) {
