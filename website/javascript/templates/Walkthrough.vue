@@ -3,46 +3,6 @@
      explanatory text (and possibly substeps), while indicating this
      information to a wrapped component.
    ------------------>
-<!--
-<template>
-    <section class="walkthrough">
-        <div class="walkthrough-nav">
-            <h1>{{title}}</h1>
-            <section class="steps" ref="stepsContainer">
-                <slot
-                    v-if="steps[progress]"
-                    name="steps"
-                    v-bind:activeStep="steps[progress].name"
-                >
-                </slot>
-            </section>
-            <nav>
-                <button
-                    v-on:click="prevStep"
-                >
-                    Back
-                </button>
-                <button
-                    v-on:click="nextStep"
-                >
-                    Next
-                </button>
-            </nav>
-        </div>
-
-        <div class="walkthrough-content">
-            <slot
-                v-if="steps[progress]"
-                name="content"
-                v-bind:progress="progress"
-                v-bind:step-name="steps[progress].name"
-            >
-            </slot>
-        </div>
-    </section>
-</template>
--->
-
 <script>
     export default {
         name: "walkthrough",
@@ -74,6 +34,8 @@
             }
         },
         mounted: function() {
+            document.body.classList.add("walkthrough-body");
+
             if (window.history.state && history.state.progress) {
                 this.switchTo(history.state.progress, false);
             }

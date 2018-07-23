@@ -172,14 +172,16 @@
 </style>
 
 <style lang="scss">
-    .walkthrough {
-        height: calc(100vh - 61px); /* TODO: Need to keep in sync with layout */
-
+    .walkthrough-body {
         .container[role="main"] {
             margin: 0;
             padding: 0;
             width: 100%;
         }
+    }
+
+    .walkthrough {
+        height: calc(100vh - 61px); /* TODO: Need to keep in sync with layout */
     }
 
     .walkthrough-nav {

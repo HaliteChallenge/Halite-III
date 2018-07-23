@@ -203,13 +203,14 @@ elif ship.halite > hlt.MAX_HALITE > 2:
 </style>
 
 <style lang="scss">
+    .walkthrough-body .container[role="main"] {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
     .walkthrough {
         height: calc(100vh - 61px); /* TODO: Need to keep in sync with layout */
-        .container[role="main"] {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-        }
     }
 
     .walkthrough-nav {

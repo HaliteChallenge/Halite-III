@@ -88,8 +88,8 @@
         },
         updated: function() {
             if (!this.boundEvents) {
-                this.$nextTick(function() {
-                    if (this.$refs.visualizer) {
+                const bindEvents = () => {
+                    if (this.$refs.visualizer && this.$refs.visualizer.getVisualizer) {
                         const visualizer = this.$refs.visualizer.getVisualizer();
                         const patch = function(obj, prop, cb) {
                             const orig = obj[prop];
@@ -124,6 +124,14 @@
 
                         this.boundEvents = true;
                     }
+                    else {
+                        window.setTimeout(() => {
+                            bindEvents();
+                        }, 500);
+                    }
+                };
+                this.$nextTick(function() {
+                    bindEvents();
                 });
             }
         },
