@@ -228,7 +228,7 @@ int main(int argc, char *argv[]) {
             results["map_seed"] = config.seed;
             // TODO: put the actual generator here
             results["map_generator"] = "default";
-            results["final_snapshot"] = game.to_snapshot();
+            results["final_snapshot"] = game.to_snapshot(map_parameters);
             results["stats"] = nlohmann::json::object();
             for (const auto& stats : replay.game_statistics.player_statistics) {
                 results["stats"][to_string(stats.player_id)] = { { "rank", stats.rank } };

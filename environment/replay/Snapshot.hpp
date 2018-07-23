@@ -10,10 +10,18 @@
 
 namespace hlt {
 
+constexpr auto SNAPSHOT_FIELD_DELIMITER = ';';
+constexpr auto SNAPSHOT_LIST_DELIMITER = ',';
+constexpr auto SNAPSHOT_SUBFIELD_DELIMITER = '-';
+
 struct PlayerSnapshot {
-    std::vector<Location> factories;
     energy_type energy;
+    Location factory{0,0};
+    std::vector<std::pair<Dropoff::id_type, Location>> dropoffs;
     std::vector<std::pair<Location, energy_type>> entities;
+
+    PlayerSnapshot() = default;
+    ~PlayerSnapshot() = default;
 };
 
 struct Snapshot {

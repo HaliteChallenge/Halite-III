@@ -22,6 +22,7 @@ enum class MapType {
  * @return The input stream.
  */
 std::istream &operator>>(std::istream &istream, MapType &type);
+std::ostream &operator<<(std::ostream &ostream, MapType type);
 
 /** Parameters for map generation. */
 struct MapParameters {

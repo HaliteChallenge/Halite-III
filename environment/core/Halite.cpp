@@ -68,17 +68,43 @@ const Player& Halite::get_player(Player::id_type player_id) {
     return store.get_player(player_id);
 }
 
-// TODO: move this to parser too
-constexpr auto SNAPSHOT_FIELD_DELIMITER = ";";
-constexpr auto SNAPSHOT_LIST_DELIMITER = ",";
-constexpr auto SNAPSHOT_SUBFIELD_DELIMITER = "-";
-
-std::string Halite::to_snapshot() {
+std::string Halite::to_snapshot(const hlt::mapgen::MapParameters& map_parameters) {
     std::stringstream output;
 
     output << HALITE_VERSION << SNAPSHOT_FIELD_DELIMITER;
 
-    // TODO:
+    output << map_parameters.type
+           << SNAPSHOT_LIST_DELIMITER << map_parameters.width
+           << SNAPSHOT_LIST_DELIMITER << map_parameters.height
+           << SNAPSHOT_LIST_DELIMITER << map_parameters.num_players
+           << SNAPSHOT_LIST_DELIMITER << map_parameters.seed
+           << SNAPSHOT_FIELD_DELIMITER;
+
+    for (const auto& [player_id, player] : store.players) {
+        output << player_id
+               << SNAPSHOT_FIELD_DELIMITER << player.energy
+               << SNAPSHOT_FIELD_DELIMITER
+               << player.factory.x << SNAPSHOT_SUBFIELD_DELIMITER
+               << player.factory.y << SNAPSHOT_LIST_DELIMITER;
+
+        for (const auto& dropoff : player.dropoffs) {
+            output << dropoff.id << SNAPSHOT_SUBFIELD_DELIMITER
+                   << dropoff.location.x << SNAPSHOT_SUBFIELD_DELIMITER
+                   << dropoff.location.y << SNAPSHOT_LIST_DELIMITER;
+        }
+
+        output << SNAPSHOT_FIELD_DELIMITER;
+
+        for (const auto& [entity_id, entity_location] : player.entities) {
+            const auto& entity = store.entities.at(entity_id);
+            output << entity_id << SNAPSHOT_SUBFIELD_DELIMITER
+                   << entity_location.x << SNAPSHOT_SUBFIELD_DELIMITER
+                   << entity_location.y << SNAPSHOT_SUBFIELD_DELIMITER
+                   << entity.energy << SNAPSHOT_LIST_DELIMITER;
+        }
+
+        output << SNAPSHOT_FIELD_DELIMITER;
+    }
 
     return output.str();
 }

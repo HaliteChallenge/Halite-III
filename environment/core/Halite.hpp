@@ -4,6 +4,7 @@
 #include "Config.hpp"
 #include "Networking.hpp"
 #include "Store.hpp"
+#include "mapgen/Generator.hpp"
 
 namespace hlt {
 
@@ -72,7 +73,7 @@ public:
     const Player& get_player(Player::id_type player_id);
 
     /** Generate a snapshot string from current game state. */
-    std::string to_snapshot();
+    std::string to_snapshot(const mapgen::MapParameters& map_parameters);
 
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();
