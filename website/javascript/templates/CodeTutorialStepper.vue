@@ -33,8 +33,15 @@
                     this.$refs.editor
                         .doReady((editor) => {
                             editor.clearHighlights();
-                            editor.highlightContaining("moves");
-                            editor.highlightContaining("send_frame", "tutorial-highlight-alt");
+                            editor.highlightContaining("commands.move");
+                            editor.highlightContaining("end_turn", "tutorial-highlight-alt");
+                        });
+                }
+                else if (newStep === "carrier") {
+                    this.$refs.editor
+                        .doReady((editor) => {
+                            editor.clearHighlights();
+                            editor.highlightContaining("commands.spawn", "tutorial-highlight");
                         });
                 }
                 else {

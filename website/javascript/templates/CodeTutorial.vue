@@ -37,8 +37,8 @@
                 </p>
                 <p>
                     Right now, the bot moves ships around
-                    randomly. Try changing it to do something like
-                    moving the ship always west.
+                    randomly. Try different movement strategies, it to
+                    like always moving the ship.
                 </p>
             </Step>
             <Step title="Halite Filtration" name="tunneling">
@@ -49,16 +49,17 @@
                     they are not told to move.
                 </p>
                 <p>
-                    Python: convert the dictionary comprehension to an
-                    actual loop. Then, add some criteria to decide if
-                    the ship should move. For instance, you might stop
-                    the ship if its cargo/fuel is below a certain
-                    level, or if the tile you're on is especially
-                    rich. Some APIs that might help:
+                    Python: add some criteria to decide if the ship
+                    should move. For instance, you might stop the ship
+                    if its cargo/fuel is below a certain level, or if
+                    the tile you're on is especially rich. Some APIs
+                    that might help:
                 </p>
                 <ul>
-                    <li><code>game_map.foo</code></li>
-                    <li><code>entity.bar</code></li>
+                    <li><code>ship.location</code>&mdash;a two-element tuple of (x, y) coordinates.</li>
+                    <li><code>ship.halite</code>&mdash;an <tt>int</tt> indicating how much halite the ship has.</li>
+                    <li><code>game_map[&lt;y_coordinate&gt;][&lt;x_coordinate&gt;]</code>&mdash;how much halite is on the given coordinates.</li>
+                    <li><code>hlt.MAX_HALITE</code>&mdash;a constant representing the maximum amount of halite a ship can carry.</li>
                 </ul>
             </Step>
             <Step title="Depositing Halite" name="dropoffs">
@@ -70,54 +71,95 @@
                     the shipyard.
                 </p>
                 <p>
-                    Python: add the following check:
+                    Right now, our bot is <em>stateless</em>: it makes
+                    its moves purely based on the most recent game
+                    information, without tracking any information
+                    between turns. However, this isn't going to work
+                    for us much longer. In particular, if we add a
+                    check that moves ships with more than a certain
+                    amount of stored halite towards the shipyard,
+                    what'll happen is it'll move a bit, and its halite
+                    will drop below the threshold. Then it'll do
+                    something else again, until its halite goes back
+                    up, but by then, it might have wandered off.
+                </p>
+                <p>
+                    So we need to add a do-or-die check: once we
+                    decide to move a ship back to port, we need to
+                    commit to it.
+                </p>
+                <p>
+                    Python: add the following code right after
+                    initialization:
                 </p>
                 <pre>
-code block
-this is actually kind of annoying,
-because without state, the ship
-will go above the threshold, move,
-fall below the threshold, then
-start doing something else again
-                </pre>
+ship_status = {}</pre>
+                <p>
+                    Add the following code inside the ship loop:
+                </p>
+                <pre>
+if ship.location == players[myID].shipyard:
+    commands.dump(ship.id, ship.halite)
+    ship_status[ship.id] = "exploring"
+elif ship_status.get(ship.id) === "returning":
+    # Figure out how to make the ship move towards port.
+    pass
+elif ship.halite > hlt.MAX_HALITE > 2:
+    ship_status[ship_id] = "returning"</pre>
             </Step>
             <Step title="Better Movement" name="dropoffs">
                 <p>
                     By now, you've probably noticed that your ships
-                    aren't moving very efficiently. Recall that moving
-                    off of a tile costs you halite proportional to how
-                    rich it is.
+                    aren't moving very efficiently. For instance,
+                    moving off of a tile costs you halite proportional
+                    to how rich it is.
                 </p>
+                <p>
+                    Let's make a simple improvement: instead of moving
+                    ships randomly, let's move them onto the
+                    neighboring cell with the most halite. That way,
+                    we can start mining faster, and don't burn fuel
+                    moving onto low-halite cells. You might find this
+                    helpful:
+                </p>
+                <ul>
+                    <li><code>game_map.location_with_offset(location, direction)</code>&mdash;given a location and a direction (<tt>"n"</tt>, <tt>"s"</tt>, etc.), returns the coordinates of the resulting cell.</li>
+                </ul>
             </Step>
             <Step title="Carrier Has Arrived" name="carrier">
                 <p>
                     One ship does not make a fleet. Besides issuing
                     movement commands to ships, you can also
                     commission new ships&mdash;for an appropriate fee,
-                    of course. Building a new ship costs 255 halite,
+                    of course. Building a new ship costs 500 halite,
                     plus the initial amount of fuel for the ship.
-                    For now, let's build ships whenever possible.
+                    Right now, the bot already builds ships whenever
+                    possible.
                 </p>
                 <p>
-                    Python: add the following code:
+                    In a real match, you'll want to think about
+                    whether you should be hoarding halite or spending
+                    it, because ultimately, the winner is the one with
+                    the most halite in the bank.
                 </p>
                 <p>
-                    Of course, in a real match, you'll want to think
-                    about whether you should be hoarding halite or
-                    spending it, because ultimately, the winner is the
-                    one with the most halite in the bank.
+                    So, let's change the bot to only make ships in the
+                    first 200 turns of the game.
                 </p>
             </Step>
             <Step title="Start Playing!" name="submit">
                 <p>
-                    You're all done! Let's submit your bot:
+                    You're all done! At this point, your bot explores
+                    the map, mines halite, brings it back to port, and
+                    builds new ships when necessary. Let's submit your
+                    bot so it can start playing:
                 </p>
                 <button>
                     Upload
                 </button>
                 <p>
                     You'll get an email once your bot is processed and
-                    starts playing. Look at <a href="#">your
+                    starts playing. Look at <a href="/user?me">your
                     profile</a> to watch your games!
                 </p>
             </Step>
