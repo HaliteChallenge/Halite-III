@@ -1,8 +1,9 @@
 #include <memory>
 
-#include "BotCommandError.hpp"
 #include "BotCommunicationError.hpp"
 #include "Command.hpp"
+#include "CommandError.hpp"
+#include "CommandTransaction.hpp"
 
 /** The JSON key for command type. */
 constexpr auto JSON_TYPE_KEY = "type";
@@ -20,6 +21,12 @@ namespace hlt {
 
 template<class T>
 TransactableCommand<T>::~TransactableCommand() = default;
+
+template<class T>
+void TransactableCommand<T>::add_to_transaction(Player &player, CommandTransaction &transaction) const {
+    // Invoke overload resolution on CommandTransaction::add_command
+    transaction.add_command(player, static_cast<const T &>(*this));
+}
 
 /**
  * Convert a Command to JSON format.

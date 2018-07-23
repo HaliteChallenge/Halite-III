@@ -4,11 +4,12 @@
 #include "Entity.hpp"
 #include "Map.hpp"
 #include "Player.hpp"
-#include "Transaction.hpp"
 
 #include "nlohmann/json_fwd.hpp"
 
 namespace hlt {
+
+class CommandTransaction;
 
 /** Abstract type of commands issued by the user. */
 class Command {
@@ -47,10 +48,7 @@ public:
      * @param player The player executing the command.
      * @param transaction The command transaction to act on.
      */
-    void add_to_transaction(Player &player, CommandTransaction &transaction) const final {
-        // Invoke overload resolution on CommandTransaction::add_command
-        transaction.add_command(player, static_cast<const T &>(*this));
-    }
+    void add_to_transaction(Player &player, CommandTransaction &transaction) const final;
 
     /** Virtual destructor. */
     ~TransactableCommand() override = 0;
