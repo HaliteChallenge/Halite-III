@@ -773,7 +773,7 @@
               }
             }
           }
-          const cell = this.replay.production_map.grid[this.selected.x][this.selected.y];
+          const cell = this.replay.production_map.grid[this.selected.y][this.selected.x];
           return {
             energy: cell.energy,
             x: this.selected.x,
