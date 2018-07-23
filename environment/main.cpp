@@ -195,7 +195,11 @@ int main(int argc, char *argv[]) {
 
         for (const auto &[player_id, _] : replay.players) {
             std::string error_log = game.error_logs[player_id].str();
-            if (!error_log.empty()) {
+             // In JSON mode, only write logs if player actually was
+            // kicked out
+            if (!error_log.empty() &&
+                (!json_results_switch.getValue() ||
+                 game.get_player(player_id).terminated)) {
                 std::stringstream logname_buf;
                 logname_buf << "errorlog-" << std::string(time_string)
                             << "-" << replay.map_generator_seed
