@@ -1,5 +1,6 @@
 #include <future>
 
+#include "CommandTransaction.hpp"
 #include "HaliteImpl.hpp"
 #include "Logging.hpp"
 
@@ -91,11 +92,10 @@ void HaliteImpl::run_game() {
                                         });
     }
     for (auto &[player_id, result] : results) {
-        game.store.players.at(player_id).log_error_section("Initialization Phase");
         try {
             result.get();
         }
-        catch (const BotError& e) {
+        catch (const BotError &e) {
             game.kill_player(player_id);
         }
     }
@@ -128,17 +128,16 @@ void HaliteImpl::process_turn() {
     for (auto &[player_id, player] : game.store.players) {
         if (player.is_alive()) {
             results[player_id] = std::async(std::launch::async,
-                                            [&game = this->game, &player = player] {
-                                                return game.networking.handle_frame(player);
+                                            [&networking = game.networking, &player = player] {
+                                                return networking.handle_frame(player);
                                             });
         }
     }
     for (auto &[player_id, result] : results) {
-        game.store.players.at(player_id).log_error_section("Turn " + std::to_string(game.turn_number));
         try {
             commands[player_id] = result.get();
         }
-        catch (const BotError& e) {
+        catch (const BotError &e) {
             game.kill_player(player_id);
         }
     }
@@ -146,11 +145,38 @@ void HaliteImpl::process_turn() {
     // Process valid player commands, removing players if they submit invalid ones.
     std::unordered_set<Entity::id_type> changed_entities;
     while (!commands.empty()) {
+        changed_entities.clear();
+        game.store.changed_cells.clear();
+
         CommandTransaction transaction{game.store, game.map};
-        transaction.set_callback([&frames = game.replay.full_frames](auto event) {
+        std::unordered_set<Player::id_type> offenders;
+        transaction.on_event([&frames = game.replay.full_frames](GameEvent event) {
             // Create new game event for replay file.
             frames.back().events.push_back(std::move(event));
         });
+        transaction.on_error([&offenders, &commands, &game = game](CommandError error) {
+            const auto message = error->log_message();
+            const auto player_id = error->player;
+            if (offenders.find(player_id) == offenders.end()) {
+                game.log_error_section(player_id, "Turn " + std::to_string(game.turn_number));
+            }
+            if (error->ignored) {
+                Logging::log("Player " + to_string(player_id) + " caused ignored error: " + message,
+                             Logging::Level::Warning);
+                game.log_error(player_id, "[IGNORED] " + message);
+            } else {
+                Logging::log("Player " + to_string(player_id) + " caused error: " + message, Logging::Level::Error);
+                offenders.emplace(player_id);
+                game.log_error(player_id, message);
+            }
+        });
+        transaction.on_cell_update([&changed_cells = game.store.changed_cells](Location cell) {
+            changed_cells.emplace(cell);
+        });
+        transaction.on_entity_update([&changed_entities](Entity::id_type entity) {
+            changed_entities.emplace(entity);
+        });
+
         for (const auto &[player_id, command_list] : commands) {
             auto &player = game.store.players.find(player_id)->second;
             for (const auto &command : command_list) {
@@ -160,22 +186,13 @@ void HaliteImpl::process_turn() {
         if (transaction.check()) {
             // All commands are successful.
             transaction.commit();
-            changed_entities = std::move(transaction.changed_entities);
-            game.store.changed_cells = std::move(transaction.changed_cells);
-            // add player commands to replay and note players still alive
+            // Add player commands to replay and note players still alive
             game.replay.full_frames.back().moves = std::move(commands);
             break;
         } else {
-            for (auto &offender : transaction.offenders) {
-                // Remove this player and their commands.
-                for (auto command_iterator = commands.begin(); command_iterator != commands.end();) {
-                    if (command_iterator->first == offender) {
-                        command_iterator = commands.erase(command_iterator);
-                    } else {
-                        command_iterator++;
-                    }
-                }
-                // TODO: kill the player over the network and mark them dead
+            for (auto player : offenders) {
+                game.kill_player(player);
+                commands.erase(player);
             }
         }
     }

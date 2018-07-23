@@ -105,12 +105,12 @@ int main(int argc, char *argv[]) {
     // Read the player bot commands
     auto bot_commands = command_args.getValue();
     if (bot_commands.size() > constants.MAX_PLAYERS) {
-        std::cerr << "Error: too many players (max is " << constants.MAX_PLAYERS << ")" << std::endl;
+        Logging::log("Too many players (max is " + std::to_string(constants.MAX_PLAYERS) + ")", Logging::Level::Error);
         return 1;
     } else if (bot_commands.size() > n_players) {
         n_players = bot_commands.size();
         if (players_arg.isSet()) {
-            std::cerr << "Warning: overriding the specified number of players." << std::endl;
+            Logging::log("Warning: overriding the specified number of players.", Logging::Level::Warning);
         }
     }
 
@@ -190,8 +190,8 @@ int main(int argc, char *argv[]) {
         results["error_logs"] = nlohmann::json::object();
 
         for (const auto &[player_id, _] : replay.players) {
-            const auto& player = game.get_player(player_id);
-            if (player.crashed) {
+            std::string error_log = game.error_logs[player_id].str();
+            if (!error_log.empty()) {
                 std::stringstream logname_buf;
                 logname_buf << "errorlog-" << std::string(time_string)
                             << "-" << replay.map_generator_seed
@@ -211,14 +211,14 @@ int main(int argc, char *argv[]) {
 
                 results["error_logs"][to_string(player_id)] = log_filepath;
 
-                log_file.write(player.error_log.c_str(), player.error_log.size());
+                log_file.write(error_log.c_str(), error_log.size());
 
-                replay_message << "Player " << player_id << " crashed. "
+                replay_message << "Player " << player_id << " has log output. "
                                << "Writing a log at " << log_filepath << std::endl;
             }
         }
 
-        Logging::log(replay_message.str());
+        std::cout << replay_message.str();
 
         if (json_results_switch.getValue()) {
             results["replay"] = output_filename;

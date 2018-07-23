@@ -42,22 +42,21 @@ void Halite::run_game(const std::vector<std::string> &player_commands,
 }
 
 void Halite::kill_player(const Player::id_type& player_id) {
-    Logging::log("Killing player " + to_string(player_id));
+    Logging::log("Killing player " + to_string(player_id), Logging::Level::Warning);
     auto& player = store.get_player(player_id);
-    player.crashed = true;
+    player.terminated = true;
+    networking.kill_player(player);
 
     auto &entities = player.entities;
-    std::vector<Entity::id_type> to_delete;
-    for (const auto& [entity_id, location] : entities) {
+    for (auto entity_iterator = entities.begin();
+            entity_iterator != entities.end();
+            entity_iterator = entities.erase(entity_iterator)) {
+        const auto &[entity_id, location] = *entity_iterator;
         auto& cell = map.at(location);
-        player.remove_entity(cell.entity);
         cell.entity = Entity::None;
-        to_delete.push_back(entity_id);
-    }
-
-    for (const auto& entity_id : to_delete) {
         store.delete_entity(entity_id);
     }
+    player.energy = 0;
 }
 
 const Player& Halite::get_player(Player::id_type player_id) {
@@ -110,6 +109,20 @@ std::string Halite::to_snapshot(const hlt::mapgen::MapParameters& map_parameters
     }
 
     return output.str();
+}
+
+void Halite::log_error_section(Player::id_type id, const std::string& section_name) {
+    auto &error_log = error_logs[id];
+    error_log << std::endl;
+    error_log << section_name;
+    error_log << std::endl;
+    error_log << "================================================================" << std::endl;
+}
+
+void Halite::log_error(Player::id_type id, const std::string& text) {
+    auto &error_log = error_logs[id];
+    error_log << text;
+    error_log << std::endl;
 }
 
 /** Default destructor is defined where HaliteImpl is complete. */
