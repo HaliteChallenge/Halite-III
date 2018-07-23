@@ -38,6 +38,8 @@ class Halite final {
     std::unique_ptr<HaliteImpl> impl; /**< The pointer to implementation. */
 
 public:
+    id_map<Player, std::ostringstream> error_logs; /**< Player error logs. */
+
     /**
      * Constructor for the main game.
      *
@@ -73,6 +75,16 @@ public:
 
     /** Generate a snapshot string from current game state. */
     std::string to_snapshot();
+
+    /**
+     * Add a section to a player's error log.
+     */
+    void log_error_section(Player::id_type id, const std::string& section_name);
+
+    /**
+     * Add a line to this player's error log.
+     */
+    void log_error(Player::id_type id, const std::string& text);
 
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();

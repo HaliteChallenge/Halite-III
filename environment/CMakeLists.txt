@@ -20,6 +20,7 @@ set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
 include_directories(${CMAKE_SOURCE_DIR}/config)
 include_directories(${CMAKE_SOURCE_DIR}/core)
+include_directories(${CMAKE_SOURCE_DIR}/core/command)
 include_directories(${CMAKE_SOURCE_DIR}/error)
 include_directories(${CMAKE_SOURCE_DIR}/logging)
 include_directories(${CMAKE_SOURCE_DIR}/mapgen)
@@ -42,6 +43,7 @@ add_custom_target(VERSION_CHECK
 set(dirs
     ${CMAKE_SOURCE_DIR}/config
     ${CMAKE_SOURCE_DIR}/core
+    ${CMAKE_SOURCE_DIR}/core/command
     ${CMAKE_SOURCE_DIR}/error
     ${CMAKE_SOURCE_DIR}/logging
     ${CMAKE_SOURCE_DIR}/mapgen

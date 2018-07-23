@@ -16,14 +16,13 @@ namespace hlt {
 struct Player final : public Enumerated<Player> {
     friend class Factory<Player>;
 
-    std::string name;               /**< The name of the player. */
-    const Location factory;         /**< The factory location of the player. */
-    std::vector<Dropoff> dropoffs;  /**< The dropoffs this player owns. */
-    energy_type energy{};           /**< The amount of energy stockpiled by the player. */
-    const std::string command;      /**< The bot command for the player. */
-    id_map<Entity, Location> entities{};  /**< Mapping from entity to location. */
-    bool crashed;                   /**< Whether the player was kicked out of the game. */
-    std::string error_log;          /**< A log of errors this player encounters. */
+    std::string name;                    /**< The name of the player. */
+    const Location factory;              /**< The factory location of the player. */
+    std::vector<Dropoff> dropoffs;       /**< The dropoffs this player owns. */
+    energy_type energy{};                /**< The amount of energy stockpiled by the player. */
+    const std::string command;           /**< The bot command for the player. */
+    id_map<Entity, Location> entities{}; /**< Mapping from entity to location. */
+    bool terminated;                     /**< Whether the player was kicked out of the game. */
 
     /**
      * Get whether this player is alive.
@@ -59,16 +58,6 @@ struct Player final : public Enumerated<Player> {
     Location get_entity_location(const Entity::id_type &id) const;
 
     /**
-     * Add a section to this player's error log.
-     */
-    void log_error_section(const std::string& section_name);
-
-    /**
-     * Add a line to this player's error log.
-     */
-    void log_error(const std::string& text);
-
-    /**
      * Convert a Player to JSON format.
      * @param[out] json The output JSON.
      * @param player The Player to convert.
@@ -90,7 +79,7 @@ private:
      * @param command The player bot command.
      */
     Player(Player::id_type id, Location factory, std::string command) :
-            Enumerated(id), factory(factory), command(std::move(command)), crashed(false) {}
+            Enumerated(id), factory(factory), command(std::move(command)), terminated(false) {}
 
 };
 
