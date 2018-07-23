@@ -802,10 +802,10 @@
       getPlayers: async function () {
         if (!this.replay) return []
         return this.replay.game_statistics.player_statistics
-                   .map((p, idx) => {
+                   .map((p) => {
                      const player = Object.assign({}, p);
-                     player.name = this.replay.players[idx].name;
-                     player.index = idx;
+                     player.name = this.replay.players[player.player_id].name;
+                     player.index = player.player_id;
                      return player;
                    })
       },
