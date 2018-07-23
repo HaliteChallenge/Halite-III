@@ -1,6 +1,5 @@
 const PIXI = require("pixi.js");
 const $ = require("jquery");
-const extraFilters = require("pixi-extra-filters");
 
 import Ship from "./sprite";
 import {Factory} from "./factory";

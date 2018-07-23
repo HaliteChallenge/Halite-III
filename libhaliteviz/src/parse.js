@@ -1,4 +1,4 @@
-const parseWorker = require("worker-loader?inline!./parseWorker");
+import parseWorker from "worker-loader!./parseWorker.js";
 import {TextDecoder} from 'text-encoding';
 
 export function parseReplay(buffer) {
@@ -16,7 +16,6 @@ export function parseReplay(buffer) {
                     return;
                 }
                 const decoded = new TextDecoder("utf-8").decode(arr);
-                console.log(decoded)
                 const replay = JSON.parse(decoded);
                 const finishTime = Date.now();
                 console.info(`Decoded compressed replay in ${finishTime - startTime}ms, inflating took ${inflatedTime - startTime}ms, decoding took ${finishTime - inflatedTime}ms.`);

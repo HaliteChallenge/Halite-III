@@ -195,7 +195,6 @@
 <script>
   import Vue from 'vue'
   import * as api from '../api'
-  import * as libhaliteviz from '../../../libhaliteviz'
   import * as utils from '../utils'
   import moment from 'vue-moment'
   import vueSlider from 'vue-slider-component'
@@ -217,16 +216,6 @@
       18: '9x',
       20: '10x',
     }
-
-  // libhaliteviz.setAssetRoot("/assets/js/");
-  const HaliteVisualizer = libhaliteviz.HaliteVisualizer
-
-  // just for electron
-  if (window && window.process && window.process.type) {
-      libhaliteviz.setAssetRoot('assets/js/')
-  } else {
-      libhaliteviz.setAssetRoot('/assets/js/')
-  }
 
   const getParameterByName = (name, url) => {
     if (!url) url = window.location.href;
@@ -566,54 +555,68 @@
         // }
 
         const buffer = game.replay
-        return libhaliteviz.parseReplay(buffer).then((replay) => {
-          this.replay = Object.freeze(replay);
-          let visualizer = new HaliteVisualizer(this.replay)
-          this.visualizer = visualizer
-          // parse game here
-          const storedSpeedIndex = sessionStorage.getItem('halite-replaySpeed')
+        return import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
+          .then((libhaliteviz) => {
+            // just for electron
+            if (window && window.process && window.process.type) {
+              libhaliteviz.setAssetRoot('assets/js/')
+            } else {
+              libhaliteviz.setAssetRoot('/assets/js/')
+            }
 
-          // playerS
-          this.getSortedPlayers()
 
-          if (storedSpeedIndex) {
-            const speedIndex = parseInt(storedSpeedIndex)
-            const value = Object.keys(speedList)[speedIndex]
-            const label = speedList[value]
-
-            this.speedIndex = speedIndex
-            this.speedLabel = label
-            visualizer.playSpeed = value
-          } else {
-            visualizer.playSpeed = 6
-          }
-
-          // slider
-          this.sliderOptions = Object.assign(this.sliderOptions, {
-            max: this.replay.num_frames - 1,
-            value: this.frame
+            return libhaliteviz;
           })
+          .then((libhaliteviz) =>
+            libhaliteviz.parseReplay(buffer).then((replay) => {
+              this.replay = Object.freeze(replay);
+              let visualizer = new HaliteVisualizer(this.replay)
+              this.visualizer = visualizer
+              // parse game here
+              const storedSpeedIndex = sessionStorage.getItem('halite-replaySpeed')
 
-          // this.stats = visualizer.stats
-          visualizer.onUpdate = () => {
-            this.frame = visualizer.frame
-            this.time = visualizer.time
-          }
-          visualizer.onPlay = () => {
-            this.playing = true
-          }
-          visualizer.onPause = () => {
-            this.playing = false
-          }
-          $('.game-replay-viewer').html('');
-          visualizer.attach('.game-replay-viewer')
-          // play the replay - delay a bit to make sure assets load/are rendered
-          window.setTimeout(function() { visualizer.play() }, 500);
-          this.isLoading = false;
+              // playerS
+              this.getSortedPlayers()
 
-          // scale
-          this.scaleCanvas();
-        })
+              if (storedSpeedIndex) {
+                const speedIndex = parseInt(storedSpeedIndex)
+                const value = Object.keys(speedList)[speedIndex]
+                const label = speedList[value]
+
+                this.speedIndex = speedIndex
+                this.speedLabel = label
+                visualizer.playSpeed = value
+              } else {
+                visualizer.playSpeed = 6
+              }
+
+              // slider
+              this.sliderOptions = Object.assign(this.sliderOptions, {
+                max: this.replay.num_frames - 1,
+                value: this.frame
+              })
+
+              // this.stats = visualizer.stats
+              visualizer.onUpdate = () => {
+                this.frame = visualizer.frame
+                this.time = visualizer.time
+              }
+              visualizer.onPlay = () => {
+                this.playing = true
+              }
+              visualizer.onPause = () => {
+                this.playing = false
+              }
+              $('.game-replay-viewer').html('');
+              visualizer.attach('.game-replay-viewer')
+              // play the replay - delay a bit to make sure assets load/are rendered
+              window.setTimeout(function() { visualizer.play() }, 500);
+              this.isLoading = false;
+
+              // scale
+              this.scaleCanvas();
+            })
+          );
       },
       userlink: function (user_id) {
         if (user_id) {
