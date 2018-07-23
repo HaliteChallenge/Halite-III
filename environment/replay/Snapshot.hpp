@@ -14,11 +14,22 @@ constexpr auto SNAPSHOT_FIELD_DELIMITER = ';';
 constexpr auto SNAPSHOT_LIST_DELIMITER = ',';
 constexpr auto SNAPSHOT_SUBFIELD_DELIMITER = '-';
 
+struct EntitySnapshot {
+    Entity::id_type id;
+    energy_type energy;
+    Location location{0,0};
+
+    EntitySnapshot() = default;
+    EntitySnapshot(Entity::id_type id, energy_type energy, Location location)
+        : id(id), energy(energy), location(location) {}
+    ~EntitySnapshot() = default;
+};
+
 struct PlayerSnapshot {
     energy_type energy;
     Location factory{0,0};
     std::vector<std::pair<Dropoff::id_type, Location>> dropoffs;
-    std::vector<std::pair<Location, energy_type>> entities;
+    std::vector<EntitySnapshot> entities;
 
     PlayerSnapshot() = default;
     ~PlayerSnapshot() = default;

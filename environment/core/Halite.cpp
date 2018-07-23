@@ -31,17 +31,13 @@ Halite::Halite(const Config &config,
         impl(std::make_unique<HaliteImpl>(*this)) {
 }
 
-void Halite::load_snapshot(const Snapshot &snapshot) {
-    // TODO: implement
-    (void) snapshot;
-}
-
 /**
  * Run the game.
  * @param player_commands The list of player commands.
  */
-void Halite::run_game(const std::vector<std::string> &player_commands) {
-    impl->initialize_game(player_commands);
+void Halite::run_game(const std::vector<std::string> &player_commands,
+                      const Snapshot &snapshot) {
+    impl->initialize_game(player_commands, snapshot);
     impl->run_game();
 }
 

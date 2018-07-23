@@ -45,8 +45,9 @@ Snapshot Snapshot::from_str(const std::string &snapshot) {
     unsigned long num_players;
     unsigned int seed;
 
-    iss >> map_generator;
-    ignore_delimiter(iss, SNAPSHOT_LIST_DELIMITER, iss.tellg());
+    std::getline(iss, buf, SNAPSHOT_LIST_DELIMITER);
+    std::istringstream maptype{buf};
+    maptype >> map_generator;
     iss >> width;
     ignore_delimiter(iss, SNAPSHOT_LIST_DELIMITER, iss.tellg());
     iss >> height;
@@ -104,8 +105,11 @@ Snapshot Snapshot::from_str(const std::string &snapshot) {
 
         // Parse entities
         while (iss && iss.peek() != SNAPSHOT_FIELD_DELIMITER && iss.peek() != EOF) {
+            Entity::id_type entity_id;
             dimension_type x, y;
             energy_type energy;
+            iss >> entity_id;
+            ignore_delimiter(iss, SNAPSHOT_SUBFIELD_DELIMITER, 0);
             iss >> x;
             ignore_delimiter(iss, SNAPSHOT_SUBFIELD_DELIMITER, 0);
             iss >> y;
@@ -113,7 +117,7 @@ Snapshot Snapshot::from_str(const std::string &snapshot) {
             iss >> energy;
             if (iss.peek() == SNAPSHOT_LIST_DELIMITER) iss.ignore();
 
-            players[player_id].entities.emplace_back(Location{x, y}, energy);
+            players[player_id].entities.emplace_back(entity_id, energy, Location{x, y});
         }
         // Skip ; between players but don't require it at end
         if (iss) ignore_delimiter(iss, SNAPSHOT_FIELD_DELIMITER, 0);

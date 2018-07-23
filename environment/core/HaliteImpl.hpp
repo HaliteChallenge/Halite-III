@@ -5,6 +5,7 @@
 
 #include "Halite.hpp"
 #include "Replay.hpp"
+#include "Snapshot.hpp"
 #include "BotError.hpp"
 
 namespace hlt {
@@ -20,7 +21,8 @@ class HaliteImpl final {
      * Initialize the game.
      * @param player_commands The list of player commands.
      */
-    void initialize_game(const std::vector<std::string> &player_commands);
+    void initialize_game(const std::vector<std::string> &player_commands,
+                         const Snapshot &snapshot);
 
     /** Run the game. */
     void run_game();

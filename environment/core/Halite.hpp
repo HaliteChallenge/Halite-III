@@ -57,14 +57,10 @@ public:
     /**
      * Run the game.
      * @param player_commands The list of player commands.
+     * @param snapshot A snapshot of game state.
      */
-    void run_game(const std::vector<std::string> &player_commands);
-
-    /**
-     * Load a snapshot.
-     * @param snapshot The snapshot.
-     */
-    void load_snapshot(const Snapshot &snapshot);
+    void run_game(const std::vector<std::string> &player_commands,
+                  const Snapshot &snapshot);
 
     /** Remove a player from the game. */
     void kill_player(const Player::id_type& player_id);

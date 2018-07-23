@@ -9,7 +9,8 @@ namespace hlt {
  * Initialize the game.
  * @param player_commands The list of player commands.
  */
-void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands) {
+void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands,
+                                     const Snapshot& snapshot) {
     const auto &constants = Constants::get();
     auto &players = game.store.players;
     players.reserve(player_commands.size());
