@@ -376,7 +376,15 @@ export class HaliteVisualizer {
     }
 
     scrub(frame, time, dt=1000/60) {
+        const delta = frame > this.frame ? 1 : -1;
         this.pause();
+
+        for (let f = this.frame + delta; (delta > 0 ? f < frame : f > frame); f += delta) {
+            this.frame = f;
+            this.time = 0.0;
+            this.update();
+        }
+
         this.frame = frame;
         this.time = time;
         if (time === 0.0) {
