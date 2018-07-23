@@ -102,6 +102,10 @@ int main(int argc, char *argv[]) {
     verbosity = verbosity > Logging::NUM_LEVELS ? 0 : Logging::NUM_LEVELS - verbosity;
     Logging::set_level(static_cast<Logging::Level>(verbosity));
 
+    if (json_results_switch.getValue()) {
+        Logging::set_enabled(false);
+    }
+
     // Read the player bot commands
     auto bot_commands = command_args.getValue();
     if (bot_commands.size() > constants.MAX_PLAYERS) {

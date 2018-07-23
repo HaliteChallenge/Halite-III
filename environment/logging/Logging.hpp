@@ -34,10 +34,20 @@ struct Logging {
     static Level level;
 
     /**
+     * Whether logging is enabled.
+     */
+    static bool enabled;
+
+    /**
      * Set the logging verbosity level.
      * @param level The new verbosity level.
      */
     static void set_level(Level level);
+
+    /**
+     * Set whether logging is enabled.
+     */
+    static void set_enabled(bool enabled);
 
     /**
      * Log a message to console.
