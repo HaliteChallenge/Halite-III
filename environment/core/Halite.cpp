@@ -52,9 +52,11 @@ void Halite::kill_player(const Player::id_type& player_id) {
     networking.kill_player(player);
 
     auto &entities = player.entities;
-    for (const auto& [entity_id, location] : entities) {
+    for (auto entity_iterator = entities.begin();
+            entity_iterator != entities.end();
+            entity_iterator = entities.erase(entity_iterator)) {
+        const auto &[entity_id, location] = *entity_iterator;
         auto& cell = map.at(location);
-        player.remove_entity(cell.entity);
         cell.entity = Entity::None;
         store.delete_entity(entity_id);
     }

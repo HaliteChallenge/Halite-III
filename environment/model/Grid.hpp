@@ -1,6 +1,8 @@
 #ifndef GRID_HPP
 #define GRID_HPP
 
+#include <cassert>
+
 #include "Location.hpp"
 
 namespace hlt {
@@ -54,6 +56,7 @@ public:
     Entry &at(dimension_type x, dimension_type y) {
         // Flipping x and y gives us a grid memory representation that is consistent
         // with the physical grid, indexed by rows then columns.
+        assert(0 <= y && y <= height && 0 <= x && x <= width);
         return grid[y][x];
     }
 
@@ -64,6 +67,7 @@ public:
      * @return Reference to the entry at (x, y).
      */
     const Entry &at(dimension_type x, dimension_type y) const {
+        assert(0 <= y && y <= height && 0 <= x && x <= width);
         return grid[y][x];
     }
 
@@ -74,6 +78,7 @@ public:
      */
     Entry &at(const Location &location) {
         auto [x, y] = location;
+        assert(0 <= y && y <= height && 0 <= x && x <= width);
         return grid[y][x];
     }
 
@@ -84,6 +89,7 @@ public:
      */
     const Entry &at(const Location &location) const {
         auto [x, y] = location;
+        assert(0 <= y && y <= height && 0 <= x && x <= width);
         return grid[y][x];
     }
 
