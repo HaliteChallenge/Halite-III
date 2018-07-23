@@ -2,7 +2,6 @@
 
 #include "HaliteImpl.hpp"
 #include "Logging.hpp"
-#include "Entity.hpp"
 
 namespace hlt {
 
@@ -182,7 +181,7 @@ bool HaliteImpl::game_ended() const {
 }
 
 /**
- * Update all player's statistics after a single turn.
+ * Update all players' statistics after a single turn.
  */
 void HaliteImpl::update_player_stats() {
     for (PlayerStatistics &player_stats : game.game_statistics.player_statistics) {
