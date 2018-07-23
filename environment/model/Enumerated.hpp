@@ -101,11 +101,8 @@ public:
     explicit Enumerated(id_type id) : id(id) {}
 
     /** Virtual destructor. */
-    virtual ~Enumerated() = 0;
+    virtual ~Enumerated() = default;
 };
-
-template<class T>
-Enumerated<T>::~Enumerated() = default;
 
 namespace std {
 template<class T>

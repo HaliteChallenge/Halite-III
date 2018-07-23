@@ -51,7 +51,7 @@ public:
     void add_to_transaction(Player &player, CommandTransaction &transaction) const final;
 
     /** Virtual destructor. */
-    ~TransactableCommand() override = 0;
+    ~TransactableCommand() override = default;
 };
 
 /**

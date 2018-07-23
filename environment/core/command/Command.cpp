@@ -20,9 +20,6 @@ constexpr auto TYPE_LENGTH = 1;
 namespace hlt {
 
 template<class T>
-TransactableCommand<T>::~TransactableCommand() = default;
-
-template<class T>
 void TransactableCommand<T>::add_to_transaction(Player &player, CommandTransaction &transaction) const {
     // Invoke overload resolution on CommandTransaction::add_command
     transaction.add_command(player, static_cast<const T &>(*this));
