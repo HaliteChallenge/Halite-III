@@ -382,13 +382,13 @@ export class HaliteVisualizer {
         for (let f = this.frame + delta; (delta > 0 ? f < frame : f > frame); f += delta) {
             this.frame = f;
             this.time = 0.0;
-            this.update();
+            this.update(delta);
         }
 
         this.frame = frame;
         this.time = time;
         if (time === 0.0) {
-            this.update();
+            this.update(delta);
             this.onUpdate();
         }
         this.draw(dt);
@@ -399,7 +399,7 @@ export class HaliteVisualizer {
     // Update the status of the game once per frame. Updating includes processing turn movement, spawning, death, and map ownership
     // Be sure order of events (movement, merging, production calculation, spawning, and death) directly mirrors
     // game engine or visualization will be incorrect.
-    update() {
+    update(delta=1) {
         for (const factory of this.factories) {
             factory.scale = this.camera.scale;
             factory.update();
@@ -411,7 +411,7 @@ export class HaliteVisualizer {
         this.process_entity_commands();
 
         // Spawn entities (info from replay file), then process deaths
-        this.process_entity_events();
+        this.process_entity_events(delta);
 
         // Process map ownership
         if (this.currentFrame) {
@@ -499,8 +499,9 @@ export class HaliteVisualizer {
      * Read events for the turn from the replay file.
      * This functions will spawn new entities, and create animations for spawning and deaths.
      * Though this function adds animations for deaths, it does not remove dying entities.
+     * @param delta whether are are scrubbing forward or backward through time
      */
-    process_entity_events() {
+    process_entity_events(delta) {
         // TODO: add within frame interpolation
         let delayTime = 0;
         if (!this.currentFrame) return;
@@ -554,12 +555,29 @@ export class HaliteVisualizer {
                 }
                 else if (event.type === "construct") {
                     /// TODO: create new sprite class for dropoffs, construct one, add to list (dict?) of dropoffs
+                    // Temporarily draw as factory
+
+                    if (delta < 0) {
+                        // We are reversing, delete the factory
+
+                        let idx = 0;
+                        for (const dropoff of this.dropoffs) {
+                            if (dropoff.factoryBase.x === event.location.x &&
+                                dropoff.factoryBase.y === event.location.y) {
+                                this.dropoffs.splice(idx, 1);
+                                dropoff.destroy();
+                                break;
+                            }
+                            idx++;
+                        }
+
+                        return;
+                    }
+
                     // temporarily use old animation
                     this.animationQueue.push(
                         new animation.PlanetExplosionFrameAnimation(
                             event, delayTime, cellSize, this.factoryContainer));
-
-                    // Temporarily draw as factory
 
                     // Don't add factory twice (if scrubbing)
                     let create = true;
