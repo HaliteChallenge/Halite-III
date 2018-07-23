@@ -21,7 +21,7 @@ export const FACTORY_BASE_COLOR = 0xFFFFFF;
 export const FACTORY_BASE_ALPHA = 0.8;
 
 
-export const MAX_PRODUCTION = 255;
+export const MAX_PRODUCTION = 1000;
 export const MAP_COLOR_LIGHT = 0x00FFFF;
 export const MAP_COLOR_MEDIUM = 0xFF00FF;
 export const MAP_COLOR_DARK = 0xFFFF00;

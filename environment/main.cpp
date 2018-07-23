@@ -102,6 +102,10 @@ int main(int argc, char *argv[]) {
     verbosity = verbosity > Logging::NUM_LEVELS ? 0 : Logging::NUM_LEVELS - verbosity;
     Logging::set_level(static_cast<Logging::Level>(verbosity));
 
+    if (json_results_switch.getValue()) {
+        Logging::set_enabled(false);
+    }
+
     // Read the player bot commands
     auto bot_commands = command_args.getValue();
     if (bot_commands.size() > constants.MAX_PLAYERS) {
@@ -145,8 +149,7 @@ int main(int argc, char *argv[]) {
     hlt::Replay replay{game_statistics, map_parameters.num_players, map_parameters.seed, map};
 
     hlt::Halite game(config, map, networking_config, game_statistics, replay);
-    game.load_snapshot(snapshot);
-    game.run_game(bot_commands);
+    game.run_game(bot_commands, snapshot);
 
     const auto& overrides = override_args.getValue();
     auto idx = 0;
@@ -228,7 +231,7 @@ int main(int argc, char *argv[]) {
             results["map_seed"] = config.seed;
             // TODO: put the actual generator here
             results["map_generator"] = "default";
-            results["final_snapshot"] = game.to_snapshot();
+            results["final_snapshot"] = game.to_snapshot(map_parameters);
             results["stats"] = nlohmann::json::object();
             for (const auto& stats : replay.game_statistics.player_statistics) {
                 results["stats"][to_string(stats.player_id)] = { { "rank", stats.rank } };

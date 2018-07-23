@@ -45,5 +45,29 @@ std::istream &operator>>(std::istream &istream, MapType &type) {
     return istream;
 }
 
+std::ostream &operator<<(std::ostream &ostream, MapType type) {
+    std::string str;
+    switch (type) {
+    case MapType::Basic: {
+        str = "basic";
+        break;
+    }
+    case MapType::BlurTile: {
+        str = "blur_tile";
+        break;
+    }
+    case MapType::Fractal: {
+        str = "fractal";
+        break;
+    }
+    default: {
+        throw std::runtime_error("Illegal map type");
+    }
+    }
+    ostream << str;
+
+    return ostream;
+}
+
 }
 }
