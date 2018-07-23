@@ -558,12 +558,26 @@ export class HaliteVisualizer {
                     this.animationQueue.push(
                         new animation.PlanetExplosionFrameAnimation(
                             event, delayTime, cellSize, this.factoryContainer));
+
                     // Temporarily draw as factory
-                    const dropoff_base = {"x" : event.location.x, "y" : event.location.y, "owner" : event.owner_id};
-                    const dropoff = new Factory(this, dropoff_base, this.replay.constants,
-                        this.camera.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
-                    this.dropoffs.push(dropoff);
-                    dropoff.attach(this.factoryContainer);
+
+                    // Don't add factory twice (if scrubbing)
+                    let create = true;
+                    for (const dropoff of this.dropoffs) {
+                        if (dropoff.factoryBase.x === event.location.x &&
+                            dropoff.factoryBase.y === event.location.y) {
+                            create = false;
+                            break;
+                        }
+                    }
+
+                    if (create) {
+                        const dropoff_base = {"x" : event.location.x, "y" : event.location.y, "owner" : event.owner_id};
+                        const dropoff = new Factory(this, dropoff_base, this.replay.constants,
+                                                    this.camera.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
+                        this.dropoffs.push(dropoff);
+                        dropoff.attach(this.factoryContainer);
+                    }
 
                     // delete entity sprite as it is no longer a ship
                     // entity might not exist if this is the zero
