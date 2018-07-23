@@ -18,7 +18,9 @@
 
         },
         methods: {
-
+            upload() {
+                return this.$refs.editor.submit_bot();
+            }
         },
         watch: {
             stepName: function(newStep, oldStep) {

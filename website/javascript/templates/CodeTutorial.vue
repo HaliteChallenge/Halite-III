@@ -154,7 +154,10 @@ elif ship.halite > hlt.MAX_HALITE > 2:
                     builds new ships when necessary. Let's submit your
                     bot so it can start playing:
                 </p>
-                <button>
+                <p v-if="uploadMessage">
+                    <strong>{{uploadMessage}}</strong>
+                </p>
+                <button v-on:click="upload" v-else>
                     Upload
                 </button>
                 <p>
@@ -167,6 +170,7 @@ elif ship.halite > hlt.MAX_HALITE > 2:
 
         <template slot="content" slot-scope="walkthrough">
             <CodeTutorialStepper
+                ref="stepper"
                 v-bind:progress="walkthrough.progress"
                 v-bind:step-name="walkthrough.stepName"
             />
@@ -187,13 +191,22 @@ elif ship.halite > hlt.MAX_HALITE > 2:
             "CodeTutorialStepper": CodeTutorialStepper,
         },
         data: function () {
-            return {};
+            return {
+                uploadMessage: null,
+            };
         },
         mounted: function () {
 
         },
         methods: {
-
+            upload: function() {
+                this.uploadMessage = "Uploading...";
+                this.$refs.stepper.upload().then(() => {
+                    this.uploadMessage = "Success!";
+                }, () => {
+                    this.uploadMessage = "Hmm, something went wrong.";
+                });
+            },
         },
     };
 </script>
