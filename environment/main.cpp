@@ -222,8 +222,6 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        std::cout << replay_message.str();
-
         if (json_results_switch.getValue()) {
             results["replay"] = output_filename;
             results["map_width"] = map_width;
@@ -237,6 +235,9 @@ int main(int argc, char *argv[]) {
                 results["stats"][to_string(stats.player_id)] = { { "rank", stats.rank } };
             }
             std::cout << results.dump(JSON_INDENT_LEVEL) << std::endl;
+        }
+        else {
+            std::cout << replay_message.str();
         }
     }
 
