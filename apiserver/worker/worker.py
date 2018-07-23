@@ -288,16 +288,15 @@ def parseGameOutput(output, users):
 
     for player_tag, stats in result["stats"].items():
         player_tag = int(player_tag)
-        # Halite 3 uses 1-indexed players
-        users[player_tag - 1]["player_tag"] = player_tag
-        users[player_tag - 1]["rank"] = stats["rank"]
-        users[player_tag - 1]["timed_out"] = False
-        users[player_tag - 1]["log_name"] = None
+        users[player_tag]["player_tag"] = player_tag
+        users[player_tag]["rank"] = stats["rank"]
+        users[player_tag]["timed_out"] = False
+        users[player_tag]["log_name"] = None
 
     for player_tag, error_log in result["error_logs"].items():
         player_tag = int(player_tag)
-        users[player_tag - 1]["timed_out"] = True
-        users[player_tag - 1]["log_name"] = os.path.basename(error_log)
+        users[player_tag]["timed_out"] = True
+        users[player_tag]["log_name"] = os.path.basename(error_log)
 
     return users, result
 
