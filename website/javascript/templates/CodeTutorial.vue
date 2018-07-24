@@ -180,8 +180,55 @@ elif ship.halite > hlt.MAX_HALITE > 2:
             </Step>
             <Step title="Collision Avoidance" name="collision-avoidance">
                 <p>
+                    By now, you've probably also noticed that the bot
+                    tends to crash its ships into each other. Not a
+                    very impressive fleet! We can do some very simple
+                    high-level navigation, again taking advantage of
+                    shared state.
+                </p>
+                <p>
+                    We'll implement the following: instead of directly
+                    issuing move commands, we'll write a wrapper that
+                    checks the move against all current moves made so
+                    far, as well as the current positions of your
+                    ships. Then, it'll only make the move if it's safe
+                    to do so. Otherwise the ship will sit there.
+                </p>
+                <p>
+                    Define a function <tt>safe_move</tt> that takes
+                    the <tt>commands</tt> object, the ship, and the
+                    direction. Also, add another dictionary like the
+                    one above, but create it after the call to
+                    <tt>game.get_frame()</tt>. (This way, the state is
+                    recreated every turn.) Put the definition of
+                    <tt>safe_move</tt> under the <tt>get_frame</tt>
+                    call as well, so it has access to things like
+                    <tt>game_map</tt>. (Sorry, we're not using the
+                    best coding practices here&mdash;no time for
+                    beautiful code on the high seas.)
+                </p>
+                <p>
+                    For the function itself, iterate through all your
+                    ships. (You can find this via
+                    <tt>players[myID]</tt>.) Compare the ship's
+                    location with the projected location of the
+                    current ship (don't forget about
+                    <tt>location_with_offset</tt>). If they match,
+                    don't move. Otherwise, also iterate through the
+                    dictionary you created above, which should map
+                    ship IDs to ship positions, and make the same
+                    check. Finally, if the move is safe, add the
+                    projected location to the dictionary and issue the
+                    command via <tt>commands.move</tt>.
                 </p>
                 <button class="run-game" v-on:click="runGame">Run Game</button>
+                <p>
+                    If you run a few games, you'll notice a few
+                    shortcomings of this approach: it doesn't do much
+                    about other players' ships, and ships tend to get
+                    stuck, especially around the shipyard. We'll leave
+                    fixing that up to you.
+                </p>
             </Step>
             <Step title="Start Playing!" name="submit">
                 <p>
