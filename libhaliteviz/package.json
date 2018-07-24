@@ -11,10 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "jquery": "^3.2.1",
-    "pako": "^1.0.5",
     "pixi.js": "^4.5.3",
-    "seedrandom": "^2.4.3",
-    "vue": "^2.3.4"
+    "seedrandom": "^2.4.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
