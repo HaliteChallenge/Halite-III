@@ -371,11 +371,11 @@ void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
 
     // Given a command position, log the context of that command.
     const auto log_context = [&player_commands, &game = game, &player_id](const auto position) {
-        static constexpr auto COMMAND_CONTEXT_LINES = 3UL;
-        auto distance = std::distance(player_commands.begin(), position);
-        const auto commands_begin = player_commands.begin() + std::max(0UL, distance - COMMAND_CONTEXT_LINES);
-        const auto commands_end =
-                player_commands.begin() + std::min(player_commands.size(), distance + COMMAND_CONTEXT_LINES + 1);
+        static constexpr long COMMAND_CONTEXT_LINES = 3L;
+        const auto distance = static_cast<long>(std::distance(player_commands.begin(), position));
+        const auto commands_begin = player_commands.begin() + std::max(0L, distance - COMMAND_CONTEXT_LINES);
+        const auto commands_end = player_commands.begin() +
+                std::min(static_cast<long>(player_commands.size()), distance + COMMAND_CONTEXT_LINES + 1);
         for (auto iterator = commands_begin; iterator != commands_end; iterator++) {
             auto number = std::distance(player_commands.begin(), iterator);
             auto marker = iterator == position ? ">>> " : "    ";
