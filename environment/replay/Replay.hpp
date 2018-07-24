@@ -77,6 +77,19 @@ struct Turn {
      * @param cells The locations of changed cells
      */
     void add_cells(Map &map, std::unordered_set<Location> changed_cells);
+
+    /**
+     * Move constructor
+     *
+     * Prevents copy construtor from being defined/used, which fixes
+     * compilation errors due to unique_ptr in MSVC when we try to add
+     * another Turn to full_frames.
+     *
+     * https://stackoverflow.com/questions/26115452
+     */
+    Turn(Turn&&) = default;
+
+    Turn() = default;
 };
 
 struct Replay {
