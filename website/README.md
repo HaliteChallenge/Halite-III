@@ -17,7 +17,7 @@ Assuming you have RubyGems and Yarn installed:
 
 Then visit <http://localhost:4000>.
 
-You can also try to use NPM, but Yarn tends to handle things better.
+You can also try to use NPM, but Yarn tends to handle things better. You will want to use `yarn link` or `npm link` as described above, or else Webpack won't pick up on changes to `libhaliteviz`, which is annoying during development.
 
 If you modify the JavaScript, you might want to run the Webpack watcher, which will rebuild the JavaScript bundle on the fly:
 
