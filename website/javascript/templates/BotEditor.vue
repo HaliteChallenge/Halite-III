@@ -335,9 +335,10 @@ export default {
     clearHighlights: function() {
       const editor = this.editorViewer.editor
       const annotationModel = editor.getAnnotationModel()
-      const annotations = annotationModel.getAnnotations();
-      while (annotations.hasNext()) {
-        const annotation = annotations.next();
+      // Actual getAnnotations doesn't seem to return all of them
+      // (iterator invalidation?)
+      while (annotationModel._annotations.length > 0) {
+        const annotation = annotationModel._annotations[0];
         annotationModel.removeAnnotation(annotation);
       }
     },
