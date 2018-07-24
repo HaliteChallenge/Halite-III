@@ -245,24 +245,60 @@ bool HaliteImpl::game_ended() const {
 }
 
 /**
- * Update a player's statistics after a single turn. This will update their current game production and their last turn
- * alive if they are still alive.
- *
- * @param productions Mapping from player ID to the production they gained in the current turn.
+ * Update all players' statistics after a single turn.
  */
 void HaliteImpl::update_player_stats() {
     for (PlayerStatistics &player_stats : game.game_statistics.player_statistics) {
         // Player with sprites is still alive, so mark as alive on this turn and add production gained
         const auto& player_id = player_stats.player_id;
         if (game.store.get_player(player_id).is_alive()) {
+            const Player &player = game.store.get_player(player_id);
             player_stats.last_turn_alive = game.turn_number;
-            player_stats.turn_productions.push_back(game.store.get_player(player_id).energy);
+            player_stats.turn_productions.push_back(player.energy);
+            player_stats.number_dropoffs = player.dropoffs.size();
+            for (const auto &[_entity_id, location] : player.entities) {
+                const dimension_type entity_distance = game.map.distance(location, player.factory);
+                if (entity_distance > player_stats.max_entity_distance) player_stats.max_entity_distance = entity_distance;
+                player_stats.total_distance += entity_distance;
+                player_stats.total_entity_lifespan++;
+                if (possible_interaction(player_id, location)) {
+                    player_stats.interaction_opportunities++;
+                }
+            }
         } else {
             player_stats.turn_productions.push_back(0);
         }
     }
 }
 
+/**
+ * Determine if entity owned by given player is in range of another player (their entity, dropoff, or factory) and thus may interact
+ *
+ * param owner_id Id of owner of entity at given location
+ * param entity_location Location of entity we are assessing for an interaction opportunity
+ * return bool Indicator of whether there players are in close range for an interaction (true) or not (false)
+ */
+bool HaliteImpl::possible_interaction(const Player::id_type owner_id, const Location entity_location) {
+    // Fetch all locations 2 cells away
+    std::unordered_set<Location> close_cells{};
+    const auto neighbors = game.map.get_neighbors(entity_location);
+    close_cells.insert(neighbors.begin(), neighbors.end());
+    for (const Location &neighbor : neighbors) {
+        const auto cells_once_removed = game.map.get_neighbors(neighbor);
+        close_cells.insert(cells_once_removed.begin(), cells_once_removed.end());
+    }
+    // Interaction possibilty implies a cell has an entity owned by another player or there is a factory or dropoff
+    // of another player on the cell. Interactions between entities of a single player are ignored
+    for (const Location &cell_location : close_cells) {
+        const Cell &cell = game.map.at(cell_location);
+        if (cell.entity != Entity::None) {
+            if (game.store.get_entity(cell.entity).owner != owner_id) return true;
+        }
+        if (cell.owner != Player::None && cell.owner != owner_id) return true;
+    }
+    return false;
+
+}
 /**
  * Update players' rankings based on their final turn alive, then break ties with production totals in final turn.
  * Function is intended to be called at end of game, and will in place modify the ranking field of player statistics

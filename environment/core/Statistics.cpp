@@ -34,7 +34,11 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
     json = {FIELD_TO_JSON(player_id),
             FIELD_TO_JSON(rank),
             FIELD_TO_JSON(last_turn_alive),
-            {"final_production", stats.turn_productions.back()}};
+            {"final_production", stats.turn_productions.back()},
+            FIELD_TO_JSON(max_entity_distance),
+            FIELD_TO_JSON(number_dropoffs),
+            FIELD_TO_JSON(interaction_opportunities),
+            {"average_entity_distance", stats.total_distance / stats.total_entity_lifespan}};
 }
 
 /**
