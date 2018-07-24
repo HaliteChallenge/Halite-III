@@ -46,8 +46,10 @@
                 </p>
                 <p>
                     Games last for 500 turns, so it's not really an
-                    infinite loop.
+                    infinite loop. Try running a game now:
                 </p>
+
+                <button class="run-game" v-on:click="runGame">Run Game</button>
             </Step>
             <Step title="Basic Movement" name="basic-movement">
                 <p>
@@ -63,11 +65,13 @@
                     randomly. Try different movement strategies, like
                     always moving the ship west.
                 </p>
-                <!-- TODO: tell them how to run games -->
+                <p>You can run games as often as you like.</p>
+                <button class="run-game" v-on:click="runGame">Run Game</button>
             </Step>
             <Step title="Collision Avoidance" name="collision-avoidance">
                 <p>
                 </p>
+                <button class="run-game" v-on:click="runGame">Run Game</button>
             </Step>
             <Step title="Halite Filtration" name="tunneling">
                 <p>
@@ -89,6 +93,7 @@
                     <li><code>game_map[&lt;y_coordinate&gt;][&lt;x_coordinate&gt;]</code>&mdash;how much halite is on the given coordinates.</li>
                     <li><code>hlt.MAX_HALITE</code>&mdash;a constant representing the maximum amount of halite a ship can carry.</li>
                 </ul>
+                <button class="run-game" v-on:click="runGame">Run Game</button>
             </Step>
             <Step title="Depositing Halite" name="dropoffs">
                 <p>
@@ -134,6 +139,7 @@ elif ship_status.get(ship.id) === "returning":
     pass
 elif ship.halite > hlt.MAX_HALITE > 2:
     ship_status[ship_id] = "returning"</pre>
+                <button class="run-game" v-on:click="runGame">Run Game</button>
             </Step>
             <Step title="Better Movement" name="dropoffs">
                 <p>
@@ -153,6 +159,7 @@ elif ship.halite > hlt.MAX_HALITE > 2:
                 <ul>
                     <li><code>game_map.location_with_offset(location, direction)</code>&mdash;given a location and a direction (<tt>"n"</tt>, <tt>"s"</tt>, etc.), returns the coordinates of the resulting cell.</li>
                 </ul>
+                <button class="run-game" v-on:click="runGame">Run Game</button>
             </Step>
             <Step title="Carrier Has Arrived" name="carrier">
                 <p>
@@ -174,6 +181,7 @@ elif ship.halite > hlt.MAX_HALITE > 2:
                     So, let's change the bot to only make ships in the
                     first 200 turns of the game.
                 </p>
+                <button class="run-game" v-on:click="runGame">Run Game</button>
             </Step>
             <Step title="Start Playing!" name="submit">
                 <p>
@@ -233,6 +241,12 @@ elif ship.halite > hlt.MAX_HALITE > 2:
                     this.uploadMessage = "Success!";
                 }, () => {
                     this.uploadMessage = "Hmm, something went wrong.";
+                });
+            },
+            runGame: function() {
+                this.$refs.stepper.runGame({
+                    width: 32,
+                    height: 32,
                 });
             },
         },

@@ -471,17 +471,17 @@ export default {
       }
       return true
     },
-    run_ondemand_game: async function() {
+    run_ondemand_game: async function(params) {
       this.clear_terminal_text()
       const user_id = this.user_id
-      const taskResult = await api.start_ondemand_task(user_id, {
+      const taskResult = await api.start_ondemand_task(user_id, Object.assign({}, {
         opponents: [
           {
             name: "MirrorMatch",
             bot_id: "self",
           },
         ],
-      })
+      }, params))
       console.log(taskResult)
       const startResult = await api.update_ondemand_task(user_id, {
         "turn-limit": 500,

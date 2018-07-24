@@ -18,6 +18,9 @@
 
         },
         methods: {
+            runGame(params) {
+                return this.$refs.editor.run_ondemand_game(params);
+            },
             upload() {
                 return this.$refs.editor.submit_bot();
             }
