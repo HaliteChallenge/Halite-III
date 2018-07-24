@@ -15,8 +15,12 @@ struct PlayerStatistics {
     Player::id_type player_id;                   /**< The ID of the player. */
     long rank{};                                 /**< The rank of the player (1 = highest) */
     long last_turn_alive{};                      /**< The last turn the player remained alive */
-    std::vector<energy_type> turn_productions{}; /**< Production granted to player each turn, turn 1 at front of vector */
-
+    std::vector<energy_type> turn_productions{}; /**< Production granted to player each turn, turn 1 at front of vector. */
+    dimension_type max_entity_distance{};        /**< The maximum distance any entity traveled from the player's factory. */
+    dimension_type total_distance{};             /**< The total distance of all entities over all turns from factory. */
+    dimension_type total_entity_lifespan{};      /**< Total lifespan of all entities (ie 1 entity for 10 turns plus 1 for 300 = 310. */
+    long number_dropoffs{};                      /**< Number of dropoffs the player owns. */
+    long interaction_opportunities{};            /**< The number of times a player's entity was within a short distance of another player. */
     /**
      * Convert Player statistics to JSON format.
      * @param[out] json The output JSON.
