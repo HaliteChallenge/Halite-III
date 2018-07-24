@@ -168,22 +168,13 @@ export default {
         window.location.href = '/';
       }
     })
-    let width = jQuery('.replay').width()
 
-    import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
-      .then((libhaliteviz) => {
-        return libhaliteviz
-          .setAssetRoot('/assets/js')
-          .then(() => {
-              this.visualizer = new libhaliteviz.HaliteVisualizer(
-                  JSON.parse(EX_GAME_STRING), width, width)
-              this.visualizer.attach('.game_replay_viewer')
-              window.addEventListener('resize', (event) => {
-                  width = jQuery('.replay').width()
-                  this.visualizer.resize(width, width)
-              }, true)
-          })
-      });
+    window.addEventListener('resize', (event) => {
+      if (this.visualizer) {
+        const width = jQuery('.replay').width()
+        this.visualizer.resize(width, width)
+      }
+    }, true)
   },
   methods: {
     /* Return bot language specific info */
@@ -509,7 +500,7 @@ export default {
         }
 
         this.visualizer = new libhaliteviz.HaliteVisualizer(replay, width, width)
-        this.visualizer.attach('.game_replay_viewer')
+        this.visualizer.attach('.game_replay_viewer', '.game_replay_viewer')
         this.visualizer.play()
         this.add_console_text("Starting replay.\n")
 

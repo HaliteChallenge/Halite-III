@@ -299,10 +299,15 @@ export class HaliteVisualizer {
         };
     }
 
-    attach(containerEl) {
+    attach(containerEl, keyboardEl=null) {
         $(containerEl).append(this.application.view);
+        if (!keyboardEl) {
+            keyboardEl = document.body;
+        }
 
-        this.keyboardControls.attach(document.body);
+        this.keyboardControls.attach(typeof keyboardEl === "string" ?
+                                     document.querySelector(keyboardEl) :
+                                     keyboardEl);
 
         this.update();
         this.application.render();
@@ -445,7 +450,8 @@ export class HaliteVisualizer {
         if (!this.currentFrame) return;
 
         for (const [entity_id, entity] of Object.entries(this.entity_dict)) {
-            if (!this.currentFrame.entities[entity.owner][entity_id]) {
+            if (!this.currentFrame.entities[entity.owner] ||
+                !this.currentFrame.entities[entity.owner][entity_id]) {
                 const sprite = this.entity_dict[entity_id];
                 sprite.destroy();
                 delete this.entity_dict[entity_id];

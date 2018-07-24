@@ -68,11 +68,6 @@
                 <p>You can run games as often as you like.</p>
                 <button class="run-game" v-on:click="runGame">Run Game</button>
             </Step>
-            <Step title="Collision Avoidance" name="collision-avoidance">
-                <p>
-                </p>
-                <button class="run-game" v-on:click="runGame">Run Game</button>
-            </Step>
             <Step title="Halite Filtration" name="tunneling">
                 <p>
                     Moving around burns a lot of halite! Let's have
@@ -180,6 +175,11 @@ elif ship.halite > hlt.MAX_HALITE > 2:
                 <p>
                     So, let's change the bot to only make ships in the
                     first 200 turns of the game.
+                </p>
+                <button class="run-game" v-on:click="runGame">Run Game</button>
+            </Step>
+            <Step title="Collision Avoidance" name="collision-avoidance">
+                <p>
                 </p>
                 <button class="run-game" v-on:click="runGame">Run Game</button>
             </Step>
