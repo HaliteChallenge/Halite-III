@@ -1,6 +1,5 @@
 #include <future>
 
-#include "CommandTransaction.hpp"
 #include "HaliteImpl.hpp"
 #include "Logging.hpp"
 
@@ -11,10 +10,9 @@ namespace hlt {
  * @param player_commands The list of player commands.
  */
 void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands,
-                                 const Snapshot& snapshot) {
+                                 const Snapshot &snapshot) {
     const auto &constants = Constants::get();
     auto &players = game.store.players;
-    players.reserve(player_commands.size());
     assert(game.map.factories.size() >= player_commands.size());
 
     // Add a 0 frame so we can record beginning-of-game state
@@ -51,8 +49,8 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
                 cell.energy = 0;
                 player.dropoffs.emplace_back(game.store.new_dropoff(dropoff_location));
                 game.replay.full_frames.back().events.push_back(
-                    std::make_unique<ConstructionEvent>(
-                        dropoff_location, player.id, Entity::id_type{0}));
+                        std::make_unique<ConstructionEvent>(
+                                dropoff_location, player.id, Entity::id_type{0}));
                 changed_cells.insert(dropoff_location);
             }
 
@@ -62,8 +60,8 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
                 cell.entity = new_entity.id;
                 player.add_entity(new_entity.id, entity.location);
                 game.replay.full_frames.back().events.push_back(
-                    std::make_unique<SpawnEvent>(
-                        entity.location, entity.energy, player.id, cell.entity));
+                        std::make_unique<SpawnEvent>(
+                                entity.location, entity.energy, player.id, cell.entity));
             }
         }
         players.emplace(player.id, player);
@@ -86,6 +84,7 @@ void HaliteImpl::run_game() {
 
     id_map<Player, std::future<void>> results{};
     for (auto &[player_id, player] : game.store.players) {
+        Logging::log("Initializing player " + to_string(player.id) + " with command " + player.command);
         results[player_id] = std::async(std::launch::async,
                                         [&networking = game.networking, &player = player] {
                                             networking.initialize_player(player);
@@ -96,14 +95,17 @@ void HaliteImpl::run_game() {
             result.get();
         }
         catch (const BotError &e) {
-            game.kill_player(player_id);
+            kill_player(player_id);
         }
     }
     game.replay.players.insert(game.store.players.begin(), game.store.players.end());
     Logging::log("Player initialization complete.");
 
     for (game.turn_number = 0; game.turn_number < constants.MAX_TURNS; game.turn_number++) {
-        Logging::log("Starting turn " + std::to_string(game.turn_number));
+        Logging::set_turn_number(game.turn_number);
+        Logging::log([turn_number = game.turn_number]() {
+            return "Starting turn " + std::to_string(turn_number);
+        }, Logging::Level::Debug);
         // Create new turn struct for replay file, to be filled by further turn actions
         game.replay.full_frames.emplace_back();
         // Add state of entities at start of turn
@@ -117,13 +119,18 @@ void HaliteImpl::run_game() {
     game.game_statistics.number_turns = game.turn_number;
 
     rank_players();
-    Logging::log("Game has ended after " + std::to_string(game.turn_number) + " turns.");
+    Logging::set_turn_number(game.turn_number);
+    Logging::log("Game has ended.");
+    Logging::remove_turn_number();
+    for (const auto &[player_id, player] : game.store.players) {
+        game.replay.players.find(player_id)->second.terminated = player.terminated;
+    }
 }
 
 /** Retrieve and process commands, and update the game state for the current turn. */
 void HaliteImpl::process_turn() {
     using Commands = std::vector<std::unique_ptr<Command>>;
-    id_map<Player, Commands> commands{};
+    ordered_id_map<Player, Commands> commands{};
     id_map<Player, std::future<Commands>> results{};
     for (auto &[player_id, player] : game.store.players) {
         if (player.is_alive()) {
@@ -138,7 +145,7 @@ void HaliteImpl::process_turn() {
             commands[player_id] = result.get();
         }
         catch (const BotError &e) {
-            game.kill_player(player_id);
+            kill_player(player_id);
         }
     }
 
@@ -154,21 +161,8 @@ void HaliteImpl::process_turn() {
             // Create new game event for replay file.
             frames.back().events.push_back(std::move(event));
         });
-        transaction.on_error([&offenders, &commands, &game = game](CommandError error) {
-            const auto message = error->log_message();
-            const auto player_id = error->player;
-            if (offenders.find(player_id) == offenders.end()) {
-                game.log_error_section(player_id, "Turn " + std::to_string(game.turn_number));
-            }
-            if (error->ignored) {
-                Logging::log("Player " + to_string(player_id) + " caused ignored error: " + message,
-                             Logging::Level::Warning);
-                game.log_error(player_id, "[IGNORED] " + message);
-            } else {
-                Logging::log("Player " + to_string(player_id) + " caused error: " + message, Logging::Level::Error);
-                offenders.emplace(player_id);
-                game.log_error(player_id, message);
-            }
+        transaction.on_error([&offenders, &commands, this](CommandError error) {
+            this->handle_error(offenders, commands, std::move(error));
         });
         transaction.on_cell_update([&changed_cells = game.store.changed_cells](Location cell) {
             changed_cells.emplace(cell);
@@ -191,7 +185,7 @@ void HaliteImpl::process_turn() {
             break;
         } else {
             for (auto player : offenders) {
-                game.kill_player(player);
+                kill_player(player);
                 commands.erase(player);
             }
         }
@@ -220,8 +214,8 @@ void HaliteImpl::process_turn() {
         }
     }
     game.replay.full_frames.back().add_cells(game.map, game.store.changed_cells);
-    for (const auto [player_id, player] : game.store.players) {
-        game.replay.full_frames.back().energy.insert( {{player_id, player.energy}} );
+    for (const auto &[player_id, player] : game.store.players) {
+        game.replay.full_frames.back().energy.insert({{player_id, player.energy}});
     }
     update_player_stats();
 }
@@ -250,7 +244,7 @@ bool HaliteImpl::game_ended() const {
 void HaliteImpl::update_player_stats() {
     for (PlayerStatistics &player_stats : game.game_statistics.player_statistics) {
         // Player with sprites is still alive, so mark as alive on this turn and add production gained
-        const auto& player_id = player_stats.player_id;
+        const auto &player_id = player_stats.player_id;
         if (game.store.get_player(player_id).is_alive()) {
             const Player &player = game.store.get_player(player_id);
             player_stats.last_turn_alive = game.turn_number;
@@ -258,7 +252,8 @@ void HaliteImpl::update_player_stats() {
             player_stats.number_dropoffs = player.dropoffs.size();
             for (const auto &[_entity_id, location] : player.entities) {
                 const dimension_type entity_distance = game.map.distance(location, player.factory);
-                if (entity_distance > player_stats.max_entity_distance) player_stats.max_entity_distance = entity_distance;
+                if (entity_distance > player_stats.max_entity_distance)
+                    player_stats.max_entity_distance = entity_distance;
                 player_stats.total_distance += entity_distance;
                 player_stats.total_entity_lifespan++;
                 if (possible_interaction(player_id, location)) {
@@ -299,6 +294,7 @@ bool HaliteImpl::possible_interaction(const Player::id_type owner_id, const Loca
     return false;
 
 }
+
 /**
  * Update players' rankings based on their final turn alive, then break ties with production totals in final turn.
  * Function is intended to be called at end of game, and will in place modify the ranking field of player statistics
@@ -315,10 +311,95 @@ void HaliteImpl::rank_players() {
     }
 }
 
+void HaliteImpl::kill_player(const Player::id_type &player_id) {
+    Logging::log("Killing player " + to_string(player_id), Logging::Level::Warning);
+    auto &player = game.store.get_player(player_id);
+    player.terminated = true;
+    game.networking.kill_player(player);
+
+    auto &entities = player.entities;
+    for (auto entity_iterator = entities.begin();
+         entity_iterator != entities.end();
+         entity_iterator = entities.erase(entity_iterator)) {
+        const auto &[entity_id, location] = *entity_iterator;
+        auto &cell = game.map.at(location);
+        cell.entity = Entity::None;
+        game.store.delete_entity(entity_id);
+    }
+    player.energy = 0;
+}
+
 /**
  * Construct HaliteImpl from game interface.
  * @param game The game interface.
  */
 HaliteImpl::HaliteImpl(Halite &game) : game(game) {}
+
+/**
+ * Handle a player command error.
+ * @param offenders The set of players this turn who have caused errors.
+ * @param commands The player command mapping.
+ * @param error The error caused by the player.
+ */
+void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
+                              ordered_id_map<Player, std::vector<std::unique_ptr<Command>>> &commands,
+                              CommandError error) {
+    const auto message = error->log_message();
+    const auto &faulty = error->command();
+    const auto player_id = error->player;
+
+    // Log the error information.
+    if (offenders.find(player_id) == offenders.end()) {
+        game.log_error_section(player_id, "Turn " + std::to_string(game.turn_number));
+    }
+    if (error->ignored) {
+        Logging::log("Player " + to_string(player_id) + " caused warning: " + message, Logging::Level::Warning);
+        game.log_error(player_id, "[warn] " + message);
+    } else {
+        Logging::log("Player " + to_string(player_id) + " caused error: " + message, Logging::Level::Error);
+        offenders.emplace(player_id);
+        game.log_error(player_id, "[error] " + message);
+    }
+
+    // Find the position of a command within a player's command list.
+    auto &player_commands = commands[player_id];
+    const auto find_position = [&player_commands](const Command &faulty) {
+        return std::find_if(player_commands.begin(), player_commands.end(), [&faulty](const auto &command) {
+            return std::addressof(*command) == std::addressof(faulty);
+        });
+    };
+
+    // Given a command position, log the context of that command.
+    const auto log_context = [&player_commands, &game = game, &player_id](const auto position) {
+        static constexpr long COMMAND_CONTEXT_LINES = 3L;
+        const auto distance = static_cast<long>(std::distance(player_commands.begin(), position));
+        const auto commands_begin = player_commands.begin() + std::max(0L, distance - COMMAND_CONTEXT_LINES);
+        const auto commands_end = player_commands.begin() +
+                std::min(static_cast<long>(player_commands.size()), distance + COMMAND_CONTEXT_LINES + 1);
+        for (auto iterator = commands_begin; iterator != commands_end; iterator++) {
+            auto number = std::distance(player_commands.begin(), iterator);
+            auto marker = iterator == position ? ">>> " : "    ";
+            game.log_error(player_id, marker + std::to_string(number + 1) + "   " +
+                                      (*iterator)->to_bot_serial());
+        }
+    };
+
+    // Log the faulty command.
+    auto position = find_position(faulty);
+    auto distance = std::distance(player_commands.begin(), position);
+    game.log_error(player_id, "Failed at command " + std::to_string(distance + 1) + " of " +
+                              std::to_string(player_commands.size()) + ":");
+    log_context(position);
+
+    // If there is a context, log the context.
+    const auto &context = error->context();
+    if (!context.empty()) {
+        const auto context_message = error->context_message();
+        game.log_error(player_id, context_message);
+        for (const Command &command : context) {
+            log_context(find_position(command));
+        }
+    }
+}
 
 }

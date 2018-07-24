@@ -9,13 +9,7 @@
 #include "Logging.hpp"
 #include "Replay.hpp"
 #include "Snapshot.hpp"
-#include "SnapshotError.hpp"
-#include "Statistics.hpp"
-#include "Units.hpp"
 
-#include "version.hpp"
-
-#include "nlohmann/json.hpp"
 #include "tclap/CmdLine.h"
 
 /** The platform-specific path separator. */
@@ -41,11 +35,11 @@ int main(int argc, char *argv[]) {
     ValueArg<unsigned long> players_arg("n", "players", "Create a map that will accommodate n players.", false, 1,
                                         "positive integer", cmd);
     ValueArg<hlt::dimension_type> width_arg("", "width", "The width of the map.", false,
-                                                 constants.DEFAULT_MAP_WIDTH,
-                                                 "positive integer", cmd);
+                                            constants.DEFAULT_MAP_WIDTH,
+                                            "positive integer", cmd);
     ValueArg<hlt::dimension_type> height_arg("", "height", "The height of the map.", false,
-                                                  constants.DEFAULT_MAP_HEIGHT,
-                                                  "positive integer", cmd);
+                                             constants.DEFAULT_MAP_HEIGHT,
+                                             "positive integer", cmd);
     ValueArg<unsigned int> seed_arg("s", "seed", "The seed for the map generator.", false, 0, "positive integer", cmd);
     ValueArg<unsigned long> turn_limit_arg("", "turn-limit", "The maximum number of turns to play.",
                                            false, 0, "positive integer", cmd);
@@ -128,7 +122,7 @@ int main(int argc, char *argv[]) {
         try {
             snapshot = hlt::Snapshot::from_str(snapshot_arg.getValue());
         }
-        catch (const SnapshotError& err) {
+        catch (const SnapshotError &err) {
             std::cerr << err.what() << std::endl;
             return 1;
         }
@@ -147,13 +141,14 @@ int main(int argc, char *argv[]) {
 
     hlt::GameStatistics game_statistics;
     hlt::Replay replay{game_statistics, map_parameters.num_players, map_parameters.seed, map};
+    Logging::log("Map seed is " + std::to_string(map_parameters.seed));
 
     hlt::Halite game(config, map, networking_config, game_statistics, replay);
     game.run_game(bot_commands, snapshot);
 
-    const auto& overrides = override_args.getValue();
+    const auto &overrides = override_args.getValue();
     auto idx = 0;
-    for (const auto& name : overrides) {
+    for (const auto &name : overrides) {
         if (idx < static_cast<int>(replay.players.size())) {
             replay.players.at(hlt::Player::id_type{idx}).name = name;
         }
@@ -181,25 +176,23 @@ int main(int argc, char *argv[]) {
         try {
             replay.output(output_filename, enable_compression);
         }
-        catch (std::runtime_error& e) {
+        catch (std::runtime_error &e) {
             output_filename = replay_directory + filename;
             replay.output(output_filename, enable_compression);
         }
-        std::stringstream replay_message;
-        replay_message << "Map seed was " << replay.map_generator_seed << std::endl
-                       << "Opening a file at " << output_filename << std::endl;
+        Logging::log("Opening a file at " + output_filename);
 
         // JSON results info, used by backend
         nlohmann::json results;
         results["error_logs"] = nlohmann::json::object();
 
-        for (const auto &[player_id, _] : replay.players) {
+        for (const auto &[player_id, player] : replay.players) {
             std::string error_log = game.error_logs[player_id].str();
-             // In JSON mode, only write logs if player actually was
+            // In JSON mode, only write logs if player actually was
             // kicked out
             if (!error_log.empty() &&
                 (!json_results_switch.getValue() ||
-                 game.get_player(player_id).terminated)) {
+                 player.terminated)) {
                 std::stringstream logname_buf;
                 logname_buf << "errorlog-" << std::string(time_string)
                             << "-" << replay.map_generator_seed
@@ -221,8 +214,8 @@ int main(int argc, char *argv[]) {
 
                 log_file.write(error_log.c_str(), error_log.size());
 
-                replay_message << "Player " << player_id << " has log output. "
-                               << "Writing a log at " << log_filepath << std::endl;
+                Logging::log("Player " + to_string(player_id) + " has log output. Writing a log at " + log_filepath,
+                             Logging::Level::Warning);
             }
         }
 
@@ -235,13 +228,10 @@ int main(int argc, char *argv[]) {
             results["map_generator"] = "default";
             results["final_snapshot"] = game.to_snapshot(map_parameters);
             results["stats"] = nlohmann::json::object();
-            for (const auto& stats : replay.game_statistics.player_statistics) {
-                results["stats"][to_string(stats.player_id)] = { { "rank", stats.rank } };
+            for (const auto &stats : replay.game_statistics.player_statistics) {
+                results["stats"][to_string(stats.player_id)] = {{"rank", stats.rank}};
             }
             std::cout << results.dump(JSON_INDENT_LEVEL) << std::endl;
-        }
-        else {
-            std::cout << replay_message.str();
         }
     }
 

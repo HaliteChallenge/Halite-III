@@ -22,7 +22,7 @@ template<class Command>
 class Transaction : public BaseTransaction {
 protected:
     using Commands = std::vector<std::reference_wrapper<const Command>>; /**< The type of the player command list. */
-    std::unordered_map<Player::id_type, Commands> commands;              /**< The stored commands per player. */
+    id_map<Player, Commands> commands;                                   /**< The stored commands per player. */
 public:
     using BaseTransaction::BaseTransaction;
 

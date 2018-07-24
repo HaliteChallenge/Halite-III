@@ -3,8 +3,6 @@
 
 #include "Halite.hpp"
 #include "HaliteImpl.hpp"
-#include "Snapshot.hpp"
-#include "Logging.hpp"
 
 namespace hlt {
 
@@ -41,29 +39,7 @@ void Halite::run_game(const std::vector<std::string> &player_commands,
     impl->run_game();
 }
 
-void Halite::kill_player(const Player::id_type& player_id) {
-    Logging::log("Killing player " + to_string(player_id), Logging::Level::Warning);
-    auto& player = store.get_player(player_id);
-    player.terminated = true;
-    networking.kill_player(player);
-
-    auto &entities = player.entities;
-    for (auto entity_iterator = entities.begin();
-            entity_iterator != entities.end();
-            entity_iterator = entities.erase(entity_iterator)) {
-        const auto &[entity_id, location] = *entity_iterator;
-        auto& cell = map.at(location);
-        cell.entity = Entity::None;
-        store.delete_entity(entity_id);
-    }
-    player.energy = 0;
-}
-
-const Player& Halite::get_player(Player::id_type player_id) {
-    return store.get_player(player_id);
-}
-
-std::string Halite::to_snapshot(const hlt::mapgen::MapParameters& map_parameters) {
+std::string Halite::to_snapshot(const hlt::mapgen::MapParameters &map_parameters) {
     std::stringstream output;
 
     output << HALITE_VERSION << SNAPSHOT_FIELD_DELIMITER;
@@ -82,14 +58,14 @@ std::string Halite::to_snapshot(const hlt::mapgen::MapParameters& map_parameters
     }
     output << SNAPSHOT_FIELD_DELIMITER;
 
-    for (const auto& [player_id, player] : store.players) {
+    for (const auto&[player_id, player] : store.players) {
         output << player_id
                << SNAPSHOT_FIELD_DELIMITER << player.energy
                << SNAPSHOT_FIELD_DELIMITER
                << player.factory.x << SNAPSHOT_SUBFIELD_DELIMITER
                << player.factory.y << SNAPSHOT_LIST_DELIMITER;
 
-        for (const auto& dropoff : player.dropoffs) {
+        for (const auto &dropoff : player.dropoffs) {
             output << dropoff.id << SNAPSHOT_SUBFIELD_DELIMITER
                    << dropoff.location.x << SNAPSHOT_SUBFIELD_DELIMITER
                    << dropoff.location.y << SNAPSHOT_LIST_DELIMITER;
@@ -97,8 +73,8 @@ std::string Halite::to_snapshot(const hlt::mapgen::MapParameters& map_parameters
 
         output << SNAPSHOT_FIELD_DELIMITER;
 
-        for (const auto& [entity_id, entity_location] : player.entities) {
-            const auto& entity = store.entities.at(entity_id);
+        for (const auto&[entity_id, entity_location] : player.entities) {
+            const auto &entity = store.entities.at(entity_id);
             output << entity_id << SNAPSHOT_SUBFIELD_DELIMITER
                    << entity_location.x << SNAPSHOT_SUBFIELD_DELIMITER
                    << entity_location.y << SNAPSHOT_SUBFIELD_DELIMITER
@@ -111,7 +87,7 @@ std::string Halite::to_snapshot(const hlt::mapgen::MapParameters& map_parameters
     return output.str();
 }
 
-void Halite::log_error_section(Player::id_type id, const std::string& section_name) {
+void Halite::log_error_section(Player::id_type id, const std::string &section_name) {
     auto &error_log = error_logs[id];
     error_log << std::endl;
     error_log << section_name;
@@ -119,7 +95,7 @@ void Halite::log_error_section(Player::id_type id, const std::string& section_na
     error_log << "================================================================" << std::endl;
 }
 
-void Halite::log_error(Player::id_type id, const std::string& text) {
+void Halite::log_error(Player::id_type id, const std::string &text) {
     auto &error_log = error_logs[id];
     error_log << text;
     error_log << std::endl;
