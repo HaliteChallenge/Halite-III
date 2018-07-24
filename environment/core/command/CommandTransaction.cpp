@@ -1,6 +1,45 @@
 #include "CommandTransaction.hpp"
+#include "Store.hpp"
 
 namespace hlt {
+
+/** The maximum number of commands per entity. */
+static constexpr auto MAX_COMMANDS_PER_ENTITY = 1;
+
+/**
+ * Add a command occurrence for an entity.
+ * @param entity The entity.
+ * @param command The command.
+ */
+void CommandTransaction::add_occurrence(Entity::id_type entity, const Command &command) {
+    auto &occurrences_entry = occurrences[entity];
+    if (occurrences_entry.first++ == MAX_COMMANDS_PER_ENTITY) {
+        // Already seen one entity, this one is illegal
+        occurrences_first_faulty.emplace(entity, command);
+    } else {
+        // Not yet seen or already found illegal, this one is context
+        occurrences_entry.second.emplace_back(command);
+    }
+}
+
+/**
+ * Add an expense for a player.
+ * @param player The player.
+ * @param command The command.
+ * @param amount The expense amount.
+ */
+void CommandTransaction::add_expense(const Player &player, const Command &command, energy_type amount) {
+    auto &expenses_entry = expenses[player.id];
+    if ((expenses_entry.first += amount) > player.energy) {
+        if (auto [_, inserted] = expenses_first_faulty.emplace(player.id, command); !inserted) {
+            // This one is context
+            expenses_entry.second.emplace_back(command);
+        }
+    } else {
+        // This one is legal
+        expenses_entry.second.emplace_back(command);
+    }
+}
 
 /**
  * Add a DumpCommand to the transaction.
@@ -8,7 +47,7 @@ namespace hlt {
  * @param command The command.
  */
 void CommandTransaction::add_command(Player &player, const DumpCommand &command) {
-    occurrences[player][command.entity]++;
+    add_occurrence(command.entity, command);
     dump_transaction.add_command(player, command);
 }
 
@@ -18,8 +57,8 @@ void CommandTransaction::add_command(Player &player, const DumpCommand &command)
  * @param command The command.
  */
 void CommandTransaction::add_command(Player &player, const ConstructCommand &command) {
-    occurrences[player][command.entity]++;
-    expenses[player] += Constants::get().DROPOFF_COST;
+    add_occurrence(command.entity, command);
+    add_expense(player, command, Constants::get().DROPOFF_COST);
     construct_transaction.add_command(player, command);
 }
 
@@ -29,7 +68,7 @@ void CommandTransaction::add_command(Player &player, const ConstructCommand &com
  * @param command The command.
  */
 void CommandTransaction::add_command(Player &player, const MoveCommand &command) {
-    occurrences[player][command.entity]++;
+    add_occurrence(command.entity, command);
     move_transaction.add_command(player, command);
 }
 
@@ -39,7 +78,7 @@ void CommandTransaction::add_command(Player &player, const MoveCommand &command)
  * @param command The command.
  */
 void CommandTransaction::add_command(Player &player, const SpawnCommand &command) {
-    expenses[player] += Constants::get().NEW_ENTITY_ENERGY_COST + command.energy;
+    add_expense(player, command, Constants::get().NEW_ENTITY_ENERGY_COST + command.energy);
     spawn_transaction.add_command(player, command);
 }
 
@@ -50,21 +89,18 @@ void CommandTransaction::add_command(Player &player, const SpawnCommand &command
 bool CommandTransaction::check() {
     bool success = true;
     // Check that expenses are not too high
-    for (const auto &[player, expense] : expenses) {
-        if (expense > player.energy) {
-            error_generated<PlayerInsufficientEnergyError>(player.id, player.energy, expense);
-            success = false;
-        }
+    for (auto &[player_id, faulty] : expenses_first_faulty) {
+        const auto &player = store.get_player(player_id);
+        auto &[energy, context] = expenses[player_id];
+        error_generated<PlayerInsufficientEnergyError>(player_id, faulty, context, player.energy, energy);
+        success = false;
     }
     // Check that each entity is operated on at most once
-    static constexpr auto MAX_MOVES_PER_ENTITY = 1;
-    for (const auto &[player, entities] : occurrences) {
-        for (const auto &[entity, number] : entities) {
-            if (number > MAX_MOVES_PER_ENTITY) {
-                error_generated<ExcessiveCommandsError>(player.id, entity, number);
-                success = false;
-            }
-        }
+    for (auto &[entity_id, faulty] : occurrences_first_faulty) {
+        const auto owner = store.get_entity(entity_id).owner;
+        auto &[_, context] = occurrences[entity_id];
+        error_generated<ExcessiveCommandsError>(owner, faulty, context, entity_id);
+        success = false;
     }
     // Check that each transaction can succeed individually
     for (BaseTransaction &transaction : all_transactions) {

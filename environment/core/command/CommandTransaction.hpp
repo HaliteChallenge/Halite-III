@@ -7,10 +7,29 @@ namespace hlt {
 
 /** Transaction for all commands. */
 class CommandTransaction final : public BaseTransaction {
-    /** Count of occurrences per player-entity pair, to catch duplicates. */
-    std::unordered_map<Player, std::unordered_map<Entity::id_type, int>> occurrences;
+    /** Command occurrences per entity, to catch duplicates. */
+    id_map<Entity, std::pair<int, ErrorContext>> occurrences;
+    /** First command which broke occurrences requirement. */
+    id_map<Entity, std::reference_wrapper<const Command>> occurrences_first_faulty;
     /** Total expenses per player. */
-    std::unordered_map<Player, energy_type> expenses;
+    id_map<Player, std::pair<energy_type, ErrorContext>> expenses;
+    /** First command which broke expense requirement. */
+    id_map<Player, std::reference_wrapper<const Command>> expenses_first_faulty;
+
+    /**
+     * Add a command occurrence for an entity.
+     * @param entity The entity.
+     * @param command The command.
+     */
+    void add_occurrence(Entity::id_type entity, const Command &command);
+
+    /**
+     * Add an expense for a player.
+     * @param player The player.
+     * @param command The command.
+     * @param amount The expense amount.
+     */
+    void add_expense(const Player &player, const Command &command, energy_type amount);
 
 public:
     DumpTransaction dump_transaction;           /**< The DumpCommand transaction. */

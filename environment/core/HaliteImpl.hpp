@@ -3,6 +3,7 @@
 
 #include <queue>
 
+#include "CommandTransaction.hpp"
 #include "Halite.hpp"
 #include "Replay.hpp"
 #include "Snapshot.hpp"
@@ -60,6 +61,19 @@ class HaliteImpl final {
 
     /** Retrieve and process commands, and update the game state for the current turn. */
     void process_turn();
+
+    /** Remove a player from the game. */
+    void kill_player(const Player::id_type &player_id);
+
+    /**
+     * Handle a player command error.
+     * @param offenders The set of players this turn who have caused errors.
+     * @param commands The player command mapping.
+     * @param error The error caused by the player.
+     */
+    void handle_error(std::unordered_set<Player::id_type> &offenders,
+                      ordered_id_map<Player, std::vector<std::unique_ptr<Command>>> &commands,
+                      CommandError error);
 
 public:
     /**

@@ -120,6 +120,10 @@ struct hash<Enumerated<T>> {
 };
 }
 
+/** Type of ordered maps from ID to arbitrary value. */
+template<class K, class V>
+using ordered_id_map = std::map<typename K::id_type, V>;
+
 /** Type of maps from ID to arbitrary value. */
 template<class K, class V>
 using id_map = std::unordered_map<typename K::id_type, V>;

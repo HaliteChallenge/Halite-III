@@ -1,3 +1,5 @@
+#include <deque>
+
 #include "Transaction.hpp"
 
 #include "Halite.hpp"
@@ -215,10 +217,24 @@ bool SpawnTransaction::check() {
     auto success = true;
     // Only one spawn per turn
     std::unordered_set<Player::id_type> occurrences;
-    for (const auto &[player_id, _] : commands) {
-        if (const auto &[_, inserted] = occurrences.emplace(player_id); !inserted) {
-            error_generated<ExcessiveSpawnsError>(player_id);
+    static constexpr auto MAX_SPAWNS_PER_TURN = 1;
+    for (const auto &[player_id, spawns] : commands) {
+        if (spawns.size() > MAX_SPAWNS_PER_TURN) {
             success = false;
+            std::deque<std::reference_wrapper<const Command>> spawns_deque{spawns.begin(), spawns.end()};
+            // First spawn is legal
+            const Command &legal = spawns_deque.front();
+            spawns_deque.pop_front();
+            // Second is illegal
+            const Command &illegal = spawns_deque.front();
+            spawns_deque.pop_front();
+            // Remainder are in context
+            ErrorContext context;
+            context.push_back(legal);
+            for (const Command &spawn : spawns_deque) {
+                context.push_back(spawn);
+            }
+            error_generated<ExcessiveSpawnsError>(player_id, illegal, context);
         }
     }
     return success;
