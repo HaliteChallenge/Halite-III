@@ -1,9 +1,12 @@
+const webpack = require("webpack");
 const path = require("path");
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 // https://github.com/vuejs-templates/webpack-simple
 module.exports = {
     entry: ['babel-polyfill', './javascript/main.js'],
     output: {
+        publicPath: "/assets/js/",
         path: path.resolve(__dirname, "assets/js/"),
         filename: "bundle.js",
     },
@@ -15,64 +18,23 @@ module.exports = {
                 exclude: /(node_modules|libzstd)/,
                 use: {
                     loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            ['env', {
-                                targets: {
-                                    browsers: ["last 2 versions", "safari >= 7"]
-                                }
-                            }],
-                        ],
-                        env: {
-                            "production": {
-                                // TODO: figure out why we can't enable babili here
-                                // "presets": ["babili"]
-                            }
-                        },
-                    }
                 }
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader',
+                    'sass-loader'
+                ]
             },
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',
-                options: {
-                    loaders: {
-                        'scss': 'vue-style-loader!css-loader!sass-loader',
-                        'sass': 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
-                        'js': {
-                            loader: 'babel-loader',
-                            options: {
-                                presets: [
-                                    ['env', {
-                                        targets: {
-                                            browsers: ["last 2 versions", "safari >= 7"]
-                                        }
-                                    }],
-                                ],
-                                env: {
-                                    "production": {
-                                        // TODO: figure out why we can't enable babili here
-                                        // "presets": ["babili"]
-                                    }
-                                },
-                            }
-                        }
-                    }
-                }
             },
             {
                 test: /\.css$/,
                 loader: 'style-loader!css-loader'
-            },
-            // Work around pixi-extra-filter's use of glslify (which is
-            // browserify-dependent) to load shaders
-            {
-                test: path.resolve(__dirname, "node_modules", "pixi-extra-filters"),
-                loader: "ify-loader",
-            },
-            {
-                test: /pixi-extra-filters/,
-                loader: "ify-loader",
             },
             {
                 test: /\.(png|ttf|woff)$/,
@@ -80,10 +42,10 @@ module.exports = {
             },
         ],
     },
-    resolve: {
-        alias: {
-            'vue$': 'vue/dist/vue.esm.js'
-        }
-    },
+    plugins: [
+        new VueLoaderPlugin(),
+        new webpack.DefinePlugin({
+            'process.env.ASSET_PATH': JSON.stringify("/assets/js/")
+        }),
+    ],
 };
-

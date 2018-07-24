@@ -101,7 +101,6 @@
   import Vue from 'vue'
   import HaliteBreadcrumb from './Breadcrumb.vue'
   import VisualizerContainer from './VisualizerContainer.vue'
-  import * as libhaliteviz from '../../../libhaliteviz'
   import Upload from './Upload.vue'
   import BotUpload from './BotUpload.vue'
   import Message from './Message.vue'
@@ -112,41 +111,52 @@
 
   // showing game
   let visualizer = null
-  const showGame = (game) => {
-    if (visualizer && visualizer.getVisualizer) {
-      visualizer.getVisualizer().destroy()
-    }
+const showGame = (game) => {
+  if (visualizer && visualizer.getVisualizer) {
+    visualizer.getVisualizer().destroy()
+  }
 
-    const buffer = game.replay
-    return libhaliteviz.parseReplay(buffer).then((replay) => {
-      let outerContainer = document.getElementById('halitetv-visualizer')
-      outerContainer.innerHTML = ''
+  const buffer = game.replay
+  return import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
+    .then((libhaliteviz) => {
+      // just for electron
+      if (window && window.process && window.process.type) {
+        libhaliteviz.setAssetRoot('assets/js/')
+      } else {
+        libhaliteviz.setAssetRoot('/assets/js/')
+      }
+      return libhaliteviz;
+    }).then((libhaliteviz) => {
+      return libhaliteviz.parseReplay(buffer).then((replay) => {
+        let outerContainer = document.getElementById('halitetv-visualizer')
+        outerContainer.innerHTML = ''
 
-      let container = document.createElement('div')
-      outerContainer.appendChild(container)
+        let container = document.createElement('div')
+        outerContainer.appendChild(container)
 
-      new Vue({
-        el: container,
-        render: (h) => h(Visualizer, {
-          props: {
-            replay: Object.freeze(replay),
-            game: game.game,
-            makeUserLink: function (user_id) {
-              return `/user?user_id=${user_id}`
-            },
-            getUserProfileImage: function (user_id) {
-              return api.get_user(user_id).then((user) => {
-                return api.make_profile_image_url(user.username)
-              })
+        new Vue({
+          el: container,
+          render: (h) => h(Visualizer, {
+            props: {
+              replay: Object.freeze(replay),
+              game: game.game,
+              makeUserLink: function (user_id) {
+                return `/user?user_id=${user_id}`
+              },
+              getUserProfileImage: function (user_id) {
+                return api.get_user(user_id).then((user) => {
+                  return api.make_profile_image_url(user.username)
+                })
+              }
             }
+          }),
+          mounted: function () {
+            window.scrollTo(0, 0);
+            visualizer = this.$children[0]
           }
-        }),
-        mounted: function () {
-          window.scrollTo(0, 0);
-          visualizer = this.$children[0]
-        }
+        })
       })
-  })
+    });
 }
 
   export default {

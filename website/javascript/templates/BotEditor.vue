@@ -22,7 +22,7 @@
                   </a>
                 </li>-->
                 <TreeElement
-                  :obj="editor_files" 
+                  :obj="editor_files"
                   :depth="-1"
                   @event_file_selected="file_selected"></TreeElement>
               </ul>
@@ -42,9 +42,7 @@
           <div class="replay">
             <div class="game_replay_viewer"></div>
           </div>
-          <div class="console">
-            {{ terminal_text }}
-          </div>
+          <div class="console">{{ terminal_text }}</div>
         </div>
       </div>
     </div>
@@ -57,7 +55,6 @@
 <script>
   import * as api from '../api'
   import * as utils from '../utils'
-  import * as libhaliteviz from '../../../libhaliteviz'
   import InputModal from './InputModal.vue'
   import CheckModal from './CheckModal.vue'
   import TreeElement from './TreeElement.vue'
@@ -90,8 +87,6 @@
   const RESET_MSG = 'Are you sure you want to reset your bot code to the default sample code?\n(All changes will be lost!)'
   const EX_GAME_STRING = '{"ENGINE_VERSION":"1.5.521.g6df5","GAME_CONSTANTS":{"BASE_TURN_ENERGY_LOSS":5,"BLUR_FACTOR":0.75,"DEFAULT_MAP_HEIGHT":128,"DEFAULT_MAP_WIDTH":128,"INITIAL_ENERGY":1000,"MAX_CELL_PRODUCTION":255,"MAX_ENERGY":255,"MAX_PLAYERS":16,"MAX_TURNS":300,"MIN_CELL_PRODUCTION":85,"NEW_ENTITY_ENERGY":255,"NEW_ENTITY_ENERGY_COST":1000},"REPLAY_FILE_VERSION":1,"full_frames":[{"events":[],"moves":{"0":[{"direction":"w","entity_x":0,"entity_y":1,"type":"move"}],"1":[{"direction":"e","entity_x":1,"entity_y":1,"type":"move"}]}}],"game_statistics":{"number_turns":49,"player_statistics":[{"last_turn_alive":49,"player_id":1,"rank":1,"total_production":770},{"last_turn_alive":49,"player_id":0,"rank":2,"total_production":518}]},"map_generator_seed":1531318637,"number_of_players":2,"players":[{"energy":0,"entities":[{"energy":0,"x":1,"y":1}],"factory_location":[1,1],"name":"JavaSP","player_id":1},{"energy":0,"entities":[{"energy":0,"x":0,"y":1}],"factory_location":[0,1],"name":"JavaSP","player_id":0}],"production_map":{"grid":[[{"production":14,"type":"n"},{"production":14,"type":"n"}],[{"type":"f"},{"type":"f"}]],"height":2,"map_generator":"Fractal Value Noise Tile","width":2}}'
 
-  const HaliteVisualizer = libhaliteviz.HaliteVisualizer
-  libhaliteviz.setAssetRoot('/assets/js/')
 
   function logError (err) {
     console.error(err)
@@ -174,12 +169,21 @@ export default {
       }
     })
     let width = jQuery('.replay').width()
-    this.visualizer = new HaliteVisualizer(JSON.parse(EX_GAME_STRING), width, width)
-    this.visualizer.attach('.game_replay_viewer')
-    window.addEventListener('resize', (function(event) {
-      width = jQuery('.replay').width()
-      this.visualizer.resize(width, width)
-    }).bind(this), true)
+
+    import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
+      .then((libhaliteviz) => {
+        return libhaliteviz
+          .setAssetRoot('/assets/js')
+          .then(() => {
+              this.visualizer = new libhaliteviz.HaliteVisualizer(
+                  JSON.parse(EX_GAME_STRING), width, width)
+              this.visualizer.attach('.game_replay_viewer')
+              window.addEventListener('resize', (event) => {
+                  width = jQuery('.replay').width()
+                  this.visualizer.resize(width, width)
+              }, true)
+          })
+      });
   },
   methods: {
     /* Return bot language specific info */
@@ -188,7 +192,6 @@ export default {
     },
     /* Init the Orion Editor */
     create_editor: function (code) {
-      this.add_console_text("[INFO] Initializing player 0 with command ./MyBot");
       logInfo('Creating editor...')
       const codeEdit = new orion.codeEdit({editorConfig: {wordWrap: true, overviewRuler: false, annotationRuler: false}})
       var opts = {parent: 'embeddedEditor', contentType: this.bot_info().mimeType, contents: code}
@@ -226,6 +229,8 @@ export default {
             this.allSaved = false;
           }
         }).bind(this))
+
+        this.add_console_text("Initialized editor.");
 
         // Be sure to save before closing/leaving the page
         window.addEventListener('beforeunload', (function(e) {
@@ -290,33 +295,42 @@ export default {
     },
     load_code: function () {
       // Restore user's bot code, or use demo code for new bot
-      const startCode = this.load_user_code()
-      return (startCode === null) ? this.load_default_code() : Promise.resolve(startCode)
+      return this
+        .load_user_code()
+        .then((startCode) => (
+          (startCode === null) ?
+          this.load_default_code() : Promise.resolve(startCode)))
     },
     load_user_code: function() {
       function api_get_files_with_list(ctx, file_list) {
-        return Promise.all(file_list.map(
-          (file_name) => (api.get_editor_file(ctx.user_id, file_name).then(
-            (contents) => ({contents: contents, name: file_name})))
-          ))
+        return Promise.all(
+          file_list.map((file_name) => {
+            return api.get_editor_file(ctx.user_id, file_name)
+               .then((contents) => {
+                 return {
+                   contents,
+                   name: file_name
+                 }
+               })
+          }))
       }
-      return api.get_editor_file_list(this.user_id).then((function(file_list) {
-        if(file_list !== []) {
-          return api_get_files_with_list(this, file_list)
-        } else { // if no workspace create one and then pull our files down
-          api.create_editor_file_space(this.user_id, 'Python').then((function(file_list) {
-            return api_get_files_with_list(this, file_list)
-          }).bind(this))
-        }
-      }).bind(this)).then(function(file_promise) {
-        return file_promise.then(function(file_contents) {
-          let editor_files =  file_contents.reduce(function(prev, cur) {
-            prev[cur.name] = {name: cur.name, contents: cur.contents}
-            return prev
-          }, {})
-          return parse_to_file_tree(editor_files)
-        })
-      })
+      return api.get_editor_file_list(this.user_id)
+                .then((file_list) => {
+                  if (file_list.length > 0) {
+                    return api_get_files_with_list(this, file_list)
+                  }
+                  else { // if no workspace create one and then pull our files down
+                    return api.create_editor_file_space(this.user_id, 'Python')
+                              .then((file_list) => api_get_files_with_list(this, file_list))
+                  }
+                })
+                .then((file_contents) => {
+                  let editor_files =  file_contents.reduce(function(prev, cur) {
+                    prev[cur.name] = {name: cur.name, contents: cur.contents}
+                    return prev
+                  }, {})
+                  return parse_to_file_tree(editor_files)
+                })
     },
     clearHighlights: function() {
       const editor = this.editorViewer.editor
@@ -369,7 +383,7 @@ export default {
         fn.cached[lang] = new Promise((resolve, reject) => {
           const starterZipPath = this.bot_info().starterZipPath
           JSZipUtils.getBinaryContent(starterZipPath, (err, data) => {
-            logInfo('Getting starter zip: ' + starterZipPath) 
+            logInfo('Getting starter zip: ' + starterZipPath)
             if (err) {
               reject(err)
               return
@@ -430,9 +444,9 @@ export default {
         }
       }
     },
-    open_delete_modal: function(file_to_delete) { 
+    open_delete_modal: function(file_to_delete) {
       this.file_to_delete = file_to_delete;
-      this.is_delete_modal_open = true; 
+      this.is_delete_modal_open = true;
     },
     close_delete_modal: function() { this.is_delete_modal_open = false; },
 
@@ -452,12 +466,60 @@ export default {
       }
       return true
     },
-    run_ondemand_game: function() {
-      let user_id = this.user_id
-      api.start_ondemand_task(user_id).then(function(_) {
-        console.log(_)
-        return api.update_ondemand_task(user_id, 5000).then((a) => console.log(a))
+    run_ondemand_game: async function() {
+      this.clear_terminal_text()
+      const user_id = this.user_id
+      const taskResult = await api.start_ondemand_task(user_id, {
+        opponents: [
+          {
+            name: "MirrorMatch",
+            bot_id: "self",
+          },
+        ],
       })
+      console.log(taskResult)
+      const startResult = await api.update_ondemand_task(user_id, {
+        "turn-limit": 500,
+      })
+      console.log(startResult)
+      this.add_console_text("Starting game...\n")
+
+      return this.check_ondemand_game()
+    },
+    check_ondemand_game: async function() {
+      const status = await api.get_ondemand_status(this.user_id)
+      console.log(status)
+
+      if (status.status === "completed") {
+        this.add_console_text("Game complete! Fetching replay...\n")
+
+        const replayBlob = await api.get_ondemand_replay(this.user_id)
+        const libhaliteviz = await import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
+        await libhaliteviz.setAssetRoot('/assets/js')
+        const replay = await libhaliteviz.parseReplay(replayBlob)
+        const width = jQuery('.replay').width()
+
+        if (this.visualizer) {
+          this.visualizer.destroy()
+        }
+
+        this.visualizer = new libhaliteviz.HaliteVisualizer(replay, width, width)
+        this.visualizer.attach('.game_replay_viewer')
+        this.visualizer.play()
+        this.add_console_text("Starting replay.\n")
+
+        for (let i = 0; i < status.opponents.length; i++) {
+          this.add_console_text(`Player ${i} (${i === 0 ? 'your bot' : '"' + status.opponents[i].name + '"'}) was rank ${status.game_output.stats[i].rank}.\n`)
+        }
+
+        return
+      }
+      else if (status.status === "failed") {
+        this.add_console_text("Game failed to run. Please try again in a few minutes.\n")
+        return
+      }
+
+      window.setTimeout(this.check_ondemand_game.bind(this), 1000)
     },
     save_current_file: function() {
       logInfo('Saving bot file to gcloud storage')
@@ -466,7 +528,7 @@ export default {
         this.save_file(this.active_file)
       }
     },
-    save_file: function(file) { 
+    save_file: function(file) {
       api.update_source_file(this.user_id, file.name, file.contents, function(){}).then((function() {
         logInfo('success')
         this.allSaved = true;
@@ -559,7 +621,7 @@ export default {
   margin-right: 0px;
   margin-left: 0px;
   padding-left: 0px;
-  padding-right: 0px; 
+  padding-right: 0px;
 }
 
 .big_col {
@@ -568,21 +630,21 @@ export default {
 }
 
 .editor_col {
-  padding: 0px;	
+  padding: 0px;
   display: flex;
   flex-grow: 1;
   padding-left: 10px;
   margin-top: 0px;
   border-right: 1px solid #424C53;
-  flex-grow: 100; 
+  flex-grow: 100;
 }
 
 .editorArea  {
   width: 100%;
-}  
+}
 
 .file_tree_col {
-  padding: 0px;	
+  padding: 0px;
   width: 150px;
   border-right: 1px solid #424C53;
   float: left;
@@ -657,6 +719,7 @@ export default {
 }
 
 .console {
+  white-space: pre-line;
   flex: 1 1 auto;
   padding: 15px;
   background-color: black;
