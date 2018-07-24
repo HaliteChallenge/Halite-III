@@ -349,7 +349,7 @@
         // just for electron
         return libhaliteviz
           .setAssetRoot((window && window.process && window.process.type) ?
-                        'assets/js/' : '/assets/js')
+                        'assets/js/' : '')
           .then(() => libhaliteviz.parseReplay(game.replay))
       });
   };

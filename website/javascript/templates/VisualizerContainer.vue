@@ -43,7 +43,7 @@
         if (window && window.process && window.process.type) {
           libhaliteviz.setAssetRoot('assets/js/')
         } else {
-          libhaliteviz.setAssetRoot('/assets/js/')
+          libhaliteviz.setAssetRoot('')
         }
         return libhaliteviz;
       }).then((libhaliteviz) => {
@@ -157,7 +157,7 @@
         // verify if the dropzone is not the bot uploader zone
         if (!container || !container.contains(e.target)) {
           e.preventDefault()
-          // clear the current game 
+          // clear the current game
           let outerContainer = document.getElementById('halitetv-visualizer')
           outerContainer.innerHTML = ''
           // play the upload replay

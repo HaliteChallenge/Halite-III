@@ -500,7 +500,7 @@ export default {
 
         const replayBlob = await api.get_ondemand_replay(this.user_id)
         const libhaliteviz = await import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
-        await libhaliteviz.setAssetRoot('/assets/js')
+        await libhaliteviz.setAssetRoot('')
         const replay = await libhaliteviz.parseReplay(replayBlob)
         const width = jQuery('.replay').width()
 
