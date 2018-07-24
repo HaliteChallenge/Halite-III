@@ -70,11 +70,13 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
 
     game.replay.game_statistics = game.game_statistics;
 
-    // Zero the energy on factories and mark as owned.
     for (auto &[player_id, player] : game.store.players) {
+        // Zero the energy on factory and mark as owned.
         auto &factory = game.map.at(player.factory);
         factory.energy = 0;
         factory.owner = player_id;
+        // Prepare the log.
+        game.logs.add(player_id);
     }
 }
 
@@ -103,6 +105,7 @@ void HaliteImpl::run_game() {
 
     for (game.turn_number = 0; game.turn_number < constants.MAX_TURNS; game.turn_number++) {
         Logging::set_turn_number(game.turn_number);
+        game.logs.set_turn_number(game.turn_number);
         Logging::log([turn_number = game.turn_number]() {
             return "Starting turn " + std::to_string(turn_number);
         }, Logging::Level::Debug);
@@ -119,11 +122,15 @@ void HaliteImpl::run_game() {
     game.game_statistics.number_turns = game.turn_number;
 
     rank_players();
-    Logging::set_turn_number(game.turn_number);
+    Logging::set_turn_number(Logging::ended);
+    game.logs.set_turn_number(PlayerLog::ended);
     Logging::log("Game has ended.");
     Logging::remove_turn_number();
     for (const auto &[player_id, player] : game.store.players) {
         game.replay.players.find(player_id)->second.terminated = player.terminated;
+        if (!player.terminated) {
+            game.networking.kill_player(player);
+        }
     }
 }
 
@@ -349,16 +356,13 @@ void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
     const auto player_id = error->player;
 
     // Log the error information.
-    if (offenders.find(player_id) == offenders.end()) {
-        game.log_error_section(player_id, "Turn " + std::to_string(game.turn_number));
-    }
     if (error->ignored) {
         Logging::log("Player " + to_string(player_id) + " caused warning: " + message, Logging::Level::Warning);
-        game.log_error(player_id, "[warn] " + message);
+        game.logs.log(player_id, message, PlayerLog::Level::Warning);
     } else {
         Logging::log("Player " + to_string(player_id) + " caused error: " + message, Logging::Level::Error);
         offenders.emplace(player_id);
-        game.log_error(player_id, "[error] " + message);
+        game.logs.log(player_id, message, PlayerLog::Level::Error);
     }
 
     // Find the position of a command within a player's command list.
@@ -371,7 +375,7 @@ void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
 
     // Given a command position, log the context of that command.
     const auto log_context = [&player_commands, &game = game, &player_id](const auto position) {
-        static constexpr long COMMAND_CONTEXT_LINES = 3L;
+        static constexpr long COMMAND_CONTEXT_LINES = 2L;
         const auto distance = static_cast<long>(std::distance(player_commands.begin(), position));
         const auto commands_begin = player_commands.begin() + std::max(0L, distance - COMMAND_CONTEXT_LINES);
         const auto commands_end = player_commands.begin() +
@@ -379,15 +383,15 @@ void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
         for (auto iterator = commands_begin; iterator != commands_end; iterator++) {
             auto number = std::distance(player_commands.begin(), iterator);
             auto marker = iterator == position ? ">>> " : "    ";
-            game.log_error(player_id, marker + std::to_string(number + 1) + "   " +
-                                      (*iterator)->to_bot_serial());
+            game.logs.log(player_id, marker + std::to_string(number + 1) + "   " + (*iterator)->to_bot_serial());
         }
+        game.logs.log(player_id, "");
     };
 
     // Log the faulty command.
     auto position = find_position(faulty);
     auto distance = std::distance(player_commands.begin(), position);
-    game.log_error(player_id, "Failed at command " + std::to_string(distance + 1) + " of " +
+    game.logs.log(player_id, "At command " + std::to_string(distance + 1) + " of " +
                               std::to_string(player_commands.size()) + ":");
     log_context(position);
 
@@ -395,9 +399,15 @@ void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
     const auto &context = error->context();
     if (!context.empty()) {
         const auto context_message = error->context_message();
-        game.log_error(player_id, context_message);
-        for (const Command &command : context) {
-            log_context(find_position(command));
+        game.logs.log(player_id, context_message);
+        static constexpr size_t MAX_CONTEXT_COMMANDS = 5;
+        const auto context_end = context.begin() + std::min(MAX_CONTEXT_COMMANDS, context.size());
+        for (auto iterator = context.begin(); iterator != context_end; iterator++) {
+            log_context(find_position(*iterator));
+        }
+        if (context.size() > MAX_CONTEXT_COMMANDS) {
+            game.logs.log(player_id, "(suppressing " + std::to_string(context.size() - MAX_CONTEXT_COMMANDS) +
+                                     " other commands)\n");
         }
     }
 }

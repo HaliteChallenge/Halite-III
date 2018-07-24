@@ -67,6 +67,13 @@ public:
     std::vector<std::unique_ptr<hlt::Command>> handle_frame(hlt::Player &player);
 
     /**
+     * Handle a player communication error.
+     * @param player The player ID.
+     * @param received_input The current received input from the player.
+     */
+    void handle_player_error(hlt::Player::id_type player, std::string received_input = "");
+
+    /**
      * Initialize Networking from configuration and Halite game.
      * @param config The configuration.
      * @param game The Halite game.

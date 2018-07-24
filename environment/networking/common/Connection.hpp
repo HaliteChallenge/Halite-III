@@ -71,7 +71,7 @@ public:
 };
 
 /** Map from players to bot connections. */
-using Connections = std::unordered_map<hlt::Player, Connection>;
+using Connections = id_map<hlt::Player, Connection>;
 
 }
 
