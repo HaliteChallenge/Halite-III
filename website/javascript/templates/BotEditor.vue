@@ -347,19 +347,23 @@ export default {
       const view = editor.getTextView()
       const viewModel = view.getModel()
       const annotationModel = editor.getAnnotationModel()
-      const lineNumber = view.getLineAtOffset(view.getText().indexOf(text))
-      const lineStart = editor.mapOffset(viewModel.getLineStart(lineNumber))
-      const lineEnd = editor.mapOffset(viewModel.getLineEnd(lineNumber))
-      annotationModel.replaceAnnotations([], [
-        {
-          start: lineStart,
-          end: lineEnd,
-          title: "",
-          type: "tutorial.highlight",
-          html: "",
-          lineStyle: { styleClass: klass },
-        },
-      ])
+      for (let lineNumber = 0; lineNumber < viewModel.getLineCount(); lineNumber++) {
+        const line = viewModel.getLine(lineNumber)
+        if (text instanceof RegExp ? line.match(text) : line.indexOf(text) > -1) {
+          const lineStart = editor.mapOffset(viewModel.getLineStart(lineNumber))
+          const lineEnd = editor.mapOffset(viewModel.getLineEnd(lineNumber))
+          annotationModel.replaceAnnotations([], [
+            {
+              start: lineStart,
+              end: lineEnd,
+              title: "",
+              type: "tutorial.highlight",
+              html: "",
+              lineStyle: { styleClass: klass },
+            },
+          ])
+        }
+      }
     },
     /* Return MyBot file of the starter bot in string format */
     load_default_code: function () {
