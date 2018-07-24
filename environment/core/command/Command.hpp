@@ -29,6 +29,12 @@ public:
     virtual void to_json(nlohmann::json &json) const = 0;
 
     /**
+     * Convert to bot serial format.
+     * @return The serialized command.
+     */
+    virtual std::string to_bot_serial() const = 0;
+
+    /**
      * Add the command to a transaction.
      * @param player The player executing the command.
      * @param transaction The command transaction to act on.
@@ -76,6 +82,14 @@ void to_json(nlohmann::json &json, const std::unique_ptr<Command> &command);
  */
 std::istream &operator>>(std::istream &istream, std::unique_ptr<Command> &command);
 
+/**
+ * Write a Command to bot serial format.
+ * @param ostream The output stream.
+ * @param[out] command The command to write.
+ * @return The output stream.
+ */
+std::ostream &operator<<(std::ostream &ostream, std::unique_ptr<Command> &command);
+
 /** Command for moving an entity in a direction. */
 class MoveCommand final : public TransactableCommand<MoveCommand> {
 public:
@@ -87,6 +101,12 @@ public:
      * @param[out] json The JSON output.
      */
     void to_json(nlohmann::json &json) const override;
+
+    /**
+     * Convert to bot serial format.
+     * @return The serialized command.
+     */
+    std::string to_bot_serial() const override;
 
     /**
      * Create MoveCommand from entity and direction.
@@ -109,6 +129,12 @@ public:
     void to_json(nlohmann::json &json) const override;
 
     /**
+     * Convert to bot serial format.
+     * @return The serialized command.
+     */
+    std::string to_bot_serial() const override;
+
+    /**
      * Create SpawnCommand from energy.
      * @param energy The energy to use.
      */
@@ -125,6 +151,12 @@ public:
      * @param[out] json The JSON output.
      */
     void to_json(nlohmann::json &json) const override;
+
+    /**
+     * Convert to bot serial format.
+     * @return The serialized command.
+     */
+    std::string to_bot_serial() const override;
 
     /**
      * Construct DumpCommand from entity and energy.
@@ -145,6 +177,12 @@ public:
      * @param[out] json The JSON output.
      */
     void to_json(nlohmann::json &json) const override;
+
+    /**
+     * Convert to bot serial format.
+     * @return The serialized command.
+     */
+    std::string to_bot_serial() const override;
 
     /**
      * Construct ConstructCommand from entity.

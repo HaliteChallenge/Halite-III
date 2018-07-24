@@ -26,10 +26,10 @@ std::string direction_to_string(Direction direction) {
  */
 std::string ExcessiveCommandsError::log_message() const {
     std::ostringstream stream;
-    stream << "Entity "
+    stream << "entity "
            << entity
            << " received "
-           << num_commands
+           << context().size()
            << " commands on this turn, but only one is permitted.";
     return stream.str();
 }
@@ -39,7 +39,7 @@ std::string ExcessiveCommandsError::log_message() const {
  * @return The message.
  */
 std::string ExcessiveSpawnsError::log_message() const {
-    return "Received more than one spawn command on this turn.";
+    return "received more than one spawn command on this turn.";
 }
 
 /**
@@ -49,10 +49,10 @@ std::string ExcessiveSpawnsError::log_message() const {
 template<>
 std::string EntityNotFoundError<DumpCommand>::log_message() const {
     std::ostringstream stream;
-    stream << "Unknown entity "
-           << command.entity
+    stream << "unknown entity "
+           << command().entity
            << " was requested to dump "
-           << command.energy
+           << command().energy
            << ".";
     return stream.str();
 }
@@ -64,8 +64,8 @@ std::string EntityNotFoundError<DumpCommand>::log_message() const {
 template<>
 std::string EntityNotFoundError<ConstructCommand>::log_message() const {
     std::ostringstream stream;
-    stream << "Unknown entity "
-           << command.entity
+    stream << "unknown entity "
+           << command().entity
            << " was requested to construct.";
     return stream.str();
 }
@@ -77,10 +77,10 @@ std::string EntityNotFoundError<ConstructCommand>::log_message() const {
 template<>
 std::string EntityNotFoundError<MoveCommand>::log_message() const {
     std::ostringstream stream;
-    stream << "Unknown entity "
-           << command.entity
+    stream << "unknown entity "
+           << command().entity
            << " was requested to move "
-           << direction_to_string(command.direction)
+           << direction_to_string(command().direction)
            << ".";
     return stream.str();
 }
@@ -92,12 +92,12 @@ std::string EntityNotFoundError<MoveCommand>::log_message() const {
 template<>
 std::string InsufficientEnergyError<MoveCommand>::log_message() const {
     std::ostringstream stream;
-    stream << "Entity "
-           << command.entity
+    stream << "entity "
+           << command().entity
            << " was directed to use "
            << requested
            << " energy to move "
-           << direction_to_string(command.direction)
+           << direction_to_string(command().direction)
            << ", but only "
            << available
            << " energy was available.";
@@ -111,8 +111,8 @@ std::string InsufficientEnergyError<MoveCommand>::log_message() const {
 template<>
 std::string InsufficientEnergyError<DumpCommand>::log_message() const {
     std::ostringstream stream;
-    stream << "Entity "
-           << command.entity
+    stream << "entity "
+           << command().entity
            << " was directed to dump "
            << requested
            << " energy, but only "
@@ -127,7 +127,7 @@ std::string InsufficientEnergyError<DumpCommand>::log_message() const {
  */
 std::string PlayerInsufficientEnergyError::log_message() const {
     std::ostringstream stream;
-    stream << "Player attempted to use "
+    stream << "player attempted to use "
            << requested
            << " energy, but only "
            << available
@@ -142,8 +142,8 @@ std::string PlayerInsufficientEnergyError::log_message() const {
 template<>
 std::string CellOwnedError<ConstructCommand>::log_message() const {
     std::ostringstream stream;
-    stream << "Entity "
-           << command.entity
+    stream << "entity "
+           << command().entity
            << " was directed to construct at ("
            << cell.x
            << ", "
