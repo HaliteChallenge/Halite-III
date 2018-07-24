@@ -13,8 +13,8 @@
                     the tutorial for simple bot development on-the-go.)
                 </p>
                 <p>
-                    At the moment, this bot does nothing. Let's edit
-                    it a bit.
+                    At the moment, this bot doesn't do much
+                    interesting. Let's edit it a bit.
                 </p>
             </Step>
             <Step title="Initialization" name="initialization">
@@ -25,20 +25,48 @@
                     and name it as you please&mdash;look at the
                     highlighted line.
                 </p>
+                <p>
+                    For advanced bots, you might take advantage of
+                    this time to process the game map and pre-compute
+                    things your bot needs. Just do it before you send
+                    back your bot name&mdash;once you do that, the
+                    engine considers you ready.
+                </p>
+                <!-- TODO: need to show name in replay -->
+            </Step>
+            <Step title="The Game Loop" name="game-loop">
+                <p>
+                    After initialization, your bot enters an infinite
+                    loop of retrieving the current game state,
+                    computing moves, and sending them back to the
+                    engine. All the magic happens here&mdash;each
+                    turn, you'll have to come up with a new set of
+                    moves according to your secret strategy, and
+                    you'll get the results next turn.
+                </p>
+                <p>
+                    Games last for 500 turns, so it's not really an
+                    infinite loop.
+                </p>
             </Step>
             <Step title="Basic Movement" name="basic-movement">
                 <p>
-                    Now let's move your ship around. The code in <span
-                    class="tutorial-highlight">red</span> builds up a
-                    set of moves by iterating through each ship you
-                    have. The code in <span
-                    class="tutorial-highlight-alt">yellow</span> then
+                    Now let's move your ship around. The <span
+                    class="tutorial-highlight">highlighted</span> code
+                    builds up a set of moves by iterating through each
+                    ship you have. The code in <span
+                    class="tutorial-highlight-alt">purple</span> then
                     sends those moves to the engine, ending your turn.
                 </p>
                 <p>
                     Right now, the bot moves ships around
-                    randomly. Try different movement strategies, it to
-                    like always moving the ship.
+                    randomly. Try different movement strategies, like
+                    always moving the ship west.
+                </p>
+                <!-- TODO: tell them how to run games -->
+            </Step>
+            <Step title="Collision Avoidance" name="collision-avoidance">
+                <p>
                 </p>
             </Step>
             <Step title="Halite Filtration" name="tunneling">

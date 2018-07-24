@@ -31,11 +31,18 @@
                             editor.highlightContaining("MyPythonBot");
                         });
                 }
+                else if (newStep === "game-loop") {
+                    this.$refs.editor
+                        .doReady((editor) => {
+                            editor.clearHighlights();
+                            editor.highlightContaining(/(while True)|(get_frame)|(current game state)/);
+                        });
+                }
                 else if (newStep === "basic-movement") {
                     this.$refs.editor
                         .doReady((editor) => {
                             editor.clearHighlights();
-                            editor.highlightContaining("commands.move");
+                            editor.highlightContaining(/(commands\.move)|(Move in)|(for ship)|(our ships)/);
                             editor.highlightContaining("end_turn", "tutorial-highlight-alt");
                         });
                 }

@@ -740,9 +740,9 @@ export default {
 
 <style lang="scss">
 .tutorial-highlight {
-  background: red !important;
+  background: rgba(255, 255, 255, 0.3) !important;
 }
 .tutorial-highlight-alt {
-  background: yellow !important;
+  background: rgba(255, 0, 255, 0.3) !important;
 }
 </style>
