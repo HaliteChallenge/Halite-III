@@ -31,6 +31,10 @@ bool PlayerStatistics::operator<(const PlayerStatistics &other) const {
  * @param stats The statistics to convert.
  */
 void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
+    dimension_type average_distance = 0;
+    if (stats.total_entity_lifespan != 0) {
+        average_distance = stats.total_distance / stats.total_entity_lifespan;
+    }
     json = {FIELD_TO_JSON(player_id),
             FIELD_TO_JSON(rank),
             FIELD_TO_JSON(last_turn_alive),
@@ -38,7 +42,7 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
             FIELD_TO_JSON(max_entity_distance),
             FIELD_TO_JSON(number_dropoffs),
             FIELD_TO_JSON(interaction_opportunities),
-            {"average_entity_distance", stats.total_distance / stats.total_entity_lifespan}};
+            {"average_entity_distance", average_distance}};
 }
 
 /**
