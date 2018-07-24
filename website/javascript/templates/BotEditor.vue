@@ -42,9 +42,7 @@
           <div class="replay">
             <div class="game_replay_viewer"></div>
           </div>
-          <div class="console">
-            {{ terminal_text }}
-          </div>
+          <div class="console">{{ terminal_text }}</div>
         </div>
       </div>
     </div>
@@ -173,15 +171,19 @@ export default {
     let width = jQuery('.replay').width()
 
     import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
-                                 .then((libhaliteviz) => {
-                                   this.visualizer = new libhaliteviz.HaliteVisualizer(JSON.parse(EX_GAME_STRING), width, width)
-                                   this.visualizer.attach('.game_replay_viewer')
-                                   window.addEventListener('resize', (function(event) {
-                                     width = jQuery('.replay').width()
-                                     this.visualizer.resize(width, width)
-                                   }).bind(this), true)
-                                 });
-
+      .then((libhaliteviz) => {
+        return libhaliteviz
+          .setAssetRoot('/assets/js')
+          .then(() => {
+              this.visualizer = new libhaliteviz.HaliteVisualizer(
+                  JSON.parse(EX_GAME_STRING), width, width)
+              this.visualizer.attach('.game_replay_viewer')
+              window.addEventListener('resize', (event) => {
+                  width = jQuery('.replay').width()
+                  this.visualizer.resize(width, width)
+              }, true)
+          })
+      });
   },
   methods: {
     /* Return bot language specific info */
@@ -190,7 +192,6 @@ export default {
     },
     /* Init the Orion Editor */
     create_editor: function (code) {
-      this.add_console_text("[INFO] Initializing player 0 with command ./MyBot");
       logInfo('Creating editor...')
       const codeEdit = new orion.codeEdit({editorConfig: {wordWrap: true, overviewRuler: false, annotationRuler: false}})
       var opts = {parent: 'embeddedEditor', contentType: this.bot_info().mimeType, contents: code}
@@ -228,6 +229,8 @@ export default {
             this.allSaved = false;
           }
         }).bind(this))
+
+        this.add_console_text("Initialized editor.");
 
         // Be sure to save before closing/leaving the page
         window.addEventListener('beforeunload', (function(e) {
@@ -463,12 +466,60 @@ export default {
       }
       return true
     },
-    run_ondemand_game: function() {
-      let user_id = this.user_id
-      api.start_ondemand_task(user_id).then(function(_) {
-        console.log(_)
-        return api.update_ondemand_task(user_id, 5000).then((a) => console.log(a))
+    run_ondemand_game: async function() {
+      this.clear_terminal_text()
+      const user_id = this.user_id
+      const taskResult = await api.start_ondemand_task(user_id, {
+        opponents: [
+          {
+            name: "MirrorMatch",
+            bot_id: "self",
+          },
+        ],
       })
+      console.log(taskResult)
+      const startResult = await api.update_ondemand_task(user_id, {
+        "turn-limit": 500,
+      })
+      console.log(startResult)
+      this.add_console_text("Starting game...\n")
+
+      return this.check_ondemand_game()
+    },
+    check_ondemand_game: async function() {
+      const status = await api.get_ondemand_status(this.user_id)
+      console.log(status)
+
+      if (status.status === "completed") {
+        this.add_console_text("Game complete! Fetching replay...\n")
+
+        const replayBlob = await api.get_ondemand_replay(this.user_id)
+        const libhaliteviz = await import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
+        await libhaliteviz.setAssetRoot('/assets/js')
+        const replay = await libhaliteviz.parseReplay(replayBlob)
+        const width = jQuery('.replay').width()
+
+        if (this.visualizer) {
+          this.visualizer.destroy()
+        }
+
+        this.visualizer = new libhaliteviz.HaliteVisualizer(replay, width, width)
+        this.visualizer.attach('.game_replay_viewer')
+        this.visualizer.play()
+        this.add_console_text("Starting replay.\n")
+
+        for (let i = 0; i < status.opponents.length; i++) {
+          this.add_console_text(`Player ${i} (${i === 0 ? 'your bot' : '"' + status.opponents[i].name + '"'}) was rank ${status.game_output.stats[i].rank}.\n`)
+        }
+
+        return
+      }
+      else if (status.status === "failed") {
+        this.add_console_text("Game failed to run. Please try again in a few minutes.\n")
+        return
+      }
+
+      window.setTimeout(this.check_ondemand_game.bind(this), 1000)
     },
     save_current_file: function() {
       logInfo('Saving bot file to gcloud storage')
@@ -668,6 +719,7 @@ export default {
 }
 
 .console {
+  white-space: pre-line;
   flex: 1 1 auto;
   padding: 15px;
   background-color: black;

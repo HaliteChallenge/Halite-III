@@ -198,46 +198,40 @@ export function delete_source_file (userId, file_name) {
   })
 }
 
-export function start_ondemand_task(userId) {
-  return $.get({
-    url: `${API_SERVER_URL}/ondemand/${userId}`,
-    data: JSON.stringify({opponents: []}),
-    contentType: 'application/json',
+export function start_ondemand_task(userId, options) {
+  return window.fetch(`${API_SERVER_URL}/ondemand/${userId}`, {
     method: 'POST',
-    xhrFields: {
-      withCredentials: true
-    }
-  })
+    headers: {
+      "Content-Type": 'application/json'
+    },
+    body: JSON.stringify(options),
+    credentials: 'include'
+  }).then(r => r.json())
 }
 
-export function update_ondemand_task(userId, num_turns) {
-  return $.get({
-    url: `${API_SERVER_URL}/ondemand/${userId}`,
+export function update_ondemand_task(userId, options) {
+  return window.fetch(`${API_SERVER_URL}/ondemand/${userId}`, {
     method: 'PUT',
-    xhrFields: {
-      withCredentials: true
-    }
-  })
+    headers: {
+      "Content-Type": 'application/json'
+    },
+    body: JSON.stringify(options),
+    credentials: 'include'
+  }).then(r => r.json())
 }
 
 export function get_ondemand_status(userId) {
-  return $.get({
-    url: `${API_SERVER_URL}/ondemand/${userId}`,
+  return window.fetch(`${API_SERVER_URL}/ondemand/${userId}`, {
     method: 'GET',
-    xhrFields: {
-      withCredentials: true
-    }
-  })
+    credentials: 'include'
+  }).then(r => r.json())
 }
 
 export function get_ondemand_replay(userId) {
-  return $.get({
-    url: `${API_SERVER_URL}/ondemand/${userId}/replay`,
-    method: 'POST',
-    xhrFields: {
-      withCredentials: true
-    }
-  })
+  return window.fetch(`${API_SERVER_URL}/ondemand/${userId}/replay`, {
+    method: 'GET',
+    credentials: 'include'
+  }).then(r => r.arrayBuffer())
 }
 
 export function register_me (data) {
