@@ -190,7 +190,7 @@ std::string SelfCollisionError<SpawnCommand>::log_message() const {
            << cell.x
            << ", "
            << cell.y
-           << ") failed due to presence of owned entity "
+           << ") collided with owned entity "
            << entities.front()
            << " on that cell";
     return stream.str();
