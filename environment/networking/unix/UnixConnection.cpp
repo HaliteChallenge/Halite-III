@@ -97,7 +97,7 @@ UnixConnection::~UnixConnection() noexcept {
  */
 void UnixConnection::send_string(const std::string &message) {
     auto length = message.length();
-    Logging::log([length](){ return "Sending message with length " + std::to_string(length); }, Logging::Level::Debug);
+    Logging::log([length]() { return "Sending message with length " + std::to_string(length); }, Logging::Level::Debug);
     auto message_ptr = message.c_str();
     auto chars_remaining = static_cast<size_t>(length);
 
@@ -177,20 +177,25 @@ std::string UnixConnection::get_string() {
         if (config.ignore_timeout) {
             selection_result = check_pipe(read_pipe);
         } else {
-            auto current_time = high_resolution_clock::now();
-            auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
-            if (remaining < milliseconds::zero()) {
-                // TODO: continue and read remainder of input
-                throw TimeoutError("when reading string", config.timeout, current_read);
+            selection_result = check_pipe(read_pipe, milliseconds::zero());
+            if (selection_result < 0) {
+                throw NetworkingError("Select failed", current_read);
+            } else if (selection_result == 0) {
+                auto current_time = high_resolution_clock::now();
+                auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
+                if (remaining < milliseconds::zero()) {
+                    // TODO: continue and read remainder of input
+                    throw TimeoutError("when reading string", config.timeout, current_read);
+                }
+                selection_result = check_pipe(read_pipe, remaining);
             }
-            selection_result = check_pipe(read_pipe, remaining);
         }
         if (selection_result < 0) {
             throw NetworkingError("Select failed", current_read);
         } else if (selection_result > 0) {
             // Read from the pipe, as many as we can into the buffer
             auto bytes_read = read(read_pipe, buffer.begin(), buffer.size());
-            if (bytes_read < 0) {
+            if (bytes_read <= 0) {
                 // TODO: continue and read remainder of input
                 throw NetworkingError("Read failed", current_read);
             }

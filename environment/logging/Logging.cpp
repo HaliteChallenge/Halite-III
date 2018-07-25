@@ -40,8 +40,9 @@ void Logging::set_enabled(bool enabled) {
  * Immediately log a message, without level checking.
  * @param message The message to log.
  * @param level The log level.
+ * @param player The player sending the message.
  */
-void Logging::_log(const std::string &message, Level level) {
+void Logging::_log(const std::string &message, Level level, class_id<hlt::Player> player) {
     std::lock_guard<std::mutex> guard(Logging::cerr_mutex);
     auto level_num = static_cast<int>(level);
     std::cerr << "["
@@ -51,6 +52,9 @@ void Logging::_log(const std::string &message, Level level) {
               << "] ";
     if (turn_number >= 0) {
         std::cerr << "[" << turn_number << "] ";
+    }
+    if (player != Enumerated<hlt::Player>::None) {
+        std::cerr << "[P" << player << "] ";
     }
     std::cerr << message << std::endl;
 }

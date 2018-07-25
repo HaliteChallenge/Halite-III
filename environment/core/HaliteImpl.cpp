@@ -84,9 +84,27 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
 void HaliteImpl::run_game() {
     const auto &constants = Constants::get();
 
-    id_map<Player, std::future<void>> results{};
+    ordered_id_map<Player, std::future<void>> results{};
+    bool success = true;
     for (auto &[player_id, player] : game.store.players) {
-        Logging::log("Initializing player " + to_string(player.id) + " with command " + player.command);
+        Logging::log("Launching with command " + player.command, Logging::Level::Info, player.id);
+        try {
+            game.networking.connect_player(player);
+        } catch (const BotError &e) {
+            success = false;
+            kill_player(player_id);
+            Logging::log("Player could not be launched", Logging::Level::Error, player.id);
+            Logging::log(e.what(), Logging::Level::Error);
+        }
+    }
+    if (!success) {
+        game.replay.players.insert(game.store.players.begin(), game.store.players.end());
+        Logging::log("Some players failed to launch, aborting", Logging::Level::Error);
+        return;
+    }
+
+    for (auto &[player_id, player] : game.store.players) {
+        Logging::log("Initializing player", Logging::Level::Info, player_id);
         results[player_id] = std::async(std::launch::async,
                                         [&networking = game.networking, &player = player] {
                                             networking.initialize_player(player);
@@ -95,13 +113,13 @@ void HaliteImpl::run_game() {
     for (auto &[player_id, result] : results) {
         try {
             result.get();
-        }
-        catch (const BotError &e) {
+        } catch (const BotError &e) {
+            Logging::log("Player could not be initialized", Logging::Level::Error, player_id);
             kill_player(player_id);
         }
     }
     game.replay.players.insert(game.store.players.begin(), game.store.players.end());
-    Logging::log("Player initialization complete.");
+    Logging::log("Player initialization complete");
 
     for (game.turn_number = 0; game.turn_number < constants.MAX_TURNS; game.turn_number++) {
         Logging::set_turn_number(game.turn_number);
@@ -124,7 +142,7 @@ void HaliteImpl::run_game() {
     rank_players();
     Logging::set_turn_number(Logging::ended);
     game.logs.set_turn_number(PlayerLog::ended);
-    Logging::log("Game has ended.");
+    Logging::log("Game has ended");
     Logging::remove_turn_number();
     for (const auto &[player_id, player] : game.store.players) {
         game.replay.players.find(player_id)->second.terminated = player.terminated;
@@ -150,9 +168,9 @@ void HaliteImpl::process_turn() {
     for (auto &[player_id, result] : results) {
         try {
             commands[player_id] = result.get();
-        }
-        catch (const BotError &e) {
+        } catch (const BotError &e) {
             kill_player(player_id);
+            commands.erase(player_id);
         }
     }
 
@@ -197,7 +215,7 @@ void HaliteImpl::process_turn() {
                             stream << ", ";
                         }
                     }
-                    stream << ". Aborting due to strict error check.";
+                    stream << ", aborting due to strict error check";
                     Logging::log(stream.str(), Logging::Level::Error);
                     game.turn_number = Constants::get().MAX_TURNS;
                     return;
@@ -337,7 +355,7 @@ void HaliteImpl::rank_players() {
 }
 
 void HaliteImpl::kill_player(const Player::id_type &player_id) {
-    Logging::log("Killing player " + to_string(player_id), Logging::Level::Warning);
+    Logging::log("Killing player", Logging::Level::Warning, player_id);
     auto &player = game.store.get_player(player_id);
     player.terminated = true;
     game.networking.kill_player(player);
@@ -375,10 +393,10 @@ void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
 
     // Log the error information.
     if (error->ignored) {
-        Logging::log("Player " + to_string(player_id) + " caused warning: " + message, Logging::Level::Warning);
+        Logging::log(message, Logging::Level::Warning, player_id);
         game.logs.log(player_id, message, PlayerLog::Level::Warning);
     } else {
-        Logging::log("Player " + to_string(player_id) + " caused error: " + message, Logging::Level::Error);
+        Logging::log(message, Logging::Level::Error, player_id);
         offenders.emplace(player_id);
         game.logs.log(player_id, message, PlayerLog::Level::Error);
     }
@@ -397,7 +415,8 @@ void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
         const auto distance = static_cast<long>(std::distance(player_commands.begin(), position));
         const auto commands_begin = player_commands.begin() + std::max(0L, distance - COMMAND_CONTEXT_LINES);
         const auto commands_end = player_commands.begin() +
-                std::min(static_cast<long>(player_commands.size()), distance + COMMAND_CONTEXT_LINES + 1);
+                                  std::min(static_cast<long>(player_commands.size()),
+                                           distance + COMMAND_CONTEXT_LINES + 1);
         for (auto iterator = commands_begin; iterator != commands_end; iterator++) {
             auto number = std::distance(player_commands.begin(), iterator);
             auto marker = iterator == position ? ">>> " : "    ";
@@ -410,7 +429,7 @@ void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
     auto position = find_position(faulty);
     auto distance = std::distance(player_commands.begin(), position);
     game.logs.log(player_id, "At command " + std::to_string(distance + 1) + " of " +
-                              std::to_string(player_commands.size()) + ":");
+                  std::to_string(player_commands.size()) + ":");
     log_context(position);
 
     // If there is a context, log the context.
