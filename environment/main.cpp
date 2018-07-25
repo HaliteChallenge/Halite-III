@@ -218,8 +218,9 @@ int main(int argc, char *argv[]) {
             results["map_width"] = map_width;
             results["map_height"] = map_height;
             results["map_seed"] = seed;
-            // TODO: put the actual generator here
-            results["map_generator"] = "default";
+            std::ostringstream stream;
+            stream << type;
+            results["map_generator"] = stream.str();
             results["final_snapshot"] = game.to_snapshot(map_parameters);
             results["stats"] = nlohmann::json::object();
             for (const auto &stats : replay.game_statistics.player_statistics) {
