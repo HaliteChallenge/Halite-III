@@ -539,13 +539,22 @@ export class HaliteVisualizer {
                 const cellSize = assets.CELL_SIZE;
 
                 if (event.type === "shipwreck") {
-                    // add death animation to be drawn
-                    // TODO: switch to Halite 3 animation
-                    this.animationQueue.push(
-                        new animation.ShipExplosionFrameAnimation(
-                            event, delayTime, cellSize, this.entityContainer));
                     // Remove all entities involved in crash
                     for (let index = 0; index < event.ships.length; index++) {
+                        // add death animation to be drawn
+                        // TODO: switch to Halite 3 animation
+                        for (const [player, playerShips] of
+                             Object.entries(this.currentFrame.entities)) {
+                            if (playerShips[event.ships[index]]) {
+                                this.animationQueue.push(
+                                    new animation.ShipExplosionFrameAnimation(
+                                        playerShips[event.ships[index]],
+                                        assets.PLAYER_COLORS[parseInt(player, 10)],
+                                        cellSize,
+                                        this.entityContainer));
+                            }
+                        }
+
                         const entity_id = event.ships[index];
                         // Might not actually exist when we're panning
                         if (this.entity_dict[entity_id]) {
