@@ -120,7 +120,6 @@ void HaliteImpl::run_game() {
         try {
             result.get();
         } catch (const BotError &e) {
-            Logging::log("Player could not be initialized", Logging::Level::Error, player_id);
             kill_player(player_id);
         }
     }
