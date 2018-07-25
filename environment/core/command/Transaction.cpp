@@ -270,7 +270,7 @@ void SpawnTransaction::commit() {
         for (const SpawnCommand &spawn : spawns) {
             auto &player = store.get_player(player_id);
             auto energy = spawn.energy;
-            player.energy -= (cost + energy);
+            player.energy -= cost + energy;
             auto &cell = map.at(player.factory);
             if (cell.entity == Entity::None) {
                 auto &entity = store.new_entity(energy, player.id);
@@ -286,7 +286,7 @@ void SpawnTransaction::commit() {
                 // There is a collision, destroy the existing.
                 auto &entity = store.get_entity(cell.entity);
                 auto &player = store.get_player(entity.owner);
-                player.energy += entity.energy;
+                player.energy += entity.energy + energy;
                 player.remove_entity(cell.entity);
                 store.delete_entity(cell.entity);
                 cell.entity = Entity::None;
