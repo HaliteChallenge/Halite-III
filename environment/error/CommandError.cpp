@@ -36,7 +36,7 @@ std::string ExcessiveCommandsError::log_message() const {
            << entity
            << " received "
            << context().size()
-           << " commands on this turn, but only one is permitted.";
+           << " commands on this turn, but only one is permitted";
     return stream.str();
 }
 
@@ -45,7 +45,7 @@ std::string ExcessiveCommandsError::log_message() const {
  * @return The message.
  */
 std::string ExcessiveSpawnsError::log_message() const {
-    return "received more than one spawn command on this turn.";
+    return "received more than one spawn command on this turn";
 }
 
 /**
@@ -58,8 +58,7 @@ std::string EntityNotFoundError<DumpCommand>::log_message() const {
     stream << "unknown entity "
            << command().entity
            << " was requested to dump "
-           << command().energy
-           << ".";
+           << command().energy;
     return stream.str();
 }
 
@@ -72,7 +71,7 @@ std::string EntityNotFoundError<ConstructCommand>::log_message() const {
     std::ostringstream stream;
     stream << "unknown entity "
            << command().entity
-           << " was requested to construct.";
+           << " was requested to construct";
     return stream.str();
 }
 
@@ -86,8 +85,7 @@ std::string EntityNotFoundError<MoveCommand>::log_message() const {
     stream << "unknown entity "
            << command().entity
            << " was requested to move "
-           << direction_to_string(command().direction)
-           << ".";
+           << direction_to_string(command().direction);
     return stream.str();
 }
 
@@ -106,7 +104,7 @@ std::string InsufficientEnergyError<MoveCommand>::log_message() const {
            << direction_to_string(command().direction)
            << ", but only "
            << available
-           << " energy was available.";
+           << " energy was available";
     return stream.str();
 }
 
@@ -123,7 +121,7 @@ std::string InsufficientEnergyError<DumpCommand>::log_message() const {
            << requested
            << " energy, but only "
            << available
-           << " energy was available.";
+           << " energy was available";
     return stream.str();
 }
 
@@ -137,7 +135,7 @@ std::string PlayerInsufficientEnergyError::log_message() const {
            << requested
            << " energy, but only "
            << available
-           << " was available.";
+           << " was available";
     return stream.str();
 }
 
@@ -155,8 +153,7 @@ std::string CellOwnedError<ConstructCommand>::log_message() const {
            << ", "
            << cell.y
            << "), but that cell was already owned by player "
-           << player
-           << ".";
+           << player;
     return stream.str();
 }
 
@@ -178,7 +175,7 @@ std::string SelfCollisionError<MoveCommand>::log_message() const {
            << cell.x
            << ", "
            << cell.y
-           << ") as the result of moves on this turn.";
+           << ") as the result of moves on this turn";
     return stream.str();
 }
 
@@ -195,7 +192,7 @@ std::string SelfCollisionError<SpawnCommand>::log_message() const {
            << cell.y
            << ") failed due to presence of owned entity "
            << entities.front()
-           << " on that cell.";
+           << " on that cell";
     return stream.str();
 }
 

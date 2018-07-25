@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
     } else if (bot_commands.size() > n_players) {
         n_players = bot_commands.size();
         if (players_arg.isSet()) {
-            Logging::log("Warning: overriding the specified number of players.", Logging::Level::Warning);
+            Logging::log("Overriding the specified number of players", Logging::Level::Warning);
         }
     }
 
@@ -118,8 +118,7 @@ int main(int argc, char *argv[]) {
     if (!snapshot_arg.getValue().empty()) {
         try {
             snapshot = hlt::Snapshot::from_str(snapshot_arg.getValue());
-        }
-        catch (const SnapshotError &err) {
+        } catch (const SnapshotError &err) {
             std::cerr << err.what() << std::endl;
             return 1;
         }
@@ -171,8 +170,7 @@ int main(int argc, char *argv[]) {
         bool enable_compression = !no_compression_switch.getValue();
         try {
             replay.output(output_filename, enable_compression);
-        }
-        catch (std::runtime_error &e) {
+        } catch (std::runtime_error &e) {
             output_filename = replay_directory + filename;
             replay.output(output_filename, enable_compression);
         }
@@ -210,8 +208,8 @@ int main(int argc, char *argv[]) {
 
                 log_file.write(error_log.c_str(), error_log.size());
 
-                Logging::log("Player " + to_string(player_id) + " has log output. Writing a log at " + log_filepath,
-                             Logging::Level::Info);
+                Logging::log("Player has log output. Writing a log at " + log_filepath,
+                             Logging::Level::Info, player.id);
             }
         }
 

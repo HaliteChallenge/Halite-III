@@ -44,11 +44,19 @@ public:
     virtual ~BaseConnection() = default;
 };
 
-/** Container type for connections, exposed to outside users. */
-using Connection = std::unique_ptr<BaseConnection>;
+/** The type of platform-specific connections. */
+#ifdef _WIN32
+class WinConnection;
+using OSConnection = WinConnection;
+#else
+class UnixConnection;
+using OSConnection = UnixConnection;
+#endif
 
-/** Generic factory class for connections across platforms. */
-template<class OSConnection>
+/** Container type for connections, exposed to outside users. */
+using Connection = std::unique_ptr<OSConnection>;
+
+/** Factory class for connections. */
 class ConnectionFactory final {
 private:
     /** The networking configuration. */
@@ -65,13 +73,34 @@ public:
      * @param command The command.
      * @return The new connection.
      */
-    Connection new_connection(const std::string &command) {
-        return std::make_unique<OSConnection>(command, config);
-    }
+    Connection new_connection(const std::string &command);
 };
 
 /** Map from players to bot connections. */
-using Connections = id_map<hlt::Player, Connection>;
+class Connections {
+    id_map<hlt::Player, Connection> map; /**< The connections map. */
+
+public:
+    /**
+     * Add a connection for a player.
+     * @param player The player.
+     * @param connection The connection.
+     */
+    void add(hlt::Player::id_type player, Connection connection);
+
+    /**
+     * Get the connection for a player.
+     * @param player The player.
+     * @return The connection.
+     */
+    Connection &get(hlt::Player::id_type player);
+
+    /**
+     * Remove the connection for a player.
+     * @param player The player.
+     */
+    void remove(hlt::Player::id_type player);
+};
 
 }
 

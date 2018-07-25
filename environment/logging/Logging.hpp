@@ -4,6 +4,12 @@
 #include <mutex>
 #include <string>
 
+#include "Enumerated.hpp"
+
+namespace hlt {
+struct Player;
+}
+
 /**
  * Logging framework for Halite.
  *
@@ -71,18 +77,20 @@ struct Logging {
      * @tparam Message The type of the suspended message.
      * @param message The suspended message or callable.
      * @param level The severity of the message, defaulting to Info.
+     * @param player The player sending the message.
      */
     template<class Message>
-    static void log(const Message &message, Level level = Level::Info) {
+    static void log(const Message &message, Level level = Level::Info,
+                    class_id<hlt::Player> player = Enumerated<hlt::Player>::None) {
         if (!Logging::enabled) {
             return;
         }
         auto level_num = static_cast<int>(level);
         if (level_num >= static_cast<int>(Logging::level)) {
             if constexpr (std::is_convertible_v<Message, std::string>) {
-                _log(message, level);
+                _log(message, level, player);
             } else {
-                _log(message(), level);
+                _log(message(), level, player);
             }
         }
     }
@@ -98,8 +106,9 @@ private:
      * Immediately log a message, without level checking.
      * @param message The message to log.
      * @param level The log level.
+     * @param player The player sending the message.
      */
-    static void _log(const std::string &message, Level level);
+    static void _log(const std::string &message, Level level, class_id<hlt::Player> player);
 };
 
 #endif // LOGGING_HPP

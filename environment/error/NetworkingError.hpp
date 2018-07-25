@@ -29,16 +29,13 @@ public:
     explicit NetworkingError(std::string message, std::string remaining_input = "")
             : message(std::move(message)), remaining_input(std::move(remaining_input)), recorded_errno(errno) {
         std::stringstream stream;
-        stream << "Error communicating with bot: "
+        stream << "communication error with bot: "
                << this->message
-               << "."
-               << std::endl
-               << "errno was: "
+               << ", errno was: "
                << recorded_errno
                << " ("
                << std::strerror(recorded_errno)
-               << ")."
-               << std::endl;
+               << ")";
         result = stream.str();
     }
 
