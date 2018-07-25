@@ -270,6 +270,10 @@ bool HaliteImpl::game_ended() const {
             return false;
         }
     }
+    if (num_alive_players == 1 && game.store.players.size() == 1) {
+        // If there is only one player in the game, then let them keep playing.
+        return false;
+    }
     return true;
 }
 
