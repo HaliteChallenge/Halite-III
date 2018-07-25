@@ -265,9 +265,15 @@ def store_challenge_results(conn, users, challenge, stats):
         status=sqlalchemy.case(
             [
                 (model.challenges.c.num_games >= 30,
-                 model.ChallengeStatus.FINISHED.value),
+                 sqlalchemy.sql.func.cast(
+                     model.ChallengeStatus.FINISHED.value,
+                     model.challenges.c.status.type
+                 )),
             ],
-            else_=model.ChallengeStatus.CREATED.value,
+            else_=sqlalchemy.sql.func.cast(
+                model.ChallengeStatus.CREATED.value,
+                model.challenges.c.status.type
+            ),
         ),
     ).where(model.challenges.c.id == challenge))
 
@@ -278,15 +284,9 @@ def store_challenge_results(conn, users, challenge, stats):
             points += 2
 
         # TODO: decide on interesting stats for challenges
-        if user["player_tag"] in stats.players:
-            ships_produced = attacks_made = 0
-        else:
-            ships_produced = attacks_made = 0
 
         conn.execute(model.challenge_participants.update().values(
             points=model.challenge_participants.c.points + points,
-            ships_produced=model.challenge_participants.c.ships_produced + ships_produced,
-            attacks_made=model.challenge_participants.c.attacks_made + attacks_made,
         ).where((model.challenge_participants.c.challenge_id == challenge) &
                 (model.challenge_participants.c.user_id == user["user_id"])))
 
@@ -300,8 +300,6 @@ def store_challenge_results(conn, users, challenge, stats):
             model.challenge_participants.c.challenge_id == challenge
         ).order_by(
             model.challenge_participants.c.points.desc(),
-            model.challenge_participants.c.ships_produced.desc(),
-            model.challenge_participants.c.attacks_made.desc(),
         )).first()
         conn.execute(model.challenges.update().values(
             finished=sqlalchemy.sql.func.now(),
