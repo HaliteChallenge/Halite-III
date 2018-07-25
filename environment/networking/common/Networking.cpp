@@ -21,20 +21,24 @@ void Networking::handle_player_error(Player::id_type player, std::string receive
     auto &connection = connections[player];
     try {
         received_input += connection->read_trailing_input();
+    } catch (...) {
+        // Ignore any exceptions from the read attempt.
+    }
+    if (!received_input.empty()) {
         game.logs.log(player, "Last input received was:");
         game.logs.log(player, received_input);
-    } catch (...) {
-        game.logs.log(player, "Last input could not be determined.");
     }
+    std::string errors;
     try {
-        const auto errors = connection->get_errors();
-        if (!errors.empty()) {
-            game.logs.log(player, "Bot error output (truncated) was:");
-            game.logs.log(player, errors);
-        }
+        errors = connection->get_errors();
     } catch (...) {
-        game.logs.log(player, "Bot error output could not be determined.");
+        // Ignore any exceptions from the read attempt.
     }
+    if (!errors.empty()) {
+        game.logs.log(player, "Bot error output was:");
+        game.logs.log(player, errors);
+    }
+}
 }
 
 /**
@@ -149,7 +153,7 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
 void Networking::kill_player(const hlt::Player &player) {
     const auto errors = connections[player.id]->get_errors();
     if (!errors.empty()) {
-        game.logs.log(player.id, "Bot error output (truncated) was:");
+        game.logs.log(player.id, "Bot error output was:");
         game.logs.log(player.id, errors);
     }
     connections.erase(player.id);

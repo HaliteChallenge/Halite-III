@@ -14,14 +14,17 @@
 #define CHECK(x) do { if ((x) < 0) { throw NetworkingError("Failed to execute " #x); } } while (false)
 
 /** The number of slots in a pipe array. */
-constexpr auto PIPE_PAIR = 2;
+static constexpr auto PIPE_PAIR = 2;
 /** The index of the head of the pipe. */
-constexpr auto PIPE_HEAD = 0;
+static constexpr auto PIPE_HEAD = 0;
 /** The index of the tail of the pipe. */
-constexpr auto PIPE_TAIL = 1;
+static constexpr auto PIPE_TAIL = 1;
 
-/** Offset added to file descriptor, required by select(2) */
-constexpr auto NFDS_OFFSET = 1;
+/** Offset added to file descriptor, required by select(2). */
+static constexpr auto NFDS_OFFSET = 1;
+
+/** The maximum length of reading from stderr, in bytes. */
+static constexpr auto MAX_STDERR_LENGTH = 1024 * 1024;
 
 namespace net {
 
@@ -232,7 +235,6 @@ std::string UnixConnection::get_string() {
  */
 std::string UnixConnection::get_errors() {
     std::string result;
-    static constexpr auto MAX_STDERR_LENGTH = 1024;
     ssize_t bytes_read = 0;
     while ((bytes_read = read(error_pipe, buffer.begin(), buffer.size())) > 0
            && result.size() < MAX_STDERR_LENGTH) {
