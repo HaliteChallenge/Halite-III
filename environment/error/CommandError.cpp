@@ -160,4 +160,43 @@ std::string CellOwnedError<ConstructCommand>::log_message() const {
     return stream.str();
 }
 
+/**
+ * Get a message for the player log.
+ * @return The message.
+ */
+template<>
+std::string SelfCollisionError<MoveCommand>::log_message() const {
+    std::ostringstream stream;
+    stream << "owned entities ";
+    for (auto iterator = entities.begin(); iterator != entities.end(); iterator++) {
+        stream << *iterator;
+        if (std::next(iterator) != entities.end()) {
+            stream << ", ";
+        }
+    }
+    stream << " collided on cell ("
+           << cell.x
+           << ", "
+           << cell.y
+           << ") as the result of moves on this turn.";
+    return stream.str();
+}
+
+/**
+ * Get a message for the player log.
+ * @return The message.
+ */
+template<>
+std::string SelfCollisionError<SpawnCommand>::log_message() const {
+    std::ostringstream stream;
+    stream << "spawn on cell ("
+           << cell.x
+           << ", "
+           << cell.y
+           << ") failed due to presence of owned entity "
+           << entities.front()
+           << " on that cell.";
+    return stream.str();
+}
+
 }
