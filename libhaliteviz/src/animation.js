@@ -70,21 +70,21 @@ export class PlanetExplosionFrameAnimation extends SpritesheetFrameAnimation {
             delayTime: delayTime,
             cellSize: cellSize,
             container: container,
-            opacity: 0.3,
-            duration: 200,
+            opacity: 0.1,
+            duration: 50,
         });
     }
 }
 
 export class ShipExplosionFrameAnimation extends SpritesheetFrameAnimation {
-    constructor(event, delayTime, cellSize, container) {
+    constructor(location, color, cellSize, container) {
         super({
             sheet: assets.SHIP_EXPLOSION_SHEET,
-            sizeFactor: 10,
-            x: event.location.x,
-            y: event.location.y,
-            tintColor: assets.EXPLOSION_COLOR,
-            delayTime: delayTime,
+            sizeFactor: 4,
+            x: location.x,
+            y: location.y,
+            tintColor: color,
+            delayTime: 0,
             cellSize: cellSize,
             container: container,
             duration: 150,

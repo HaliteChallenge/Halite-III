@@ -487,7 +487,7 @@
           }
           this.stats = visualizer.stats
 
-          visualizer.onUpdate = () => {
+          visualizer.onUpdate.add(() => {
             this.frame = visualizer.frame
             this.time = visualizer.time
             this.zoom = visualizer.camera.scale / visualizer.camera.initScale
@@ -499,14 +499,14 @@
                 player.current_energy = visualizer.currentFrame.energy[player.player_id]
               }
             }
-          }
-          visualizer.onPlay = () => {
+          })
+          visualizer.onPlay.add(() => {
             this.playing = true
-          }
-          visualizer.onPause = () => {
+          })
+          visualizer.onPause.add(() => {
             this.playing = false
-          }
-          visualizer.onSelect = (kind, args) => {
+          })
+          visualizer.onSelect.add((kind, args) => {
             this.selected.kind = kind
             this.selected.id = args.id
             this.selected.owner = args.owner
@@ -514,10 +514,10 @@
             this.selected.y = args.y
             this.selected.production = args.production
             this.showObjectPanel = true
-            visualizer.onUpdate()
+            visualizer.onUpdate.dispatch()
             this.$forceUpdate()
             this.gaData('visualizer', 'click-map-objects', 'gameplay')
-          }
+          })
           visualizer.attach('.game-replay-viewer')
           // play the replay - delay a bit to make sure assets load/are rendered
           if (this.autoplay) {
