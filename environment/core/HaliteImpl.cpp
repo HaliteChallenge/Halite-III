@@ -25,11 +25,17 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
     if (snapshot.map.size() > 0) {
         assert(snapshot.map.size() == static_cast<decltype(snapshot.map)::size_type>(game.map.width * game.map.height));
 
-        for (auto row = 0; row < game.map.height; row++) {
-            for (auto col = 0; col < game.map.width; col++) {
-                game.map.at(col, row).energy = snapshot.map.at(row * game.map.width + col);
+        for (dimension_type row = 0; row < game.map.height; row++) {
+            for (dimension_type col = 0; col < game.map.width; col++) {
+                game.map.at(col, row).energy = snapshot.map.at(static_cast<dimension_type>(row * game.map.width + col));
                 changed_cells.emplace(row, col);
             }
+        }
+    }
+
+    for (dimension_type row = 0; row < game.map.height; row++) {
+        for (dimension_type col = 0; col < game.map.width; col++) {
+            game.store.map_total_energy += game.map.at(col, row).energy;
         }
     }
 
@@ -46,7 +52,6 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
             for (const auto &[_, dropoff_location] : player_snapshot.dropoffs) {
                 auto &cell = game.map.at(dropoff_location);
                 cell.owner = player.id;
-                cell.energy = 0;
                 player.dropoffs.emplace_back(game.store.new_dropoff(dropoff_location));
                 game.replay.full_frames.back().events.push_back(
                         std::make_unique<ConstructionEvent>(
@@ -73,6 +78,7 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
     for (auto &[player_id, player] : game.store.players) {
         // Zero the energy on factory and mark as owned.
         auto &factory = game.map.at(player.factory);
+        game.store.map_total_energy -= factory.energy;
         factory.energy = 0;
         factory.owner = player_id;
         // Prepare the log.
@@ -253,6 +259,7 @@ void HaliteImpl::process_turn() {
             }
             entity.energy += extracted;
             cell.energy -= extracted;
+            game.store.map_total_energy -= extracted;
             game.store.changed_cells.emplace(location);
         }
     }
@@ -268,15 +275,22 @@ void HaliteImpl::process_turn() {
  * @return True if the game has ended.
  */
 bool HaliteImpl::game_ended() const {
+    if (game.store.map_total_energy == 0) {
+        return true;
+    }
     long num_alive_players = 0;
     for (auto &&[_, player] : game.store.players) {
-        // TODO: check that this is correct
-        if (player.is_alive()) {
+        bool can_play = !player.entities.empty() || player.energy > Constants::get().NEW_ENTITY_ENERGY_COST;
+        if (player.is_alive() && can_play) {
             num_alive_players++;
         }
         if (num_alive_players > 1) {
             return false;
         }
+    }
+    if (num_alive_players == 1 && game.store.players.size() == 1) {
+        // If there is only one player in the game, then let them keep playing.
+        return false;
     }
     return true;
 }
