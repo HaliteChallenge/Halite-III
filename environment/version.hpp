@@ -3,4 +3,4 @@
 // as linux and macOS.
 
 // Define the version of the executable
-#define HALITE_VERSION "1.5.1032.g59971"
+#define HALITE_VERSION "1.5.1150.g1884"

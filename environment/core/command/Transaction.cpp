@@ -1,6 +1,7 @@
-#include <unordered_set>
+#include <deque>
 
-#include "Command.hpp"
+#include "Transaction.hpp"
+
 #include "Halite.hpp"
 
 namespace hlt {
@@ -36,18 +37,22 @@ void dump_energy(Store &store, Entity &entity, Cell &cell, energy_type energy) {
  * @return False if the transaction may not be committed.
  */
 bool DumpTransaction::check() {
+    auto success = true;
     for (const auto &[player_id, dumps] : commands) {
         auto &player = store.get_player(player_id);
         for (const DumpCommand &command : dumps) {
-            // Entity is not found or has too little energy
-            if (!player.has_entity(command.entity)
-                || store.get_entity(command.entity).energy < command.energy) {
-                offenders.emplace(player_id);
-                break;
+            if (!player.has_entity(command.entity)) {
+                // Entity is not valid
+                error_generated<EntityNotFoundError<DumpCommand>>(player_id, command);
+                success = false;
+            } else if (auto available = store.get_entity(command.entity).energy; available < command.energy) {
+                // Entity does not have enough energy
+                error_generated<InsufficientEnergyError<DumpCommand>>(player_id, command, available, command.energy);
+                success = false;
             }
         }
     }
-    return offenders.empty();
+    return success;
 }
 
 /** If the transaction may be committed, commit the transaction. */
@@ -58,8 +63,8 @@ void DumpTransaction::commit() {
             auto &entity = store.get_entity(command.entity);
             const auto location = player.get_entity_location(command.entity);
             dump_energy(store, entity, map.at(location), command.energy);
-            changed_cells.emplace(location);
-            changed_entities.emplace(command.entity);
+            cell_updated(location);
+            entity_updated(command.entity);
         }
     }
 }
@@ -69,18 +74,26 @@ void DumpTransaction::commit() {
  * @return False if the transaction may not be committed.
  */
 bool ConstructTransaction::check() {
+    auto success = true;
     for (const auto &[player_id, constructs] : commands) {
         auto &player = store.get_player(player_id);
         for (const ConstructCommand &command : constructs) {
-            // Entity is not valid or cell is already owned
-            if (!player.has_entity(command.entity) ||
-                map.at(player.get_entity_location(command.entity)).owner != Player::None) {
-                offenders.emplace(player_id);
-                break;
+            if (!player.has_entity(command.entity)) {
+                // Entity is not valid
+                error_generated<EntityNotFoundError<ConstructCommand>>(player_id, command);
+                success = false;
+            } else {
+                const auto location = player.get_entity_location(command.entity);
+                const auto &cell = map.at(location);
+                if (cell.owner != Player::None) {
+                    // Cell is already owned
+                    error_generated<CellOwnedError<ConstructCommand>>(player_id, command, location, cell.owner);
+                    success = false;
+                }
             }
         }
     }
-    return offenders.empty();
+    return success;
 }
 
 /** If the transaction may be committed, commit the transaction. */
@@ -97,10 +110,8 @@ void ConstructTransaction::commit() {
             player.dropoffs.emplace_back(store.new_dropoff(location));
             cell.energy = 0;
             cell.entity = Entity::None;
-            if (callback) {
-                callback(std::make_unique<ConstructionEvent>(location, player_id, command.entity));
-            }
-            changed_cells.emplace(location);
+            event_generated<ConstructionEvent>(location, player_id, command.entity);
+            cell_updated(location);
             player.remove_entity(entity);
             store.delete_entity(entity);
             // Charge player
@@ -114,18 +125,19 @@ void ConstructTransaction::commit() {
  * @return False if the transaction may not be committed.
  */
 bool MoveTransaction::check() {
+    auto success = true;
     auto cost = Constants::get().MOVE_COST_RATIO;
     for (const auto &[player_id, moves] : commands) {
         auto &player = store.get_player(player_id);
         for (const MoveCommand &command : moves) {
             // Entity is not valid
             if (!player.has_entity(command.entity)) {
-                offenders.emplace(player_id);
-                break;
+                error_generated<EntityNotFoundError<MoveCommand>>(player_id, command);
+                success = false;
             }
         }
     }
-    return offenders.empty();
+    return success;
 }
 
 /** If the transaction may be committed, commit the transaction. */
@@ -144,6 +156,8 @@ void MoveTransaction::commit() {
             auto &entity = store.get_entity(command.entity);
             if (entity.energy < required) {
                 // Entity does not have enough energy, ignore command.
+                error_generated<InsufficientEnergyError<MoveCommand>>(player_id, command, entity.energy,
+                                                                      required, true);
                 continue;
             }
             // Decrease the entity's energy.
@@ -182,17 +196,15 @@ void MoveTransaction::commit() {
                 dump_energy(store, entity, cell, entity.energy);
                 store.delete_entity(entity_id);
             }
-            if (callback) {
-                callback(std::make_unique<CollisionEvent>(destination, collision_ids));
-            }
-            changed_cells.emplace(destination);
+            event_generated<CollisionEvent>(destination, collision_ids);
+            cell_updated(destination);
         } else {
             auto &entity_id = entities.front();
             // Place it on the map.
             cell.entity = entity_id;
             // Give it back to the owner.
             store.get_player(store.get_entity(entity_id).owner).add_entity(entity_id, destination);
-            changed_entities.emplace(entity_id);
+            entity_updated(entity_id);
         }
     }
 }
@@ -202,14 +214,30 @@ void MoveTransaction::commit() {
  * @return False if the transaction may not be committed.
  */
 bool SpawnTransaction::check() {
+    auto success = true;
     // Only one spawn per turn
     std::unordered_set<Player::id_type> occurrences;
-    for (const auto &[player_id, _] : commands) {
-        if (const auto &[__, inserted] = occurrences.emplace(player_id); !inserted) {
-            offenders.emplace(player_id);
+    static constexpr auto MAX_SPAWNS_PER_TURN = 1;
+    for (const auto &[player_id, spawns] : commands) {
+        if (spawns.size() > MAX_SPAWNS_PER_TURN) {
+            success = false;
+            std::deque<std::reference_wrapper<const Command>> spawns_deque{spawns.begin(), spawns.end()};
+            // First spawn is legal
+            const Command &legal = spawns_deque.front();
+            spawns_deque.pop_front();
+            // Second is illegal
+            const Command &illegal = spawns_deque.front();
+            spawns_deque.pop_front();
+            // Remainder are in context
+            ErrorContext context;
+            context.push_back(legal);
+            for (const Command &spawn : spawns_deque) {
+                context.push_back(spawn);
+            }
+            error_generated<ExcessiveSpawnsError>(player_id, illegal, context);
         }
     }
-    return offenders.empty();
+    return success;
 }
 
 /** If the transaction may be committed, commit the transaction. */
@@ -226,111 +254,16 @@ void SpawnTransaction::commit() {
                 auto &entity = store.new_entity(energy, player.id);
                 player.add_entity(entity.id, player.factory);
                 cell.entity = entity.id;
-                changed_entities.emplace(entity.id);
-                if (callback) {
-                    callback(std::make_unique<SpawnEvent>(player.factory, energy, player.id, entity.id));
-                }
+                entity_updated(entity.id);
+                event_generated<SpawnEvent>(player.factory, energy, player.id, entity.id);
             } else {
-                if (callback) {
-                    std::vector<Entity::id_type> collision_ids = {cell.entity};
-                    callback(std::make_unique<CollisionEvent>(player.factory, collision_ids));
-                }
+                event_generated<CollisionEvent>(player.factory, std::vector<Entity::id_type>{cell.entity});
                 // There is a collision, destroy the existing.
                 store.get_player(store.get_entity(cell.entity).owner).remove_entity(cell.entity);
                 store.delete_entity(cell.entity);
                 cell.entity = Entity::None;
             }
         }
-    }
-}
-
-/**
- * Add a DumpCommand to the transaction.
- * @param player The player executing the command.
- * @param command The command.
- */
-void CommandTransaction::add_command(Player &player, const DumpCommand &command) {
-    occurrences[player][command.entity]++;
-    dump_transaction.add_command(player, command);
-}
-
-/**
- * Add a ConstructCommand to the transaction.
- * @param player The player executing the command.
- * @param command The command.
- */
-void CommandTransaction::add_command(Player &player, const ConstructCommand &command) {
-    occurrences[player][command.entity]++;
-    expenses[player] += Constants::get().DROPOFF_COST;
-    construct_transaction.add_command(player, command);
-}
-
-/**
- * Add a MoveCommand to the transaction.
- * @param player The player executing the command.
- * @param command The command.
- */
-void CommandTransaction::add_command(Player &player, const MoveCommand &command) {
-    occurrences[player][command.entity]++;
-    move_transaction.add_command(player, command);
-}
-
-/**
- * Add a SpawnCommand to the transaction.
- * @param player The player executing the command.
- * @param command The command.
- */
-void CommandTransaction::add_command(Player &player, const SpawnCommand &command) {
-    expenses[player] += Constants::get().NEW_ENTITY_ENERGY_COST;
-    expenses[player] += command.energy;
-    spawn_transaction.add_command(player, command);
-}
-
-/**
- * Check if the transaction may be committed without actually committing.
- * @return False if the transaction may not be committed.
- */
-bool CommandTransaction::check() {
-    bool success = true;
-    // Check that expenses are not too high
-    for (const auto &[player, expense] : expenses) {
-        if (expense > player.energy) {
-            offenders.emplace(player.id);
-            success = false;
-        }
-    }
-    // Check that each entity is operated on at most once
-    static constexpr auto MAX_MOVES_PER_ENTITY = 1;
-    for (const auto &[player, entities] : occurrences) {
-        for (const auto &[_, number] : entities) {
-            if (number > MAX_MOVES_PER_ENTITY) {
-                offenders.emplace(player.id);
-                success = false;
-            }
-        }
-    }
-    // Check that each transaction can succeed individually
-    for (BaseTransaction &transaction : all_transactions) {
-        if (!transaction.check()) {
-            offenders.insert(transaction.offenders.begin(), transaction.offenders.end());
-            success = false;
-        }
-    }
-    return success;
-}
-
-/** If the transaction may be committed, commit the transaction. */
-void CommandTransaction::commit() {
-    for (BaseTransaction &transaction : all_transactions) {
-        transaction.commit();
-        changed_entities.insert(transaction.changed_entities.begin(), transaction.changed_entities.end());
-        changed_cells.insert(transaction.changed_cells.begin(), transaction.changed_cells.end());
-    }
-}
-
-void CommandTransaction::set_callback(std::function<void(GameEvent)> callback) {
-    for (BaseTransaction &transaction : all_transactions) {
-        transaction.set_callback(callback);
     }
 }
 

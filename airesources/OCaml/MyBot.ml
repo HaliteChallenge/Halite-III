@@ -5,9 +5,7 @@ open Bot
 let () =
   let state = init_state () in
   send_name (name state);
-  update_state state;
-  init state;
   while true do
-    update_state state;
-    send_commands (turn state);
+    let turn_number = update_state state in
+    send_commands (turn turn_number);
   done

@@ -74,6 +74,11 @@ export class Factory {
     update() {
     }
 
+    destroy() {
+        this.container.removeChild(this.core);
+        this.container = null;
+    }
+
     draw() {
         const pixelsPerUnit = assets.CELL_SIZE * this.visualizer.camera.scale;
         this.core.width = this.core.height = 2 * pixelsPerUnit;

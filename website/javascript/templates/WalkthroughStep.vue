@@ -38,6 +38,7 @@
             margin: 0;
             padding-top: 0.5rem;
             transition: 0.3s all ease-in-out;
+            font-weight: 400;
         }
     }
 

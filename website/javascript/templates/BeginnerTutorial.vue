@@ -172,10 +172,12 @@
 </style>
 
 <style lang="scss">
-    .container[role="main"] {
-        margin: 0;
-        padding: 0;
-        width: 100%;
+    .walkthrough-body {
+        .container[role="main"] {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
     }
 
     .walkthrough {

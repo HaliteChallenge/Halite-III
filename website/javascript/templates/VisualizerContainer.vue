@@ -25,7 +25,6 @@
 <script>
   import Vue from 'vue'
   import * as api from '../api'
-  import * as libhaliteviz from '../../../libhaliteviz'
   import UploadZone from './UploadZone.vue'
   import Visualizer from './Visualizer.vue'
   import * as utils from '../utils'
@@ -38,35 +37,46 @@
     }
 
     const buffer = game.replay
-    return libhaliteviz.parseReplay(buffer).then((replay) => {
-    let outerContainer = document.getElementById('halitetv-visualizer')
-    outerContainer.innerHTML = ''
-
-    let container = document.createElement('div')
-    document.getElementById('halitetv-visualizer').appendChild(container)
-
-    new Vue({
-      el: container,
-      render: (h) => h(Visualizer, {
-        props: {
-          replay: Object.freeze(replay),
-          game: game.game,
-          makeUserLink: function (user_id) {
-            return `/user?user_id=${user_id}`
-          },
-          getUserProfileImage: function (user_id) {
-            return api.get_user(user_id).then((user) => {
-              return api.make_profile_image_url(user.username)
-            })
-          }
+    return import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
+      .then((libhaliteviz) => {
+        // just for electron
+        if (window && window.process && window.process.type) {
+          libhaliteviz.setAssetRoot('assets/js/')
+        } else {
+          libhaliteviz.setAssetRoot('')
         }
-      }),
-      mounted: function () {
-        visualizer = this.$children[0]
-      }
-    })
-  })
-}
+        return libhaliteviz;
+      }).then((libhaliteviz) => {
+        return libhaliteviz.parseReplay(buffer).then((replay) => {
+          let outerContainer = document.getElementById('halitetv-visualizer')
+          outerContainer.innerHTML = ''
+
+          let container = document.createElement('div')
+          document.getElementById('halitetv-visualizer').appendChild(container)
+
+          new Vue({
+            el: container,
+            render: (h) => h(Visualizer, {
+              props: {
+                replay: Object.freeze(replay),
+                game: game.game,
+                makeUserLink: function (user_id) {
+                  return `/user?user_id=${user_id}`
+                },
+                getUserProfileImage: function (user_id) {
+                  return api.get_user(user_id).then((user) => {
+                    return api.make_profile_image_url(user.username)
+                  })
+                }
+              }
+            }),
+            mounted: function () {
+              visualizer = this.$children[0]
+            }
+          })
+        })
+      });
+  }
 
   export default {
     name: 'visualizer',
@@ -147,7 +157,7 @@
         // verify if the dropzone is not the bot uploader zone
         if (!container || !container.contains(e.target)) {
           e.preventDefault()
-          // clear the current game 
+          // clear the current game
           let outerContainer = document.getElementById('halitetv-visualizer')
           outerContainer.innerHTML = ''
           // play the upload replay

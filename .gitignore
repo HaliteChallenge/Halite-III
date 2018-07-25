@@ -498,3 +498,5 @@ environment/Makefile
 tools/standalone_visualizer/release-builds/*
 
 gcloud_config.json
+
+*.bundle.js

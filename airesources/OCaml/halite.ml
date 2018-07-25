@@ -1,125 +1,128 @@
-(** The type of energies in the game. *)
-type energy = int
-
-(** The type of the dimensions and indices of the map. *)
-type dimension = int
-
-(** The type of directions. *)
-type direction = North | South | East | West
-
-(** The type of locations. *)
-type location = dimension * dimension
+include Units
 
 (** The dropoffs on the map. *)
 module rec Dropoff : sig
   (** The type of dropoff IDs. *)
   type id = Dropoff of int
-  type t = {
-    id : id;            (** The ID of the dropoff. *)
-    location : location (** The location of the dropoff. *)
-  }
-end = Dropoff
+  (** Exception raised when an ID is invalid. *)
+  exception Invalid_id
+  (** The abstract type of dropoffs. *)
+  type t
+  (** Get the ID of a dropoff. *)
+  val id : t -> id
+  (** Get a dropoff from ID. *)
+  val of_id : id -> t
+  (** Get all the dropoffs. *)
+  val all : unit -> t list
+  (** Get the location of a dropoff. *)
+  val location : t -> location
+  (** Get the owner of a dropoff. *)
+  val owner : t -> Player.t
+  (** Get the cell of a dropoff. *)
+  val cell : t -> Cell.t
+  (** Get the energy of a dropoff. *)
+  val energy : t -> energy
+end = HaliteImpl.Dropoff
 
 (** An entity on the map, owned by a player. *)
-module rec Entity : sig
+and Entity : sig
   (** The type of entity IDs. *)
   type id = Entity of int
-  (** The type of entities. *)
-  type t = {
-    id : id;                     (** The ID of the entity. *)
-    mutable location : location; (** The location of the entity. *)
-    mutable energy : energy      (** The energy of the entity. *)
-  }
-end = Entity
+  (** Exception raised when an ID is invalid. *)
+  exception Invalid_id
+  (** The abstract type of entities. *)
+  type t
+  (** Get the ID of an entity. *)
+  val id : t -> id
+  (** Get an entity from ID. *)
+  val of_id : id -> t
+  (** Get all the entities. *)
+  val all : unit -> t list
+  (** Get the location of an entity. *)
+  val location : t -> location
+  (** Get the energy of an entity. *)
+  val energy : t -> energy
+  (** Get the owner of an entity. *)
+  val owner : t -> Player.t
+  (** Get the cell of an entity. *)
+  val cell : t -> Cell.t
+end = HaliteImpl.Entity
 
 (** A player in the game. *)
-module rec Player : sig
+and Player : sig
   (** The type of player IDs. *)
   type id = Player of int
+  (** Exception raised when an ID is invalid. *)
+  exception Invalid_id
   (** The type of players. *)
-  type t = {
-    id : id;
-    factory : location;
-    mutable dropoffs : Dropoff.t list;
-    mutable energy : energy;
-    mutable entities : Entity.id list
-  }
-end = Player
+  type t
+  (** Get the ID of a player. *)
+  val id : t -> id
+  (** Get a player from ID. *)
+  val of_id : id -> t
+  (** Get the current player. *)
+  val current : unit -> t
+  (** Get all the players. *)
+  val all : unit -> t list
+  (** Get the factory location of a player. *)
+  val factory : t -> location
+  (** Get the factory cell of a player. *)
+  val factory_cell : t -> Cell.t
+  (** Get the energy of a player. *)
+  val energy : t -> energy
+  (** Get the dropoffs of a player. *)
+  val dropoffs : t -> Dropoff.t list
+  (** Get the entities of a player. *)
+  val entities : t -> Entity.t list
+end = HaliteImpl.Player
 
 (** A cell on the game map. *)
-module rec Cell : sig
-  type t = {
-    mutable energy : energy;
-    mutable entity : Entity.id option;
-    mutable owner : Player.id option
-  }
-end = Cell
-
-(** The game map. *)
-module Map : sig
-  (** The abstract type of the map. *)
+and Cell : sig
+  (** The abstract type of a cell. *)
   type t
-  (** Create a map. *)
-  val make : dimension -> dimension -> t
-  (** Get the width of the map. *)
-  val width : t -> dimension
-  (** Get the height of the map. *)
-  val height : t -> dimension
-  (** Get the cell type at a location. *)
-  val get_cell : t -> location -> Cell.t
-end = struct
-  type t = {
-    width : dimension;
-    height : dimension;
-    cells : Cell.t array array;
-  }
-  let empty_cell : Cell.t = {energy=0; entity=None; owner=None}
-  let make width height = {
-    width;
-    height;
-    cells=Array.make height (Array.make width empty_cell)
-  }
-  let width {width} = width
-  let height {height} = height
-  let get_cell {cells} (x, y) = cells.(y).(x)
-end
+  (** Get the location of a cell. *)
+  val location : t -> location
+  (** Get the energy of a cell. *)
+  val energy : t -> energy
+  (** Get the entity on a cell. *)
+  val entity : t -> Entity.t option
+  (** Get the owner of a cell. *)
+  val owner : t -> Player.t option
+  (** Get the dropoff on a cell. *)
+  val dropoff : t -> Dropoff.t option
+end = HaliteImpl.Cell
 
-(** The game state. *)
-module State : sig
-  type t = {
-    mutable turn_number : int;                  (** The current turn number *)
-    player_id : Player.id;                      (** The player's ID. *)
-    players : (Player.id, Player.t) Hashtbl.t;  (** The players in the game. *)
-    entities : (Entity.id, Entity.t) Hashtbl.t; (** The entities in the game. *)
-    map : Map.t                                 (** The game map. *)
-  }
-  val curr_player : t -> Player.t               (** Get the current player. *)
-  val get_player : t -> Player.id -> Player.t   (** Get a player by ID. *)
-  val get_entity : t -> Entity.id -> Entity.t   (** Get an entity by ID. *)
-end = struct
-  type t = {
-    mutable turn_number : int;
-    player_id : Player.id;
-    players : (Player.id, Player.t) Hashtbl.t;
-    entities : (Entity.id, Entity.t) Hashtbl.t;
-    map : Map.t
-  }
-  let curr_player {players; player_id} = Hashtbl.find players player_id
-  let get_player {players} id = Hashtbl.find players id
-  let get_entity {entities} id = Hashtbl.find entities id
-end
+(** The game board. *)
+and Board : sig
+  (** Get the width of the board. *)
+  val width : unit -> dimension
+  (** Get the height of the board. *)
+  val height : unit -> dimension
+  (** Get the cell at a location. *)
+  val at : location -> Cell.t
+end = HaliteImpl.Board
 
-(** A command issued by a player. *)
-module rec Command : sig
-  (** The type of a command. *)
-  type t =
-    | Move of Entity.id * direction
-    | Spawn of energy
-    | Dump of Entity.id * energy
-    | Construct of Entity.id
-end = Command
+(** The type of a command. *)
+type command =
+  (** Move an entity in a direction. *)
+  | Move of Entity.t * direction
+  (** Spawn an entity with some energy. *)
+  | Spawn of energy
+  (** Dump some energy from an entity. *)
+  | Dump of Entity.t * energy
+  (** Construct a dropoff with an entity. *)
+  | Construct of Entity.t
 
 (* Halite game constants. *)
-module Constants = struct
-  let entity_cost = 1000
-end
+module Constants : sig
+  (** The cost of an entity. *)
+  val entity_cost : int
+  (** The cost of a dropoff. *)
+  val dropoff_cost : int
+  (** The denominator of the move cost ratio. *)
+  val move_cost_ratio : int
+  (** The denominator of the per-turn mining ratio. *)
+  val mine_ratio : int
+  (** The maximum amount of energy per entity. *)
+  val max_capacity : int
+end = HaliteImpl.Constants

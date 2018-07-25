@@ -89,7 +89,6 @@
 <script>
 import * as api from '../api'
 import * as utils from '../utils'
-import * as libhaliteviz from '../../../libhaliteviz'
 import Visualizer from './Visualizer.vue'
 import BotEditor from './BotEditor.vue'
 import _ from 'lodash'

@@ -38,7 +38,7 @@ private:
     ConnectionFactory<OSConnection> connection_factory; /**< The platform-specific connection factory. */
     Connections connections{};    /**< The current network connections. */
     NetworkingConfig config;      /**< The networking configuration. */
-    const hlt::Halite &game;      /**< The current game. */
+    hlt::Halite &game;            /**< The current game. */
     std::mutex connections_mutex; /**< Mutex used to protect the connections map. */
 
 public:
@@ -49,6 +49,13 @@ public:
      * @param player The player to communicate with.
      */
     void initialize_player(hlt::Player &player);
+
+    /**
+     * Kill a player connection.
+     *
+     * @param player The player whose connection to end.
+     */
+    void kill_player(const hlt::Player &player);
 
     /**
      * Handle the networking for a single frame, obtaining commands from the player if there are any.
@@ -64,7 +71,7 @@ public:
      * @param config The configuration.
      * @param game The Halite game.
      */
-    explicit Networking(NetworkingConfig config, const hlt::Halite &game) :
+    explicit Networking(NetworkingConfig config, hlt::Halite &game) :
             connection_factory(config), config(config), game(game) {};
 };
 

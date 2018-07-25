@@ -1,8 +1,9 @@
 #include <memory>
 
-#include "BotCommandError.hpp"
 #include "BotCommunicationError.hpp"
 #include "Command.hpp"
+#include "CommandError.hpp"
+#include "CommandTransaction.hpp"
 
 /** The JSON key for command type. */
 constexpr auto JSON_TYPE_KEY = "type";
@@ -12,14 +13,14 @@ constexpr auto JSON_ENTITY_KEY = "id";
 constexpr auto JSON_DIRECTION_KEY = "direction";
 /** The JSON key for energy. */
 constexpr auto JSON_ENERGY_KEY = "energy";
-/** The lenth of a type, to convert to a string for serialization */
-constexpr auto TYPE_LENGTH = 1;
-
 
 namespace hlt {
 
 template<class T>
-TransactableCommand<T>::~TransactableCommand() = default;
+void TransactableCommand<T>::add_to_transaction(Player &player, CommandTransaction &transaction) const {
+    // Invoke overload resolution on CommandTransaction::add_command
+    transaction.add_command(player, static_cast<const T &>(*this));
+}
 
 /**
  * Convert a Command to JSON format.
@@ -81,13 +82,31 @@ std::istream &operator>>(std::istream &istream, std::unique_ptr<Command> &comman
 }
 
 /**
+ * Write a Command to bot serial format.
+ * @param ostream The output stream.
+ * @param[out] command The command to write.
+ * @return The output stream.
+ */
+std::ostream &operator<<(std::ostream &ostream, std::unique_ptr<Command> &command) {
+    return ostream << command->to_bot_serial();
+}
+
+/**
  * Convert a MoveCommand to JSON format.
  * @param[out] json The JSON output.
  */
 void MoveCommand::to_json(nlohmann::json &json) const {
-    json = {{JSON_TYPE_KEY,      std::string(TYPE_LENGTH, Name::Move)},
+    json = {{JSON_TYPE_KEY,      to_string(Name::Move)},
             {JSON_ENTITY_KEY,    entity},
             {JSON_DIRECTION_KEY, direction}};
+}
+
+/**
+ * Convert to bot serial format.
+ * @return The serialized command.
+ */
+std::string MoveCommand::to_bot_serial() const {
+    return to_string(Name::Move) + " " + to_string(entity) + " " + to_string(static_cast<char>(direction));
 }
 
 /**
@@ -95,8 +114,16 @@ void MoveCommand::to_json(nlohmann::json &json) const {
  * @param[out] json The JSON output.
  */
 void SpawnCommand::to_json(nlohmann::json &json) const {
-    json = {{JSON_TYPE_KEY,  std::string(TYPE_LENGTH, Name::Spawn)},
+    json = {{JSON_TYPE_KEY,  to_string(Name::Spawn)},
             {JSON_ENERGY_KEY, energy}};
+}
+
+/**
+ * Convert to bot serial format.
+ * @return The serialized command.
+ */
+std::string SpawnCommand::to_bot_serial() const {
+    return to_string(Name::Spawn) + " " + std::to_string(energy);
 }
 
 /**
@@ -104,9 +131,17 @@ void SpawnCommand::to_json(nlohmann::json &json) const {
  * @param[out] json The JSON output.
  */
 void DumpCommand::to_json(nlohmann::json &json) const {
-    json = {{JSON_TYPE_KEY,   std::string(TYPE_LENGTH, Name::Dump)},
+    json = {{JSON_TYPE_KEY,   to_string(Name::Dump)},
             {JSON_ENTITY_KEY, entity},
             {JSON_ENERGY_KEY, energy}};
+}
+
+/**
+ * Convert to bot serial format.
+ * @return The serialized command.
+ */
+std::string DumpCommand::to_bot_serial() const {
+    return to_string(Name::Dump) + " " + to_string(entity) + " " + std::to_string(energy);
 }
 
 /**
@@ -114,8 +149,16 @@ void DumpCommand::to_json(nlohmann::json &json) const {
  * @param[out] json The JSON output.
  */
 void ConstructCommand::to_json(nlohmann::json &json) const {
-    json = {{JSON_TYPE_KEY,   std::string(TYPE_LENGTH, Name::Construct)},
+    json = {{JSON_TYPE_KEY,   to_string(Name::Construct)},
             {JSON_ENTITY_KEY, entity}};
+}
+
+/**
+ * Convert to bot serial format.
+ * @return The serialized command.
+ */
+std::string ConstructCommand::to_bot_serial() const {
+    return to_string(Name::Construct) + " " + to_string(entity);
 }
 
 }

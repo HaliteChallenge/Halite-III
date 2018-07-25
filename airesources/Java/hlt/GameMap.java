@@ -2,25 +2,29 @@ package hlt;
 
 public class GameMap {
 	private int width, height;	
-	private Cell[][] grid;
+	private int[][] grid;
 
-	public GameMap(int w, int h, Cell[][] g) {
+	public GameMap(int w, int h, int[][] g) {
 		width = w;
 		height = h;
 		grid = g;
 	}
 	
-	public int distance(Location f, Location s) {
+	public int computeDistance(Location f, Location s) {
 		int x_dist = Math.abs(f.x - s.x);
 		int y_dist = Math.abs(f.y - s.y);
 		return Math.min(x_dist, width - x_dist) 
 			+ Math.min(y_dist, height - y_dist);
 	}
 
-	public Cell getCell(Location l) { return grid[l.y][l.x]; }
-	public Cell[][] getGrid() { return grid; }
+	public int getHalite(Location l) { return grid[l.y][l.x]; }
+	public int[][] getGrid() { return grid; }
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
+
+	public void setSquare(int x, int y, int halite) { 
+		grid[y][x] = halite;	
+	}
 
 
 	public Location getLocation(Location l, Direction d) {

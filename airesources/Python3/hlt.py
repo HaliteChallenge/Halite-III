@@ -5,7 +5,8 @@ import logging
 from collections import namedtuple
 
 MAX_HALITE = 1000
-SHIP_COST = 1000
+SHIP_COST = 500
+DROPOFF_COST = 2000
 
 Ship = namedtuple('Ship', ['id', 'location', 'halite'])
 Dropoff = namedtuple('Ship', ['id', 'location'])
@@ -98,7 +99,19 @@ class GameMap:
     def __getitem__(self, row):
         return self.cells[row]
 
-    def location_with_offset(self, location, direction):
+    def distance(self, loc1, loc2):
+        x_dist = abs(loc1[0] - loc2[0])
+        y_dist = abs(loc1[1] - loc2[1])
+        return min(x_dist, self.width - x_dist) + \
+            min(y_dist, self.height - y_dist)
+
+    def location_with_offset(self, location, dx, dy):
+        return (
+            (location[0] + dx + self.width) % self.width,
+            (location[1] + dy + self.height) % self.height,
+        )
+
+    def location_with_direction(self, location, direction):
         dx = 0
         dy = 0
 
@@ -111,10 +124,7 @@ class GameMap:
         elif direction == "e":
             dx = 1
 
-        return (
-            (location[0] + dx + self.width) % self.width,
-            (location[1] + dy + self.height) % self.height,
-        )
+        return self.location_with_offset(location, dx, dy)
 
 
 class MoveSet:

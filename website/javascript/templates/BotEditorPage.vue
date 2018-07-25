@@ -31,7 +31,6 @@
 <script>
   import * as api from '../api'
   import * as utils from '../utils'
-  import * as libhaliteviz from '../../../libhaliteviz'
   import BotEditor from './BotEditor.vue'
 
 export default {

@@ -10,8 +10,16 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif(NOT CMAKE_BUILD_TYPE)
 
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -pedantic -Wno-unused-variable")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fno-inline -Wall -Wextra -pedantic -Wno-unused-variable")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fno-inline")
+
+if (MSVC)
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /EHsc")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHsc")
+else()
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -pedantic -Wextra -Wno-unused-variable")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pedantic -Wextra -Wno-unused-variable")
+endif()
 
 # versions of cmake before 3.4 always link with -rdynamic on linux, which breaks static linkage with clang
 # unfortunately travis right now only has cmake 3.2, so have to do this workaround for now
@@ -20,6 +28,7 @@ set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
 include_directories(${CMAKE_SOURCE_DIR}/config)
 include_directories(${CMAKE_SOURCE_DIR}/core)
+include_directories(${CMAKE_SOURCE_DIR}/core/command)
 include_directories(${CMAKE_SOURCE_DIR}/error)
 include_directories(${CMAKE_SOURCE_DIR}/logging)
 include_directories(${CMAKE_SOURCE_DIR}/mapgen)
@@ -42,6 +51,7 @@ add_custom_target(VERSION_CHECK
 set(dirs
     ${CMAKE_SOURCE_DIR}/config
     ${CMAKE_SOURCE_DIR}/core
+    ${CMAKE_SOURCE_DIR}/core/command
     ${CMAKE_SOURCE_DIR}/error
     ${CMAKE_SOURCE_DIR}/logging
     ${CMAKE_SOURCE_DIR}/mapgen
@@ -121,6 +131,9 @@ if (APPLE)
     # No static linkage here - https://stackoverflow.com/questions/5259249/creating-static-mac-os-x-c-build
     target_link_libraries(halite pthread libzstd_static)
     target_link_libraries(halite_test pthread libzstd_static Catch2::Catch)
+elseif(MSVC)
+    target_link_libraries(halite libzstd_static)
+    target_link_libraries(halite_test libzstd_static Catch2::Catch)
 else()
     # On Linux, make sure to link using the whole-archive option
     # See: https://stackoverflow.com/questions/35116327

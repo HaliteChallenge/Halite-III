@@ -51,12 +51,13 @@ struct EntityInfo {
 };
 
 struct Turn {
-    using Entities = std::unordered_map<Entity::id_type, EntityInfo>;
-    std::unordered_map<Player::id_type, std::vector<std::unique_ptr<Command>>> moves;    /**< Mapping from player id to the commands they issued this turn */
-    std::unordered_map<Player::id_type, energy_type> energy;            /**< Mapping from player id to the energy they ended the turn with */
-    std::vector<GameEvent> events;                                      /**< Events occurring this turn (spawns, deaths, etc) for replay */
-    std::vector<CellInfo> cells;                                        /**< Cells that changed on this turn */
-    std::unordered_map<Player::id_type, Entities> entities{};           /**< Current entities and their information. */
+    using Entities = id_map<Entity, EntityInfo>;
+    /** Mapping from player id to the commands they issued this turn */
+    ordered_id_map<Player, std::vector<std::unique_ptr<Command>>> moves;
+    id_map<Player, energy_type> energy;  /**< Mapping from player id to the energy they ended the turn with */
+    std::vector<GameEvent> events;       /**< Events occurring this turn (spawns, deaths, etc) for replay */
+    std::vector<CellInfo> cells;         /**< Cells that changed on this turn */
+    id_map<Player, Entities> entities{}; /**< Current entities and their information. */
 
     /**
      * Convert turn to JSON format.
@@ -77,6 +78,19 @@ struct Turn {
      * @param cells The locations of changed cells
      */
     void add_cells(Map &map, std::unordered_set<Location> changed_cells);
+
+    /**
+     * Move constructor
+     *
+     * Prevents copy construtor from being defined/used, which fixes
+     * compilation errors due to unique_ptr in MSVC when we try to add
+     * another Turn to full_frames.
+     *
+     * https://stackoverflow.com/questions/26115452
+     */
+    Turn(Turn&&) = default;
+
+    Turn() = default;
 };
 
 struct Replay {
@@ -86,7 +100,7 @@ struct Replay {
     static constexpr auto ENGINE_VERSION = HALITE_VERSION;      /**< Version of the game engine */
 
     size_t number_of_players;                                   /**< Number of players in this game */
-    std::unordered_map<Player::id_type, Player> players{};      /**< List of players at start of game, including factory location and initial entities */
+    ordered_id_map<Player, Player> players{};                   /**< List of players at start of game, including factory location and initial entities */
     std::vector<hlt::Turn> full_frames{};                       /**< Turn information: first element = first frame/turn. Length is game_statistics.number_turns */
 
     unsigned int map_generator_seed;                            /**< Seed used in random number generator for map */

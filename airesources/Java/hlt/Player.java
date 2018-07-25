@@ -1,30 +1,37 @@
 package hlt;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.lang.Exception;
 
 public class Player {
 	private int playerID;
-	private int energy;
-	private Location factoryLocation;
-	private HashMap<Location, Entity> entities;
+	private int halite;
+	private Location shipyardLocation;
+	private ArrayList<Ship> ships;
+	private ArrayList<Dropoff> dropoffs;
+
 	
-	public Player(int p, int e, Location f, HashMap<Location, Entity> ent) {
-		playerID = p;
-		energy = e;
-		factoryLocation = f;
-		entities = ent;
+	public Player(int playerID_, int halite_, Location shipyardLocation_, ArrayList<Ship> ships_, ArrayList<Dropoff> dropoffs_) {
+		playerID = playerID_;
+		halite = halite_;
+		shipyardLocation = shipyardLocation_;
+		ships = ships_;
+		dropoffs = dropoffs_;
 	}
 
 	public int getPlayerID() { return playerID; }
-	public int getEnergy() { return energy; }
-	public Location getFactoryLocation() { return factoryLocation; }
-	public HashMap<Location, Entity> getEntities() { return entities; }
+	public int getHalite() { return halite; }
+	public Location getShipyardLocation() { return shipyardLocation; }
+	public ArrayList<Ship> getShips() { return ships; }
+	public ArrayList<Dropoff> getDropoffs() { return dropoffs; }
 
-	// Place entity in our entities hashmap
-	// Accounts for merging of entities
-	public void addEntity(Location l, Entity e) {
-		if(entities.containsKey(l)) entities.get(l).energy += e.energy;	
-		else entities.put(l, e);
+	public void addShip(Ship ship) throws Exception {
+		if(ships.contains(ship)) throw new Exception("Tried to add a duplicate ship to a player!");	
+		else ships.add(ship);
+	}
+	public void addDropoff(Dropoff dropoff) throws Exception {
+		if(dropoffs.contains(dropoff)) throw new Exception("Tried to add a duplicate dropoff to a player!");	
+		else dropoffs.add(dropoff);
 	}
 
 }

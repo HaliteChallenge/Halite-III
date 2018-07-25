@@ -38,6 +38,10 @@ export class Map {
             }
         }
 
+        // Cache old production values so we can scrub backwards in
+        // time when needed
+        this.productionPatches = {};
+
         this.tintMap = new PIXI.particles.ParticleContainer(this.rows * this.cols, {
             vertices: true,
             position: true,
@@ -155,12 +159,33 @@ export class Map {
      * Update the fish display based on the current frame and time.
      * @param owner_grid: grid of owners of clls
      */
-    update(updated_cells) {
+    update(frame, updated_cells, delta) {
         // update cell productions
-        for (let cell_index = 0; cell_index < updated_cells.length; cell_index++) {
-            const cell_info = updated_cells[cell_index];
-            this.productions[cell_info.y][cell_info.x] = cell_info.production;
+        if (delta > 0) {
+            if (!this.productionPatches[frame]) {
+                this.productionPatches[frame] = {};
+            }
+
+            for (let cell_index = 0; cell_index < updated_cells.length; cell_index++) {
+                const cell_info = updated_cells[cell_index];
+                if (!this.productionPatches[frame][cell_info.y]) {
+                    this.productionPatches[frame][cell_info.y] = {};
+                }
+                this.productionPatches[frame][cell_info.y][cell_info.x] =
+                    this.productions[cell_info.y][cell_info.x];
+                this.productions[cell_info.y][cell_info.x] = cell_info.production;
+            }
         }
+        else if (delta < 0) {
+            for (const [ys, row] of Object.entries(this.productionPatches[frame + 1] || {})) {
+                const y = parseInt(ys, 10);
+                for (const [xs, energy] of Object.entries(row)) {
+                    const x = parseInt(xs, 10);
+                    this.productions[y][x] = energy;
+                }
+            }
+        }
+
         // Redraw map cells, both for new production colors and possible resizing due to zooming
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {

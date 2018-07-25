@@ -10,6 +10,9 @@
 /** The internal ID type. */
 using id_value_type = long;
 
+/** Sentinel value. */
+static constexpr id_value_type NONE = -1;
+
 /**
  * Type for IDs, ensuring IDs of different objects are not interchangeable.
  * No accidentally using Entity IDs for Players, or vice versa!
@@ -23,13 +26,19 @@ struct class_id final {
     id_value_type value;
 
     /** Equality test. */
-    friend bool operator==(const class_id &first, const class_id &second) { return first.value == second.value; }
+    friend constexpr bool operator==(const class_id &first, const class_id &second) {
+        return first.value == second.value;
+    }
 
     /** Inequality test. */
-    friend bool operator!=(const class_id &first, const class_id &second) { return !(first == second); }
+    friend constexpr bool operator!=(const class_id &first, const class_id &second) {
+        return !(first == second);
+    }
 
     /** Comparison function. */
-    friend bool operator<(const class_id &first, const class_id &second) { return first.value < second.value; }
+    friend constexpr bool operator<(const class_id &first, const class_id &second) {
+        return first.value < second.value;
+    }
 
     /** Stream input. */
     friend std::istream &operator>>(std::istream &istream, class_id &id) {
@@ -57,10 +66,10 @@ struct class_id final {
     }
 
     /** Default constructor. */
-    class_id() = default;
+    constexpr class_id() = default;
 
     /** Explicit constructor. */
-    explicit class_id(id_value_type value) : value(value) {}
+    constexpr explicit class_id(id_value_type value) : value(value) {}
 };
 
 /**
@@ -74,7 +83,7 @@ public:
     using id_type = class_id<T>;
 
     /** Sentinel value for ID type. */
-    static constexpr id_type None{};
+    static constexpr id_type None{NONE};
 
     /** Instance ID. */
     id_type id;
@@ -92,11 +101,8 @@ public:
     explicit Enumerated(id_type id) : id(id) {}
 
     /** Virtual destructor. */
-    virtual ~Enumerated() = 0;
+    virtual ~Enumerated() = default;
 };
-
-template<class T>
-Enumerated<T>::~Enumerated() = default;
 
 namespace std {
 template<class T>
@@ -113,6 +119,10 @@ struct hash<Enumerated<T>> {
     }
 };
 }
+
+/** Type of ordered maps from ID to arbitrary value. */
+template<class K, class V>
+using ordered_id_map = std::map<typename K::id_type, V>;
 
 /** Type of maps from ID to arbitrary value. */
 template<class K, class V>

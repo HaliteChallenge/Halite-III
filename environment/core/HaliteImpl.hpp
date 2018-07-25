@@ -3,8 +3,10 @@
 
 #include <queue>
 
+#include "CommandTransaction.hpp"
 #include "Halite.hpp"
 #include "Replay.hpp"
+#include "Snapshot.hpp"
 #include "BotError.hpp"
 
 namespace hlt {
@@ -20,7 +22,8 @@ class HaliteImpl final {
      * Initialize the game.
      * @param player_commands The list of player commands.
      */
-    void initialize_game(const std::vector<std::string> &player_commands);
+    void initialize_game(const std::vector<std::string> &player_commands,
+                         const Snapshot &snapshot);
 
     /** Run the game. */
     void run_game();
@@ -41,6 +44,15 @@ class HaliteImpl final {
     void update_player_stats();
 
     /**
+     * Determine if entity owned by given player is in range of another player (their entity, dropoff, or factory) and thus may interact
+     *
+     * param owner_id Id of owner of entity at given location
+     * param entity_location Location of entity we are assessing for an interaction opportunity
+     * return bool Indicator of whether there players are in close range for an interaction (true) or not (false)
+     */
+    bool possible_interaction(const Player::id_type owner_id, const Location entity_location);
+
+    /**
      * Update players' rankings based on their final turn alive, then break ties with production totals in final turn.
      * Function is intended to be called at end of game, and will in place modify the ranking field of player statistics
      * to rank players from winner (1) to last player.
@@ -49,6 +61,19 @@ class HaliteImpl final {
 
     /** Retrieve and process commands, and update the game state for the current turn. */
     void process_turn();
+
+    /** Remove a player from the game. */
+    void kill_player(const Player::id_type &player_id);
+
+    /**
+     * Handle a player command error.
+     * @param offenders The set of players this turn who have caused errors.
+     * @param commands The player command mapping.
+     * @param error The error caused by the player.
+     */
+    void handle_error(std::unordered_set<Player::id_type> &offenders,
+                      ordered_id_map<Player, std::vector<std::unique_ptr<Command>>> &commands,
+                      CommandError error);
 
 public:
     /**

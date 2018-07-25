@@ -26,7 +26,7 @@ Snapshot Snapshot::from_str(const std::string &snapshot) {
     std::istringstream iss{snapshot};
     std::string buf;
 
-    if (!std::getline(iss, buf, ';')) {
+    if (!std::getline(iss, buf, SNAPSHOT_FIELD_DELIMITER)) {
         throw SnapshotError(
                 "EOF while parsing engine version from snapshot",
                 snapshot.size()
@@ -39,39 +39,23 @@ Snapshot Snapshot::from_str(const std::string &snapshot) {
         );
     }
 
-    if (!std::getline(iss, buf, ';')) {
-        throw SnapshotError(
-                "EOF while parsing mapgen parameters from snapshot",
-                snapshot.size()
-        );
-    }
-    std::string mapbuf;
-    std::istringstream mapiss{buf};
-    if (!std::getline(mapiss, mapbuf, ',')) {
-        throw SnapshotError(
-                "EOF while parsing mapgen algorithm",
-                snapshot.size()
-        );
-    }
-    // TODO: parse all mapgen algorithms
-    if (mapbuf != "Fractal Value Noise Tile") {
-        throw SnapshotError(
-                "Unrecognized mapgen algorithm",
-                iss.tellg()
-        );
-    }
+    hlt::mapgen::MapType map_generator;
     dimension_type width;
     dimension_type height;
     unsigned long num_players;
     unsigned int seed;
 
-    mapiss >> width;
-    ignore_delimiter(mapiss, ',', iss.tellg());
-    mapiss >> height;
-    ignore_delimiter(mapiss, ',', iss.tellg());
-    mapiss >> num_players;
-    ignore_delimiter(mapiss, ',', iss.tellg());
-    mapiss >> seed;
+    std::getline(iss, buf, SNAPSHOT_LIST_DELIMITER);
+    std::istringstream maptype{buf};
+    maptype >> map_generator;
+    iss >> width;
+    ignore_delimiter(iss, SNAPSHOT_LIST_DELIMITER, iss.tellg());
+    iss >> height;
+    ignore_delimiter(iss, SNAPSHOT_LIST_DELIMITER, iss.tellg());
+    iss >> num_players;
+    ignore_delimiter(iss, SNAPSHOT_LIST_DELIMITER, iss.tellg());
+    iss >> seed;
+    ignore_delimiter(iss, SNAPSHOT_FIELD_DELIMITER, iss.tellg());
 
     auto map_params = mapgen::MapParameters{
             mapgen::MapType::Fractal,
@@ -81,48 +65,73 @@ Snapshot Snapshot::from_str(const std::string &snapshot) {
             num_players,
     };
 
-    std::unordered_map<Player::id_type, PlayerSnapshot> players;
+    // Parse map
+    std::vector<energy_type> map;
+    for (auto i = 0; i < width * height; i++) {
+        energy_type energy;
+        iss >> energy;
+        map.push_back(energy);
+        if (iss.peek() == SNAPSHOT_LIST_DELIMITER) iss.ignore();
+    }
+    ignore_delimiter(iss, SNAPSHOT_FIELD_DELIMITER, 0);
 
+    std::unordered_map<Player::id_type, PlayerSnapshot> players;
     for (unsigned long i = 0; i < num_players; i++) {
         Player::id_type player_id;
         energy_type energy;
 
         iss >> player_id;
-        ignore_delimiter(iss, ';', 0);
+        ignore_delimiter(iss, SNAPSHOT_FIELD_DELIMITER, 0);
         iss >> energy;
-        ignore_delimiter(iss, ';', 0);
+        ignore_delimiter(iss, SNAPSHOT_FIELD_DELIMITER, 0);
 
-        players[player_id] = PlayerSnapshot{{}, energy, {}};
+        players[player_id] = PlayerSnapshot{energy, {0, 0}, {}, {}};
 
-        // Parse factories
-        while (iss && iss.peek() != ';') {
+        // Parse shipyard
+        {
             dimension_type x, y;
             iss >> x;
-            ignore_delimiter(iss, '-', 0);
+            ignore_delimiter(iss, SNAPSHOT_SUBFIELD_DELIMITER, 0);
             iss >> y;
-            if (iss.peek() == ',') iss.ignore();
-
-            players[player_id].factories.emplace_back(x, y);
+            if (iss.peek() == SNAPSHOT_LIST_DELIMITER) iss.ignore();
+            players[player_id].factory = Location{x, y};
         }
-        ignore_delimiter(iss, ';', 0);
+
+        // Parse dropoffs
+        while (iss && iss.peek() != SNAPSHOT_FIELD_DELIMITER) {
+            Dropoff::id_type dropoff_id;
+            dimension_type x, y;
+            iss >> dropoff_id;
+            ignore_delimiter(iss, SNAPSHOT_SUBFIELD_DELIMITER, 0);
+            iss >> x;
+            ignore_delimiter(iss, SNAPSHOT_SUBFIELD_DELIMITER, 0);
+            iss >> y;
+            if (iss.peek() == SNAPSHOT_LIST_DELIMITER) iss.ignore();
+
+            players[player_id].dropoffs.emplace_back(dropoff_id, Location{x, y});
+        }
+        ignore_delimiter(iss, SNAPSHOT_FIELD_DELIMITER, 0);
 
         // Parse entities
-        while (iss && iss.peek() != ';' && iss.peek() != EOF) {
+        while (iss && iss.peek() != SNAPSHOT_FIELD_DELIMITER && iss.peek() != EOF) {
+            Entity::id_type entity_id;
             dimension_type x, y;
             energy_type energy;
+            iss >> entity_id;
+            ignore_delimiter(iss, SNAPSHOT_SUBFIELD_DELIMITER, 0);
             iss >> x;
-            ignore_delimiter(iss, '-', 0);
+            ignore_delimiter(iss, SNAPSHOT_SUBFIELD_DELIMITER, 0);
             iss >> y;
-            ignore_delimiter(iss, '-', 0);
+            ignore_delimiter(iss, SNAPSHOT_SUBFIELD_DELIMITER, 0);
             iss >> energy;
-            if (iss.peek() == ',') iss.ignore();
+            if (iss.peek() == SNAPSHOT_LIST_DELIMITER) iss.ignore();
 
-            players[player_id].entities.emplace_back(Location{x, y}, energy);
+            players[player_id].entities.emplace_back(entity_id, energy, Location{x, y});
         }
         // Skip ; between players but don't require it at end
-        if (iss) ignore_delimiter(iss, ';', 0);
+        if (iss) ignore_delimiter(iss, SNAPSHOT_FIELD_DELIMITER, 0);
     }
 
-    return Snapshot{map_params, players};
+    return Snapshot{map_params, map, players};
 }
 }

@@ -196,11 +196,12 @@ def update_task(user_id, game_output, files):
         if "snapshots" not in task:
             task["snapshots"] = []
 
-        task["snapshots"].append({
-            "snapshot": game_output["final_snapshot"],
-            "updated_at": current_time,
-        })
+        # task["snapshots"].append({
+        #     "snapshot": game_output["final_snapshot"],
+        #     "updated_at": current_time,
+        # })
 
+    del game_output["final_snapshot"]
     task["game_output"] = game_output
     task["last_updated"] = current_time
     task["retries"] = 0

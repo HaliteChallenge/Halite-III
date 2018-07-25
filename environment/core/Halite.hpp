@@ -4,6 +4,7 @@
 #include "Config.hpp"
 #include "Networking.hpp"
 #include "Store.hpp"
+#include "mapgen/Generator.hpp"
 
 namespace hlt {
 
@@ -38,6 +39,8 @@ class Halite final {
     std::unique_ptr<HaliteImpl> impl; /**< The pointer to implementation. */
 
 public:
+    id_map<Player, std::ostringstream> error_logs; /**< Player error logs. */
+
     /**
      * Constructor for the main game.
      *
@@ -56,23 +59,23 @@ public:
     /**
      * Run the game.
      * @param player_commands The list of player commands.
+     * @param snapshot A snapshot of game state.
      */
-    void run_game(const std::vector<std::string> &player_commands);
-
-    /**
-     * Load a snapshot.
-     * @param snapshot The snapshot.
-     */
-    void load_snapshot(const Snapshot &snapshot);
-
-    /** Remove a player from the game. */
-    void kill_player(const Player::id_type& player_id);
-
-    /** Get a player from the game. Used for writing error logs */
-    const Player& get_player(Player::id_type player_id);
+    void run_game(const std::vector<std::string> &player_commands,
+                  const Snapshot &snapshot);
 
     /** Generate a snapshot string from current game state. */
-    std::string to_snapshot();
+    std::string to_snapshot(const mapgen::MapParameters& map_parameters);
+
+    /**
+     * Add a section to a player's error log.
+     */
+    void log_error_section(Player::id_type id, const std::string& section_name);
+
+    /**
+     * Add a line to this player's error log.
+     */
+    void log_error(Player::id_type id, const std::string& text);
 
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();

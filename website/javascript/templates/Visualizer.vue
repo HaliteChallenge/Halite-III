@@ -177,7 +177,7 @@
                 <span class="toggle-icon chevron"></span>
                 <i class="xline xline-bottom"></i>
                 <div v-for="player in players">
-                    <span :class="`color-${player.player_id}`">{{player.name}}</span>
+                    <span :class="`color-${player.index + 1}`">{{player.name}}</span>
                     has {{player.current_energy}} energy
                 </div>
               </a>
@@ -316,7 +316,6 @@
 <script>
   import Vue from 'vue'
   import * as api from '../api'
-  import * as libhaliteviz from '../../../libhaliteviz'
   import * as utils from '../utils'
   import moment from 'vue-moment'
   import vueSlider from 'vue-slider-component'
@@ -344,19 +343,16 @@
       20: '10x',
     }
 
-  // libhaliteviz.setAssetRoot("/assets/js/");
-  const HaliteVisualizer = libhaliteviz.HaliteVisualizer
-
-  // just for electron
-  if (window && window.process && window.process.type) {
-      libhaliteviz.setAssetRoot('assets/js/')
-  } else {
-      libhaliteviz.setAssetRoot('/assets/js/')
-  }
   const loadGame = (game) => {
-    const buffer = game.replay
-  return libhaliteviz.parseReplay(buffer)
-  }
+    return import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
+      .then((libhaliteviz) => {
+        // just for electron
+        return libhaliteviz
+          .setAssetRoot((window && window.process && window.process.type) ?
+                        'assets/js/' : '')
+          .then(() => libhaliteviz.parseReplay(game.replay))
+      });
+  };
 
   export default {
     name: 'haliteTV',
@@ -472,176 +468,152 @@
         this.isHoliday = false;
       }
 
-      const visualizer = new HaliteVisualizer(this.replay, this.width, this.height)
-      this.getVisualizer = function() {
-        return visualizer
-      }
-      const storedSpeedIndex = sessionStorage.getItem('halite-replaySpeed')
-      if (storedSpeedIndex) {
-        const speedIndex = parseInt(storedSpeedIndex)
-        this.speedIndex = speedIndex
-        const value = Object.keys(speedList)[speedIndex]
-        const label = speedList[value]
-        this.speedLabel = label
-        visualizer.playSpeed = value
-      } else {
-        visualizer.playSpeed = 6
-      }
-      this.stats = visualizer.stats
-
-      visualizer.onUpdate = () => {
-        this.frame = visualizer.frame
-        this.time = visualizer.time
-        this.zoom = visualizer.camera.scale / visualizer.camera.initScale
-        const camera = visualizer.camera
-        this.pan.x = (camera.cols - camera.pan.x) % camera.cols
-        this.pan.y = (camera.rows - camera.pan.y) % camera.rows
-        if (visualizer.currentFrame) {
-          for (const player of this.players) {
-            player.current_energy = visualizer.currentFrame.energy[player.player_id]
+      import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
+        .then((libhaliteviz) => {
+          const visualizer = new libhaliteviz.HaliteVisualizer(this.replay, this.width, this.height)
+          this.getVisualizer = function() {
+            return visualizer
           }
-        }
-      }
-      visualizer.onPlay = () => {
-        this.playing = true
-      }
-      visualizer.onPause = () => {
-        this.playing = false
-      }
-      visualizer.onSelect = (kind, args) => {
-        this.selected.kind = kind
-        this.selected.id = args.id
-        this.selected.owner = args.owner
-        this.selected.x = args.x
-        this.selected.y = args.y
-        this.showObjectPanel = true
-        visualizer.onUpdate()
-        this.$forceUpdate()
-        this.gaData('visualizer', 'click-map-objects', 'gameplay')
-      }
-      visualizer.attach('.game-replay-viewer')
-
-      // play the replay - delay a bit to make sure assets load/are rendered
-      if (this.autoplay) window.setTimeout(function() { visualizer.play() }, 500);
-
-      // action
-      this.playVideo = (e) => {
-        if (visualizer) {
-          if (this.frame >= this.replay.game_statistics.number_turns - 1) {
-            visualizer.frame = 0
-            visualizer.time = 0.0
-            this.frame = 0
-            this.time = 0.0
+          const storedSpeedIndex = sessionStorage.getItem('halite-replaySpeed')
+          if (storedSpeedIndex) {
+            const speedIndex = parseInt(storedSpeedIndex)
+            this.speedIndex = speedIndex
+            const value = Object.keys(speedList)[speedIndex]
+            const label = speedList[value]
+            this.speedLabel = label
+            visualizer.playSpeed = value
+          } else {
+            visualizer.playSpeed = 6
           }
-          visualizer.play()
-          this.gaData('visualizer', 'click-play', 'gameplay')
-        }
-      }
-      this.pauseVideo = (e) => {
-        if (visualizer) {
-          visualizer.pause()
-        }
+          this.stats = visualizer.stats
 
-        this.gaData('visualizer', 'click-pause', 'gameplay')
-      }
-      this.resetView = () => {
-        if (visualizer) {
-          visualizer.camera.reset();
-        }
-      }
-      this.snapshot = () => {
-        window.prompt("Copy the snapshot:", visualizer.snapshot())
-      }
-
-      const changeSpeed = (speed) => {
-        this.speedIndex = speed
-        if (this.speedIndex >= Object.keys(speedList).length) this.speedIndex = 0
-
-        const value = Object.keys(speedList)[this.speedIndex]
-        const label = speedList[value]
-        this.speedLabel = label
-
-        if (visualizer) {
-          visualizer.playSpeed = value
-        }
-
-        this.gaData('visualizer', 'click-speed', 'gameplay')
-
-        sessionStorage.setItem('halite-replaySpeed', this.speedIndex)
-      }
-
-      this.toggleSpeed = (e) => {
-        changeSpeed(this.speedIndex + 1);
-      }
-
-      this.prevFrame = () => {
-        if (visualizer && this.frame > 0) {
-          visualizer.scrub(this.frame + -1, 0)
-        }
-
-        this.gaData('visualizer', 'click-back', 'gameplay')
-      }
-      this.nextFrame = () => {
-        if (visualizer && this.frame < this.replay.game_statistics.number_turns - 1) {
-          visualizer.scrub(this.frame + 1, 0)
-        }
-
-        this.gaData('visualizer', 'click-forward', 'gameplay')
-      }
-      this.changeFrame = (event) => {
-        // waiting for the slider dot finish to move
-        setTimeout(() => {
-          if (visualizer) {
-            visualizer.scrub(this.frame, 0)
+          visualizer.onUpdate = () => {
+            this.frame = visualizer.frame
+            this.time = visualizer.time
+            this.zoom = visualizer.camera.scale / visualizer.camera.initScale
+            const camera = visualizer.camera
+            this.pan.x = (camera.cols - camera.pan.x) % camera.cols
+            this.pan.y = (camera.rows - camera.pan.y) % camera.rows
+            if (visualizer.currentFrame) {
+              for (const player of this.players) {
+                player.current_energy = visualizer.currentFrame.energy[player.player_id]
+              }
+            }
           }
-        }, 200)
+          visualizer.onPlay = () => {
+            this.playing = true
+          }
+          visualizer.onPause = () => {
+            this.playing = false
+          }
+          visualizer.onSelect = (kind, args) => {
+            this.selected.kind = kind
+            this.selected.id = args.id
+            this.selected.owner = args.owner
+            this.selected.x = args.x
+            this.selected.y = args.y
+            this.selected.production = args.production
+            this.showObjectPanel = true
+            visualizer.onUpdate()
+            this.$forceUpdate()
+            this.gaData('visualizer', 'click-map-objects', 'gameplay')
+          }
+          visualizer.attach('.game-replay-viewer')
+          // play the replay - delay a bit to make sure assets load/are rendered
+          if (this.autoplay) {
+            window.setTimeout(function() { visualizer.play() }, 500);
+          }
 
-        this.gaData('visualizer', 'click-slider', 'gameplay')
-      }
+          // action
+          this.playVideo = (e) => {
+            if (visualizer) {
+              if (this.frame >= this.replay.game_statistics.number_turns - 1) {
+                visualizer.frame = 0
+                visualizer.time = 0.0
+                this.frame = 0
+                this.time = 0.0
+              }
+              visualizer.play()
+              this.gaData('visualizer', 'click-play', 'gameplay')
+            }
+          }
+          this.pauseVideo = (e) => {
+            if (visualizer) {
+              visualizer.pause()
+            }
 
-      this.toggleHoliday = function() {
-        if (window.localStorage['holiday'] === undefined || window.localStorage['holiday'] === 'true') {
-          window.localStorage['holiday'] = "false";
-          this.isHoliday = false;
-        }
-        else {
-          window.localStorage['holiday'] = "true";
-           this.isHoliday = true;
-        }
+            this.gaData('visualizer', 'click-pause', 'gameplay')
+          }
+          this.resetView = () => {
+            if (visualizer) {
+              visualizer.camera.reset();
+            }
+          }
+          this.snapshot = () => {
+            window.prompt("Copy the snapshot:", visualizer.snapshot())
+          }
 
-        this.$forceUpdate();
-      };
+          const changeSpeed = (speed) => {
+            this.speedIndex = speed
+            if (this.speedIndex >= Object.keys(speedList).length) this.speedIndex = 0
 
-      // keybinding
-      document.addEventListener('keyup', (e) => {
-        console.log(e.which);
-        const code = e.which;
-        let speed;
-        if (code >= 49 && code <= 58){
-          changeSpeed(code - 48); // subtract 48 from code to get the speed. for example, 49 => 1, 50 => 2 and so on
-        } else if (code == 48){
-          changeSpeed(10);
-        }
-      });
+            const value = Object.keys(speedList)[this.speedIndex]
+            const label = speedList[value]
+            this.speedLabel = label
 
-      // disable text select on safari
-      document.onselectstart = function(){ return false; };
-      this.scaleCanvas = () => {
-        const viewWidth = $('.game-replay-viewer').width()
-        const canvasWidth = 690
-        const canvasHeight = 460
-        let scale = viewWidth/canvasWidth
-        if(viewWidth >= canvasWidth){
-          scale = 1
-        }
-        $('.game-replay-viewer').find('>canvas').css('zoom', scale)
-      }
-      this.scaleCanvas();
-      $(window).on('resize', _.throttle(this.scaleCanvas, 150));
+            if (visualizer) {
+              visualizer.playSpeed = value
+            }
 
-      setTimeout(() => {
-        this.$refs.slider.refresh();
-      }, 2000);
+            this.gaData('visualizer', 'click-speed', 'gameplay')
+
+            sessionStorage.setItem('halite-replaySpeed', this.speedIndex)
+          }
+
+          this.toggleSpeed = (e) => {
+            changeSpeed(this.speedIndex + 1);
+          }
+
+          this.prevFrame = () => {
+            if (visualizer && this.frame > 0) {
+              visualizer.scrub(this.frame + -1, 0)
+            }
+
+            this.gaData('visualizer', 'click-back', 'gameplay')
+          }
+          this.nextFrame = () => {
+            if (visualizer && this.frame < this.replay.game_statistics.number_turns - 1) {
+              visualizer.scrub(this.frame + 1, 0)
+            }
+
+            this.gaData('visualizer', 'click-forward', 'gameplay')
+          }
+          this.changeFrame = (event) => {
+            // waiting for the slider dot finish to move
+            setTimeout(() => {
+              if (visualizer) {
+                visualizer.scrub(this.frame, 0)
+              }
+            }, 200)
+
+            this.gaData('visualizer', 'click-slider', 'gameplay')
+          }
+
+          this.toggleHoliday = function() {
+            if (window.localStorage['holiday'] === undefined || window.localStorage['holiday'] === 'true') {
+              window.localStorage['holiday'] = "false";
+              this.isHoliday = false;
+            }
+            else {
+              window.localStorage['holiday'] = "true";
+              this.isHoliday = true;
+            }
+          }
+
+          setTimeout(() => {
+            this.$refs.slider.refresh();
+          }, 2000);
+        })
     },
     computed: {
       statistics: function () {
@@ -773,7 +745,7 @@
               }
             }
           }
-          const cell = this.replay.production_map.grid[this.selected.x][this.selected.y];
+          const cell = this.replay.production_map.grid[this.selected.y][this.selected.x];
           return {
             energy: cell.energy,
             x: this.selected.x,
@@ -802,10 +774,10 @@
       getPlayers: async function () {
         if (!this.replay) return []
         return this.replay.game_statistics.player_statistics
-                   .map((p, idx) => {
+                   .map((p) => {
                      const player = Object.assign({}, p);
-                     player.name = this.replay.players[idx].name;
-                     player.index = idx;
+                     player.name = this.replay.players[player.player_id].name;
+                     player.index = player.player_id;
                      return player;
                    })
       },

@@ -11,7 +11,7 @@ namespace hlt {
 
 class BaseEvent;
 
-/** Container type for cells, exposed to Replay */
+/** Container type for events, exposed to Replay */
 using GameEvent = std::unique_ptr<BaseEvent>;
 
 /**

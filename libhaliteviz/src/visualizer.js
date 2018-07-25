@@ -1,6 +1,5 @@
 const PIXI = require("pixi.js");
 const $ = require("jquery");
-const extraFilters = require("pixi-extra-filters");
 
 import Ship from "./sprite";
 import {Factory} from "./factory";
@@ -300,10 +299,15 @@ export class HaliteVisualizer {
         };
     }
 
-    attach(containerEl) {
+    attach(containerEl, keyboardEl=null) {
         $(containerEl).append(this.application.view);
+        if (!keyboardEl) {
+            keyboardEl = document.body;
+        }
 
-        this.keyboardControls.attach(document.body);
+        this.keyboardControls.attach(typeof keyboardEl === "string" ?
+                                     document.querySelector(keyboardEl) :
+                                     keyboardEl);
 
         this.update();
         this.application.render();
@@ -376,11 +380,19 @@ export class HaliteVisualizer {
     }
 
     scrub(frame, time, dt=1000/60) {
+        const delta = frame > this.frame ? 1 : -1;
         this.pause();
+
+        for (let f = this.frame + delta; (delta > 0 ? f < frame : f > frame); f += delta) {
+            this.frame = f;
+            this.time = 0.0;
+            this.update(delta);
+        }
+
         this.frame = frame;
         this.time = time;
         if (time === 0.0) {
-            this.update();
+            this.update(delta);
             this.onUpdate();
         }
         this.draw(dt);
@@ -391,7 +403,7 @@ export class HaliteVisualizer {
     // Update the status of the game once per frame. Updating includes processing turn movement, spawning, death, and map ownership
     // Be sure order of events (movement, merging, production calculation, spawning, and death) directly mirrors
     // game engine or visualization will be incorrect.
-    update() {
+    update(delta=1) {
         for (const factory of this.factories) {
             factory.scale = this.camera.scale;
             factory.update();
@@ -403,11 +415,11 @@ export class HaliteVisualizer {
         this.process_entity_commands();
 
         // Spawn entities (info from replay file), then process deaths
-        this.process_entity_events();
+        this.process_entity_events(delta);
 
         // Process map ownership
         if (this.currentFrame) {
-            this.baseMap.update(this.currentFrame.cells);
+            this.baseMap.update(this.frame, this.currentFrame.cells, delta);
         }
     }
 
@@ -422,7 +434,7 @@ export class HaliteVisualizer {
         //     dropoff.update();
         // }
 
-        this.baseMap.update([]);
+        this.baseMap.update(this.frame, [], 0);
 
         if (!this.isPlaying()) {
             this.application.render();
@@ -438,7 +450,8 @@ export class HaliteVisualizer {
         if (!this.currentFrame) return;
 
         for (const [entity_id, entity] of Object.entries(this.entity_dict)) {
-            if (!this.currentFrame.entities[entity.owner][entity_id]) {
+            if (!this.currentFrame.entities[entity.owner] ||
+                !this.currentFrame.entities[entity.owner][entity_id]) {
                 const sprite = this.entity_dict[entity_id];
                 sprite.destroy();
                 delete this.entity_dict[entity_id];
@@ -491,8 +504,9 @@ export class HaliteVisualizer {
      * Read events for the turn from the replay file.
      * This functions will spawn new entities, and create animations for spawning and deaths.
      * Though this function adds animations for deaths, it does not remove dying entities.
+     * @param delta whether are are scrubbing forward or backward through time
      */
-    process_entity_events() {
+    process_entity_events(delta) {
         // TODO: add within frame interpolation
         let delayTime = 0;
         if (!this.currentFrame) return;
@@ -531,31 +545,70 @@ export class HaliteVisualizer {
                         const new_entity = new Ship(this, entity_object);
                         this.entity_dict[event.id] = new_entity;
                         new_entity.attach(this.entityContainer);
+                        // TODO: use new Halite 3 spawn animation
+                        this.animationQueue.push(
+                            new animation.PlanetExplosionFrameAnimation(
+                                event, delayTime, cellSize, this.entityContainer));
                     }
 
-                    // TODO: use new Halite 3 spawn animation
-                    this.animationQueue.push(
-                        new animation.PlanetExplosionFrameAnimation(
-                            event, delayTime, cellSize, this.entityContainer));
                     // Store spawn as command so that entity knows not to mine this turn
+                    if (!this.current_commands[event.owner_id]) {
+                        this.current_commands[event.owner_id] = {};
+                    }
                     this.current_commands[event.owner_id][event.id] = {"type" : "g"};
                 }
                 else if (event.type === "construct") {
                     /// TODO: create new sprite class for dropoffs, construct one, add to list (dict?) of dropoffs
+                    // Temporarily draw as factory
+
+                    if (delta < 0) {
+                        // We are reversing, delete the factory
+
+                        let idx = 0;
+                        for (const dropoff of this.dropoffs) {
+                            if (dropoff.factoryBase.x === event.location.x &&
+                                dropoff.factoryBase.y === event.location.y) {
+                                this.dropoffs.splice(idx, 1);
+                                dropoff.destroy();
+                                break;
+                            }
+                            idx++;
+                        }
+
+                        return;
+                    }
+
                     // temporarily use old animation
                     this.animationQueue.push(
                         new animation.PlanetExplosionFrameAnimation(
                             event, delayTime, cellSize, this.factoryContainer));
-                    // Temporarily draw as factory
-                    const dropoff_base = {"x" : event.location.x, "y" : event.location.y, "owner" : event.owner_id};
-                    const dropoff = new Factory(this, dropoff_base, this.replay.constants,
-                        this.camera.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
-                    this.dropoffs.push(dropoff);
-                    dropoff.attach(this.factoryContainer);
+
+                    // Don't add factory twice (if scrubbing)
+                    let create = true;
+                    for (const dropoff of this.dropoffs) {
+                        if (dropoff.factoryBase.x === event.location.x &&
+                            dropoff.factoryBase.y === event.location.y) {
+                            create = false;
+                            break;
+                        }
+                    }
+
+                    if (create) {
+                        const dropoff_base = {"x" : event.location.x, "y" : event.location.y, "owner" : event.owner_id};
+                        const dropoff = new Factory(this, dropoff_base, this.replay.constants,
+                                                    this.camera.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
+                        this.dropoffs.push(dropoff);
+                        dropoff.attach(this.factoryContainer);
+                    }
 
                     // delete entity sprite as it is no longer a ship
-                    this.entity_dict[event.id].destroy();
-                    delete this.entity_dict[event.id];
+                    // entity might not exist if this is the zero
+                    // frame (which just records prior game state,
+                    // e.g. from a snapshot)
+                    if (this.entity_dict[event.id]) {
+                        this.entity_dict[event.id].destroy();
+                        delete this.entity_dict[event.id];
+                    }
                 }
                 else {
                     console.log(event);

@@ -7,10 +7,10 @@ export const BASE_VISUALIZER_HEIGHT = 700;
 export const STATS_SIZE = 20;
 export const CELL_SIZE = 1;
 
-export const PLAYER_COLORS = [0xff0000, 0x00FF00, 0xBA55D3, 0xffae42,
-                                0xFF69B4, 0xbd00db, 0xFFFF00, 0x009900,
-                                0xFF8C00, 0xff0000, 0x00FF00, 0xBA55D3,
-                                0xffae42, 0xbd00db, 0xFF69B4, 0xFFFF00];
+export const PLAYER_COLORS = [0x00FF00, 0xBA55D3, 0xffae42, 0xFF69B4,
+                              0xff0000, 0xbd00db, 0xFFFF00, 0x009900,
+                              0xFF8C00, 0xff0000, 0x00FF00, 0xBA55D3,
+                              0xffae42, 0xbd00db, 0xFF69B4, 0xFFFF00];
 export const EXPLOSION_COLOR = 0xb7b7b7;
 export const PLANET_COLOR = 0xb7b7b7;
 export const FISH_COLOR = 0xFFA500;
@@ -21,7 +21,7 @@ export const FACTORY_BASE_COLOR = 0xFFFFFF;
 export const FACTORY_BASE_ALPHA = 0.8;
 
 
-export const MAX_PRODUCTION = 255;
+export const MAX_PRODUCTION = 1000;
 export const MAP_COLOR_LIGHT = 0x00FFFF;
 export const MAP_COLOR_MEDIUM = 0xFF00FF;
 export const MAP_COLOR_DARK = 0xFFFF00;
@@ -44,13 +44,14 @@ export let PLANET_EXPLOSION_SHEET = null;
 export let SHIP_EXPLOSION_SHEET = null;
 
 
-function loadSpritesheet(meta, textureImage, onload) {
-    const texture = PIXI.BaseTexture.fromImage(textureImage);
-    const sheet = new PIXI.Spritesheet(texture, meta);
-    sheet.parse(() => {
-        onload(sheet);
+function loadSpritesheet(meta, textureImage) {
+    return new Promise((resolve) => {
+        const texture = PIXI.BaseTexture.fromImage(textureImage);
+        const sheet = new PIXI.Spritesheet(texture, meta);
+        sheet.parse(() => {
+            resolve(sheet);
+        });
     });
-    return sheet;
 }
 
 /**
@@ -77,15 +78,18 @@ export function setAssetRoot(path) {
 
     FISH_IMAGE = ASSET_ROOT + require("../assets/fish.png");
 
-    PLANET_EXPLOSION_SHEET = loadSpritesheet(
-        require("../assets/planet-explosion.json"),
-        ASSET_ROOT + require("../assets/planet-explosion.png"),
-        () => {}
-    );
-
-    SHIP_EXPLOSION_SHEET = loadSpritesheet(
-        require("../assets/ship-explosion.json"),
-        ASSET_ROOT + require("../assets/ship-explosion.png"),
-        () => {}
-    );
+    return Promise.all([
+        loadSpritesheet(
+            require("../assets/planet-explosion.json"),
+            ASSET_ROOT + require("../assets/planet-explosion.png"),
+        ).then((sheet) => {
+            PLANET_EXPLOSION_SHEET = sheet;
+        }),
+        loadSpritesheet(
+            require("../assets/ship-explosion.json"),
+            ASSET_ROOT + require("../assets/ship-explosion.png"),
+        ).then((sheet) => {
+            SHIP_EXPLOSION_SHEET = sheet;
+        }),
+    ]);
 }
