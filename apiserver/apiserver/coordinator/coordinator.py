@@ -139,8 +139,6 @@ def upload_game():
         game_id = store_game_results(conn, game_output, stats,
                                      replay_key, bucket_class,
                                      users, challenge)
-        # Store game stats in database
-        store_game_stats(conn, game_output, stats, game_id, users)
         # Update rankings
         if not challenge:
             update_rankings(conn, users)
@@ -215,6 +213,7 @@ def store_game_results(conn, game_output, stats, replay_key, bucket_class,
         time_played=sqlalchemy.sql.func.NOW(),
         replay_bucket=bucket_class,
         challenge_id=challenge,
+        stats=stats,
     )).inserted_primary_key[0]
 
     # Initialize the game view stats
@@ -278,9 +277,9 @@ def store_challenge_results(conn, users, challenge, stats):
         if len(users) == 2:
             points += 2
 
+        # TODO: decide on interesting stats for challenges
         if user["player_tag"] in stats.players:
-            ships_produced = stats.players[user["player_tag"]].ships_produced
-            attacks_made = stats.players[user["player_tag"]].attacks_total
+            ships_produced = attacks_made = 0
         else:
             ships_produced = attacks_made = 0
 
@@ -308,32 +307,6 @@ def store_challenge_results(conn, users, challenge, stats):
             finished=sqlalchemy.sql.func.now(),
             winner=winner["user_id"],
         ).where(model.challenges.c.id == challenge))
-
-
-def store_game_stats(conn, game_output, stats, game_id, users):
-    """
-    Store additional game stats into database.
-
-    :param game_output: The JSON output of the Halite game environment.
-    :param game_id: ID of the current match in game table
-    :param users: The list of user objects for this game.
-    :return:
-    """
-    # Store game stats in database
-    conn.execute(model.game_stats.insert().values(
-        game_id=game_id,
-        turns_total=stats.turns_total,
-    ))
-
-    # Use player_tag to get the correct user_id from replay
-    for user in users:
-        player_tag = user["player_tag"]
-        if player_tag in stats.players:
-            conn.execute(model.game_bot_stats.insert().values(
-                game_id=game_id,
-                user_id=user["user_id"],
-                bot_id=user["bot_id"],
-            ))
 
 
 def decode_replay(replay_file_obj):
@@ -370,14 +343,7 @@ def parse_replay(replay):
     """
     if replay is None:
         return None
-
-    stats = GameStat(replay["number_of_players"])
-    stats.turns_total = len(replay['full_frames']) - 1
-    # TODO: compute and record interesting stats
-    for player_tag in stats.players.keys():
-        # TODO: compute and record new interesting stats
-        pass
-
+    stats = replay["game_statistics"]
     return stats
 
 

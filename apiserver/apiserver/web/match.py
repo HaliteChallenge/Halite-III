@@ -107,11 +107,8 @@ def list_matches_helper(offset, limit, participant_clause,
             model.games.c.map_height,
             model.games.c.time_played,
             model.games.c.challenge_id,
-            model.game_stats.c.turns_total,
-        ]).select_from(model.games.outerjoin(
-            model.game_stats,
-            (model.games.c.id == model.game_stats.c.game_id)
-        )).where(
+            model.games.c.stats,
+        ]).select_from(model.games).where(
             where_clause &
             sqlalchemy.sql.exists(
                 model.game_participants.select(
@@ -141,7 +138,7 @@ def list_matches_helper(offset, limit, participant_clause,
                 "replay": match["replay_name"],
                 "replay_class": match["replay_bucket"],
                 "time_played": match["time_played"],
-                "turns_total": match["turns_total"],
+                "turns_total": match["stats"]["number_turns"] if match["stats"] else None,
                 "challenge_id": match["challenge_id"],
                 "players": {},
             }
@@ -172,7 +169,6 @@ def list_matches():
         "game_id": model.games.c.id,
         "time_played": model.games.c.time_played,
         "views_total": model.game_view_stats.c.views_total,
-        "turns_total": model.game_stats.c.turns_total,
         "challenge_id": model.games.c.challenge_id,
     }, ["timed_out"])
 
