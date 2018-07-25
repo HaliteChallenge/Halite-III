@@ -123,7 +123,7 @@ const showGame = (game) => {
       if (window && window.process && window.process.type) {
         libhaliteviz.setAssetRoot('assets/js/')
       } else {
-        libhaliteviz.setAssetRoot('/assets/js/')
+        libhaliteviz.setAssetRoot('')
       }
       return libhaliteviz;
     }).then((libhaliteviz) => {

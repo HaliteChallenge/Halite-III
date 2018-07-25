@@ -106,7 +106,7 @@ export default class Camera {
             for (const ship of Object.values(this.visualizer.entity_dict)) {
                 if (Math.floor(ship.x) === worldX &&
                     Math.floor(ship.y) === worldY) {
-                    this.visualizer.onSelect("ship", {
+                    this.visualizer.onSelect.dispatch("ship", {
                         owner: ship.owner,
                         id: ship.id,
                     });
@@ -114,7 +114,7 @@ export default class Camera {
                 }
             }
             if (!selected) {
-                this.visualizer.onSelect("point", {
+                this.visualizer.onSelect.dispatch("point", {
                     x: worldX,
                     y: worldY,
                 });
