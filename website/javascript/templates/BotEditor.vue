@@ -751,6 +751,7 @@ export default {
   bottom: 1em;
   left: 0;
   right: 0;
+  z-index: 99999999;
 
   font-size: 1.2em;
 
