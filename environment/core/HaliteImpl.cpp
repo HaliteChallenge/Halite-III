@@ -415,7 +415,8 @@ void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
         const auto distance = static_cast<long>(std::distance(player_commands.begin(), position));
         const auto commands_begin = player_commands.begin() + std::max(0L, distance - COMMAND_CONTEXT_LINES);
         const auto commands_end = player_commands.begin() +
-                std::min(static_cast<long>(player_commands.size()), distance + COMMAND_CONTEXT_LINES + 1);
+                                  std::min(static_cast<long>(player_commands.size()),
+                                           distance + COMMAND_CONTEXT_LINES + 1);
         for (auto iterator = commands_begin; iterator != commands_end; iterator++) {
             auto number = std::distance(player_commands.begin(), iterator);
             auto marker = iterator == position ? ">>> " : "    ";
@@ -428,7 +429,7 @@ void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
     auto position = find_position(faulty);
     auto distance = std::distance(player_commands.begin(), position);
     game.logs.log(player_id, "At command " + std::to_string(distance + 1) + " of " +
-                              std::to_string(player_commands.size()) + ":");
+                  std::to_string(player_commands.size()) + ":");
     log_context(position);
 
     // If there is a context, log the context.

@@ -97,7 +97,7 @@ UnixConnection::~UnixConnection() noexcept {
  */
 void UnixConnection::send_string(const std::string &message) {
     auto length = message.length();
-    Logging::log([length](){ return "Sending message with length " + std::to_string(length); }, Logging::Level::Debug);
+    Logging::log([length]() { return "Sending message with length " + std::to_string(length); }, Logging::Level::Debug);
     auto message_ptr = message.c_str();
     auto chars_remaining = static_cast<size_t>(length);
 

@@ -60,7 +60,7 @@ public:
                   const Snapshot &snapshot);
 
     /** Generate a snapshot string from current game state. */
-    std::string to_snapshot(const mapgen::MapParameters& map_parameters);
+    std::string to_snapshot(const mapgen::MapParameters &map_parameters);
 
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();

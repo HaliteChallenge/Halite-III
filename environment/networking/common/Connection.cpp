@@ -22,10 +22,10 @@ std::string BaseConnection::read_trailing_input() {
         try {
             result += get_string();
             result += "\n";
-        } catch (const TimeoutError& err) {
+        } catch (const TimeoutError &err) {
             result += err.remaining_input;
             break;
-        } catch (const NetworkingError& err) {
+        } catch (const NetworkingError &err) {
             result += err.remaining_input;
             break;
         } catch (...) {
