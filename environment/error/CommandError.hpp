@@ -318,6 +318,55 @@ public:
     }
 };
 
+/**
+ * Error for when a player causes their own entities to collide.
+ * @tparam Command The type of the command.
+ */
+template<class Command>
+class SelfCollisionError : public BaseCommandError {
+private:
+    const Command &_command;                     /** The command that caused the error. */
+
+public:
+    const Location cell;                         /**< The location of the collision. */
+    const std::vector<Entity::id_type> entities; /**< The entities that collided. */
+
+    /**
+     * Get the command that caused the error.
+     * @return The command.
+     */
+    const Command &command() const override { return _command; }
+
+
+    /**
+     * Get a message for the player log.
+     * @return The message.
+     */
+    std::string log_message() const override;
+
+    /**
+     * Get a message printed immediately before the context if there is any.
+     * @return The message.
+     */
+    std::string context_message() const override {
+        return "Other commands that placed an entity on this cell:";
+    }
+
+    /**
+     * Construct SelfCollisionError from player, command, context, cell, and entities.
+     * @param player The player.
+     * @param command The command.
+     * @param context The context.
+     * @param cell The cell of the collision.
+     * @param entities The entities that collided.
+     * @param ignored Whether this error was ignored by the engine.
+     */
+    SelfCollisionError(Player::id_type player, const Command &command, ErrorContext context, Location cell,
+                       std::vector<Entity::id_type> entities, bool ignored = false) :
+            BaseCommandError(player, std::move(context), ignored), _command(command), cell(cell),
+            entities(std::move(entities)) {}
+};
+
 }
 
 #endif // COMMANDERROR_HPP

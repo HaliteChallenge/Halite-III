@@ -30,6 +30,7 @@ int main(int argc, char *argv[]) {
     SwitchArg print_constants_switch("", "print-constants", "Print out the default constants and exit.", cmd, false);
     SwitchArg no_compression_switch("", "no-compression", "Disables compression for output files.", cmd, false);
     SwitchArg json_results_switch("", "results-as-json", "Prints game results as JSON at end.", cmd, false);
+    SwitchArg strict_switch("", "strict", "Enables strict error reporting mode.", cmd, false);
     ValueArg<unsigned long> players_arg("n", "players", "Create a map that will accommodate n players.", false, 1,
                                         "positive integer", cmd);
     ValueArg<hlt::dimension_type> width_arg("", "width", "The width of the map.", false,
@@ -73,6 +74,10 @@ int main(int argc, char *argv[]) {
 
     if (turn_limit_arg.isSet()) {
         constants.MAX_TURNS = turn_limit_arg.getValue();
+    }
+
+    if (strict_switch.isSet()) {
+        constants.STRICT_ERRORS = true;
     }
 
     // Set the random seed
@@ -206,7 +211,7 @@ int main(int argc, char *argv[]) {
                 log_file.write(error_log.c_str(), error_log.size());
 
                 Logging::log("Player " + to_string(player_id) + " has log output. Writing a log at " + log_filepath,
-                             Logging::Level::Warning);
+                             Logging::Level::Info);
             }
         }
 

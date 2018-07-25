@@ -187,6 +187,24 @@ void HaliteImpl::process_turn() {
         if (transaction.check()) {
             // All commands are successful.
             transaction.commit();
+            if (Constants::get().STRICT_ERRORS) {
+                if (!offenders.empty()) {
+                    std::ostringstream stream;
+                    stream << "Command processing failed for players: ";
+                    for (auto iterator = offenders.begin(); iterator != offenders.end(); iterator++) {
+                        stream << *iterator;
+                        if (std::next(iterator) != offenders.end()) {
+                            stream << ", ";
+                        }
+                    }
+                    stream << ". Aborting due to strict error check.";
+                    Logging::log(stream.str(), Logging::Level::Error);
+                    game.turn_number = Constants::get().MAX_TURNS;
+                    return;
+                }
+            } else {
+                assert(offenders.empty());
+            }
             // Add player commands to replay and note players still alive
             game.replay.full_frames.back().moves = std::move(commands);
             break;

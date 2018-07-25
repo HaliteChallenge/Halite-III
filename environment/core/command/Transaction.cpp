@@ -145,6 +145,8 @@ void MoveTransaction::commit() {
     auto cost = Constants::get().MOVE_COST_RATIO;
     // Map from destination location to all the entities that want to go there.
     std::unordered_map<Location, std::vector<Entity::id_type>> destinations;
+    /** Map from entity to the command that caused it to move. */
+    id_map<Entity, std::reference_wrapper<const MoveCommand>> causes;
     // Lift each entity that is moving from the grid.
     for (auto &[player_id, moves] : commands) {
         auto &player = store.get_player(player_id);
@@ -157,9 +159,10 @@ void MoveTransaction::commit() {
             if (entity.energy < required) {
                 // Entity does not have enough energy, ignore command.
                 error_generated<InsufficientEnergyError<MoveCommand>>(player_id, command, entity.energy,
-                                                                      required, true);
+                                                                      required, !Constants::get().STRICT_ERRORS);
                 continue;
             }
+            causes.emplace(command.entity, command);
             // Decrease the entity's energy.
             entity.energy -= required;
             // Remove the entity from its source.
@@ -189,12 +192,29 @@ void MoveTransaction::commit() {
         if (entities.size() > MAX_ENTITIES_PER_CELL) {
             // Destroy all interested entities and collect them in replay info
             std::vector<Entity::id_type> collision_ids;
+            id_map<Player, std::vector<Entity::id_type>> self_collisions;
+            id_map<Player, std::deque<std::reference_wrapper<const MoveCommand>>> self_collision_commands;
             for (auto &entity_id : entities) {
-                collision_ids.push_back(entity_id);
-                // Dump the energy.
                 auto &entity = store.get_entity(entity_id);
+                collision_ids.push_back(entity_id);
+                self_collisions[entity.owner].emplace_back(entity_id);
+                if (auto cause = causes.find(entity_id); cause != causes.end()) {
+                    self_collision_commands[entity.owner].emplace_back(cause->second);
+                }
+                // Dump the energy.
                 dump_energy(store, entity, cell, entity.energy);
                 store.delete_entity(entity_id);
+            }
+            for (const auto &[player_id, self_collision_entities] : self_collisions) {
+                if (self_collision_entities.size() > MAX_ENTITIES_PER_CELL) {
+                    auto &commands = self_collision_commands[player_id];
+                    const MoveCommand &first = commands.front();
+                    commands.pop_front();
+                    const ErrorContext context{commands.begin(), commands.end()};
+                    error_generated<SelfCollisionError<MoveCommand>>(player_id, first, context, destination,
+                                                                     self_collision_entities,
+                                                                     !Constants::get().STRICT_ERRORS);
+                }
             }
             event_generated<CollisionEvent>(destination, collision_ids);
             cell_updated(destination);
@@ -257,6 +277,9 @@ void SpawnTransaction::commit() {
                 entity_updated(entity.id);
                 event_generated<SpawnEvent>(player.factory, energy, player.id, entity.id);
             } else {
+                error_generated<SelfCollisionError<SpawnCommand>>(player_id, spawn, ErrorContext(), player.factory,
+                                                                  std::vector<Entity::id_type>{cell.entity},
+                                                                  !Constants::get().STRICT_ERRORS);
                 event_generated<CollisionEvent>(player.factory, std::vector<Entity::id_type>{cell.entity});
                 // There is a collision, destroy the existing.
                 store.get_player(store.get_entity(cell.entity).owner).remove_entity(cell.entity);

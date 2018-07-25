@@ -16,7 +16,8 @@ namespace hlt {
  * @param constants The constants.
  */
 void to_json(nlohmann::json &json, const Constants &constants) {
-    json = {FIELD_TO_JSON(MAX_TURNS),
+    json = {FIELD_TO_JSON(STRICT_ERRORS),
+            FIELD_TO_JSON(MAX_TURNS),
             FIELD_TO_JSON(MAX_PLAYERS),
             FIELD_TO_JSON(DEFAULT_MAP_WIDTH),
             FIELD_TO_JSON(DEFAULT_MAP_HEIGHT),
@@ -40,7 +41,8 @@ void to_json(nlohmann::json &json, const Constants &constants) {
  * @param[out] constants The decoded constants.
  */
 void from_json(const nlohmann::json &json, Constants &constants) {
-    constants = {FIELD_FROM_JSON(MAX_TURNS),
+    constants = {FIELD_FROM_JSON(STRICT_ERRORS),
+                 FIELD_FROM_JSON(MAX_TURNS),
                  FIELD_FROM_JSON(MAX_PLAYERS),
                  FIELD_FROM_JSON(DEFAULT_MAP_WIDTH),
                  FIELD_FROM_JSON(DEFAULT_MAP_HEIGHT),
