@@ -508,7 +508,7 @@ export default {
           this.visualizer.destroy()
         }
 
-        this.visualizer = new libhaliteviz.HaliteVisualizer(replay, width, width)
+        this.visualizer = new libhaliteviz.EmbeddedVisualizer(replay, width, width)
         this.visualizer.attach('.game_replay_viewer', '.game_replay_viewer')
         this.visualizer.play()
         this.add_console_text("Starting replay.\n")
