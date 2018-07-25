@@ -20,6 +20,7 @@ void dump_energy(Store &store, Entity &entity, Cell &cell, energy_type energy) {
     if (cell.owner == Player::None) {
         // Just dump directly onto the cell.
         cell.energy += energy;
+        store.map_total_energy += energy;
     } else if (cell.owner == entity.owner) {
         // The owner gets all the energy.
         store.get_player(entity.owner).energy += energy;
@@ -108,6 +109,7 @@ void ConstructTransaction::commit() {
             // Mark as owned, clear contents of cell
             cell.owner = player_id;
             player.dropoffs.emplace_back(store.new_dropoff(location));
+            store.map_total_energy -= cell.energy;
             cell.energy = 0;
             cell.entity = Entity::None;
             event_generated<ConstructionEvent>(location, player_id, command.entity);
@@ -282,7 +284,10 @@ void SpawnTransaction::commit() {
                                                                   !Constants::get().STRICT_ERRORS);
                 event_generated<CollisionEvent>(player.factory, std::vector<Entity::id_type>{cell.entity});
                 // There is a collision, destroy the existing.
-                store.get_player(store.get_entity(cell.entity).owner).remove_entity(cell.entity);
+                auto &entity = store.get_entity(cell.entity);
+                auto &player = store.get_player(entity.owner);
+                player.energy += entity.energy;
+                player.remove_entity(cell.entity);
                 store.delete_entity(cell.entity);
                 cell.entity = Entity::None;
             }
