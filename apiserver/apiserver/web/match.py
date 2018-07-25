@@ -43,6 +43,7 @@ def get_match_helper(match_id):
             model.games.c.map_height,
             model.games.c.time_played,
             model.games.c.challenge_id,
+            model.games.c.stats,
         ]).where(
             model.games.c.id == match_id
         )).first()
@@ -57,6 +58,7 @@ def get_match_helper(match_id):
             "replay_class": match["replay_bucket"],
             "time_played": match["time_played"],
             "challenge_id": match["challenge_id"],
+            "stats": match["stats"],
             "players": {}
         }
         for row in query.fetchall():
@@ -140,6 +142,7 @@ def list_matches_helper(offset, limit, participant_clause,
                 "time_played": match["time_played"],
                 "turns_total": match["stats"]["number_turns"] if match["stats"] else None,
                 "challenge_id": match["challenge_id"],
+                "stats": match["stats"],
                 "players": {},
             }
 
