@@ -39,7 +39,6 @@ void Networking::handle_player_error(Player::id_type player, std::string receive
         game.logs.log(player, errors);
     }
 }
-}
 
 /**
  * Launch the bot for a player, send the initial game information to the player, and update its name.

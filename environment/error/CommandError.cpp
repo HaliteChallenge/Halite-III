@@ -8,16 +8,22 @@ namespace hlt {
  * @return The direction as a string.
  */
 std::string direction_to_string(Direction direction) {
+    std::string result;
     switch (direction) {
     case Direction::North:
-        return "north";
+        result = "north";
+        break;
     case Direction::South:
-        return "south";
+        result = "south";
+        break;
     case Direction::East:
-        return "east";
+        result = "east";
+        break;
     case Direction::West:
-        return "west";
+        result = "west";
+        break;
     }
+    return result;
 }
 
 /**
