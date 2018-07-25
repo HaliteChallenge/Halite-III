@@ -33,6 +33,12 @@ struct Logging {
      */
     static Level level;
 
+    /** Sentinel turn number for the initialization phase. */
+    static constexpr long init_turn = -1;
+
+    /** Sentinel turn number for after the game ended. */
+    static constexpr long ended = -2;
+
     /** The current turn number. */
     static long turn_number;
 
@@ -55,7 +61,7 @@ struct Logging {
      * Set the turn number.
      * @param turn_number The turn number.
      */
-    static void set_turn_number(unsigned long turn_number);
+    static void set_turn_number(long turn_number);
 
     /** Remove the turn number. */
     static void remove_turn_number();

@@ -1,8 +1,8 @@
 #ifndef HALITE_H
 #define HALITE_H
 
-#include "Config.hpp"
 #include "Networking.hpp"
+#include "PlayerLog.hpp"
 #include "Store.hpp"
 #include "mapgen/Generator.hpp"
 
@@ -27,9 +27,6 @@ class Halite final {
     GameStatistics &game_statistics;  /**< The statistics of the game. */
     Replay &replay;                   /**< Replay instance to collect info for visualizer. */
 
-    /** Configuration. */
-    Config config;                    /**< The game configuration. */
-
     /** Friend classes have full access to game state. */
     friend class net::Networking;
 
@@ -39,19 +36,17 @@ class Halite final {
     std::unique_ptr<HaliteImpl> impl; /**< The pointer to implementation. */
 
 public:
-    id_map<Player, std::ostringstream> error_logs; /**< Player error logs. */
+    PlayerLogs logs;                  /**< The player logs. */
 
     /**
      * Constructor for the main game.
      *
-     * @param config The configuration options for the game.
      * @param map The game map.
      * @param networking_config The networking configuration.
      * @param game_statistics The game statistics to use.
      * @param replay The game replay to use.
      */
-    Halite(const Config &config,
-           Map &map,
+    Halite(Map &map,
            const net::NetworkingConfig &networking_config,
            GameStatistics &game_statistics,
            Replay &replay);
@@ -66,16 +61,6 @@ public:
 
     /** Generate a snapshot string from current game state. */
     std::string to_snapshot(const mapgen::MapParameters& map_parameters);
-
-    /**
-     * Add a section to a player's error log.
-     */
-    void log_error_section(Player::id_type id, const std::string& section_name);
-
-    /**
-     * Add a line to this player's error log.
-     */
-    void log_error(Player::id_type id, const std::string& text);
 
     /** Default destructor is defined where HaliteImpl is complete. */
     ~Halite();
