@@ -230,7 +230,8 @@ def hackathon_total_ranked_users_query(hackathon_id):
         ).join(
             users,
             (bots.c.user_id == users.c.id) &
-            (users.c.is_email_good == True)
+            (users.c.is_email_good == True) &
+            (users.c.is_active == True)
         )
     ).where(bots.c.games_played > 0)
 
