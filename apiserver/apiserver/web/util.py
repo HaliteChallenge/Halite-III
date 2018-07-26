@@ -57,6 +57,9 @@ def validate_api_key(api_key):
         if not user:
             return None
 
+        if not user["is_active"]:
+            raise util.APIError(403, message="User is disabled.")
+
         if config.api_key_context.verify(api_key, user["api_key_hash"]):
             return user
 

@@ -49,10 +49,7 @@ def ranked_bots_query(alias="ranked_bots"):
     """
     Builds a query that ranks all bots.
 
-    This is a function in case you need this as a subquery multiple times,
-    and would like to avoid reusing the same SQL variable.
-
-    Unfortunately, MySQL does not support SQL variables in views.
+    This is a function in case you need this as a subquery multiple times.
     """
     return sqlalchemy.sql.select([
         bots.c.user_id,
@@ -68,7 +65,13 @@ def ranked_bots_query(alias="ranked_bots"):
         sqlalchemy.sql.func.rank().over(
             order_by=bots.c.score.desc()
         ).label("bot_rank"),
-    ]).select_from(bots).order_by(bots.c.score.desc()).alias(alias)
+    ]).select_from(
+        bots.join(users)
+    ).where(
+        users.c.is_active == True
+    ).order_by(
+        bots.c.score.desc()
+    ).alias(alias)
 
 
 def hackathon_ranked_bots_query(hackathon_id,
