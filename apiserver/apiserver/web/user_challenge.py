@@ -97,7 +97,8 @@ def create_challenge(intended_user, *, user_id):
             ]).select_from(
                 model.users
             ).where(
-                model.users.c.id.in_(opponents)
+                model.users.c.id.in_(opponents) &
+                model.users.c.is_active == True
             )
         ).fetchall()]
 
