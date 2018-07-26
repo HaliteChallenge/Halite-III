@@ -91,10 +91,12 @@ def hackathon_ranked_bots_query(hackathon_id,
         hackathon_snapshot.c.games_played,
         hackathon_snapshot.c.version_number,
         hackathon_snapshot.c.language,
+        users.c.is_active,
     ]).select_from(
-        hackathon_snapshot
+        hackathon_snapshot.join(users, hackathon_snapshot.c.user_id == users.c.id)
     ).where(
-        hackathon_snapshot.c.hackathon_id == hackathon_id
+        (hackathon_snapshot.c.hackathon_id == hackathon_id) &
+        (users.c.is_active == True)
     ).order_by(hackathon_snapshot.c.score.desc()).alias("temptable")
 
     return sqlalchemy.sql.select([
