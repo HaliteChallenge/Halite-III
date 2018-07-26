@@ -33,6 +33,7 @@ const css = `
 }
 
 .embedded-toolbar {
+    display: flex;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -41,6 +42,10 @@ const css = `
     transition: opacity 0.3s ease-in;
     padding: 0.25em 0;
     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.7));
+}
+
+.embedded-toolbar span {
+    padding: 0 0.5em;
 }
 
 .embedded-toolbar button {
@@ -94,13 +99,23 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         const slower = button("Slower", "embedded-toolbar-slower");
         const faster = button("Faster", "embedded-toolbar-faster");
         const progress = document.createElement("span");
+        const slider = document.createElement("input");
+        const final = document.createElement("span");
 
         toolbar.appendChild(pf);
         toolbar.appendChild(play);
         toolbar.appendChild(nf);
         toolbar.appendChild(slower);
         toolbar.appendChild(progress);
+        toolbar.appendChild(slider);
+        toolbar.appendChild(final);
         toolbar.appendChild(faster);
+
+        slider.setAttribute("type", "range");
+        slider.setAttribute("min", 0);
+        slider.setAttribute("max", this.replay.full_frames.length - 1);
+        slider.setAttribute("step", 1);
+        final.innerText = this.replay.full_frames.length - 1;
 
         this.onPlay.add(() => {
             play.innerText = "Pause";
@@ -109,7 +124,13 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
             play.innerText = "Play";
         });
         this.onUpdate.add(() => {
-            progress.innerText = `${this.frame}/${this.replay.full_frames.length - 1}`;
+            progress.innerText = `${this.frame}`;
+
+            // Only update when necessary so user can still drag the
+            // slider
+            if (this.frame !== slider.value) {
+                slider.value = this.frame;
+            }
 
             if (!this.currentFrame) return;
 
@@ -160,6 +181,10 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         });
         faster.addEventListener("click", () => {
             this.playSpeed = Math.min(20, this.playSpeed + 1);
+        });
+        slider.addEventListener("change", () => {
+            if (this.isPlaying()) this.pause();
+            this.scrub(parseInt(slider.value, 10), 0);
         });
 
         container.appendChild(clashbar);
