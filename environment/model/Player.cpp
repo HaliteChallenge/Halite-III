@@ -77,12 +77,4 @@ void Player::add_entity(const Entity::id_type &id, Location location) {
     entities.emplace(id, location);
 }
 
-/**
- * Get whether this player is alive.
- * @return True if the player is alive, false otherwise.
- */
-bool Player::is_alive() const {
-    return !terminated;
-}
-
 }

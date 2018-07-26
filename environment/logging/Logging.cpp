@@ -66,8 +66,3 @@ void Logging::_log(const std::string &message, Level level, class_id<hlt::Player
 void Logging::set_turn_number(long turn_number) {
     Logging::turn_number = turn_number;
 }
-
-/** Remove the turn number. */
-void Logging::remove_turn_number() {
-    Logging::turn_number = -1;
-}

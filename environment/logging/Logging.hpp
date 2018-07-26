@@ -69,9 +69,6 @@ struct Logging {
      */
     static void set_turn_number(long turn_number);
 
-    /** Remove the turn number. */
-    static void remove_turn_number();
-
     /**
      * Log a suspended (possibly not yet evaluated) message to console.
      * @tparam Message The type of the suspended message.
