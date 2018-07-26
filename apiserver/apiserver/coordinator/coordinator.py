@@ -9,6 +9,8 @@ import zstd
 
 import google.cloud.storage as gcloud_storage
 
+from sqlalchemy.dialects import postgresql
+
 from .. import config, model, notify, util
 
 from .blueprint import coordinator_api
@@ -392,40 +394,44 @@ def update_rankings(conn, users):
 
         for hackathon in hackathons.fetchall():
             hackathon_id = hackathon["hackathon_id"]
-            try:
-                # Try and insert
-                insert_values = {
-                    "hackathon_id": hackathon_id,
-                    "user_id": user["user_id"],
-                    "bot_id": user["bot_id"],
-                    "score": new_score,
-                    "mu": rating[0].mu,
-                    "sigma": rating[0].sigma,
-                    "version_number": user["version_number"],
-                    "language": user["language"],
-                    "games_played": 1,
-                }
+            # In MySQL we would try-except an insert, then an update;
+            # in Postgres we should use the upsert
+            # functionality. However, this is Postgres-specific.
+            insert_values = {
+                "hackathon_id": hackathon_id,
+                "user_id": user["user_id"],
+                "bot_id": user["bot_id"],
+                "score": new_score,
+                "mu": rating[0].mu,
+                "sigma": rating[0].sigma,
+                "version_number": user["version_number"],
+                "language": user["language"],
+                "games_played": 1,
+            }
 
-                conn.execute(
-                    model.hackathon_snapshot.insert().values(
-                        **insert_values))
-            except sqlalchemy.exc.IntegrityError:
-                # Row exists, update
-                condition = ((model.hackathon_snapshot.c.hackathon_id ==
-                              hackathon_id) &
-                             (model.hackathon_snapshot.c.user_id ==
-                              user["user_id"]) &
-                             (model.hackathon_snapshot.c.bot_id ==
-                              user["bot_id"]))
-                conn.execute(
-                    model.hackathon_snapshot.update().values(
-                        score=new_score,
-                        mu=rating[0].mu,
-                        sigma=rating[0].sigma,
-                        version_number=user["version_number"],
-                        language=user["language"],
-                        games_played=model.hackathon_snapshot.c.games_played + 1,
-                    ).where(condition))
+            query = postgresql.insert(model.hackathon_snapshot).values(
+                **insert_values
+            ).on_conflict_do_update(
+                set_=dict(
+                    score=new_score,
+                    mu=rating[0].mu,
+                    sigma=rating[0].sigma,
+                    version_number=user["version_number"],
+                    language=user["language"],
+                    games_played=model.hackathon_snapshot.c.games_played + 1),
+                where=((model.hackathon_snapshot.c.hackathon_id ==
+                        hackathon_id) &
+                       (model.hackathon_snapshot.c.user_id ==
+                        user["user_id"]) &
+                       (model.hackathon_snapshot.c.bot_id ==
+                        user["bot_id"])),
+                index_elements=[
+                    model.hackathon_snapshot.c.hackathon_id,
+                    model.hackathon_snapshot.c.user_id,
+                    model.hackathon_snapshot.c.bot_id,
+                ]
+            )
+            conn.execute(query)
 
 
 def update_user_timeout(conn, game_id, user):
