@@ -145,10 +145,9 @@ void HaliteImpl::run_game() {
     game.game_statistics.number_turns = game.turn_number;
 
     rank_players();
+    Logging::log("Game has ended");
     Logging::set_turn_number(Logging::ended);
     game.logs.set_turn_number(PlayerLog::ended);
-    Logging::log("Game has ended");
-    Logging::remove_turn_number();
     for (const auto &[player_id, player] : game.store.players) {
         game.replay.players.find(player_id)->second.terminated = player.terminated;
         if (!player.terminated) {
@@ -163,7 +162,7 @@ void HaliteImpl::process_turn() {
     ordered_id_map<Player, Commands> commands{};
     id_map<Player, std::future<Commands>> results{};
     for (auto &[player_id, player] : game.store.players) {
-        if (player.is_alive()) {
+        if (!player.terminated) {
             results[player_id] = std::async(std::launch::async,
                                             [&networking = game.networking, &player = player] {
                                                 return networking.handle_frame(player);
@@ -280,18 +279,19 @@ bool HaliteImpl::game_ended() const {
     long num_alive_players = 0;
     for (auto &&[_, player] : game.store.players) {
         bool can_play = !player.entities.empty() || player.energy > Constants::get().NEW_ENTITY_ENERGY_COST;
-        if (player.is_alive() && can_play) {
+        if (player.can_play && !can_play) {
+            Logging::log("player has insufficient resources to continue", Logging::Level::Info, player.id);
+            player.can_play = false;
+        }
+        if (!player.terminated && can_play) {
             num_alive_players++;
         }
         if (num_alive_players > 1) {
             return false;
         }
     }
-    if (num_alive_players == 1 && game.store.players.size() == 1) {
-        // If there is only one player in the game, then let them keep playing.
-        return false;
-    }
-    return true;
+    // If there is only one player in the game, then let them keep playing.
+    return !(game.store.players.size() == 1 && num_alive_players == 1);
 }
 
 /**
@@ -301,7 +301,7 @@ void HaliteImpl::update_player_stats() {
     for (PlayerStatistics &player_stats : game.game_statistics.player_statistics) {
         // Player with sprites is still alive, so mark as alive on this turn and add production gained
         const auto &player_id = player_stats.player_id;
-        if (game.store.get_player(player_id).is_alive()) {
+        if (!game.store.get_player(player_id).terminated) {
             const Player &player = game.store.get_player(player_id);
             player_stats.last_turn_alive = game.turn_number;
             player_stats.turn_productions.push_back(player.energy);
