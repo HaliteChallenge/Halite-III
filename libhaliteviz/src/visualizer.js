@@ -323,6 +323,50 @@ export class HaliteVisualizer {
         };
     }
 
+    /**
+     * Helper method that figures out the current production present
+     * on a cell, saving you from having to jump through the replay.
+     */
+    findCurrentProduction(frameId, x, y) {
+        // TODO: this is inefficient AF
+        for (let i = frameId; i >= 0; i--) {
+            const frame = this.replay.full_frames[i];
+            for (const cell of frame.cells) {
+                if (cell.x == x && cell.y == y) {
+                    return cell.production;
+                }
+            }
+        }
+        const cell = this.replay.production_map.grid[y][x];
+        return cell.energy;
+    }
+
+    /**
+     * Helper method that figures out the current status of the given
+     * ship.
+     */
+    findShip(frameId, owner, id) {
+        const frame = this.replay.full_frames[frameId];
+        if (!frame) return null;
+
+        if (frame.entities[owner][id]) {
+            return frame.entities[owner][id];
+        }
+        // Not yet spawned, look for event
+        for (const event of frame.events) {
+            if (event.type === "spawn" &&
+                event.owner_id === owner &&
+                event.id === id) {
+                return {
+                    x: event.location.x,
+                    y: event.location.y,
+                    energy: event.energy,
+                };
+            }
+        }
+        return null;
+    }
+
     attach(containerEl, keyboardEl=null) {
         $(containerEl).append(this.application.view);
         if (!keyboardEl) {

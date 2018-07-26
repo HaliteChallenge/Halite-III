@@ -702,26 +702,12 @@
       },
       selectedShip: function () {
         if (this.selected.kind === "ship") {
-          const frame = this.replay.full_frames[this.frame]
-          const state = frame.entities[this.selected.owner][this.selected.id]
-
+          const state = this.getVisualizer().findShip(this.frame, this.selected.owner, this.selected.id);
           if (state) {
-            state.owner = this.selected.owner;
-            state.id = this.selected.id;
-            return state;
-          }
-
-          // Not yet spawned, look for event
-          for (const event of frame.events) {
-            if (event.type === "spawn" &&
-                event.owner_id === this.selected.owner &&
-                event.id === this.selected.id) {
-              return Object.assign({}, this.selected, {
-                x: event.location.x,
-                y: event.location.y,
-                energy: event.energy,
-              });
-            }
+            return Object.assign({}, state, {
+              owner: this.selected.owner,
+              id: this.selected.id,
+            });
           }
         }
       },
@@ -732,22 +718,9 @@
             this.selected.x = this.selectedShip.x;
             this.selected.y = this.selectedShip.y;
           }
-          // TODO: this is inefficient AF
-          for (let i = this.frame; i >= 0; i--) {
-            const frame = this.replay.full_frames[i];
-            for (const cell of frame.cells) {
-              if (cell.x == this.selected.x && cell.y == this.selected.y) {
-                return {
-                  energy: cell.production,
-                  x: this.selected.x,
-                  y: this.selected.y,
-                };
-              }
-            }
-          }
-          const cell = this.replay.production_map.grid[this.selected.y][this.selected.x];
+          const energy = this.getVisualizer().findCurrentProduction(this.frame, this.selected.x, this.selected.y);
           return {
-            energy: cell.energy,
+            energy,
             x: this.selected.x,
             y: this.selected.y,
           };

@@ -14,6 +14,41 @@ const css = `
     color: #FFF;
 }
 
+.embedded-selected {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    right: 2rem;
+    padding: 1rem;
+
+    background: rgba(0,0,0,0.4);
+    border-radius: 10px;
+    color: rgba(255,255,255,0.8);
+    opacity: 0;
+
+    transform: scaleY(0);
+    transition: opacity 0.3s ease-in;
+}
+
+.embedded-selected-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: none;
+    border: 0;
+    padding: 0 0.5rem 0 1rem;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.embedded-visualizer:hover .embedded-selected.show {
+    opacity: 1;
+}
+
+.embedded-selected-close:hover {
+    color: #FFF;
+}
+
 .embedded-clashbar {
     position: absolute;
     top: 0;
@@ -27,12 +62,15 @@ const css = `
 }
 
 .embedded-clashbar-energybar {
-    height: 1em;
-    opacity: 0.5;
+    height: 1.25rem;
     transition: width 0.2s ease;
+    color: #FFF;
+    font-size: 0.75em;
+    line-height: 1.25rem;
 }
 
 .embedded-toolbar {
+    display: flex;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -41,6 +79,10 @@ const css = `
     transition: opacity 0.3s ease-in;
     padding: 0.25em 0;
     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.7));
+}
+
+.embedded-toolbar span {
+    padding: 0 0.5em;
 }
 
 .embedded-toolbar button {
@@ -55,6 +97,9 @@ const css = `
 }
 .embedded-visualizer:hover .embedded-clashbar {
     opacity: 1;
+}
+.embedded-visualizer:hover .embedded-selected {
+    transform: none;
 }
 `;
 
@@ -85,6 +130,16 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
             clashbar.appendChild(bar);
         }
 
+        // Display of what's selected
+        const selected = document.createElement("div");
+        const selectedText = document.createElement("span");
+        const selectedClose = document.createElement("button");
+        selected.classList.add("embedded-selected");
+        selectedClose.innerText = "x";
+        selectedClose.classList.add("embedded-selected-close");
+        selected.appendChild(selectedClose);
+        selected.appendChild(selectedText);
+
         const toolbar = document.createElement("div");
         toolbar.classList.add("embedded-toolbar");
 
@@ -94,24 +149,69 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         const slower = button("Slower", "embedded-toolbar-slower");
         const faster = button("Faster", "embedded-toolbar-faster");
         const progress = document.createElement("span");
+        const slider = document.createElement("input");
+        const final = document.createElement("span");
 
         toolbar.appendChild(pf);
         toolbar.appendChild(play);
         toolbar.appendChild(nf);
         toolbar.appendChild(slower);
         toolbar.appendChild(progress);
+        toolbar.appendChild(slider);
+        toolbar.appendChild(final);
         toolbar.appendChild(faster);
 
+        slider.setAttribute("type", "range");
+        slider.setAttribute("min", 0);
+        slider.setAttribute("max", this.replay.full_frames.length - 1);
+        slider.setAttribute("step", 1);
+        final.innerText = this.replay.full_frames.length - 1;
+
+        let selection = null;
         this.onPlay.add(() => {
             play.innerText = "Pause";
         });
         this.onPause.add(() => {
             play.innerText = "Play";
         });
+        this.onSelect.add((kind, args) => {
+            selection = Object.assign({
+                kind,
+            }, args);
+            console.log(selection);
+            selected.classList.add("show");
+        });
+        selectedClose.addEventListener("click", () => {
+            selection = null;
+            selected.classList.remove("show");
+        });
         this.onUpdate.add(() => {
-            progress.innerText = `${this.frame}/${this.replay.full_frames.length - 1}`;
+            progress.innerText = `${this.frame}`;
+
+            // Only update when necessary so user can still drag the
+            // slider
+            if (this.frame !== slider.value) {
+                slider.value = this.frame;
+            }
 
             if (!this.currentFrame) return;
+
+            if (selection) {
+                const lines = [];
+                if (selection.kind === "ship") {
+                    const ship = this.findShip(this.frame, selection.owner, selection.id);
+                    if (ship) {
+                        selection.x = ship.x;
+                        selection.y = ship.y;
+                        lines.push(`${this.replay.players[selection.owner].name} H.M.S. #${selection.id}: ${ship.energy} energy`);
+                    }
+                }
+                if (selection.kind === "point" || selection.kind === "ship") {
+                    const energy = this.findCurrentProduction(this.frame, selection.x, selection.y);
+                    lines.push(`Point ${selection.x}, ${selection.y}: ${energy} energy`);
+                }
+                selectedText.innerText = lines.join("\n");
+            }
 
             const energies = this.currentFrame.energy;
             const widths = {};
@@ -133,9 +233,10 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
                 }
             }
             for (const [ id, width ] of Object.entries(widths)) {
-                clashbar
-                    .querySelector(`div:nth-child(${parseInt(id, 10) + 1})`)
-                    .style.width = `${width}%`;
+                const bar = clashbar
+                      .querySelector(`div:nth-child(${parseInt(id, 10) + 1})`);
+                bar.style.width = `${width}%`;
+                bar.innerText = `${energies[id]} energy`;
             }
 
             const tooltip = [];
@@ -161,8 +262,15 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         faster.addEventListener("click", () => {
             this.playSpeed = Math.min(20, this.playSpeed + 1);
         });
+        slider.addEventListener("change", () => {
+            if (this.isPlaying()) this.pause();
+            progress.innerText = slider.value;
+            this.scrub(parseInt(slider.value, 10), 0);
+            this.onUpdate.dispatch();
+        });
 
         container.appendChild(clashbar);
+        container.appendChild(selected);
         container.appendChild(toolbar);
 
         if (!injectedCSS) {
