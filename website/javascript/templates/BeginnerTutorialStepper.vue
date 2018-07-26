@@ -36,7 +36,7 @@
                 Promise.resolve(libhaliteviz),
                 req.arrayBuffer(),
             ])).then(([ libhaliteviz, buf ]) =>
-                libhaliteviz.setAssetRoot("/assets/js")
+                libhaliteviz.setAssetRoot("")
                             .then(() => libhaliteviz.parseReplay(buf))
             ).then((replay) => {
                 this.replay = replay;
@@ -60,28 +60,24 @@
                 visualizer.render();
 
                 if (stepName === "admiral") {
+                    // Scrub to frame 1 so ships actually show
+                    visualizer.scrub(1, 0);
                     tween.driveWhile(
-                        () => visualizer.camera.scale > visualizer.camera.initScale,
-                        (dt) => visualizer.camera.zoomBy(0.5, 0.5, -dt / 10000)
+                        () => visualizer.camera.scale < 40,
+                        (dt) => visualizer.camera.zoomBy(0.5, 0.5, dt / 10000)
                     )
                          .then(() => tween.driveWhile(
-                             () => (visualizer.camera.pan.x !== 5 ||
-                                    visualizer.camera.pan.y !== 1),
+                             () => (visualizer.camera.pan.x !== 0 ||
+                                    visualizer.camera.pan.y !== 22),
                              (dt) => {
-                                 if (visualizer.camera.pan.x !== 5) {
+                                 if (visualizer.camera.pan.x !== 0) {
                                      visualizer.camera.panByPixel(dt / 1000, 0);
                                  }
-                                 if (visualizer.camera.pan.y !== 1) {
+                                 if (visualizer.camera.pan.y !== 22) {
                                      visualizer.camera.panByPixel(0, dt / 1000);
                                  }
                              }
                          ))
-                         .then(() => tween.driveWhile(
-                             () => visualizer.camera.scale < 40,
-                             (dt) => {
-                                 visualizer.camera.zoomBy(0.5, 0.5, dt / 10000);
-                             }
-                         ));
                 }
                 else if (stepName === "collection") {
                     tween.driveWhile(
@@ -116,7 +112,7 @@
                         patch(visualizer, "play", () => {
                             this.completeSubstep("collection-play");
                         });
-                        patch(visualizer, "onSelect", (kind) => {
+                        patch(visualizer.onSelect, "dispatch", (kind) => {
                             if (this.stepName === "salt" && kind === "point") {
                                 this.completeSubstep("salt-halite");
                             }
