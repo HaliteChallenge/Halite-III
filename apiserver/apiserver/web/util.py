@@ -57,9 +57,6 @@ def validate_api_key(api_key):
         if not user:
             return None
 
-        if not user["is_active"]:
-            raise util.APIError(403, message="User is disabled.")
-
         if config.api_key_context.verify(api_key, user["api_key_hash"]):
             return user
 
@@ -108,6 +105,9 @@ def requires_login(accept_key=False, optional=False, admin=False,
                     flask.session.get(config.SESSION_COOKIE))
 
             if user:
+                if not user["is_active"]:
+                    raise util.APIError(
+                        403, message="User is disabled.")
                 if admin and user["is_admin"]:
                     kwargs["user_id"] = user["user_id"]
                 elif admin:
