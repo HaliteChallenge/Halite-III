@@ -184,7 +184,6 @@ std::string UnixConnection::get_string() {
                 auto current_time = high_resolution_clock::now();
                 auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
                 if (remaining < milliseconds::zero()) {
-                    // TODO: continue and read remainder of input
                     throw TimeoutError("when reading string", config.timeout, current_read);
                 }
                 selection_result = check_pipe(read_pipe, remaining);
@@ -196,7 +195,6 @@ std::string UnixConnection::get_string() {
             // Read from the pipe, as many as we can into the buffer
             auto bytes_read = read(read_pipe, buffer.begin(), buffer.size());
             if (bytes_read <= 0) {
-                // TODO: continue and read remainder of input
                 throw NetworkingError("read failed", current_read);
             }
             // Iterator one past the last read character
