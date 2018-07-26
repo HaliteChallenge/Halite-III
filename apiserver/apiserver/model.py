@@ -144,7 +144,9 @@ all_users = sqlalchemy.sql.select([
     organizations,
     organizations.c.id == users.c.organization_id,
     isouter=True
-)).group_by(
+)).where(
+    users.c.is_active == True
+).group_by(
     users.c.id,
     users.c.username,
     users.c.player_level,
@@ -206,7 +208,12 @@ def ranked_users_query(alias="ranked_users"):
 # Total number of ranked users that have played a game
 total_ranked_users = sqlalchemy.sql.select([
     _func.count(sqlalchemy.distinct(bots.c.user_id))
-]).select_from(bots).where(bots.c.games_played > 0)
+]).select_from(
+    bots.join(users)
+).where(
+    (bots.c.games_played > 0) &
+    (users.c.is_active == True)
+)
 
 
 def hackathon_total_ranked_users_query(hackathon_id):

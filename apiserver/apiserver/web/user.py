@@ -225,6 +225,9 @@ def create_user(*, user_id):
             model.users.c.id == user_id
         )).first()
 
+        if not user_data["is_active"]:
+            raise util.APIError(403, message="User disabled. Please contact halite@halite.io.")
+
         if user_data["verification_code"]:
             raise util.APIError(400, message="User needs to verify email.")
 
@@ -370,7 +373,7 @@ def get_user(intended_user, *, user_id):
 
         row = conn.execute(query).first()
         if not row:
-            raise util.APIError(404, message="No user found.")
+            raise util.APIError(404, message="No user found or user disabled.")
 
         total_users = conn.execute(model.total_ranked_users).first()[0]
 
