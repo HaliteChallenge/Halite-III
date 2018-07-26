@@ -49,6 +49,14 @@
     <InputModal ref="new_file_modal" :baseUrl="baseUrl" :isOn="is_new_file_modal_open" :createCallback="create_new_file" :closeCallback="close_new_file_modal" title_text="New File" cancel_text="Cancel" accept_text="Create"></InputModal>
     <InputModal ref="new_folder_modal" :baseUrl="baseUrl" :isOn="is_new_folder_modal_open" :createCallback="create_new_folder" :closeCallback="close_new_folder_modal" title_text="New Folder" cancel_text="Cancel" accept_text="Create"></InputModal>
     <CheckModal ref="delete_modal" :baseUrl="baseUrl" :isOn="is_delete_modal_open" :yesCallback="delete_file" :noCallback="close_delete_modal" title_text="Delete File" cancel_text="Cancel" accept_text="Delete" body_text="This will delete your file permanently!!!"></CheckModal>
+
+    <div class="toasts">
+        <transition-group name="toast-pop-up" tag="div">
+            <div v-for="(toast, idx) in alerts" class="editor-toast" v-bind:key="idx">
+                {{toast}}
+            </div>
+        </transition-group>
+    </div>
   </div>
 </template>
 
@@ -139,6 +147,7 @@ export default {
       is_new_file_modal_open: false,
       is_new_folder_modal_open: false,
       is_delete_modal_open: false,
+      alerts: [],
     }
   },
   props: {
@@ -499,7 +508,7 @@ export default {
           this.visualizer.destroy()
         }
 
-        this.visualizer = new libhaliteviz.HaliteVisualizer(replay, width, width)
+        this.visualizer = new libhaliteviz.EmbeddedVisualizer(replay, width, width)
         this.visualizer.attach('.game_replay_viewer', '.game_replay_viewer')
         this.visualizer.play()
         this.add_console_text("Starting replay.\n")
@@ -523,6 +532,7 @@ export default {
         this.update_editor_files()
         this.save_file(this.active_file)
       }
+      this.alert("Saved")
     },
     save_file: function(file) {
       api.update_source_file(this.user_id, file.name, file.contents, function(){}).then((function() {
@@ -543,6 +553,12 @@ export default {
     add_console_text: function(new_text) {
       if(this.terminal_text === undefined) this.terminal_text = ""
         this.terminal_text += new_text
+    },
+    alert: function(text) {
+      this.alerts.push(text)
+      setTimeout(() => {
+        this.alerts.pop()
+      }, 3000)
     },
     /* Submit bot to our leaderboard */
     submit_bot: function () {
@@ -572,10 +588,12 @@ export default {
           }).then(() => {
             logInfo('upload successully')
             this.status_message = 'Successfully uploaded!'
+            this.alert("Successfully uploaded!")
             resolve();
           }, (err) => {
             logInfo('error: ' + err.message)
             this.status_message = err.message
+            this.alert(`Error uploading bot: ${err.message}`)
             reject(err.message);
           })
         })
@@ -726,6 +744,47 @@ export default {
 
 .replay, .console {
   width: 100%;
+}
+
+.toasts {
+  position: fixed;
+  bottom: 1em;
+  left: 0;
+  right: 0;
+  z-index: 99999999;
+
+  font-size: 1.2em;
+
+  .editor-toast {
+    margin: 1em auto 0;
+    padding: 0.25em 0.5em;
+    width: fit-content;
+
+    background: #FFF;
+    box-shadow: 0 1px 5px #FFF;
+    color: #333;
+  }
+}
+
+.toast-pop-up-enter-active {
+  transition: all .5s ease-out;
+}
+
+.toast-pop-up-leave-active {
+  transition: all .3s ease-in;
+}
+
+.toast-pop-up-enter {
+  transform: translateY(5em);
+}
+
+.toast-pop-up-leave-to {
+  transform: translateY(-2em);
+  opacity: 0;
+}
+
+.toast-pop-up-move {
+  transition: all .5s ease-in-out;
 }
 </style>
 

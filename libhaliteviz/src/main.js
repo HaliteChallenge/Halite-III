@@ -1,6 +1,7 @@
 import * as visualizer from "./visualizer";
 import * as assets from "./assets";
 import * as parse from "./parse";
+export {default as EmbeddedVisualizer} from "./embeddedControls";
 
 export const setAssetRoot = assets.setAssetRoot;
 export const parseReplay = parse.parseReplay;

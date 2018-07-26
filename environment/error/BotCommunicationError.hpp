@@ -10,32 +10,34 @@
 
 /** Thrown when bot communication cannot be decoded. */
 class BotCommunicationError : public BotError {
-    /** The bot input. */
-    std::string bot_input;
-    std::iostream::pos_type position;
-
+    /** The message buffer. */
+    std::string buffer;
 public:
     /**
      * Construct BotCommunicationError from bot input.
      * @param bot_input The bot input.
      */
-    explicit BotCommunicationError(std::string bot_input)
-        : bot_input(std::move(bot_input)), position(-1) {}
+    explicit BotCommunicationError(const std::string &bot_input) {
+        buffer = "failed to decode bot message: \"" + bot_input + "\"";
+    }
 
-    explicit BotCommunicationError(std::string bot_input,
-                                   std::iostream::pos_type position)
-        : bot_input(std::move(bot_input)), position(position) {}
+    /**
+     * Construct BotCommunicationError from bot input and position.
+     * @param bot_input The bot input.
+     * @param position The decoding position.
+     */
+    explicit BotCommunicationError(const std::string &bot_input,
+                                   std::iostream::pos_type position) {
+        buffer = "failed to decode bot message: \"" + bot_input +
+                 "\" (at position " + std::to_string(position) + ")";
+    }
 
     /**
      * Get the exception description.
      * @return The exception description.
      */
     const char *what() const noexcept override {
-        if (position >= 0) {
-            return ("Failed to decode bot message: \"" + bot_input +
-                    "\" (at position " + std::to_string(position) + ")").c_str();
-        }
-        return ("Failed to decode bot message: \"" + bot_input + "\"").c_str();
+        return buffer.c_str();
     }
 };
 

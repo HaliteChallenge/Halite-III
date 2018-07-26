@@ -25,25 +25,24 @@ class Halite;
 
 namespace net {
 
-/** The type of platform-specific connections. */
-#ifdef _WIN32
-using OSConnection = WinConnection;
-#else
-using OSConnection = UnixConnection;
-#endif
-
 /** Networking support suite for Halite. */
 class Networking final {
 private:
-    ConnectionFactory<OSConnection> connection_factory; /**< The platform-specific connection factory. */
-    Connections connections{};    /**< The current network connections. */
+    ConnectionFactory connection_factory; /**< The platform-specific connection factory. */
+    Connections connections;      /**< The current network connections. */
     NetworkingConfig config;      /**< The networking configuration. */
     hlt::Halite &game;            /**< The current game. */
-    std::mutex connections_mutex; /**< Mutex used to protect the connections map. */
 
 public:
     /**
-     * Launch the bot for a player, send the initial game information to the player, and update its name.
+     * Launch the bot for a player and register their connection.
+     *
+     * @param player The player.
+     */
+    void connect_player(hlt::Player &player);
+
+    /**
+     * Send the initial game information to the player, and update its name.
      * Safe to invoke from multiple threads on different players.
      *
      * @param player The player to communicate with.
@@ -65,6 +64,13 @@ public:
      * @return The commands from the player.
      */
     std::vector<std::unique_ptr<hlt::Command>> handle_frame(hlt::Player &player);
+
+    /**
+     * Handle a player communication error.
+     * @param player The player ID.
+     * @param received_input The current received input from the player.
+     */
+    void handle_player_error(hlt::Player::id_type player, std::string received_input = "");
 
     /**
      * Initialize Networking from configuration and Halite game.

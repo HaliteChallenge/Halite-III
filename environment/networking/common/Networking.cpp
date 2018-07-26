@@ -14,26 +14,39 @@ constexpr auto NAME_MAX_LENGTH = 30;
 
 /**
  * Handle a player communication error.
- * @param game The game object.
  * @param player The player ID.
- * @param connection The player connection.
  * @param received_input The current received input from the player.
  */
-void handle_player_error(Halite &game, Player::id_type player_id,
-                         Connection &connection, std::string received_input = "") {
+void Networking::handle_player_error(Player::id_type player, std::string received_input) {
+    auto &connection = connections.get(player);
     try {
         received_input += connection->read_trailing_input();
-        game.log_error(player_id, "Last input received was:");
-        game.log_error(player_id, received_input);
     } catch (...) {
-        game.log_error(player_id, "Last input could not be determined.");
+        // Ignore any exceptions from the read attempt.
     }
+    if (!received_input.empty()) {
+        game.logs.log(player, "Last input received was:");
+        game.logs.log(player, received_input);
+    }
+    std::string errors;
     try {
-        game.log_error(player_id, "Bot error output was:");
-        game.log_error(player_id, connection->get_errors());
+        errors = connection->get_errors();
     } catch (...) {
-        game.log_error(player_id, "Bot error output could not be determined.");
+        // Ignore any exceptions from the read attempt.
     }
+    if (!errors.empty()) {
+        game.logs.log(player, "Bot error output was:");
+        game.logs.log(player, errors);
+    }
+}
+
+/**
+ * Launch the bot for a player and register their connection.
+ *
+ * @param player The player.
+ */
+void Networking::connect_player(hlt::Player &player) {
+    connections.add(player.id, connection_factory.new_connection(player.command));
 }
 
 /**
@@ -43,9 +56,8 @@ void handle_player_error(Halite &game, Player::id_type player_id,
  * @param player The player to communicate with.
  */
 void Networking::initialize_player(Player &player) {
-    auto connection = connection_factory.new_connection(player.command);
     std::stringstream message_stream;
-    Logging::log("Sending init message to player " + to_string(player.id), Logging::Level::Debug);
+    Logging::log("Sending init message", Logging::Level::Debug, player.id);
     // Send the number of players and player ID
     message_stream << game.store.players.size()
                    << " " << player.id << std::endl;
@@ -58,24 +70,17 @@ void Networking::initialize_player(Player &player) {
     // Send the map
     message_stream << game.map;
 
-    {
-        std::lock_guard<std::mutex> guard(connections_mutex);
-        connections[player] = std::move(connection);
-    }
-
     try {
-        connections[player]->send_string(message_stream.str());
-        Logging::log("Init message sent to player " + to_string(player.id), Logging::Level::Debug);
+        connections.get(player.id)->send_string(message_stream.str());
+        Logging::log("Init message sent", Logging::Level::Debug, player.id);
         // Receive a name from the player.
-        player.name = connections[player]->get_string().substr(0, NAME_MAX_LENGTH);
-        Logging::log("Init message received from player " + to_string(player.id) + ", name: " + player.name,
-                     Logging::Level::Debug);
-    }
-    catch (const BotError &e) {
-        Logging::log("Failed to initialize player " + to_string(player.id), Logging::Level::Error);
-        game.log_error_section(player.id, "Initialization Phase");
-        game.log_error(player.id, e.what());
-        handle_player_error(game, player.id, connections[player]);
+        player.name = connections.get(player.id)->get_string().substr(0, NAME_MAX_LENGTH);
+        Logging::log("Init message received, name: " + player.name,
+                     Logging::Level::Debug, player.id);
+    } catch (const BotError &e) {
+        Logging::log("Failed to initialize", Logging::Level::Error, player.id);
+        game.logs.log(player.id, e.what(), PlayerLog::Level::Error);
+        handle_player_error(player.id);
         throw;
     }
 }
@@ -115,30 +120,24 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
     std::vector<std::unique_ptr<Command>> commands;
     std::string received_input;
     try {
-        connections[player]->send_string(message_stream.str());
-        Logging::log([id = player.id]() { return "Turn info sent to player " + to_string(id); }, Logging::Level::Debug);
+        connections.get(player.id)->send_string(message_stream.str());
+        Logging::log("Turn info sent", Logging::Level::Debug, player.id);
         // Get commands from the player.
-        received_input = connections[player]->get_string();
+        received_input = connections.get(player.id)->get_string();
         std::istringstream command_stream(received_input);
         std::unique_ptr<Command> command;
         while (command_stream >> command) {
             commands.push_back(std::move(command));
         }
         command_stream >> command;
-        std::string errors = connections[player]->get_errors();
-        if (!errors.empty()) {
-            game.log_error(player.id, errors);
-        }
-        Logging::log([number = commands.size(), id = player.id]() {
-            return "Received " + std::to_string(number) +
-                   " commands from player " + to_string(id);
-        }, Logging::Level::Debug);
-    }
-    catch (const BotError &e) {
-        Logging::log("Failed to communicate with player " + to_string(player.id), Logging::Level::Error);
-        game.log_error(player.id, e.what());
+        Logging::log([number = commands.size()]() {
+            return "Received " + std::to_string(number) + " commands";
+        }, Logging::Level::Debug, player.id);
+    } catch (const BotError &e) {
+        Logging::log("Communication failed", Logging::Level::Error, player.id);
+        game.logs.log(player.id, e.what(), PlayerLog::Level::Error);
         received_input += '\n';
-        handle_player_error(game, player.id, connections[player], received_input);
+        handle_player_error(player.id, received_input);
         throw;
     }
 
@@ -151,7 +150,12 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
  * @param player The player whose connection to end.
  */
 void Networking::kill_player(const hlt::Player &player) {
-    connections.erase(player);
+    const auto errors = connections.get(player.id)->get_errors();
+    if (!errors.empty()) {
+        game.logs.log(player.id, "Bot error output was:");
+        game.logs.log(player.id, errors);
+    }
+    connections.remove(player.id);
 }
 
 }

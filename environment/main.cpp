@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iostream>
 
-#include "Config.hpp"
 #include "Constants.hpp"
 #include "Generator.hpp"
 #include "Halite.hpp"
@@ -23,7 +22,6 @@ constexpr auto JSON_INDENT_LEVEL = 4;
 
 int main(int argc, char *argv[]) {
     auto &constants = hlt::Constants::get_mut();
-    hlt::Config config{};
 
     using namespace TCLAP;
     CmdLine cmd("Halite Game Environment", ' ', HALITE_VERSION);
@@ -32,6 +30,7 @@ int main(int argc, char *argv[]) {
     SwitchArg print_constants_switch("", "print-constants", "Print out the default constants and exit.", cmd, false);
     SwitchArg no_compression_switch("", "no-compression", "Disables compression for output files.", cmd, false);
     SwitchArg json_results_switch("", "results-as-json", "Prints game results as JSON at end.", cmd, false);
+    SwitchArg strict_switch("", "strict", "Enables strict error reporting mode.", cmd, false);
     ValueArg<unsigned long> players_arg("n", "players", "Create a map that will accommodate n players.", false, 1,
                                         "positive integer", cmd);
     ValueArg<hlt::dimension_type> width_arg("", "width", "The width of the map.", false,
@@ -77,14 +76,12 @@ int main(int argc, char *argv[]) {
         constants.MAX_TURNS = turn_limit_arg.getValue();
     }
 
-    // TODO: set game ID
+    if (strict_switch.isSet()) {
+        constants.STRICT_ERRORS = true;
+    }
 
     // Set the random seed
-    config.seed = static_cast<unsigned int>(time(nullptr));
-    std::srand(config.seed); // For all non-seeded randomness
-    if (seed_arg.getValue() != 0) {
-        config.seed = seed_arg.getValue();
-    }
+    auto seed = static_cast<unsigned int>(time(nullptr));
 
     // Get the map parameters
     auto map_width = width_arg.getValue();
@@ -108,26 +105,24 @@ int main(int argc, char *argv[]) {
     } else if (bot_commands.size() > n_players) {
         n_players = bot_commands.size();
         if (players_arg.isSet()) {
-            Logging::log("Warning: overriding the specified number of players.", Logging::Level::Warning);
+            Logging::log("Overriding the specified number of players", Logging::Level::Warning);
         }
     }
 
     hlt::mapgen::MapType type;
     std::istringstream type_stream(map_type_arg.getValue());
     type_stream >> type;
-    hlt::mapgen::MapParameters map_parameters{type, config.seed, map_width, map_height, n_players};
+    hlt::mapgen::MapParameters map_parameters{type, seed, map_width, map_height, n_players};
 
     hlt::Snapshot snapshot;
     if (!snapshot_arg.getValue().empty()) {
         try {
             snapshot = hlt::Snapshot::from_str(snapshot_arg.getValue());
-        }
-        catch (const SnapshotError &err) {
+        } catch (const SnapshotError &err) {
             std::cerr << err.what() << std::endl;
             return 1;
         }
         map_parameters = snapshot.map_param;
-        config.seed = map_parameters.seed;
     }
 
     net::NetworkingConfig networking_config{};
@@ -143,7 +138,7 @@ int main(int argc, char *argv[]) {
     hlt::Replay replay{game_statistics, map_parameters.num_players, map_parameters.seed, map};
     Logging::log("Map seed is " + std::to_string(map_parameters.seed));
 
-    hlt::Halite game(config, map, networking_config, game_statistics, replay);
+    hlt::Halite game(map, networking_config, game_statistics, replay);
     game.run_game(bot_commands, snapshot);
 
     const auto &overrides = override_args.getValue();
@@ -175,8 +170,7 @@ int main(int argc, char *argv[]) {
         bool enable_compression = !no_compression_switch.getValue();
         try {
             replay.output(output_filename, enable_compression);
-        }
-        catch (std::runtime_error &e) {
+        } catch (std::runtime_error &e) {
             output_filename = replay_directory + filename;
             replay.output(output_filename, enable_compression);
         }
@@ -187,7 +181,7 @@ int main(int argc, char *argv[]) {
         results["error_logs"] = nlohmann::json::object();
 
         for (const auto &[player_id, player] : replay.players) {
-            std::string error_log = game.error_logs[player_id].str();
+            std::string error_log = game.logs.str(player_id);
             // In JSON mode, only write logs if player actually was
             // kicked out
             if (!error_log.empty() &&
@@ -214,8 +208,8 @@ int main(int argc, char *argv[]) {
 
                 log_file.write(error_log.c_str(), error_log.size());
 
-                Logging::log("Player " + to_string(player_id) + " has log output. Writing a log at " + log_filepath,
-                             Logging::Level::Warning);
+                Logging::log("Player has log output. Writing a log at " + log_filepath,
+                             Logging::Level::Info, player.id);
             }
         }
 
@@ -223,7 +217,7 @@ int main(int argc, char *argv[]) {
             results["replay"] = output_filename;
             results["map_width"] = map_width;
             results["map_height"] = map_height;
-            results["map_seed"] = config.seed;
+            results["map_seed"] = seed;
             // TODO: put the actual generator here
             results["map_generator"] = "default";
             results["final_snapshot"] = game.to_snapshot(map_parameters);

@@ -27,12 +27,11 @@ public:
                           std::string remaining_input = "")
             : message(std::move(message)), time(time), remaining_input(std::move(remaining_input)) {
         std::ostringstream stream;
-        stream << "Timed out after "
+        stream << "timed out after "
                << std::to_string(time.count())
                << " ms ("
                << this->message
-               << ")."
-               << std::endl;
+               << ")";
         result = stream.str();
     }
 

@@ -28,6 +28,8 @@ class Store {
     std::unordered_set<Location> changed_cells{}; /**< The cells changed on the last turn. */
 
 public:
+    unsigned long long map_total_energy{}; /**< The total energy remaining on the map. */
+
     /**
      * Get a player by ID.
      *

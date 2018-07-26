@@ -13,6 +13,30 @@ import * as assets from "./assets";
 import * as animation from "./animation";
 
 
+class Signal {
+    constructor(name) {
+        this.name = name;
+        this.listeners = [];
+    }
+
+    dispatch(...args) {
+        this.listeners.forEach((f) => {
+            try {
+                f(...args);
+            }
+            catch (e) {
+                console.error(`Error dispatching signal ${this.name}:`);
+                console.error(e);
+            }
+        });
+    }
+
+    add(f) {
+        this.listeners.push(f);
+    }
+}
+
+
 export class HaliteVisualizer {
     constructor(replay, width, height) {
         window.replay = replay;
@@ -107,14 +131,14 @@ export class HaliteVisualizer {
 
         // Generate base map with visualziation of production squares
         this.baseMap = new Map(this.replay, this.replay.GAME_CONSTANTS, this.camera,
-            (kind, args) => this.onSelect(kind, args), this.application.renderer);
+            (kind, args) => this.onSelect.dispatch(kind, args), this.application.renderer);
         this.baseMap.attach(this.mapContainer);
 
         for (let i = 0; i < this.replay.players.length; i++) {
             const factoryBase = {"x" : this.replay.players[i].factory_location.x,
                 "y" : this.replay.players[i].factory_location.y, "owner" : this.replay.players[i].player_id };
             const factory = new Factory(this, factoryBase, this.replay.constants,
-                scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
+                scale, (kind, args) => this.onSelect.dispatch(kind, args), this.application.renderer);
             this.factories.push(factory);
             factory.attach(this.factoryContainer);
         }
@@ -130,12 +154,12 @@ export class HaliteVisualizer {
 
         this.animationQueue = [];
 
-        this.onUpdate = function() {};
-        this.onPlay = function() {};
-        this.onPause = function() {};
-        this.onEnd = function() {};
-        this.onSelect = function() {};
-        this.onDeselect = function() {};
+        this.onUpdate = new Signal("onUpdate");
+        this.onPlay = new Signal("onPlay");
+        this.onPause = new Signal("onPause");
+        this.onEnd = new Signal("onEnd");
+        this.onSelect = new Signal("onSelect");
+        this.onDeselect = new Signal("onDeselect");
 
         this._onKeyUp = null;
         this._onKeyDown = null;
@@ -299,6 +323,50 @@ export class HaliteVisualizer {
         };
     }
 
+    /**
+     * Helper method that figures out the current production present
+     * on a cell, saving you from having to jump through the replay.
+     */
+    findCurrentProduction(frameId, x, y) {
+        // TODO: this is inefficient AF
+        for (let i = frameId; i >= 0; i--) {
+            const frame = this.replay.full_frames[i];
+            for (const cell of frame.cells) {
+                if (cell.x == x && cell.y == y) {
+                    return cell.production;
+                }
+            }
+        }
+        const cell = this.replay.production_map.grid[y][x];
+        return cell.energy;
+    }
+
+    /**
+     * Helper method that figures out the current status of the given
+     * ship.
+     */
+    findShip(frameId, owner, id) {
+        const frame = this.replay.full_frames[frameId];
+        if (!frame) return null;
+
+        if (frame.entities[owner][id]) {
+            return frame.entities[owner][id];
+        }
+        // Not yet spawned, look for event
+        for (const event of frame.events) {
+            if (event.type === "spawn" &&
+                event.owner_id === owner &&
+                event.id === id) {
+                return {
+                    x: event.location.x,
+                    y: event.location.y,
+                    energy: event.energy,
+                };
+            }
+        }
+        return null;
+    }
+
     attach(containerEl, keyboardEl=null) {
         $(containerEl).append(this.application.view);
         if (!keyboardEl) {
@@ -336,7 +404,7 @@ export class HaliteVisualizer {
 
         this._playing = true;
 
-        this.onPlay();
+        this.onPlay.dispatch();
     }
 
     advanceTime(time) {
@@ -357,8 +425,8 @@ export class HaliteVisualizer {
             this.pause();
             this.frame = this.replay.full_frames.length - 1;
             this.time = 1.0;
-            this.onUpdate();
-            this.onEnd();
+            this.onUpdate.dispatch();
+            this.onEnd.dispatch();
             return;
         }
         else if (this.frame < 0) {
@@ -370,13 +438,13 @@ export class HaliteVisualizer {
         if (prevFrame !== this.frame) {
             this.update();
         }
-        this.onUpdate();
+        this.onUpdate.dispatch();
     }
 
     pause() {
         if (!this._playing) return;
         this._playing = false;
-        this.onPause();
+        this.onPause.dispatch();
     }
 
     scrub(frame, time, dt=1000/60) {
@@ -393,7 +461,7 @@ export class HaliteVisualizer {
         this.time = time;
         if (time === 0.0) {
             this.update(delta);
-            this.onUpdate();
+            this.onUpdate.dispatch();
         }
         this.draw(dt);
         // TODO: this is SLOW. Tie rerendering during scrub to rAF
@@ -439,7 +507,7 @@ export class HaliteVisualizer {
         if (!this.isPlaying()) {
             this.application.render();
         }
-        this.onUpdate();
+        this.onUpdate.dispatch();
     }
 
     /**
@@ -515,13 +583,22 @@ export class HaliteVisualizer {
                 const cellSize = assets.CELL_SIZE;
 
                 if (event.type === "shipwreck") {
-                    // add death animation to be drawn
-                    // TODO: switch to Halite 3 animation
-                    this.animationQueue.push(
-                        new animation.ShipExplosionFrameAnimation(
-                            event, delayTime, cellSize, this.entityContainer));
                     // Remove all entities involved in crash
                     for (let index = 0; index < event.ships.length; index++) {
+                        // add death animation to be drawn
+                        // TODO: switch to Halite 3 animation
+                        for (const [player, playerShips] of
+                             Object.entries(this.currentFrame.entities)) {
+                            if (playerShips[event.ships[index]]) {
+                                this.animationQueue.push(
+                                    new animation.ShipExplosionFrameAnimation(
+                                        playerShips[event.ships[index]],
+                                        assets.PLAYER_COLORS[parseInt(player, 10)],
+                                        cellSize,
+                                        this.entityContainer));
+                            }
+                        }
+
                         const entity_id = event.ships[index];
                         // Might not actually exist when we're panning
                         if (this.entity_dict[entity_id]) {
@@ -596,7 +673,7 @@ export class HaliteVisualizer {
                     if (create) {
                         const dropoff_base = {"x" : event.location.x, "y" : event.location.y, "owner" : event.owner_id};
                         const dropoff = new Factory(this, dropoff_base, this.replay.constants,
-                                                    this.camera.scale, (kind, args) => this.onSelect(kind, args), this.application.renderer);
+                                                    this.camera.scale, (kind, args) => this.onSelect.dispatch(kind, args), this.application.renderer);
                         this.dropoffs.push(dropoff);
                         dropoff.attach(this.factoryContainer);
                     }

@@ -35,10 +35,14 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
     if (stats.total_entity_lifespan != 0) {
         average_distance = stats.total_distance / stats.total_entity_lifespan;
     }
+    energy_type final_production = 0;
+    if (!stats.turn_productions.empty()) {
+        final_production = stats.turn_productions.back();
+    }
     json = {FIELD_TO_JSON(player_id),
             FIELD_TO_JSON(rank),
             FIELD_TO_JSON(last_turn_alive),
-            {"final_production", stats.turn_productions.back()},
+            {"final_production", final_production},
             FIELD_TO_JSON(max_entity_distance),
             FIELD_TO_JSON(number_dropoffs),
             FIELD_TO_JSON(interaction_opportunities),

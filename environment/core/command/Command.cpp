@@ -114,7 +114,7 @@ std::string MoveCommand::to_bot_serial() const {
  * @param[out] json The JSON output.
  */
 void SpawnCommand::to_json(nlohmann::json &json) const {
-    json = {{JSON_TYPE_KEY,  to_string(Name::Spawn)},
+    json = {{JSON_TYPE_KEY,   to_string(Name::Spawn)},
             {JSON_ENERGY_KEY, energy}};
 }
 

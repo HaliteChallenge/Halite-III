@@ -63,7 +63,7 @@
                 <span v-if="playing" class="replay-btn" style="text-align: center">
                   <a href="javascript:;" @click="pauseVideo"><span class="icon-pause"></span></a>
                 </span>
-                
+
                 <span class="replay-btn">
                   <a href="javascript:;" @click="nextFrame"><span class="icon-next"></span></a>
                 </span>
@@ -492,7 +492,7 @@
       getVideoFeeds() {
         this.fetch({order_by: 'desc,game_id'}).then((data) => {
           // play the first video
-          // 
+          //
           const urlGameId = getParameterByName('game_id')
           console.log(urlGameId)
 
@@ -501,7 +501,7 @@
           } else if (data.length && data[0].game_id){
             this.play(data[0].game_id)
           }
-          // 
+          //
           this.recentVideos = data.slice(0, 4)
           this.videos = data
         });
@@ -561,7 +561,7 @@
             if (window && window.process && window.process.type) {
               libhaliteviz.setAssetRoot('assets/js/')
             } else {
-              libhaliteviz.setAssetRoot('/assets/js/')
+              libhaliteviz.setAssetRoot('')
             }
 
 

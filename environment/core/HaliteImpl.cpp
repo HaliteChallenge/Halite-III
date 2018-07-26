@@ -25,11 +25,17 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
     if (snapshot.map.size() > 0) {
         assert(snapshot.map.size() == static_cast<decltype(snapshot.map)::size_type>(game.map.width * game.map.height));
 
-        for (auto row = 0; row < game.map.height; row++) {
-            for (auto col = 0; col < game.map.width; col++) {
-                game.map.at(col, row).energy = snapshot.map.at(row * game.map.width + col);
+        for (dimension_type row = 0; row < game.map.height; row++) {
+            for (dimension_type col = 0; col < game.map.width; col++) {
+                game.map.at(col, row).energy = snapshot.map.at(static_cast<dimension_type>(row * game.map.width + col));
                 changed_cells.emplace(row, col);
             }
+        }
+    }
+
+    for (dimension_type row = 0; row < game.map.height; row++) {
+        for (dimension_type col = 0; col < game.map.width; col++) {
+            game.store.map_total_energy += game.map.at(col, row).energy;
         }
     }
 
@@ -46,7 +52,6 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
             for (const auto &[_, dropoff_location] : player_snapshot.dropoffs) {
                 auto &cell = game.map.at(dropoff_location);
                 cell.owner = player.id;
-                cell.energy = 0;
                 player.dropoffs.emplace_back(game.store.new_dropoff(dropoff_location));
                 game.replay.full_frames.back().events.push_back(
                         std::make_unique<ConstructionEvent>(
@@ -70,11 +75,14 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
 
     game.replay.game_statistics = game.game_statistics;
 
-    // Zero the energy on factories and mark as owned.
     for (auto &[player_id, player] : game.store.players) {
+        // Zero the energy on factory and mark as owned.
         auto &factory = game.map.at(player.factory);
+        game.store.map_total_energy -= factory.energy;
         factory.energy = 0;
         factory.owner = player_id;
+        // Prepare the log.
+        game.logs.add(player_id);
     }
 }
 
@@ -82,9 +90,27 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
 void HaliteImpl::run_game() {
     const auto &constants = Constants::get();
 
-    id_map<Player, std::future<void>> results{};
+    ordered_id_map<Player, std::future<void>> results{};
+    bool success = true;
     for (auto &[player_id, player] : game.store.players) {
-        Logging::log("Initializing player " + to_string(player.id) + " with command " + player.command);
+        Logging::log("Launching with command " + player.command, Logging::Level::Info, player.id);
+        try {
+            game.networking.connect_player(player);
+        } catch (const BotError &e) {
+            success = false;
+            kill_player(player_id);
+            Logging::log("Player could not be launched", Logging::Level::Error, player.id);
+            Logging::log(e.what(), Logging::Level::Error);
+        }
+    }
+    if (!success) {
+        game.replay.players.insert(game.store.players.begin(), game.store.players.end());
+        Logging::log("Some players failed to launch, aborting", Logging::Level::Error);
+        return;
+    }
+
+    for (auto &[player_id, player] : game.store.players) {
+        Logging::log("Initializing player", Logging::Level::Info, player_id);
         results[player_id] = std::async(std::launch::async,
                                         [&networking = game.networking, &player = player] {
                                             networking.initialize_player(player);
@@ -93,16 +119,16 @@ void HaliteImpl::run_game() {
     for (auto &[player_id, result] : results) {
         try {
             result.get();
-        }
-        catch (const BotError &e) {
+        } catch (const BotError &e) {
             kill_player(player_id);
         }
     }
     game.replay.players.insert(game.store.players.begin(), game.store.players.end());
-    Logging::log("Player initialization complete.");
+    Logging::log("Player initialization complete");
 
     for (game.turn_number = 0; game.turn_number < constants.MAX_TURNS; game.turn_number++) {
         Logging::set_turn_number(game.turn_number);
+        game.logs.set_turn_number(game.turn_number);
         Logging::log([turn_number = game.turn_number]() {
             return "Starting turn " + std::to_string(turn_number);
         }, Logging::Level::Debug);
@@ -119,11 +145,15 @@ void HaliteImpl::run_game() {
     game.game_statistics.number_turns = game.turn_number;
 
     rank_players();
-    Logging::set_turn_number(game.turn_number);
-    Logging::log("Game has ended.");
+    Logging::set_turn_number(Logging::ended);
+    game.logs.set_turn_number(PlayerLog::ended);
+    Logging::log("Game has ended");
     Logging::remove_turn_number();
     for (const auto &[player_id, player] : game.store.players) {
         game.replay.players.find(player_id)->second.terminated = player.terminated;
+        if (!player.terminated) {
+            game.networking.kill_player(player);
+        }
     }
 }
 
@@ -143,9 +173,9 @@ void HaliteImpl::process_turn() {
     for (auto &[player_id, result] : results) {
         try {
             commands[player_id] = result.get();
-        }
-        catch (const BotError &e) {
+        } catch (const BotError &e) {
             kill_player(player_id);
+            commands.erase(player_id);
         }
     }
 
@@ -180,6 +210,24 @@ void HaliteImpl::process_turn() {
         if (transaction.check()) {
             // All commands are successful.
             transaction.commit();
+            if (Constants::get().STRICT_ERRORS) {
+                if (!offenders.empty()) {
+                    std::ostringstream stream;
+                    stream << "Command processing failed for players: ";
+                    for (auto iterator = offenders.begin(); iterator != offenders.end(); iterator++) {
+                        stream << *iterator;
+                        if (std::next(iterator) != offenders.end()) {
+                            stream << ", ";
+                        }
+                    }
+                    stream << ", aborting due to strict error check";
+                    Logging::log(stream.str(), Logging::Level::Error);
+                    game.turn_number = Constants::get().MAX_TURNS;
+                    return;
+                }
+            } else {
+                assert(offenders.empty());
+            }
             // Add player commands to replay and note players still alive
             game.replay.full_frames.back().moves = std::move(commands);
             break;
@@ -210,6 +258,7 @@ void HaliteImpl::process_turn() {
             }
             entity.energy += extracted;
             cell.energy -= extracted;
+            game.store.map_total_energy -= extracted;
             game.store.changed_cells.emplace(location);
         }
     }
@@ -225,15 +274,22 @@ void HaliteImpl::process_turn() {
  * @return True if the game has ended.
  */
 bool HaliteImpl::game_ended() const {
+    if (game.store.map_total_energy == 0) {
+        return true;
+    }
     long num_alive_players = 0;
     for (auto &&[_, player] : game.store.players) {
-        // TODO: check that this is correct
-        if (player.is_alive()) {
+        bool can_play = !player.entities.empty() || player.energy > Constants::get().NEW_ENTITY_ENERGY_COST;
+        if (player.is_alive() && can_play) {
             num_alive_players++;
         }
         if (num_alive_players > 1) {
             return false;
         }
+    }
+    if (num_alive_players == 1 && game.store.players.size() == 1) {
+        // If there is only one player in the game, then let them keep playing.
+        return false;
     }
     return true;
 }
@@ -312,7 +368,7 @@ void HaliteImpl::rank_players() {
 }
 
 void HaliteImpl::kill_player(const Player::id_type &player_id) {
-    Logging::log("Killing player " + to_string(player_id), Logging::Level::Warning);
+    Logging::log("Killing player", Logging::Level::Warning, player_id);
     auto &player = game.store.get_player(player_id);
     player.terminated = true;
     game.networking.kill_player(player);
@@ -349,16 +405,13 @@ void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
     const auto player_id = error->player;
 
     // Log the error information.
-    if (offenders.find(player_id) == offenders.end()) {
-        game.log_error_section(player_id, "Turn " + std::to_string(game.turn_number));
-    }
     if (error->ignored) {
-        Logging::log("Player " + to_string(player_id) + " caused warning: " + message, Logging::Level::Warning);
-        game.log_error(player_id, "[warn] " + message);
+        Logging::log(message, Logging::Level::Warning, player_id);
+        game.logs.log(player_id, message, PlayerLog::Level::Warning);
     } else {
-        Logging::log("Player " + to_string(player_id) + " caused error: " + message, Logging::Level::Error);
+        Logging::log(message, Logging::Level::Error, player_id);
         offenders.emplace(player_id);
-        game.log_error(player_id, "[error] " + message);
+        game.logs.log(player_id, message, PlayerLog::Level::Error);
     }
 
     // Find the position of a command within a player's command list.
@@ -371,33 +424,40 @@ void HaliteImpl::handle_error(std::unordered_set<Player::id_type> &offenders,
 
     // Given a command position, log the context of that command.
     const auto log_context = [&player_commands, &game = game, &player_id](const auto position) {
-        static constexpr long COMMAND_CONTEXT_LINES = 3L;
+        static constexpr long COMMAND_CONTEXT_LINES = 2L;
         const auto distance = static_cast<long>(std::distance(player_commands.begin(), position));
         const auto commands_begin = player_commands.begin() + std::max(0L, distance - COMMAND_CONTEXT_LINES);
         const auto commands_end = player_commands.begin() +
-                std::min(static_cast<long>(player_commands.size()), distance + COMMAND_CONTEXT_LINES + 1);
+                                  std::min(static_cast<long>(player_commands.size()),
+                                           distance + COMMAND_CONTEXT_LINES + 1);
         for (auto iterator = commands_begin; iterator != commands_end; iterator++) {
             auto number = std::distance(player_commands.begin(), iterator);
             auto marker = iterator == position ? ">>> " : "    ";
-            game.log_error(player_id, marker + std::to_string(number + 1) + "   " +
-                                      (*iterator)->to_bot_serial());
+            game.logs.log(player_id, marker + std::to_string(number + 1) + "   " + (*iterator)->to_bot_serial());
         }
+        game.logs.log(player_id, "");
     };
 
     // Log the faulty command.
     auto position = find_position(faulty);
     auto distance = std::distance(player_commands.begin(), position);
-    game.log_error(player_id, "Failed at command " + std::to_string(distance + 1) + " of " +
-                              std::to_string(player_commands.size()) + ":");
+    game.logs.log(player_id, "At command " + std::to_string(distance + 1) + " of " +
+                  std::to_string(player_commands.size()) + ":");
     log_context(position);
 
     // If there is a context, log the context.
     const auto &context = error->context();
     if (!context.empty()) {
         const auto context_message = error->context_message();
-        game.log_error(player_id, context_message);
-        for (const Command &command : context) {
-            log_context(find_position(command));
+        game.logs.log(player_id, context_message);
+        static constexpr size_t MAX_CONTEXT_COMMANDS = 5;
+        const auto context_end = context.begin() + std::min(MAX_CONTEXT_COMMANDS, context.size());
+        for (auto iterator = context.begin(); iterator != context_end; iterator++) {
+            log_context(find_position(*iterator));
+        }
+        if (context.size() > MAX_CONTEXT_COMMANDS) {
+            game.logs.log(player_id, "(suppressing " + std::to_string(context.size() - MAX_CONTEXT_COMMANDS) +
+                                     " other commands)\n");
         }
     }
 }

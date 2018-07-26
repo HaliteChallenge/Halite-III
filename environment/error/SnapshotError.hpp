@@ -8,28 +8,30 @@
 
 /** Thrown when a snapshot cannot be decoded. */
 class SnapshotError : public std::exception {
-    std::string description;
-    int position;
+    std::string buffer;      /**< The message buffer. */
 
 public:
-    explicit SnapshotError(const std::string description, int position) : description{description},
-                                                                          position{position} {}
+    /**
+     * Construct SnapshotError from description and position.
+     * @param description The error description.
+     * @param position The decoding position.
+     */
+    SnapshotError(const std::string &description, int position) {
+        std::stringstream result;
+        result << "could not decode snapshot: ";
+        result << description;
+        result << " (at position ";
+        result << position;
+        result << ")";
+        buffer = result.str();
+    }
 
     /**
      * Get the exception description.
      * @return The exception description.
      */
     const char *what() const noexcept override {
-        std::stringstream result;
-
-        result << "Could not decode snapshot: ";
-        result << description;
-        result << " (at position ";
-        result << position;
-        result << ")";
-
-        const std::string copy = result.str();
-        return strdup(copy.c_str());
+        return buffer.c_str();
     }
 
 };

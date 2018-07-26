@@ -29,12 +29,15 @@ export default class Camera {
         view.addEventListener("mousemove", this.onDragMove.bind(this));
         view.addEventListener("mouseleave", this.onDragStop.bind(this));
         view.addEventListener("mouseup", this.onDragStop.bind(this));
-        view.addEventListener("mousewheel", this.onZoom.bind(this));
+        view.addEventListener("wheel", this.onZoom.bind(this));
     }
 
     // Adjust coordinates to account for scaling on canvas
     scaledToScreen(x, y) {
-        const zoom = parseFloat($('.game-replay-viewer').find('>canvas').css('zoom'));
+        let zoom = parseFloat($('.game-replay-viewer').find('>canvas').css('zoom'));
+        if (!Number.isFinite(zoom)) {
+            zoom = 1;
+        }
         return [ x / zoom, y / zoom ];
     }
 
@@ -58,8 +61,8 @@ export default class Camera {
     onZoom(e) {
         e.preventDefault();
 
-        const sign = e.wheelDelta >= 0 ? 1 : -1;
-        const delta = sign * Math.max(1, Math.min(2, Math.abs(e.wheelDelta) / 150));
+        const sign = e.deltaY >= 0 ? -1 : 1;
+        const delta = sign * Math.max(1, Math.min(2, Math.abs(e.deltaY) / 150));
         const percentX = (e.offsetX + 0.5 * this.scale) / this.visualizer.width;
         const percentY = (e.offsetY + 0.5 * this.scale) / this.visualizer.height;
 
@@ -106,7 +109,7 @@ export default class Camera {
             for (const ship of Object.values(this.visualizer.entity_dict)) {
                 if (Math.floor(ship.x) === worldX &&
                     Math.floor(ship.y) === worldY) {
-                    this.visualizer.onSelect("ship", {
+                    this.visualizer.onSelect.dispatch("ship", {
                         owner: ship.owner,
                         id: ship.id,
                     });
@@ -114,7 +117,7 @@ export default class Camera {
                 }
             }
             if (!selected) {
-                this.visualizer.onSelect("point", {
+                this.visualizer.onSelect.dispatch("point", {
                     x: worldX,
                     y: worldY,
                 });

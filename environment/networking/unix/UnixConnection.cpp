@@ -11,17 +11,20 @@
 #include "UnixConnection.hpp"
 
 /** Try a call, and throw NetworkingError if it fails. */
-#define CHECK(x) do { if ((x) < 0) { throw NetworkingError("Failed to execute " #x); } } while (false)
+#define CHECK(x) do { if ((x) < 0) { throw NetworkingError("failed to execute " #x); } } while (false)
 
 /** The number of slots in a pipe array. */
-constexpr auto PIPE_PAIR = 2;
+static constexpr auto PIPE_PAIR = 2;
 /** The index of the head of the pipe. */
-constexpr auto PIPE_HEAD = 0;
+static constexpr auto PIPE_HEAD = 0;
 /** The index of the tail of the pipe. */
-constexpr auto PIPE_TAIL = 1;
+static constexpr auto PIPE_TAIL = 1;
 
-/** Offset added to file descriptor, required by select(2) */
-constexpr auto NFDS_OFFSET = 1;
+/** Offset added to file descriptor, required by select(2). */
+static constexpr auto NFDS_OFFSET = 1;
+
+/** The maximum length of reading from stderr, in bytes. */
+static constexpr auto MAX_STDERR_LENGTH = 1024 * 1024;
 
 namespace net {
 
@@ -53,7 +56,7 @@ UnixConnection::UnixConnection(const std::string &command, NetworkingConfig conf
         // This is the child
         setpgid(getpid(), getpid());
         if (getppid() != ppid_before_fork) {
-            throw NetworkingError("Fork failed");
+            throw NetworkingError("fork failed");
         }
 
         // Redirect stdin, stdout, and stderr
@@ -67,9 +70,9 @@ UnixConnection::UnixConnection(const std::string &command, NetworkingConfig conf
         // Execute the command
         CHECK(execl("/bin/sh", "sh", "-c", command.c_str(), nullptr));
         // Nothing past here should be run
-        throw NetworkingError("Exec failed");
+        throw NetworkingError("exec failed");
     } else if (pid < 0) {
-        throw NetworkingError("Fork failed");
+        throw NetworkingError("fork failed");
     }
     this->read_pipe = read_pipe[PIPE_HEAD];
     close(read_pipe[PIPE_TAIL]);
@@ -94,7 +97,7 @@ UnixConnection::~UnixConnection() noexcept {
  */
 void UnixConnection::send_string(const std::string &message) {
     auto length = message.length();
-    Logging::log([length](){ return "Sending message with length " + std::to_string(length); }, Logging::Level::Debug);
+    Logging::log([length]() { return "Sending message with length " + std::to_string(length); }, Logging::Level::Debug);
     auto message_ptr = message.c_str();
     auto chars_remaining = static_cast<size_t>(length);
 
@@ -114,7 +117,7 @@ void UnixConnection::send_string(const std::string &message) {
             case EAGAIN:
                 continue;
             default:
-                throw NetworkingError("Could not send string");
+                throw NetworkingError("could not send string");
             }
         }
         message_ptr += chars_written;
@@ -174,22 +177,27 @@ std::string UnixConnection::get_string() {
         if (config.ignore_timeout) {
             selection_result = check_pipe(read_pipe);
         } else {
-            auto current_time = high_resolution_clock::now();
-            auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
-            if (remaining < milliseconds::zero()) {
-                // TODO: continue and read remainder of input
-                throw TimeoutError("when reading string", config.timeout, current_read);
+            selection_result = check_pipe(read_pipe, milliseconds::zero());
+            if (selection_result < 0) {
+                throw NetworkingError("select failed", current_read);
+            } else if (selection_result == 0) {
+                auto current_time = high_resolution_clock::now();
+                auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
+                if (remaining < milliseconds::zero()) {
+                    // TODO: continue and read remainder of input
+                    throw TimeoutError("when reading string", config.timeout, current_read);
+                }
+                selection_result = check_pipe(read_pipe, remaining);
             }
-            selection_result = check_pipe(read_pipe, remaining);
         }
         if (selection_result < 0) {
-            throw NetworkingError("Select failed", current_read);
+            throw NetworkingError("select failed", current_read);
         } else if (selection_result > 0) {
             // Read from the pipe, as many as we can into the buffer
             auto bytes_read = read(read_pipe, buffer.begin(), buffer.size());
-            if (bytes_read < 0) {
+            if (bytes_read <= 0) {
                 // TODO: continue and read remainder of input
-                throw NetworkingError("Read failed", current_read);
+                throw NetworkingError("read failed", current_read);
             }
             // Iterator one past the last read character
             auto read_end = buffer.begin() + bytes_read;
@@ -232,7 +240,6 @@ std::string UnixConnection::get_string() {
  */
 std::string UnixConnection::get_errors() {
     std::string result;
-    static constexpr auto MAX_STDERR_LENGTH = 1024;
     ssize_t bytes_read = 0;
     while ((bytes_read = read(error_pipe, buffer.begin(), buffer.size())) > 0
            && result.size() < MAX_STDERR_LENGTH) {

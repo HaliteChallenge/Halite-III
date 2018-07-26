@@ -18,6 +18,8 @@ namespace hlt {
 struct Constants {
     friend int ::main(int argc, char *argv[]);
 
+    bool STRICT_ERRORS = false;                 /**< Whether strict error checking mode is enabled. */
+
     unsigned long MAX_TURNS = 500;              /**< The maximum number of turns. */
     unsigned long MAX_PLAYERS = 16;             /**< The maximum number of players. */
     dimension_type DEFAULT_MAP_WIDTH = 128;     /**< The default width of generated maps. */
@@ -26,13 +28,13 @@ struct Constants {
     energy_type MAX_CELL_PRODUCTION = 1000;     /**< The maximum maximum amount of production on a cell. */
     energy_type MIN_CELL_PRODUCTION = 900;      /**< The minimum maximum amount of production on a cell. */
     energy_type MAX_ENERGY = 1000;              /**< The maximum amount of energy per entity. */
-    energy_type NEW_ENTITY_ENERGY_COST = 500;  /**< The base cost of a new entity. */
+    energy_type NEW_ENTITY_ENERGY_COST = 500;   /**< The base cost of a new entity. */
     energy_type INITIAL_ENERGY = 1000;          /**< The initial amount of energy for a player. */
 
-    energy_type DROPOFF_COST = 2000;           /**< The cost of a dropoff construction. */
+    energy_type DROPOFF_COST = 2000;            /**< The cost of a dropoff construction. */
     unsigned long MOVE_COST_RATIO = 10;         /**< The cost of a move is the source's energy divided by this. */
     unsigned long DROPOFF_PENALTY_RATIO = 4;    /**< The cost ratio of using another player's dropoff. */
-    unsigned long EXTRACT_RATIO = 4;           /**< The ratio of energy extracted from a cell per turn. */
+    unsigned long EXTRACT_RATIO = 4;            /**< The ratio of energy extracted from a cell per turn. */
 
     double PERSISTENCE = 0.7; // Determines relative weight of local vs global features.
     double FACTOR_EXP_1 = 2; // Determines initial spikiness of map. Higher values weight towards 0.

@@ -6,7 +6,7 @@
 
 std::mutex Logging::cerr_mutex;
 
-long Logging::turn_number = -1;
+long Logging::turn_number = init_turn;
 
 /** The names of the log levels, indexed by level. */
 constexpr char const *level_names[] = {"debug", "info", "warn", "error"};
@@ -40,8 +40,9 @@ void Logging::set_enabled(bool enabled) {
  * Immediately log a message, without level checking.
  * @param message The message to log.
  * @param level The log level.
+ * @param player The player sending the message.
  */
-void Logging::_log(const std::string &message, Level level) {
+void Logging::_log(const std::string &message, Level level, class_id<hlt::Player> player) {
     std::lock_guard<std::mutex> guard(Logging::cerr_mutex);
     auto level_num = static_cast<int>(level);
     std::cerr << "["
@@ -52,6 +53,9 @@ void Logging::_log(const std::string &message, Level level) {
     if (turn_number >= 0) {
         std::cerr << "[" << turn_number << "] ";
     }
+    if (player != Enumerated<hlt::Player>::None) {
+        std::cerr << "[P" << player << "] ";
+    }
     std::cerr << message << std::endl;
 }
 
@@ -59,8 +63,8 @@ void Logging::_log(const std::string &message, Level level) {
  * Set the turn number.
  * @param turn_number The turn number.
  */
-void Logging::set_turn_number(unsigned long turn_number) {
-    Logging::turn_number = static_cast<long>(turn_number);
+void Logging::set_turn_number(long turn_number) {
+    Logging::turn_number = turn_number;
 }
 
 /** Remove the turn number. */

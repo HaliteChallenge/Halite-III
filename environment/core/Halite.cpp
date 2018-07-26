@@ -9,25 +9,21 @@ namespace hlt {
 /**
  * Constructor for the main game.
  *
- * @param config The configuration options for the game.
  * @param map The game map.
  * @param networking_config The networking configuration.
  * @param players The list of players.
  * @param game_statistics The game statistics to use.
  * @param replay The game replay to use.
  */
-Halite::Halite(const Config &config,
-               Map &map,
+Halite::Halite(Map &map,
                const net::NetworkingConfig &networking_config,
                GameStatistics &game_statistics,
                Replay &replay) :
         map(map),
         game_statistics(game_statistics),
         replay(replay),
-        config(config),
         networking(networking_config, *this),
-        impl(std::make_unique<HaliteImpl>(*this)) {
-}
+        impl(std::make_unique<HaliteImpl>(*this)) {}
 
 /**
  * Run the game.
@@ -85,20 +81,6 @@ std::string Halite::to_snapshot(const hlt::mapgen::MapParameters &map_parameters
     }
 
     return output.str();
-}
-
-void Halite::log_error_section(Player::id_type id, const std::string &section_name) {
-    auto &error_log = error_logs[id];
-    error_log << std::endl;
-    error_log << section_name;
-    error_log << std::endl;
-    error_log << "================================================================" << std::endl;
-}
-
-void Halite::log_error(Player::id_type id, const std::string &text) {
-    auto &error_log = error_logs[id];
-    error_log << text;
-    error_log << std::endl;
 }
 
 /** Default destructor is defined where HaliteImpl is complete. */
