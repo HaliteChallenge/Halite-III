@@ -27,9 +27,11 @@ const css = `
 }
 
 .embedded-clashbar-energybar {
-    height: 1em;
-    opacity: 0.5;
+    height: 1.25rem;
     transition: width 0.2s ease;
+    color: #FFF;
+    font-size: 0.75em;
+    line-height: 1.25rem;
 }
 
 .embedded-toolbar {
@@ -154,9 +156,10 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
                 }
             }
             for (const [ id, width ] of Object.entries(widths)) {
-                clashbar
-                    .querySelector(`div:nth-child(${parseInt(id, 10) + 1})`)
-                    .style.width = `${width}%`;
+                const bar = clashbar
+                      .querySelector(`div:nth-child(${parseInt(id, 10) + 1})`);
+                bar.style.width = `${width}%`;
+                bar.innerText = `${energies[id]} energy`;
             }
 
             const tooltip = [];
@@ -184,7 +187,9 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         });
         slider.addEventListener("change", () => {
             if (this.isPlaying()) this.pause();
+            progress.innerText = slider.value;
             this.scrub(parseInt(slider.value, 10), 0);
+            this.onUpdate.dispatch();
         });
 
         container.appendChild(clashbar);
