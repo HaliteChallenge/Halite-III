@@ -35,7 +35,7 @@ std::string ExcessiveCommandsError::log_message() const {
     stream << "entity "
            << entity
            << " received "
-           << context().size()
+           << context().size() + 1
            << " commands on this turn, but only one is permitted";
     return stream.str();
 }

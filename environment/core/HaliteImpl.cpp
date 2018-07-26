@@ -22,12 +22,12 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
     auto factory_iterator = game.map.factories.begin();
 
     // Load the map from the snapshot
-    if (snapshot.map.size() > 0) {
+    if (!snapshot.map.empty()) {
         assert(snapshot.map.size() == static_cast<decltype(snapshot.map)::size_type>(game.map.width * game.map.height));
 
         for (dimension_type row = 0; row < game.map.height; row++) {
             for (dimension_type col = 0; col < game.map.width; col++) {
-                game.map.at(col, row).energy = snapshot.map.at(static_cast<dimension_type>(row * game.map.width + col));
+                game.map.at(col, row).energy = snapshot.map.at(static_cast<size_t>(row * game.map.width + col));
                 changed_cells.emplace(row, col);
             }
         }
