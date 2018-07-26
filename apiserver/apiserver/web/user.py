@@ -367,7 +367,7 @@ def create_user(*, user_id):
 @util.cross_origin(methods=["GET", "PUT"])
 @web_util.requires_login(optional=True, accept_key=True)
 def get_user(intended_user, *, user_id):
-    with model.engine.connect() as conn:
+    with model.read_engine().connect() as conn:
         query = model.all_users.select(
             model.all_users.c.user_id == intended_user)
 
@@ -388,7 +388,7 @@ def get_user(intended_user, *, user_id):
 @util.cross_origin(methods=["GET"])
 @web_util.requires_login(optional=True, accept_key=True)
 def get_user_season1(intended_user, *, user_id):
-    with model.engine.connect() as conn:
+    with model.read_engine().connect() as conn:
         query = model.all_users.select(
             model.all_users.c.user_id == intended_user)
 
@@ -458,7 +458,7 @@ def verify_user_email(user_id):
 @util.cross_origin(methods=["POST"])
 @web_util.requires_login()
 def resend_user_verification_email(user_id):
-    with model.engine.connect() as conn:
+    with model.read_engine().connect() as conn:
         row = conn.execute(
             model.users.select(model.users.c.id == user_id)
         ).first()

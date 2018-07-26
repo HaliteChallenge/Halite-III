@@ -51,7 +51,7 @@ def leaderboard():
     if not order_clause:
         order_clause = [model.ranked_bots_users.c.rank]
 
-    with model.engine.connect() as conn:
+    with model.read_engine().connect() as conn:
         if _COUNT_KEY in flask.request.args:
             return str(api_util.get_value(conn.execute(_count_leaderboard_query(where_clause))))
 
@@ -147,7 +147,7 @@ def leaderboard():
 @util.cross_origin(methods=["GET"])
 def leagues():
     result = []
-    with model.engine.connect() as conn:
+    with model.read_engine().connect() as conn:
         query = conn.execute(
             model.leagues.select())
 

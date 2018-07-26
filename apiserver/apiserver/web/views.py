@@ -77,7 +77,7 @@ def discourse_sso():
 @web_api.route("/finals", methods=["GET"])
 @util.cross_origin(methods=["GET"])
 def status():
-    with model.engine.connect() as conn:
+    with model.read_engine().connect() as conn:
         last_game_id = conn.execute(sqlalchemy.sql.select([
                     sqlalchemy.sql.func.max(model.games.c.id)
                 ]).select_from(model.games)).first()[0]

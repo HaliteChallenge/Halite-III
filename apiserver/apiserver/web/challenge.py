@@ -36,7 +36,7 @@ def make_challenge_record(challenge, participants):
 
 
 def get_challenge_helper(challenge_id):
-    with model.engine.connect() as conn:
+    with model.read_engine().connect() as conn:
         query = sqlalchemy.sql.select([
             model.challenges.c.id,
             model.challenges.c.created,
@@ -67,7 +67,7 @@ def get_challenge_helper(challenge_id):
 
 def list_challenges_helper(offset, limit, participant_clause,
                            where_clause, order_clause):
-    with model.engine.connect() as conn:
+    with model.read_engine().connect() as conn:
         query = sqlalchemy.sql.select([
             model.challenges.c.id,
             model.challenges.c.created,

@@ -100,7 +100,7 @@ def list_matches_helper(offset, limit, participant_clause,
     """
     result = []
 
-    with model.engine.connect() as conn:
+    with model.read_engine().connect() as conn:
         query = sqlalchemy.sql.select([
             model.games.c.id,
             model.games.c.replay_name,

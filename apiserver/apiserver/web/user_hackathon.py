@@ -15,7 +15,7 @@ from .blueprint import web_api
 @util.cross_origin(methods=["GET", "POST"])
 def get_user_hackathons(intended_user):
     record = []
-    with model.engine.connect() as conn:
+    with model.read_engine().connect() as conn:
         hackathons = conn.execute(sqlalchemy.sql.select([
             model.hackathons.c.id,
             model.hackathons.c.title,
