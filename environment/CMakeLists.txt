@@ -101,12 +101,14 @@ link_directories(${EXTERNAL_INSTALL_LOCATION}/zstd/build/cmake/lib)
 add_library(halite_core OBJECT ${SOURCE_FILES})
 
 add_executable(halite $<TARGET_OBJECTS:halite_core> main.cpp)
-add_dependencies(halite VERSION_CHECK libzstd_static)
+if (NOT WIN32)
+    add_dependencies(halite VERSION_CHECK libzstd_static)
+endif()
 
 file(GLOB_RECURSE SOURCE ${CMAKE_SOURCE_DIR}/test/*.[ch]*)
 set(TEST_FILES "${TEST_FILES}" ${SOURCE})
 
-if(CMAKE_BUILD_TYPE MATCHES Debug)
+if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
     set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules)
     include(CodeCoverage)
     set(COVERAGE_EXCLUDES '${CMAKE_SOURCE_DIR}/external/*' '${CMAKE_SOURCE_DIR}/test/*' '/usr/include/*')
