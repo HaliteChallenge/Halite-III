@@ -14,8 +14,8 @@ typedef long id_type;
 typedef long dimension_type;
 
 namespace hlt {
-static constexpr halite_type MAX_HALITE = 65535;
-static constexpr halite_type SHIP_COST = 65536;
+static constexpr halite_type MAX_HALITE = 1000;
+static constexpr halite_type SHIP_COST = 500;
 }
 
 struct Logging {

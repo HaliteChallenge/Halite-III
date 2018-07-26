@@ -1,6 +1,6 @@
 open HaliteImpl
 
-let init_state () =
+let get_init () =
   let (num_players, player_id) = Scanf.scanf "%d %d\n" (fun x y -> (x, Player.Player y)) in
   let players : (Player.id, location) Hashtbl.t = Hashtbl.create num_players in
   for _ = 1 to num_players do
@@ -24,7 +24,7 @@ let init_state () =
     ) players;
   Player.current_player := Some (Hashtbl.find Player.players player_id)
 
-let update_state () =
+let get_frame () =
   let turn_number = Scanf.scanf "%d\n" (fun x -> x) in
   let players = Player.players in
   for _ = 1 to Hashtbl.length players do
@@ -72,7 +72,7 @@ let update_state () =
   end;
   turn_number
 
-let send_commands commands =
+let end_turn commands =
   let open Halite in
   let id entity = match Entity.id entity with Entity.Entity id -> id in
   List.iter begin
@@ -87,4 +87,4 @@ let send_commands commands =
   end commands;
   Printf.printf "\n"; flush stdout
 
-let send_name name = Printf.printf "%s\n" name; flush stdout
+let send_init name = Printf.printf "%s\n" name; flush stdout
