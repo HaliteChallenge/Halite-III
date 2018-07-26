@@ -34,7 +34,10 @@ export default class Camera {
 
     // Adjust coordinates to account for scaling on canvas
     scaledToScreen(x, y) {
-        const zoom = parseFloat($('.game-replay-viewer').find('>canvas').css('zoom'));
+        let zoom = parseFloat($('.game-replay-viewer').find('>canvas').css('zoom'));
+        if (!Number.isFinite(zoom)) {
+            zoom = 1;
+        }
         return [ x / zoom, y / zoom ];
     }
 
