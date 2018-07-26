@@ -29,7 +29,7 @@ export default class Camera {
         view.addEventListener("mousemove", this.onDragMove.bind(this));
         view.addEventListener("mouseleave", this.onDragStop.bind(this));
         view.addEventListener("mouseup", this.onDragStop.bind(this));
-        view.addEventListener("mousewheel", this.onZoom.bind(this));
+        view.addEventListener("wheel", this.onZoom.bind(this));
     }
 
     // Adjust coordinates to account for scaling on canvas
@@ -58,8 +58,8 @@ export default class Camera {
     onZoom(e) {
         e.preventDefault();
 
-        const sign = e.wheelDelta >= 0 ? 1 : -1;
-        const delta = sign * Math.max(1, Math.min(2, Math.abs(e.wheelDelta) / 150));
+        const sign = e.deltaY >= 0 ? -1 : 1;
+        const delta = sign * Math.max(1, Math.min(2, Math.abs(e.deltaY) / 150));
         const percentX = (e.offsetX + 0.5 * this.scale) / this.visualizer.width;
         const percentY = (e.offsetY + 0.5 * this.scale) / this.visualizer.height;
 
