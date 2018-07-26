@@ -20,11 +20,13 @@ public class MyBot {
 			map = Networking.getMap();
 
 			// Dump halite at our shipyard if a ship is sitting on top of it
-			// Otherwise, move our ships randomnly
+			// Otherwise, move our ships randomly
+			boolean atHome = false;
 			for (Ship ship: players[myID].getShips()) {
 				if (ship.getLocation() == players[myID].getShipyardLocation()
 						&& ship.halite > Constants.MAX_HALITE / 4) {
 					ship.dumpHalite(ship.halite);
+				atHome = true;
 				} else if (map.getHalite(ship.getLocation()) < Constants.MAX_HALITE / 10) {
 					ship.move(Direction.randomDirection());
 				}
@@ -33,7 +35,9 @@ public class MyBot {
 			// Spawn a ship if we're in the start or middle of the game
 			// and if we have the available halite
 			if (Networking.getTurnNumber() <= 200 && players[myID].getHalite() >= Constants.SHIP_COST)  {
-				Networking.spawn(0);
+				if (players[myID].getShips().isEmpty() || (Networking.getTurnNumber() > 20 && !atHome)) {
+					Networking.spawn(0);
+				}
 			}
 
 			//Send back our commands
