@@ -114,6 +114,8 @@ def github_login_callback():
             )).inserted_primary_key
             flask.session["user_id"] = new_user_id[0]
             return flask.redirect(urllib.parse.urljoin(config.SITE_URL, "/create-account"))
+        elif not user["is_active"]:
+            raise util.APIError(403, message="User is disabled.")
         else:
             flask.session["user_id"] = user["id"]
             return flask.redirect(urllib.parse.urljoin(config.SITE_URL, "/user/?me"))
