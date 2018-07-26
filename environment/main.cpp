@@ -81,11 +81,11 @@ int main(int argc, char *argv[]) {
     }
 
     // Set the random seed
-    auto seed = static_cast<unsigned int>(time(nullptr));
+    auto seed = seed_arg.isSet() ? seed_arg.getValue() : static_cast<unsigned int>(time(nullptr));
 
     // Get the map parameters
-    auto map_width = width_arg.getValue();
-    auto map_height = height_arg.getValue();
+    auto map_width = width_arg.isSet() ? width_arg.getValue() : constants.DEFAULT_MAP_WIDTH;
+    auto map_height = height_arg.isSet() ? height_arg.getValue() : constants.DEFAULT_MAP_HEIGHT;
     auto n_players = players_arg.getValue();
 
     auto verbosity = verbosity_arg.getValue();
