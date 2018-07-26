@@ -41,10 +41,12 @@ else()
     include_directories(${CMAKE_SOURCE_DIR}/networking/unix)
 endif()
 
+if (NOT WIN32)
 add_custom_target(VERSION_CHECK
     ./set_version.sh
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
+endif()
 
 set(dirs
     ${CMAKE_SOURCE_DIR}/config
