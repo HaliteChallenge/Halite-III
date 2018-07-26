@@ -190,7 +190,7 @@ def list_users():
         "rank": model.all_users.c.rank,
     })
 
-    with model.engine.connect() as conn:
+    with model.read_engine().connect() as conn:
         total_users = conn.execute(model.total_ranked_users).first()[0]
 
         query = conn.execute(

@@ -1,6 +1,8 @@
 from .. import config
 
 if __name__ == "__main__":
-    print("{}:{}:{}".format(config.DATABASE_PROJECT_ID,
-                            config.DATABASE_REGION,
-                            config.DATABASE_INSTANCE_NAME))
+    for (region, instance_name, port) in config.DATABASES:
+        print("{} {}:{}:{}".format(port,
+                                   config.DATABASE_PROJECT_ID,
+                                   region,
+                                   instance_name))

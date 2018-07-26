@@ -1,4 +1,5 @@
 import enum
+import random
 
 import google.cloud.datastore as gcloud_datastore
 import google.cloud.storage as gcloud_storage
@@ -24,8 +25,14 @@ class ChallengeStatus(enum.Enum):
 
 
 # Database setup
-engine = sqlalchemy.create_engine(config.DATABASE_URL)
+engines = []
+for (_, _, port) in config.DATABASES:
+    engines.append(sqlalchemy.create_engine(config.DATABASE_URL.format(port=port)))
+engine = engines[0]
 metadata = sqlalchemy.MetaData(bind=engine)
+
+def read_engine():
+    return random.choice(engines[1:])
 
 organizations = sqlalchemy.Table("organization", metadata, autoload=True)
 organization_email_domains = \
