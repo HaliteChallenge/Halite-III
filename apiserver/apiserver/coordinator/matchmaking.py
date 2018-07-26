@@ -169,6 +169,19 @@ def reset_challenges(conn):
     )
     conn.execute(reset_stuck_challenges)
 
+    # Find challenges involving disabled users, and finish them right now
+    finish_disabled_challenges = model.challenges.update().values(
+        status='finished',
+        finished=sqlalchemy.sql.func.current_timestamp(),
+    ).where(
+        (model.challenges.c.id == model.challenge_participants.c.challenge_id) &
+        (model.challenge_participants.c.user_id == model.users.c.id) &
+        (model.users.c.is_active == False) &
+        (model.challenges.c.status != 'finished')
+    )
+    conn.execute(finish_disabled_challenges)
+
+
 
 def find_challenge(conn, has_gpu=False):
     """
