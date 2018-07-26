@@ -20,8 +20,13 @@ SymmetricalTile::SymmetricalTile(const MapParameters &parameters) :
         num_players(parameters.num_players) {
 
     // Ensure that the map can be created in symmetrical fashion
-    const std::unordered_set<unsigned long> ALLOWED_NUMBERS({2, 4, 8, 16});
-
+    const std::unordered_set<unsigned long> ALLOWED_NUMBERS({1, 2, 4, 8, 16});
+    if (ALLOWED_NUMBERS.find(num_players) == ALLOWED_NUMBERS.end()) {
+        std::ostringstream stream;
+        stream << "We cannot create a game map for the specified number of players (" << num_players << "). ";
+        stream << "Please try playing with 1, 2, 4, 8, or 16 players";
+        Logging::log(stream.str(), Logging::Level::Error);
+    }
     assert(ALLOWED_NUMBERS.find(num_players) != ALLOWED_NUMBERS.end());
 
     unsigned long num_tiles = 1;
@@ -41,6 +46,12 @@ SymmetricalTile::SymmetricalTile(const MapParameters &parameters) :
     tile_height = height / num_tile_rows;
 
     // Ensure these tiles then make up the whole map
+    if (!(tile_width * num_tile_cols == width && tile_height * num_tile_rows == height)) {
+        std::ostringstream stream;
+        stream << "We cannot create a symmetrical map of dimensions " << width << " x " << height << " for " << num_players;
+        stream << " players. Try using dimensions that are a power of 2 instead.";
+        Logging::log(stream.str(), Logging::Level::Error);
+    }
     assert(tile_width * num_tile_cols == width && tile_height * num_tile_rows == height);
 }
 
