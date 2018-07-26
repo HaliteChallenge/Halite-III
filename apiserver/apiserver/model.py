@@ -66,7 +66,7 @@ def ranked_bots_query(alias="ranked_bots"):
             order_by=bots.c.score.desc()
         ).label("bot_rank"),
     ]).select_from(
-        bots.join(users)
+        bots.join(users, bots.c.user_id == users.c.id)
     ).where(
         users.c.is_active == True
     ).order_by(
