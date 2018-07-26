@@ -489,9 +489,9 @@ def resend_user_verification_email(user_id):
 
 @web_api.route("/user/<int:intended_user_id>", methods=["PUT"])
 @util.cross_origin(methods=["GET", "PUT"])
-@web_util.requires_login(accept_key=False)
-def update_user(intended_user_id, *, user_id):
-    if user_id != intended_user_id:
+@web_util.requires_login(accept_key=False, maybe_admin=True)
+def update_user(intended_user_id, *, user_id, is_admin):
+    if user_id != intended_user_id and not is_admin:
         raise web_util.user_mismatch_error()
 
     fields = flask.request.get_json()
@@ -503,13 +503,14 @@ def update_user(intended_user_id, *, user_id):
         "email": "email",
         "verification_code": "organization_verification_code",
         "is_gpu_enabled": "is_gpu_enabled",
+        "is_active": "is_active",
     }
 
     update = {}
     message = []
 
     for key in fields:
-        if key not in columns:
+        if key not in columns or (key == "is_active" and not is_admin):
             raise util.APIError(400, message="Cannot update '{}'".format(key))
 
         if (fields[key] is not None or
@@ -524,7 +525,7 @@ def update_user(intended_user_id, *, user_id):
 
     with model.engine.connect() as conn:
         old_user = conn.execute(
-            model.users.select(model.users.c.id == user_id)).first()
+            model.users.select(model.users.c.id == intended_user_id)).first()
         if update.get("organization_id") is not None:
             org_data = conn.execute(
                 model.organizations.select(model.organizations.c.id == update["organization_id"])
@@ -585,7 +586,7 @@ def update_user(intended_user_id, *, user_id):
         # generates invalid SQL)
         if update:
             conn.execute(model.users.update().where(
-                model.users.c.id == user_id
+                model.users.c.id == intended_user_id
             ).values(**update))
 
         user_data = conn.execute(sqlalchemy.sql.select(["*"]).select_from(
@@ -600,7 +601,7 @@ def update_user(intended_user_id, *, user_id):
 
         if "email" in update and update.get("organization_id"):
             send_verification_email(
-                notify.Recipient(user_id, user_data["username"],
+                notify.Recipient(intended_user_id, user_data["username"],
                                  user_data["email"],
                                  user_data["organization_name"],
                                  user_data["player_level"],
@@ -608,7 +609,7 @@ def update_user(intended_user_id, *, user_id):
                 update["verification_code"])
         elif "email" in update:
             send_verification_email(
-                notify.Recipient(user_id, user_data["username"],
+                notify.Recipient(intended_user_id, user_data["username"],
                                  user_data["email"],
                                  "unknown",
                                  user_data["player_level"],
@@ -619,7 +620,9 @@ def update_user(intended_user_id, *, user_id):
         return util.response_success({
             "message": "\n".join(message),
         })
-    return util.response_success()
+    return util.response_success({
+        "update": update
+    })
 
 
 @web_api.route("/user/<int:intended_user_id>", methods=["DELETE"])

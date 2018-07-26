@@ -80,7 +80,7 @@ def validate_session_cookie(user_id):
 
 
 def requires_login(accept_key=False, optional=False, admin=False,
-                   association=False):
+                   association=False, maybe_admin=False):
     """
     Indicates that an endpoint requires the user to be logged in.
 
@@ -89,6 +89,8 @@ def requires_login(accept_key=False, optional=False, admin=False,
     :param optional: if True, do not return HTTP 403 if the user is not
     logged in.
     :param admin: if True, only accept admin users.
+    :param maybe_admin: if True, accept admin users and pass the `is_admin`
+    flag to the view.
     :param association: if True, only accept users that have associated and
     verified their email.
     """
@@ -115,6 +117,8 @@ def requires_login(accept_key=False, optional=False, admin=False,
                         403, message="User cannot take this action.")
                 else:
                     kwargs["user_id"] = user["user_id"]
+                    if maybe_admin:
+                        kwargs["is_admin"] = user["is_admin"]
             elif optional:
                 kwargs["user_id"] = None
             else:
