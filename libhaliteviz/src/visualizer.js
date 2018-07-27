@@ -423,7 +423,7 @@ export class HaliteVisualizer {
             this.time = 1.0;
         }
 
-        if (this.frame > this.replay.full_frames.length) {
+        if (this.frame >= this.replay.full_frames.length) {
             this.pause();
             this.frame = this.replay.full_frames.length - 1;
             this.time = 1.0;
