@@ -25,10 +25,11 @@ def make_team_record(team, members):
     for member in members:
         record = {
             "user_id": member["user_id"],
-            "is_leader": member["is_leader"],
+            "is_leader": member["user_id"] == team["leader_id"],
             "username": member["username"],
             "player_level": member["player_level"],
             "organization_id": member["organization_id"],
+            "organization_name": member["organization_name"],
             "country_code": member["country_code"],
             "country_subdivision_code": member["country_subdivision_code"],
         }
@@ -37,6 +38,7 @@ def make_team_record(team, members):
             result["score"] = member["score"]
             result["mu"] = member["mu"]
             result["sigma"] = member["sigma"]
+            result["rank"] = member["rank"]
         result["members"][member["user_id"]] = record
 
     return result
@@ -73,6 +75,7 @@ def list_teams_helper(offset, limit, participant_clause,
             model.teams.c.id,
             model.teams.c.created,
             model.teams.c.name,
+            model.teams.c.leader_id,
         ]).select_from(model.teams).where(
             where_clause &
             sqlalchemy.sql.exists(model.team_members.select(
@@ -84,23 +87,22 @@ def list_teams_helper(offset, limit, participant_clause,
         teams = conn.execute(query)
         result = []
         for team in teams.fetchall():
-            # TODO: grab rank of the team leader
             members = conn.execute(sqlalchemy.sql.select([
                 model.team_members.c.user_id,
-                model.team_members.c.is_leader,
-                model.users.c.username,
-                model.users.c.player_level,
-                # TODO: organization name
-                model.users.c.organization_id,
-                model.users.c.country_code,
-                model.users.c.country_subdivision_code,
-                model.users.c.num_submissions,
-                model.users.c.score,
-                model.users.c.mu,
-                model.users.c.sigma,
-            ]).select_from(model.challenge_participants.join(
-                model.users,
-                model.team_members.c.user_id == model.users.c.id
+                model.all_users.c.username,
+                model.all_users.c.player_level,
+                model.all_users.c.organization_id,
+                model.all_users.c.organization_name,
+                model.all_users.c.country_code,
+                model.all_users.c.country_subdivision_code,
+                model.all_users.c.num_submissions,
+                model.all_users.c.score,
+                model.all_users.c.mu,
+                model.all_users.c.sigma,
+                model.all_users.c.rank,
+            ]).select_from(model.team_members.join(
+                model.all_users,
+                model.team_members.c.user_id == model.all_users.c.user_id
             )).where(
                 model.team_members.c.team_id == team["id"]
             )).fetchall()
