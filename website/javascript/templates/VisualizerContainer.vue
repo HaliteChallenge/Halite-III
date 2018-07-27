@@ -108,7 +108,20 @@
         })
       }
 
-      if (params.has('game_id')) {
+      if (params.has('ondemand')) {
+        this.message = "Downloading latest ondemand game.`"
+        this.is_upload = false;
+
+        (async function() {
+          const me = await api.me()
+          const replayBlob = await api.get_ondemand_replay(me["user_id"])
+          setupGame({
+            game: null,
+            replay: replayBlob,
+          })
+        })()
+      }
+      else if (params.has('game_id')) {
         const game_id = params.get('game_id')
         this.message = `Downloading game ${game_id}.`
         this.is_upload = false
