@@ -1,5 +1,5 @@
 .card-player{
-  background-color: #24252C;
+  background-color: #FFF;
   padding: 10px;
   margin-bottom: 10px;
   .circle{
@@ -13,18 +13,17 @@
 
   &-name{
     font-size: 18px;
-    color: #ECFFFB;
     letter-spacing: 1px;
     position: relative;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     padding-right: 15px;
+    font-weight: normal;
   }
   &-stats{
     font-size: 14px;
     line-height: 2em;
-    color: #b0bebe;
     letter-spacing: 0.5px;
     line-height: 30px;
     [class*="icon"]{

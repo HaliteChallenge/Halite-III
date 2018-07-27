@@ -143,12 +143,12 @@
                       <td>{{`${replay.production_map.width}x${replay.production_map.height}`}}</td>
                     </tr>
                     <tr>
-                      <th>Map Parameters:</th>
-                      <td>{{replay.production_map.map_generator}}</td>
+                      <th>Map Seed:</th>
+                      <td>{{replay.map_generator_seed}}</td>
                     </tr>
                     <tr>
-                      <th>Seed:</th>
-                      <td>{{replay.map_generator_seed}}</td>
+                      <th>Engine Version:</th>
+                      <td>{{replay.ENGINE_VERSION}}</td>
                     </tr>
                     <tr>
                       <th>Replay Version:</th>
@@ -176,10 +176,6 @@
                 <h4>player details</h4>
                 <span class="toggle-icon chevron"></span>
                 <i class="xline xline-bottom"></i>
-                <div v-for="player in players">
-                    <span :class="`color-${player.index + 1}`">{{player.name}}</span>
-                    has {{player.current_energy}} energy
-                </div>
               </a>
             </div>
             <div class="panel-collapse collapse" :class="{'in': showPlayerDetailPanel}" role="tabpanel" :aria-expanded="showPlayerDetailPanel.toString()" id="widget_player_details" aria-labelledby="heading_player_details">
@@ -206,7 +202,7 @@
               <div v-if="selectedShip">
                 <SelectedShip :selected-ship="selectedShip" :players="players"></SelectedShip>
               </div>
-              <div class="message-box" v-else>
+              <div class="message-box" v-if="!selectedPoint && !selectedShip">
                 <p><span class="icon-info"></span></p>
                 <p>Click on a ship, planet, or other map location to see properties</p>
               </div>
@@ -494,11 +490,6 @@
             const camera = visualizer.camera
             this.pan.x = (camera.cols - camera.pan.x) % camera.cols
             this.pan.y = (camera.rows - camera.pan.y) % camera.rows
-            if (visualizer.currentFrame) {
-              for (const player of this.players) {
-                player.current_energy = visualizer.currentFrame.energy[player.player_id]
-              }
-            }
           })
           visualizer.onPlay.add(() => {
             this.playing = true
@@ -617,12 +608,12 @@
     },
     computed: {
       statistics: function () {
-        let count = {}
+        const count = {}
 
         if (!this.entitiesProduced) {
           this.entitiesProduced = []
           for (let frame of this.replay.full_frames) {
-            let thisFrame = { 0: 3, 1: 3, 2: 3, 3: 3 }
+            let thisFrame = { 0: 0, 1: 0, 2: 0, 3: 0 }
             if (this.entitiesProduced.length > 0) {
               thisFrame[0] = this.entitiesProduced[this.entitiesProduced.length - 1][0]
               thisFrame[1] = this.entitiesProduced[this.entitiesProduced.length - 1][1]
@@ -642,13 +633,14 @@
 
         for (let i = 0; i < this.replay.number_of_players; i++) {
           count[i] = {
-            ships: 0,
-            planets: 0,
-            shipsRate: 0,
-            planetsRate: 0,
-            shipsProduced: 0
+            ships: Object.keys(this.replay.full_frames[this.frame].entities[i] || {}).length,
+            dropoffs: 0,
+            collisions: 0,
+            shipsProduced: this.entitiesProduced[this.frame][i],
           }
         }
+
+        return count
       },
       chartData: function () {
         let output = {
@@ -766,7 +758,7 @@
       },
       getSortedPlayers: async function () {
         const players = await this.getPlayers()
-        this.players = players.map(p => { p.current_energy = 1000; return p })
+        this.players = players
         this.sortedPlayers = _.sortBy(players, ['rank'])
 
         const selectedPlayers = []

@@ -3,13 +3,14 @@
     <div class="col-sm-6" v-for="(player,index) in statistics">
       <div class="card-player">
         <h4 class="card-player-name">
-          {{player_names[index]}}
+          {{replay.players[index].name}}
           <span :class="'circle bg-player-' + (parseInt(index)+1)"></span>
         </h4>
         <div class="card-player-stats-list">
+          <div class="card-player-stats"><span class="icon-lightning"></span> Current Energy: {{replay.full_frames[frame].energy[index]}}</div>
           <div class="card-player-stats"><span class="icon-ship"></span> Current Ships: {{player.ships}}</div>
-          <div class="card-player-stats"><span class="icon-planet"></span> Planets Owned: {{player.planets}}</div>
-          <div class="card-player-stats"><span class="icon-lightning"></span> Attacks: {{playerInfo ? playerInfo[index].totalDamages : ''}}</div>
+          <div class="card-player-stats"><span class="icon-planet"></span> Dropoffs Built: {{player.planets}}</div>
+          <div class="card-player-stats"><span class="icon-lightning"></span> Collisions: {{playerInfo ? playerInfo[index].totalDamages : ''}}</div>
           <div class="card-player-stats"><span class="icon-ships"></span> Total Ships: {{player.shipsProduced}}</div>
         </div>
       </div>
@@ -24,9 +25,7 @@ export default{
     name: 'PlayerDetailPane',
     props: ['replay', 'frame', 'stats', 'statistics'],
     data: function () {
-      return {
-        player_names: this.replay.player_names
-      }
+      return {}
     },
     mounted: function () {
     },
