@@ -494,13 +494,6 @@ export class HaliteVisualizer {
     /** Update/rerender after panning. */
     panRender() {
         this.draw();
-        // for (const factory of this.factories) {
-        //     factory.update();
-        // }
-
-        // for (const dropoff of this.dropoffs) {
-        //     dropoff.update();
-        // }
 
         this.baseMap.update(this.frame, [], 0);
 
@@ -719,6 +712,8 @@ export class HaliteVisualizer {
 
             entity.draw();
         }
+
+        this.baseMap.draw();
 
         // dt comes from Pixi ticker, and the unit is essentially frames
         let queue = this.animationQueue;

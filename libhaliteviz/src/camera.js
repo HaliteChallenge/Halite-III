@@ -136,6 +136,12 @@ export default class Camera {
             this.dragBase = [ e.offsetX, e.offsetY ];
             this.panByPixel(dx, dy);
         }
+        else {
+            const [ x, y ] = this.screenToWorld(
+                ...this.scaledToScreen(e.offsetX, e.offsetY));
+            this.visualizer.baseMap.hovered = { x, y };
+            this.visualizer.panRender();
+        }
     }
 
     panByPixel(dx, dy) {
@@ -166,5 +172,7 @@ export default class Camera {
     onDragStop(e) {
         this.dragging = false;
         this.mouseDown = false;
+        this.visualizer.baseMap.hovered = null;
+        this.visualizer.panRender();
     }
 }
