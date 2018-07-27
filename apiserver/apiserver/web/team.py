@@ -44,39 +44,48 @@ def make_team_record(team, members):
     return result
 
 
+def get_team_members(conn, team):
+    return conn.execute(sqlalchemy.sql.select([
+        model.team_members.c.user_id,
+        model.all_users.c.username,
+        model.all_users.c.player_level,
+        model.all_users.c.organization_id,
+        model.all_users.c.organization_name,
+        model.all_users.c.country_code,
+        model.all_users.c.country_subdivision_code,
+        model.all_users.c.num_submissions,
+        model.all_users.c.score,
+        model.all_users.c.mu,
+        model.all_users.c.sigma,
+        model.all_users.c.rank,
+    ]).select_from(model.team_members.join(
+        model.all_users,
+        model.team_members.c.user_id == model.all_users.c.user_id
+    )).where(
+        model.team_members.c.team_id == team["id"]
+    )).fetchall()
+
+
 def get_team_helper(team_id):
     with model.read_engine().connect() as conn:
-        query = sqlalchemy.sql.select([
-        ]).select_from(model.teams).where(
-            model.challenges.c.id == challenge_id
+        query = model.teams.select().where(
+            model.teams.c.id == team_id
         ).reduce_columns()
 
-        challenge = conn.execute(query).first()
-        if not challenge:
+        team = conn.execute(query).first()
+        if not team:
             raise util.APIError(
                 404,
-                message="Challenge {} not found.".format(challenge_id))
+                message="Team {} not found.".format(team_id))
 
-        participants = conn.execute(
-            model.challenge_participants.join(
-                model.users,
-                model.challenge_participants.c.user_id == model.users.c.id
-            ).select(
-                model.challenge_participants.c.challenge_id == challenge["id"]
-            )
-        )
-        return make_challenge_record(challenge, participants)
+        members = get_team_members(conn, team)
+        return make_team_record(team, members)
 
 
 def list_teams_helper(offset, limit, participant_clause,
                            where_clause, order_clause):
     with model.read_engine().connect() as conn:
-        query = sqlalchemy.sql.select([
-            model.teams.c.id,
-            model.teams.c.created,
-            model.teams.c.name,
-            model.teams.c.leader_id,
-        ]).select_from(model.teams).where(
+        query = model.teams.select().where(
             where_clause &
             sqlalchemy.sql.exists(model.team_members.select(
                 participant_clause &
@@ -87,26 +96,7 @@ def list_teams_helper(offset, limit, participant_clause,
         teams = conn.execute(query)
         result = []
         for team in teams.fetchall():
-            members = conn.execute(sqlalchemy.sql.select([
-                model.team_members.c.user_id,
-                model.all_users.c.username,
-                model.all_users.c.player_level,
-                model.all_users.c.organization_id,
-                model.all_users.c.organization_name,
-                model.all_users.c.country_code,
-                model.all_users.c.country_subdivision_code,
-                model.all_users.c.num_submissions,
-                model.all_users.c.score,
-                model.all_users.c.mu,
-                model.all_users.c.sigma,
-                model.all_users.c.rank,
-            ]).select_from(model.team_members.join(
-                model.all_users,
-                model.team_members.c.user_id == model.all_users.c.user_id
-            )).where(
-                model.team_members.c.team_id == team["id"]
-            )).fetchall()
-
+            members = get_team_members(conn, team)
             result.append(make_team_record(team, members))
 
         return result
