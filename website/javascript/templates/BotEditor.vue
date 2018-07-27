@@ -43,6 +43,7 @@
             <div class="game_replay_viewer"></div>
           </div>
           <button
+              class="pop-out-replay"
               v-if="visualizer"
               v-on:click="pop_out_replay">Open Replay in New Window</button>
           <div class="console">{{ terminal_text }}</div>
@@ -498,18 +499,30 @@ export default {
       const status = await api.get_ondemand_status(this.user_id)
       console.log(status)
 
+      if (this.visualizer) {
+        this.visualizer.destroy()
+        this.visualizer = null
+      }
+
       if (status.status === "completed") {
-        this.add_console_text("Game complete! Fetching replay...\n")
+        if (status.error_log) {
+          this.add_console_text("Your bot crashed :(\n")
+          this.add_console_text("Fetching replay...\n")
+          this.add_console_text("Fetching error log...\n")
+
+          window.setTimeout(() => {
+            this.add_console_text(status.error_log)
+          }, 1000)
+        }
+        else {
+          this.add_console_text("Game complete! Fetching replay...\n")
+        }
 
         const replayBlob = await api.get_ondemand_replay(this.user_id)
         const libhaliteviz = await import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
         await libhaliteviz.setAssetRoot('')
         const replay = await libhaliteviz.parseReplay(replayBlob)
         const width = jQuery('.replay').width()
-
-        if (this.visualizer) {
-          this.visualizer.destroy()
-        }
 
         this.visualizer = new libhaliteviz.EmbeddedVisualizer(replay, width, width)
         this.visualizer.attach('.game_replay_viewer', '.game_replay_viewer')
@@ -738,6 +751,10 @@ export default {
   width: 100%;
 }
 
+.pop-out-replay {
+  flex: 0 0 2.5rem;
+}
+
 .console {
   white-space: pre-line;
   flex: 1 1 auto;
@@ -746,6 +763,7 @@ export default {
   color: silver;
   font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
   font-size: 10pt;
+  overflow-y: auto;
 }
 
 .replay, .console {
