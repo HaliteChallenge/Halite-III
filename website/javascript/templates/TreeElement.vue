@@ -57,7 +57,7 @@ export default {
 <style lang="scss" scoped>
 
 .tree_files {
-  font-size: 12pt;
+  font-size: 9pt;
 }
 
 .tree_folder_container, .tree_file_container {
