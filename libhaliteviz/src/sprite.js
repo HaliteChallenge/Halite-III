@@ -100,9 +100,11 @@ export default class Ship {
             if (command.type === "g") {
                 return;
             }
-            const entity_record = this.visualizer.replay
+            const ownerEntities = this.visualizer.replay
                   .full_frames[this.visualizer.frame]
-                  .entities[this.owner][this.id];
+                  .entities[this.owner];
+            if (!ownerEntities) return;
+            const entity_record = ownerEntities[this.id];
             if (!entity_record) {
                 return;
             }

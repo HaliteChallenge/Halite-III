@@ -446,7 +446,7 @@
     mounted: function () {
       this.getSortedPlayers()
       this.sliderOptions = Object.assign(this.sliderOptions, {
-        max: this.replay.game_statistics.number_turns,
+        max: this.replay.full_frames.length - 1,
         value: this.frame
       })
 
