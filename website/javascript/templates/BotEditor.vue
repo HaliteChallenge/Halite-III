@@ -42,6 +42,9 @@
           <div class="replay">
             <div class="game_replay_viewer"></div>
           </div>
+          <button
+              v-if="visualizer"
+              v-on:click="pop_out_replay">Open Replay in New Window</button>
           <div class="console">{{ terminal_text }}</div>
         </div>
       </div>
@@ -525,6 +528,9 @@ export default {
       }
 
       window.setTimeout(this.check_ondemand_game.bind(this), 1000)
+    },
+    pop_out_replay: function() {
+      window.open("/play?ondemand")
     },
     save_current_file: function() {
       logInfo('Saving bot file to gcloud storage')
