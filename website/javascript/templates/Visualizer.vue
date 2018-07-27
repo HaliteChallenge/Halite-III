@@ -200,11 +200,11 @@
               <div v-if="selectedPlanet">
                 <SelectedPlanet :selected-planet="selectedPlanet" :players="players"></SelectedPlanet>
               </div>
+              <div v-if="selectedPoint && !selectedPlanet">
+                <SelectedPoint :selected-point="selectedPoint" :players="players"></SelectedPoint>
+              </div>
               <div v-if="selectedShip">
                 <SelectedShip :selected-ship="selectedShip" :players="players"></SelectedShip>
-              </div>
-              <div v-if="selectedPoint">
-                <SelectedPoint :selected-point="selectedPoint" :players="players"></SelectedPoint>
               </div>
               <div class="message-box" v-else>
                 <p><span class="icon-info"></span></p>
@@ -688,17 +688,27 @@
         }
       },
       selectedPlanet: function () {
-        // if (this.selected.kind === 'planet') {
-        //   let frame = this.replay.full_frames[this.frame]
-        //   let state = frame.planets[this.selected.id]
-        //   if (state) {
-        //     return {
-        //       base: this.replay.planets[this.selected.id],
-        //       state: state
-        //     }
-        //   }
-        // }
-        return null
+        if (this.selected.kind) {
+          let x
+          let y
+          if (this.selectedShip) {
+            ({ x, y } = this.selectedShip)
+          }
+          else {
+            ({ x, y } = this.selectedPoint)
+          }
+
+          for (const player of this.replay.players) {
+            if (player.factory_location.x === x &&
+                player.factory_location.y === y) {
+              return {
+                x, y,
+                owner: player.player_id,
+                type: "Shipyard",
+              }
+            }
+          }
+        }
       },
       selectedShip: function () {
         if (this.selected.kind === "ship") {
