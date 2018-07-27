@@ -1,7 +1,8 @@
 """
 Team API endpoints - list, create, update teams
 """
-import datetime
+
+import secrets
 
 import flask
 import sqlalchemy
@@ -132,13 +133,45 @@ def list_teams():
 
 @web_api.route("/team", methods=["POST"])
 @util.cross_origin(methods=["GET", "POST"])
-def create_team():
-    pass
+@web_util.requires_login()
+def create_team(*, user_id):
+    if "name" not in flask.request.json:
+        raise util.APIError(400, message="Please provide a team name.")
+
+    team_name = flask.request.json["name"]
+
+    # TODO: validate team name
+
+    verification_code = secrets.token_hex(16)
+
+    # Check if user is already on a team
+    with model.engine.begin() as conn:
+        query = model.team_members.select().where(
+            model.team_members.c.user_id == user_id)
+        if conn.execute(query).first():
+            raise util.APIError(
+                400, message="You're already on a team.")
+
+        team_id = conn.execute(model.teams.insert().values(
+            name=team_name,
+            verification_code=verification_code,
+            leader_id=user_id,
+        )).inserted_primary_key[0]
+        conn.execute(model.team_members.insert().values(
+            team_id=team_id,
+            user_id=user_id,
+        ))
+
+        return util.response_success({
+            "team_id": team_id,
+            "verification_code": verification_code,
+        })
 
 
 @web_api.route("/team/<int:team_id>", methods=["GET"])
 @util.cross_origin(methods=["GET", "POST"])
 def get_team(team_id):
+    # TODO: if user logged in, give them code
     result = get_team_helper(team_id)
     return flask.jsonify(result)
 
