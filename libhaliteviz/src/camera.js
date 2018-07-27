@@ -99,29 +99,7 @@ export default class Camera {
         if (e.which === 1) {
             this.dragBase = [ e.offsetX, e.offsetY ];
             this.mouseDown = true;
-
-            // Also compute selection
-            const [ worldX, worldY ] = this.screenToWorld(
-                ...this.scaledToScreen(e.offsetX, e.offsetY));
-
-            // TODO: add factory selection
-            let selected = false;
-            for (const ship of Object.values(this.visualizer.entity_dict)) {
-                if (Math.floor(ship.x) === worldX &&
-                    Math.floor(ship.y) === worldY) {
-                    this.visualizer.onSelect.dispatch("ship", {
-                        owner: ship.owner,
-                        id: ship.id,
-                    });
-                    selected = true;
-                }
-            }
-            if (!selected) {
-                this.visualizer.onSelect.dispatch("point", {
-                    x: worldX,
-                    y: worldY,
-                });
-            }
+            this.dragging = false;
         }
     }
 
@@ -170,6 +148,30 @@ export default class Camera {
     }
 
     onDragStop(e) {
+        if (this.mouseDown && !this.dragging) {
+            // Compute selection (mouse up and didn't drag)
+            const [ worldX, worldY ] = this.screenToWorld(
+                ...this.scaledToScreen(e.offsetX, e.offsetY));
+
+            // TODO: add factory selection
+            let selected = false;
+            for (const ship of Object.values(this.visualizer.entity_dict)) {
+                if (Math.floor(ship.x) === worldX &&
+                    Math.floor(ship.y) === worldY) {
+                    this.visualizer.onSelect.dispatch("ship", {
+                        owner: ship.owner,
+                        id: ship.id,
+                    });
+                    selected = true;
+                }
+            }
+            if (!selected) {
+                this.visualizer.onSelect.dispatch("point", {
+                    x: worldX,
+                    y: worldY,
+                });
+            }
+        }
         this.dragging = false;
         this.mouseDown = false;
         this.visualizer.baseMap.hovered = null;
