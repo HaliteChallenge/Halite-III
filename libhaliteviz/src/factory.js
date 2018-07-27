@@ -2,10 +2,7 @@ import * as PIXI from "pixi.js";
 
 import * as assets from "./assets";
 
-/**
- * Manages a factory on screen.
- */
-export class Factory {
+export class Dropoff {
     /**
      *
      * @param factoryBase The "base" factory record in the replay (contains a location)
@@ -25,19 +22,14 @@ export class Factory {
         const pixelsPerUnit = assets.CELL_SIZE * scale;
 
         // TODO: Switch factory from square to image
-        const factoryShape = new PIXI.Graphics();
-        factoryShape.beginFill(assets.FACTORY_BASE_COLOR, assets.FACTORY_BASE_ALPHA);
-        factoryShape.drawRect(0, 0, pixelsPerUnit, pixelsPerUnit);
-        factoryShape.endFill();
-        let factoryTexture = renderer.generateTexture(factoryShape);
-        this.core = new PIXI.Sprite(factoryTexture);
+        this.makeCore(renderer, pixelsPerUnit);
 
         // Rotate factories, make twice the size of a cell
         this.core.width = this.core.height = 2 * pixelsPerUnit;
         // anchor factory in center for rotation
         this.core.anchor.x = 0.5;
         this.core.anchor.y = 0.5;
-        this.core.alpha = 0.9;
+        this.core.alpha = 0.7;
 
         // Place factories in center of cells
         this.core.position.x = pixelsPerUnit * factoryBase.x + pixelsPerUnit / 2;
@@ -45,17 +37,16 @@ export class Factory {
 
         // Rotate the factory a bit just to mix it up
         this.core.rotation = Math.random() * 2 * Math.PI;
-        // this.core.interactive = true;
-        this.core.buttonMode = true;
-        this.core.on("pointerdown", (e) => {
-            // When clicked, notify the visualizer
-            // TODO: switch to factory (unified naming change with vue code)
-            onSelect("planet", {
-                id: this.owner,
-            });
-        });
-
         this.core.tint = assets.PLAYER_COLORS[this.owner];
+    }
+
+    makeCore(renderer, pixelsPerUnit) {
+        const factoryShape = new PIXI.Graphics();
+        factoryShape.beginFill(assets.FACTORY_BASE_COLOR, assets.FACTORY_BASE_ALPHA);
+        factoryShape.drawRect(0, 0, pixelsPerUnit, pixelsPerUnit);
+        factoryShape.endFill();
+        let factoryTexture = renderer.generateTexture(factoryShape);
+        this.core = new PIXI.Sprite(factoryTexture);
     }
 
     /**
@@ -71,7 +62,9 @@ export class Factory {
      * Update the factory display based on the current frame and time.
      */
     //TODO: update to make factories change color when player dies
-    update() {
+    update(delta=1) {
+        this.core.rotation += delta * Math.PI / 36;
+        this.core.rotation %= 2 * Math.PI;
     }
 
     destroy() {
@@ -81,7 +74,7 @@ export class Factory {
 
     draw() {
         const pixelsPerUnit = assets.CELL_SIZE * this.visualizer.camera.scale;
-        this.core.width = this.core.height = 2 * pixelsPerUnit;
+        this.core.width = this.core.height = 1.5 * pixelsPerUnit;
 
         // Account for camera panning
         const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(
@@ -91,5 +84,35 @@ export class Factory {
 
         this.core.position.x = pixelsPerUnit * cellX + pixelsPerUnit / 2;
         this.core.position.y = pixelsPerUnit * cellY + pixelsPerUnit / 2;
+    }
+}
+
+/**
+ * Manages a factory on screen.
+ */
+export class Factory extends Dropoff {
+    constructor(...args) {
+        super(...args);
+        this.core.alpha = 0.9;
+    }
+
+    makeCore(renderer, pixelsPerUnit) {
+        const factoryShape = new PIXI.Graphics();
+        factoryShape.beginFill(assets.FACTORY_BASE_COLOR, assets.FACTORY_BASE_ALPHA);
+        factoryShape.drawRect(0, 0, pixelsPerUnit, pixelsPerUnit);
+        factoryShape.beginFill(0x000000, assets.FACTORY_BASE_ALPHA);
+        factoryShape.drawRect(pixelsPerUnit / 4, pixelsPerUnit / 4,
+                              pixelsPerUnit / 2, pixelsPerUnit / 2);
+        factoryShape.endFill();
+        let factoryTexture = renderer.generateTexture(factoryShape);
+        this.core = new PIXI.Sprite(factoryTexture);
+    }
+
+    draw() {
+        super.draw();
+        const pixelsPerUnit = assets.CELL_SIZE * this.visualizer.camera.scale;
+        const energy = this.visualizer.frame === 0 ? this.visualizer.replay.players[this.owner].energy : this.visualizer.currentFrame.energy[this.owner];
+        const energyFactor = energy / 10000;
+        this.core.width = this.core.height = (1.25 + Math.min(1.25, energyFactor)) * pixelsPerUnit;
     }
 }
