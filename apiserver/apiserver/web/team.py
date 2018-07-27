@@ -13,7 +13,7 @@ from . import util as web_util
 from .blueprint import web_api
 
 
-def make_team_record(team, members):
+def make_team_record(team, members, show_verification_code=False):
     result = {
         "team_id": team["id"],
         "created": team["created"],
@@ -21,6 +21,9 @@ def make_team_record(team, members):
         "members": {},
         "leader_id": team["leader_id"],
     }
+
+    if show_verification_code:
+        result["verification_code"] = team["verification_code"]
 
     for member in members:
         record = {
@@ -66,7 +69,7 @@ def get_team_members(conn, team):
     )).fetchall()
 
 
-def get_team_helper(team_id):
+def get_team_helper(team_id, user_id=None):
     with model.read_engine().connect() as conn:
         query = model.teams.select().where(
             model.teams.c.id == team_id
@@ -79,7 +82,8 @@ def get_team_helper(team_id):
                 message="Team {} not found.".format(team_id))
 
         members = get_team_members(conn, team)
-        return make_team_record(team, members)
+        return make_team_record(team, members,
+                                show_verification_code=user_id == team["leader_id"])
 
 
 def list_teams_helper(offset, limit, participant_clause,
@@ -162,9 +166,10 @@ def create_team(*, user_id):
 
 @web_api.route("/team/<int:team_id>", methods=["GET"])
 @util.cross_origin(methods=["GET", "POST"])
-def get_team(team_id):
-    # TODO: if user logged in, give them code
-    result = get_team_helper(team_id)
+@web_util.requires_login(optional=True)
+def get_team(team_id, *, user_id=None):
+    # If user logged in, give them code
+    result = get_team_helper(team_id, user_id)
     return flask.jsonify(result)
 
 
