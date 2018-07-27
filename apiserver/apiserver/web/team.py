@@ -173,11 +173,47 @@ def get_team(team_id, *, user_id=None):
     return flask.jsonify(result)
 
 
-@web_api.route("/team/<int:team_id>", methods=["POST"])
-@util.cross_origin(methods=["GET", "POST"])
+@web_api.route("/team/<int:team_id>/user", methods=["POST"])
+@util.cross_origin(methods=["POST"])
 @web_util.requires_login()
-def update_team(team_id, *, user_id):
-    pass
+def associate_user_team(team_id, *, user_id):
+    verification_code = flask.request.form.get("verification_code")
+    if not verification_code:
+        raise util.APIError(
+            400,
+            message="Please provide the team's verification code."
+        )
+
+    with model.engine.connect() as conn:
+        team = conn.execute(model.teams.select(model.teams.c.id == team_id)).first()
+
+        if not team:
+            raise util.APIError(404, message="Team {} does not exist.".format(team_id))
+
+        if team["verification_code"] != verification_code:
+            raise util.APIError(403, message="Incorrect verification code.")
+
+        members = conn.execute(
+            model.team_members.select(model.team_members.c.team_id == team_id)
+        ).fetchall()
+
+        if len(members) >= 4:
+            raise util.APIError(400, message="Team already has 4 members.")
+
+        for member in members:
+            if member["user_id"] == user_id:
+                raise util.APIError(400, message="You're already in this team.")
+
+        conn.execute(
+            model.team_members.insert().values(
+                team_id=team_id,
+                user_id=user_id
+            ))
+
+        # TODO: delete user's bots/remove them from matchmaking
+
+        return util.response_success()
+
 
 
 # TODO: add /bot, /match endpoints that redirect to corresponding
