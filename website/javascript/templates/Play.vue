@@ -14,8 +14,26 @@
     <div class="play-body" v-if="currentView == 'upload'">
       <div>
         <div class="page-header">
-          <h1>SUBMIT OR REPLAY A HALITE AI BOT</h1>
-          <i class="xline xline-bottom"></i>
+          <h1>PLAY HALITE III: Option 1</h1>
+        <i class="xline xline-bottom"></i>
+        </div>
+      </div>
+     <div class="row play-upload-section">
+        <div class="col-sm-20">
+            <div class="upload-container" id="bot-upload-container">
+                <div class="upload-desc text-center">
+                    <h2>WEB EDITOR EXPERIENCE</h2>
+                    <p>Create, replay, and submit a Python bot via a web-based editor.</p>
+                    <p><a href="/editor">Go to Editor</a></p>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="page-header">
+          <h1>PLAY HALITE III: Option 2</h1>
+        <i class="xline xline-bottom"></i>
         </div>
       </div>
       <div class="row play-upload-section">
@@ -29,8 +47,7 @@
             <div class="upload-container" id="bot-upload-container">
                 <div class="upload-desc text-center">
                     <h2>Submit a bot</h2>
-                    <p>To play a Halite bot in the competition, submit a .zip file here. Bot submissions need to adhere to specific guidelines</p>
-                    <p><a href="/learn-programming-challenge/downloads-and-starter-kits/submit-bot">Learn more</a></p>
+                    <p>To submit a Halite bot in the competition, upload a .zip file here. The root folder of your zip should contain a MyBot.{extension} file and the /hlt folder from the starter kit.</p>
                 </div>
                 <Upload :logged-in="loggedIn" :showMessage="showMessage"></Upload>
             </div>
@@ -40,7 +57,7 @@
           <div class="upload-container">
             <div class="upload-desc text-center">
               <h2>replay a file</h2>
-              <p>When you run the Halite executable locally, it will add a .hlt file to your directory. Upload that file here to watch your game</p>
+              <p>When you run the Halite executable locally, it will add a .hlt file to your directory. Upload that file here to watch your game.</p>
             </div>
             <halite-upload-zone
               caption="Drop a replay file here to upload"
