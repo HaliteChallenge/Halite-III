@@ -35,17 +35,6 @@
            </div>
             <div class="col-md-12 ha-line">
             </div>
-            <div class="col-md-12 big-menu">
-                <p class="t2 c-wht font-headline">GET STARTED WITH HALITE</p>
-                <div class="line-container"><i class="xline xline-top"></i></div>
-                <div class="ha-button-container">
-                    <div>
-                        <a :href="loginServerUrl" v-if="!me_in" class="ha-button"><span>SIGN UP WITH GITHUB</span></a>
-                        <a href="/play-programming-challenge" v-if="me_in" class="ha-button hidden-sm hidden-xs"><span>PLAY NOW</span></a>
-                        <a href="/learn-programming-challenge" v-if="me_in" class="ha-button visible-sm visible-xs"><span>GET STARTED AND LEARN</span></a>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </template>
