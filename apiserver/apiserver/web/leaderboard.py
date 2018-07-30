@@ -46,6 +46,9 @@ def leaderboard():
         "num_games": model.ranked_bots_users.c.num_games,
         "rank": model.ranked_bots_users.c.rank,
         "language": model.ranked_bots_users.c.language,
+        "team_name": model.ranked_bots_users.c.team_name,
+        "team_id": model.ranked_bots_users.c.team_id,
+        "team_leader_id": model.ranked_bots_users.c.team_leader_id,
     }, ["tier"])
 
     if not order_clause:
@@ -109,6 +112,11 @@ def leaderboard():
         if tier_filter is not None:
             where_clause &= tier_filter
 
+        # Only include non-team players/team leaders
+        where_clause &= (
+            (model.ranked_bots_users.c.team_id == None) |
+            (model.ranked_bots_users.c.team_id == model.ranked_bots_users.c.user_id))
+
         query = conn.execute(
             model.ranked_bots_users.select()
                 .where(where_clause).order_by(*order_clause)
@@ -131,6 +139,9 @@ def leaderboard():
                 "update_time": row["update_time"],
                 "mu": row["mu"],
                 "sigma": row["sigma"],
+                "team_id": row["team_id"],
+                "team_name": row["team_name"],
+                "team_leader_id": row["team_leader_id"],
             }
 
             if total_users and row["rank"] is not None:

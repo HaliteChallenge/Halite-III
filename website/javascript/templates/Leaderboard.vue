@@ -88,7 +88,7 @@
             <td class="nowrap">
               <a :href="'/user?user_id=' + player.user_id" class="leaderboard-name">
                 <img width="30" height="30" :src="`https://github.com/${player.username}.png`" alt="">
-                {{ player.username }}
+                {{ player.team_name || player.username }}
               </a>
             </td>
             <td :title="`${player.rating_components}`">{{ Math.round(100 * player.score) / 100 }}</td>

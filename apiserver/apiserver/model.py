@@ -223,6 +223,9 @@ ranked_bots_users = sqlalchemy.sql.select([
     users.c.country_subdivision_code,
     users.c.github_email.label("email"),
     users.c.is_gpu_enabled,
+    teams.c.id.label("team_id"),
+    teams.c.name.label("team_name"),
+    teams.c.leader_id.label("team_leader_id"),
     ranked_bots.c.bot_id,
     ranked_bots.c.games_played.label("num_games"),
     ranked_bots.c.version_number.label("num_submissions"),
@@ -233,14 +236,23 @@ ranked_bots_users = sqlalchemy.sql.select([
     ranked_bots.c.update_time,
     ranked_bots.c.bot_rank.label("rank"),
     ranked_bots.c.compile_status,
-]).select_from(ranked_bots.join(
-    users,
-    ranked_bots.c.user_id == users.c.id,
+]).select_from(
+    ranked_bots.join(
+        users,
+        ranked_bots.c.user_id == users.c.id,
     ).join(
-    organizations,
-    organizations.c.id == users.c.organization_id,
-    isouter=True
-)).alias("ranked_bots_users")
+        organizations,
+        organizations.c.id == users.c.organization_id,
+        isouter=True
+    ).join(
+        teams,
+        sqlalchemy.sql.exists(teams.select(
+            (teams.c.id == team_members.c.team_id) &
+            (team_members.c.user_id == users.c.id)
+        )),
+        isouter=True
+    )
+).alias("ranked_bots_users")
 
 
 # Users, ranked by their best bot
