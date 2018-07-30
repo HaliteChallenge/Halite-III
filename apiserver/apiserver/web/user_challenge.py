@@ -28,14 +28,14 @@ def list_user_challenges(intended_user):
         "id": model.challenges.c.id,
     }, ["finished"])
 
-    participant_clause = model.challenge_participants.c.user_id == intended_user
     for (field, _, _) in manual_sort:
         if field == "finished":
             where_clause &= model.challenges.c.status == "finished"
 
     result = challenge_api.list_challenges_helper(offset, limit,
-                                                  participant_clause,
-                                                  where_clause, order_clause)
+                                                  sqlalchemy.true(),
+                                                  where_clause, order_clause,
+                                                  intended_user)
     return flask.jsonify(result)
 
 
@@ -56,6 +56,14 @@ def list_user_challenge_matches(intended_user, challenge_id):
     }, ["timed_out"])
 
     participant_clause = model.game_participants.c.user_id == intended_user
+    with model.read_engine().connect() as conn:
+        team = conn.execute(model.team_leader_query(intended_user)).first()
+        if team:
+            participant_clause = model.game_participants.c.user_id.in_([
+                intended_user,
+                team["leader_id"],
+            ])
+
     where_clause &= model.games.c.challenge_id == challenge_id
     for (field, _, _) in manual_sort:
         if field == "timed_out":

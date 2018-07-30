@@ -336,6 +336,13 @@ def hackathon_ranked_bots_users_query(hackathon_id, *, alias="hackathon_ranked_b
     ).alias(alias)
 
 
+def team_leader_query(user_id):
+    return team_members.join(
+        teams,
+        team_members.c.team_id == teams.c.id
+    ).select(team_members.c.user_id == user_id)
+
+
 def cached(f):
     """Decorator for nullary functions that caches their result."""
     __cache = None

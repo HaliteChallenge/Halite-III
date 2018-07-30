@@ -66,8 +66,20 @@ def get_challenge_helper(challenge_id):
 
 
 def list_challenges_helper(offset, limit, participant_clause,
-                           where_clause, order_clause):
+                           where_clause, order_clause, user_id=None):
     with model.read_engine().connect() as conn:
+        if user_id is not None:
+            # See if user is part of a team, and add to participant
+            # clause
+            team = conn.execute(model.team_leader_query(user_id)).first()
+            if team:
+                participant_clause &= model.challenge_participants.c.user_id.in_([
+                    user_id,
+                    team["leader_id"],
+                ])
+            else:
+                participant_clause &= model.challenge_participants.c.user_id == user_id
+
         query = sqlalchemy.sql.select([
             model.challenges.c.id,
             model.challenges.c.created,
