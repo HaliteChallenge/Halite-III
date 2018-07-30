@@ -2,7 +2,7 @@ const PIXI = require("pixi.js");
 const $ = require("jquery");
 
 import Ship from "./sprite";
-import {Factory} from "./factory";
+import {Dropoff, Factory} from "./factory";
 import {Map} from "./map";
 import Camera from "./camera";
 import * as statistics from "./statistics";
@@ -73,10 +73,15 @@ export class HaliteVisualizer {
             },
         });
 
+        // XXX FORCE WEBGL ON SOFTWARE RENDERER
+        // TODO: BETTER OVERRIDE
+        PIXI.utils.isWebGLSupported = () => true;
         this.application = new PIXI.Application(
             this.width, this.height,
             {
                 backgroundColor: 0x222222,
+                antialias: true,
+                resolution: 1,
             }
         );
         // Seems to help with pixelation when downscaling
@@ -421,7 +426,7 @@ export class HaliteVisualizer {
             this.time = 1.0;
         }
 
-        if (this.frame > this.replay.full_frames.length) {
+        if (this.frame >= this.replay.full_frames.length) {
             this.pause();
             this.frame = this.replay.full_frames.length - 1;
             this.time = 1.0;
@@ -474,7 +479,7 @@ export class HaliteVisualizer {
     update(delta=1) {
         for (const factory of this.factories) {
             factory.scale = this.camera.scale;
-            factory.update();
+            factory.update(delta);
         }
 
         this.remove_invalid_entities();
@@ -494,13 +499,6 @@ export class HaliteVisualizer {
     /** Update/rerender after panning. */
     panRender() {
         this.draw();
-        // for (const factory of this.factories) {
-        //     factory.update();
-        // }
-
-        // for (const dropoff of this.dropoffs) {
-        //     dropoff.update();
-        // }
 
         this.baseMap.update(this.frame, [], 0);
 
@@ -672,7 +670,7 @@ export class HaliteVisualizer {
 
                     if (create) {
                         const dropoff_base = {"x" : event.location.x, "y" : event.location.y, "owner" : event.owner_id};
-                        const dropoff = new Factory(this, dropoff_base, this.replay.constants,
+                        const dropoff = new Dropoff(this, dropoff_base, this.replay.constants,
                                                     this.camera.scale, (kind, args) => this.onSelect.dispatch(kind, args), this.application.renderer);
                         this.dropoffs.push(dropoff);
                         dropoff.attach(this.factoryContainer);
@@ -719,6 +717,8 @@ export class HaliteVisualizer {
 
             entity.draw();
         }
+
+        this.baseMap.draw();
 
         // dt comes from Pixi ticker, and the unit is essentially frames
         let queue = this.animationQueue;

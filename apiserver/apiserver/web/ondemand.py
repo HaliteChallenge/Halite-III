@@ -149,5 +149,10 @@ def get_ondemand_replay(intended_user, *, user_id):
         attachment_filename="{}.hlt".format(user_id)))
 
     response.headers["Content-Length"] = str(buffer.getbuffer().nbytes)
+    # Don't cache this
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    response.headers["Cache-Control"] = "public, max-age=0"
 
     return response

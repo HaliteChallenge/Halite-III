@@ -35,7 +35,7 @@ public class Networking {
 
     private static String[] getSplitLine() { return readLine().split(" "); }
 
-    public static void consumeInit() {
+    public static void getInit() {
         try {
             Log.initialize(new FileWriter("Log.log"));
         } catch (IOException e) {
@@ -70,7 +70,7 @@ public class Networking {
         else System.out.println(name);
         System.out.flush();
     }
-    public static void consumeFrame() {
+    public static void getFrame() {
         // TODO give this out
         turnNumber = Integer.parseInt(readLine());
         String[] c;
@@ -85,14 +85,14 @@ public class Networking {
             for(int j=0; j<numShips; j++) {
                 c = getSplitLine();
                 ships.add(new Ship(
-                    Integer.parseInt(c[0]), 
+                    Integer.parseInt(c[0]),
                     new Location(Integer.parseInt(c[1]), Integer.parseInt(c[2])),
                     Integer.parseInt(c[3])));
             }
             for(int j=0; j<numDropoffs; j++) {
                 c = getSplitLine();
                 dropoffs.add(new Dropoff(
-                    Integer.parseInt(c[0]), 
+                    Integer.parseInt(c[0]),
                     new Location(Integer.parseInt(c[1]), Integer.parseInt(c[2]))));
             }
             players[playerID] = new Player(playerID,

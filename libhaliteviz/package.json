@@ -12,6 +12,7 @@
   "dependencies": {
     "jquery": "^3.2.1",
     "pixi.js": "^4.5.3",
+    "@pixi/filter-motion-blur": "^2.6.1",
     "seedrandom": "^2.4.3"
   },
   "devDependencies": {

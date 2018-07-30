@@ -81,11 +81,11 @@ int main(int argc, char *argv[]) {
     }
 
     // Set the random seed
-    auto seed = static_cast<unsigned int>(time(nullptr));
+    auto seed = seed_arg.isSet() ? seed_arg.getValue() : static_cast<unsigned int>(time(nullptr));
 
     // Get the map parameters
-    auto map_width = width_arg.getValue();
-    auto map_height = height_arg.getValue();
+    auto map_width = width_arg.isSet() ? width_arg.getValue() : constants.DEFAULT_MAP_WIDTH;
+    auto map_height = height_arg.isSet() ? height_arg.getValue() : constants.DEFAULT_MAP_HEIGHT;
     auto n_players = players_arg.getValue();
 
     auto verbosity = verbosity_arg.getValue();
@@ -218,8 +218,9 @@ int main(int argc, char *argv[]) {
             results["map_width"] = map_width;
             results["map_height"] = map_height;
             results["map_seed"] = seed;
-            // TODO: put the actual generator here
-            results["map_generator"] = "default";
+            std::ostringstream stream;
+            stream << type;
+            results["map_generator"] = stream.str();
             results["final_snapshot"] = game.to_snapshot(map_parameters);
             results["stats"] = nlohmann::json::object();
             for (const auto &stats : replay.game_statistics.player_statistics) {

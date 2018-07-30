@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import {MotionBlurFilter} from '@pixi/filter-motion-blur';
 
 import * as assets from "./assets";
 import {CELL_SIZE, PLAYER_COLORS} from "./assets";
@@ -17,12 +18,14 @@ export default class Ship {
         const spriteShape = new PIXI.Graphics();
         spriteShape.beginFill(assets.SPRITE_COLOR, 1);
         // draw circle - x coord, y coord, radius
-        spriteShape.drawCircle(0, 0, assets.CELL_SIZE * visualizer.camera.scale);
+        spriteShape.drawCircle(0, 0, assets.CELL_SIZE * 64);
         spriteShape.endFill();
 
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);
 
         this.sprite = new PIXI.Sprite(spriteTexture);
+        this.motionblur = new MotionBlurFilter([0, 0], 9, 0);
+        this.sprite.filters = [this.motionblur];
 
         this.container = null;
         this.visualizer = visualizer;
@@ -97,9 +100,11 @@ export default class Ship {
             if (command.type === "g") {
                 return;
             }
-            const entity_record = this.visualizer.replay
+            const ownerEntities = this.visualizer.replay
                   .full_frames[this.visualizer.frame]
-                  .entities[this.owner][this.id];
+                  .entities[this.owner];
+            if (!ownerEntities) return;
+            const entity_record = ownerEntities[this.id];
             if (!entity_record) {
                 return;
             }
@@ -163,6 +168,8 @@ export default class Ship {
                 // Use a bit of easing on the time to make it look
                 // nicer (cubic in/out easing)
                 let t = this.visualizer.time;
+                this.motionblur.velocity.set(x_move * -20 * t * (t - 1),
+                                             y_move * -20 * t * (t - 1));
                 t /= 0.5;
                 if (t < 1) {
                     t = t*t*t/2;

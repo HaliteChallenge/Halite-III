@@ -23,12 +23,7 @@ struct Player final : public Enumerated<Player> {
     const std::string command;           /**< The bot command for the player. */
     id_map<Entity, Location> entities{}; /**< Mapping from entity to location. */
     bool terminated;                     /**< Whether the player was kicked out of the game. */
-
-    /**
-     * Get whether this player is alive.
-     * @return True if the player is alive, false otherwise.
-     */
-    bool is_alive() const;
+    bool can_play = true;                /**< Whether the player has sufficient resources remaining. */
 
     /**
      * Get whether the player has an entity.

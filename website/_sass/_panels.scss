@@ -14,7 +14,7 @@
       position: relative;
       display: block;
       padding: 10px 0;
-      color: #858F91;
+      color: #DDD;
       &:hover, &:focus{
         text-decoration: none;
       }
@@ -32,7 +32,7 @@
         }
       }
       &[aria-expanded="true"]{
-        color: #ECFFFB;
+        color: #FFF;
         .chevron{
           &:before{
             content: "\e900";
@@ -46,7 +46,7 @@
         }
       }
       &[aria-expanded="true"]{
-        color: #ECFFFB;
+        color: #FFF;
         .expand{
           &:before{
             content: "\e908";
@@ -56,6 +56,8 @@
     }
     h4{
       font-size: 20px;
+      font-weight: 300;
+      letter-spacing: 2px;
     }
     .fa-chevron-down{
       position: absolute;

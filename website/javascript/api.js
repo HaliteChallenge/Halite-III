@@ -228,7 +228,7 @@ export function get_ondemand_status(userId) {
 }
 
 export function get_ondemand_replay(userId) {
-  return window.fetch(`${API_SERVER_URL}/ondemand/${userId}/replay`, {
+  return window.fetch(`${API_SERVER_URL}/ondemand/${userId}/replay?_=${new Date().getTime()}`, {
     method: 'GET',
     credentials: 'include'
   }).then(r => r.arrayBuffer())

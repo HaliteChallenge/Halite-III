@@ -21,6 +21,7 @@ export class Map {
         this.prev_time = 0;
         this.renderer = renderer;
 
+        this.hovered = null;
 
         // Background image, based on initial production values
         // draw a map, with color intensity dependent on production value
@@ -80,9 +81,14 @@ export class Map {
 
         this.cells = [];
 
+        // Cell placed underneath other cells to highlight mouse
+        // position
+        this.pointer = PIXI.Sprite.from(normalTex);
+
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
                 const cell = PIXI.Sprite.from(normalTex);
+                cell.alpha = 0.9;
                 cell.width = this.scale;
                 cell.height = this.scale;
                 cell.position.x = col * this.scale;
@@ -129,6 +135,7 @@ export class Map {
      * sprites.
      */
     attach(container) {
+        container.addChild(this.pointer);
         container.addChild(this.tintMap);
         this.container = container;
     }
@@ -138,6 +145,8 @@ export class Map {
      */
     destroy() {
         this.container.removeChild(this.tintMap);
+        this.container.removeChild(this.pointer);
+        this.container = null;
     }
 
     /**
@@ -191,13 +200,28 @@ export class Map {
             for (let col = 0; col < this.cols; col++) {
                 const [ base, baseOpacity ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
                 const cell = this.cells[row * this.cols + col];
-                cell.tint = alphaBlend(base, this.renderer.backgroundColor, baseOpacity);
+                const bg = this.renderer.backgroundColor;
+                cell.tint = alphaBlend(base, bg, baseOpacity);
                 cell.width = this.scale;
                 cell.height = this.scale;
                 const [ cellX, cellY ] = this.camera.worldToCamera(col, row);
                 cell.position.x = cellX * this.scale;
                 cell.position.y = cellY * this.scale;
             }
+        }
+    }
+
+    draw() {
+        if (this.hovered) {
+            const [ cellX, cellY ] = this.camera.worldToCamera(this.hovered.x, this.hovered.y);
+            this.pointer.position.x = cellX * this.scale;
+            this.pointer.position.y = cellY * this.scale;
+            this.pointer.width = this.scale;
+            this.pointer.height = this.scale;
+            this.pointer.visible = true;
+        }
+        else {
+            this.pointer.visible = false;
         }
     }
 }
