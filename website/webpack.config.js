@@ -5,6 +5,9 @@ const commonConfig = require('./webpack.common.js');
 module.exports = merge(commonConfig, {
     devtool: "source-map",
     plugins: [
-        new BundleAnalyzerPlugin(),
+        new BundleAnalyzerPlugin({
+            analyzerMode: "static",
+            openAnalyzer: false,
+        }),
     ],
 });

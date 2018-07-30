@@ -84,7 +84,7 @@ export class ShipExplosionFrameAnimation extends SpritesheetFrameAnimation {
             x: location.x,
             y: location.y,
             tintColor: color,
-            delayTime: 0,
+            delayTime: 90,
             cellSize: cellSize,
             container: container,
             duration: 150,
