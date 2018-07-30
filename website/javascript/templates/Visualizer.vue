@@ -758,7 +758,7 @@
       },
       getSortedPlayers: async function () {
         const players = await this.getPlayers()
-        this.players = players
+        this.players = _.sortBy(players, ['player_id'])
         this.sortedPlayers = _.sortBy(players, ['rank'])
 
         const selectedPlayers = []
