@@ -214,7 +214,7 @@ def associate_user_team(team_id, *, user_id):
         # )
 
         conn.execute(model.bots.update().values(
-            compile_status="Disabled"
+            compile_status=model.CompileStatus.DISABLED.value
         ).where(model.bots.c.user_id == user_id))
 
         conn.execute(
