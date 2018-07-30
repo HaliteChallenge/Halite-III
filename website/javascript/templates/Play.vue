@@ -36,6 +36,17 @@
         <i class="xline xline-bottom"></i>
         </div>
       </div>
+       <div class="row play-upload-section">
+        <div class="col-sm-20">
+            <div class="upload-container" id="bot-upload-container">
+                <div class="upload-desc text-center">
+                    <h2>LOCAL EXPERIENCE</h2>
+                    <p>Download the game environment and starter kit bundle for your platform and language of choice.</p>
+                    <p><a href="/learn-programming-challenge/downloads-and-starter-kits">Go to Downloads</a></p>
+                </div>
+            </div>
+        </div>
+      </div>
       <div class="row play-upload-section">
         <div class="col-sm-6">
             <!-- <div data-v-2c45658c="" id="bot-upload-container" class="upload-container">
