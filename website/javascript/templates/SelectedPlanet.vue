@@ -11,7 +11,7 @@
       </tr>
       <tr>
         <td>Owner:</td>
-        <td>{{info.owner}}</td>
+        <td :class="`color-${selectedPlanet.owner + 1}`">{{info.owner}}</td>
       </tr>
       <tr>
         <td>Type:</td>
