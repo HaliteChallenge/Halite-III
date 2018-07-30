@@ -87,9 +87,13 @@
             <td class="text-center">{{ player.rank || player.local_rank }}</td>
             <td class="nowrap">
               <a :href="'/user?user_id=' + player.user_id" class="leaderboard-name" v-bind:title="player_link_title(player)">
-                <template v-if="player.team_members.length > 0">
+                <template v-if="player.user_id === player.team_leader_id && player.team_members.length > 0">
                   <img v-for="team_member in player.team_members" width="30" height="30" :src="`https://github.com/${team_member.username}.png`" v-bind:alt="player.username">
-                  {{ player.team_name }}
+                  {{ player.team_name }} ({{player.username}})
+                </template>
+                <template v-else-if="player.team_members.length > 0">
+                  <img width="30" height="30" :src="`https://github.com/${player.username}.png`" v-bind:alt="player.username">
+                  {{ player.username }} ({{player.team_name}})
                 </template>
                 <template v-else>
                   <img width="30" height="30" :src="`https://github.com/${player.username}.png`" v-bind:alt="player.username">
@@ -106,7 +110,7 @@
             </td>
             <td>{{ player.level }}</td>
             <td class="text-center">
-              <div v-if="player.team_members.length > 0">
+              <div v-if="player.user_id === player.team_leader_id && player.team_members.length > 0">
                 <img
                   v-for="team_member in player.team_members"
                   v-if="getCountry(team_member.country)"
@@ -119,7 +123,7 @@
               </div>
             </td>
             <td>
-              <template v-if="player.team_members.length > 0">
+              <template v-if="player.user_id === player.team_leader_id && player.team_members.length > 0">
                 {{ player.team_members.filter(tm => tm.organization).map(tm => tm.organization).join(", ") }}
               </template>
               <template v-else>
@@ -127,7 +131,10 @@
               </template>
             </td>
             <td>{{ player.language }}</td>
-            <td :title="`${player.num_games} games`">{{ getFormattedDate(player.update_time)  }} {{ player.compile_status == "Successful" ? "v"+player.version_number : player.compile_status }}</td>
+            <td :title="`${player.num_games} games`">
+              {{ getFormattedDate(player.update_time)  }}
+              {{ player.compile_status == "Successful" ? "v"+player.version_number : player.compile_status }}
+            </td>
           </tr>
           </tbody>
         </table>

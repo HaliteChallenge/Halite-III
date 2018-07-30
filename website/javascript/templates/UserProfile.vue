@@ -8,6 +8,31 @@
                 </div>
                 <div class="user-profile-detail">
                     <a class="user-name" target="_blank" :href="'https://github.com/' + user.username">{{ user.username }}</a>
+                    <div v-if="user.team_id" class="user-team-detail">
+                        <p class="user-team">
+                            <template v-if="user.team_leader_id == user.user_id">
+                                Leader of
+                            </template>
+                            <template v-else>
+                                Member of
+                            </template>
+                            <a target="_blank"
+                               :href="`/user/?user_id=${user.team_id}`"
+                            >{{ user.team_name }}</a>
+                        </p>
+
+                        <template v-if="team" v-for="member in team.members">
+                            <a :href="`/user/?user_id=${member.user_id}`">
+                                <img
+                                  height="20px"
+                                  :alt="member.username"
+                                  :src="`https://github.com/${member.username}.png`"
+                                />
+                                {{member.username}}
+                            </a>
+                        </template>
+                        <i class="xline xline-bottom"></i>
+                    </div>
                     <p>{{ user.level }} <span v-if="user.organization">at <a  :href="`/programming-competition-leaderboard?organization=${user.organization_id}`">{{ user.organization }}</a></span></p>
                     <p v-if="user.location">
                       From <a :href="`/programming-competition-leaderboard?country=${user.country_code}`">{{user.location}}</a>
@@ -565,6 +590,7 @@
             'num_games': '',
             'user_id': ''
           },
+          team: null,
           games: [],
           challengeGames: [],
           nemesisList: [],
@@ -617,6 +643,13 @@
               {}, '',
               `${window.location.origin}${window.location.pathname}?user_id=${user.user_id}`)
           }
+
+          if (user.team_id) {
+            api.get_team(user.team_id).then((team) => {
+              this.team = team
+            })
+          }
+
           api.list_bots(user.user_id).then((bots) => {
             this.bots = bots
           })

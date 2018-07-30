@@ -56,6 +56,12 @@ export function get_user (user_id) {
   })
 }
 
+export function get_team(team_id) {
+  return window.fetch(`${API_SERVER_URL}/team/${team_id}`, {
+    credentials: 'include',
+  }).then(r => r.json())
+}
+
 export function logout () {
   return $.post({
     url: `${LOGOUT_SERVER_URL}`,

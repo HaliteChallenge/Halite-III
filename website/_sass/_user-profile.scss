@@ -162,6 +162,17 @@
     font-size: 35px;
     font-family: $font-heading;
   }
+
+  .user-team {
+    font-size: 1.5em;
+    font-family: $font-heading;
+  }
+}
+
+.user-team-detail {
+  position: relative;
+  padding: 0 0 10px 0;
+  margin: 0 0 10px 0;
 }
 
 .stats-1-section{
