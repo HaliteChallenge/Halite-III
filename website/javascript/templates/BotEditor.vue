@@ -152,6 +152,8 @@ export default {
       is_new_folder_modal_open: false,
       is_delete_modal_open: false,
       alerts: [],
+      visualizer: null,
+      baseUrl: '',
     }
   },
   props: {
@@ -481,10 +483,12 @@ export default {
       const taskResult = await api.start_ondemand_task(user_id, Object.assign({}, {
         opponents: [
           {
-            name: "MirrorMatch",
-            bot_id: "self",
+            name: this.opponent_bot_name,
+            bot_id: this.opponent_bot_id,
           },
         ],
+        width: this.map_size,
+        height: this.map_size,
       }, params))
       console.log(taskResult)
       const startResult = await api.update_ondemand_task(user_id, {
@@ -617,6 +621,11 @@ export default {
           })
         })
       })
+    },
+    set_settings: function(settings) {
+      for(let key in settings) {
+        this[key] = settings[key]
+      }
     },
     update_editor_files: function() {
       this.active_file.contents = this.editorViewer.editor.getModel().getText()

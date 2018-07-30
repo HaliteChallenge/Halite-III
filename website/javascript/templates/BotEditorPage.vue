@@ -20,8 +20,16 @@
             <li><a v-on:click="download_bot()"><span>Download</span><i class="xline xline-bottom"></i></a></li>
             <li><a v-on:click="submit_bot()"><span>Submit</span><i class="xline xline-bottom"></i></a></li>
           </ul>
+          <ul class="nav navbar-nav halite-nav-right">
+            <li><a v-on:click="save_current_file()"><span>Save</span><i class="xline xline-bottom"></i></a></li>
+            <li>
+              <BotEditorSettings ref="settings_console" @settings_change="on_settings_change()"/>
+            </li>
+            <li>
+              <div id="user-profile-bar-container"></div>
+            </li>
+          </ul>
         </div>
-        <div id="user-profile-bar-container"></div>
       </div>
     </header>
     <BotEditor ref="editor_pane" :baseUrl="baseUrl"/>
@@ -32,18 +40,23 @@
   import * as api from '../api'
   import * as utils from '../utils'
   import BotEditor from './BotEditor.vue'
+  import BotEditorSettings from './BotEditorSettings.vue'
 
 export default {
   name: 'bot_editor_page',
   props: ['baseUrl'],
-  components: {BotEditor},
+  components: {BotEditor, BotEditorSettings},
   data: function () {
     return {}
   },
   mounted: function () {
     utils.initUserProfileNav();
+    this.on_settings_change();
   },
   methods: {
+    on_settings_change: function() {
+      this.$refs.editor_pane.set_settings(this.$refs.settings_console.get_settings());
+    },
     download_bot: function () {
       this.$refs.editor_pane.download_bot();
     },
@@ -65,4 +78,11 @@ export default {
  height: 100%;
 }
 
+.halite-nav-right {
+  float: right !important;
+}
+
+</style>
+
+<style lang="scss">
 </style>
