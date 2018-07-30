@@ -193,6 +193,8 @@ export default{
             this.showResult = true;
           }, (error) => {
             this.showResult = false;
+            this.validated = true;
+            this.errorMessage = error.responseJSON.message;
             throw error.responseJSON.message;
           })
         } else {
