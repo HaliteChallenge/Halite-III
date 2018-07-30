@@ -748,13 +748,14 @@
       tierClass: tierClass,
       getPlayers: async function () {
         if (!this.replay) return []
-        return this.replay.game_statistics.player_statistics
+        let players =  this.replay.game_statistics.player_statistics
                    .map((p) => {
                      const player = Object.assign({}, p);
                      player.name = this.replay.players[player.player_id].name;
                      player.index = player.player_id;
                      return player;
                    })
+          return _.sortBy(players, ['index'])
       },
       getSortedPlayers: async function () {
         const players = await this.getPlayers()
