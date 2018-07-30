@@ -114,9 +114,9 @@ def leaderboard():
             where_clause &= tier_filter
 
         # Only include non-team players/team leaders
-        where_clause &= (
-            (model.ranked_bots_users.c.team_id == None) |
-            (model.ranked_bots_users.c.team_id == model.ranked_bots_users.c.user_id))
+        # where_clause &= (
+        #     (model.ranked_bots_users.c.team_id == None) |
+        #     (model.ranked_bots_users.c.team_id == model.ranked_bots_users.c.user_id))
 
         query = conn.execute(
             model.ranked_bots_users.select()

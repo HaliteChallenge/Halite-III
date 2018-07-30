@@ -10,10 +10,15 @@ from . import config
 
 class CompileStatus(enum.Enum):
     """The compilation status of a bot."""
+    # Bot just uploaded
     UPLOADED = "Uploaded"
+    # Bot being compiled
     IN_PROGRESS = "InProgress"
+    # Bot playing games
     SUCCESSFUL = "Successful"
+    # Bot failed to compile
     FAILED = "Failed"
+    # Bot not running (e.g. part of team and not leader)
     DISABLED = "Disabled"
 
 
@@ -315,7 +320,6 @@ def hackathon_ranked_bots_users_query(hackathon_id, *, alias="hackathon_ranked_b
         local_rank.c.score,
         local_rank.c.language,
         ranked_bots.c.update_time,
-        # Perform a no-op operation so we can label the column easily
         local_rank.c.local_rank,
         ranked_bots.c.compile_status,
     ]).select_from(
