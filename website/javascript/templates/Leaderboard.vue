@@ -86,9 +86,15 @@
           <tr :id="`user-row-${player.user_id}`" :key="player.user_id" v-for="player in leaderboard">
             <td class="text-center">{{ player.rank || player.local_rank }}</td>
             <td class="nowrap">
-              <a :href="'/user?user_id=' + player.user_id" class="leaderboard-name">
-                <img width="30" height="30" :src="`https://github.com/${player.username}.png`" alt="">
-                {{ player.team_name || player.username }}
+              <a :href="'/user?user_id=' + player.user_id" class="leaderboard-name" v-bind:title="player_link_title(player)">
+                <template v-if="player.team_members.length > 0">
+                  <img v-for="team_member in player.team_members" width="30" height="30" :src="`https://github.com/${team_member.username}.png`" v-bind:alt="player.username">
+                  {{ player.team_name }}
+                </template>
+                <template v-else>
+                  <img width="30" height="30" :src="`https://github.com/${player.username}.png`" v-bind:alt="player.username">
+                  {{ player.username }}
+                </template>
               </a>
             </td>
             <td :title="`${player.rating_components}`">{{ Math.round(100 * player.score) / 100 }}</td>
@@ -100,11 +106,26 @@
             </td>
             <td>{{ player.level }}</td>
             <td class="text-center">
-              <div>
+              <div v-if="player.team_members.length > 0">
+                <img
+                  v-for="team_member in player.team_members"
+                  v-if="getCountry(team_member.country)"
+                  :title="`${getCountryName(team_member.country)}`"
+                  :src="`${getCountry(team_member.country)}`"
+                  class="country-img">
+              </div>
+              <div v-else>
                 <img v-if="getCountry(player.country)" :title="`${getCountryName(player.country)}`" :src="`${getCountry(player.country)}`" class="country-img">
               </div>
             </td>
-            <td>{{ player.organization }}</td>
+            <td>
+              <template v-if="player.team_members.length > 0">
+                {{ player.team_members.filter(tm => tm.organization).map(tm => tm.organization).join(", ") }}
+              </template>
+              <template v-else>
+                {{ player.organization }}
+              </template>
+            </td>
             <td>{{ player.language }}</td>
             <td :title="`${player.num_games} games`">{{ getFormattedDate(player.update_time)  }} {{ player.compile_status == "Successful" ? "v"+player.version_number : player.compile_status }}</td>
           </tr>
@@ -625,6 +646,15 @@ export default {
           api.leaderboard(filters, this.hackathonId, (this.page - 1) * this.limit, this.limit).then((leaderboard) => {
             handleLeaderboard(leaderboard);
           });
+        }
+      },
+
+      player_link_title(player) {
+        if (player.team_members.length > 0) {
+          return `${player.team_name}: ${player.team_members.map(tm => tm.username).join(", ")}`;
+        }
+        else {
+          return player.username;
         }
       },
 

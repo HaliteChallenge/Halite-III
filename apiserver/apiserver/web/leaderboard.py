@@ -1,6 +1,7 @@
 """
 Leaderboard API endpoints - get/sort/filter the leaderboard
 """
+import collections
 import operator
 
 import flask
@@ -122,6 +123,7 @@ def leaderboard():
                 .where(where_clause).order_by(*order_clause)
                 .offset(offset).limit(limit).reduce_columns())
 
+        team_ids = []
         for row in query.fetchall():
             user = {
                 "user_id": row["user_id"],
@@ -144,12 +146,38 @@ def leaderboard():
                 "team_leader_id": row["team_leader_id"],
             }
 
+            if row["team_id"] is not None:
+                team_ids.append(row["team_id"])
+
             if total_users and row["rank"] is not None:
                 user["tier"] = util.tier(row["rank"], total_users)
             else:
                 user["tier"] = None
 
             result.append(user)
+
+        team_members = conn.execute(model.team_members.join(
+            model.all_users,
+            model.team_members.c.user_id == model.all_users.c.user_id
+        ).select().where(
+            model.team_members.c.team_id.in_(team_ids)
+        ).reduce_columns())
+        team_map = collections.defaultdict(list)
+        for team_member in team_members.fetchall():
+            team_map[team_member["team_id"]].append(team_member)
+
+        for row in result:
+            if row["team_id"] in team_map:
+                row["team_members"] = [{
+                    "user_id": tm["user_id"],
+                    "username": tm["username"],
+                    "player_level": tm["player_level"],
+                    "organization_id": tm["organization_id"],
+                    "organization": tm["organization_name"],
+                    "country": tm["country_code"],
+                } for tm in team_map[row["team_id"]]]
+            else:
+                row["team_members"] = []
 
     return flask.jsonify(result)
 
