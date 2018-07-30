@@ -204,6 +204,19 @@ def associate_user_team(team_id, *, user_id):
             if member["user_id"] == user_id:
                 raise util.APIError(400, message="You're already in this team.")
 
+        # conn.execute(
+        #     model.challenges.update().where(
+        #         model.challenges.c.status != 'finished'
+        #     ).values(
+        #         status="finished",
+        #         finished=
+        #     )
+        # )
+
+        conn.execute(model.bots.update().values(
+            compile_status="Disabled"
+        ).where(model.bots.c.user_id == user_id))
+
         conn.execute(
             model.team_members.insert().values(
                 team_id=team_id,
