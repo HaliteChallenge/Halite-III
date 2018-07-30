@@ -21,6 +21,9 @@ def make_user_record(row, *, logged_in, total_users=None):
     """Given a database result row, create the JSON user object."""
     user = {
         "user_id": row["user_id"],
+        "team_id": row["team_id"],
+        "team_name": row["team_name"],
+        "team_leader_id": row["team_leader_id"],
         "username": row["username"],
         "level": row["player_level"],
         "organization_id": row["organization_id"],

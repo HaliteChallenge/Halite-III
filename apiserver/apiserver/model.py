@@ -127,6 +127,8 @@ ranked_bots = ranked_bots_query()
 
 
 _func = sqlalchemy.sql.func
+leader_bots = ranked_bots_query("leader_bot")
+teams_bots = teams.join(leader_bots, teams.c.leader_id == leader_bots.c.user_id)
 # Summary of all users, regardless of whether they have bots
 all_users = sqlalchemy.sql.select([
     users.c.id.label("user_id"),
@@ -140,22 +142,56 @@ all_users = sqlalchemy.sql.select([
     users.c.email.label("personal_email"),
     users.c.is_email_good,
     users.c.is_gpu_enabled,
+    teams.c.id.label("team_id"),
+    teams.c.name.label("team_name"),
+    teams.c.leader_id.label("team_leader_id"),
     _func.count(ranked_bots.c.user_id).label("num_bots"),
-    _func.coalesce(_func.sum(ranked_bots.c.games_played), 0).label("num_games"),
-    _func.coalesce(_func.sum(ranked_bots.c.version_number), 0).label("num_submissions"),
-    _func.coalesce(_func.max(ranked_bots.c.score), 0).label("score"),
-    _func.coalesce(_func.max(ranked_bots.c.sigma), 0).label("sigma"),
-    _func.coalesce(_func.max(ranked_bots.c.mu), 0).label("mu"),
-    _func.coalesce(_func.min(ranked_bots.c.bot_rank)).label("rank"),
-]).select_from(users.join(
-    ranked_bots,
-    ranked_bots.c.user_id == users.c.id,
-    isouter=True,
+    _func.coalesce(
+        _func.sum(leader_bots.c.games_played),
+        _func.sum(ranked_bots.c.games_played),
+        0,
+    ).label("num_games"),
+    _func.coalesce(
+        _func.sum(leader_bots.c.version_number),
+        _func.sum(ranked_bots.c.version_number),
+        0,
+    ).label("num_submissions"),
+    _func.coalesce(
+        _func.max(leader_bots.c.score),
+        _func.max(ranked_bots.c.score),
+        0,
+    ).label("score"),
+    _func.coalesce(
+        _func.max(leader_bots.c.sigma),
+        _func.max(ranked_bots.c.sigma),
+        0,
+    ).label("sigma"),
+    _func.coalesce(
+        _func.max(leader_bots.c.mu),
+        _func.max(ranked_bots.c.mu),
+        0,
+    ).label("mu"),
+    _func.coalesce(
+        _func.min(ranked_bots.c.bot_rank),
+    ).label("rank"),
+]).select_from(
+    users.join(
+        ranked_bots,
+        ranked_bots.c.user_id == users.c.id,
+        isouter=True,
     ).join(
-    organizations,
-    organizations.c.id == users.c.organization_id,
-    isouter=True
-)).where(
+        organizations,
+        organizations.c.id == users.c.organization_id,
+        isouter=True
+    ).join(
+        teams_bots,
+        sqlalchemy.sql.exists(team_members.select(
+            (teams_bots.c.team_id == team_members.c.team_id) &
+            (team_members.c.user_id == users.c.id)
+        )),
+        isouter=True
+    )
+).where(
     users.c.is_active == True
 ).group_by(
     users.c.id,
@@ -169,6 +205,9 @@ all_users = sqlalchemy.sql.select([
     users.c.email,
     users.c.is_email_good,
     users.c.is_gpu_enabled,
+    teams.c.id,
+    teams.c.name,
+    teams.c.leader_id,
 ).alias("all_users")
 
 
