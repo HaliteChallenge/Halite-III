@@ -101,6 +101,7 @@ def serve_game_task(conn, has_gpu=False):
         ranked_users.c.rank.label("player_rank"),
         model.ranked_bots_users.c.num_submissions.label("version_number"),
         model.ranked_bots_users.c.mu,
+        model.teams.c.name.label("team_name"),
     ]).select_from(
         model.ranked_bots_users.join(
             model.bots,
@@ -109,6 +110,12 @@ def serve_game_task(conn, has_gpu=False):
         ).join(
             ranked_users,
             (ranked_users.c.user_id == model.ranked_bots_users.c.user_id)
+        ).join(
+            model.team_members.join(
+                model.teams,
+                model.team_members.c.team_id == model.teams.c.id),
+            model.team_members.c.user_id == model.ranked_bots_users.c.user_id,
+            isouter=True
         )
     ).where(
         (model.bots.c.compile_status == model.CompileStatus.SUCCESSFUL.value) &
@@ -139,7 +146,7 @@ def serve_game_task(conn, has_gpu=False):
     players = [{
         "user_id": player["user_id"],
         "bot_id": player["bot_id"],
-        "username": player["username"],
+        "username": player["team_name"] if player["team_name"] else player["username"],
         "version_number": player["version_number"],
         "rank": player["rank"],
         "tier": util.tier(player["rank"], total_players),
@@ -359,11 +366,19 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
         gamers_last_play.c.mu,
         gamers_last_play.c.rank,
         gamers_last_play.c.player_rank,
+        model.teams.c.name.label("team_name"),
     ]).select_from(
         gamers_last_play.join(
             outer_bots,
             (outer_bots.c.user_id == gamers_last_play.c.user_id) &
-            (outer_bots.c.id == gamers_last_play.c.bot_id))) \
+            (outer_bots.c.id == gamers_last_play.c.bot_id)) \
+        .join(
+            model.team_members.join(
+                model.teams,
+                model.team_members.c.team_id == model.teams.c.id),
+            model.team_members.c.user_id == gamers_last_play.c.user_id,
+            isouter=True
+        )) \
         .where(bot_restrictions) \
         .order_by(gamers_last_play.c.max_time.asc()) \
         .limit(15).alias("orderedtable")
@@ -400,6 +415,7 @@ def find_newbie_seed_player(conn, ranked_users, seed_filter):
         ranked_users.c.rank.label("player_rank"),
         model.bots.c.version_number,
         model.bots.c.mu,
+        model.teams.c.name.label("team_name"),
     ]
     query = sqlalchemy.sql.select(columns).select_from(
         model.ranked_bots_users.join(
@@ -409,6 +425,12 @@ def find_newbie_seed_player(conn, ranked_users, seed_filter):
         ).join(
             ranked_users,
             model.ranked_bots_users.c.user_id == ranked_users.c.user_id
+        ).join(
+            model.team_members.join(
+                model.teams,
+                model.team_members.c.team_id == model.teams.c.id),
+            model.team_members.c.user_id == model.ranked_bots_users.c.user_id,
+            isouter=True
         )
     ).where(
         (model.bots.c.compile_status == model.CompileStatus.SUCCESSFUL.value) &
@@ -465,6 +487,7 @@ def find_seed_player(conn, ranked_users, seed_filter):
             ranked_users.c.rank.label("player_rank"),
             model.ranked_bots_users.c.mu,
             model.ranked_bots_users.c.num_submissions.label("version_number"),
+            model.teams.c.name.label("team_name"),
         ]).select_from(
             model.ranked_bots_users.join(
                 # This join should have no effect on the result but it makes
@@ -476,6 +499,12 @@ def find_seed_player(conn, ranked_users, seed_filter):
                 ranked_users,
                 (model.ranked_bots_users.c.user_id == ranked_users.c.user_id) &
                 seed_filter
+            ).join(
+                model.team_members.join(
+                    model.teams,
+                    model.team_members.c.team_id == model.teams.c.id),
+                model.team_members.c.user_id == model.ranked_bots_users.c.user_id,
+                isouter=True
             )
         ).where(
             model.bots.c.compile_status == model.CompileStatus.SUCCESSFUL.value
