@@ -73,6 +73,9 @@ export class HaliteVisualizer {
             },
         });
 
+        // XXX FORCE WEBGL ON SOFTWARE RENDERER
+        // TODO: BETTER OVERRIDE
+        PIXI.utils.isWebGLSupported = () => true;
         this.application = new PIXI.Application(
             this.width, this.height,
             {
