@@ -36,6 +36,14 @@ class HaliteImpl final {
     bool game_ended() const;
 
     /**
+     * Determine whether a player can still play in the future
+     *
+     * @param player Player to check
+     * @return True if the player can play on the next turn
+     */
+    bool player_can_play(const Player &player) const;
+
+    /**
      * Update a player's statistics after a single turn. This will update their current game production and their last turn
      * alive if they are still alive.
      *

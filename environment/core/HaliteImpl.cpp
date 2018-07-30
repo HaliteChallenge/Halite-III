@@ -269,6 +269,15 @@ void HaliteImpl::process_turn() {
 }
 
 /**
+ * Determine whether a player can still play in the future
+ *
+ * @param player Player to check
+ * @return True if the player can play on the next turn
+ */
+bool HaliteImpl::player_can_play(const Player &player) const {
+    return !player.entities.empty() || player.energy > Constants::get().NEW_ENTITY_ENERGY_COST;
+}
+/**
  * Determine whether the game has ended.
  * @return True if the game has ended.
  */
@@ -278,7 +287,7 @@ bool HaliteImpl::game_ended() const {
     }
     long num_alive_players = 0;
     for (auto &&[_, player] : game.store.players) {
-        bool can_play = !player.entities.empty() || player.energy > Constants::get().NEW_ENTITY_ENERGY_COST;
+        bool can_play = player_can_play(player);
         if (player.can_play && !can_play) {
             Logging::log("player has insufficient resources to continue", Logging::Level::Info, player.id);
             player.can_play = false;
@@ -301,9 +310,11 @@ void HaliteImpl::update_player_stats() {
     for (PlayerStatistics &player_stats : game.game_statistics.player_statistics) {
         // Player with sprites is still alive, so mark as alive on this turn and add production gained
         const auto &player_id = player_stats.player_id;
-        if (!game.store.get_player(player_id).terminated) {
-            const Player &player = game.store.get_player(player_id);
-            player_stats.last_turn_alive = game.turn_number;
+        const Player &player = game.store.get_player(player_id);
+        if (!player.terminated && player.can_play) {
+            if (player_can_play(player)) { // Player may have died during this turn, in which case do not update final turn
+                player_stats.last_turn_alive = game.turn_number;
+            }
             player_stats.turn_productions.push_back(player.energy);
             player_stats.number_dropoffs = player.dropoffs.size();
             for (const auto &[_entity_id, location] : player.entities) {
