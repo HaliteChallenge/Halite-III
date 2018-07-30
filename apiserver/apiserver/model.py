@@ -172,6 +172,7 @@ all_users = sqlalchemy.sql.select([
         0,
     ).label("mu"),
     _func.coalesce(
+        _func.min(leader_bots.c.bot_rank),
         _func.min(ranked_bots.c.bot_rank),
     ).label("rank"),
 ]).select_from(
