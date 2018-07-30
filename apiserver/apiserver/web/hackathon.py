@@ -22,8 +22,17 @@ def can_view_hackathon(user_id, hackathon_id, conn):
     :param conn:
     :return: True if the user can view the hackathon; False otherwise
     """
+    team = conn.execute(model.team_leader_query(user_id)).first()
+    if team:
+        user_where_clause = model.hackathon_participants.c.user_id.in_([
+            team["leader_id"],
+            user_id,
+        ])
+    else:
+        user_where_clause = model.hackathon_participants.c.user_id == user_id
+
     is_user_joined = conn.execute(model.hackathon_participants.select(
-        (model.hackathon_participants.c.user_id == user_id) &
+        user_where_clause &
         (model.hackathon_participants.c.hackathon_id == hackathon_id)
     )).first()
 
