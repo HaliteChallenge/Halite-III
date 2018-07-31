@@ -358,12 +358,12 @@
       makeUserLink: Function,
       getUserProfileImage: Function,
       width: {
-        default: 700,
+        default: 600,
         required: false,
         type: Number
       },
       height: {
-        default: 700,
+        default: 600,
         required: false,
         type: Number
       },
