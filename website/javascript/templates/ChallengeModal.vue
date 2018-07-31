@@ -21,9 +21,15 @@
                     </v-select>
                   </div>
                 </div>
-                <div v-else-if="members[friends[index]]">
+                <div v-else>
                   <div class="selected-friend">
-                    <a :href="'/user?user_id=' + members[friends[index]].user_id"><img width="36" height="36" :src="`https://github.com/${friends[index]}.png`" alt=""> {{friends[index]}}</a>
+                    <a :href="'/user?user_id=' + members[friends[index]][0].user_id">
+                      <img
+                        v-for="opponent in members[friends[index]]"
+                        width="36" height="36"
+                        :src="`https://github.com/${opponent.username}.png`" alt="">
+                      {{friends[index]}}
+                    </a>
                     <a class="close" @click="removeFriend(index)"><span class="icon-remove"></span></a>
                   </div>
                 </div>
@@ -83,6 +89,7 @@ export default{
       options: [],
       friends: [],
       members: {},
+      teamMap: {},
       me: false,
       errorMessage: "",
       emptyFields: [],
@@ -92,51 +99,66 @@ export default{
   },
   mounted: function(){
     api.me().then((me) => {
-      if (me){
+      if (me) {
         this.me = me
 
         api.leaderboard(null, null, 0, 99999).then((members) => {
-          this.options = members.map((member) => member.username )
-            .filter((username) => username !== me.username)
+          this.options = members
+            .filter((member) => {
+              if (member.team_name) {
+                this.teamMap[member.username] = member.team_name
+              }
+              return member.username !== me.username &&
+                     (!member.team_leader_id ||
+                      (member.team_leader_id === member.user_id))
+            })
+            .map((member) => (member.team_name || member.username))
 
           let arr = {};
           members.forEach((item) => {
-            arr[item.username] = item
+            const key = item.team_name || item.username
+            if (!arr[key]) {
+              arr[key] = []
+            }
+            arr[key].push(item)
           });
-          this.members = arr;
+          this.members = arr
+
+          if (this.username) {
+            this.friends.push(this.username)
+          } else {
+            this.friends.push("")
+          }
         })
       }
     });
 
-    let options = []
-    let members = {}
-
-    if (this.username){
-      this.friends.push(this.username)
-    } else {
-      this.friends.push("")
-    }
-
   },
   watch: {
     username: function(newUsername){
-      if (newUsername){
-        this.friends[0] = newUsername
+      if (newUsername) {
+        if (this.teamMap[newUsername]) {
+          newUsername = this.teamMap[newUsername]
+        }
+        this.friends = [newUsername]
       } else {
-        this.friends[0] = ""
+        this.friends = []
       }
     },
     friends: function(newFriends) {
       let options = this.options;
       newFriends.forEach((username) => {
+        if (this.teamMap[username]) {
+          username = this.teamMap[username]
+        }
         options = options.filter((searchedUsername) => searchedUsername != username)
       })
       this.options = options
       this.validated = false
     },
-    isOn: function(value){
+    isOn: function(value) {
       if (value){
-        this.friends = this.username ? [this.username] : [""]
+        this.friends = this.username ? [this.teamMap[this.username] || this.username] : [""]
         this.errorMessage = ""
         this.emptyFields = []
         this.validated = false
