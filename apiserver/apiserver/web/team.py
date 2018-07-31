@@ -134,7 +134,7 @@ def create_team(*, user_id):
     if "name" not in flask.request.json:
         raise util.APIError(400, message="Please provide a team name.")
 
-    team_name = flask.request.json["name"]
+    team_name = "Team " + flask.request.json["name"]
 
     # TODO: validate team name
 
