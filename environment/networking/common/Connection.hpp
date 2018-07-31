@@ -22,11 +22,19 @@ public:
     virtual void send_string(const std::string &message) = 0;
 
     /**
-     * Get a string from this connection.
+     * Get a string from this connection with configured timeout.
      * @return The string read.
      * @throws NetworkingError on error while reading.
      */
     virtual std::string get_string() = 0;
+
+    /**
+     * Get a string from this connection.
+     * @param timeout The timeout to use.
+     * @return The string read.
+     * @throws NetworkingError on error while reading.
+     */
+    virtual std::string get_string(std::chrono::milliseconds timeout) = 0;
 
     /**
      * Read any remaining input from the pipe.
