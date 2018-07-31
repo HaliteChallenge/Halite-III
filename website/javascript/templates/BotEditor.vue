@@ -541,16 +541,9 @@ export default {
       if (status.status === "completed") {
         if (status.error_log) {
           this.add_console_text("Your bot crashed :(\n")
-          this.add_console_text("Fetching replay...\n")
-          this.add_console_text("Fetching error log...\n")
+        }
 
-          window.setTimeout(() => {
-            this.add_console_text(status.error_log)
-          }, 1000)
-        }
-        else {
-          this.add_console_text("Game complete! Fetching replay...\n")
-        }
+        this.add_console_text("Fetching replay...\n")
 
         const replayBlob = await api.get_ondemand_replay(this.user_id)
         const libhaliteviz = await import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
@@ -565,6 +558,12 @@ export default {
 
         for (let i = 0; i < status.opponents.length; i++) {
           this.add_console_text(`Player ${i} (${i === 0 ? 'your bot' : '"' + status.opponents[i].name + '"'}) was rank ${status.game_output.stats[i].rank}.\n`)
+        }
+
+        if (status.error_log) {
+          this.add_console_text("Fetching error log...\n")
+          const log = await api.get_ondemand_error_log(this.user_id)
+          this.add_console_text(log)
         }
 
         return
