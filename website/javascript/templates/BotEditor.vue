@@ -65,6 +65,7 @@
 </template>
 
 <script>
+  import moment from "moment";
   import * as api from '../api'
   import * as utils from '../utils'
   import InputModal from './InputModal.vue'
@@ -154,6 +155,7 @@ export default {
       alerts: [],
       visualizer: null,
       baseUrl: '',
+      gameTimes: [],
     }
   },
   props: {
@@ -480,6 +482,16 @@ export default {
     run_ondemand_game: async function(params) {
       this.clear_terminal_text()
       const user_id = this.user_id
+
+      const cutoff = moment().subtract(1, 'minutes')
+      this.gameTimes = this.gameTimes.filter(time => time.isSameOrAfter(cutoff))
+      if (this.gameTimes.length > 3) {
+        this.alert("No more than 3 games per minute allowed, please wait and try again.")
+        return;
+      }
+
+      this.gameTimes.push(moment())
+
       const taskResult = await api.start_ondemand_task(user_id, Object.assign({}, {
         opponents: [
           {
