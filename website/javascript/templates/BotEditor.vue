@@ -677,8 +677,16 @@ export default {
       })
     },
     set_settings: function(settings) {
-      for(let key in settings) {
+      let change = false
+      for (let key in settings) {
+        if (this[key] !== settings[key]) {
+          change = true
+        }
         this[key] = settings[key]
+      }
+
+      if (change) {
+        this.alert("Settings updated")
       }
     },
     update_editor_files: function() {
