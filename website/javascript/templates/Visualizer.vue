@@ -406,7 +406,7 @@
         sliderOptions: {
           min: 0,
           max: 0,
-          speed: 1.5,
+          speed: 0.5,
           sliderStyle: {
             backgroundColor: '#E6AB00',
             top: 0,
@@ -519,8 +519,7 @@
           this.playVideo = (e) => {
             if (visualizer) {
               if (this.frame >= this.replay.game_statistics.number_turns - 1) {
-                visualizer.frame = 0
-                visualizer.time = 0.0
+                visualizer.scrub(0, 0)
                 this.frame = 0
                 this.time = 0.0
               }
