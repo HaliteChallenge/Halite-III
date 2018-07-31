@@ -2,6 +2,7 @@
 Coordinator API for running games on-demand (e.g. for the web editor
 and tutorial).
 """
+import datetime
 import io
 import re
 
@@ -34,6 +35,7 @@ def check_ondemand(intended_user, *, user_id):
                            "opponents",
                            "objective",
                            "snapshots",
+                           "crashed",
                            "status"):
             if field_name in task:
                 result[field_name] = task[field_name]
@@ -56,7 +58,6 @@ def create_ondemand(intended_user, *, user_id):
     if user_id != intended_user:
         raise web_util.user_mismatch_error(
             message="Cannot start ondemand game for another user.")
-
 
     if "opponents" not in flask.request.json:
         raise util.APIError(400, message="Opponents array is required.")
@@ -94,6 +95,13 @@ def create_ondemand(intended_user, *, user_id):
     for key, value in flask.request.json.items():
         if key in ("width", "height", "s", "no-timeout", "turn-limit"):
             env_params[key] = value
+
+    entity = ondemand.check_status(user_id)
+    cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=15)
+    if entity and entity["last_updated"] >= cutoff:
+        raise util.APIError(
+            400,
+            message="You last created a game less than 15 seconds ago, please wait and try again.")
 
     # TODO: check that user has a bot in the editor bucket (tutorial
     # bucket?)
@@ -147,6 +155,40 @@ def get_ondemand_replay(intended_user, *, user_id):
         mimetype="application/x-halite-3-replay",
         as_attachment=True,
         attachment_filename="{}.hlt".format(user_id)))
+
+    response.headers["Content-Length"] = str(buffer.getbuffer().nbytes)
+    # Don't cache this
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    response.headers["Cache-Control"] = "public, max-age=0"
+
+    return response
+
+
+@web_api.route("/ondemand/<int:intended_user>/error_log", methods=["GET"])
+@util.cross_origin(methods=["GET"])
+@web_util.requires_login(accept_key=False)
+def get_ondemand_log(intended_user, *, user_id):
+    if user_id != intended_user:
+        raise web_util.user_mismatch_error(
+            message="Cannot get error log for another user.")
+
+    bucket = model.get_ondemand_replay_bucket()
+    blob = gcloud_storage.Blob("ondemand_log_{}".format(user_id), bucket, chunk_size=262144)
+    buffer = io.BytesIO()
+
+    try:
+        blob.download_to_file(buffer)
+    except gcloud_exceptions.NotFound:
+        raise util.APIError(404, message="Error log not found.")
+
+    buffer.seek(0)
+    response = flask.make_response(flask.send_file(
+        buffer,
+        mimetype="text/plain",
+        as_attachment=True,
+        attachment_filename="{}.log".format(user_id)))
 
     response.headers["Content-Length"] = str(buffer.getbuffer().nbytes)
     # Don't cache this

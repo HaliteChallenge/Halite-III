@@ -7,6 +7,7 @@ module.exports = merge(commonConfig, {
     plugins: [
         new BundleAnalyzerPlugin({
             analyzerMode: "static",
+            openAnalyzer: false,
         }),
     ],
 });

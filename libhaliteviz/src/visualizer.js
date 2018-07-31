@@ -581,30 +581,39 @@ export class HaliteVisualizer {
                 const cellSize = assets.CELL_SIZE;
 
                 if (event.type === "shipwreck") {
-                    // Remove all entities involved in crash
-                    for (let index = 0; index < event.ships.length; index++) {
-                        // add death animation to be drawn
-                        // TODO: switch to Halite 3 animation
+                    const lastFrame = this.frame >= this.replay.full_frames.length - 1;
+                    // add death animation to be drawn
+                    // TODO: switch to Halite 3 animation
+                    const involvedPlayers = event.ships.map((id) => {
                         for (const [player, playerShips] of
                              Object.entries(this.currentFrame.entities)) {
-                            if (playerShips[event.ships[index]]) {
-                                this.animationQueue.push(
-                                    new animation.ShipExplosionFrameAnimation(
-                                        playerShips[event.ships[index]],
-                                        assets.PLAYER_COLORS[parseInt(player, 10)],
-                                        cellSize,
-                                        this.entityContainer));
+                            if (playerShips[id]) return player;
+                        }
+                        return null;
+                    });
+                    let color = 0xFFFFFF;
+                    if (involvedPlayers.every(p => p === involvedPlayers[0])) {
+                        color = assets.PLAYER_COLORS[parseInt(involvedPlayers[0], 10)];
+                    }
+                    this.animationQueue.push(
+                        new animation.ShipExplosionFrameAnimation(
+                            event.location,
+                            color,
+                            lastFrame ? 0 : 90,
+                            cellSize,
+                            this.entityContainer));
+
+                    // Don't actually remove entities - allow
+                    // remove_invalid_entities to clean it up next
+                    // frame (unless this is the last frame)
+                    if (lastFrame) {
+                        for (const id of event.ships) {
+                            if (this.entity_dict[id]) {
+                                this.entity_dict[id].destroy();
+                                delete this.entity_dict[id];
                             }
                         }
-
-                        const entity_id = event.ships[index];
-                        // Might not actually exist when we're panning
-                        if (this.entity_dict[entity_id]) {
-                            this.entity_dict[entity_id].destroy();
-                            delete this.entity_dict[entity_id];
-                        }
                     }
-
                 }
                 else if (event.type === "spawn") {
                     // Create a new entity, add to map, and merge as needed

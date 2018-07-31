@@ -52,6 +52,8 @@
             });
         },
         render: function(h) {
+            const steps = this.$slots.steps
+                              .filter((node) => node.tag && node.tag.endsWith("walkthrough-step"));
             return h("section", {
                 class: "walkthrough",
             }, [
@@ -62,22 +64,26 @@
                     h("section", {
                         class: "steps",
                         ref: "stepsContainer",
-                    }, this.$slots.steps
-                           .filter((node) => node.tag && node.tag.endsWith("walkthrough-step"))
-                           .map((step, index) => {
-                               if (step.child) {
-                                   step.child.active = index === this.progress;
-                                   step.child.switchTo = () => this.switchTo(index);
-                               }
-                               return step;
-                           })),
+                    }, steps.map((step, index) => {
+                        if (step.child) {
+                            step.child.active = index === this.progress;
+                            step.child.switchTo = () => this.switchTo(index);
+                        }
+                        return step;
+                    })),
                     h("nav", [
                         h("button", {
+                            attrs: {
+                                disabled: this.progress === 0,
+                            },
                             on: {
                                 click: this.prevStep,
                             },
                         }, "Back"),
                         h("button", {
+                            attrs: {
+                                disabled: this.progress === this.steps.length - 1,
+                            },
                             on: {
                                 click: this.nextStep,
                             },

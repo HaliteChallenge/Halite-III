@@ -2,8 +2,8 @@ const PIXI = require("pixi.js");
 
 export let ASSET_ROOT = "dist/";
 
-export const BASE_VISUALIZER_WIDTH = 700;
-export const BASE_VISUALIZER_HEIGHT = 700;
+export const BASE_VISUALIZER_WIDTH = 600;
+export const BASE_VISUALIZER_HEIGHT = 600;
 export const STATS_SIZE = 20;
 export const CELL_SIZE = 1;
 

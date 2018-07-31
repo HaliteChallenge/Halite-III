@@ -162,26 +162,6 @@ export default class Ship {
                         }
                     }
                 }
-
-                // Use wrap around map in determining movement,
-                // interpolate between moves with visualizer time
-                // Use a bit of easing on the time to make it look
-                // nicer (cubic in/out easing)
-                let t = this.visualizer.time;
-                this.motionblur.velocity.set(x_move * -20 * t * (t - 1),
-                                             y_move * -20 * t * (t - 1));
-                t /= 0.5;
-                if (t < 1) {
-                    t = t*t*t/2;
-                }
-                else {
-                    t -= 2;
-                    t = (t*t*t + 2)/2;
-                }
-
-                this.x = (entity_record.x + x_move * t + this.map_width) % this.map_width;
-                this.y = (entity_record.y + y_move * t + this.map_height) % this.map_height;
-
             }  else if (command.type === "d") {
                 // TODO
             } else if (command.type === "m") {
@@ -189,6 +169,25 @@ export default class Ship {
             } else if (command.type === "c") {
                 // TODO
             }
+
+            // Use wrap around map in determining movement,
+            // interpolate between moves with visualizer time
+            // Use a bit of easing on the time to make it look
+            // nicer (cubic in/out easing)
+            let t = this.visualizer.time;
+            this.motionblur.velocity.set(x_move * -20 * t * (t - 1),
+                                         y_move * -20 * t * (t - 1));
+            t /= 0.5;
+            if (t < 1) {
+                t = t*t*t/2;
+            }
+            else {
+                t -= 2;
+                t = (t*t*t + 2)/2;
+            }
+
+            this.x = (entity_record.x + x_move * t + this.map_width) % this.map_width;
+            this.y = (entity_record.y + y_move * t + this.map_height) % this.map_height;
         }
     }
 

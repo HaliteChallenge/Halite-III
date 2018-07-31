@@ -240,6 +240,23 @@ export function get_ondemand_replay(userId) {
   }).then(r => r.arrayBuffer())
 }
 
+export function get_ondemand_error_log(userId) {
+  return window.fetch(`${API_SERVER_URL}/ondemand/${userId}/error_log?_=${new Date().getTime()}`, {
+    method: 'GET',
+    credentials: 'include'
+  }).then(r => r.text())
+}
+
+export function get_bot_zip(userId, botId) {
+  return window.fetch(`${API_SERVER_URL}/user/${userId}/bot/${botId}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/zip'
+    }
+  }).then(r => r.blob())
+}
+
 export function register_me (data) {
   return $.post({
     url: `${API_SERVER_URL}/user`,

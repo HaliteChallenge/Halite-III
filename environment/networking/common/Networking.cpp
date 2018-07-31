@@ -74,7 +74,8 @@ void Networking::initialize_player(Player &player) {
         connections.get(player.id)->send_string(message_stream.str());
         Logging::log("Init message sent", Logging::Level::Debug, player.id);
         // Receive a name from the player.
-        player.name = connections.get(player.id)->get_string().substr(0, NAME_MAX_LENGTH);
+        static constexpr auto INIT_TIMEOUT = std::chrono::seconds(30);
+        player.name = connections.get(player.id)->get_string(INIT_TIMEOUT).substr(0, NAME_MAX_LENGTH);
         Logging::log("Init message received, name: " + player.name,
                      Logging::Level::Debug, player.id);
     } catch (const BotError &e) {

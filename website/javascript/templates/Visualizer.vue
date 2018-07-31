@@ -358,12 +358,12 @@
       makeUserLink: Function,
       getUserProfileImage: Function,
       width: {
-        default: 700,
+        default: 600,
         required: false,
         type: Number
       },
       height: {
-        default: 700,
+        default: 600,
         required: false,
         type: Number
       },
@@ -406,7 +406,7 @@
         sliderOptions: {
           min: 0,
           max: 0,
-          speed: 1.5,
+          speed: 0.5,
           sliderStyle: {
             backgroundColor: '#E6AB00',
             top: 0,
@@ -464,6 +464,25 @@
         this.isHoliday = false;
       }
 
+      // Make sure canvas fits on screen
+      const onResize = () => {
+        if (document.querySelector("canvas")) {
+          const windowHeight = window.innerHeight
+          const canvasHeight = document.querySelector("canvas").offsetHeight
+          const ratio = canvasHeight > windowHeight
+
+          console.log(ratio)
+
+          if (ratio > 0.8) {
+            document.querySelector("canvas").style.zoom = (1 / (ratio + 0.3)).toString()
+          }
+          else {
+            document.querySelector("canvas").style.zoom = null
+          }
+        }
+      }
+      window.addEventListener("resize", onResize)
+
       import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
         .then((libhaliteviz) => {
           const visualizer = new libhaliteviz.HaliteVisualizer(this.replay, this.width, this.height)
@@ -510,6 +529,7 @@
             this.gaData('visualizer', 'click-map-objects', 'gameplay')
           })
           visualizer.attach('.game-replay-viewer')
+          onResize()
           // play the replay - delay a bit to make sure assets load/are rendered
           if (this.autoplay) {
             window.setTimeout(function() { visualizer.play() }, 500);
@@ -519,8 +539,7 @@
           this.playVideo = (e) => {
             if (visualizer) {
               if (this.frame >= this.replay.game_statistics.number_turns - 1) {
-                visualizer.frame = 0
-                visualizer.time = 0.0
+                visualizer.scrub(0, 0)
                 this.frame = 0
                 this.time = 0.0
               }

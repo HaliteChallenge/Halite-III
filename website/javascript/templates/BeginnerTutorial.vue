@@ -47,12 +47,12 @@
                     </walkthrough-substep>
                 </walkthrough-substeps>
             </Step>
-            <Step title="Admiral" name="admiral">
+            <Step title="Ships" name="admiral">
                 <p>
-                    You command a fleet of ships, which are capable of
-                    filtering halite from the water. Your goal is to
-                    go forth and bring back as much halite as
-                    possible.
+                    You, as the admiral, command a fleet of ships,
+                    which are capable of filtering halite from the
+                    water. Your goal is to go forth and bring back as
+                    much halite as possible.
                 </p>
             </Step>
             <Step title="Shipyard" name="shipyard">

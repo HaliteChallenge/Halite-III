@@ -133,6 +133,10 @@ header.unloaded{
   }
 }
 
+.halite-nav-right {
+  float: right !important;
+}
+
 header.navbar{
   border-bottom: 1px solid $border;
   height: 61px;
@@ -162,12 +166,9 @@ header.navbar{
     }
   }
   .logged-in {
-    position: absolute;
-    top: 0;
-    right: 60px;
-    @media (min-width: $mobile-breakpoint + 1){
-      right: 20px;
-    }
+    position: relative;
+    right: auto;
+    top: auto;
     .navbar-right{
       li a {
         transform: translateY(1px);

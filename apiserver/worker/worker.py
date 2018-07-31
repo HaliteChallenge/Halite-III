@@ -294,9 +294,9 @@ def parseGameOutput(output, users):
         users[player_tag]["log_name"] = None
 
     for player_tag, error_log in result["error_logs"].items():
-        player_tag = int(player_tag)
-        users[player_tag]["timed_out"] = True
-        users[player_tag]["log_name"] = os.path.basename(error_log)
+        numeric_player_tag = int(player_tag)
+        users[numeric_player_tag]["timed_out"] = result["terminated"].get(player_tag, False)
+        users[numeric_player_tag]["log_name"] = os.path.basename(error_log)
 
     return users, result
 

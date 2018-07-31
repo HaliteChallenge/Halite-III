@@ -15,33 +15,39 @@ additional_css: ["built-codeEdit", "dark-codeEdit"]
 
 <div id="onboarding-container"></div>
 
-Welcome to the Halite III alpha!  If you’re here, that means you’re excited to make your first bot and get on the Halite III alpha leaderboard. Let's get you set up!
+Welcome to the Halite III alpha! Let's get you set up to play.
 
 ### 1) SIGN UP
 
-First, you need to [sign up via Github][login] and create a user profile.
+First, [sign up via Github][login] and create a Halite user profile.
 
-### 2) WATCH A FEW GAMES
 
-Next, get a feel for how to play the game. Check out some user profiles, where you'll find recently played games.
+### 2) GET A FEEL FOR THE GAME
 
-You might also want to [browse the game rules][game rules], but it helps to watch some videos first.
+Start by watching a few game replays, such as those [here][example game 1] or [here][example game 2].
 
-### 3) DOWNLOAD A BOT
+Be sure to read through [the game rules][game rules], too.
 
-Now it's time to [download the game environment and starter kit][downloads] for your platform and language of choice.
 
-The game environment and starter kit are bundled together, so you should be all set.
+### 3) BUILD A BOT
 
-### 4) SUBMIT THE STARTER BOT
+* Via the web-based [editor][editor].
+* Locally. [Download the game environment and starter kit bundle][downloads] for your platform and language of choice.
 
-A great way to get going with the game is to just go ahead and [submit][play] the starter bot you downloaded and then going to your [user profile][profile] to see how you've done.
+
+### 4) SUBMIT A BOT
+
+When you're satisfied with your bot's performance, submit it to the competition via the editor or [here][play].
+
+Check out your [user profile][profile] and the [leaderboard][leaderboard] to view your games and ranking.
+
 
 ### May the best bot win!
 
 
 [login]: {{ site.login_server_url }}/github
 [downloads]: {{ site.baseurl }}/learn-programming-challenge/downloads-and-starter-kits
+[editor]: {{ site.baseurl }}/editor
 [contact]: {{ site.baseurl }}/about/contact-us
 [play]: {{ site.baseurl }}/play-programming-challenge
 [submit]: {{ site.baseurl }}/learn-programming-challenge/downloads-and-starter-kits/submit
@@ -49,4 +55,6 @@ A great way to get going with the game is to just go ahead and [submit][play] th
 [game rules]: {{ site.baseurl }}/learn-programming-challenge/basic-game-rules
 [profile]: /user/?me
 [improve bot]: /learn-programming-challenge/downloads-and-starter-kits/improve-basic-bot
+[example game 1]: {{ site.baseurl }}/play/?game_id=3996012&replay_class=1&replay_name=replay-20180730-134819%2B0000-1532958122-96-96
+[example game 2]: {{ site.baseurl }}/play/?game_id=3995999&replay_class=1&replay_name=replay-20180730-133054%2B0000-1532957367-48-48
 [david game]: /play/?game_id=1658857&replay_class=0&replay_name=replay-20171016-183304%2B0000--998929535-240-160-1508178764

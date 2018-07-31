@@ -179,14 +179,11 @@ int main(int argc, char *argv[]) {
         // JSON results info, used by backend
         nlohmann::json results;
         results["error_logs"] = nlohmann::json::object();
+        results["terminated"] = nlohmann::json::object();
 
         for (const auto &[player_id, player] : replay.players) {
             std::string error_log = game.logs.str(player_id);
-            // In JSON mode, only write logs if player actually was
-            // kicked out
-            if (!error_log.empty() &&
-                (!json_results_switch.getValue() ||
-                 player.terminated)) {
+            if (!error_log.empty()) {
                 std::stringstream logname_buf;
                 logname_buf << "errorlog-" << std::string(time_string)
                             << "-" << replay.map_generator_seed
@@ -205,6 +202,7 @@ int main(int argc, char *argv[]) {
                 }
 
                 results["error_logs"][to_string(player_id)] = log_filepath;
+                results["terminated"][to_string(player_id)] = player.terminated;
 
                 log_file.write(error_log.c_str(), error_log.size());
 
