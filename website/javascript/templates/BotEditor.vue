@@ -506,6 +506,14 @@ export default {
         height: this.map_size,
       }, params))
       console.log(taskResult)
+
+      if (taskResult.status !== "success") {
+        if (taskResult.message) {
+          this.alert(taskResult.message)
+        }
+        return
+      }
+
       const startResult = await api.update_ondemand_task(user_id, {
         "turn-limit": 500,
       })

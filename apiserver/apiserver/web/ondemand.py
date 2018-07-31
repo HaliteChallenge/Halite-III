@@ -2,6 +2,7 @@
 Coordinator API for running games on-demand (e.g. for the web editor
 and tutorial).
 """
+import datetime
 import io
 import re
 
@@ -57,7 +58,6 @@ def create_ondemand(intended_user, *, user_id):
         raise web_util.user_mismatch_error(
             message="Cannot start ondemand game for another user.")
 
-
     if "opponents" not in flask.request.json:
         raise util.APIError(400, message="Opponents array is required.")
 
@@ -94,6 +94,13 @@ def create_ondemand(intended_user, *, user_id):
     for key, value in flask.request.json.items():
         if key in ("width", "height", "s", "no-timeout", "turn-limit"):
             env_params[key] = value
+
+    entity = ondemand.check_status(user_id)
+    cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=15)
+    if entity and entity["last_updated"] >= cutoff:
+        raise util.APIError(
+            400,
+            message="You last created a game less than 15 seconds ago, please wait and try again.")
 
     # TODO: check that user has a bot in the editor bucket (tutorial
     # bucket?)
