@@ -56,7 +56,7 @@
 
     <div class="toasts">
         <transition-group name="toast-pop-up" tag="div">
-            <div v-for="(toast, idx) in alerts" class="editor-toast" v-bind:key="idx">
+            <div v-for="(toast, idx) in alerts" class="editor-toast" v-bind:key="alerts.length - idx">
                 {{toast}}
             </div>
         </transition-group>
@@ -483,6 +483,7 @@ export default {
       return true
     },
     run_ondemand_game: async function(params) {
+      await this.save_current_file()
       this.clear_terminal_text()
       const user_id = this.user_id
 
@@ -582,12 +583,13 @@ export default {
       logInfo('Saving bot file to gcloud storage')
       if(this.active_file !== null) {
         this.update_editor_files()
-        this.save_file(this.active_file)
+        return this.save_file(this.active_file).then(() => {
+          this.alert("Saved")
+        })
       }
-      this.alert("Saved")
     },
     save_file: function(file) {
-      api.update_source_file(this.user_id, file.name, file.contents, function(){}).then((function() {
+      return api.update_source_file(this.user_id, file.name, file.contents, function(){}).then((function() {
         logInfo('success')
         this.allSaved = true;
       }).bind(this), function(response) {
@@ -609,7 +611,7 @@ export default {
     alert: function(text) {
       this.alerts.push(text)
       setTimeout(() => {
-        this.alerts.pop()
+        this.alerts.shift()
       }, 3000)
     },
     /* Submit bot to our leaderboard */
