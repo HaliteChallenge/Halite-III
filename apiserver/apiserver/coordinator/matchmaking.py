@@ -342,7 +342,9 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
                == model.game_participants.c.bot_id),
             isouter=True
         )
-    ).group_by(ranked_users.c.user_id, model.ranked_bots_users.c.bot_id,
+    ).group_by(ranked_users.c.user_id,
+               ranked_users.c.team_id,
+               model.ranked_bots_users.c.bot_id,
                ranked_users.c.username, ranked_users.c.rank,
                model.ranked_bots_users.c.num_submissions,
                model.ranked_bots_users.c.mu,
