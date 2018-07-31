@@ -7,6 +7,7 @@ NUM_BOTS=4
 ## Create a user to be used by the worker exclusively.
 sudo groupadd bots
 sudo useradd -m worker -U -G bots -s /bin/bash
+## Create a user to be used by compilation. This user will have limited Internet access.
 sudo useradd -m bot_compilation -U -G bots -s /bin/bash
 for i in $(seq 0 $((NUM_BOTS-1))); do
     sudo groupadd bots_$i
@@ -168,8 +169,6 @@ echo "c 195:2 rwm" > /sys/fs/cgroup/devices/bot_3/devices.deny
 EOF
 sudo chmod 544 /home/worker/fix_cgroups.sh
 
-## Create a user to be used by compilation. This user will have limited Internet access.
-sudo useradd -m bot_compilation -G bots
 ## No access to 10. addresses (which are our own servers)
 ## We are giving them general network access (to download dependencies)
 sudo iptables -A OUTPUT -d 10.0.0.0/8 -m owner --uid-owner bot_compilation -j DROP
@@ -253,6 +252,3 @@ sudo -iu bot_compilation sdk current | grep groovy
 
 echo "Miniconda"
 sudo -iu bot_compilation bash -c 'source ~/miniconda/bin/activate; conda -V'
-
-# Don't just grant random people sudo access.
-sudo rm /etc/sudoers.d/google_sudoers

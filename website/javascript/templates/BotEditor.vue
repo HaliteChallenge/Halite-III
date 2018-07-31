@@ -1,5 +1,9 @@
 <template>
-  <div style='margin-top: 61px' class="body">
+  <div v-if="needs_login" class="body needs-login" style="margin-top: 61px">
+    <p>You must be logged in to use the editor.</p>
+    <a :href="login_url">Log In</a>
+  </div>
+  <div style='margin-top: 61px' class="body" v-else>
     <div class="container-fluid h-100 page_container">
       <div class="row flex-xl-nowrap h-100 page_row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 py-md-8 pl-md-8 bd-content big_col">
@@ -142,6 +146,7 @@ export default {
       all_bot_languages: botLanguagePacks,
       status_message: null,
       logged_in: false,
+      needs_login: false,
       editorViewer: null,
       bot_lang: lang,
       selected_language: lang,
@@ -185,7 +190,8 @@ export default {
           this.create_editor(this.get_active_file_code())
         }).bind(this))
       } else {
-        window.location.href = '/';
+        this.logged_in = false
+        this.needs_login = true
       }
     })
 
@@ -195,6 +201,11 @@ export default {
         this.visualizer.resize(width, width)
       }
     }, true)
+  },
+  computed: {
+    login_url() {
+      return `${api.LOGIN_SERVER_URL}/github`
+    },
   },
   methods: {
     /* Return bot language specific info */
@@ -540,7 +551,12 @@ export default {
 
       if (status.status === "completed") {
         if (status.error_log) {
-          this.add_console_text("Your bot crashed :(\n")
+          if (status.crashed) {
+            this.add_console_text("Your bot crashed :(\n")
+          }
+          else {
+            this.add_console_text("Your bot generated a log.\n")
+          }
         }
 
         this.add_console_text("Fetching replay...\n")
@@ -848,6 +864,12 @@ export default {
 
 .toast-pop-up-move {
   transition: all .5s ease-in-out;
+}
+
+.needs-login {
+  font-size: 1.25em;
+  color: #FFF;
+  text-align: center;
 }
 </style>
 

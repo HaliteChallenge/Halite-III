@@ -241,6 +241,16 @@ export function get_ondemand_error_log(userId) {
   }).then(r => r.text())
 }
 
+export function get_bot_zip(userId, botId) {
+  return window.fetch(`${API_SERVER_URL}/user/${userId}/bot/${botId}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/zip'
+    }
+  }).then(r => r.blob())
+}
+
 export function register_me (data) {
   return $.post({
     url: `${API_SERVER_URL}/user`,

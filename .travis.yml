@@ -32,21 +32,12 @@ script:
   - cd ../airesources/C++
   - make MyBot
 
-# build Rust bot
-  - cd ../Rust
-  - curl -sSf https://static.rust-lang.org/rustup.sh | sh
-  - cargo rustc --release -q -- -Awarnings
-
 # build Java bot
   - cd ../Java
   - javac MyBot.java
-  
+
 # compile Python script
   - cd ../Python3
-  - python -m py_compile MyBot.py
-
-# compile mlstarterbot script
-  - cd ../ML-StarterBot-Python
   - python -m py_compile MyBot.py
 
 # build website
