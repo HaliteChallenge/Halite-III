@@ -204,14 +204,19 @@ def associate_user_team(team_id, *, user_id):
             if member["user_id"] == user_id:
                 raise util.APIError(400, message="You're already in this team.")
 
-        # conn.execute(
-        #     model.challenges.update().where(
-        #         model.challenges.c.status != 'finished'
-        #     ).values(
-        #         status="finished",
-        #         finished=
-        #     )
-        # )
+        conn.execute(
+            model.challenges.update().where(
+                model.challenges.c.status != 'finished'
+            ).values(
+                status="finished",
+                finished=sqlalchemy.sql.func.current_timestamp()
+            ).where(
+                sqlalchemy.sql.exists(model.challenge_participants.select().where(
+                    (model.challenge_participants.c.user_id == user_id) &
+                    (model.challenge_participants.c.challenge_id == model.challenges.c.id)
+                ))
+            )
+        )
 
         conn.execute(model.bots.update().values(
             compile_status=model.CompileStatus.DISABLED.value
