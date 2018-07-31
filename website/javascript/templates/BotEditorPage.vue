@@ -21,7 +21,13 @@
             <li><a v-on:click="submit_bot()"><span>Submit</span><i class="xline xline-bottom"></i></a></li>
           </ul>
           <ul class="nav navbar-nav halite-nav-right">
-            <li><a v-on:click="save_current_file()"><span>Save</span><i class="xline xline-bottom"></i></a></li>
+            <li>
+              <a v-on:click="save_current_file">
+                <span v-if="allSaved" class="saved">Saved</span>
+                <span v-else>Not Saved</span>
+                <i class="xline xline-bottom"></i>
+              </a>
+            </li>
             <li>
               <BotEditorSettings ref="settings_console" @settings_change="on_settings_change()"/>
             </li>
@@ -32,7 +38,7 @@
         </div>
       </div>
     </header>
-    <BotEditor ref="editor_pane" :baseUrl="baseUrl"/>
+    <BotEditor ref="editor_pane" :baseUrl="baseUrl" @save="on_save" />
   </div>
 </template>
 
@@ -47,7 +53,9 @@ export default {
   props: ['baseUrl'],
   components: {BotEditor, BotEditorSettings},
   data: function () {
-    return {}
+    return {
+      allSaved: false
+    }
   },
   mounted: function () {
     utils.initUserProfileNav();
@@ -69,6 +77,9 @@ export default {
     submit_bot: function () {
       this.$refs.editor_pane.submit_bot();
     },
+    on_save(value) {
+      this.allSaved = value
+    }
   }
 }
 </script>
@@ -80,6 +91,10 @@ export default {
 
 .halite-nav-right {
   float: right !important;
+}
+
+.saved {
+  color: #009900;
 }
 
 </style>

@@ -164,13 +164,15 @@ export default {
       gameTimes: [],
       // Monotonic counter, so running multiple games doesn't give you multiple results
       gameCounter: 0,
+      allSaved: false,
+      saveCallback: null,
     }
   },
   props: {
     tutorial: {
       default: false,
       type: Boolean,
-    }
+    },
   },
   created: function() {
     // Create promise so callers can use our methods without having to
@@ -249,6 +251,12 @@ export default {
           if (evt.contentsSaved) {
             logInfo('input changed')
             this.allSaved = false;
+            if (this.saveCallback !== null) {
+              window.clearTimeout(this.saveCallback)
+            }
+            window.setTimeout(() => {
+              this.save_current_file()
+            }, 2500)
           }
         }).bind(this))
 
@@ -676,7 +684,12 @@ export default {
     update_editor_files: function() {
       this.active_file.contents = this.editorViewer.editor.getModel().getText()
     }
-  }
+  },
+  watch: {
+    allSaved(value) {
+      this.$emit('save', value)
+    }
+  },
 }
 </script>
 
