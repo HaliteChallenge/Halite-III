@@ -8,7 +8,7 @@ sort_key: 0
 
 Halite III, codenamed Shipyard, is an exploratory resource management game, in which 2-4 players command a fleet of ships that trawl the sea for halite, a sparkling energy resource.
 
-The object of the game is to collect and deposit the most halite into shipyards and drop-off zones, over the course of 500 turns. 
+The object of the game is to collect and deposit the most halite into shipyards and drop-off zones, over the course of 500 turns. The winner is whoever has the most halite in their reserves on the last turn.
 
 Gameplay takes place on a wrapping rectangular grid of a variety of sizes. Each square grid cell contains an amount of halite.
 

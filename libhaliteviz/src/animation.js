@@ -77,16 +77,16 @@ export class PlanetExplosionFrameAnimation extends SpritesheetFrameAnimation {
 }
 
 export class ShipExplosionFrameAnimation extends SpritesheetFrameAnimation {
-    constructor(location, color, cellSize, container) {
+    constructor(location, color, delayTime, cellSize, container) {
         super({
             sheet: assets.SHIP_EXPLOSION_SHEET,
             sizeFactor: 4,
             x: location.x,
             y: location.y,
             tintColor: color,
-            delayTime: 90,
-            cellSize: cellSize,
-            container: container,
+            delayTime,
+            cellSize,
+            container,
             duration: 150,
         });
     }

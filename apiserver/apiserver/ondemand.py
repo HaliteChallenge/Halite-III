@@ -221,7 +221,11 @@ def update_task(user_id, game_output, files):
         blob.upload_from_file(files["replay"])
 
     if "error_log" in files:
-        task["error_log"] = files["error_log"].read().decode("utf-8")
+        bucket = model.get_ondemand_replay_bucket()
+        log_key = "ondemand_log_{}".format(user_id)
+        blob = gcloud_storage.Blob(log_key, bucket, chunk_size=262144)
+        blob.upload_from_file(files["error_log"])
+        task["error_log"] = True
     else:
         task["error_log"] = None
 

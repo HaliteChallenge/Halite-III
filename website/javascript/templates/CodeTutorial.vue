@@ -170,7 +170,7 @@ elif ship.halite > hlt.MAX_HALITE > 2:
                     In a real match, you'll want to think about
                     whether you should be hoarding halite or spending
                     it, because ultimately, the winner is the one with
-                    the most halite in the bank.
+                    the most halite in the bank on the last turn.
                 </p>
                 <p>
                     So, let's change the bot to only make ships in the

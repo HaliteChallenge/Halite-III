@@ -56,7 +56,7 @@
 
     <div class="toasts">
         <transition-group name="toast-pop-up" tag="div">
-            <div v-for="(toast, idx) in alerts" class="editor-toast" v-bind:key="idx">
+            <div v-for="(toast, idx) in alerts" class="editor-toast" v-bind:key="alerts.length - idx">
                 {{toast}}
             </div>
         </transition-group>
@@ -155,7 +155,10 @@ export default {
       alerts: [],
       visualizer: null,
       baseUrl: '',
+      // List of times games were started, to prevent spamming
       gameTimes: [],
+      // Monotonic counter, so running multiple games doesn't give you multiple results
+      gameCounter: 0,
     }
   },
   props: {
@@ -480,6 +483,7 @@ export default {
       return true
     },
     run_ondemand_game: async function(params) {
+      await this.save_current_file()
       this.clear_terminal_text()
       const user_id = this.user_id
 
@@ -503,17 +507,31 @@ export default {
         height: this.map_size,
       }, params))
       console.log(taskResult)
+
+      if (taskResult.status !== "success") {
+        if (taskResult.message) {
+          this.alert(taskResult.message)
+        }
+        return
+      }
+
       const startResult = await api.update_ondemand_task(user_id, {
         "turn-limit": 500,
       })
       console.log(startResult)
       this.add_console_text("Starting game...\n")
 
-      return this.check_ondemand_game()
+      this.gameCounter += 1
+      return this.check_ondemand_game(this.gameCounter)
     },
-    check_ondemand_game: async function() {
+    check_ondemand_game: async function(counter) {
+      // If another game has been started in the meantime, abandon this one
+      if (this.gameCounter !== counter) {
+        console.log(`Ondemand game ${counter} canceled.`)
+        return;
+      }
+
       const status = await api.get_ondemand_status(this.user_id)
-      console.log(status)
 
       if (this.visualizer) {
         this.visualizer.destroy()
@@ -523,16 +541,9 @@ export default {
       if (status.status === "completed") {
         if (status.error_log) {
           this.add_console_text("Your bot crashed :(\n")
-          this.add_console_text("Fetching replay...\n")
-          this.add_console_text("Fetching error log...\n")
+        }
 
-          window.setTimeout(() => {
-            this.add_console_text(status.error_log)
-          }, 1000)
-        }
-        else {
-          this.add_console_text("Game complete! Fetching replay...\n")
-        }
+        this.add_console_text("Fetching replay...\n")
 
         const replayBlob = await api.get_ondemand_replay(this.user_id)
         const libhaliteviz = await import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
@@ -549,6 +560,12 @@ export default {
           this.add_console_text(`Player ${i} (${i === 0 ? 'your bot' : '"' + status.opponents[i].name + '"'}) was rank ${status.game_output.stats[i].rank}.\n`)
         }
 
+        if (status.error_log) {
+          this.add_console_text("Fetching error log...\n")
+          const log = await api.get_ondemand_error_log(this.user_id)
+          this.add_console_text(log)
+        }
+
         return
       }
       else if (status.status === "failed") {
@@ -556,7 +573,7 @@ export default {
         return
       }
 
-      window.setTimeout(this.check_ondemand_game.bind(this), 1000)
+      window.setTimeout(() => this.check_ondemand_game(counter), 1000)
     },
     pop_out_replay: function() {
       window.open("/play?ondemand")
@@ -565,12 +582,13 @@ export default {
       logInfo('Saving bot file to gcloud storage')
       if(this.active_file !== null) {
         this.update_editor_files()
-        this.save_file(this.active_file)
+        return this.save_file(this.active_file).then(() => {
+          this.alert("Saved")
+        })
       }
-      this.alert("Saved")
     },
     save_file: function(file) {
-      api.update_source_file(this.user_id, file.name, file.contents, function(){}).then((function() {
+      return api.update_source_file(this.user_id, file.name, file.contents, function(){}).then((function() {
         logInfo('success')
         this.allSaved = true;
       }).bind(this), function(response) {
@@ -592,7 +610,7 @@ export default {
     alert: function(text) {
       this.alerts.push(text)
       setTimeout(() => {
-        this.alerts.pop()
+        this.alerts.shift()
       }, 3000)
     },
     /* Submit bot to our leaderboard */

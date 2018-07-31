@@ -581,6 +581,7 @@ export class HaliteVisualizer {
                 const cellSize = assets.CELL_SIZE;
 
                 if (event.type === "shipwreck") {
+                    const lastFrame = this.frame >= this.replay.full_frames.length - 1;
                     // add death animation to be drawn
                     // TODO: switch to Halite 3 animation
                     const involvedPlayers = event.ships.map((id) => {
@@ -598,12 +599,21 @@ export class HaliteVisualizer {
                         new animation.ShipExplosionFrameAnimation(
                             event.location,
                             color,
+                            lastFrame ? 0 : 90,
                             cellSize,
                             this.entityContainer));
 
                     // Don't actually remove entities - allow
                     // remove_invalid_entities to clean it up next
-                    // frame
+                    // frame (unless this is the last frame)
+                    if (lastFrame) {
+                        for (const id of event.ships) {
+                            if (this.entity_dict[id]) {
+                                this.entity_dict[id].destroy();
+                                delete this.entity_dict[id];
+                            }
+                        }
+                    }
                 }
                 else if (event.type === "spawn") {
                     // Create a new entity, add to map, and merge as needed
