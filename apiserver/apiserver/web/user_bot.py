@@ -1,6 +1,7 @@
 """
 User bot API endpoints - create/update/delete/list user's bots
 """
+import io
 import zipfile
 
 import flask
@@ -52,9 +53,10 @@ def list_user_bots(user_id):
     return flask.jsonify(result)
 
 
-@web_api.route("/user/<int:user_id>/bot/<int:bot_id>", methods=["GET"])
+@web_api.route("/user/<int:intended_user>/bot/<int:bot_id>", methods=["GET"])
 @util.cross_origin(methods=["GET", "PUT"])
-def get_user_bot(user_id, bot_id):
+@api_util.requires_login(accept_key=True, optional=True)
+def get_user_bot(intended_user, bot_id, *, user_id):
     with model.engine.connect() as conn:
         bot = conn.execute(sqlalchemy.sql.select([
             model.bots.c.id,
@@ -71,12 +73,46 @@ def get_user_bot(user_id, bot_id):
                 (model.bots.c.user_id == model.ranked_bots.c.user_id)
             )
         ).where(
-            (model.bots.c.user_id == user_id) &
+            (model.bots.c.user_id == intended_user) &
             (model.bots.c.id == bot_id)
         ).order_by(model.bots.c.id)).first()
 
         if not bot:
             raise util.APIError(404, message="Bot not found.")
+
+        mime_type = flask.request.accept_mimetypes.best_match([
+            "application/json",
+            "text/json",
+            "application/zip",
+        ])
+        if mime_type == "application/zip":
+            if not user_id:
+                raise util.APIError(403, message="You must sign in to download your bot.")
+            elif user_id != intended_user:
+                raise api_util.user_mismatch_error(
+                    message="Cannot download bot for another user.")
+
+            # Return bot ZIP file
+            bucket = model.get_compilation_bucket()
+            botname = "{}_{}".format(user_id, bot_id)
+            try:
+                blob = bucket.get_blob(botname)
+                buffer = io.BytesIO()
+                blob.download_to_file(buffer)
+                buffer.seek(0)
+                response = flask.make_response(flask.send_file(
+                    buffer,
+                    mimetype="application/zip",
+                    as_attachment=True,
+                    attachment_filename=botname + ".zip"))
+                response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+                response.headers["Pragma"] = "no-cache"
+                response.headers["Expires"] = "0"
+                response.headers["Cache-Control"] = "public, max-age=0"
+                return response
+            except gcloud_exceptions.NotFound:
+                raise util.APIError(404, message="Bot not found.")
+
 
         return flask.jsonify({
             "bot_id": bot_id,

@@ -423,6 +423,15 @@
                                     History
                                     <span title="Rank/Rating history of your bots, the rank/rating is the last rating or rank achieved before the bot was retired." class="info-icon icon-info pull-right"></span>
                                 </h2>
+                                <button
+                                    type="button"
+                                    class="btn"
+                                    v-if="is_my_page"
+                                    v-on:click="download_bot">
+                                    <span>Download Current Bot</span>
+                                </button>
+                                <span>{{messages.bot_download}}</span>
+
                                 <!-- <div v-if="!userHistory.length" class="section-empty">
                                     <img :src="`${baseUrl}/assets/images/leaderboard-zero-icon.png`" class="icon-"></img>
                                     <h2>No history</h2>
@@ -586,7 +595,8 @@
           sharePopup: false,
           season1stats: null,
           messages: {
-            hackathon: ''
+            hackathon: '',
+            bot_download: ''
           },
           participants: {},
           isLastPage: false,
@@ -957,6 +967,27 @@
         },
         replay_link: function (game_id) {
           return `/play/?game_id=${game_id}`
+        },
+        download_bot() {
+          api.get_bot_zip(this.user.user_id, 0).then((blob) => {
+            console.log(blob)
+            if (blob.type === "application/zip") {
+              const url = URL.createObjectURL(blob)
+              const anchor = document.createElement("a")
+              anchor.href = url
+              anchor.setAttribute("download", `${this.user.user_id}.zip`)
+              anchor.style.display = "none"
+              document.body.appendChild(anchor)
+              window.setTimeout(() => {
+                anchor.click()
+                document.body.removeChild(anchor)
+                window.setTimeout(() => URL.revokeObjectURL(url), 500)
+              }, 1000)
+            }
+            else {
+              this.messages.bot_download = "No bot uploaded, cannot download bot."
+            }
+          })
         },
         prev_badge: () => {
           let content = $('.user-profile-badge-content')
