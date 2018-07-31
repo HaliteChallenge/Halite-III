@@ -464,6 +464,25 @@
         this.isHoliday = false;
       }
 
+      // Make sure canvas fits on screen
+      const onResize = () => {
+        if (document.querySelector("canvas")) {
+          const windowHeight = window.innerHeight
+          const canvasHeight = document.querySelector("canvas").offsetHeight
+          const ratio = canvasHeight > windowHeight
+
+          console.log(ratio)
+
+          if (ratio > 0.8) {
+            document.querySelector("canvas").style.zoom = (1 / (ratio + 0.3)).toString()
+          }
+          else {
+            document.querySelector("canvas").style.zoom = null
+          }
+        }
+      }
+      window.addEventListener("resize", onResize)
+
       import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
         .then((libhaliteviz) => {
           const visualizer = new libhaliteviz.HaliteVisualizer(this.replay, this.width, this.height)
@@ -510,6 +529,7 @@
             this.gaData('visualizer', 'click-map-objects', 'gameplay')
           })
           visualizer.attach('.game-replay-viewer')
+          onResize()
           // play the replay - delay a bit to make sure assets load/are rendered
           if (this.autoplay) {
             window.setTimeout(function() { visualizer.play() }, 500);
