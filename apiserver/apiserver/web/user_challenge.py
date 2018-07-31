@@ -97,13 +97,13 @@ def create_challenge(intended_user, *, user_id):
         # leaders where appropriate
         team_remapping = {}
         team_leaders_query = sqlalchemy.sql.select([
-            model.team_members.c.user_id,
+            model.users.c.id.label("user_id"),
             model.teams.c.leader_id,
         ]).select_from(
-            model.team_members.join(
+            model.users.join(
                 model.teams,
-                model.team_members.c.team_id == model.teams.c.id)
-        ).where(model.team_members.c.user_id.in_([intended_user] + opponents))
+                model.users.c.team_id == model.teams.c.id)
+        ).where(model.users.c.id.in_([intended_user] + opponents))
         for row in conn.execute(team_leaders_query).fetchall():
             team_remapping[row["user_id"]] = row["leader_id"]
 

@@ -111,10 +111,8 @@ def serve_game_task(conn, has_gpu=False):
             ranked_users,
             (ranked_users.c.user_id == model.ranked_bots_users.c.user_id)
         ).join(
-            model.team_members.join(
-                model.teams,
-                model.team_members.c.team_id == model.teams.c.id),
-            model.team_members.c.user_id == model.ranked_bots_users.c.user_id,
+            model.teams,
+            model.teams.c.id == model.ranked_bots_users.c.team_id,
             isouter=True
         )
     ).where(
@@ -318,6 +316,7 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
     columns = [
         max_time,
         ranked_users.c.user_id,
+        ranked_users.c.team_id,
         model.ranked_bots_users.c.bot_id,
         ranked_users.c.username,
         ranked_users.c.rank.label("player_rank"),
@@ -373,10 +372,8 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
             (outer_bots.c.user_id == gamers_last_play.c.user_id) &
             (outer_bots.c.id == gamers_last_play.c.bot_id)) \
         .join(
-            model.team_members.join(
-                model.teams,
-                model.team_members.c.team_id == model.teams.c.id),
-            model.team_members.c.user_id == gamers_last_play.c.user_id,
+            model.teams,
+            gamers_last_play.c.team_id == model.teams.c.id,
             isouter=True
         )) \
         .where(bot_restrictions) \
@@ -426,10 +423,8 @@ def find_newbie_seed_player(conn, ranked_users, seed_filter):
             ranked_users,
             model.ranked_bots_users.c.user_id == ranked_users.c.user_id
         ).join(
-            model.team_members.join(
-                model.teams,
-                model.team_members.c.team_id == model.teams.c.id),
-            model.team_members.c.user_id == model.ranked_bots_users.c.user_id,
+            model.teams,
+            model.teams.c.id == model.ranked_bots_users.c.team_id,
             isouter=True
         )
     ).where(
@@ -500,10 +495,8 @@ def find_seed_player(conn, ranked_users, seed_filter):
                 (model.ranked_bots_users.c.user_id == ranked_users.c.user_id) &
                 seed_filter
             ).join(
-                model.team_members.join(
-                    model.teams,
-                    model.team_members.c.team_id == model.teams.c.id),
-                model.team_members.c.user_id == model.ranked_bots_users.c.user_id,
+                model.teams,
+                model.teams.c.id == model.ranked_bots_users.c.team_id,
                 isouter=True
             )
         ).where(

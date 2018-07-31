@@ -57,7 +57,6 @@ hackathon_snapshot = sqlalchemy.Table("hackathon_snapshot", metadata, autoload=T
 challenges = sqlalchemy.Table("challenge", metadata, autoload=True)
 challenge_participants = sqlalchemy.Table("challenge_participant", metadata, autoload=True)
 teams = sqlalchemy.Table("team", metadata, autoload=True)
-team_members = sqlalchemy.Table("team_member", metadata, autoload=True)
 
 def ranked_bots_query(alias="ranked_bots"):
     """
@@ -191,10 +190,7 @@ all_users = sqlalchemy.sql.select([
         isouter=True
     ).join(
         teams_bots,
-        sqlalchemy.sql.exists(team_members.select(
-            (teams_bots.c.team_id == team_members.c.team_id) &
-            (team_members.c.user_id == users.c.id)
-        )),
+        users.c.team_id == teams_bots.c.team_id,
         isouter=True
     )
 ).where(
@@ -251,10 +247,7 @@ ranked_bots_users = sqlalchemy.sql.select([
         isouter=True
     ).join(
         teams,
-        sqlalchemy.sql.exists(teams.select(
-            (teams.c.id == team_members.c.team_id) &
-            (team_members.c.user_id == users.c.id)
-        )),
+        users.c.team_id == teams.c.id,
         isouter=True
     )
 ).alias("ranked_bots_users")
@@ -265,12 +258,18 @@ def ranked_users_query(alias="ranked_users"):
     ranked_bots = ranked_bots_query("rurank")
     return sqlalchemy.sql.select([
         users.c.id.label("user_id"),
+        users.c.team_id,
         users.c.username,
         # Perform a no-op operation so we can label the column easily
         ranked_bots.c.bot_rank.label("rank"),
     ]).select_from(
         users.join(ranked_bots, ranked_bots.c.user_id == users.c.id)
-    ).group_by(users.c.id, users.c.username, ranked_bots.c.bot_rank).alias(alias)
+    ).group_by(
+        users.c.id,
+        users.c.team_id,
+        users.c.username,
+        ranked_bots.c.bot_rank
+    ).alias(alias)
 
 
 # Total number of ranked users that have played a game
@@ -341,10 +340,7 @@ def hackathon_ranked_bots_users_query(hackathon_id, *, alias="hackathon_ranked_b
 
 
 def team_leader_query(user_id):
-    return team_members.join(
-        teams,
-        team_members.c.team_id == teams.c.id
-    ).select(team_members.c.user_id == user_id)
+    return teams.join(users, teams.c.id == users.c.team_id).select(users.c.id == user_id)
 
 
 def cached(f):

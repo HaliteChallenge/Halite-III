@@ -156,11 +156,8 @@ def leaderboard():
 
             result.append(user)
 
-        team_members = conn.execute(model.team_members.join(
-            model.all_users,
-            model.team_members.c.user_id == model.all_users.c.user_id
-        ).select().where(
-            model.team_members.c.team_id.in_(team_ids)
+        team_members = conn.execute(model.all_users.select(
+            model.all_users.c.team_id.in_(team_ids)
         ).reduce_columns())
         team_map = collections.defaultdict(list)
         for team_member in team_members.fetchall():

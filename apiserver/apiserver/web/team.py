@@ -49,7 +49,7 @@ def make_team_record(team, members, show_verification_code=False):
 
 def get_team_members(conn, team):
     return conn.execute(sqlalchemy.sql.select([
-        model.team_members.c.user_id,
+        model.all_users.c.user_id,
         model.all_users.c.username,
         model.all_users.c.player_level,
         model.all_users.c.organization_id,
@@ -61,11 +61,10 @@ def get_team_members(conn, team):
         model.all_users.c.mu,
         model.all_users.c.sigma,
         model.all_users.c.rank,
-    ]).select_from(model.team_members.join(
-        model.all_users,
-        model.team_members.c.user_id == model.all_users.c.user_id
-    )).where(
-        model.team_members.c.team_id == team["id"]
+    ]).select_from(
+        model.all_users
+    ).where(
+        model.all_users.c.team_id == team["id"]
     )).fetchall()
 
 
@@ -91,9 +90,9 @@ def list_teams_helper(offset, limit, participant_clause,
     with model.read_engine().connect() as conn:
         query = model.teams.select().where(
             where_clause &
-            sqlalchemy.sql.exists(model.team_members.select(
+            sqlalchemy.sql.exists(model.users.select(
                 participant_clause &
-                (model.teams.c.id == model.team_members.c.team_id)
+                (model.teams.c.id == model.users.c.team_id)
             ).correlate(model.teams))
         ).order_by(*order_clause).offset(offset).limit(limit).reduce_columns()
 
@@ -119,7 +118,7 @@ def list_teams():
     participant_clause = sqlalchemy.true()
     for (field, op, val) in manual_sort:
         if field == "participant":
-            participant_clause &= op(model.team_members.c.user_id, val)
+            participant_clause &= op(model.users.c.id, val)
 
     result = list_teams_helper(offset, limit,
                                participant_clause,
@@ -142,8 +141,8 @@ def create_team(*, user_id):
 
     # Check if user is already on a team
     with model.engine.begin() as conn:
-        query = model.team_members.select().where(
-            model.team_members.c.user_id == user_id)
+        query = model.users.select((model.users.c.id == user_id) &
+                                   (model.users.c.team_id != None))
         if conn.execute(query).first():
             raise util.APIError(
                 400, message="You're already on a team.")
@@ -153,10 +152,9 @@ def create_team(*, user_id):
             verification_code=verification_code,
             leader_id=user_id,
         )).inserted_primary_key[0]
-        conn.execute(model.team_members.insert().values(
+        conn.execute(model.users.update().values(
             team_id=team_id,
-            user_id=user_id,
-        ))
+        ).where(model.users.c.id == user_id))
 
         return util.response_success({
             "team_id": team_id,
@@ -194,14 +192,14 @@ def associate_user_team(team_id, *, user_id):
             raise util.APIError(403, message="Incorrect verification code.")
 
         members = conn.execute(
-            model.team_members.select(model.team_members.c.team_id == team_id)
+            model.users.select(model.users.c.team_id == team_id)
         ).fetchall()
 
         if len(members) >= 4:
             raise util.APIError(400, message="Team already has 4 members.")
 
         for member in members:
-            if member["user_id"] == user_id:
+            if member["id"] == user_id:
                 raise util.APIError(400, message="You're already in this team.")
 
         conn.execute(
@@ -218,17 +216,15 @@ def associate_user_team(team_id, *, user_id):
             )
         )
 
+        # Remove user bots from matchmaking
         conn.execute(model.bots.update().values(
             compile_status=model.CompileStatus.DISABLED.value
         ).where(model.bots.c.user_id == user_id))
 
         conn.execute(
-            model.team_members.insert().values(
+            model.users.update().values(
                 team_id=team_id,
-                user_id=user_id
-            ))
-
-        # TODO: delete user's bots/remove them from matchmaking
+            ).where(model.users.c.id == user_id))
 
         return util.response_success()
 

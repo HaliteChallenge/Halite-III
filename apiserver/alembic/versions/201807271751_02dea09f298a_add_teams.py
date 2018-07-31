@@ -24,18 +24,15 @@ def upgrade():
                     sa.Column('name', sa.String(length=32), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
                     sa.Column('verification_code', sa.String(length=32), nullable=False),
                     sa.Column('leader_id', sa.Integer(), autoincrement=False, nullable=False),
-                    sa.ForeignKeyConstraint(['leader_id'], ['user.id'], name='team_leader_id_user_ibfk', ondelete='CASCADE'),
+                    sa.ForeignKeyConstraint(['leader_id'], ['user.id'], name='team_leader_id_user_ibfk'),
                     sa.PrimaryKeyConstraint('id'),
     )
-    op.create_table('team_member',
-                    sa.Column('team_id', sa.Integer(), autoincrement=False, nullable=False),
-                    sa.Column('user_id', sa.Integer(), autoincrement=False, nullable=False),
-                    sa.ForeignKeyConstraint(['team_id'], ['team.id'], name='team_member_team_fk', ondelete='CASCADE'),
-                    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='team_member_user_ibfk', ondelete='CASCADE'),
-                    sa.PrimaryKeyConstraint('team_id', 'user_id'),
-    )
+    op.add_column('user',
+                  sa.Column('team_id', sa.Integer(), autoincrement=False, nullable=True))
+    op.create_foreign_key('user_team_id_team_fk', 'user', 'team', ['team_id'], ['id'])
 
 
 def downgrade():
-    op.drop_table('team_member')
+    op.drop_constraint('user_team_id_team_fk', 'user')
+    op.drop_column('user', 'team_id')
     op.drop_table('team')
