@@ -11,8 +11,8 @@
         <input v-model="file_name" class="halite-modal-input" placeholder="file name">
       </div>
       <div class="halite-modal-footer">
-        <button type="button" @click="create_file" class="btn"><span>{{ accept_text }}</span></button>
         <button type="button" @click="closeCallback" class="btn" data-dismiss="modal"><span>{{ cancel_text }}</span></button>
+        <button type="button" @click="create_file" class="btn"><span>{{ accept_text }}</span></button>
       </div>
     </div>
   </div>

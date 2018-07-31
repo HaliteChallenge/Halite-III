@@ -8,8 +8,8 @@
         <p>{{ body_text }}</p>
       </div>
       <div class="halite-modal-footer">
-        <button type="button" @click="yesCallback" class="btn"><span>{{ accept_text }}</span></button>
         <button type="button" @click="noCallback" class="btn" data-dismiss="modal"><span>{{ cancel_text }}</span></button>
+        <button type="button" @click="yesCallback" class="btn"><span>{{ accept_text }}</span></button>
       </div>
     </div>
   </div>
