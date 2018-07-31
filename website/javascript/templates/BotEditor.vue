@@ -155,7 +155,10 @@ export default {
       alerts: [],
       visualizer: null,
       baseUrl: '',
+      // List of times games were started, to prevent spamming
       gameTimes: [],
+      // Monotonic counter, so running multiple games doesn't give you multiple results
+      gameCounter: 0,
     }
   },
   props: {
@@ -509,11 +512,17 @@ export default {
       console.log(startResult)
       this.add_console_text("Starting game...\n")
 
-      return this.check_ondemand_game()
+      this.gameCounter += 1
+      return this.check_ondemand_game(this.gameCounter)
     },
-    check_ondemand_game: async function() {
+    check_ondemand_game: async function(counter) {
+      // If another game has been started in the meantime, abandon this one
+      if (this.gameCounter !== counter) {
+        console.log(`Ondemand game ${counter} canceled.`)
+        return;
+      }
+
       const status = await api.get_ondemand_status(this.user_id)
-      console.log(status)
 
       if (this.visualizer) {
         this.visualizer.destroy()
@@ -556,7 +565,7 @@ export default {
         return
       }
 
-      window.setTimeout(this.check_ondemand_game.bind(this), 1000)
+      window.setTimeout(() => this.check_ondemand_game(counter), 1000)
     },
     pop_out_replay: function() {
       window.open("/play?ondemand")
