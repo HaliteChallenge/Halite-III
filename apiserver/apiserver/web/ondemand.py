@@ -35,6 +35,7 @@ def check_ondemand(intended_user, *, user_id):
                            "opponents",
                            "objective",
                            "snapshots",
+                           "crashed",
                            "status"):
             if field_name in task:
                 result[field_name] = task[field_name]

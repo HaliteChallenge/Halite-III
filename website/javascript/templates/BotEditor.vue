@@ -540,7 +540,12 @@ export default {
 
       if (status.status === "completed") {
         if (status.error_log) {
-          this.add_console_text("Your bot crashed :(\n")
+          if (status.crashed) {
+            this.add_console_text("Your bot crashed :(\n")
+          }
+          else {
+            this.add_console_text("Your bot generated a log.\n")
+          }
         }
 
         this.add_console_text("Fetching replay...\n")
