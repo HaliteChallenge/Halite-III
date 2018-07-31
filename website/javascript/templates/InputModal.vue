@@ -26,7 +26,18 @@ export default {
   name: 'InputModal',
   props: ['isOn', 'closeCallback', 'createCallback', 'baseUrl', 'title_text', 'accept_text', 'cancel_text'],
   components: {vSelect},
-  mounted: function() {},
+  mounted: function() {
+    document.addEventListener("keyup", (e) => {
+      if (this.isOn) {
+        if (e.key === "Escape") {
+          this.closeCallback()
+        }
+        else if (e.key === "Enter") {
+          this.create_file()
+        }
+      }
+    })
+  },
   data: function() {
     return {
       is_name_valid: true,

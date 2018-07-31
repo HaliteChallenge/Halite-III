@@ -23,7 +23,13 @@ export default {
   name: 'InputModal',
   props: ['isOn', 'noCallback', 'yesCallback', 'baseUrl', 'title_text', 'accept_text', 'cancel_text', 'body_text'],
   components: {vSelect},
-  mounted: function() {},
+  mounted: function() {
+    document.addEventListener("keyup", (e) => {
+      if (this.isOn && e.key === "Escape") {
+        this.noCallback()
+      }
+    })
+  },
   data: function() {
     return {}
   }
