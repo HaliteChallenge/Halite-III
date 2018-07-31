@@ -110,9 +110,10 @@ void WinConnection::send_string(const std::string &message) {
 
 /**
  * Get a string from this connection.
+ * @param timeout The timeout to use.
  * @return The string read.
  */
-std::string WinConnection::get_string() {
+std::string WinConnection::get_string(std::chrono::milliseconds timeout) {
     char buffer;
     std::string result;
 
@@ -123,9 +124,9 @@ std::string WinConnection::get_string() {
         while (bytes_available < 1) {
             if (!config.ignore_timeout) {
                 auto current_time = high_resolution_clock::now();
-                auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
+                auto remaining = timeout - duration_cast<milliseconds>(current_time - initial_time);
                 if (remaining < milliseconds::zero()) {
-                    throw TimeoutError("when reading string", config.timeout, result);
+                    throw TimeoutError("when reading string", timeout, result);
                 }
             }
             PeekNamedPipe(read_pipe, nullptr, 0, nullptr, &bytes_available, nullptr);

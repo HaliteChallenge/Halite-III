@@ -158,10 +158,11 @@ int check_pipe(int pipe, std::chrono::milliseconds timeout) {
 
 /**
  * Get a string from this connection.
+ * @param timeout The timeout to use.
  * @return The string read.
  * @throws NetworkingError on error while reading.
  */
-std::string UnixConnection::get_string() {
+std::string UnixConnection::get_string(std::chrono::milliseconds timeout) {
     // Try the queue first
     if (!message_queue.empty()) {
         const auto &message = message_queue.front();
@@ -182,9 +183,9 @@ std::string UnixConnection::get_string() {
                 throw NetworkingError("select failed", current_read);
             } else if (selection_result == 0) {
                 auto current_time = high_resolution_clock::now();
-                auto remaining = config.timeout - duration_cast<milliseconds>(current_time - initial_time);
+                auto remaining = timeout - duration_cast<milliseconds>(current_time - initial_time);
                 if (remaining < milliseconds::zero()) {
-                    throw TimeoutError("when reading string", config.timeout, current_read);
+                    throw TimeoutError("when reading string", timeout, current_read);
                 }
                 selection_result = check_pipe(read_pipe, remaining);
             }

@@ -41,7 +41,17 @@ public:
      * @return The string read.
      * @throws NetworkingError on error while reading.
      */
-    std::string get_string() override;
+    std::string get_string() override {
+        return get_string(config.timeout);
+    }
+
+    /**
+     * Get a string from this connection.
+     * @param timeout The timeout to use.
+     * @return The string read.
+     * @throws NetworkingError on error while reading.
+     */
+    std::string get_string(std::chrono::milliseconds timeout) override;
 
     /**
      * Get the error output from this connection.
