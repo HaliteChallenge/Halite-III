@@ -25,6 +25,12 @@ def list_user_matches(intended_user):
     }, ["timed_out"])
 
     participant_clause = model.game_participants.c.user_id == intended_user
+
+    with model.read_engine().connect() as conn:
+        team = conn.execute(model.team_leader_query(intended_user)).first()
+        if team:
+            participant_clause |= model.game_participants.c.user_id == team["leader_id"]
+
     for (field, _, _) in manual_sort:
         if field == "timed_out":
             participant_clause &= model.game_participants.c.timed_out

@@ -201,7 +201,7 @@
                                                     </a>
                                                 </td>
                                                 <td v-bind:class="{ 'challenge': game.challenge_id }">
-                                                    <div class="info-icon-trophy" v-if="game.players[user.user_id].rank === 1">
+                                                    <div class="info-icon-trophy" v-if="(game.players[user.user_id] || game.players[team.leader_id]).rank === 1">
                                                         <span class="icon-trophy"></span>
                                                     </div>
                                                     <a v-for="player in game.playerSorted"
@@ -887,13 +887,18 @@
           return $.get(url).then((data) => {
             var nemesisMap = new Map()
             for (let game of data) {
+              let user_id = this.user.user_id
               let user_player = game.players[this.user.user_id]
+              if (!user_player) {
+                user_id = this.team.leader_id
+                user_player = game.players[this.team.leader_id]
+              }
               for (let participant of Object.keys(game.players)) {
-                if (participant == this.user.user_id) {
+                if (parseInt(participant, 10) === user_id) {
                   continue
                 }
 
-                let username = game.players[participant].username
+                let username = game.players[participant].team_name || game.players[participant].username
                 this.profile_images[participant] = api.make_profile_image_url(username)
                 this.usernames[participant] = username
 
