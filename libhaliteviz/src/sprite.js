@@ -24,6 +24,8 @@ export default class Ship {
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);
 
         this.sprite = new PIXI.Sprite(spriteTexture);
+        this.highlight = new PIXI.Sprite(spriteTexture);
+        this.highlight.visible = false;
         this.motionblur = new MotionBlurFilter([0, 0], 9, 0);
         this.sprite.filters = [this.motionblur];
 
@@ -49,6 +51,7 @@ export default class Ship {
         // Set up sprite size & anchors
         const width = assets.CELL_SIZE * this.visualizer.camera.scale;
         setupSprite(this.sprite, width);
+        setupSprite(this.highlight, width * 1.25);
 
         this.sprite.tint = PLAYER_COLORS[this.owner];
 
@@ -64,6 +67,7 @@ export default class Ship {
      * @param container {PIXI.Container} to use for the sprite
      */
     attach(container) {
+        container.addChild(this.highlight);
         container.addChild(this.sprite);
         this.container = container;
     }
@@ -73,6 +77,8 @@ export default class Ship {
      */
     destroy() {
         this.container.removeChild(this.sprite);
+        this.container.removeChild(this.highlight);
+        delete this.container;
     }
 
     /**
@@ -201,5 +207,17 @@ export default class Ship {
         this.sprite.position.x = pixelX;
         this.sprite.position.y = pixelY;
         this.sprite.width = this.sprite.height = size;
+
+        const camera = this.visualizer.camera;
+        if (camera.selected && camera.selected.type === "ship" &&
+            camera.selected.id === this.id && camera.selected.owner === this.owner) {
+            this.highlight.visible = true;
+            this.highlight.position.x = pixelX;
+            this.highlight.position.y = pixelY;
+            this.highlight.width = this.highlight.height = 1.25 * size;
+        }
+        else {
+            this.highlight.visible = false;
+        }
     }
 }
