@@ -43,13 +43,17 @@
           </div>
         </div>
         <div class="col-12 col-md-4 col-lg-4 col-xl-4 hidden-sm hidden-xs py-md-4 pl-md-4 bd-toc replay_col">
-          <div class="replay">
+          <div class="replay" :style="visualizerVisible ? 'display: block' : 'display: none'">
             <div class="game_replay_viewer"></div>
           </div>
-          <button
-              class="pop-out-replay"
-              v-if="visualizer"
-              v-on:click="pop_out_replay">Open Replay in New Window</button>
+          <nav class="replay-extra-controls" v-if="visualizer">
+              <button
+                class="pop-out-replay"
+                v-on:click="pop_out_replay">Pop Out Replay</button>
+              <button
+                class="close-replay"
+                v-on:click="toggle_replay">Toggle Replay</button>
+          </nav>
           <div class="console">{{ terminal_text }}</div>
         </div>
       </div>
@@ -159,6 +163,7 @@ export default {
       is_delete_modal_open: false,
       alerts: [],
       visualizer: null,
+      visualizerVisible: true,
       baseUrl: '',
       // List of times games were started, to prevent spamming
       gameTimes: [],
@@ -224,6 +229,7 @@ export default {
         this.editorViewer = editorViewer
         const editor = editorViewer.editor
 
+        console.log(editorViewer)
         editor.setAnnotationRulerVisible(false);
 
         if (this.tutorial) {
@@ -579,6 +585,7 @@ export default {
         this.visualizer = new libhaliteviz.EmbeddedVisualizer(replay, width, width)
         this.visualizer.attach('.game_replay_viewer', '.game_replay_viewer')
         this.visualizer.play()
+        this.visualizerVisible = true
         this.add_console_text("Starting replay.\n")
 
         for (let i = 0; i < status.opponents.length; i++) {
@@ -602,6 +609,9 @@ export default {
     },
     pop_out_replay: function() {
       window.open("/play?ondemand")
+    },
+    toggle_replay: function() {
+      this.visualizerVisible = !this.visualizerVisible
     },
     save_current_file: function() {
       logInfo('Saving bot file to gcloud storage')
@@ -830,8 +840,13 @@ export default {
   width: 100%;
 }
 
-.pop-out-replay {
+.replay-extra-controls {
   flex: 0 0 2.5rem;
+  display: flex;
+
+    button {
+      flex: 1;
+    }
 }
 
 .console {
@@ -904,4 +919,13 @@ export default {
 .tutorial-highlight-alt {
   background: rgba(255, 0, 255, 0.3) !important;
 }
+canvas {
+  /* Fixes extra space under visualizer */
+  display: block;
+}
 </style>
+<!--
+     Local Variables:
+     web-mode-style-padding: 0
+     End:
+     End: -->
