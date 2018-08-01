@@ -168,13 +168,14 @@
         const container = document.getElementById('bot-upload-container')
 
         // verify if the dropzone is not the bot uploader zone
-        if (!container || !container.contains(e.target)) {
+        const files = e.originalEvent.dataTransfer.files
+        if ((!container || !container.contains(e.target)) && files.length > 0) {
           e.preventDefault()
           // clear the current game
           let outerContainer = document.getElementById('halitetv-visualizer')
           outerContainer.innerHTML = ''
           // play the upload replay
-          ins.play_replay(e.originalEvent.dataTransfer.files)
+          ins.play_replay(files)
         }
       })
       $('body').on('dragenter', function (e) {
@@ -194,8 +195,8 @@
   },
     methods: {
       play_replay: function (files) {
-        this.gaData('play', 'select-replay-file', 'replay-flow')
         if (files.length > 0) {
+          this.gaData('play', 'select-replay-file', 'replay-flow')
           const reader = new FileReader()
           const inst = this
           reader.onload = (e) => {
