@@ -599,7 +599,8 @@ export class HaliteVisualizer {
                         new animation.ShipExplosionFrameAnimation(
                             event.location,
                             color,
-                            lastFrame ? 0 : 90,
+                            this.frame + 0.5,
+                            1,
                             cellSize,
                             this.entityContainer));
 
@@ -632,7 +633,7 @@ export class HaliteVisualizer {
                         // TODO: use new Halite 3 spawn animation
                         this.animationQueue.push(
                             new animation.PlanetExplosionFrameAnimation(
-                                event, delayTime, cellSize, this.entityContainer));
+                                event, this.frame, 2, cellSize, this.entityContainer));
                     }
 
                     // Store spawn as command so that entity knows not to mine this turn
@@ -665,7 +666,7 @@ export class HaliteVisualizer {
                     // temporarily use old animation
                     this.animationQueue.push(
                         new animation.PlanetExplosionFrameAnimation(
-                            event, delayTime, cellSize, this.factoryContainer));
+                            event, this.frame, 5, cellSize, this.factoryContainer));
 
                     // Don't add factory twice (if scrubbing)
                     let create = true;
@@ -732,24 +733,17 @@ export class HaliteVisualizer {
         // dt comes from Pixi ticker, and the unit is essentially frames
         let queue = this.animationQueue;
         this.animationQueue = [];
+        let frameTime = this.frame + this.time;
         for (let anim of queue) {
-            let subdelta = dt;
-            if (anim.delayFrames > 0) {
-                if (anim.delayFrames >= subdelta) {
-                    anim.delayFrames -= subdelta;
-                }
-                else if (anim.delayFrames < subdelta) {
-                    subdelta -= anim.delayFrames;
-                    anim.delayFrames = -1;
-                }
+            if (this.frame >= this.replay.full_frames.length - 1) {
+                // If at end of replay, adjust animations to keep them playing
+                anim.start -= this.timeStep * this.playSpeed * dt;
             }
-
-            if (anim.delayFrames <= 0 && anim.frames >= subdelta) {
-                anim.draw(this.camera, anim.frames);
-                anim.frames -= subdelta;
+            if (frameTime >= anim.start && frameTime <= anim.start + anim.duration) {
+                anim.draw(this.camera, frameTime - anim.start);
                 this.animationQueue.push(anim);
             }
-            else if (anim.delayFrames > 0) {
+            else if (frameTime < anim.start) {
                 this.animationQueue.push(anim);
             }
             else {
