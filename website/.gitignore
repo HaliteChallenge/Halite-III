@@ -3,4 +3,5 @@ _site
 .jekyll-metadata
 .bundle
 assets/js/*.png
+assets/js/report.html
 yarn.lock

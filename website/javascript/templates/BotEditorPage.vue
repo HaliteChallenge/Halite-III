@@ -29,7 +29,7 @@
               </a>
             </li>
             <li>
-              <BotEditorSettings ref="settings_console" @settings_change="on_settings_change()"/>
+              <BotEditorSettings ref="settings_console" />
             </li>
             <li>
               <div id="user-profile-bar-container"></div>
@@ -59,12 +59,8 @@ export default {
   },
   mounted: function () {
     utils.initUserProfileNav();
-    this.on_settings_change();
   },
   methods: {
-    on_settings_change: function() {
-      this.$refs.editor_pane.set_settings(this.$refs.settings_console.get_settings());
-    },
     download_bot: function () {
       this.$refs.editor_pane.download_bot();
     },

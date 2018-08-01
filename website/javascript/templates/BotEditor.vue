@@ -43,14 +43,21 @@
           </div>
         </div>
         <div class="col-12 col-md-4 col-lg-4 col-xl-4 hidden-sm hidden-xs py-md-4 pl-md-4 bd-toc replay_col">
-          <div class="replay">
+          <div class="replay" :style="visualizerVisible ? 'display: block' : 'display: none'">
             <div class="game_replay_viewer"></div>
           </div>
-          <button
-              class="pop-out-replay"
-              v-if="visualizer"
-              v-on:click="pop_out_replay">Open Replay in New Window</button>
-          <div class="console">{{ terminal_text }}</div>
+          <nav class="replay-extra-controls" v-if="visualizer">
+              <button
+                class="pop-out-replay"
+                v-on:click="pop_out_replay">Pop Out Replay</button>
+              <button
+                class="close-replay"
+                v-on:click="toggle_replay">Toggle Replay</button>
+          </nav>
+          <div class="console"><span
+                                 v-for="text in terminal_text"
+                                 v-bind:class="text.class ? text.class : ''"
+                               >{{text.text ? text.text : text}}</span></div>
         </div>
       </div>
     </div>
@@ -71,6 +78,7 @@
 <script>
   import moment from "moment";
   import * as api from '../api'
+  import editorState from '../editorState'
   import * as utils from '../utils'
   import InputModal from './InputModal.vue'
   import CheckModal from './CheckModal.vue'
@@ -142,6 +150,7 @@ export default {
     const lang = 'Python3'
     const theme = DARK_THEME
     return {
+      state: editorState,
       active_file: {name: '', contents: ''},
       all_bot_languages: botLanguagePacks,
       status_message: null,
@@ -153,12 +162,13 @@ export default {
       selected_theme: theme,
       editor_files: [],
       file_tree: [],
-      terminal_text: "",
+      terminal_text: [],
       is_new_file_modal_open: false,
       is_new_folder_modal_open: false,
       is_delete_modal_open: false,
       alerts: [],
       visualizer: null,
+      visualizerVisible: true,
       baseUrl: '',
       // List of times games were started, to prevent spamming
       gameTimes: [],
@@ -224,6 +234,7 @@ export default {
         this.editorViewer = editorViewer
         const editor = editorViewer.editor
 
+        console.log(editorViewer)
         editor.setAnnotationRulerVisible(false);
 
         if (this.tutorial) {
@@ -277,12 +288,18 @@ export default {
         }).bind(this))
 
         // Other settings
-        if (editorViewer.settings) {
-          editorViewer.settings.showOccurrences = true
-        }
+        editorViewer.updateSettings({
+          showOccurrences: true,
+          expandTab: true,
+        })
 
         jQuery('.textview').addClass('editorTheme')
+
+        // Load saved settings
+        this.state.load()
+
         logInfo('Editor ready!')
+
         this._readyResolve();
       })
     },
@@ -518,12 +535,12 @@ export default {
       const taskResult = await api.start_ondemand_task(user_id, Object.assign({}, {
         opponents: [
           {
-            name: this.opponent_bot_name,
-            bot_id: this.opponent_bot_id,
+            name: this.state.BOT_OPTIONS[this.state.opponent],
+            bot_id: this.state.opponent,
           },
         ],
-        width: this.map_size,
-        height: this.map_size,
+        width: this.state.mapSize,
+        height: this.state.mapSize,
       }, params))
       console.log(taskResult)
 
@@ -578,10 +595,26 @@ export default {
         this.visualizer = new libhaliteviz.EmbeddedVisualizer(replay, width, width)
         this.visualizer.attach('.game_replay_viewer', '.game_replay_viewer')
         this.visualizer.play()
+        this.visualizerVisible = true
         this.add_console_text("Starting replay.\n")
 
         for (let i = 0; i < status.opponents.length; i++) {
-          this.add_console_text(`Player ${i} (${i === 0 ? 'your bot' : '"' + status.opponents[i].name + '"'}) was rank ${status.game_output.stats[i].rank}.\n`)
+          this.add_console_text({
+            text: `Player ${i}`,
+            class: `color-${i + 1}`,
+          })
+          const name = status.opponents[i].name
+          let displayName = name
+          if (i === 0) {
+            displayName = "(your bot)"
+          }
+          else if (name === "Self") {
+            displayName = "(a copy of your bot)"
+          }
+          else {
+            displayName = `"${displayName}"`
+          }
+          this.add_console_text(` ${displayName} was rank ${status.game_output.stats[i].rank}.\n`)
         }
 
         if (status.error_log) {
@@ -601,6 +634,9 @@ export default {
     },
     pop_out_replay: function() {
       window.open("/play?ondemand")
+    },
+    toggle_replay: function() {
+      this.visualizerVisible = !this.visualizerVisible
     },
     save_current_file: function() {
       logInfo('Saving bot file to gcloud storage')
@@ -625,11 +661,10 @@ export default {
       this.editorViewer.setContents(contents, this.bot_info().mimeType)
     },
     clear_terminal_text: function() {
-      this.terminal_text = "";
+      this.terminal_text = []
     },
     add_console_text: function(new_text) {
-      if(this.terminal_text === undefined) this.terminal_text = ""
-        this.terminal_text += new_text
+      this.terminal_text.push(new_text)
     },
     alert: function(text) {
       this.alerts.push(text)
@@ -676,19 +711,6 @@ export default {
         })
       })
     },
-    set_settings: function(settings) {
-      let change = false
-      for (let key in settings) {
-        if (this[key] !== settings[key]) {
-          change = true
-        }
-        this[key] = settings[key]
-      }
-
-      if (change) {
-        this.alert("Settings updated")
-      }
-    },
     update_editor_files: function() {
       this.active_file.contents = this.editorViewer.editor.getModel().getText()
     }
@@ -696,6 +718,14 @@ export default {
   watch: {
     allSaved(value) {
       this.$emit('save', value)
+    },
+    state: {
+      handler(newState) {
+        this.editorViewer.updateSettings(newState.editor)
+        this.state.save()
+        this.alert("Updated settings")
+      },
+      deep: true
     }
   },
 }
@@ -827,8 +857,13 @@ export default {
   width: 100%;
 }
 
-.pop-out-replay {
+.replay-extra-controls {
   flex: 0 0 2.5rem;
+  display: flex;
+
+    button {
+      flex: 1;
+    }
 }
 
 .console {
@@ -901,4 +936,14 @@ export default {
 .tutorial-highlight-alt {
   background: rgba(255, 0, 255, 0.3) !important;
 }
+canvas {
+  /* Fixes extra space under visualizer */
+  display: block;
+}
 </style>
+<!--
+     Local Variables:
+     web-mode-style-padding: 0
+     web-mode-script-padding: 0
+     End:
+     End: -->

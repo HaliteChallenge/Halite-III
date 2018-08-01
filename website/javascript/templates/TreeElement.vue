@@ -14,10 +14,11 @@
         </div>
         <ul class="nav bd-sidenav" :class="{'indent': !is_root, 'hidden': !show_children}">
           <TreeElement
-            v-for="(subobj, key) in obj" 
-            :obj="subobj" 
+            v-for="(subobj, key) in obj"
+            :obj="subobj"
             :name="key"
             :depth="depth + 1"
+            :key="key"
             @event_file_selected="pass_up">
           </TreeElement>
         </ul>
@@ -25,7 +26,7 @@
     </li>
 </template>
 <script>
-export default { 
+export default {
   props: [ 'name', 'obj', 'depth' ],
   name: 'TreeElement',
   data: function() {

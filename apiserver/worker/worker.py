@@ -232,7 +232,7 @@ def setupParticipant(user_index, user, temp_dir):
     return bot_command, bot_name
 
 
-def runGame(environment_parameters, users):
+def runGame(environment_parameters, users, offset=0):
     with tempfile.TemporaryDirectory(dir=TEMP_DIR) as temp_dir:
         shutil.copy(ENVIRONMENT, os.path.join(temp_dir, ENVIRONMENT))
 
@@ -254,12 +254,13 @@ def runGame(environment_parameters, users):
         os.chmod(temp_dir, 0o755)
 
         for user_index, user in enumerate(users):
-            bot_command, bot_name = setupParticipant(user_index, user, temp_dir)
+            bot_command, bot_name = setupParticipant(user_index + offset, user, temp_dir)
             command.append(bot_command)
             command.append("-o")
             command.append(bot_name)
 
         logging.debug("Run game command %s\n" % command)
+        print(command)
         logging.debug("Waiting for game output...\n")
         lines = subprocess.Popen(
             command,
@@ -270,7 +271,7 @@ def runGame(environment_parameters, users):
         # tempdir will automatically be cleaned up, but we need to do things
         # manually because the bot might have made files it owns
         for user_index, user in enumerate(users):
-            bot_user = "bot_{}".format(user_index)
+            bot_user = "bot_{}".format(user_index + offset)
             rm_as_user(bot_user, temp_dir)
 
             # The processes won't necessarily be automatically cleaned up, so
@@ -307,7 +308,9 @@ def executeGameTask(environment_parameters, users, extra_metadata, gameResult):
     logging.debug("Users objects {}\n".format(users))
     logging.debug("Extra metadata {}\n".format(extra_metadata))
 
-    raw_output = '\n'.join(runGame(environment_parameters, users))
+    raw_output = '\n'.join(runGame(
+        environment_parameters, users,
+        extra_metadata.get("offset", 0)))
     users, parsed_output = parseGameOutput(raw_output, users)
 
     gameResult(users, parsed_output, extra_metadata)
@@ -384,6 +387,7 @@ def main(args):
                 environment_params = task["environment_parameters"]
                 extra_metadata = {
                     "task_user_id": task["task_user_id"],
+                    "offset": int(args.user_offset),
                 }
 
                 try:
@@ -397,6 +401,8 @@ def main(args):
                         extra_metadata,
                         e.language, e.log
                     )
+
+                sleep(random.randint(1, 4))
             else:
                 logging.debug("No task available at time %s (GMT). Sleeping...\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         except Exception as e:
@@ -409,5 +415,6 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--task-type", default="task")
+    parser.add_argument("--user-offset", default=0)
     args = parser.parse_args()
     main(args)
