@@ -294,7 +294,12 @@ export default {
         })
 
         jQuery('.textview').addClass('editorTheme')
+
+        // Load saved settings
+        this.state.load()
+
         logInfo('Editor ready!')
+
         this._readyResolve();
       })
     },
@@ -717,6 +722,7 @@ export default {
     state: {
       handler(newState) {
         this.editorViewer.updateSettings(newState.editor)
+        this.state.save()
         this.alert("Updated settings")
       },
       deep: true
