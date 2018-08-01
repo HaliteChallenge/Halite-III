@@ -277,9 +277,10 @@ export default {
         }).bind(this))
 
         // Other settings
-        if (editorViewer.settings) {
-          editorViewer.settings.showOccurrences = true
-        }
+        editorViewer.updateSettings({
+          showOccurrences: true,
+          expandTab: true,
+        })
 
         jQuery('.textview').addClass('editorTheme')
         logInfo('Editor ready!')
@@ -677,17 +678,19 @@ export default {
       })
     },
     set_settings: function(settings) {
-      let change = false
+      console.log(settings)
       for (let key in settings) {
-        if (this[key] !== settings[key]) {
-          change = true
+        if (key === "editor") {
+          if (this.editorViewer) {
+            this.editorViewer.updateSettings(settings[key])
+          }
         }
-        this[key] = settings[key]
+        else {
+          this[key] = settings[key]
+        }
       }
 
-      if (change) {
-        this.alert("Settings updated")
-      }
+      this.alert("Settings updated")
     },
     update_editor_files: function() {
       this.active_file.contents = this.editorViewer.editor.getModel().getText()
