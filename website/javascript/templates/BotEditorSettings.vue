@@ -17,19 +17,19 @@
 
       <h2>Editor</h2>
       <label for="expandTab">Tab inserts spaces:</label>
-      <input type="checkbox" name="expandTab" @change="on_change" v-model="expandTab" checked />
+      <input type="checkbox" name="expandTab" @change="on_change" v-model="state.editor.expandTab" checked />
 
       <h2>Games</h2>
 
       <p><i>Opponent Bot</i></p>
-      <select v-on:change="on_change" v-model="bot_id">
-          <option v-for="(name, id) in BOT_OPTIONS" v-bind:value="id">
+      <select v-on:change="on_change" v-model="state.opponent">
+          <option v-for="(name, id) in state.BOT_OPTIONS" v-bind:value="id">
             {{ name }}
           </option>
       </select>
 
       <p><i>Map Size</i></p>
-      <select v-on:change="on_change" v-model="map_size">
+      <select v-on:change="on_change" v-model="state.mapSize">
           <option v-for="size in MAP_OPTIONS" v-bind:value="size">
             {{ size }}
           </option>
@@ -42,20 +42,18 @@
   import Vue from 'vue'
   import {Popover} from 'element-ui'
 
+  import editorState from '../editorState'
 
   export default {
-    name: 'TierPopover',
+    name: 'BotEditorSettings',
     components: {
       'el-popover': Popover
     },
     mounted: function () {},
     data: function () {
       return {
-        expandTab: true,
-        bot_id: "self",
-        map_size: 32,
+        state: editorState,
         show: false,
-        BOT_OPTIONS: {"self": "Self", "0": "GoodBot"},
         MAP_OPTIONS: [32, 48, 64, 96, 128],
       }
     },
@@ -63,16 +61,6 @@
       on_change: function() {
         this.$emit('settings_change')
       },
-      get_settings: function() {
-        return {
-          editor: {
-            expandTab: this.expandTab,
-          },
-          opponent_bot_id: this.bot_id,
-          opponent_bot_name: this.BOT_OPTIONS[this.bot_id],
-          map_size: this.map_size
-        }
-      }
     }
   }
 </script>
@@ -147,3 +135,8 @@
     color: #30242F;
   }
 </style>
+<!--
+     Local Variables:
+     web-mode-script-padding: 2
+     End:
+     End: -->

@@ -78,6 +78,7 @@
 <script>
   import moment from "moment";
   import * as api from '../api'
+  import editorState from '../editorState'
   import * as utils from '../utils'
   import InputModal from './InputModal.vue'
   import CheckModal from './CheckModal.vue'
@@ -149,6 +150,7 @@ export default {
     const lang = 'Python3'
     const theme = DARK_THEME
     return {
+      state: editorState,
       active_file: {name: '', contents: ''},
       all_bot_languages: botLanguagePacks,
       status_message: null,
@@ -528,12 +530,12 @@ export default {
       const taskResult = await api.start_ondemand_task(user_id, Object.assign({}, {
         opponents: [
           {
-            name: this.opponent_bot_name,
-            bot_id: this.opponent_bot_id,
+            name: this.state.BOT_OPTIONS[this.state.opponent],
+            bot_id: this.state.opponent,
           },
         ],
-        width: this.map_size,
-        height: this.map_size,
+        width: this.state.mapSize,
+        height: this.state.mapSize,
       }, params))
       console.log(taskResult)
 
@@ -704,21 +706,6 @@ export default {
         })
       })
     },
-    set_settings: function(settings) {
-      console.log(settings)
-      for (let key in settings) {
-        if (key === "editor") {
-          if (this.editorViewer) {
-            this.editorViewer.updateSettings(settings[key])
-          }
-        }
-        else {
-          this[key] = settings[key]
-        }
-      }
-
-      this.alert("Settings updated")
-    },
     update_editor_files: function() {
       this.active_file.contents = this.editorViewer.editor.getModel().getText()
     }
@@ -726,6 +713,13 @@ export default {
   watch: {
     allSaved(value) {
       this.$emit('save', value)
+    },
+    state: {
+      handler(newState) {
+        this.editorViewer.updateSettings(newState.editor)
+        this.alert("Updated settings")
+      },
+      deep: true
     }
   },
 }
@@ -944,5 +938,6 @@ canvas {
 <!--
      Local Variables:
      web-mode-style-padding: 0
+     web-mode-script-padding: 0
      End:
      End: -->
