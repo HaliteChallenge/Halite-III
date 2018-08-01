@@ -1,18 +1,24 @@
 import enum
+import random
 
 import google.cloud.datastore as gcloud_datastore
 import google.cloud.storage as gcloud_storage
 import sqlalchemy
 
-from . import config
+from . import app, config
 
 
 class CompileStatus(enum.Enum):
     """The compilation status of a bot."""
+    # Bot just uploaded
     UPLOADED = "Uploaded"
+    # Bot being compiled
     IN_PROGRESS = "InProgress"
+    # Bot playing games
     SUCCESSFUL = "Successful"
+    # Bot failed to compile
     FAILED = "Failed"
+    # Bot not running (e.g. part of team and not leader)
     DISABLED = "Disabled"
 
 
@@ -24,8 +30,22 @@ class ChallengeStatus(enum.Enum):
 
 
 # Database setup
-engine = sqlalchemy.create_engine(config.DATABASE_URL)
+engines = []
+for (_, _, port) in config.DATABASES:
+    engines.append(sqlalchemy.create_engine(config.DATABASE_URL.format(port=port)))
+engine = engines[0]
 metadata = sqlalchemy.MetaData(bind=engine)
+
+def read_conn():
+    """
+    Pick and connect to a random read replica, falling back to the
+    master instance if needed.
+    """
+    try:
+        return random.choice(engines[1:]).connect()
+    except Exception as e:
+        app.logger.error("Could not connect to read replica", exc_info=e)
+        return engine.connect()
 
 organizations = sqlalchemy.Table("organization", metadata, autoload=True)
 organization_email_domains = \
@@ -37,27 +57,22 @@ user_notifications = sqlalchemy.Table("user_notification", metadata, autoload=Tr
 bots = sqlalchemy.Table("bot", metadata, autoload=True)
 bot_history = sqlalchemy.Table("bot_history", metadata, autoload=True)
 games = sqlalchemy.Table("game", metadata, autoload=True)
-game_stats = sqlalchemy.Table("game_stat", metadata, autoload=True)
 game_view_stats = sqlalchemy.Table("game_view_stat", metadata, autoload=True)
-game_bot_stats = sqlalchemy.Table("game_bot_stat", metadata, autoload=True)
 game_participants = sqlalchemy.Table("game_participant", metadata, autoload=True)
 hackathons = sqlalchemy.Table("hackathon", metadata, autoload=True)
 hackathon_participants = sqlalchemy.Table("hackathon_participant", metadata, autoload=True)
 hackathon_snapshot = sqlalchemy.Table("hackathon_snapshot", metadata, autoload=True)
 challenges = sqlalchemy.Table("challenge", metadata, autoload=True)
 challenge_participants = sqlalchemy.Table("challenge_participant", metadata, autoload=True)
+teams = sqlalchemy.Table("team", metadata, autoload=True)
 
-def ranked_bots_query(variable="rank", alias="ranked_bots"):
+def ranked_bots_query(alias="ranked_bots"):
     """
     Builds a query that ranks all bots.
 
-    This is a function in case you need this as a subquery multiple times,
-    and would like to avoid reusing the same SQL variable.
-
-    Unfortunately, MySQL does not support SQL variables in views.
+    This is a function in case you need this as a subquery multiple times.
     """
     return sqlalchemy.sql.select([
-        sqlalchemy.sql.text("(@{v}:=@{v} + 1) AS bot_rank".format(v=variable)),
         bots.c.user_id,
         bots.c.id.label("bot_id"),
         bots.c.mu,
@@ -68,9 +83,16 @@ def ranked_bots_query(variable="rank", alias="ranked_bots"):
         bots.c.language,
         bots.c.update_time,
         bots.c.compile_status,
-    ]).select_from(bots).select_from(sqlalchemy.sql.select([
-        sqlalchemy.sql.text("@{}:=0".format(variable))
-    ]).alias("rn")).order_by(bots.c.score.desc()).alias(alias)
+        sqlalchemy.sql.func.rank().over(
+            order_by=bots.c.score.desc()
+        ).label("bot_rank"),
+    ]).select_from(
+        bots.join(users, bots.c.user_id == users.c.id)
+    ).where(
+        users.c.is_active == True
+    ).order_by(
+        bots.c.score.desc()
+    ).alias(alias)
 
 
 def hackathon_ranked_bots_query(hackathon_id,
@@ -90,16 +112,18 @@ def hackathon_ranked_bots_query(hackathon_id,
         hackathon_snapshot.c.games_played,
         hackathon_snapshot.c.version_number,
         hackathon_snapshot.c.language,
+        users.c.is_active,
     ]).select_from(
-        hackathon_snapshot
-    ).select_from(sqlalchemy.sql.select([
-        sqlalchemy.sql.text("@{}:=0".format(variable))
-    ]).alias("rn")).where(
-        hackathon_snapshot.c.hackathon_id == hackathon_id
+        hackathon_snapshot.join(users, hackathon_snapshot.c.user_id == users.c.id)
+    ).where(
+        (hackathon_snapshot.c.hackathon_id == hackathon_id) &
+        (users.c.is_active == True)
     ).order_by(hackathon_snapshot.c.score.desc()).alias("temptable")
 
     return sqlalchemy.sql.select([
-        sqlalchemy.sql.text("(@{v}:=@{v} + 1) AS local_rank".format(v=variable)),
+        sqlalchemy.sql.func.rank().over(
+            order_by=temptable.c.score.desc()
+        ).label("local_rank"),
         temptable.c.user_id,
         temptable.c.bot_id,
         temptable.c.mu,
@@ -115,6 +139,8 @@ ranked_bots = ranked_bots_query()
 
 
 _func = sqlalchemy.sql.func
+leader_bots = ranked_bots_query("leader_bot")
+teams_bots = teams.join(leader_bots, teams.c.leader_id == leader_bots.c.user_id)
 # Summary of all users, regardless of whether they have bots
 all_users = sqlalchemy.sql.select([
     users.c.id.label("user_id"),
@@ -128,22 +154,71 @@ all_users = sqlalchemy.sql.select([
     users.c.email.label("personal_email"),
     users.c.is_email_good,
     users.c.is_gpu_enabled,
-    _func.coalesce(_func.count(), 0).label("num_bots"),
-    _func.coalesce(_func.sum(ranked_bots.c.games_played), 0).label("num_games"),
-    _func.coalesce(_func.sum(ranked_bots.c.version_number), 0).label("num_submissions"),
-    _func.coalesce(_func.max(ranked_bots.c.score), 0).label("score"),
-    _func.coalesce(_func.max(ranked_bots.c.sigma), 0).label("sigma"),
-    _func.coalesce(_func.max(ranked_bots.c.mu), 0).label("mu"),
-    _func.coalesce(_func.min(sqlalchemy.sql.text("ranked_bots.bot_rank"))).label("rank"),
-]).select_from(users.join(
-    ranked_bots,
-    ranked_bots.c.user_id == users.c.id,
-    isouter=True,
+    teams.c.id.label("team_id"),
+    teams.c.name.label("team_name"),
+    teams.c.leader_id.label("team_leader_id"),
+    _func.count(ranked_bots.c.user_id).label("num_bots"),
+    _func.coalesce(
+        _func.sum(leader_bots.c.games_played),
+        _func.sum(ranked_bots.c.games_played),
+        0,
+    ).label("num_games"),
+    _func.coalesce(
+        _func.sum(leader_bots.c.version_number),
+        _func.sum(ranked_bots.c.version_number),
+        0,
+    ).label("num_submissions"),
+    _func.coalesce(
+        _func.max(leader_bots.c.score),
+        _func.max(ranked_bots.c.score),
+        0,
+    ).label("score"),
+    _func.coalesce(
+        _func.max(leader_bots.c.sigma),
+        _func.max(ranked_bots.c.sigma),
+        0,
+    ).label("sigma"),
+    _func.coalesce(
+        _func.max(leader_bots.c.mu),
+        _func.max(ranked_bots.c.mu),
+        0,
+    ).label("mu"),
+    _func.coalesce(
+        _func.min(leader_bots.c.bot_rank),
+        _func.min(ranked_bots.c.bot_rank),
+    ).label("rank"),
+]).select_from(
+    users.join(
+        ranked_bots,
+        ranked_bots.c.user_id == users.c.id,
+        isouter=True,
     ).join(
-    organizations,
-    organizations.c.id == users.c.organization_id,
-    isouter=True
-)).group_by(users.c.id).alias("all_users")
+        organizations,
+        organizations.c.id == users.c.organization_id,
+        isouter=True
+    ).join(
+        teams_bots,
+        users.c.team_id == teams_bots.c.team_id,
+        isouter=True
+    )
+).where(
+    users.c.is_active == True
+).group_by(
+    users.c.id,
+    users.c.username,
+    users.c.player_level,
+    users.c.organization_id,
+    organizations.c.organization_name,
+    users.c.country_code,
+    users.c.country_subdivision_code,
+    users.c.github_email,
+    users.c.email,
+    users.c.is_email_good,
+    users.c.is_gpu_enabled,
+    teams.c.id,
+    teams.c.name,
+    teams.c.leader_id,
+).alias("all_users")
 
 
 # All submitted bots, ranked with user info
@@ -157,6 +232,9 @@ ranked_bots_users = sqlalchemy.sql.select([
     users.c.country_subdivision_code,
     users.c.github_email.label("email"),
     users.c.is_gpu_enabled,
+    teams.c.id.label("team_id"),
+    teams.c.name.label("team_name"),
+    teams.c.leader_id.label("team_leader_id"),
     ranked_bots.c.bot_id,
     ranked_bots.c.games_played.label("num_games"),
     ranked_bots.c.version_number.label("num_submissions"),
@@ -165,17 +243,22 @@ ranked_bots_users = sqlalchemy.sql.select([
     ranked_bots.c.score,
     ranked_bots.c.language,
     ranked_bots.c.update_time,
-    # Perform a no-op operation so we can label the column easily
-    sqlalchemy.cast(sqlalchemy.sql.text("ranked_bots.bot_rank"), sqlalchemy.Integer).label("rank"),
+    ranked_bots.c.bot_rank.label("rank"),
     ranked_bots.c.compile_status,
-]).select_from(ranked_bots.join(
-    users,
-    ranked_bots.c.user_id == users.c.id,
+]).select_from(
+    ranked_bots.join(
+        users,
+        ranked_bots.c.user_id == users.c.id,
     ).join(
-    organizations,
-    organizations.c.id == users.c.organization_id,
-    isouter=True
-)).alias("ranked_bots_users")
+        organizations,
+        organizations.c.id == users.c.organization_id,
+        isouter=True
+    ).join(
+        teams,
+        users.c.team_id == teams.c.id,
+        isouter=True
+    )
+).alias("ranked_bots_users")
 
 
 # Users, ranked by their best bot
@@ -183,18 +266,29 @@ def ranked_users_query(alias="ranked_users"):
     ranked_bots = ranked_bots_query("rurank")
     return sqlalchemy.sql.select([
         users.c.id.label("user_id"),
+        users.c.team_id,
         users.c.username,
         # Perform a no-op operation so we can label the column easily
-        _func.min(sqlalchemy.sql.text("ranked_bots.bot_rank")).label("rank"),
+        ranked_bots.c.bot_rank.label("rank"),
     ]).select_from(
         users.join(ranked_bots, ranked_bots.c.user_id == users.c.id)
-    ).group_by(users.c.id).alias(alias)
+    ).group_by(
+        users.c.id,
+        users.c.team_id,
+        users.c.username,
+        ranked_bots.c.bot_rank
+    ).alias(alias)
 
 
 # Total number of ranked users that have played a game
 total_ranked_users = sqlalchemy.sql.select([
     _func.count(sqlalchemy.distinct(bots.c.user_id))
-]).select_from(bots).where(bots.c.games_played > 0)
+]).select_from(
+    bots.join(users)
+).where(
+    (bots.c.games_played > 0) &
+    (users.c.is_active == True)
+)
 
 
 def hackathon_total_ranked_users_query(hackathon_id):
@@ -209,7 +303,8 @@ def hackathon_total_ranked_users_query(hackathon_id):
         ).join(
             users,
             (bots.c.user_id == users.c.id) &
-            (users.c.is_email_good == True)
+            (users.c.is_email_good == True) &
+            (users.c.is_active == True)
         )
     ).where(bots.c.games_played > 0)
 
@@ -232,8 +327,7 @@ def hackathon_ranked_bots_users_query(hackathon_id, *, alias="hackathon_ranked_b
         local_rank.c.score,
         local_rank.c.language,
         ranked_bots.c.update_time,
-        # Perform a no-op operation so we can label the column easily
-        sqlalchemy.cast(sqlalchemy.sql.text("local_rank.local_rank"), sqlalchemy.Integer).label("local_rank"),
+        local_rank.c.local_rank,
         ranked_bots.c.compile_status,
     ]).select_from(
         ranked_bots.join(
@@ -251,6 +345,10 @@ def hackathon_ranked_bots_users_query(hackathon_id, *, alias="hackathon_ranked_b
             isouter=True
         )
     ).alias(alias)
+
+
+def team_leader_query(user_id):
+    return teams.join(users, teams.c.id == users.c.team_id).select(users.c.id == user_id)
 
 
 def cached(f):

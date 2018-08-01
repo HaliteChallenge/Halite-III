@@ -29,8 +29,6 @@ def make_challenge_record(challenge, participants):
         result["players"][participant["user_id"]] = {
             "username": participant["username"],
             "points": participant["points"],
-            "ships_produced": participant["ships_produced"],
-            "attacks_made": participant["attacks_made"],
             "is_issuer": participant["user_id"] == result["issuer"],
         }
 
@@ -38,7 +36,7 @@ def make_challenge_record(challenge, participants):
 
 
 def get_challenge_helper(challenge_id):
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         query = sqlalchemy.sql.select([
             model.challenges.c.id,
             model.challenges.c.created,
@@ -68,8 +66,20 @@ def get_challenge_helper(challenge_id):
 
 
 def list_challenges_helper(offset, limit, participant_clause,
-                           where_clause, order_clause):
-    with model.engine.connect() as conn:
+                           where_clause, order_clause, user_id=None):
+    with model.read_conn() as conn:
+        if user_id is not None:
+            # See if user is part of a team, and add to participant
+            # clause
+            team = conn.execute(model.team_leader_query(user_id)).first()
+            if team:
+                participant_clause &= model.challenge_participants.c.user_id.in_([
+                    user_id,
+                    team["leader_id"],
+                ])
+            else:
+                participant_clause &= model.challenge_participants.c.user_id == user_id
+
         query = sqlalchemy.sql.select([
             model.challenges.c.id,
             model.challenges.c.created,
@@ -91,8 +101,6 @@ def list_challenges_helper(offset, limit, participant_clause,
             participants = conn.execute(sqlalchemy.sql.select([
                 model.challenge_participants.c.user_id,
                 model.challenge_participants.c.points,
-                model.challenge_participants.c.ships_produced,
-                model.challenge_participants.c.attacks_made,
                 model.users.c.username,
             ]).select_from(model.challenge_participants.join(
                 model.users,

@@ -8,6 +8,31 @@
                 </div>
                 <div class="user-profile-detail">
                     <a class="user-name" target="_blank" :href="'https://github.com/' + user.username">{{ user.username }}</a>
+                    <div v-if="user.team_id" class="user-team-detail">
+                        <p class="user-team">
+                            <template v-if="user.team_leader_id == user.user_id">
+                                Leader of
+                            </template>
+                            <template v-else>
+                                Member of
+                            </template>
+                            <a target="_blank"
+                               :href="`/user/?user_id=${user.team_id}`"
+                            >{{ user.team_name }}</a>
+                        </p>
+
+                        <template v-if="team" v-for="member in team.members">
+                            <a :href="`/user/?user_id=${member.user_id}`">
+                                <img
+                                  height="20px"
+                                  :alt="member.username"
+                                  :src="`https://github.com/${member.username}.png`"
+                                />
+                                {{member.username}}
+                            </a>
+                        </template>
+                        <i class="xline xline-bottom"></i>
+                    </div>
                     <p>{{ user.level }} <span v-if="user.organization">at <a  :href="`/programming-competition-leaderboard?organization=${user.organization_id}`">{{ user.organization }}</a></span></p>
                     <p v-if="user.location">
                       From <a :href="`/programming-competition-leaderboard?country=${user.country_code}`">{{user.location}}</a>
@@ -176,7 +201,7 @@
                                                     </a>
                                                 </td>
                                                 <td v-bind:class="{ 'challenge': game.challenge_id }">
-                                                    <div class="info-icon-trophy" v-if="game.players[user.user_id].rank === 1">
+                                                    <div class="info-icon-trophy" v-if="(game.players[user.user_id] || game.players[team.leader_id]).rank === 1">
                                                         <span class="icon-trophy"></span>
                                                     </div>
                                                     <a v-for="player in game.playerSorted"
@@ -574,6 +599,7 @@
             'num_games': '',
             'user_id': ''
           },
+          team: null,
           games: [],
           challengeGames: [],
           nemesisList: [],
@@ -627,6 +653,13 @@
               {}, '',
               `${window.location.origin}${window.location.pathname}?user_id=${user.user_id}`)
           }
+
+          if (user.team_id) {
+            api.get_team(user.team_id).then((team) => {
+              this.team = team
+            })
+          }
+
           api.list_bots(user.user_id).then((bots) => {
             this.bots = bots
           })
@@ -854,13 +887,18 @@
           return $.get(url).then((data) => {
             var nemesisMap = new Map()
             for (let game of data) {
+              let user_id = this.user.user_id
               let user_player = game.players[this.user.user_id]
+              if (!user_player) {
+                user_id = this.team.leader_id
+                user_player = game.players[this.team.leader_id]
+              }
               for (let participant of Object.keys(game.players)) {
-                if (participant == this.user.user_id) {
+                if (parseInt(participant, 10) === user_id) {
                   continue
                 }
 
-                let username = game.players[participant].username
+                let username = game.players[participant].team_name || game.players[participant].username
                 this.profile_images[participant] = api.make_profile_image_url(username)
                 this.usernames[participant] = username
 

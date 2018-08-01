@@ -21,6 +21,9 @@ def make_user_record(row, *, logged_in, total_users=None):
     """Given a database result row, create the JSON user object."""
     user = {
         "user_id": row["user_id"],
+        "team_id": row["team_id"],
+        "team_name": row["team_name"],
+        "team_leader_id": row["team_leader_id"],
         "username": row["username"],
         "level": row["player_level"],
         "organization_id": row["organization_id"],
@@ -190,7 +193,7 @@ def list_users():
         "rank": model.all_users.c.rank,
     })
 
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         total_users = conn.execute(model.total_ranked_users).first()[0]
 
         query = conn.execute(
@@ -225,10 +228,13 @@ def create_user(*, user_id):
             model.users.c.id == user_id
         )).first()
 
+        if not user_data["is_active"]:
+            raise util.APIError(403, message="User disabled. Please contact halite@halite.io.")
+
         if user_data["verification_code"]:
             raise util.APIError(400, message="User needs to verify email.")
 
-        if user_data["is_email_good"] == 1:
+        if user_data["is_email_good"]:
             raise util.APIError(400, message="You have already successfully confirmed your membership with this organization.")
 
     org_id = body.get("organization_id")
@@ -364,13 +370,13 @@ def create_user(*, user_id):
 @util.cross_origin(methods=["GET", "PUT"])
 @web_util.requires_login(optional=True, accept_key=True)
 def get_user(intended_user, *, user_id):
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         query = model.all_users.select(
             model.all_users.c.user_id == intended_user)
 
         row = conn.execute(query).first()
         if not row:
-            raise util.APIError(404, message="No user found.")
+            raise util.APIError(404, message="No user found or user disabled.")
 
         total_users = conn.execute(model.total_ranked_users).first()[0]
 
@@ -385,7 +391,7 @@ def get_user(intended_user, *, user_id):
 @util.cross_origin(methods=["GET"])
 @web_util.requires_login(optional=True, accept_key=True)
 def get_user_season1(intended_user, *, user_id):
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         query = model.all_users.select(
             model.all_users.c.user_id == intended_user)
 
@@ -455,7 +461,7 @@ def verify_user_email(user_id):
 @util.cross_origin(methods=["POST"])
 @web_util.requires_login()
 def resend_user_verification_email(user_id):
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         row = conn.execute(
             model.users.select(model.users.c.id == user_id)
         ).first()
@@ -486,9 +492,9 @@ def resend_user_verification_email(user_id):
 
 @web_api.route("/user/<int:intended_user_id>", methods=["PUT"])
 @util.cross_origin(methods=["GET", "PUT"])
-@web_util.requires_login(accept_key=False)
-def update_user(intended_user_id, *, user_id):
-    if user_id != intended_user_id:
+@web_util.requires_login(accept_key=False, maybe_admin=True)
+def update_user(intended_user_id, *, user_id, is_admin):
+    if user_id != intended_user_id and not is_admin:
         raise web_util.user_mismatch_error()
 
     fields = flask.request.get_json()
@@ -500,13 +506,14 @@ def update_user(intended_user_id, *, user_id):
         "email": "email",
         "verification_code": "organization_verification_code",
         "is_gpu_enabled": "is_gpu_enabled",
+        "is_active": "is_active",
     }
 
     update = {}
     message = []
 
     for key in fields:
-        if key not in columns:
+        if key not in columns or (key == "is_active" and not is_admin):
             raise util.APIError(400, message="Cannot update '{}'".format(key))
 
         if (fields[key] is not None or
@@ -521,7 +528,7 @@ def update_user(intended_user_id, *, user_id):
 
     with model.engine.connect() as conn:
         old_user = conn.execute(
-            model.users.select(model.users.c.id == user_id)).first()
+            model.users.select(model.users.c.id == intended_user_id)).first()
         if update.get("organization_id") is not None:
             org_data = conn.execute(
                 model.organizations.select(model.organizations.c.id == update["organization_id"])
@@ -578,9 +585,12 @@ def update_user(intended_user_id, *, user_id):
         message.append("Please check your inbox for your verification email.")
 
     with model.engine.connect() as conn:
-        conn.execute(model.users.update().where(
-            model.users.c.id == user_id
-        ).values(**update))
+        # Don't execute update if no values to update (SQLAlchemy
+        # generates invalid SQL)
+        if update:
+            conn.execute(model.users.update().where(
+                model.users.c.id == intended_user_id
+            ).values(**update))
 
         user_data = conn.execute(sqlalchemy.sql.select(["*"]).select_from(
             model.users.join(
@@ -594,7 +604,7 @@ def update_user(intended_user_id, *, user_id):
 
         if "email" in update and update.get("organization_id"):
             send_verification_email(
-                notify.Recipient(user_id, user_data["username"],
+                notify.Recipient(intended_user_id, user_data["username"],
                                  user_data["email"],
                                  user_data["organization_name"],
                                  user_data["player_level"],
@@ -602,7 +612,7 @@ def update_user(intended_user_id, *, user_id):
                 update["verification_code"])
         elif "email" in update:
             send_verification_email(
-                notify.Recipient(user_id, user_data["username"],
+                notify.Recipient(intended_user_id, user_data["username"],
                                  user_data["email"],
                                  "unknown",
                                  user_data["player_level"],
@@ -613,7 +623,9 @@ def update_user(intended_user_id, *, user_id):
         return util.response_success({
             "message": "\n".join(message),
         })
-    return util.response_success()
+    return util.response_success({
+        "update": update
+    })
 
 
 @web_api.route("/user/<int:intended_user_id>", methods=["DELETE"])

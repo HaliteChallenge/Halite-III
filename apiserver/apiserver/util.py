@@ -1,4 +1,9 @@
+import contextlib
+import cProfile
 import math
+import os
+import threading
+import time
 import urllib.parse
 
 import flask
@@ -103,3 +108,24 @@ def build_site_url(page, params, base_url=config.SITE_URL):
     return "{}?{}".format(
         urllib.parse.urljoin(base_url, page),
         urllib.parse.urlencode(params))
+
+
+@contextlib.contextmanager
+def profiling(name):
+    profiler = cProfile.Profile()
+    profiler.enable()
+    try:
+        yield
+    finally:
+        profiler.disable()
+        profiler.dump_stats(name)
+
+
+def profiled(view):
+    def _view(*args, **kwargs):
+        with profiling("{}-{}-{}-{}.prof".format(view.__name__,
+                                                 time.time(),
+                                                 os.getpid(),
+                                                 threading.get_ident())):
+            return view(*args, **kwargs)
+    return _view

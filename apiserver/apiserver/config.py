@@ -69,9 +69,13 @@ GCLOUD_EDITOR_BUCKET = 'editor-bucket'
 WORKER_ARTIFACT_KEY = ""
 
 DATABASE_PROJECT_ID = ""
-DATABASE_REGION = ""
-DATABASE_INSTANCE_NAME = ""
-DATABASE_URL = ""
+DATABASE_URL = "postgresql+psycopg2://user:pass@localhost:{port}/dbname"
+DATABASES = [
+    # Read-write master
+    ("zone", "instance-name", 3307),
+    # Read replica
+    ("zone", "instance-name", 3308),
+]
 
 # OAuth
 OAUTH_GITHUB_CONSUMER_KEY = ""

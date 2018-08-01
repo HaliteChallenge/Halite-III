@@ -20,12 +20,14 @@ from .blueprint import web_api
 @util.cross_origin(methods=["GET"])
 def list_user_bots(user_id):
     result = []
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         bots = conn.execute(sqlalchemy.sql.select([
             model.bots.c.id,
             model.bots.c.version_number,
             model.bots.c.games_played,
             model.bots.c.language,
+            model.bots.c.mu,
+            model.bots.c.sigma,
             model.bots.c.score,
             model.bots.c.compile_status,
             sqlalchemy.sql.text("ranked_bots.bot_rank"),
@@ -46,6 +48,8 @@ def list_user_bots(user_id):
                 "version_number": bot["version_number"],
                 "games_played": bot["games_played"],
                 "language": bot["language"],
+                "mu": bot["mu"],
+                "sigma": bot["sigma"],
                 "score": bot["score"],
                 "compilation_status": bot["compile_status"],
             })
@@ -57,7 +61,7 @@ def list_user_bots(user_id):
 @util.cross_origin(methods=["GET", "PUT"])
 @api_util.requires_login(accept_key=True, optional=True)
 def get_user_bot(intended_user, bot_id, *, user_id):
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         bot = conn.execute(sqlalchemy.sql.select([
             model.bots.c.id,
             model.bots.c.version_number,
@@ -86,15 +90,17 @@ def get_user_bot(intended_user, bot_id, *, user_id):
             "application/zip",
         ])
         if mime_type == "application/zip":
+            team = conn.execute(model.team_leader_query(user_id)).first()
             if not user_id:
                 raise util.APIError(403, message="You must sign in to download your bot.")
-            elif user_id != intended_user:
+            elif user_id != intended_user and \
+                 (not team or team["leader_id"] != intended_user):
                 raise api_util.user_mismatch_error(
                     message="Cannot download bot for another user.")
 
             # Return bot ZIP file
             bucket = model.get_compilation_bucket()
-            botname = "{}_{}".format(user_id, bot_id)
+            botname = "{}_{}".format(intended_user, bot_id)
             try:
                 blob = bucket.get_blob(botname)
                 buffer = io.BytesIO()
@@ -157,14 +163,21 @@ def create_user_bot(intended_user, *, user_id):
     _ = validate_bot_submission()
 
     with model.engine.connect() as conn:
+        # If user in team, allow creation as team leader bot
+        team = conn.execute(model.team_leader_query(user_id)).first()
+        target_user_id = user_id
+        if team:
+            target_user_id = team["leader_id"]
+
         current_bot = conn.execute(
-            model.bots.select(model.bots.c.user_id == user_id)).first()
+            model.bots.select(model.bots.c.user_id == target_user_id)).first()
+
         if current_bot:
             raise util.APIError(
-                400, message="Only one bot allowed per user.")
+                400, message="Only one bot allowed per user/team.")
 
         conn.execute(model.bots.insert().values(
-            user_id=user_id,
+            user_id=target_user_id,
             id=0,
             compile_status=model.CompileStatus.DISABLED.value,
         ))
@@ -191,9 +204,13 @@ def store_user_bot(user_id, intended_user, bot_id):
 
     uploaded_file = validate_bot_submission()
 
-    bot_where_clause = (model.bots.c.user_id == user_id) & \
-                       (model.bots.c.id == bot_id)
     with model.engine.connect() as conn:
+        team = conn.execute(model.team_leader_query(user_id)).first()
+        if team:
+            user_id = intended_user = team["leader_id"]
+
+        bot_where_clause = (model.bots.c.user_id == user_id) & \
+            (model.bots.c.id == bot_id)
         bot = conn.execute(model.bots.select(bot_where_clause)).first()
         if not bot:
             raise util.APIError(404, message="Bot not found.")
@@ -218,7 +235,10 @@ def store_user_bot(user_id, intended_user, bot_id):
             )
         conn.execute(update)
 
-    return util.response_success()
+    return util.response_success({
+        "user_id": user_id,
+        "bot_id": bot["id"],
+    })
 
 
 @web_api.route("/user/<int:intended_user>/bot/<int:bot_id>", methods=["DELETE"])

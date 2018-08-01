@@ -28,14 +28,14 @@ def list_user_challenges(intended_user):
         "id": model.challenges.c.id,
     }, ["finished"])
 
-    participant_clause = model.challenge_participants.c.user_id == intended_user
     for (field, _, _) in manual_sort:
         if field == "finished":
             where_clause &= model.challenges.c.status == "finished"
 
     result = challenge_api.list_challenges_helper(offset, limit,
-                                                  participant_clause,
-                                                  where_clause, order_clause)
+                                                  sqlalchemy.true(),
+                                                  where_clause, order_clause,
+                                                  intended_user)
     return flask.jsonify(result)
 
 
@@ -56,6 +56,14 @@ def list_user_challenge_matches(intended_user, challenge_id):
     }, ["timed_out"])
 
     participant_clause = model.game_participants.c.user_id == intended_user
+    with model.read_conn() as conn:
+        team = conn.execute(model.team_leader_query(intended_user)).first()
+        if team:
+            participant_clause = model.game_participants.c.user_id.in_([
+                intended_user,
+                team["leader_id"],
+            ])
+
     where_clause &= model.games.c.challenge_id == challenge_id
     for (field, _, _) in manual_sort:
         if field == "timed_out":
@@ -72,6 +80,9 @@ def list_user_challenge_matches(intended_user, challenge_id):
 @api_util.requires_login(accept_key=False)
 @api_util.requires_competition_open
 def create_challenge(intended_user, *, user_id):
+    if config.COMPETITION_FINALS_PAIRING:
+        raise util.APIError(400, message="Sorry, challenges are closed for the competition finals.")
+
     if user_id != intended_user:
         raise api_util.user_mismatch_error()
 
@@ -80,15 +91,35 @@ def create_challenge(intended_user, *, user_id):
         raise util.APIError(400, message="Must provide array of opponent IDs.")
 
     opponents = challenge_body["opponents"]
-    if user_id in opponents:
-        raise util.APIError(400, message="You can't challenge yourself.")
-    if len(opponents) not in (1, 3):
-        raise util.APIError(400, message="Must provide 1 or 3 opponents.")
 
-    if config.COMPETITION_FINALS_PAIRING:
-        raise util.APIError(400, message="Sorry, challenges are closed for the competition finals.")
+    with model.engine.begin() as conn:
+        # Check intended_user and opponents, replacing them with team
+        # leaders where appropriate
+        team_remapping = {}
+        team_leaders_query = sqlalchemy.sql.select([
+            model.users.c.id.label("user_id"),
+            model.teams.c.leader_id,
+        ]).select_from(
+            model.users.join(
+                model.teams,
+                model.users.c.team_id == model.teams.c.id)
+        ).where(model.users.c.id.in_([intended_user] + opponents))
+        for row in conn.execute(team_leaders_query).fetchall():
+            team_remapping[row["user_id"]] = row["leader_id"]
 
-    with model.engine.connect() as conn:
+        user_id = intended_user = team_remapping.get(user_id, user_id)
+        opponents = [team_remapping.get(opponent_id, opponent_id)
+                     for opponent_id in opponents]
+
+        if user_id in opponents:
+            raise util.APIError(400, message="You can't challenge yourself or someone on your team.")
+
+        if len(set(opponents)) != len(opponents):
+            raise util.APIError(400, message="Do not provide multiple opponents from the same team.")
+
+        if len(opponents) not in (1, 3):
+            raise util.APIError(400, message="Must provide 1 or 3 opponents.")
+
         sqlfunc = sqlalchemy.sql.func
 
         opponents_exist = [row["id"] for row in conn.execute(
@@ -97,7 +128,8 @@ def create_challenge(intended_user, *, user_id):
             ]).select_from(
                 model.users
             ).where(
-                model.users.c.id.in_(opponents)
+                model.users.c.id.in_(opponents) &
+                model.users.c.is_active == True
             )
         ).fetchall()]
 
@@ -113,8 +145,8 @@ def create_challenge(intended_user, *, user_id):
                 model.challenges
             ).where(
                 (model.challenges.c.issuer == user_id) &
-                (model.challenges.c.created >= sqlfunc.date_sub(
-                    sqlfunc.now(), sqlalchemy.sql.text("interval 1 day")))
+                (model.challenges.c.created >=
+                 (sqlfunc.now() - sqlalchemy.sql.text("interval '1 day'")))
             )
         ).first()[0]
 
@@ -136,8 +168,6 @@ def create_challenge(intended_user, *, user_id):
                     challenge_id=challenge_id,
                     user_id=participant,
                     points=0,
-                    ships_produced=0,
-                    attacks_made=0,
                 ))
 
         return util.response_success({

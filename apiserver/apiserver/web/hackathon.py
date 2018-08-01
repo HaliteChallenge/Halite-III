@@ -14,24 +14,6 @@ from . import util as api_util
 from .blueprint import web_api
 
 
-def can_view_hackathon(user_id, hackathon_id, conn):
-    """
-    Validate whether a given user is allowed to view a given hackathon.
-    :param user_id:
-    :param hackathon_id:
-    :param conn:
-    :return: True if the user can view the hackathon; False otherwise
-    """
-    is_user_joined = conn.execute(model.hackathon_participants.select(
-        (model.hackathon_participants.c.user_id == user_id) &
-        (model.hackathon_participants.c.hackathon_id == hackathon_id)
-    )).first()
-
-    is_admin = api_util.is_user_admin(user_id, conn=conn)
-
-    return is_user_joined or is_admin
-
-
 hackathon_query = sqlalchemy.sql.select([
     model.hackathons.c.id,
     model.hackathons.c.title,
@@ -57,7 +39,7 @@ def list_hackathons():
     result = []
     offset, limit = api_util.get_offset_limit()
 
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         hackathons = conn.execute(
             hackathon_query.offset(offset).limit(limit)).fetchall()
 
@@ -145,7 +127,7 @@ def create_hackathon(*, user_id):
 @web_api.route("/hackathon/<int:hackathon_id>", methods=["GET"])
 @util.cross_origin(methods=["GET", "PUT"])
 def get_hackathon(hackathon_id):
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         hackathon = conn.execute(hackathon_query.where(
             model.hackathons.c.id == hackathon_id)).first()
 
@@ -234,7 +216,7 @@ def update_hackathon(hackathon_id, *, user_id):
 @web_api.route("/hackathon/<int:hackathon_id>/leaderboard")
 @util.cross_origin(methods=["GET"])
 def get_hackathon_leaderboard(hackathon_id):
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
 
         table = model.hackathon_ranked_bots_users_query(hackathon_id)
 

@@ -45,7 +45,7 @@ def validate_api_key(api_key):
 
     user_id, api_key = api_key.split(":", 1)
     user_id = int(user_id)
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         user = conn.execute(sqlalchemy.sql.select([
             model.users.c.id.label("user_id"),
             model.users.c.is_admin,
@@ -67,7 +67,7 @@ def validate_session_cookie(user_id):
     """
     Validate the session cookie and retrieve the corresponding user record.
     """
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         user = conn.execute(sqlalchemy.sql.select([
             model.users.c.id.label("user_id"),
             model.users.c.is_admin,
@@ -80,7 +80,7 @@ def validate_session_cookie(user_id):
 
 
 def requires_login(accept_key=False, optional=False, admin=False,
-                   association=False):
+                   association=False, maybe_admin=False):
     """
     Indicates that an endpoint requires the user to be logged in.
 
@@ -89,6 +89,8 @@ def requires_login(accept_key=False, optional=False, admin=False,
     :param optional: if True, do not return HTTP 403 if the user is not
     logged in.
     :param admin: if True, only accept admin users.
+    :param maybe_admin: if True, accept admin users and pass the `is_admin`
+    flag to the view.
     :param association: if True, only accept users that have associated and
     verified their email.
     """
@@ -105,6 +107,9 @@ def requires_login(accept_key=False, optional=False, admin=False,
                     flask.session.get(config.SESSION_COOKIE))
 
             if user:
+                if not user["is_active"]:
+                    raise util.APIError(
+                        403, message="User is disabled.")
                 if admin and user["is_admin"]:
                     kwargs["user_id"] = user["user_id"]
                 elif admin:
@@ -112,6 +117,8 @@ def requires_login(accept_key=False, optional=False, admin=False,
                         403, message="User cannot take this action.")
                 else:
                     kwargs["user_id"] = user["user_id"]
+                    if maybe_admin:
+                        kwargs["is_admin"] = user["is_admin"]
             elif optional:
                 kwargs["user_id"] = None
             else:
@@ -293,9 +300,9 @@ def hackathon_status(start_date, end_date):
     `end_date` may be null (for ongoing hackathons).
     """
     status = "open"
-    if end_date and end_date < datetime.datetime.now():
+    if end_date and end_date < arrow.now():
         status = "closed"
-    elif start_date > datetime.datetime.now():
+    elif start_date > arrow.now():
         status = "upcoming"
     return status
 

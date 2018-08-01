@@ -30,11 +30,11 @@ oauth2client==4.1.1
 oauthlib==2.0.2
 passlib==1.7.1
 protobuf==3.3.0
+psycopg2-binary==2.7.5
 pyasn1==0.4.3
 pyasn1-modules==0.2.2
 pycountry==17.5.14
 pycparser==2.17
-PyMySQL==0.7.11
 python-dateutil==2.6.0
 python-editor==1.0.3
 python-http-client==2.4.0

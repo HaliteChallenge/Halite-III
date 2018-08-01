@@ -1,6 +1,7 @@
 """
 Leaderboard API endpoints - get/sort/filter the leaderboard
 """
+import collections
 import operator
 
 import flask
@@ -46,12 +47,15 @@ def leaderboard():
         "num_games": model.ranked_bots_users.c.num_games,
         "rank": model.ranked_bots_users.c.rank,
         "language": model.ranked_bots_users.c.language,
+        "team_name": model.ranked_bots_users.c.team_name,
+        "team_id": model.ranked_bots_users.c.team_id,
+        "team_leader_id": model.ranked_bots_users.c.team_leader_id,
     }, ["tier"])
 
     if not order_clause:
         order_clause = [model.ranked_bots_users.c.rank]
 
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         if _COUNT_KEY in flask.request.args:
             return str(api_util.get_value(conn.execute(_count_leaderboard_query(where_clause))))
 
@@ -109,11 +113,17 @@ def leaderboard():
         if tier_filter is not None:
             where_clause &= tier_filter
 
+        # Only include non-team players/team leaders
+        # where_clause &= (
+        #     (model.ranked_bots_users.c.team_id == None) |
+        #     (model.ranked_bots_users.c.team_id == model.ranked_bots_users.c.user_id))
+
         query = conn.execute(
             model.ranked_bots_users.select()
                 .where(where_clause).order_by(*order_clause)
                 .offset(offset).limit(limit).reduce_columns())
 
+        team_ids = []
         for row in query.fetchall():
             user = {
                 "user_id": row["user_id"],
@@ -131,7 +141,13 @@ def leaderboard():
                 "update_time": row["update_time"],
                 "mu": row["mu"],
                 "sigma": row["sigma"],
+                "team_id": row["team_id"],
+                "team_name": row["team_name"],
+                "team_leader_id": row["team_leader_id"],
             }
+
+            if row["team_id"] is not None:
+                team_ids.append(row["team_id"])
 
             if total_users and row["rank"] is not None:
                 user["tier"] = util.tier(row["rank"], total_users)
@@ -140,6 +156,26 @@ def leaderboard():
 
             result.append(user)
 
+        team_members = conn.execute(model.all_users.select(
+            model.all_users.c.team_id.in_(team_ids)
+        ).reduce_columns())
+        team_map = collections.defaultdict(list)
+        for team_member in team_members.fetchall():
+            team_map[team_member["team_id"]].append(team_member)
+
+        for row in result:
+            if row["team_id"] in team_map:
+                row["team_members"] = [{
+                    "user_id": tm["user_id"],
+                    "username": tm["username"],
+                    "player_level": tm["player_level"],
+                    "organization_id": tm["organization_id"],
+                    "organization": tm["organization_name"],
+                    "country": tm["country_code"],
+                } for tm in team_map[row["team_id"]]]
+            else:
+                row["team_members"] = []
+
     return flask.jsonify(result)
 
 
@@ -147,7 +183,7 @@ def leaderboard():
 @util.cross_origin(methods=["GET"])
 def leagues():
     result = []
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         query = conn.execute(
             model.leagues.select())
 
