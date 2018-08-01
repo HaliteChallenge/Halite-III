@@ -99,6 +99,7 @@ def github_login_callback():
     with model.engine.connect() as conn:
         user = conn.execute(sqlalchemy.sql.select([
             model.users.c.id,
+            model.users.c.is_active,
         ]).select_from(model.users).where(
             (model.users.c.oauth_provider == 1) &
             (model.users.c.oauth_id == github_user_id)
