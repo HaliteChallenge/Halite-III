@@ -82,7 +82,6 @@ int main(int argc, char *argv[]) {
 
     // Set the random seed
     auto seed = seed_arg.isSet() ? seed_arg.getValue() : static_cast<unsigned int>(time(nullptr));
-    srand(seed);
 
     // Get the map parameters
     auto map_width = width_arg.isSet() ? width_arg.getValue() : constants.DEFAULT_MAP_WIDTH;

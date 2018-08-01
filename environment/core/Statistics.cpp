@@ -17,7 +17,7 @@ bool PlayerStatistics::operator<(const PlayerStatistics &other) const {
         while (this->turn_productions[turn_to_compare] == other.turn_productions[turn_to_compare]) {
             if (--turn_to_compare < 0) {
                 // Players exactly tied on all turns, so randomly choose
-                return rand() % 2 == 0;
+                return this->random_id < other.random_id;
             }
         }
         return this->turn_productions[turn_to_compare] < other.turn_productions[turn_to_compare];

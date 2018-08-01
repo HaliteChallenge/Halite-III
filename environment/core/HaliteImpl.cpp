@@ -43,7 +43,7 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
         auto &factory = *factory_iterator++;
         auto player = game.store.player_factory.make(factory, command);
         player.energy = constants.INITIAL_ENERGY;
-        game.game_statistics.player_statistics.emplace_back(player.id);
+        game.game_statistics.player_statistics.emplace_back(player.id, game.rng());
         if (snapshot.players.find(player.id) != snapshot.players.end()) {
             const auto &player_snapshot = snapshot.players.at(player.id);
             player.factory = player_snapshot.factory;
