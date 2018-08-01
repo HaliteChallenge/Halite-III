@@ -39,7 +39,7 @@ def list_hackathons():
     result = []
     offset, limit = api_util.get_offset_limit()
 
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         hackathons = conn.execute(
             hackathon_query.offset(offset).limit(limit)).fetchall()
 
@@ -127,7 +127,7 @@ def create_hackathon(*, user_id):
 @web_api.route("/hackathon/<int:hackathon_id>", methods=["GET"])
 @util.cross_origin(methods=["GET", "PUT"])
 def get_hackathon(hackathon_id):
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         hackathon = conn.execute(hackathon_query.where(
             model.hackathons.c.id == hackathon_id)).first()
 
@@ -216,7 +216,7 @@ def update_hackathon(hackathon_id, *, user_id):
 @web_api.route("/hackathon/<int:hackathon_id>/leaderboard")
 @util.cross_origin(methods=["GET"])
 def get_hackathon_leaderboard(hackathon_id):
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
 
         table = model.hackathon_ranked_bots_users_query(hackathon_id)
 

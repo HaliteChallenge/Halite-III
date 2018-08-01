@@ -26,7 +26,7 @@ def list_user_matches(intended_user):
 
     participant_clause = model.game_participants.c.user_id == intended_user
 
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         team = conn.execute(model.team_leader_query(intended_user)).first()
         if team:
             participant_clause |= model.game_participants.c.user_id == team["leader_id"]
@@ -54,7 +54,7 @@ def get_user_match(intended_user, match_id):
                methods=["GET"])
 @util.cross_origin(methods=["GET"])
 def get_match_replay(intended_user, match_id):
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         match = conn.execute(sqlalchemy.sql.select([
             model.games.c.replay_name,
             model.games.c.replay_bucket,
@@ -98,7 +98,7 @@ def get_match_error_log(intended_user, match_id, *, user_id):
                          "and you can only request your error log. "
         )
 
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         match = conn.execute(sqlalchemy.sql.select([
             model.game_participants.c.log_name,
         ]).where(

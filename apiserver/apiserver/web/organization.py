@@ -23,7 +23,7 @@ def list_organizations():
         "type": model.organizations.c.kind,
     })
 
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         # Don't limit this query
         query = model.organizations.select() \
             .where(where_clause).order_by(*order_clause) \
@@ -43,7 +43,7 @@ def list_organizations():
 @web_api.route("/organization/<int:org_id>", methods=["GET"])
 @util.cross_origin(methods=["GET"])
 def get_organization(org_id):
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         org = conn.execute(model.organizations.select().where(
             model.organizations.c.id == org_id
         )).first()
@@ -115,7 +115,7 @@ def update_organization(org_id, *, user_id):
 @web_util.requires_login(accept_key=True, admin=True)
 def list_organization_email_domains(org_id, *, user_id):
     result = []
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         domains = conn.execute(model.organization_email_domains.select(
             model.organization_email_domains.c.organization_id == org_id
         ))

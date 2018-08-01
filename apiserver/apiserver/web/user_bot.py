@@ -20,7 +20,7 @@ from .blueprint import web_api
 @util.cross_origin(methods=["GET"])
 def list_user_bots(user_id):
     result = []
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         bots = conn.execute(sqlalchemy.sql.select([
             model.bots.c.id,
             model.bots.c.version_number,
@@ -61,7 +61,7 @@ def list_user_bots(user_id):
 @util.cross_origin(methods=["GET", "PUT"])
 @api_util.requires_login(accept_key=True, optional=True)
 def get_user_bot(intended_user, bot_id, *, user_id):
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         bot = conn.execute(sqlalchemy.sql.select([
             model.bots.c.id,
             model.bots.c.version_number,

@@ -36,7 +36,7 @@ def make_challenge_record(challenge, participants):
 
 
 def get_challenge_helper(challenge_id):
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         query = sqlalchemy.sql.select([
             model.challenges.c.id,
             model.challenges.c.created,
@@ -67,7 +67,7 @@ def get_challenge_helper(challenge_id):
 
 def list_challenges_helper(offset, limit, participant_clause,
                            where_clause, order_clause, user_id=None):
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         if user_id is not None:
             # See if user is part of a team, and add to participant
             # clause

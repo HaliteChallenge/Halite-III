@@ -69,7 +69,7 @@ def get_team_members(conn, team):
 
 
 def get_team_helper(team_id, user_id=None):
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         query = model.teams.select().where(
             model.teams.c.id == team_id
         ).reduce_columns()
@@ -87,7 +87,7 @@ def get_team_helper(team_id, user_id=None):
 
 def list_teams_helper(offset, limit, participant_clause,
                            where_clause, order_clause):
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         query = model.teams.select().where(
             where_clause &
             sqlalchemy.sql.exists(model.users.select(

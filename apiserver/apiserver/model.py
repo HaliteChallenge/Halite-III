@@ -5,7 +5,7 @@ import google.cloud.datastore as gcloud_datastore
 import google.cloud.storage as gcloud_storage
 import sqlalchemy
 
-from . import config
+from . import app, config
 
 
 class CompileStatus(enum.Enum):
@@ -36,8 +36,16 @@ for (_, _, port) in config.DATABASES:
 engine = engines[0]
 metadata = sqlalchemy.MetaData(bind=engine)
 
-def read_engine():
-    return random.choice(engines[1:])
+def read_conn():
+    """
+    Pick and connect to a random read replica, falling back to the
+    master instance if needed.
+    """
+    try:
+        return random.choice(engines[1:]).connect()
+    except Exception as e:
+        app.logger.error("Could not connect to read replica", exc_info=e)
+        return engine.connect()
 
 organizations = sqlalchemy.Table("organization", metadata, autoload=True)
 organization_email_domains = \

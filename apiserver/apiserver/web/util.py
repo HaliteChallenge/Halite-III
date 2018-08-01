@@ -45,7 +45,7 @@ def validate_api_key(api_key):
 
     user_id, api_key = api_key.split(":", 1)
     user_id = int(user_id)
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         user = conn.execute(sqlalchemy.sql.select([
             model.users.c.id.label("user_id"),
             model.users.c.is_admin,
@@ -67,7 +67,7 @@ def validate_session_cookie(user_id):
     """
     Validate the session cookie and retrieve the corresponding user record.
     """
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         user = conn.execute(sqlalchemy.sql.select([
             model.users.c.id.label("user_id"),
             model.users.c.is_admin,

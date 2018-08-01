@@ -56,7 +56,7 @@ def list_user_challenge_matches(intended_user, challenge_id):
     }, ["timed_out"])
 
     participant_clause = model.game_participants.c.user_id == intended_user
-    with model.read_engine().connect() as conn:
+    with model.read_conn() as conn:
         team = conn.execute(model.team_leader_query(intended_user)).first()
         if team:
             participant_clause = model.game_participants.c.user_id.in_([
