@@ -54,7 +54,10 @@
                 class="close-replay"
                 v-on:click="toggle_replay">Toggle Replay</button>
           </nav>
-          <div class="console">{{ terminal_text }}</div>
+          <div class="console"><span
+                                 v-for="text in terminal_text"
+                                 v-bind:class="text.class ? text.class : ''"
+                               >{{text.text ? text.text : text}}</span></div>
         </div>
       </div>
     </div>
@@ -157,7 +160,7 @@ export default {
       selected_theme: theme,
       editor_files: [],
       file_tree: [],
-      terminal_text: "",
+      terminal_text: [],
       is_new_file_modal_open: false,
       is_new_folder_modal_open: false,
       is_delete_modal_open: false,
@@ -589,7 +592,22 @@ export default {
         this.add_console_text("Starting replay.\n")
 
         for (let i = 0; i < status.opponents.length; i++) {
-          this.add_console_text(`Player ${i} (${i === 0 ? 'your bot' : '"' + status.opponents[i].name + '"'}) was rank ${status.game_output.stats[i].rank}.\n`)
+          this.add_console_text({
+            text: `Player ${i}`,
+            class: `color-${i + 1}`,
+          })
+          const name = status.opponents[i].name
+          let displayName = name
+          if (i === 0) {
+            displayName = "(your bot)"
+          }
+          else if (name === "Self") {
+            displayName = "(a copy of your bot)"
+          }
+          else {
+            displayName = `"${displayName}"`
+          }
+          this.add_console_text(` ${displayName} was rank ${status.game_output.stats[i].rank}.\n`)
         }
 
         if (status.error_log) {
@@ -636,11 +654,10 @@ export default {
       this.editorViewer.setContents(contents, this.bot_info().mimeType)
     },
     clear_terminal_text: function() {
-      this.terminal_text = "";
+      this.terminal_text = []
     },
     add_console_text: function(new_text) {
-      if(this.terminal_text === undefined) this.terminal_text = ""
-        this.terminal_text += new_text
+      this.terminal_text.push(new_text)
     },
     alert: function(text) {
       this.alerts.push(text)

@@ -203,7 +203,7 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
                     if (ship) {
                         selection.x = ship.x;
                         selection.y = ship.y;
-                        lines.push(`${this.replay.players[selection.owner].name} H.M.S. #${selection.id}: ${ship.energy} energy`);
+                        lines.push(`${this.replay.players[selection.owner].name} (Player ${selection.owner}) H.M.S. ${selection.id}: ${ship.energy} energy`);
                     }
                 }
                 if (selection.kind === "point" || selection.kind === "ship") {
