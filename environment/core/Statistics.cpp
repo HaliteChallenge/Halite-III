@@ -16,7 +16,8 @@ bool PlayerStatistics::operator<(const PlayerStatistics &other) const {
         auto turn_to_compare = this->last_turn_alive;
         while (this->turn_productions[turn_to_compare] == other.turn_productions[turn_to_compare]) {
             if (--turn_to_compare < 0) {
-                return true;
+                // Players exactly tied on all turns, so randomly choose
+                return this->random_id < other.random_id;
             }
         }
         return this->turn_productions[turn_to_compare] < other.turn_productions[turn_to_compare];
@@ -40,6 +41,7 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
         final_production = stats.turn_productions.back();
     }
     json = {FIELD_TO_JSON(player_id),
+            FIELD_TO_JSON(random_id),
             FIELD_TO_JSON(rank),
             FIELD_TO_JSON(last_turn_alive),
             {"final_production", final_production},

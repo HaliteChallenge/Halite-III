@@ -13,6 +13,7 @@ namespace hlt {
 /** Statistics for a player in the game. */
 struct PlayerStatistics {
     Player::id_type player_id;                   /**< The ID of the player. */
+    unsigned int random_id;                      /**< Random number assigned to player for use in ties. */
     long rank{};                                 /**< The rank of the player (1 = highest) */
     long last_turn_alive{};                      /**< The last turn the player remained alive */
     std::vector<energy_type> turn_productions{}; /**< Production granted to player each turn, turn 1 at front of vector. */
@@ -39,14 +40,16 @@ struct PlayerStatistics {
     /**
      * Construct PlayerStatistics from Player ID.
      * @param player_id The player ID.
+     * @param random_id The random number assigned to this player to break ties in ranking players
      */
-    explicit PlayerStatistics(Player::id_type player_id) : player_id(player_id) {}
+    explicit PlayerStatistics(Player::id_type player_id, unsigned int random_id) :
+            player_id(player_id), random_id(random_id) {}
 };
 
 /** Statistics for a game. */
 struct GameStatistics {
     std::vector<PlayerStatistics> player_statistics;        /**< Statistics for each player. */
-    unsigned long number_turns{};                          /**< Total number of turns that finished before game ends. */
+    unsigned long number_turns{};                           /**< Total number of turns that finished before game ends. */
 
     /**
      * Convert game statistics to json format

@@ -34,6 +34,7 @@ class Halite final {
 
     net::Networking networking;       /**< The networking suite. */
     std::unique_ptr<HaliteImpl> impl; /**< The pointer to implementation. */
+    std::mt19937 rng;                 /** The random number generator used for tie breaking. */
 
 public:
     PlayerLogs logs;                  /**< The player logs. */

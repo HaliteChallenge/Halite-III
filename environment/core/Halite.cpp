@@ -23,7 +23,8 @@ Halite::Halite(Map &map,
         game_statistics(game_statistics),
         replay(replay),
         networking(networking_config, *this),
-        impl(std::make_unique<HaliteImpl>(*this)) {}
+        impl(std::make_unique<HaliteImpl>(*this)),
+        rng(replay.map_generator_seed) {}
 
 /**
  * Run the game.
