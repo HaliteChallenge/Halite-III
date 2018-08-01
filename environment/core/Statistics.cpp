@@ -41,6 +41,7 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
         final_production = stats.turn_productions.back();
     }
     json = {FIELD_TO_JSON(player_id),
+            FIELD_TO_JSON(random_id),
             FIELD_TO_JSON(rank),
             FIELD_TO_JSON(last_turn_alive),
             {"final_production", final_production},
