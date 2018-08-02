@@ -63,8 +63,8 @@
 
     <div class="toasts">
         <transition-group name="toast-pop-up" tag="div">
-            <div v-for="(toast, idx) in alerts" class="editor-toast" v-bind:key="alerts.length - idx">
-                {{toast}}
+            <div v-for="toast in alerts" class="editor-toast" v-bind:key="toast.key">
+                {{toast.message}}
             </div>
         </transition-group>
     </div>
@@ -163,6 +163,7 @@ export default {
       is_new_folder_modal_open: false,
       is_delete_modal_open: false,
       alerts: [],
+      alertKey: 0,
       visualizer: null,
       visualizerVisible: true,
       baseUrl: '',
@@ -622,7 +623,7 @@ export default {
       this.terminal_text.push(new_text)
     },
     alert: function(text) {
-      this.alerts.push(text)
+      this.alerts.push({ message: text, key: this.alertKey++ })
       setTimeout(() => {
         this.alerts.shift()
       }, 3000)
