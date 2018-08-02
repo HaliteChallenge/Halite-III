@@ -20,7 +20,7 @@
       </div>
      <div class="row play-upload-section">
         <div class="col-sm-20">
-            <div class="upload-container" id="bot-upload-container">
+            <div class="upload-container">
                 <div class="upload-desc text-center">
                     <h2>WEB EDITOR EXPERIENCE</h2>
                     <p>Create, replay, and submit a Python bot via a web-based editor.</p>
@@ -38,7 +38,7 @@
       </div>
        <div class="row play-upload-section">
         <div class="col-sm-20">
-            <div class="upload-container" id="bot-upload-container">
+            <div class="upload-container">
                 <div class="upload-desc text-center">
                     <h2>LOCAL EXPERIENCE</h2>
                     <p>Download the game environment and starter kit bundle for your platform and language of choice.</p>
