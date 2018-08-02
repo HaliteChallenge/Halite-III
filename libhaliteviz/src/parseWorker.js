@@ -65,8 +65,6 @@ addEventListener("message", (e) => {
     catch (e) {
         console.debug("zSTD failed: ", e);
         // Not compressed with zSTD, plain data?
+        self.postMessage(buffer, [buffer]);
     }
-
-    // TODO:
-    self.postMessage(buffer, [buffer]);
 });
