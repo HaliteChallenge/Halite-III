@@ -237,11 +237,19 @@ const showGame = (game) => {
         const container = document.getElementById('bot-upload-container')
 
         // verify if the dropzone is not the bot uploader zone
-        if (!container || !container.contains(e.target)) {
+        const files = e.originalEvent.dataTransfer.files
+        if ((!container || !container.contains(e.target)) && files.length > 0) {
           e.preventDefault()
-          let outerContainer = document.getElementById('halitetv-visualizer')
-          outerContainer.innerHTML = ''
-          ins.play_replay(e.originalEvent.dataTransfer.files)
+
+          const [f] = files;
+          if (f.type === "application/zip") {
+            // TODO: upload
+          }
+          else {
+            let outerContainer = document.getElementById('halitetv-visualizer')
+            outerContainer.innerHTML = ''
+            ins.play_replay(files)
+          }
         }
       })
       $('body').on('dragenter', (e) => {
