@@ -1,53 +1,49 @@
 sudo: true
 dist: trusty
 language: cpp
-
-# https://docs.travis-ci.com/user/languages/cpp/
-matrix:
-  include:
-    # works on Precise and Trusty
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-            - lcov
-            - cmake
-      env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+services: docker
 
 before_install:
-    - eval "${MATRIX_EVAL}"
-
+  - docker pull ubuntu:bionic
+  - docker run -itd --name build -v $(pwd):/project ubuntu:bionic /bin/bash
+  - docker exec build apt-get update
+  - docker exec build apt-get install -y cmake lcov $COMPILER
 script:
-
-# build game environment
-  - cd environment/
-  - cmake .
-  - make -j2
-
-# build C++ bot
-  - cd ../airesources/C++
-  - make MyBot
-
-# build Java bot
-  - cd ../Java
-  - javac MyBot.java
-
-# compile Python script
-  - cd ../Python3
-  - python -m py_compile MyBot.py
-
-# build website
-  - cd ../../website
-  - npm config set package-lock false
-  - gem install bundler
-  - bundle install --path=vendor/bundle
-  - npm install
-  - cd ../libhaliteviz
-  - npm install
-  - cd ../website
-  - npm run build
-  - bundle exec jekyll build
+  - docker exec build /bin/bash -c "which $CCOMPILE"
+  - docker exec build /bin/bash -c "which $CXXCOMPILE"
+  - docker exec build /bin/bash -c "$CXXCOMPILE --version"
+  - docker exec build /bin/bash -c "cd /project/environment; CC=$CCOMPILE CXX=$CXXCOMPILE cmake ."
+  - docker exec build /bin/bash -c "cd /project/environment; CC=$CCOMPILE CXX=$CXXCOMPILE make"
+env:
+  - COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
+  - COMPILER="clang-5.0" CCOMPILE=clang-5.0 CXXCOMPILE=clang++-5.0
+  - COMPILER="clang-6.0" CCOMPILE=clang-6.0 CXXCOMPILE=clang++-6.0
+jobs:
+  include:
+    - stage: test starter kits
+      name: "Java starter kit"
+      script:
+        - cd ./airesources/Java
+        - javac MyBot.java
+      env: []
+    - script:
+        - cd ./airesources/Python3
+        - python3 -m py_compile MyBot.py
+      name: "Python starter kit"
+      env: []
+    - script:
+        - docker exec build /bin/bash -c "cd /project/airesources/C++; CC=$CCOMPILE CXX=$CXXCOMPILE make MyBot"
+      name: "C++ starter kit"
+    - stage: build website
+      env: []
+      script:
+        - cd ./website
+        - npm config set package-lock false
+        - gem install bundler
+        - bundle install --path=vendor/bundle
+        - npm install
+        - cd ../libhaliteviz
+        - npm install
+        - cd ../website
+        - npm run build
+        - bundle exec jekyll build

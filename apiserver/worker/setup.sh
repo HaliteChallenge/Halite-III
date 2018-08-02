@@ -7,7 +7,7 @@ source ~/.profile
 cd ../../environment
 
 cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
-cmake --build build -- -j2
+cmake --build build -- -j4
 
 cp build/halite .
 
