@@ -13,6 +13,8 @@ export default class Camera {
 
         this.pan = { x: 0, y: 0 };
         this.pixelPan = { x: 0, y: 0 };
+
+        this.selected = null;
     }
 
     reset() {
@@ -162,6 +164,11 @@ export default class Camera {
                         owner: ship.owner,
                         id: ship.id,
                     });
+                    this.selected = {
+                        type: "ship",
+                        owner: ship.owner,
+                        id: ship.id,
+                    };
                     selected = true;
                 }
             }
@@ -170,6 +177,11 @@ export default class Camera {
                     x: worldX,
                     y: worldY,
                 });
+                this.selected = {
+                    type: "point",
+                    x: worldX,
+                    y: worldY,
+                };
             }
         }
         this.dragging = false;

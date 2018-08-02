@@ -84,6 +84,8 @@ export class Map {
         // Cell placed underneath other cells to highlight mouse
         // position
         this.pointer = PIXI.Sprite.from(normalTex);
+        // Cell placed underneath other cells to highlight selection
+        this.highlight = PIXI.Sprite.from(normalTex);
 
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
@@ -137,6 +139,7 @@ export class Map {
     attach(container) {
         container.addChild(this.pointer);
         container.addChild(this.tintMap);
+        container.addChild(this.highlight);
         this.container = container;
     }
 
@@ -146,6 +149,7 @@ export class Map {
     destroy() {
         this.container.removeChild(this.tintMap);
         this.container.removeChild(this.pointer);
+        this.container.removeChild(this.highlight);
         this.container = null;
     }
 
@@ -222,6 +226,20 @@ export class Map {
         }
         else {
             this.pointer.visible = false;
+        }
+
+        const camera = this.camera;
+        if (camera.selected && camera.selected.type === "point") {
+            const [ cellX, cellY ] = this.camera.worldToCamera(camera.selected.x, camera.selected.y);
+            this.highlight.position.x = cellX * this.scale;
+            this.highlight.position.y = cellY * this.scale;
+            this.highlight.width = this.scale;
+            this.highlight.height = this.scale;
+            this.highlight.visible = true;
+            this.highlight.alpha = 0.4;
+        }
+        else {
+            this.highlight.visible = false;
         }
     }
 }
