@@ -868,5 +868,11 @@
   }
 </script>
 
-<style>
+<style lang="scss">
+    .game-replay-viewer {
+      canvas {
+        display: block;
+        margin: 0 auto;
+      }
+    }
 </style>
