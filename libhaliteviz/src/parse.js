@@ -16,10 +16,17 @@ export function parseReplay(buffer) {
                     return;
                 }
                 const decoded = new TextDecoder("utf-8").decode(arr);
-                const replay = JSON.parse(decoded);
-                const finishTime = Date.now();
-                console.info(`Decoded compressed replay in ${finishTime - startTime}ms, inflating took ${inflatedTime - startTime}ms, decoding took ${finishTime - inflatedTime}ms.`);
-                resolve(replay);
+                try {
+                    const replay = JSON.parse(decoded);
+                    const finishTime = Date.now();
+                    console.info(`Decoded compressed replay in ${finishTime - startTime}ms, inflating took ${inflatedTime - startTime}ms, decoding took ${finishTime - inflatedTime}ms.`);
+                    resolve(replay);
+                }
+                catch (e) {
+                    console.error("Could not decompress replay.");
+                    console.error(e);
+                    reject(e);
+                }
             };
             worker.postMessage(buffer, [buffer]);
             if (buffer.byteLength) {
@@ -28,7 +35,7 @@ export function parseReplay(buffer) {
         }
         catch (e) {
             console.error(e);
-            resolve(msgpack.decode(buffer));
+            reject(e);
         }
     });
 }
