@@ -179,7 +179,7 @@ export default {
       type: String,
     },
     localStorage: {
-      default: true,
+      default: false,
       type: Boolean,
     },
     tutorial: {
