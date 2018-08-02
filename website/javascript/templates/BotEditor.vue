@@ -141,7 +141,6 @@
 
 export default {
   name: 'bot_editor',
-  props: ['baseUrl'],
   components: { InputModal, CheckModal, TreeElement, LanguageModal },
   data: function () {
     const lang = 'Python3'
@@ -166,7 +165,6 @@ export default {
       alertKey: 0,
       visualizer: null,
       visualizerVisible: true,
-      baseUrl: '',
       // List of times games were started, to prevent spamming
       gameTimes: [],
       // Monotonic counter, so running multiple games doesn't give you multiple results
@@ -177,6 +175,13 @@ export default {
     }
   },
   props: {
+    baseUrl: {
+      type: String,
+    },
+    localStorage: {
+      default: true,
+      type: Boolean,
+    },
     tutorial: {
       default: false,
       type: Boolean,
@@ -191,9 +196,12 @@ export default {
   },
   mounted: function () {
     api.me().then((me) => {
+      this.logged_in = me !== null
       if (me !== null) {
         this.user_id = me.user_id
-        this.logged_in = true
+      }
+
+      if (me !== null || this.localStorage) {
         this.load_user_code().then((editor_files) => {
           this.active_file = _.find(editor_files, {name: this.bot_info().fileName})
           this.editor_files = parse_to_file_tree(editor_files)
@@ -203,7 +211,6 @@ export default {
           this.is_picking_language = true
         })
       } else {
-        this.logged_in = false
         this.needs_login = true
       }
     })
@@ -228,7 +235,29 @@ export default {
     pick_language: async function(language) {
       this.is_picking_language = false
       this.bot_lang = language
-      await api.create_editor_file_space(this.user_id, language)
+      if (this.localStorage) {
+        // TODO: download something for real
+        const fetch = await window.fetch(`/assets/downloads/${language}-Tutorial.zip`)
+        const zipBlob = await fetch.blob()
+        const zip = await JSZip.loadAsync(zipBlob)
+        const files = await Promise.all(
+          Object.values(zip.files)
+                .map(key => key.async("text").then(contents => [ key.name, contents ])))
+        for (const [ key, contents ] of files) {
+          window.localStorage.setItem(key, JSON.stringify({
+            name: key,
+            contents,
+          }))
+        }
+        window.localStorage.setItem("@@editor-filelist",
+                                    JSON.stringify(files.map(([key]) => key)))
+      }
+      else {
+        await api.create_editor_file_space(this.user_id, language)
+      }
+      this.setup_editor()
+    },
+    setup_editor: async function() {
       const editor_files = await this.load_user_code()
       this.active_file = _.find(editor_files, {name: this.bot_info().fileName})
       this.editor_files = parse_to_file_tree(editor_files)
@@ -363,24 +392,38 @@ export default {
                })
           }))
       }
-      return api.get_editor_file_list(this.user_id)
-                .then((file_list) => {
-                  if (file_list.length > 0) {
-                    return api_get_files_with_list(this, file_list)
-                  }
-                  else { // if no workspace ask user to choose a language
-                    return Promise.reject()
-                    /* return api.create_editor_file_space(this.user_id, 'Python')
-                     *           .then((file_list) => api_get_files_with_list(this, file_list)) */
-                  }
-                })
-                .then((file_contents) => {
-                  let editor_files =  file_contents.reduce(function(prev, cur) {
-                    prev[cur.name] = {name: cur.name, contents: cur.contents}
-                    return prev
-                  }, {})
-                  return parse_to_file_tree(editor_files)
-                })
+
+      let filePromise;
+      if (this.localStorage) {
+        const fileList = window.localStorage.getItem("@@editor-filelist")
+        if (!fileList) {
+          return Promise.reject()
+        }
+        else {
+          filePromise = Promise.resolve(
+            JSON.parse(fileList)
+                .map(key => JSON.parse(window.localStorage.getItem(key))))
+        }
+      }
+      else {
+        filePromise = api.get_editor_file_list(this.user_id)
+                         .then((file_list) => {
+                           if (file_list.length > 0) {
+                             return api_get_files_with_list(this, file_list)
+                           }
+                           else { // if no workspace ask user to choose a language
+                             return Promise.reject()
+                           }
+                         })
+      }
+
+      return filePromise.then((file_contents) => {
+        let editor_files =  file_contents.reduce(function(prev, cur) {
+          prev[cur.name] = {name: cur.name, contents: cur.contents}
+          return prev
+        }, {})
+        return parse_to_file_tree(editor_files)
+      })
     },
     clearHighlights: function() {
       const editor = this.editorViewer.editor
