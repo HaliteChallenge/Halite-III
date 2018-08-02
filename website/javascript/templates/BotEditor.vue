@@ -20,11 +20,6 @@
             </div>
             <nav class="tree_nav"><div class="bd-toc-item active">
               <ul class="nav bd-sidenav">
-                <!--<li v-for="(f, name) in editor_files" class="bd-sidenav-active tree_files" v-bind:class="{ active: f === active_file }">
-                  <a v-on:click="file_selected(f)">
-                    {{ name }}
-                  </a>
-                </li>-->
                 <TreeElement
                   :obj="editor_files"
                   :depth="-1"
@@ -64,6 +59,7 @@
     <InputModal ref="new_file_modal" :baseUrl="baseUrl" :isOn="is_new_file_modal_open" :createCallback="create_new_file" :closeCallback="close_new_file_modal" title_text="New File" cancel_text="Cancel" accept_text="Create"></InputModal>
     <InputModal ref="new_folder_modal" :baseUrl="baseUrl" :isOn="is_new_folder_modal_open" :createCallback="create_new_folder" :closeCallback="close_new_folder_modal" title_text="New Folder" cancel_text="Cancel" accept_text="Create"></InputModal>
     <CheckModal ref="delete_modal" :baseUrl="baseUrl" :isOn="is_delete_modal_open" :yesCallback="delete_file" :noCallback="close_delete_modal" title_text="Delete File" cancel_text="Cancel" accept_text="Delete" body_text="This will delete your file permanently!!!"></CheckModal>
+    <LanguageModal :baseUrl="baseUrl" :isOn="is_picking_language" @choose="pick_language" />
 
     <div class="toasts">
         <transition-group name="toast-pop-up" tag="div">
@@ -80,6 +76,7 @@
   import * as api from '../api'
   import editorState from '../editorState'
   import * as utils from '../utils'
+  import LanguageModal from './BotEditorLanguageModal.vue'
   import InputModal from './InputModal.vue'
   import CheckModal from './CheckModal.vue'
   import TreeElement from './TreeElement.vue'
@@ -145,14 +142,13 @@
 export default {
   name: 'bot_editor',
   props: ['baseUrl'],
-  components: { InputModal, CheckModal, TreeElement},
+  components: { InputModal, CheckModal, TreeElement, LanguageModal },
   data: function () {
     const lang = 'Python3'
     const theme = DARK_THEME
     return {
       state: editorState,
       active_file: {name: '', contents: ''},
-      all_bot_languages: botLanguagePacks,
       status_message: null,
       logged_in: false,
       needs_login: false,
@@ -176,6 +172,7 @@ export default {
       gameCounter: 0,
       allSaved: false,
       saveCallback: null,
+      is_picking_language: false,
     }
   },
   props: {
@@ -196,11 +193,14 @@ export default {
       if (me !== null) {
         this.user_id = me.user_id
         this.logged_in = true
-        this.load_code().then((function(editor_files) {
+        this.load_user_code().then((editor_files) => {
           this.active_file = _.find(editor_files, {name: this.bot_info().fileName})
           this.editor_files = parse_to_file_tree(editor_files)
           this.create_editor(this.get_active_file_code())
-        }).bind(this))
+        }).catch(() => {
+          // No files, ask user to pick
+          this.is_picking_language = true
+        })
       } else {
         this.logged_in = false
         this.needs_login = true
@@ -223,6 +223,15 @@ export default {
     /* Return bot language specific info */
     bot_info: function () {
       return botLanguagePacks[this.bot_lang]
+    },
+    pick_language: async function(language) {
+      this.is_picking_language = false
+      this.bot_lang = language
+      await api.create_editor_file_space(this.user_id, language)
+      const editor_files = await this.load_user_code()
+      this.active_file = _.find(editor_files, {name: this.bot_info().fileName})
+      this.editor_files = parse_to_file_tree(editor_files)
+      this.create_editor(this.get_active_file_code())
     },
     /* Init the Orion Editor */
     create_editor: function (code) {
@@ -340,14 +349,6 @@ export default {
       this.set_editor_contents(sel_file.contents)
       this.active_file = sel_file
     },
-    load_code: function () {
-      // Restore user's bot code, or use demo code for new bot
-      return this
-        .load_user_code()
-        .then((startCode) => (
-          (startCode === null) ?
-          this.load_default_code() : Promise.resolve(startCode)))
-    },
     load_user_code: function() {
       function api_get_files_with_list(ctx, file_list) {
         return Promise.all(
@@ -366,9 +367,10 @@ export default {
                   if (file_list.length > 0) {
                     return api_get_files_with_list(this, file_list)
                   }
-                  else { // if no workspace create one and then pull our files down
-                    return api.create_editor_file_space(this.user_id, 'Python')
-                              .then((file_list) => api_get_files_with_list(this, file_list))
+                  else { // if no workspace ask user to choose a language
+                    return Promise.reject()
+                    /* return api.create_editor_file_space(this.user_id, 'Python')
+                     *           .then((file_list) => api_get_files_with_list(this, file_list)) */
                   }
                 })
                 .then((file_contents) => {
@@ -412,43 +414,12 @@ export default {
         }
       }
     },
-    /* Return MyBot file of the starter bot in string format */
-    load_default_code: function () {
-      logInfo('Loading default bot code...')
-      const fileName = this.bot_info().fileName
-      return this.get_starter_zip().then((starterZip) => {
-        logInfo('Got starter zip. Getting sample bot file: ' + fileName)
-        return this.extract_files_from_zip(starterZip)
-      }, logError)
-    },
     get_active_file_code: function() {
       return this.active_file == null ? "" : this.active_file.contents
     },
     /* Return a string of the code currently in the editor */
     get_editor_code: function () {
       return this.editorViewer.editor.getModel().getText()
-    },
-    get_starter_zip: function fn (forceClean = false) {
-      if (fn.cached === undefined) { fn.cached = {} }
-        const lang = this.bot_lang
-      if (fn.cached[lang] === undefined || forceClean) {
-        fn.cached[lang] = new Promise((resolve, reject) => {
-          const starterZipPath = this.bot_info().starterZipPath
-          JSZipUtils.getBinaryContent(starterZipPath, (err, data) => {
-            logInfo('Getting starter zip: ' + starterZipPath)
-            if (err) {
-              reject(err)
-              return
-            }
-            try {
-              JSZip.loadAsync(data).then(resolve, reject)
-            } catch (e) {
-              reject(e)
-            }
-          })
-        })
-      }
-      return fn.cached[lang]
     },
     /* Return a zip file object with our starter pack files + our mybot file */
     get_user_zip_promise: function () {
@@ -502,22 +473,6 @@ export default {
     },
     close_delete_modal: function() { this.is_delete_modal_open = false; },
 
-    /* Load code into editor; either saved code or default */
-    reload_code: function (use_default = false) {
-      const codePromise = use_default ? this.load_default_code() : this.load_code()
-      return codePromise.then((editor_files) => {
-        this.editor_files = parse_to_file_tree(editor_files)
-        this.set_editor_contents(this.get_active_file_code())
-      })
-    },
-    /* Revert to starter bot code */
-    reset_code: function () {
-      if (window.confirm(RESET_MSG)) {
-        // reset to starter pack sample code for current language
-        this.reload_code(true)
-      }
-      return true
-    },
     run_ondemand_game: async function(params) {
       await this.save_current_file()
       this.clear_terminal_text()
