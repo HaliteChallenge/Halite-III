@@ -204,6 +204,9 @@ export default {
       if (me !== null || this.localStorage) {
         this.load_user_code().then((editor_files) => {
           this.active_file = _.find(editor_files, {name: this.bot_info().fileName})
+          if (!this.active_file) {
+            this.active_file = editor_files[Object.keys(editor_files)[0]]
+          }
           this.editor_files = parse_to_file_tree(editor_files)
           this.create_editor(this.get_active_file_code())
         }).catch(() => {
@@ -490,7 +493,17 @@ export default {
 
 
     delete_file: function() {
-      api.delete_source_file(this.user_id, this.file_to_delete.name)
+      if (this.localStorage) {
+        window.localStorage.setItem(
+          "@@editor-filelist",
+          JSON.stringify(JSON.parse(window.localStorage.getItem("@@editor-filelist"))
+                             .filter(name => name !== this.file_to_delete.name)))
+        window.localStorage.removeItem(this.file_to_delete.name)
+      }
+      else {
+        api.delete_source_file(this.user_id, this.file_to_delete.name)
+      }
+
       let need_file_switch = this.file_to_delete === this.active_file
       this.delete_from_tree(this.editor_files, this.file_to_delete)
       if(need_file_switch) {
@@ -647,6 +660,18 @@ export default {
       }
     },
     save_file: function(file) {
+      if (this.localStorage) {
+        window.localStorage.setItem(file.name, JSON.stringify(file))
+        window.localStorage.setItem(
+          "@@editor-filelist",
+          JSON.stringify(JSON.parse(window.localStorage.getItem("@@editor-filelist"))
+                             .filter(name => name !== file.name)
+                             .concat([ file.name ])))
+
+        this.allSaved = true
+        return Promise.resolve()
+      }
+
       return api.update_source_file(this.user_id, file.name, file.contents, function(){}).then((function() {
         logInfo('success')
         this.allSaved = true;
