@@ -469,12 +469,10 @@
         if (document.querySelector("canvas")) {
           const windowHeight = window.innerHeight
           const canvasHeight = document.querySelector("canvas").offsetHeight
-          const ratio = canvasHeight > windowHeight
+          const ratio = canvasHeight / windowHeight
 
-          console.log(ratio)
-
-          if (ratio > 0.8) {
-            document.querySelector("canvas").style.zoom = (1 / (ratio + 0.3)).toString()
+          if (ratio > 0.9) {
+            document.querySelector("canvas").style.zoom = (1 / (ratio + 0.2)).toString()
           }
           else {
             document.querySelector("canvas").style.zoom = null
