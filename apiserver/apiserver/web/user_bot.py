@@ -263,3 +263,39 @@ def delete_user_bot(intended_user, bot_id, *, user_id):
                 pass
 
         return util.response_success()
+
+
+@web_api.route("/user/<int:intended_user>/bot/<int:bot_id>/error_log", methods=["GET"])
+@util.cross_origin(methods=["GET"])
+@api_util.requires_login(accept_key=True)
+def get_user_bot_compile_log(intended_user, bot_id, *, user_id):
+    with model.read_conn() as conn:
+        bot = conn.execute(sqlalchemy.sql.select([
+            model.bots.c.id,
+        ]).select_from(model.bots).where(
+            (model.bots.c.user_id == intended_user) &
+            (model.bots.c.id == bot_id)
+        )).first()
+
+        if not bot:
+            raise util.APIError(404, message="Bot not found.")
+
+        bucket = model.get_error_log_bucket()
+        log_file = "compilation_{}_{}.log".format(intended_user, bot_id)
+        try:
+            blob = bucket.get_blob(log_file)
+            buffer = io.BytesIO()
+            blob.download_to_file(buffer)
+            buffer.seek(0)
+            response = flask.make_response(flask.send_file(
+                buffer,
+                mimetype="text/plain",
+                as_attachment=True,
+                attachment_filename=log_file))
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+            response.headers["Cache-Control"] = "public, max-age=0"
+            return response
+        except gcloud_exceptions.NotFound:
+            raise util.APIError(404, message="Bot error log not found.")

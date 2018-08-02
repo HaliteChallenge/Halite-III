@@ -2,6 +2,7 @@ import datetime
 
 import flask
 import sqlalchemy
+import google.cloud.storage as gcloud_storage
 
 from .. import config, model, notify, util
 
@@ -186,6 +187,13 @@ def update_compilation_status():
 
             return util.response_success()
         else:
+            # Save error log to bucket as well
+            log_name = "compilation_{}_{}.log".format(user_id, bot_id)
+            blob = gcloud_storage.Blob(log_name,
+                                       model.get_error_log_bucket(),
+                                       chunk_size=262144)
+            blob.upload_from_string(errors)
+
             notify.send_templated_notification(
                 notify.Recipient(user["id"], user["username"], user["email"],
                                  user["organization_name"], user["player_level"],
