@@ -17,27 +17,52 @@ _global_map = None
 
 
 class Location:
+    """
+    A location utility class.
+    """
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
     def distance(self, other):
+        """
+        Compute the Manhattan distance to the given point.
+
+        Accounts for wraparound.
+        """
         global _global_map
         return _global_map.distance(self, other)
 
     def with_offset(self, dx, dy):
+        """
+        Create a new Location with the given offset from this.
+
+        Normalizes the coordinates afterwards.
+        """
         global _global_map
         return _global_map.location_with_offset(self, dx, dy)
 
     def with_direction(self, direction):
+        """
+        Create a new Location one unit away in the given direction.
+
+        Normalizes the coordinates afterwards.
+        """
         global _global_map
         return _global_map.location_with_direction(self, direction)
 
     def normalized(self):
+        """
+        Create a copy of this location with the coordinates normalized.
+        """
         global _global_map
         return _global_map.normalize(self)
 
     def towards(self, target):
+        """
+        Return the direction to move closer to the target point, or
+        None if the points are the same.
+        """
         global _global_map
         if self.x != target.x:
             if self.x > target.x:
@@ -68,6 +93,19 @@ class Location:
 
 
 class SafeMover:
+    """
+    Helper class that prevents your own ships from crashing into each
+    other.
+
+    To use, create a new instance on each turn. This class keeps track
+    of where ships are and where your ships are moving, and changes
+    your moves in case they conflict.
+
+    This only offers basic collision avoidance: it cannot do things
+    like swap the position of ships, and it isn't very cautious near
+    other players' ships.
+
+    """
     def __init__(self, game_map, players):
         self.game_map = game_map
         self.players = players
@@ -75,6 +113,16 @@ class SafeMover:
         self.moves = {}
 
     def move(self, ship, direction, tries=5):
+        """
+        Move the given ship in the given direction, or try and move in
+        a different direction if the original direction is unsafe to move in.
+
+        We try to move in a different direction, instead of staying
+        still, to avoid deadlocks, where two or more ships are trying
+        to swap positions. (This is technically safe, but we will
+        leave that up to you.) In such cases, moving randomly prevents
+        ships from waiting for each other forever.
+        """
         if tries <= 0:
             return None
 
@@ -93,7 +141,7 @@ class SafeMover:
 
     def move_towards(self, ship, target):
         """
-        Move this ship towards the given point.
+        Safely move this ship towards the given point.
         """
         return self.move(ship, ship.location.towards(target))
 
@@ -106,20 +154,23 @@ class Ship:
 
     @property
     def is_full(self):
+        """Is this ship at max capacity?"""
         return self.halite == MAX_HALITE
 
     def construct_dropoff(self):
+        """Return a move to convert this ship into a dropoff."""
         return "c {}".format(self.id)
 
     def move_unsafe(self, direction):
         """
-        Move this ship in a direction without checking for collisions.
+        Return a move to move this ship in a direction without
+        checking for collisions.
         """
         return "m {} {}".format(self.id, direction)
 
     def dump(self, amount):
         """
-        Dump halite from this ship.
+        Return a move to dump halite from this ship.
         """
         return "d {} {}".format(self.id, amount)
 
@@ -135,6 +186,7 @@ class Dropoff:
 
 class Shipyard(Dropoff):
     def spawn(self, energy):
+        """Return a move to spawn a new ship."""
         return "g {}".format(energy)
 
 
@@ -147,6 +199,11 @@ class Game:
         self.game_map = None
 
     def get_init(self):
+        """
+        Get the initial game state.
+
+        :returns: The initial game map, list of players, and your player ID.
+        """
         num_players, my_id = map(int, input().split())
 
         self.my_id = my_id
@@ -178,11 +235,21 @@ class Game:
         return self.game_map, players, my_id
 
     def send_init(self, name):
+        """
+        Tell the engine that you are done initializing.
+
+        :param name: The name of your bot. (Only used locally.)
+        """
         self.name = name
         print(name)
         sys.stdout.flush()
 
     def get_frame(self):
+        """
+        Get the next turn's game state.
+
+        :returns: The turn number, an updated map, and an updated player list.
+        """
         turn_number = int(input())
         logging.info("=============== TURN {:03} ================".format(turn_number))
         self.players = copy.copy(self.base_players)
@@ -224,12 +291,20 @@ class Player:
 
 
 class MapCell:
+    """A cell on the game map."""
     def __init__(self, halite):
         self.halite = halite
         self.ships = {}
 
 
 class GameMap:
+    """
+    The game map.
+
+    Can be indexed by a location, or by row and then
+    column. Coordinates start at 0. This class does not normalize
+    coordinates for you.
+    """
     def __init__(self, cells, width, height):
         self.width = width
         self.height = height
@@ -241,6 +316,10 @@ class GameMap:
         return self.cells[row]
 
     def distance(self, loc1, loc2):
+        """Compute the Manhattan distance between two locations.
+
+        Accounts for wrap-around.
+        """
         x_dist = abs(loc1.x - loc2.x)
         y_dist = abs(loc1.y - loc2.y)
         return min(x_dist, self.width - x_dist) + \
