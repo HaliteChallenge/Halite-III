@@ -21,6 +21,14 @@ std::string BaseConnection::read_trailing_input() {
     while (true) {
         try {
             result += get_string();
+
+            // Cap amount of input read
+            if (result.size() > MAX_TRAILING_INPUT_READ) {
+                result.resize(MAX_TRAILING_INPUT_READ);
+                result += "\n...output truncated...\n";
+                break;
+            }
+
             result += "\n";
         } catch (const TimeoutError &err) {
             result += err.remaining_input;

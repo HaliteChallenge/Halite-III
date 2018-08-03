@@ -13,6 +13,8 @@ class BaseConnection {
 protected:
     NetworkingConfig config{}; /** The networking configuration. */
 
+    constexpr static auto MAX_TRAILING_INPUT_READ = 4 * 1024;
+
 public:
     /**
      * Send a string along this connection.
