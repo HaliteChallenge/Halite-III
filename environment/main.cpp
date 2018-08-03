@@ -177,6 +177,9 @@ int main(int argc, char *argv[]) {
             replay.output(output_filename, enable_compression);
         }
         Logging::log("Opening a file at " + output_filename);
+        for (const auto &stats : replay.game_statistics.player_statistics) {
+            Logging::log("Player " + to_string(stats.player_id) + " was rank " + std::to_string(stats.rank));
+        }
 
         // JSON results info, used by backend
         nlohmann::json results;
