@@ -38,6 +38,8 @@ AUTH_MODE = 'auth'
 GYM_MODE = 'gym'
 REPLAY_MODE = 'replay'
 BOT_MODE = 'bot'
+BOT_UPLOAD_MODE = 'upload'
+BOT_DOWNLOAD_MODE = 'download'
 MODES = str({AUTH_MODE, GYM_MODE, REPLAY_MODE, BOT_MODE})
 REPLAY_MODE_DATE = 'date'
 REPLAY_MODE_USER = 'user'
@@ -112,7 +114,7 @@ class Config:
         :return: The JSON object with the auth information
         """
         if not self.auth_exists():
-            raise ValueError("CLI not authenticated. Please run `client.py --auth` first.")
+            raise ValueError("CLI not authenticated. Please run `client.py auth` first.")
         with open(self._auth_file) as file:
             config_contents = file.read()
         try:
@@ -155,6 +157,9 @@ def _parse_arguments():
     auth_parser.add_argument('-m', '--metadata', action='store_true', help="Print auth metadata")
     # .Modes.Bot
     bot_parser = subparser.add_parser('bot', help='Actions associated with a bot')
+    bot_subparser = bot_parser.add_subparsers(dest='bot_mode', required=True)
+    bot_upload_parser = bot_subparser.add_parser(BOT_UPLOAD_MODE, help='Actions associated with a bot')
+    bot_download_parser = bot_subparser.add_parser(BOT_DOWNLOAD_MODE, help='Actions associated with a bot')
     bot_parser.add_argument('-b', '--bot-path', dest='bot_path', action='store', type=str, required=True,
                             help="The path wherein your bot zip lives.")
     # .Modes.Gym
@@ -222,7 +227,10 @@ def main():
             if args.metadata:
                 print(Config())
         elif args.mode == BOT_MODE:
-            upload_bot.upload(args.bot_path)
+            if args.bot_mode == BOT_UPLOAD_MODE:
+                upload_bot.upload(args.bot_path)
+            else:
+                upload_bot.download(args.bot_path)
         elif args.mode == REPLAY_MODE:
             download_game.download(args.replay_mode, args.destination,
                                    getattr(args, 'date', None), getattr(args, 'all', None),

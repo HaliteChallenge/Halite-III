@@ -1,8 +1,9 @@
 import os
 import sys
+import pathlib
 import zipfile
 import requests
-from . import client
+from . import client, util
 
 _BOT_FILE_NAME_PREPEND = 'MyBot.'
 _LANGUGAGE_PROJECT_FILE_IDENTIFIERS = ['cargo.toml', 'project.clj', 'package.swift', 'stack.yaml']
@@ -81,3 +82,28 @@ def upload(bot_path):
     if result.status_code != client.SUCCESS:
         raise IOError("Unable to upload bot: {}".format(result.text))
     print("Successfully uploaded bot with version {}".format(_get_bot_version(config.user_id)))
+
+
+def download(bot_path):
+    """
+    Downloads the bot to the file bot_path. May only be called once Config is properly initialized.
+    :param bot_path: The path the bot should be written
+    :return: Nothing
+    """
+    config = client.Config()
+    bot_path = pathlib.Path(bot_path)
+
+    if bot_path.exists():
+        # Confirm overwriting
+        if not util.confirm("{} already exists. Overwrite?".format(bot_path)):
+            print("Aborting download.")
+            return
+
+    # Make the directories
+    bot_path.parent.mkdir(parents=True, exist_ok=True)
+
+    print("Downloading bot...")
+    result = _download_bot(config.user_id, config.api_key, bot_path)
+    if result.status_code != client.SUCCESS:
+        raise IOError("Unable to download bot: {}".format(result.text))
+    print("Successfully downloaded bot with version {}".format(_get_bot_version(config.user_id)))
