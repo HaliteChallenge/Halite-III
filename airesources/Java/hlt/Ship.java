@@ -5,7 +5,7 @@ import hlt.command.*;
 public class Ship {
     private int id;
     private Location location;
-    public int halite;
+    private int halite;
 
     public Ship(int id_, Location location_, int halite_) {
         id = id_;
@@ -24,5 +24,6 @@ public class Ship {
     }
 
     public int getID() { return id; }
+    public int getHalite() { return halite; }
     public Location getLocation() { return location; }
 }

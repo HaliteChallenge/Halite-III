@@ -26,9 +26,10 @@ public class MyBot {
                 if (ship.getLocation().equals(me.getShipyard().getLocation())) {
                     atHome = true;
                 }
+
                 if (ship.getLocation().equals(me.getShipyard().getLocation()) &&
-                    ship.halite > 0) {
-                    commandQueue.add(ship.dump(ship.halite));
+                    ship.getHalite() > 0) {
+                    commandQueue.add(ship.dump(ship.getHalite()));
                 } else if (game.getMap().getHalite(ship.getLocation()) < Constants.MAX_HALITE / 10) {
                     commandQueue.add(safeMover.move(ship, Direction.randomDirection()));
                 }

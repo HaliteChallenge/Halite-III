@@ -45,4 +45,8 @@ public class SafeMover {
     public Command move(Ship ship, Direction direction) {
         return move(ship, direction, 5);
     }
+
+    public Command moveTowards(Ship ship, Location target) {
+        return move(ship, gameMap.towards(ship.getLocation(), target));
+    }
 }

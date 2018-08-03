@@ -55,4 +55,43 @@ public class GameMap {
     public Location locationWithDirection(Location l, Direction d) {
         return normalize(getLocation(l.clone(), d));
     }
+
+    public Direction towards(Location start, Location target) {
+        if (start.x != target.x) {
+            int east_dist = 0;
+            int west_dist = 0;
+            if (start.x > target.x) {
+                west_dist = start.x - target.x;
+                east_dist = width - west_dist;
+            }
+            else {
+                east_dist = target.x - start.x;
+                west_dist = width - east_dist;
+            }
+
+            if (west_dist < east_dist) {
+                return Direction.WEST;
+            }
+            return Direction.EAST;
+        }
+        else if (start.y != target.y) {
+            int north_dist = 0;
+            int south_dist = 0;
+
+            if (start.y > target.y) {
+                north_dist = start.y - target.y;
+                south_dist = height - north_dist;
+            }
+            else {
+                south_dist = start.y - target.y;
+                north_dist = height - south_dist;
+            }
+
+            if (north_dist < south_dist) {
+                return Direction.NORTH;
+            }
+            return Direction.SOUTH;
+        }
+        return Direction.STILL;
+    }
 }
