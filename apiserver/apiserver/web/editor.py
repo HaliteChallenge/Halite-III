@@ -68,9 +68,11 @@ def create_user_filespace(intended_user, language, *, user_id):
             message="Cannot list files for another user.")
 
     editor_bucket = model.get_editor_bucket()
-    if len([a for a in editor_bucket.list_blobs(prefix=str(intended_user))]) == 0:
+    user_prefix = "{}/".format(intended_user)
+    language_prefix = "{}/".format(language)
+    if len([a for a in editor_bucket.list_blobs(prefix=user_prefix)]) == 0:
         starter_bucket = model.get_starter_bucket()
-        sub_blobs = [b for b in starter_bucket.list_blobs(prefix=language)]
+        sub_blobs = [b for b in starter_bucket.list_blobs(prefix=language_prefix)]
         if len(sub_blobs) == 0:
             raise util.APIError(400, message='Selected language is unavailable')
         for sub_blob in sub_blobs:
