@@ -47,6 +47,30 @@ def _upload_bot(user_id, api_key, bot_path):
         return requests.post(client.URI_API_CREATE_BOT.format(user_id), files=files, headers=headers)
 
 
+def _download_bot(user_id, api_key, bot_path):
+    """
+    Download the bot from the Halite servers.
+
+    NOTE: Assuming only bot is bot 0
+
+    :param user_id: The ID of the user making the request
+    :param api_key: The API key provided by the server (acquired in the auth phase)
+    :param bot_path: The path wherein the bot is found (expected file)
+    :return: The result of the request to the server
+    """
+    headers = {
+        client.API_KEY_HEADER: api_key,
+        "Accept": "application/zip"
+    }
+    if _bot_exists(user_id):
+        request = requests.get(client.URI_API_EXISTING_BOT.format(user_id, client.FIRST_BOT_ID), headers=headers)
+        with open(bot_path, "wb") as target:
+            target.write(request.content)
+        return request
+    else:
+        raise ValueError("Bot does not exist.")
+
+
 def _zip_file_integrity_check(file_path):
     """
     Determines whether the zip file contents are structured correctly to be uploaded.
