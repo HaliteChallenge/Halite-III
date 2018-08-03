@@ -1,26 +1,28 @@
 package hlt;
 
+import hlt.command.*;
+
 public class Ship {
-	private int id;
-	private Location location;
-	public int halite;
+    private int id;
+    private Location location;
+    public int halite;
 
-	public Ship(int id_, Location location_, int halite_) {
-		id = id_;
-		location = location_;
-		halite = halite_;
-	}
+    public Ship(int id_, Location location_, int halite_) {
+        id = id_;
+        location = location_;
+        halite = halite_;
+    }
 
-	public void move(Direction direction) {
-		Networking.move(id, direction);
-	}
-	public void dumpHalite(int haliteAmount) {
-		Networking.dump(id, haliteAmount);
-	}
-	public void transformToShipyard() {
-		Networking.construct(id);
-	}
+    public Command moveUnsafe(Direction direction) {
+        return new Move(id, direction);
+    }
+    public Command dump(int amount) {
+        return new Dump(id, amount);
+    }
+    public Command construct() {
+        return new Construct(id);
+    }
 
-	public int getID() { return id; }
-	public Location getLocation() { return location; }
+    public int getID() { return id; }
+    public Location getLocation() { return location; }
 }
