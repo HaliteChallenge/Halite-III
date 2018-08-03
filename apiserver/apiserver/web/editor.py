@@ -17,8 +17,17 @@ def list_user_files(intended_user, *, user_id):
     if user_id != intended_user:
         raise api_util.user_mismatch_error(
             message="Cannot list files for another user.")
+
     editor_bucket = model.get_editor_bucket()
-    return flask.jsonify([a.name[len(str(intended_user))+1:] for a in editor_bucket.list_blobs(prefix=str(intended_user)) if a.name[:-1] != str(intended_user)])
+
+    files = []
+    directory = "{}/".format(intended_user)
+    for file_blob in editor_bucket.list_blobs(prefix=directory):
+        # Don't list root directory
+        if file_blob.name[:-1] != str(intended_user):
+            files.append(file_blob.name[len(directory):])
+
+    return flask.jsonify(files)
 
 
 @web_api.route("/editor/<int:intended_user>/file/<path:file_id>", methods=["GET"])
