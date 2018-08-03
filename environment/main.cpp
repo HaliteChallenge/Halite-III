@@ -89,7 +89,9 @@ int main(int argc, char *argv[]) {
     auto n_players = players_arg.getValue();
 
     auto verbosity = verbosity_arg.getValue();
-    verbosity++; // One more level than specified verbosity
+    if (!verbosity_arg.isSet()) {
+        verbosity = 3;
+    }
     verbosity = verbosity > Logging::NUM_LEVELS ? 0 : Logging::NUM_LEVELS - verbosity;
     Logging::set_level(static_cast<Logging::Level>(verbosity));
 
