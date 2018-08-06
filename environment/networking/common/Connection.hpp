@@ -13,6 +13,7 @@ class BaseConnection {
 protected:
     NetworkingConfig config{}; /** The networking configuration. */
 
+    /** The maximum bytes that will be read after a bot dies. */
     constexpr static auto MAX_TRAILING_INPUT_READ = 4 * 1024;
 
 public:
