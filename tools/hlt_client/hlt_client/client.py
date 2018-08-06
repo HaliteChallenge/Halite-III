@@ -228,7 +228,7 @@ def main():
         elif args.mode == GYM_MODE:
             compare_bots.play_games(args.halite_binary,
                                     args.map_width, args.map_height,
-                                    args.run_commands, args.iterations)
+                                    args.run_commands, args.iterations, [])
     except (IndexError, TypeError, ValueError, IOError) as err:
         sys.stderr.write(str(err) + os.linesep)
         exit(-1)

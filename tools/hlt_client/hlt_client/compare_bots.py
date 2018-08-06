@@ -1,7 +1,6 @@
+import json
 import subprocess
-import re
 
-_WINNING_RANK_STRING = "rank #1"
 _SPACE_DELIMITER = ' '
 _BOT_ID_POSITION = 1
 
@@ -12,11 +11,13 @@ def _determine_winner(game_result):
     :param game_result: The result of running a game on the Halite binary
     :return:
     """
-    return next(line for line in game_result.splitlines()
-                if re.compile(_WINNING_RANK_STRING).search(line)).split(_SPACE_DELIMITER)[_BOT_ID_POSITION]
+    results = json.loads(game_result)
+    for player_id, stats in results["stats"].items():
+        if stats["rank"] == 1:
+            return player_id
 
 
-def _play_game(binary, map_width, map_height, bot_commands):
+def _play_game(binary, map_width, map_height, bot_commands, flags):
     """
     Plays one game considering the specified bots and the game and map constraints.
     :param binary: The halite binary
@@ -25,13 +26,19 @@ def _play_game(binary, map_width, map_height, bot_commands):
     :param bot_commands: The commands to run each of the bots
     :return: The game's result string
     """
-    game_run_command = '\"{}\" -d "{} {}" -t'.format(binary, map_width, map_height)
+    command = [
+        binary,
+        "--width", str(map_width),
+        "--height", str(map_height),
+        "--results-as-json"
+    ]
+    command.extend(flags)
     for bot_command in bot_commands:
-        game_run_command += " \"{}\"".format(bot_command)
-    return subprocess.check_output(game_run_command, shell=True).decode()
+        command.append(bot_command)
+    return subprocess.check_output(command).decode()
 
 
-def play_games(binary, map_width, map_height, bot_commands, number_of_runs):
+def play_games(binary, map_width, map_height, bot_commands, number_of_runs, flags):
     """
     Runs number_of_runs games using the designated bots and binary, recording the tally of wins per player
     :param binary: The Halite binary.
@@ -41,12 +48,14 @@ def play_games(binary, map_width, map_height, bot_commands, number_of_runs):
     :param number_of_runs: How many runs total
     :return: Nothing
     """
+    # TODO: way to choose where log files, etc. go (chdir)
+    # TODO: return results as JSON
     print("Comparing Bots!")
     result = {}
     if not(len(bot_commands) == 4 or len(bot_commands) == 2):
         raise IndexError("The number of bots specified must be either 2 or 4.")
     for current_run in range(0, number_of_runs):
-        match_output = _play_game(binary, map_width, map_height, bot_commands)
+        match_output = _play_game(binary, map_width, map_height, bot_commands, flags)
         winner = _determine_winner(match_output)
         result[winner] = result.setdefault(winner, 0) + 1
         print("Finished {} runs.".format(current_run + 1))
