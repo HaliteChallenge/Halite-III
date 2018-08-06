@@ -163,18 +163,7 @@ def _parse_arguments():
     bot_parser.add_argument('-b', '--bot-path', dest='bot_path', action='store', type=str, required=True,
                             help="The path wherein your bot zip lives.")
     # .Modes.Gym
-    bot_parser = subparser.add_parser('gym', help='Train your Bot(s)!')
-    bot_parser.add_argument('-r', '--run-command', dest='run_commands', action='append', type=str, required=True,
-                            help="The command to run a specific bot. You may pass either 2 or 4 of these arguments")
-    bot_parser.add_argument('-b', '--binary', dest='halite_binary', action='store', type=str, required=True,
-                            help="The halite executable/binary path, used to run the games")
-
-    bot_parser.add_argument('-W', '--width', dest='map_width', action='store', type=int, default=240,
-                            help="The map width the simulations will run in")
-    bot_parser.add_argument('-H', '--height', dest='map_height', action='store', type=int, default=160,
-                            help="The map height the simulations will run in")
-    bot_parser.add_argument('-i', '--iterations', dest='iterations', action='store', type=int,  default=100,
-                            help="Number of games to be run")
+    compare_bots.parse_arguments(subparser)
     # .Modes.Replay
     replay_parser = subparser.add_parser('replay', help='Actions associated with replay files')
     # .Modes.Replay.Modes

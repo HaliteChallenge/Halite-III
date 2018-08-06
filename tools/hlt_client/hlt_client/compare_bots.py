@@ -51,3 +51,33 @@ def play_games(binary, map_width, map_height, bot_commands, number_of_runs):
         result[winner] = result.setdefault(winner, 0) + 1
         print("Finished {} runs.".format(current_run + 1))
         print("Win Ratio: {}".format(result))
+
+
+def parse_arguments(subparser):
+    bot_parser = subparser.add_parser('gym', help='Train your Bot(s)!')
+    bot_parser.add_argument('-r', '--run-command',
+                            dest='run_commands',
+                            action='append',
+                            type=str, required=True,
+                            help="The command to run a specific bot. You may pass either 2 or 4 of these arguments")
+    bot_parser.add_argument('-b', '--binary',
+                            dest='halite_binary',
+                            action='store',
+                            type=str, required=True,
+                            help="The halite executable/binary path, used to run the games")
+
+    bot_parser.add_argument('-W', '--width',
+                            dest='map_width',
+                            action='store',
+                            type=int, default=48,
+                            help="The map width the simulations will run in")
+    bot_parser.add_argument('-H', '--height',
+                            dest='map_height',
+                            action='store',
+                            type=int, default=48,
+                            help="The map height the simulations will run in")
+    bot_parser.add_argument('-i', '--iterations',
+                            dest='iterations',
+                            action='store',
+                            type=int,  default=100,
+                            help="Number of games to be run")
