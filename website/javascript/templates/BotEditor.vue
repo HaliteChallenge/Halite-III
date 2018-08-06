@@ -796,7 +796,6 @@ export default {
   padding: 0px;
   display: flex;
   flex-grow: 1;
-  padding-left: 10px;
   margin-top: 0px;
   border-right: 1px solid #424C53;
   flex-grow: 100;
