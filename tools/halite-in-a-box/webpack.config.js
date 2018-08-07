@@ -2,12 +2,32 @@ const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
-    entry: './src/index.js',
+    entry: ['babel-polyfill', './src/index.js'],
+    target: 'electron-renderer',
     module: {
         rules: [
             {
                 test: /\.vue$/,
-                loader: 'vue-loader'
+                loader: 'vue-loader',
+                options: {
+                    optimizeSSR: false,
+                },
+            },
+            {
+                test: /\.js$/,
+                loader: 'babel-loader'
+            },
+            {
+                test: /\.css$/,
+                use: [ 'style-loader', 'css-loader' ]
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    'sass-loader',
+                ]
             },
         ],
     },
@@ -16,7 +36,6 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
-        // make sure to include the plugin!
-        new VueLoaderPlugin()
+        new VueLoaderPlugin(),
     ],
 };

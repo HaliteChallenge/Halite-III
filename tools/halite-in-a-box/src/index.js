@@ -1,8 +1,11 @@
-import Vue from "vue";
+import 'reset-css';
+import 'milligram';
+import Vue from 'vue';
 
-import Main from "./Main.vue";
+import './index.scss';
+import Main from './Main.vue';
 
 const app = new Vue({
-    el: "#app",
+    el: '#app',
     render: h => h(Main),
 });
