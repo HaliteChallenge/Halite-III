@@ -79,7 +79,8 @@ export class HaliteVisualizer {
         this.application = new PIXI.Application(
             this.width, this.height,
             {
-                backgroundColor: 0x222222,
+                // TWEAK: background color (most visible with circles)
+                backgroundColor: 0x000000,
                 antialias: true,
                 resolution: 1,
             }
