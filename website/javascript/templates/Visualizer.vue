@@ -236,14 +236,14 @@
                       <span class="icon-ship"></span>
                       Ships
                     </h4>
-                    <PlayerLineChart ref="chart2" :selected-players="selectedPlayers" :chart-data="chartData.ship" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}" />
+                    <PlayerLineChart ref="chart2" :selected-players="selectedPlayers" :chart-data="chartData.fleet" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}" />
                   </div>
                   <div class="dashboard-graph col-md-6">
                     <h4 class="dashboard-graph-heading">
                       <span class="icon-health"></span>
                       health
                     </h4>
-                    <PlayerLineChart ref="chart3" :selected-players="selectedPlayers" :chart-data="chartData.health" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}" />
+                    <PlayerLineChart ref="chart3" :selected-players="selectedPlayers" :chart-data="chartData.fleet" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}" />
                   </div>
                 </div>
               </div>
@@ -256,14 +256,14 @@
                       <span class="icon-ship"></span>
                       damage dealt
                     </h4>
-                    <PlayerLineChart ref="chart4" :selected-players="selectedPlayers" :chart-data="chartData.damage" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}" />
+                    <PlayerLineChart ref="chart4" :selected-players="selectedPlayers" :chart-data="chartData.fleet" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}" />
                   </div>
                   <div class="dashboard-graph col-md-6">
                     <h4 class="dashboard-graph-heading">
                       <span class="icon-health"></span>
                       attack over time
                     </h4>
-                    <PlayerLineChart ref="chart5" :selected-players="selectedPlayers" :chart-data="chartData.attack" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}" />
+                    <PlayerLineChart ref="chart5" :selected-players="selectedPlayers" :chart-data="chartData.fleet" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}" />
                   </div>
                 </div>
               </div>
@@ -628,40 +628,22 @@
       },
       chartData: function () {
         let output = {
-          production: [],
-          health: [],
-          damage: [],
-          attack: [],
-          ship: []
+          energy: [],
+          fleet: []
         }
 
-        try {
-          if (!this.stats || !this.stats.frames || !this.stats.frames.length || !this.stats.frames[0].players) return output
-          for (let _pIndex in this.stats.frames[0].players) {
-            let playerP = []
-            let playerS = []
-            let playerH = []
-            let playerD = []
-            let playerA = []
-            this.stats.frames.forEach((_frame, _fIndex) => {
-              const lastProd = _fIndex > 0 ? playerP[_fIndex - 1].y : 0
-              playerP.push({x: _fIndex, y: _frame.players[_pIndex].currentProductions + lastProd})
-              playerS.push({x: _fIndex, y: _frame.players[_pIndex].totalShips})
-              playerH.push({x: _fIndex, y: _frame.players[_pIndex].totalHealths})
-              playerD.push({x: _fIndex, y: _frame.players[_pIndex].totalDamages})
-              playerA.push({x: _fIndex, y: _frame.players[_pIndex].totalAttacks})
-            })
-            output.ship.push(playerS)
-            output.production.push(playerP)
-            output.health.push(playerH)
-            output.damage.push(playerD)
-            output.attack.push(playerA)
-          }
-          return output
-        } catch (e) {
-          console.error(e)
-          return output
+        if (!this.stats || !this.stats.frames || !this.stats.frames.length || !this.stats.frames[0].players) return output
+        for (let _pIndex in this.stats.frames[0].players) {
+          let playerEnergy = []
+          let playerFleet = []
+          this.stats.frames.forEach((_frame, _fIndex) => {
+            playerEnergy.push({x: _fIndex, y: _frame.players[_pIndex].currentEnergy})
+            playerFleet.push({x: _fIndex, y: _frame.players[_pIndex].currentShips})
+          })
+          output.energy.push(playerEnergy)
+          output.fleet.push(playerFleet)
         }
+        return output
       },
       selectedPlanet: function () {
         if (this.selected.kind) {

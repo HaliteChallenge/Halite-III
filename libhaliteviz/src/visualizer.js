@@ -46,7 +46,7 @@ export class HaliteVisualizer {
         this.replay = replay;
         this.map_width = replay.production_map.width;
         this.map_height = replay.production_map.height;
-        //this.stats = new statistics.Statistics(replay);
+        this.stats = new statistics.Statistics(replay);
 
         this.frame = 0;
         this.prevFrame = -1;
