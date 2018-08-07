@@ -5,6 +5,9 @@ import {AdvancedBloomFilter} from '@pixi/filter-advanced-bloom';
 import * as assets from "./assets";
 import {PLAYER_COLORS} from "./assets";
 
+// Color scale from Colorcet
+// TODO: add attribution to website
+// https://github.com/bokeh/colorcet/blob/master/LICENSE.txt
 const COLOR_SCALE = [
     [0, 0.047803, 0.4883],
     [0, 0.049756, 0.49556],
