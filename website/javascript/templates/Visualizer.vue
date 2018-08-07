@@ -1,7 +1,7 @@
 <template>
   <div class="visuallizer-container">
-    <div class="row">
-      <div class="col-md-8">
+    <div class="visualizer-row">
+      <div class="visualizer-column">
         <div class="game-heading">
           <i class="xline xline-top"></i>
           <i class="xline xline-bottom"></i>
@@ -62,9 +62,9 @@
                 <span class="replay-btn reset-btn" style="text-align: center">
                   <a href="javascript:;" @click="resetView" title="Reset zoom/pan"><span class="icon-lightning"></span></a>
                 </span>
-                <span class="replay-btn" style="text-align: center">
-                  <a href="javascript:;" @click="snapshot" title="Snapshot state"><span class="icon-lightning"></span></a>
-                </span>
+                <!-- <span class="replay-btn" style="text-align: center">
+                     <a href="javascript:;" @click="snapshot" title="Snapshot state"><span class="icon-lightning"></span></a>
+                     </span> -->
                 <span class="replay-btn">
                   <a style="text-align: center; margin-bottom: 4px;" v-if="game && game.game_id" :href="replay_download_link(game.game_id)">
                     <span class="icon-download"></span>
@@ -121,78 +121,44 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4 sidebar hidden-xs hidden-sm" v-if="!isMobile">
-        <div class="game-stats-widget">
-          <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation">
-              <a href="#game_stats" v-on:click="gaData('visualizer','click-game-stats','gameplay')" aria-controls="game_stats" role="tab" data-toggle="tab">
-                <i class="xline xline-top"></i>
-                <span>Game/Map Stats</span>
-                <i class="xline xline-bottom"></i>
-              </a>
-            </li>
-          </ul>
-          <!-- Tab panes -->
-          <div class="tab-content">
-            <div role="tabpanel" class="tab-pane" id="game_stats">
-              <div id="map_stats_pane">
-                <table class="map-stats-props">
-                  <tbody>
-                    <tr>
-                      <th>Map Size:</th>
-                      <td>{{`${replay.production_map.width}x${replay.production_map.height}`}}</td>
-                    </tr>
-                    <tr>
-                      <th>Map Seed:</th>
-                      <td>{{replay.map_generator_seed}}</td>
-                    </tr>
-                    <tr>
-                      <th>Engine Version:</th>
-                      <td>{{replay.ENGINE_VERSION}}</td>
-                    </tr>
-                    <tr>
-                      <th>Replay Version:</th>
-                      <td>{{replay.REPLAY_FILE_VERSION}}</td>
-                    </tr>
-                    <tr>
-                      <th>Zoom Level:</th>
-                      <td>{{Math.round(zoom*100)}}%</td>
-                    </tr>
-                    <tr>
-                      <th>Camera Position:</th>
-                      <td>{{pan.x}}, {{pan.y}}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="visualizer-stats-column">
         <div class="panel-group" aria-multiselectable="true">
-          <div class="panel panel-stats">
-            <div class="panel-heading" role="tab" id="heading_player_details">
-              <a data-toggle="collapse" v-on:click="gaData('visualizer','click-player-details','gameplay')" @click.stop="togglePlayerPanel" data-parent="#accordion" :aria-expanded="showPlayerDetailPanel.toString()" aria-controls="widget_player_details">
-                <i class="xline xline-top"></i>
-                <h4>player details</h4>
-                <span class="toggle-icon chevron"></span>
-                <i class="xline xline-bottom"></i>
-              </a>
-            </div>
-            <div class="panel-collapse collapse" :class="{'in': showPlayerDetailPanel}" role="tabpanel" :aria-expanded="showPlayerDetailPanel.toString()" id="widget_player_details" aria-labelledby="heading_player_details">
-              <PlayerDetailPane :replay="replay" :statistics="statistics" :stats="stats" :frame="frame"></PlayerDetailPane>
-            </div>
-          </div>
-          <div class="panel panel-stats">
-            <div class="panel-heading" role="tab" id="heading_map_properties">
-              <a data-toggle="collapse" v-on:click="gaData('visualizer','click-object-properties','gameplay')" @click.stop="toggleObjectPanel" data-parent="#accordion" :aria-expanded="showObjectPanel.toString()" aria-controls="widget_map_properties">
-                <i class="xline xline-top"></i>
-                <h4>map object properties</h4>
-                <span class="toggle-icon chevron"></span>
-                <i class="xline xline-bottom"></i>
-              </a>
-            </div>
-            <div class="panel-collapse collapse" :class="{'in': showObjectPanel}" role="tabpanel" :aria-expanded="showObjectPanel.toString()" id="widget_map_properties" aria-labelledby="heading_map_properties">
-              <!-- DISPLAY MESSAGE BOX -->
+          <VisualizerPanel name="map-stats" title="game/map stats">
+            <table class="map-stats-props">
+              <tbody>
+                <tr>
+                  <th>Map Size:</th>
+                  <td>{{`${replay.production_map.width}x${replay.production_map.height}`}}</td>
+                </tr>
+                <tr>
+                  <th>Map Seed:</th>
+                  <td>{{replay.map_generator_seed}}</td>
+                </tr>
+                <tr>
+                  <th>Engine Version:</th>
+                  <td>{{replay.ENGINE_VERSION}}</td>
+                </tr>
+                <tr>
+                  <th>Replay Version:</th>
+                  <td>{{replay.REPLAY_FILE_VERSION}}</td>
+                </tr>
+                <tr>
+                  <th>Zoom Level:</th>
+                  <td>{{Math.round(zoom*100)}}%</td>
+                </tr>
+                <tr>
+                  <th>Camera Position:</th>
+                  <td>{{pan.x}}, {{pan.y}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </VisualizerPanel>
+          <VisualizerPanel name="charts" title="charts">
+          </VisualizerPanel>
+          <VisualizerPanel name="player-detail" title="player details" @click="gaData('visualizer','click-player-details','gameplay')">
+            <PlayerDetailPane :replay="replay" :statistics="statistics" :stats="stats" :frame="frame"></PlayerDetailPane>
+          </VisualizerPanel>
+          <VisualizerPanel ref="objectPanel" name="map-object-properties" title="map object properties" @click="gaData('visualizer','click-object-properties','gameplay')">
               <div v-if="selectedPlanet">
                 <SelectedPlanet :selected-planet="selectedPlanet" :players="players"></SelectedPlanet>
               </div>
@@ -206,8 +172,7 @@
                 <p><span class="icon-info"></span></p>
                 <p>Click on a ship, planet, or other map location to see properties</p>
               </div>
-            </div>
-          </div>
+          </VisualizerPanel>
         </div>
       </div>
     </div>
@@ -315,6 +280,7 @@
   import * as utils from '../utils'
   import moment from 'vue-moment'
   import vueSlider from 'vue-slider-component'
+  import VisualizerPanel from './VisualizerPanel.vue'
   import PlayerStatsPane from './PlayerStatsPane.vue'
   import PlayerDetailPane from './PlayerDetailPane.vue'
   import PlayerLineChart from './PlayerLineChart.vue'
@@ -384,15 +350,13 @@
         frame: 0,
         time: 0,
         playing: false,
-        showObjectPanel: sessionStorage.getItem('halite-showMapObjectPanel') !== 'false',
-        showPlayerDetailPanel: sessionStorage.getItem('halite-showPlayerDetailPanel') === 'true',
-        showChartPanel: sessionStorage.getItem('halite-showChartPanel') ? sessionStorage.getItem('halite-showChartPanel') === 'true' : true,
         speedIndex: 3,
         speedLabel: '3x',
         stats: null,
         sharePopup: false,
         isHoliday: true,
         showHoliday: false,
+        showChartPanel: true,
         isMobile: window.mobileAndTabletcheck(),
         user: null,
         showChart: false,
@@ -438,12 +402,15 @@
       vueSlider,
       PlayerStatsPane,
       PlayerDetailPane,
+      VisualizerPanel,
       SelectedPlanet,
       SelectedShip,
       SelectedPoint,
       TierPopover
     },
     mounted: function () {
+      // Grab a bit more vertical space
+      document.querySelector('.navbar-fixed-top').style.position = 'absolute'
       this.getSortedPlayers()
       this.sliderOptions = Object.assign(this.sliderOptions, {
         max: this.replay.full_frames.length - 1,
@@ -521,7 +488,7 @@
             this.selected.x = args.x
             this.selected.y = args.y
             this.selected.production = args.production
-            this.showObjectPanel = true
+            this.$refs.objectPanel.open()
             visualizer.onUpdate.dispatch()
             this.$forceUpdate()
             this.gaData('visualizer', 'click-map-objects', 'gameplay')
@@ -801,14 +768,6 @@
       },
       resetView: function() {},
       snapshot: function() {},
-      toggleObjectPanel: function (e) {
-        this.showObjectPanel = !this.showObjectPanel
-        sessionStorage.setItem('halite-showMapObjectPanel', this.showObjectPanel.toString())
-      },
-      togglePlayerPanel: function (e) {
-        this.showPlayerDetailPanel = !this.showPlayerDetailPanel
-        sessionStorage.setItem('halite-showPlayerDetailPanel', this.showPlayerDetailPanel.toString())
-      },
       toggleChartPanel: function (e) {
         this.showChartPanel = !this.showChartPanel
         sessionStorage.setItem('halite-showChartPanel', this.showChartPanel.toString())
