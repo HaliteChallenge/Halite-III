@@ -382,7 +382,12 @@
   position: relative;
   padding: 20px 0;
 }
-.dashboard-graph{
+.dashboard-graphs {
+  display: flex;
+  flex-wrap: wrap;
+}
+.dashboard-graph {
+  flex: 1 0 200px;
   &-heading{
     font-family: $font-heading;
     text-transform: uppercase;

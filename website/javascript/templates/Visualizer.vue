@@ -154,6 +154,37 @@
             </table>
           </VisualizerPanel>
           <VisualizerPanel name="charts" title="charts">
+            <template slot-scope="panelOpen">
+              <section class="dashboard-graphs">
+                <section class="dashboard-graph">
+                  <h4 class="dashboard-graph-heading">
+                    <span class="icon-ship"></span>
+                    Ships
+                  </h4>
+                  <PlayerLineChart
+                    ref="chart2"
+                    :selected-players="selectedPlayers"
+                    :maxLength="50"
+                    :chart-data="chartData.fleet"
+                    :index="frame"
+                    :showChart="panelOpen.panelOpen"
+                    @updateIndex="index => {frame = index}" />
+                </section>
+                <section class="dashboard-graph">
+                  <h4 class="dashboard-graph-heading">
+                    <span class="icon-ship"></span>
+                    Current Halite
+                  </h4>
+                  <PlayerLineChart
+                    :selected-players="selectedPlayers"
+                    :maxLength="50"
+                    :chart-data="chartData.energy"
+                    :index="frame"
+                    :showChart="panelOpen.panelOpen"
+                    @updateIndex="index => {frame = index}" />
+                </section>
+              </section>
+            </template>
           </VisualizerPanel>
           <VisualizerPanel name="player-detail" title="player details" @click="gaData('visualizer','click-player-details','gameplay')">
             <PlayerDetailPane :replay="replay" :statistics="statistics" :stats="stats" :frame="frame"></PlayerDetailPane>
@@ -209,61 +240,6 @@
                       <p v-else class="card-dashboard-version-heading">Local bot</p>
                     </div>
                     <div v-if="_player.version" class="card-dashboard-version">V{{_player.version}}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="dashboard-graph-container bt bb">
-                <i class="dot-tl"></i>
-                <i class="dot-tr"></i>
-                <i class="dot-bl"></i>
-                <i class="dot-br"></i>
-                <!-- <div class="dashboard-graph dashboard-graph-full">
-                  <h4 class="dashboard-graph-heading">
-                    <span class="icon-globe"></span>
-                    Territory Gained
-                  </h4>
-                  <PlayerLineChart ref="chart1" :selected-players="selectedPlayers" :chart-data="chartData.production" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}"/>
-                </div> -->
-              </div>
-              <div class="dashboard-graph-container bb ">
-                <!-- <i class="dot-bl"></i>
-                <i class="dot-br"></i> -->
-                <div class="row">
-                  <div class="dashboard-graph br col-md-6">
-                    <i class="dot-tr"></i>
-                    <i class="dot-br"></i>
-                    <h4 class="dashboard-graph-heading">
-                      <span class="icon-ship"></span>
-                      Ships
-                    </h4>
-                    <PlayerLineChart ref="chart2" :selected-players="selectedPlayers" :chart-data="chartData.fleet" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}" />
-                  </div>
-                  <div class="dashboard-graph col-md-6">
-                    <h4 class="dashboard-graph-heading">
-                      <span class="icon-health"></span>
-                      health
-                    </h4>
-                    <PlayerLineChart ref="chart3" :selected-players="selectedPlayers" :chart-data="chartData.fleet" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}" />
-                  </div>
-                </div>
-              </div>
-              <div class="dashboard-graph-container">
-                <div class="row">
-                  <div class="dashboard-graph br col-md-6">
-                    <i class="dot-tr"></i>
-                    <i class="dot-br"></i>
-                    <h4 class="dashboard-graph-heading">
-                      <span class="icon-ship"></span>
-                      damage dealt
-                    </h4>
-                    <PlayerLineChart ref="chart4" :selected-players="selectedPlayers" :chart-data="chartData.fleet" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}" />
-                  </div>
-                  <div class="dashboard-graph col-md-6">
-                    <h4 class="dashboard-graph-heading">
-                      <span class="icon-health"></span>
-                      attack over time
-                    </h4>
-                    <PlayerLineChart ref="chart5" :selected-players="selectedPlayers" :chart-data="chartData.fleet" :index="frame" :showChart="showChartPanel" @updateIndex="index => {frame = index}" />
                   </div>
                 </div>
               </div>

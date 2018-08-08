@@ -9,7 +9,7 @@
       </a>
     </div>
     <div class="panel-collapse collapse" :class="{'in': show}" role="tabpanel" :aria-expanded="show.toString()" id="widget_player_details" aria-labelledby="heading_player_details">
-      <slot></slot>
+      <slot v-bind:panelOpen="show"></slot>
     </div>
   </div>
 </template>
@@ -17,10 +17,10 @@
 <script>
   export default {
     props: {
-      'name': {
+      name: {
         required: true,
       },
-      'title': {
+      title: {
         required: true,
       },
     },
@@ -35,11 +35,11 @@
       },
       togglePanel() {
         this.show = !this.show
-        window.sessionStorage.setItem(`halite-showpanel-${this.name}`, this.showPanel.toString())
+        window.sessionStorage.setItem(`halite-showpanel-${this.name}`, this.show.toString())
       },
       open() {
         this.show = true
-        window.sessionStorage.setItem(`halite-showpanel-${this.name}`, this.showPanel.toString())
+        window.sessionStorage.setItem(`halite-showpanel-${this.name}`, this.show.toString())
       },
     },
   }
