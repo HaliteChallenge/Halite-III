@@ -1,3 +1,4 @@
+import io
 import os
 import sys
 import pathlib
@@ -30,7 +31,7 @@ def _get_bot_version(user_id):
     return requests.get(client.URI_API_CREATE_BOT.format(user_id)).json()[_FIRST_BOT_INDEX][_VERSION_NUMBER_KEY]
 
 
-def _upload_bot(user_id, api_key, bot_path):
+def _upload_bot(user_id, api_key, bot_file):
     """
     Uploads the bot to the Halite servers. If the bot exists, simply update using PUT. Otherwise create it with
     POST. NOTE: Assuming only bot is bot 0
@@ -39,7 +40,7 @@ def _upload_bot(user_id, api_key, bot_path):
     :param bot_path: The path wherein the bot is found (expected file)
     :return: The result of the request to the server
     """
-    files = {client.BOT_FILE_KEY: open(bot_path, 'rb')}
+    files = {client.BOT_FILE_KEY: bot_file}
     headers = {client.API_KEY_HEADER: api_key}
     if _bot_exists(user_id):
         return requests.put(client.URI_API_EXISTING_BOT.format(user_id, client.FIRST_BOT_ID), files=files, headers=headers)
@@ -98,7 +99,9 @@ def upload(bot_path, dry_run):
     :return: Nothing
     """
 
-    # If the bot looks like a MyBot file, then try and create the
+    bot_file = None
+
+    # If the bot looks like a MyBot.* file, then try and create the
     # archive for the user.
     # We only support this for Python bots (for now), though.
     bot_filename = os.path.basename(bot_path)
@@ -113,23 +116,30 @@ def upload(bot_path, dry_run):
             output.output("Dry run, not continuing.")
             return
 
-        # TODO: actually create ZIP and upload
-        return
+        # Create ZIP and upload
+        bot_file = io.BytesIO()
+        with zipfile.ZipFile(bot_file, mode='w') as bot_zip:
+            for filename in files_to_include:
+                destname = os.path.relpath(filename, os.path.dirname(bot_path))
+                bot_zip.write(filename, arcname=destname)
 
-    _zip_file_integrity_check(bot_path)
-    config = client.Config()
-    if not bot_path or not os.path.isfile(bot_path):
-        raise ValueError("Bot path is not valid or does not exist. Try again.")
+        bot_file.seek(0)
+    else:
+        _zip_file_integrity_check(bot_path)
+        if not bot_path or not os.path.isfile(bot_path):
+            raise ValueError("Bot path is not valid or does not exist. Try again.")
 
     if dry_run:
         output.output("Dry run, not continuing.")
         return
 
-    output.output("Uploading bot...")
-    result = _upload_bot(config.user_id, config.api_key, bot_path)
-    if result.status_code != client.SUCCESS:
-        raise IOError("Unable to upload bot: {}".format(result.text))
-    output.output("Successfully uploaded bot with version {}".format(_get_bot_version(config.user_id)))
+    config = client.Config()
+    with (bot_file if bot_file else open(bot_path, 'rb')) as bot_file:
+        output.output("Uploading bot...")
+        result = _upload_bot(config.user_id, config.api_key, bot_file)
+        if result.status_code != client.SUCCESS:
+            raise IOError("Unable to upload bot: {}".format(result.text))
+        output.output("Successfully uploaded bot with version {}".format(_get_bot_version(config.user_id)))
 
 
 def download(bot_path):
