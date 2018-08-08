@@ -5,7 +5,7 @@
         </header>
         <template v-if="localBot">
             <p>Bot path: {{localBot}}</p>
-            <button>Benchmark</button>
+            <button @click="benchmark">Benchmark</button>
             <button>Gym</button>
             <button @click="upload">Upload</button>
         </template>
@@ -41,6 +41,13 @@
                 });
                 this.localBot = path;
             },
+
+            async benchmark() {
+                const action = await this.showModal('benchmark-modal', {});
+                console.log(action);
+                this.closeModal();
+            },
+
             async upload() {
                 let items = null;
                 const params = ['bot', '-b', this.localBot, 'upload', '--dry-run'];
