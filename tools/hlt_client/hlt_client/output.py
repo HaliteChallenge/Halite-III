@@ -40,12 +40,26 @@ def error(message, **fields):
 
 def output(message, **fields):
     if mode() == JSON:
+        result = { "status": "success" }
+        result.update(fields)
         message = jsonify(message)
         if isinstance(message, dict):
-            result = { "status": "success" }
             result.update(message)
-            print(format_json(result))
         else:
-            print(format_json({ "status": "success", "message": message }))
+            result["message"] = message
+        print(format_json(result))
     else:
         print(message)
+
+
+def warning(message, **fields):
+    output(message, status="warning", **fields)
+
+
+def print_list(title, items):
+    if mode() == JSON:
+        output(title, items=items)
+    else:
+        print(title)
+        for item in items:
+            print(' *', item)

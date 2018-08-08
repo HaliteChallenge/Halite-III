@@ -3,7 +3,7 @@ import sys
 import pathlib
 import zipfile
 import requests
-from . import client, util
+from . import client, output, util
 
 _BOT_FILE_NAME_PREPEND = 'MyBot.'
 _LANGUGAGE_PROJECT_FILE_IDENTIFIERS = ['cargo.toml', 'project.clj', 'package.swift', 'stack.yaml']
@@ -88,24 +88,48 @@ def _zip_file_integrity_check(file_path):
                 or item.lower() in _LANGUGAGE_PROJECT_FILE_IDENTIFIERS) for item in zip.namelist()):
         raise ValueError("MyBot.* file must be present in the zip's top directory (or cargo.toml in case of Rust).")
     if not any(item.lower().startswith(_HALITE_LIBRARY_FOLDER) for item in zip.namelist()):
-        sys.stderr.write("WARNING: Could not find an hlt/ library folder. Proceeding with upload. {}".format(os.linesep))
+        output.warning("WARNING: Could not find an hlt/ library folder. Proceeding with upload. {}".format(os.linesep))
 
 
-def upload(bot_path):
+def upload(bot_path, dry_run):
     """
     Uploads the bot placed under bot_path. May only be called once Config is properly initialized.
     :param bot_path: The path wherein the bot is located
     :return: Nothing
     """
+
+    # If the bot looks like a MyBot file, then try and create the
+    # archive for the user.
+    # We only support this for Python bots (for now), though.
+    bot_filename = os.path.basename(bot_path)
+    if os.path.exists(bot_path) and bot_filename.startswith(_BOT_FILE_NAME_PREPEND):
+        files_to_include = []
+        for dirpath, _, filenames in os.walk(os.path.dirname(bot_path)):
+            for filename in filenames:
+                if filename.endswith(".py"):
+                    files_to_include.append(os.path.join(dirpath, filename))
+        output.print_list("Files that will be included:", files_to_include)
+        if dry_run:
+            output.output("Dry run, not continuing.")
+            return
+
+        # TODO: actually create ZIP and upload
+        return
+
     _zip_file_integrity_check(bot_path)
     config = client.Config()
     if not bot_path or not os.path.isfile(bot_path):
         raise ValueError("Bot path is not valid or does not exist. Try again.")
-    print("Uploading bot...")
+
+    if dry_run:
+        output.output("Dry run, not continuing.")
+        return
+
+    output.output("Uploading bot...")
     result = _upload_bot(config.user_id, config.api_key, bot_path)
     if result.status_code != client.SUCCESS:
         raise IOError("Unable to upload bot: {}".format(result.text))
-    print("Successfully uploaded bot with version {}".format(_get_bot_version(config.user_id)))
+    output.output("Successfully uploaded bot with version {}".format(_get_bot_version(config.user_id)))
 
 
 def download(bot_path):
@@ -120,14 +144,14 @@ def download(bot_path):
     if bot_path.exists():
         # Confirm overwriting
         if not util.confirm("{} already exists. Overwrite?".format(bot_path)):
-            print("Aborting download.")
+            output.output("Aborting download.")
             return
 
     # Make the directories
     bot_path.parent.mkdir(parents=True, exist_ok=True)
 
-    print("Downloading bot...")
+    output.output("Downloading bot...")
     result = _download_bot(config.user_id, config.api_key, bot_path)
     if result.status_code != client.SUCCESS:
         raise IOError("Unable to download bot: {}".format(result.text))
-    print("Successfully downloaded bot with version {}".format(_get_bot_version(config.user_id)))
+    output.output("Successfully downloaded bot with version {}".format(_get_bot_version(config.user_id)))

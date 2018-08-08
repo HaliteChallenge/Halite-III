@@ -168,6 +168,8 @@ def _parse_arguments():
     bot_download_parser = bot_subparser.add_parser(BOT_DOWNLOAD_MODE, help='Actions associated with a bot')
     bot_parser.add_argument('-b', '--bot-path', dest='bot_path', action='store', type=str, required=True,
                             help="The path wherein your bot zip lives.")
+    bot_upload_parser.add_argument('--dry-run', dest='dry_run', action='store_true',
+                                   help="Verify the bot upload but do not actually upload.")
     # .Modes.Gym
     compare_bots.parse_arguments(subparser)
     # .Modes.Replay
@@ -237,7 +239,7 @@ def main():
                 output.output(Config())
         elif args.mode == BOT_MODE:
             if args.bot_mode == BOT_UPLOAD_MODE:
-                upload_bot.upload(args.bot_path)
+                upload_bot.upload(args.bot_path, args.dry_run)
             else:
                 upload_bot.download(args.bot_path)
         elif args.mode == REPLAY_MODE:
