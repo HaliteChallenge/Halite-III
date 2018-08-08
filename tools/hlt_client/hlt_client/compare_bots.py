@@ -1,6 +1,8 @@
 import json
 import subprocess
 
+from . import output
+
 _SPACE_DELIMITER = ' '
 _BOT_ID_POSITION = 1
 
@@ -49,8 +51,7 @@ def play_games(binary, map_width, map_height, bot_commands, number_of_runs, flag
     :return: Nothing
     """
     # TODO: way to choose where log files, etc. go (chdir)
-    # TODO: return results as JSON
-    print("Comparing Bots!")
+    output.output("Comparing Bots!")
     result = {}
     if not(len(bot_commands) == 4 or len(bot_commands) == 2):
         raise IndexError("The number of bots specified must be either 2 or 4.")
@@ -58,8 +59,8 @@ def play_games(binary, map_width, map_height, bot_commands, number_of_runs, flag
         match_output = _play_game(binary, map_width, map_height, bot_commands, flags)
         winner = _determine_winner(match_output)
         result[winner] = result.setdefault(winner, 0) + 1
-        print("Finished {} runs.".format(current_run + 1))
-        print("Win Ratio: {}".format(result))
+        output.output("Finished {} runs.".format(current_run + 1), games_played=current_run + 1)
+        output.output("Win Ratio: {}".format(result), stats=result)
 
 
 def parse_arguments(subparser):
