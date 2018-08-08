@@ -1,13 +1,17 @@
 <template>
-    <div id="main-container" v-if="!loggedIn">
-        <Login @login="checkLogin" />
-    </div>
-    <div v-else id="main-logged-in">
-        <header id="page-header">
-            <h1>Halite III <span>in a box</span></h1>
-        </header>
-        <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
-        <LocalBot :apiKey="apiKey" :userId="userId" />
+    <div>
+        <div id="main-container" v-if="!loggedIn">
+            <Login @login="checkLogin" />
+        </div>
+        <div v-else id="main-logged-in">
+            <header id="page-header">
+                <h1>Halite III <span>in a box</span></h1>
+            </header>
+            <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
+            <LocalBot :apiKey="apiKey" :userId="userId" />
+        </div>
+        <component v-if="modal" :is="modal" :params="modalProps" :event="modalEvent">
+        </component>
     </div>
 </template>
 
@@ -33,6 +37,9 @@
                 remoteBot: null,
                 localBot: null,
                 userId: null,
+                modal: null,
+                modalProps: null,
+                modalResolve: null,
             };
         },
         async mounted() {
@@ -58,6 +65,26 @@
                     this.remoteBot = bots[0];
                 }
             },
+            showModal(componentName, props) {
+                this.modal = componentName;
+                this.modalProps = props;
+                return new Promise((resolve) => {
+                    this.modalResolve = resolve;
+                });
+            },
+            modalEvent(event) {
+                this.modalResolve(event);
+            },
+            closeModal() {
+                this.modal = null;
+                this.modalProps = null;
+            },
+        },
+        provide() {
+            return {
+                showModal: this.showModal,
+                closeModal: this.closeModal,
+            };
         },
     };
 </script>
