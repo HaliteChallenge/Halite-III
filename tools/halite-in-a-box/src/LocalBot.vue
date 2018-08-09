@@ -107,10 +107,19 @@
 
                 // TODO: autodetect/embed interpreter, environment
                 const params = ['gym', '-i', action.games,
-                                '-b', '/Users/lidavidm/Code/Halite-III-Internal/environment/halite',
                                 '-r', 'python3 ' + this.localBot];
+
+                const stats = [{
+                    won: 0,
+                    name: '(your bot)',
+                }];
+
                 // TODO: input validation
                 for (const bot of action.bots) {
+                    stats.push({
+                        won: 0,
+                        name: bot,
+                    });
                     params.push('-r');
                     if (bot === 'self') {
                         params.push('python3 ' + this.localBot);
@@ -121,9 +130,16 @@
                     status: 'running',
                     gamesPlayed: 0,
                     gamesTotal: action.games,
-                    stats: [],
+                    stats,
+                    message: 'Checking game environment...',
                 };
 
+                this.showModal('benchmark-modal', state);
+                const paths = await this.prepareAssets();
+                console.log(paths);
+                params.push('-b');
+                params.push(paths.environmentPath);
+                state.message = 'Running games...';
                 this.showModal('benchmark-modal', state);
 
                 for await (const value of util.call(params)) {
@@ -133,13 +149,14 @@
                     }
                     if (value.stats) {
                         for (const [stringKey, gamesWon] of Object.entries(value.stats)) {
-                            state.stats[parseInt(stringKey, 10)] = gamesWon;
+                            state.stats[parseInt(stringKey, 10)].won = gamesWon;
                         }
                     }
                     this.showModal('benchmark-modal', state);
                 }
 
                 state.status = 'finished';
+                state.message = 'Done playing games!';
                 await this.showModal('benchmark-modal', state);
                 this.closeModal();
             },

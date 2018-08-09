@@ -1,6 +1,6 @@
 <template functional>
     <modal>
-        <h1 slot="header">Upload New Bot</h1>
+        <h2 slot="header">Upload New Bot</h2>
 
         <template slot="content">
             <template v-if="props.params.status === 'previewing'">
