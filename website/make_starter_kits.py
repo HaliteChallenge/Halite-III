@@ -127,7 +127,6 @@ def make_benchmark_download():
             archive.write(source_path, target_path)
 
 
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("version", help=VERSION_HELP)

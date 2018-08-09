@@ -6,14 +6,17 @@
             <template v-if="params.status === 'setup'">
                 <p v-if="error" class="error">{{error}}</p>
                 <fieldset>
+                    <!-- TODO: drag-and-drop bots from left to right so you can multiple copies of a bot -->
                     <legend>Select Bots (1 or 3)</legend>
-                    <div>
-                        <input type="checkbox" name="bots" id="bot-starter" value="starter" v-model="bots" />
-                        <label for="bot-starter">Python Starter Bot</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" name="bots" id="bot-zerg" value="zerg" v-model="bots" />
-                        <label for="bot-zerg">Zerg</label>
+                    <div v-for="(bot, index) in params.benchmarkBots">
+                        <input
+                            type="checkbox"
+                            name="bots"
+                            :id="`bot-${index}`"
+                            :value="bot"
+                            v-model="bots"
+                        />
+                        <label :for="`bot-${index}`">{{bot.name}}</label>
                     </div>
                     <div>
                         <input type="checkbox" name="bots" id="bot-self" value="self" v-model="bots" />

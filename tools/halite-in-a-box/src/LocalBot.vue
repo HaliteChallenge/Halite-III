@@ -47,8 +47,12 @@
             },
 
             async benchmark() {
+                // TODO: loading screen
+                const paths = await assets();
+
                 const action = await this.showModal('benchmark-modal', {
                     status: 'setup',
+                    benchmarkBots: paths.benchmarkBots,
                 });
                 console.log(action);
                 if (action === 'cancel') {
@@ -56,8 +60,8 @@
                     return;
                 }
 
-                // TODO: autodetect/embed interpreter, environment
                 const params = ['gym', '-i', action.games,
+                                '-b', paths.environmentPath,
                                 '-r', 'python3 ' + this.localBot];
 
                 const stats = [{
@@ -69,28 +73,26 @@
                 for (const bot of action.bots) {
                     stats.push({
                         won: 0,
-                        name: bot,
+                        name: bot.name,
                     });
                     params.push('-r');
                     if (bot === 'self') {
-                        params.push('python3 ' + this.localBot);
+                        params.push(`python3 "${this.localBot}"`);
+                    }
+                    else {
+                        params.push(`python3 "${bot.path}"`);
                     }
                 }
+
+                console.log(params);
 
                 const state = {
                     status: 'running',
                     gamesPlayed: 0,
                     gamesTotal: action.games,
                     stats,
-                    message: 'Checking game environment...',
+                    message: 'Running games...',
                 };
-
-                this.showModal('benchmark-modal', state);
-                const paths = await assets();
-                console.log(paths);
-                params.push('-b');
-                params.push(paths.environmentPath);
-                state.message = 'Running games...';
                 this.showModal('benchmark-modal', state);
 
                 for await (const value of util.call(params)) {
