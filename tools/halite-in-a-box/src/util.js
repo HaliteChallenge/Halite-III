@@ -24,10 +24,14 @@ export async function* call(args) {
     });
     let currentPromise = makePromise();
 
+    const buffer = [];
+
     rl.on('line', (line) => {
         const result = JSON.parse(line);
-        currentResolve(result);
+        buffer.push(result);
+        const resolve = currentResolve;
         currentPromise = makePromise();
+        resolve();
     });
     rl.on('close', () => {
         iterating = false;
@@ -36,8 +40,10 @@ export async function* call(args) {
 
     while (iterating) {
         try {
-            const value = await currentPromise;
-            yield value;
+            while (buffer.length > 0) {
+                yield buffer.shift();
+            }
+            await currentPromise;
         }
         catch (e) {
             if (e !== DONE_READING) {
