@@ -43,8 +43,51 @@
             },
 
             async benchmark() {
-                const action = await this.showModal('benchmark-modal', {});
+                const action = await this.showModal('benchmark-modal', {
+                    status: 'setup',
+                });
                 console.log(action);
+                if (action === 'cancel') {
+                    this.closeModal();
+                    return;
+                }
+
+                // TODO: autodetect/embed interpreter, environment
+                const params = ['gym', '-i', action.games,
+                                '-b', '/Users/lidavidm/Code/Halite-III-Internal/environment/halite',
+                                '-r', 'python3 ' + this.localBot];
+                // TODO: input validation
+                for (const bot of action.bots) {
+                    params.push('-r');
+                    if (bot === 'self') {
+                        params.push('python3 ' + this.localBot);
+                    }
+                }
+
+                const state = {
+                    status: 'running',
+                    gamesPlayed: 0,
+                    gamesTotal: action.games,
+                    stats: [],
+                };
+
+                this.showModal('benchmark-modal', state);
+
+                for await (const value of util.call(params)) {
+                    console.log(value);
+                    if (value.games_played) {
+                        state.gamesPlayed = value.games_played;
+                    }
+                    if (value.stats) {
+                        for (const [stringKey, gamesWon] of Object.entries(value.stats)) {
+                            state.stats[parseInt(stringKey, 10)] = gamesWon;
+                        }
+                    }
+                    this.showModal('benchmark-modal', state);
+                }
+
+                state.status = 'finished';
+                await this.showModal('benchmark-modal', state);
                 this.closeModal();
             },
 
