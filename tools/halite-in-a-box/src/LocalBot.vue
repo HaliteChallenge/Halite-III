@@ -22,6 +22,9 @@
 
 <script>
     import { remote as electronRemote } from 'electron';
+    import fs from 'fs';
+    import path from 'path';
+    import JSZip from 'jszip';
 
     import * as util from './util';
 
@@ -40,6 +43,56 @@
                     properties: ['openFile', 'openDirectory'],
                 });
                 this.localBot = path;
+            },
+
+            async prepareAssets() {
+                const dataDir = path.join(electronRemote.app.getPath('appData'),
+                                          'halite-in-a-box');
+                try {
+                    fs.mkdirSync(dataDir);
+                }
+                catch (e) {
+                    if (e.code && e.code === 'EEXIST') {
+                        // Already exists, do nothing
+                    }
+                    else {
+                        console.error(e);
+                        throw e;
+                    }
+                }
+
+                console.info(`Data directory: ${dataDir}`);
+
+                let platform;
+                let environmentBinary;
+                if (process.platform === 'darwin') {
+                    platform = 'MacOS';
+                    environmentBinary = 'halite';
+                }
+                else if (process.platform === 'win32') {
+                    platform = 'Windows-AMD64';
+                    environmentBinary = 'halite.exe';
+                }
+                else if (process.platform === 'linux') {
+                    platform = 'Linux-AMD64';
+                    environmentBinary = 'halite';
+                }
+
+                const environmentPath = path.join(dataDir, environmentBinary);
+                if (!fs.existsSync(environmentPath)) {
+                    console.info(`Downloading environment to ${environmentPath}`);
+
+                    const request = await util.download(`assets/downloads/Halite2_${platform}.zip`);
+                    const rawZip = await request.arrayBuffer();
+                    const zip = await JSZip.loadAsync(rawZip);
+                    const binary = await zip.file(environmentBinary).async('uint8array');
+                    await util.writeFile(environmentPath, binary);
+                    fs.chmodSync(environmentPath, 0o775);
+                }
+
+                return {
+                    environmentPath,
+                };
             },
 
             async benchmark() {

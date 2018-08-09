@@ -1,5 +1,6 @@
 import { spawn } from 'child_process';
 import { shell } from 'electron';
+import fs from 'fs';
 import readline from 'readline';
 
 const DONE_READING = Symbol();
@@ -71,4 +72,21 @@ export function fetchApi(apiKey, endpoint, options) {
         'X-Api-Key': apiKey,
     });
     return window.fetch(`${API_SERVER_URL}/${endpoint}`, options);
+}
+
+export function download(asset) {
+    return window.fetch(`${WEBSITE_URL}/${asset}`);
+}
+
+export function writeFile(path, contents) {
+    return new Promise((resolve, reject) => {
+        fs.writeFile(path, contents, (err) => {
+            if (err) {
+                console.error(err);
+                reject(err);
+                return;
+            }
+            resolve();
+        });
+    });
 }
