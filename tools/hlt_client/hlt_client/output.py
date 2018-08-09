@@ -48,6 +48,7 @@ def output(message, **fields):
         else:
             result["message"] = message
         print(format_json(result))
+        sys.stdout.flush()
     else:
         print(message)
 
