@@ -22,14 +22,14 @@ PLATFORM_AGNOSTIC = "None"
 
 # Names of generated downloads
 # Standard language + platform
-OUTPUT_FILE_FORMAT = "assets/downloads/Halite2_{language}_{platform}.zip"
+OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_{language}_{platform}.zip"
 
 # Platform only
-ENVIRONMENT_OUTPUT_FILE_FORMAT = "assets/downloads/Halite2_{platform}.zip"
+ENVIRONMENT_OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_{platform}.zip"
 
 # All languages + platform
-ALL_LANGUAGES_OUTPUT_FILE_FORMAT = "assets/downloads/Halite2_all_{platform}.zip"
-SOURCE_FILE = "assets/downloads/Halite2Source.zip"
+ALL_LANGUAGES_OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_all_{platform}.zip"
+SOURCE_FILE = "assets/downloads/Halite3Source.zip"
 
 versions =  {"Python3" : "1.0", "C++" : "1.0", "Java" : "1.0", "CSharp" : "1.0" ,"JavaScript": "1.0",
 "ML-StarterBot-Python":"1.0", "Rust" : "1.0", "Scala" : "1.0", "Go" : "1.0", "Ruby" : "1.0-beta" , "Kotlin" : "0.9.0-beta", "Clojure" : "0.9.0-beta", "Julia" : "0.9.0-beta", "OCaml" : "0.9.0-beta", "Haskell" : "0.9.0-beta", "Elixir" : "0.9.0-beta", "PHP": "0.9.0-beta","Dart": "0.9.0-beta", "Swift": "0.9.0-beta",  "Cython3": "0.9.0-beta","FSharp": "0.9.0-beta",}
