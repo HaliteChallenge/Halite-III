@@ -249,6 +249,7 @@ def main():
                                    getattr(args, 'limit', None))
         elif args.mode == GYM_MODE:
             compare_bots.play_games(args.halite_binary,
+                                    args.game_output_dir,
                                     args.map_width, args.map_height,
                                     args.run_commands, args.iterations, [])
         elif args.mode == GUI_MODE:
