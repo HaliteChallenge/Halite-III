@@ -1,13 +1,15 @@
 <template>
     <section id="local-bot">
         <header>
-            <h2>Select Local Bot</h2>
+            <h2 v-if="localBot">Local Bot</h2>
+            <h2 v-else>Select Local Bot</h2>
         </header>
         <template v-if="localBot">
             <p>Bot path: {{localBot}}</p>
             <button @click="benchmark">Benchmark</button>
             <button>Gym</button>
             <button @click="upload">Upload</button>
+            <button @click="chooseLocalBot">Select Different Bot</button>
         </template>
         <template v-else>
             <p>
@@ -36,6 +38,11 @@
             return {
                 localBot: null,
             };
+        },
+        mounted() {
+            if (window.localStorage.getItem('local-bot-path')) {
+                this.localBot = window.localStorage.getItem('local-bot-path');
+            }
         },
         methods: {
             chooseLocalBot() {
@@ -154,6 +161,11 @@
                     // Canceled
                     this.closeModal();
                 }
+            },
+        },
+        watch: {
+            localBot(newValue) {
+                window.localStorage.setItem('local-bot-path', newValue);
             },
         },
     }
