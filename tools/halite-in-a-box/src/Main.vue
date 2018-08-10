@@ -3,16 +3,22 @@
         <div id="main-container" v-if="!loggedIn">
             <Login @login="checkLogin" />
         </div>
-        <div v-else id="main-logged-in">
-            <header id="page-header">
-                <h1>Halite III <span>in a box</span></h1>
-            </header>
-            <nav id="toolbar">
-                <button @click="chooseReplay">Watch Replay</button>
-            </nav>
-            <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
-            <LocalBot :apiKey="apiKey" :userId="userId" />
-        </div>
+        <template v-else>
+            <div id="main-logged-in">
+                <header id="page-header">
+                    <h1>Halite III <span>in a box</span></h1>
+                </header>
+                <nav id="toolbar">
+                    <button @click="chooseReplay">Watch Replay</button>
+                </nav>
+                <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
+                <LocalBot :apiKey="apiKey" :userId="userId" />
+                <div id="scroll-down">
+                    ▼Past Replays & Analytics▼
+                </div>
+            </div>
+            <RemoteBotHistory :userId="userId" />
+        </template>
         <component v-if="modal" :is="modal" :params="modalProps" :event="modalEvent">
         </component>
     </div>
@@ -24,12 +30,14 @@
 
     import Login from './Login.vue';
     import RemoteBot from './RemoteBot.vue';
+    import RemoteBotHistory from './RemoteBotHistory.vue';
     import LocalBot from './LocalBot.vue';
 
     export default {
         components: {
             Login,
             RemoteBot,
+            RemoteBotHistory,
             LocalBot,
         },
         data() {
@@ -145,7 +153,8 @@
 
         grid-template-rows:
             [header] 4em
-            [content] 1fr;
+            [content] 1fr
+            [footer] min-content;
 
         #page-header {
             grid-row: header;
@@ -159,6 +168,12 @@
             display: flex;
             justify-content: flex-end;
             align-items: center;
+        }
+
+        #scroll-down {
+            grid-row: footer;
+            grid-column: left / -1;
+            text-align: center;
         }
 
         #remote-bot, #local-bot {

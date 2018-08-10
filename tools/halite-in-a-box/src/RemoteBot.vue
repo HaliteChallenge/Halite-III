@@ -36,6 +36,7 @@
 <script>
     import { remote as electronRemote } from 'electron';
     import fs from 'fs';
+    import * as util from './util';
 
     export default {
         props: ['apiKey', 'userId', 'remoteBot'],
