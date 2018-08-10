@@ -2,8 +2,9 @@
  * Provide an embeddable visualizer with integrated controls.
  */
 
-import {HaliteVisualizer} from "./visualizer";
 import $ from "jquery";
+import {PLAYER_COLORS} from "./assets";
+import {HaliteVisualizer} from "./visualizer";
 
 let injectedCSS = false;
 
@@ -39,6 +40,7 @@ const css = `
     padding: 0 0.5rem 0 1rem;
     margin: 0;
     transition: color 0.3s ease;
+    color: #FFF;
 }
 
 .embedded-visualizer:hover .embedded-selected.show {
@@ -90,6 +92,7 @@ const css = `
     font-family: inherit;
     background: none;
     border: 0;
+    color: #FFF;
 }
 
 .embedded-visualizer:hover .embedded-toolbar {
@@ -101,7 +104,11 @@ const css = `
 .embedded-visualizer:hover .embedded-selected {
     transform: none;
 }
-`;
+` + PLAYER_COLORS.map((colorHex, index) => `
+.embedded-bg-player-${index + 1} {
+    background: #${colorHex.toString(16).padStart(6, '0')};
+}
+`).join('\n');
 
 function button(label, klass) {
     const el = document.createElement("button");
@@ -125,7 +132,7 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
 
         for (let i = 0; i < this.replay.players.length; i++) {
             const bar = document.createElement("div");
-            bar.classList.add(`bg-player-${i+1}`);
+            bar.classList.add(`embedded-bg-player-${i+1}`);
             bar.classList.add("embedded-clashbar-energybar");
             clashbar.appendChild(bar);
         }
