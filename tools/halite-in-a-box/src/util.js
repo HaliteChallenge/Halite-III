@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { shell } from 'electron';
+import { remote as electronRemote, shell } from 'electron';
 import fs from 'fs';
 import readline from 'readline';
 
@@ -88,5 +88,17 @@ export function writeFile(path, contents) {
             }
             resolve();
         });
+    });
+}
+
+export function watchReplay(path) {
+    let win = new electronRemote.BrowserWindow({ width: 800, height: 800 });
+    win.loadFile('visualizer.html');
+    win.on('closed', () => {
+        win = null;
+    });
+
+    win.webContents.on('did-finish-load', () => {
+        win.webContents.send('watch', path);
     });
 }

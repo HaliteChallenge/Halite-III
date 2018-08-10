@@ -37,7 +37,7 @@
         .modal {
             background: #FFF;
             width: 80vw;
-            min-width: 60em;
+            min-width: 30em;
             padding: 1em;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 

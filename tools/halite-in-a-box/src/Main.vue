@@ -7,6 +7,9 @@
             <header id="page-header">
                 <h1>Halite III <span>in a box</span></h1>
             </header>
+            <nav id="toolbar">
+                <button @click="chooseReplay">Watch Replay</button>
+            </nav>
             <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
             <LocalBot :apiKey="apiKey" :userId="userId" />
         </div>
@@ -63,6 +66,19 @@
                 const bots = await request.json();
                 if (bots && bots.length > 0) {
                     this.remoteBot = bots[0];
+                }
+            },
+            chooseReplay() {
+                const result = electronRemote.dialog.showOpenDialog({
+                    title: 'Choose bot folder or MyBot file',
+                    properties: ['openFile'],
+                    filters: [{
+                        name: 'Halite III replay',
+                        extensions: ['hlt'],
+                    }],
+                });
+                if (result && result.length > 0) {
+                    util.watchReplay(result[0]);
                 }
             },
             showModal(componentName, props) {
@@ -133,7 +149,16 @@
 
         #page-header {
             grid-row: header;
-            grid-column: left / -1;
+            grid-column: left;
+        }
+
+        #toolbar {
+            grid-row: header;
+            grid-column: right;
+
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
         }
 
         #remote-bot, #local-bot {

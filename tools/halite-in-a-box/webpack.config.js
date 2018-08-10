@@ -2,7 +2,10 @@ const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
-    entry: ['babel-polyfill', './src/index.js'],
+    entry: {
+        main: ['babel-polyfill', './src/index.js'],
+        visualizer: ['babel-polyfill', './src/visualizer.js'],
+    },
     target: 'electron-renderer',
     module: {
         rules: [
@@ -15,7 +18,8 @@ module.exports = {
             },
             {
                 test: /\.js$/,
-                loader: 'babel-loader'
+                loader: 'babel-loader',
+                exclude: /(libzstd|encoding-indexes)/,
             },
             {
                 test: /\.css$/,
@@ -29,11 +33,16 @@ module.exports = {
                     'sass-loader',
                 ]
             },
+            {
+                test: /\.png$/,
+                loader: "file-loader",
+            },
         ],
     },
     output: {
-        filename: 'main.js',
+        filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
+        publicPath: 'dist/',
     },
     plugins: [
         new VueLoaderPlugin(),

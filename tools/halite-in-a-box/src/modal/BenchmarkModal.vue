@@ -73,7 +73,7 @@
                                         (crashed)
                                     </template>
                                 </td>
-                                <td><a>Watch Replay</a></td>
+                                <td><a href="javascript: void 0;" @click="showReplay(game.replay)">Watch Replay</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -94,6 +94,8 @@
 </template>
 
 <script>
+    import * as util from '../util';
+
     export default {
         props: ['event', 'params'],
         data() {
@@ -114,6 +116,9 @@
                     games: this.rounds,
                     bots: this.bots,
                 });
+            },
+            showReplay(path) {
+                util.watchReplay(path);
             },
         },
     }
