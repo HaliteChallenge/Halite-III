@@ -1,5 +1,4 @@
 import 'reset-css';
-import 'milligram';
 import Vue from 'vue';
 
 import './index.scss';

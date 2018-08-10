@@ -92,7 +92,7 @@ export function writeFile(path, contents) {
 }
 
 export function watchReplay(path) {
-    let win = new electronRemote.BrowserWindow({ width: 800, height: 800 });
+    let win = new electronRemote.BrowserWindow({ width: 640, height: 680 });
     win.loadFile('visualizer.html');
     win.on('closed', () => {
         win = null;

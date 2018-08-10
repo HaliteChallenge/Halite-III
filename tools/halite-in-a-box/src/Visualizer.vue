@@ -22,10 +22,15 @@
 
                     const replay = await libhaliteviz.parseReplay(data.buffer);
                     await libhaliteviz.setAssetRoot('');
-                    const visualizer = new libhaliteviz.EmbeddedVisualizer(replay, 800, 800);
+
+                    const dim = Math.min(window.innerWidth, window.innerHeight);
+                    const visualizer = new libhaliteviz.EmbeddedVisualizer(replay, dim, dim);
                     visualizer.attach(this.$refs.visualizer);
                 });
             });
         },
     }
 </script>
+
+<style>
+</style>
