@@ -34,6 +34,7 @@
                 <p>{{params.message}}</p>
                 <p>{{params.gamesPlayed}}/{{params.gamesTotal}} games played</p>
                 <table>
+                    <caption>Game Results Summary</caption>
                     <thead>
                         <tr>
                             <th>Bot</th>
@@ -49,6 +50,34 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <div class="scroll-table">
+                    <table>
+                        <caption>Individual Games</caption>
+                        <thead>
+                            <tr>
+                                <th>Game #</th>
+                                <th>Map Parameters</th>
+                                <th>Your Bot Rank</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr v-for="(game, index) in params.games">
+                                <td>{{index + 1}}</td>
+                                <td>{{game.map_width}}×{{game.map_height}}, seed: {{game.map_seed}}</td>
+                                <td>
+                                    #{{game.stats[0].rank}}
+                                    <template v-if="game.terminated && game.terminated[0]">
+                                        (crashed)
+                                    </template>
+                                </td>
+                                <td><a>Watch Replay</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </template>
         </template>
 
@@ -100,5 +129,24 @@
         border: 0.1rem solid #d1d1d1;
         border-radius: 5px;
         padding: 0 1em;
+    }
+
+    .scroll-table {
+        max-height: 20vh;
+        overflow-y: scroll;
+
+        caption {
+            position: sticky;
+            top: 0;
+            height: 1.5em;
+            background: #FFF;
+        }
+
+        thead th {
+            position: sticky;
+            top: 1.5em;
+            background: #FFF;
+            background-clip: padding-box;
+        }
     }
 </style>

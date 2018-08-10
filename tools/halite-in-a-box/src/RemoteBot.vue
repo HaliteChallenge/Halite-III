@@ -66,7 +66,7 @@
     }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     table {
         margin: 0 auto 2em;
         width: auto;

@@ -42,6 +42,8 @@ export default async function assets() {
 
     console.info(`Data directory: ${dataDir}`);
 
+    const replayDir = path.join(dataDir, 'replays');
+
     // Determine platform name for downloads
     let platform;
     let environmentBinary;
@@ -101,7 +103,9 @@ export default async function assets() {
     }));
 
     return {
+        dataDir,
         environmentPath,
+        replayDir,
         benchmarkBots,
     };
 }

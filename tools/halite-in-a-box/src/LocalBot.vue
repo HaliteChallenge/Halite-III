@@ -39,11 +39,13 @@
         },
         methods: {
             chooseLocalBot() {
-                const [ path ] = electronRemote.dialog.showOpenDialog({
+                const result = electronRemote.dialog.showOpenDialog({
                     title: 'Choose bot folder or MyBot file',
                     properties: ['openFile', 'openDirectory'],
                 });
-                this.localBot = path;
+                if (result && result.length > 0) {
+                    this.localBot = result[0];
+                }
             },
 
             async benchmark() {
@@ -62,6 +64,7 @@
 
                 const params = ['gym', '-i', action.games,
                                 '-b', paths.environmentPath,
+                                '--output-dir', paths.replayDir,
                                 '-r', 'python3 ' + this.localBot];
 
                 const stats = [{
@@ -88,6 +91,7 @@
 
                 const state = {
                     status: 'running',
+                    games: [],
                     gamesPlayed: 0,
                     gamesTotal: action.games,
                     stats,
@@ -104,6 +108,9 @@
                         for (const [stringKey, gamesWon] of Object.entries(value.stats)) {
                             state.stats[parseInt(stringKey, 10)].won = gamesWon;
                         }
+                    }
+                    if (value.results) {
+                        state.games.push(value.results);
                     }
                     this.showModal('benchmark-modal', state);
                 }
