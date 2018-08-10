@@ -73,7 +73,14 @@
                                         (crashed)
                                     </template>
                                 </td>
-                                <td><a href="javascript: void 0;" @click="showReplay(game.replay)">Watch Replay</a></td>
+                                <td>
+                                    <a href="javascript: void 0;" @click="showReplay(game.replay)">Watch Replay</a>
+                                    <a v-if="game.error_logs && game.error_logs[0]"
+                                       href="javascript: void 0;"
+                                       @click="showErrorLog(game.error_logs[0])">
+                                        View Error/Warning Log
+                                    </a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -94,6 +101,7 @@
 </template>
 
 <script>
+    import { shell } from 'electron';
     import * as util from '../util';
 
     export default {
@@ -119,6 +127,9 @@
             },
             showReplay(path) {
                 util.watchReplay(path);
+            },
+            showErrorLog(path) {
+                shell.openItem(path);
             },
         },
     }
