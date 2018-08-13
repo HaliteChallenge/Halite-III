@@ -39,7 +39,7 @@ public:
     ~Transaction() override = default;
 };
 
-class DumpCommand;
+struct NoCommand {};
 
 class ConstructCommand;
 
@@ -48,7 +48,7 @@ class MoveCommand;
 class SpawnCommand;
 
 /** Transaction for DumpCommand. */
-class DumpTransaction final : public Transaction<DumpCommand> {
+class DumpTransaction final : public Transaction<NoCommand> {
 public:
     using Transaction::Transaction;
 
@@ -60,7 +60,6 @@ public:
 
     /** If the transaction may be committed, commit the transaction. */
     void commit() override;
-
 };
 
 /** Transaction for ConstructCommand. */

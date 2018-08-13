@@ -27,10 +27,7 @@ public class MyBot {
                     atHome = true;
                 }
 
-                if (ship.getLocation().equals(me.getShipyard().getLocation()) &&
-                    ship.getHalite() > 0) {
-                    commandQueue.add(ship.dump(ship.getHalite()));
-                } else if (game.getMap().getHalite(ship.getLocation()) < Constants.MAX_HALITE / 10) {
+                if (game.getMap().getHalite(ship.getLocation()) < Constants.MAX_HALITE / 10) {
                     commandQueue.add(safeMover.move(ship, Direction.randomDirection()));
                 }
             }
@@ -38,7 +35,7 @@ public class MyBot {
             // Spawn a ship if we're in the start or middle of the game
             // and if we have the available halite
             if (turnNumber <= 200 && me.getHalite() >= Constants.SHIP_COST && !atHome)  {
-                commandQueue.add(me.getShipyard().spawn(0));
+                commandQueue.add(me.getShipyard().spawn());
             }
 
             //Send back our commands

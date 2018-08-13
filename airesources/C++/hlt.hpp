@@ -48,7 +48,8 @@ namespace hlt {
         NORTH = 'n',
         EAST = 'e',
         SOUTH = 's',
-        WEST = 'w'
+        WEST = 'w',
+        STILL = 'o',
     };
 
     static std::ostream & operator<<(std::ostream & ostream, const Direction & direction) {
@@ -79,6 +80,9 @@ namespace hlt {
                 break;
             case Direction::WEST:
                 dx = -1;
+                break;
+            case Direction::STILL:
+                // No move
                 break;
             }
             return Location{x + dx, y + dy};
@@ -113,12 +117,10 @@ namespace hlt {
     };
 
     struct Spawn : Command {
-        halite_type initial_fuel;
-
-        Spawn(halite_type initial_fuel) : initial_fuel{initial_fuel} {}
+        Spawn() {}
 
         void send() const override {
-            std::cout << "g " << initial_fuel;
+            std::cout << "g";
         }
     };
 
@@ -130,17 +132,6 @@ namespace hlt {
 
         void send() const override {
             std::cout << "m " << id << " " << direction;
-        }
-    };
-
-    struct Dump : Command {
-        id_type id;
-        halite_type amount;
-
-        Dump(id_type id, halite_type amount) : id{id}, amount{amount} {}
-
-        void send() const override {
-            std::cout << "d " << id << " " << amount;
         }
     };
 
@@ -162,7 +153,6 @@ namespace hlt {
         bool is_full() const { return halite >= MAX_HALITE; }
 
         std::unique_ptr<Command> move_unsafe(Direction d) const { return std::make_unique<Move>(id, d); }
-        std::unique_ptr<Command> dump(halite_type amount) const { return std::make_unique<Dump>(id, amount); }
         std::unique_ptr<Command> construct() const { return std::make_unique<Construct>(id); }
     };
 
@@ -178,8 +168,8 @@ namespace hlt {
         Shipyard() : Dropoff() {}
         Shipyard(Location location) : Dropoff(0, location) {}
 
-        std::unique_ptr<Command> spawn(halite_type initial_fuel) {
-            return std::make_unique<Spawn>(initial_fuel);
+        std::unique_ptr<Command> spawn() {
+            return std::make_unique<Spawn>();
         }
     };
 

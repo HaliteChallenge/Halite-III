@@ -16,9 +16,6 @@ public class Ship {
     public Command moveUnsafe(Direction direction) {
         return new Move(id, direction);
     }
-    public Command dump(int amount) {
-        return new Dump(id, amount);
-    }
     public Command construct() {
         return new Construct(id);
     }

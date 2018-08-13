@@ -7,7 +7,7 @@ public class Shipyard extends Dropoff {
         super(-1, location);
     }
 
-    public Command spawn(int initialHalite) {
-        return new Spawn(initialHalite);
+    public Command spawn() {
+        return new Spawn();
     }
 }

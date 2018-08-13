@@ -21,15 +21,9 @@ void dump_energy(Store &store, Entity &entity, Cell &cell, energy_type energy) {
         // Just dump directly onto the cell.
         cell.energy += energy;
         store.map_total_energy += energy;
-    } else if (cell.owner == entity.owner) {
-        // The owner gets all the energy.
-        store.get_player(entity.owner).energy += energy;
     } else {
-        // The energy is split.
-        energy_type penalty = energy / Constants::get().DROPOFF_PENALTY_RATIO;
-        energy -= penalty;
-        store.get_player(entity.owner).energy += energy;
-        store.get_player(cell.owner).energy += penalty;
+        // The cell owner gets all the energy
+        store.get_player(cell.owner).energy += energy;
     }
 }
 
@@ -38,34 +32,21 @@ void dump_energy(Store &store, Entity &entity, Cell &cell, energy_type energy) {
  * @return False if the transaction may not be committed.
  */
 bool DumpTransaction::check() {
-    auto success = true;
-    for (const auto &[player_id, dumps] : commands) {
-        auto &player = store.get_player(player_id);
-        for (const DumpCommand &command : dumps) {
-            if (!player.has_entity(command.entity)) {
-                // Entity is not valid
-                error_generated<EntityNotFoundError<DumpCommand>>(player_id, command);
-                success = false;
-            } else if (auto available = store.get_entity(command.entity).energy; available < command.energy) {
-                // Entity does not have enough energy
-                error_generated<InsufficientEnergyError<DumpCommand>>(player_id, command, available, command.energy);
-                success = false;
-            }
-        }
-    }
-    return success;
+    return true;
 }
 
 /** If the transaction may be committed, commit the transaction. */
 void DumpTransaction::commit() {
-    for (const auto &[player_id, dumps] : commands) {
-        auto &player = store.get_player(player_id);
-        for (const DumpCommand &command : dumps) {
-            auto &entity = store.get_entity(command.entity);
-            const auto location = player.get_entity_location(command.entity);
-            dump_energy(store, entity, map.at(location), command.energy);
+    // If an entity ends the turn on their dropoff or shipyard,
+    // auto-dump all their energy.
+    for (auto &[entity_id, entity] : store.all_entities()) {
+        const auto &player = store.get_player(entity.owner);
+        const auto &location = player.get_entity_location(entity.id);
+        auto &cell = map.at(location);
+        if (cell.owner == entity.owner) {
+            dump_energy(store, entity, cell, entity.energy);
             cell_updated(location);
-            entity_updated(command.entity);
+            entity_updated(entity.id);
         }
     }
 }
@@ -153,6 +134,10 @@ void MoveTransaction::commit() {
     for (auto &[player_id, moves] : commands) {
         auto &player = store.get_player(player_id);
         for (const MoveCommand &command : moves) {
+            // If entity remained still, treat it as a no-op command.
+            if (command.direction == Direction::Still) {
+                continue;
+            }
             auto location = player.get_entity_location(command.entity);
             auto &source = map.at(location);
             // Check if entity has enough energy
@@ -269,15 +254,14 @@ void SpawnTransaction::commit() {
     for (const auto &[player_id, spawns] : commands) {
         for (const SpawnCommand &spawn : spawns) {
             auto &player = store.get_player(player_id);
-            auto energy = spawn.energy;
-            player.energy -= cost + energy;
+            player.energy -= cost;
             auto &cell = map.at(player.factory);
             if (cell.entity == Entity::None) {
-                auto &entity = store.new_entity(energy, player.id);
+                auto &entity = store.new_entity(0, player.id);
                 player.add_entity(entity.id, player.factory);
                 cell.entity = entity.id;
                 entity_updated(entity.id);
-                event_generated<SpawnEvent>(player.factory, energy, player.id, entity.id);
+                event_generated<SpawnEvent>(player.factory, 0, player.id, entity.id);
             } else {
                 error_generated<SelfCollisionError<SpawnCommand>>(player_id, spawn, ErrorContext(), player.factory,
                                                                   std::vector<Entity::id_type>{cell.entity},
@@ -286,7 +270,7 @@ void SpawnTransaction::commit() {
                 // There is a collision, destroy the existing.
                 auto &entity = store.get_entity(cell.entity);
                 auto &player = store.get_player(entity.owner);
-                player.energy += entity.energy + energy;
+                player.energy += entity.energy;
                 player.remove_entity(cell.entity);
                 store.delete_entity(cell.entity);
                 cell.entity = Entity::None;

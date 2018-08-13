@@ -11,6 +11,21 @@ class Networking;
 
 namespace hlt {
 
+class Store;
+class StoreEntityIter {
+    friend class Store;
+    id_map<Entity, Entity> &entities;
+
+    StoreEntityIter(id_map<Entity, Entity> &entities) : entities{entities} {}
+public:
+    id_map<Entity, Entity>::iterator begin() {
+        return entities.begin();
+    }
+    id_map<Entity, Entity>::iterator end() {
+        return entities.end();
+    }
+};
+
 /** Storage and lifetime management for Player and Entity objects. */
 class Store {
     friend class Halite;
@@ -45,6 +60,11 @@ public:
      * @return The entity.
      */
     Entity &get_entity(const Entity::id_type &id);
+
+    /**
+     * Get an iterator over all entities.
+     */
+    StoreEntityIter all_entities() { return StoreEntityIter(entities); }
 
     /**
      * Obtain a new entity.

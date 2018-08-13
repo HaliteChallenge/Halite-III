@@ -22,6 +22,9 @@ std::string direction_to_string(Direction direction) {
     case Direction::West:
         result = "west";
         break;
+    case Direction::Still:
+        result = "still";
+        break;
     }
     return result;
 }
@@ -46,20 +49,6 @@ std::string ExcessiveCommandsError::log_message() const {
  */
 std::string ExcessiveSpawnsError::log_message() const {
     return "received more than one spawn command on this turn";
-}
-
-/**
- * Get a message for the player log.
- * @return The message.
- */
-template<>
-std::string EntityNotFoundError<DumpCommand>::log_message() const {
-    std::ostringstream stream;
-    stream << "unknown entity "
-           << command().entity
-           << " was requested to dump "
-           << command().energy;
-    return stream.str();
 }
 
 /**
@@ -103,23 +92,6 @@ std::string InsufficientEnergyError<MoveCommand>::log_message() const {
            << " energy to move "
            << direction_to_string(command().direction)
            << ", but only "
-           << available
-           << " energy was available";
-    return stream.str();
-}
-
-/**
- * Get a message for the player log.
- * @return The message.
- */
-template<>
-std::string InsufficientEnergyError<DumpCommand>::log_message() const {
-    std::ostringstream stream;
-    stream << "entity "
-           << command().entity
-           << " was directed to dump "
-           << requested
-           << " energy, but only "
            << available
            << " energy was available";
     return stream.str();

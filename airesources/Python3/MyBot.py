@@ -19,13 +19,14 @@ while True:
 
     at_home = False
     for ship in me.ships.values(): # For each of our ships
-        # If we're on our shipyard and have enough halite, dump it.
-        if ship.location == me.shipyard.location and ship.halite > hlt.MAX_HALITE / 4:
-            command_queue.append(ship.dump(ship.halite))
+        # If we're on our shipyard and have enough halite, remember this.
+        if ship.location == me.shipyard.location:
             at_home = True
-        # Otherwise, check if there's a reasonable amount of halite on the square.
+        # Halite will get deposited automatically when we move over the shipyard.
+
+        # Check if there's a reasonable amount of halite on the square.
         # If so, extract halite. If not, move randomly.
-        elif game_map[ship.location].halite > hlt.MAX_HALITE / 10 and not ship.is_full:
+        if game_map[ship.location].halite > hlt.MAX_HALITE / 10 and not ship.is_full:
             pass # Do nothing, which is to say, extract halite.
         else:
             # Move in a random direction
@@ -35,6 +36,6 @@ while True:
     # Don't spawn a ship if we currently have a ship at port, though.
     if turn_number <= 200 and me.halite >= hlt.SHIP_COST and not at_home:
         # We don't want to put any halite in the newly spawned ship.
-        command_queue.append(me.shipyard.spawn(0))
+        command_queue.append(me.shipyard.spawn())
 
     game.end_turn(command_queue) # Send our moves back to the game environment

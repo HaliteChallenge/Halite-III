@@ -26,15 +26,16 @@ int main() {
         for (const auto &id_ship : game.players[game.my_id].ships) {
             const auto id = id_ship.first;
             const auto &ship = id_ship.second;
-            // If we're on our shipyard and have enough halite, dump it.
-            if (ship.location == game.me().shipyard.location &&
-                ship.halite > 0) {
-                command_queue.push_back(ship.dump(ship.halite));
+            // If we're on our shipyard and have enough halite, remember this.
+            if (ship.location == game.me().shipyard.location) {
                 at_home = true;
+                // Halite gets collected automatically when we move
+                // over the shipyard.
             }
+
             // Otherwise, check if there's a reasonable amount of halite on the square and we have capacity.
             // If so, extract halite. If not, move randomly.
-            else if (game.game_map[ship.location] > hlt::MAX_HALITE / 10 &&
+            if (game.game_map[ship.location] > hlt::MAX_HALITE / 10 &&
                      !ship.is_full()) {
                 continue; // Do nothing, which is to say, extract halite.
             }
@@ -48,8 +49,7 @@ int main() {
         if (turn_number <= 200 &&
             game.players[game.my_id].halite >= hlt::SHIP_COST &&
             !at_home) {
-            // We don't want to put any halite in the newly spawned ship.
-            command_queue.push_back(game.me().shipyard.spawn(0));
+            command_queue.push_back(game.me().shipyard.spawn());
         }
 
         // Send our moves back to the game environment

@@ -42,16 +42,6 @@ void CommandTransaction::add_expense(const Player &player, const Command &comman
 }
 
 /**
- * Add a DumpCommand to the transaction.
- * @param player The player executing the command.
- * @param command The command.
- */
-void CommandTransaction::add_command(Player &player, const DumpCommand &command) {
-    add_occurrence(command.entity, command);
-    dump_transaction.add_command(player, command);
-}
-
-/**
  * Add a ConstructCommand to the transaction.
  * @param player The player executing the command.
  * @param command The command.
@@ -78,7 +68,7 @@ void CommandTransaction::add_command(Player &player, const MoveCommand &command)
  * @param command The command.
  */
 void CommandTransaction::add_command(Player &player, const SpawnCommand &command) {
-    add_expense(player, command, Constants::get().NEW_ENTITY_ENERGY_COST + command.energy);
+    add_expense(player, command, Constants::get().NEW_ENTITY_ENERGY_COST);
     spawn_transaction.add_command(player, command);
 }
 
