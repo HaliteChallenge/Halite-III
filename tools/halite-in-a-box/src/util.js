@@ -3,6 +3,8 @@ import { remote as electronRemote, shell } from 'electron';
 import fs from 'fs';
 import readline from 'readline';
 
+import { pythonPath, pythonPackagePath, appData } from './assets';
+
 const DONE_READING = Symbol();
 
 export const WEBSITE_URL = 'http://35.241.33.112';
@@ -10,7 +12,15 @@ export const API_SERVER_URL = 'http://35.190.92.101/v1';
 
 export async function* call(args) {
     const fullArgs = ['-m', 'hlt_client', '--json'].concat(args);
-    const subprocess = spawn('python', fullArgs);
+    const pythonModulePath = [
+        appData(),
+        pythonPackagePath(),
+    ];
+    const subprocess = spawn(pythonPath(), fullArgs, {
+        env: {
+            'PYTHONPATH': pythonModulePath.join(':'),
+        },
+    });
     const rl = readline.createInterface({
         input: subprocess.stdout,
         crlfDelay: Infinity,
@@ -26,6 +36,8 @@ export async function* call(args) {
     let currentPromise = makePromise();
 
     const buffer = [];
+
+    subprocess.stderr.on('data', (a) => console.log(new TextDecoder("utf-8").decode(a)));
 
     rl.on('line', (line) => {
         const result = JSON.parse(line);
