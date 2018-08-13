@@ -38,16 +38,30 @@ export function appData() {
     return dataDir;
 }
 
+// TODO: auto-download
+// TODO: change for Windows/Linux
+
 export function pythonPath() {
-    return path.join(pythonBasePath(), 'MacOS/python');
+    if (process.platform === 'darwin') {
+        return path.join(pythonBasePath(), 'MacOS/python');
+    }
+    return 'python3';
 }
 
 export function pythonBasePath() {
-    return path.join(appData(), 'python-macos/Contents');
+    if (process.platform === 'darwin') {
+        return path.join(appData(), 'python-macos/Contents');
+    }
+    return '';
 }
 
-export function pythonPackagePath() {
-    return path.join(pythonBasePath(), 'Resources/lib/python37.zip') + ':' + path.join(pythonBasePath(), 'Resources/lib/python3.7/lib-dynload');
+export function pythonPackagePath(otherPackages) {
+    const packages = [].concat(otherPackages);
+    if (process.platform === 'darwin') {
+        packages.push(path.join(pythonBasePath(), 'Resources/lib/python37.zip'));
+        packages.push(path.join(pythonBasePath(), 'Resources/lib/python3.7/lib-dynload'));
+    }
+    return packages.join(':');
 }
 
 export function toolsPath() {

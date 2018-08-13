@@ -12,13 +12,9 @@ export const API_SERVER_URL = 'http://35.190.92.101/v1';
 
 export async function* call(args) {
     const fullArgs = ['-m', 'hlt_client', '--json'].concat(args);
-    const pythonModulePath = [
-        appData(),
-        pythonPackagePath(),
-    ];
     const subprocess = spawn(pythonPath(), fullArgs, {
         env: {
-            'PYTHONPATH': pythonModulePath.join(':'),
+            'PYTHONPATH': pythonPackagePath([ appData() ]),
         },
     });
     const rl = readline.createInterface({
@@ -37,7 +33,7 @@ export async function* call(args) {
 
     const buffer = [];
 
-    subprocess.stderr.on('data', (a) => console.log(new TextDecoder("utf-8").decode(a)));
+    subprocess.stderr.on('data', (a) => console.warn(new TextDecoder("utf-8").decode(a)));
 
     rl.on('line', (line) => {
         const result = JSON.parse(line);
