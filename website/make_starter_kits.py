@@ -32,6 +32,7 @@ ENVIRONMENT_OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_{platform}.zip"
 ALL_LANGUAGES_OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_all_{platform}.zip"
 SOURCE_FILE = "assets/downloads/Halite3Source.zip"
 BENCHMARK_FILE = "assets/downloads/Halite3Benchmark.zip"
+TOOLS_FILE = "assets/downloads/Halite3Tools.zip"
 
 versions =  {"Python3" : "1.0", "C++" : "1.0", "Java" : "1.0", "CSharp" : "1.0" ,"JavaScript": "1.0",
 "ML-StarterBot-Python":"1.0", "Rust" : "1.0", "Scala" : "1.0", "Go" : "1.0", "Ruby" : "1.0-beta" , "Kotlin" : "0.9.0-beta", "Clojure" : "0.9.0-beta", "Julia" : "0.9.0-beta", "OCaml" : "0.9.0-beta", "Haskell" : "0.9.0-beta", "Elixir" : "0.9.0-beta", "PHP": "0.9.0-beta","Dart": "0.9.0-beta", "Swift": "0.9.0-beta",  "Cython3": "0.9.0-beta","FSharp": "0.9.0-beta",}
@@ -127,6 +128,22 @@ def make_benchmark_download():
             archive.write(source_path, target_path)
 
 
+def make_tools_download():
+    included_files = []
+    for directory, _, file_list in os.walk("../tools/hlt_client/hlt_client"):
+        for filename in file_list:
+            _, ext = os.path.splitext(filename)
+            if ext.lower() in {".py"}:
+                source_path = os.path.join(directory, filename)
+                target_path = os.path.normpath(
+                    os.path.join("hlt_client/", filename))
+                included_files.append((source_path, target_path))
+
+    with zipfile.ZipFile(TOOLS_FILE, "w", zipfile.ZIP_DEFLATED) as archive:
+        for source_path, target_path in included_files:
+            archive.write(source_path, target_path)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("version", help=VERSION_HELP)
@@ -146,6 +163,7 @@ def main():
 
     make_source_download()
     make_benchmark_download()
+    make_tools_download()
 
     # Keep paths of all source files around so we can make a single combined
     # download at the end
@@ -198,10 +216,16 @@ def main():
         "platforms": [environment[0] for environment in environments],
         "languages": [],
         "environments": [],
-        "tools": [{
-            "name": "Benchmark Bots",
-            "files": [BENCHMARK_FILE],
-        }],
+        "tools": [
+            {
+                "name": "Benchmark Bots",
+                "files": [BENCHMARK_FILE],
+            },
+            {
+                "name": "CLI Client",
+                "files": [TOOLS_FILE],
+            },
+        ],
         "source": SOURCE_FILE,
         "version": args.version,
     }
