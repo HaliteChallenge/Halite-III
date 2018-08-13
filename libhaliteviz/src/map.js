@@ -338,13 +338,13 @@ export class Map {
                 const bg = this.renderer.backgroundColor;
                 cell.tint = alphaBlend(base, bg, baseOpacity);
                 // TWEAK: uncomment to make size vary with amount of halite
-                if (production_fraction == 0 ) {
-                    cell.width = 0
-                    cell.height = 0
+                if (production_fraction <= 0.2) {
+                    cell.width = Math.sqrt(production_fraction) * this.scale
+                    cell.height = Math.sqrt(production_fraction) * this.scale
                 }
                 else {
-                    cell.width = (0.2 + 0.8 * production_fraction) * this.scale;
-                    cell.height = (0.2 + 0.8 * production_fraction) * this.scale;    
+                    cell.width = (0.3 + 0.7 * production_fraction) * this.scale;
+                    cell.height = (0.3 + 0.7 * production_fraction) * this.scale;    
                 }
                 const [ cellX, cellY ] = this.camera.worldToCamera(col, row);
                 cell.position.x = (cellX + 0.5) * this.scale;
