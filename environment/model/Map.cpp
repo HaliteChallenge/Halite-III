@@ -82,6 +82,9 @@ void Map::move_location(Location &location, const Direction &direction) const {
     case Direction::West:
         x = (x + width - 1) % width;
         break;
+    case Direction::Still:
+        // Don't move
+        break;
     }
 }
 

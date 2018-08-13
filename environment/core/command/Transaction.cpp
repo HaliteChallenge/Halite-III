@@ -153,6 +153,10 @@ void MoveTransaction::commit() {
     for (auto &[player_id, moves] : commands) {
         auto &player = store.get_player(player_id);
         for (const MoveCommand &command : moves) {
+            // If entity remained still, treat it as a no-op command.
+            if (command.direction == Direction::Still) {
+                continue;
+            }
             auto location = player.get_entity_location(command.entity);
             auto &source = map.at(location);
             // Check if entity has enough energy

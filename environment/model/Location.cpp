@@ -37,6 +37,9 @@ bool from_char(const char direction_char, Direction &direction) {
     case static_cast<char>(Direction::West):
         direction = Direction::West;
         return true;
+    case static_cast<char>(Direction::Still):
+        direction = Direction::Still;
+        return true;
     default:
         return false;
     }

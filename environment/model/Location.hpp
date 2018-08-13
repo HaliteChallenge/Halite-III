@@ -16,6 +16,7 @@ enum class Direction : char {
     South = 's',
     East = 'e',
     West = 'w',
+    Still = 'o',
 };
 
 /**
