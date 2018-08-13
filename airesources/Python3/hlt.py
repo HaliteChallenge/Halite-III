@@ -168,12 +168,6 @@ class Ship:
         """
         return "m {} {}".format(self.id, direction)
 
-    def dump(self, amount):
-        """
-        Return a move to dump halite from this ship.
-        """
-        return "d {} {}".format(self.id, amount)
-
     def __repr__(self):
         return "Ship(id={}, {}, cargo={} halite)".format(self.id, self.location, self.halite)
 
