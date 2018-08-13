@@ -5,60 +5,37 @@ export class Statistics {
     constructor(replay) {
         this.frames = [];
 
-        for (let frameIdx = 0; frameIdx < replay.frames.length; frameIdx++) {
-            let frameStats = {
+        for (let frameIdx = 0; frameIdx < replay.full_frames.length; frameIdx++) {
+            const frameStats = {
                 players: {},
             };
 
-            let curFrame = replay.frames[frameIdx];
+            const curFrame = replay.full_frames[frameIdx];
 
-            for (let playerId of Object.keys(replay.player_names)) {
+            for (const playerId of Object.keys(replay.players)) {
                 let playerStats = {
                     totalShips: 0,
-                    totalTargets: 0,
-                    totalAttacks: 0,
-                    totalHealths: 0,
-                    totalDamages: 0,
-                    currentProductions: 0,
-                    currentAttacks: 0
+                    currentShips: 0,
+                    currentEnergy: 0,
                 };
 
                 if (frameIdx > 0) {
                     let prevFrameStats = this.frames[this.frames.length - 1].players[playerId];
                     playerStats = Object.assign({}, prevFrameStats);
+                }
 
+                if (curFrame.entities) {
+                    playerStats.currentShips = Object.keys(curFrame.entities[playerId] || {}).length;
+                }
+                if (curFrame.energy && typeof curFrame.energy[playerId] !== "undefined") {
+                    playerStats.currentEnergy = curFrame.energy[playerId];
                 }
 
                 frameStats.players[playerId] = playerStats;
-
-                // health: reset from previous frame
-                if (curFrame.ships) {
-                    frameStats.players[playerId].totalHealths = 0;
-                    for(let ship of Object.values(curFrame.ships[playerId])) {
-                        frameStats.players[playerId].totalHealths += ship.health;
-                    }
-                }
-
-                // currentProductions: reset from previous frame
-                frameStats.players[playerId].currentProductions = 0;
-
-                // currentAttacks: reset from previous frame
-                frameStats.players[playerId].currentAttacks = 0;
             }
 
             if (curFrame.events) {
                 for (let event of curFrame.events) {
-                    if (event.event === "spawned") {
-                        frameStats.players[event.entity.owner].totalShips++;
-                        frameStats.players[event.entity.owner].currentProductions++;
-                    }
-                    else if (event.event === "attack") {
-                        frameStats.players[event.entity.owner].totalTargets += event.targets.length;
-                        frameStats.players[event.entity.owner].totalAttacks++;
-                        frameStats.players[event.entity.owner].currentAttacks++;
-                        // damage: should accounts for distance from ship to targets
-                        frameStats.players[event.entity.owner].totalDamages += replay.constants.WEAPON_DAMAGE;
-                    }
                 }
             }
 
