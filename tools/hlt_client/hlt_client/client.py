@@ -252,8 +252,6 @@ def main():
                                     args.game_output_dir,
                                     args.map_width, args.map_height,
                                     args.run_commands, args.iterations, [])
-        elif args.mode == GUI_MODE:
-            gui.launch()
     except (IndexError, TypeError, ValueError, IOError) as err:
         output.error(str(err))
         exit(-1)
