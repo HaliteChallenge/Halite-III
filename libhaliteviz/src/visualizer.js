@@ -80,7 +80,7 @@ export class HaliteVisualizer {
             this.width, this.height,
             {
                 // TWEAK: background color (most visible with circles)
-                backgroundColor: 0x000000,
+                backgroundColor: 0x141EA0, // greener blue 0x2CF2DF //  darker green blue  0x34CBD3// darker blue 0x141EA0, // lighter blue 0x0938BB, // 0x000000, // cyan 0x5AE4EF,
                 antialias: true,
                 resolution: 1,
             }
