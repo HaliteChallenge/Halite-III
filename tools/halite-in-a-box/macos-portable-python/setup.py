@@ -7,7 +7,7 @@ Usage:
 
 from setuptools import setup
 
-APP = ['everything.py']
+APP = ['python-macos.py']
 DATA_FILES = []
 OPTIONS = {}
 
