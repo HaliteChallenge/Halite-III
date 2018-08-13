@@ -19,11 +19,7 @@ export async function getBotManifest() {
 
 }
 
-/**
- * Make sure the environment, benchmark bots, and other assets are
- * prepared and up-to-date.
- */
-export default async function assets() {
+export function appData() {
     // Create directory in application data directory
     const dataDir = path.join(electronRemote.app.getPath('appData'),
                               'halite-in-a-box');
@@ -39,6 +35,31 @@ export default async function assets() {
             throw e;
         }
     }
+    return dataDir;
+}
+
+export function pythonPath() {
+    return path.join(pythonBasePath(), 'MacOS/python');
+}
+
+export function pythonBasePath() {
+    return path.join(appData(), 'python-macos/Contents');
+}
+
+export function pythonPackagePath() {
+    return path.join(pythonBasePath(), 'Resources/lib/python37.zip') + ':' + path.join(pythonBasePath(), 'Resources/lib/python3.7/lib-dynload');
+}
+
+export function toolsPath() {
+    return path.join(appData(), 'hlt_client');
+}
+
+/**
+ * Make sure the environment, benchmark bots, and other assets are
+ * prepared and up-to-date.
+ */
+export default async function assets() {
+    const dataDir = appData();
 
     console.info(`Data directory: ${dataDir}`);
 
