@@ -8,7 +8,7 @@
             <p>Bot path: {{localBot}}</p>
             <button @click="benchmark">Benchmark</button>
             <button>Gym</button>
-            <button @click="upload">Upload</button>
+            <button @click="upload">Submit</button>
             <button @click="chooseLocalBot">Select Different Bot</button>
         </template>
         <template v-else>
