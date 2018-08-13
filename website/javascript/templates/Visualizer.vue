@@ -8,20 +8,20 @@
           <p class="game-heading-date" v-if="game">{{game.time_played | moment("MMM Do, YY - HH:mm:ss")}}</p>
           <div class="game-heading-players">
             <div class="short">
-              <span :class="`player color-${sortedPlayers[0].index + 1}`" v-if="sortedPlayers.length">
+              <span :class="`player color-${sortedPlayers[0].index + 1}`" v-if="sortedPlayers.length >= 1">
                 <TierPopover :tier="tierClass(sortedPlayers[0].tier)"/>
                 <a v-if="sortedPlayers[0].id" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].id}`">{{sortedPlayers[0].name}}</a>
                 <span v-if="!sortedPlayers[0].id" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
               </span>
               <span class="action">defeats</span>
-              <span :class="`player color-${sortedPlayers[1].index + 1}`" v-if="sortedPlayers.length">
+              <span :class="`player color-${sortedPlayers[1].index + 1}`" v-if="sortedPlayers.length >= 2">
                 <TierPopover :tier="tierClass(sortedPlayers[1].tier)"/>
                 <a class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[1].id}`">{{sortedPlayers[1].name}}</a>
               </span>
               <span class="action" v-if="sortedPlayers.length > 2">+{{sortedPlayers.length - 2}}</span>
             </div>
             <div class="long">
-              <span :class="`player color-${sortedPlayers[0].index + 1}`" v-if="sortedPlayers.length">
+              <span :class="`player color-${sortedPlayers[0].index + 1}`" v-if="sortedPlayers.length >= 1">
                 <TierPopover :tier="tierClass(sortedPlayers[0].tier)"/>
                 <a v-if="sortedPlayers[0].id" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].id}`">{{sortedPlayers[0].name}}</a>
                 <span v-if="!sortedPlayers[0].id" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
