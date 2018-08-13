@@ -22,6 +22,9 @@ std::string direction_to_string(Direction direction) {
     case Direction::West:
         result = "west";
         break;
+    case Direction::Still:
+        result = "still";
+        break;
     }
     return result;
 }
