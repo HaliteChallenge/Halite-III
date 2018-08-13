@@ -48,7 +48,8 @@ namespace hlt {
         NORTH = 'n',
         EAST = 'e',
         SOUTH = 's',
-        WEST = 'w'
+        WEST = 'w',
+        STILL = 'o',
     };
 
     static std::ostream & operator<<(std::ostream & ostream, const Direction & direction) {
@@ -79,6 +80,9 @@ namespace hlt {
                 break;
             case Direction::WEST:
                 dx = -1;
+                break;
+            case Direction::STILL:
+                // No move
                 break;
             }
             return Location{x + dx, y + dy};
