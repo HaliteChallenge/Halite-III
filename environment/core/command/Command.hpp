@@ -18,7 +18,6 @@ public:
     enum Name : char {
         Move = 'm',
         Spawn = 'g',
-        Dump = 'd',
         Construct = 'c'
     };
 
@@ -136,31 +135,6 @@ public:
      * @param energy The energy to use.
      */
     explicit SpawnCommand() {}
-};
-
-class DumpCommand final : public TransactableCommand<DumpCommand> {
-public:
-    const Entity::id_type entity; /**< The entity from which to dump. */
-    const energy_type energy;     /**< The amount to dump. */
-
-    /**
-     * Convert a DumpCommand to JSON format.
-     * @param[out] json The JSON output.
-     */
-    void to_json(nlohmann::json &json) const override;
-
-    /**
-     * Convert to bot serial format.
-     * @return The serialized command.
-     */
-    std::string to_bot_serial() const override;
-
-    /**
-     * Construct DumpCommand from entity and energy.
-     * @param entity The entity from which to dump.
-     * @param energy The amount of energy to dump.
-     */
-    DumpCommand(const Entity::id_type &entity, energy_type energy) : entity(entity), energy(energy) {}
 };
 
 /** Command to construct a drop zone. */

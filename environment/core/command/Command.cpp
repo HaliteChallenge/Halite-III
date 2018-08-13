@@ -59,13 +59,6 @@ std::istream &operator>>(std::istream &istream, std::unique_ptr<Command> &comman
             command = std::make_unique<SpawnCommand>();
             break;
         }
-        case Command::Name::Dump: {
-            Entity::id_type entity;
-            energy_type energy{};
-            istream >> entity >> energy;
-            command = std::make_unique<DumpCommand>(entity, energy);
-            break;
-        }
         case Command::Name::Construct: {
             Entity::id_type entity;
             istream >> entity;
@@ -121,24 +114,6 @@ void SpawnCommand::to_json(nlohmann::json &json) const {
  */
 std::string SpawnCommand::to_bot_serial() const {
     return to_string(Name::Spawn);
-}
-
-/**
- * Convert a DumpCommand to JSON format.
- * @param[out] json The JSON output.
- */
-void DumpCommand::to_json(nlohmann::json &json) const {
-    json = {{JSON_TYPE_KEY,   to_string(Name::Dump)},
-            {JSON_ENTITY_KEY, entity},
-            {JSON_ENERGY_KEY, energy}};
-}
-
-/**
- * Convert to bot serial format.
- * @return The serialized command.
- */
-std::string DumpCommand::to_bot_serial() const {
-    return to_string(Name::Dump) + " " + to_string(entity) + " " + std::to_string(energy);
 }
 
 /**

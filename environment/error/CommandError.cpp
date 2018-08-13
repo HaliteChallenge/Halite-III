@@ -56,20 +56,6 @@ std::string ExcessiveSpawnsError::log_message() const {
  * @return The message.
  */
 template<>
-std::string EntityNotFoundError<DumpCommand>::log_message() const {
-    std::ostringstream stream;
-    stream << "unknown entity "
-           << command().entity
-           << " was requested to dump "
-           << command().energy;
-    return stream.str();
-}
-
-/**
- * Get a message for the player log.
- * @return The message.
- */
-template<>
 std::string EntityNotFoundError<ConstructCommand>::log_message() const {
     std::ostringstream stream;
     stream << "unknown entity "
@@ -106,23 +92,6 @@ std::string InsufficientEnergyError<MoveCommand>::log_message() const {
            << " energy to move "
            << direction_to_string(command().direction)
            << ", but only "
-           << available
-           << " energy was available";
-    return stream.str();
-}
-
-/**
- * Get a message for the player log.
- * @return The message.
- */
-template<>
-std::string InsufficientEnergyError<DumpCommand>::log_message() const {
-    std::ostringstream stream;
-    stream << "entity "
-           << command().entity
-           << " was directed to dump "
-           << requested
-           << " energy, but only "
            << available
            << " energy was available";
     return stream.str();

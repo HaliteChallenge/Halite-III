@@ -32,21 +32,14 @@ class CommandTransaction final : public BaseTransaction {
     void add_expense(const Player &player, const Command &command, energy_type amount);
 
 public:
-    DumpTransaction dump_transaction;           /**< The DumpCommand transaction. */
+    DumpTransaction dump_transaction;           /**< The transaction for auto-dumping. */
     ConstructTransaction construct_transaction; /**< The ConstructCommand transaction. */
     MoveTransaction move_transaction;           /**< The MoveCommand transaction. */
     SpawnTransaction spawn_transaction;         /**< The SpawnCommand transaction. */
 
     /** All of the transactions, in commit order. */
     std::vector<std::reference_wrapper<BaseTransaction>> all_transactions
-            {dump_transaction, construct_transaction, move_transaction, spawn_transaction};
-
-    /**
-     * Add a DumpCommand to the transaction.
-     * @param player The player executing the command.
-     * @param command The command.
-     */
-    void add_command(Player &player, const DumpCommand &command);
+        {construct_transaction, move_transaction, dump_transaction, spawn_transaction};
 
     /**
      * Add a ConstructCommand to the transaction.
