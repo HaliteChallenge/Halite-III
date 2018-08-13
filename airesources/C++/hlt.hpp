@@ -135,17 +135,6 @@ namespace hlt {
         }
     };
 
-    struct Dump : Command {
-        id_type id;
-        halite_type amount;
-
-        Dump(id_type id, halite_type amount) : id{id}, amount{amount} {}
-
-        void send() const override {
-            std::cout << "d " << id << " " << amount;
-        }
-    };
-
     struct Construct : Command {
         id_type id;
 
@@ -164,7 +153,6 @@ namespace hlt {
         bool is_full() const { return halite >= MAX_HALITE; }
 
         std::unique_ptr<Command> move_unsafe(Direction d) const { return std::make_unique<Move>(id, d); }
-        std::unique_ptr<Command> dump(halite_type amount) const { return std::make_unique<Dump>(id, amount); }
         std::unique_ptr<Command> construct() const { return std::make_unique<Construct>(id); }
     };
 
