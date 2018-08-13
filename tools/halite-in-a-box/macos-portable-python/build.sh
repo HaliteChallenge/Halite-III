@@ -7,4 +7,5 @@ else
 fi
 
 python setup.py py2app
-zip -r python-macos.zip dist/python-macos.app
+cd dist/
+zip -r ../python-macos.zip python-macos.app
