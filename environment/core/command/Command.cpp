@@ -56,9 +56,7 @@ std::istream &operator>>(std::istream &istream, std::unique_ptr<Command> &comman
             break;
         }
         case Command::Name::Spawn: {
-            energy_type energy;
-            istream >> energy;
-            command = std::make_unique<SpawnCommand>(energy);
+            command = std::make_unique<SpawnCommand>();
             break;
         }
         case Command::Name::Dump: {
@@ -114,8 +112,7 @@ std::string MoveCommand::to_bot_serial() const {
  * @param[out] json The JSON output.
  */
 void SpawnCommand::to_json(nlohmann::json &json) const {
-    json = {{JSON_TYPE_KEY,   to_string(Name::Spawn)},
-            {JSON_ENERGY_KEY, energy}};
+    json = {{JSON_TYPE_KEY,   to_string(Name::Spawn)}};
 }
 
 /**
@@ -123,7 +120,7 @@ void SpawnCommand::to_json(nlohmann::json &json) const {
  * @return The serialized command.
  */
 std::string SpawnCommand::to_bot_serial() const {
-    return to_string(Name::Spawn) + " " + std::to_string(energy);
+    return to_string(Name::Spawn);
 }
 
 /**

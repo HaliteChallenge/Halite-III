@@ -35,6 +35,6 @@ while True:
     # Don't spawn a ship if we currently have a ship at port, though.
     if turn_number <= 200 and me.halite >= hlt.SHIP_COST and not at_home:
         # We don't want to put any halite in the newly spawned ship.
-        command_queue.append(me.shipyard.spawn(0))
+        command_queue.append(me.shipyard.spawn())
 
     game.end_turn(command_queue) # Send our moves back to the game environment

@@ -38,7 +38,7 @@ public class MyBot {
             // Spawn a ship if we're in the start or middle of the game
             // and if we have the available halite
             if (turnNumber <= 200 && me.getHalite() >= Constants.SHIP_COST && !atHome)  {
-                commandQueue.add(me.getShipyard().spawn(0));
+                commandQueue.add(me.getShipyard().spawn());
             }
 
             //Send back our commands

@@ -1,15 +1,11 @@
 package hlt.command;
 
 public class Spawn implements Command {
-    private int amount;
-
-    public Spawn(int amount) {
-        this.amount = amount;
+    public Spawn() {
     }
 
     @Override
     public void build(StringBuilder sb) {
-        sb.append("g ");
-        sb.append(amount);
+        sb.append("g");
     }
 }

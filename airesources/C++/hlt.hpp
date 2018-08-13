@@ -117,12 +117,10 @@ namespace hlt {
     };
 
     struct Spawn : Command {
-        halite_type initial_fuel;
-
-        Spawn(halite_type initial_fuel) : initial_fuel{initial_fuel} {}
+        Spawn() {}
 
         void send() const override {
-            std::cout << "g " << initial_fuel;
+            std::cout << "g";
         }
     };
 
@@ -182,8 +180,8 @@ namespace hlt {
         Shipyard() : Dropoff() {}
         Shipyard(Location location) : Dropoff(0, location) {}
 
-        std::unique_ptr<Command> spawn(halite_type initial_fuel) {
-            return std::make_unique<Spawn>(initial_fuel);
+        std::unique_ptr<Command> spawn() {
+            return std::make_unique<Spawn>();
         }
     };
 

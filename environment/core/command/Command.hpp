@@ -119,9 +119,6 @@ public:
 /** Command for spawning an entity. */
 class SpawnCommand final : public TransactableCommand<SpawnCommand> {
 public:
-    /** The amount of energy to give the new entity. */
-    const energy_type energy;
-
     /**
      * Convert a SpawnCommand to JSON format.
      * @param[out] json The JSON output.
@@ -138,7 +135,7 @@ public:
      * Create SpawnCommand from energy.
      * @param energy The energy to use.
      */
-    explicit SpawnCommand(energy_type energy) : energy(energy) {}
+    explicit SpawnCommand() {}
 };
 
 class DumpCommand final : public TransactableCommand<DumpCommand> {

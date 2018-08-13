@@ -273,15 +273,14 @@ void SpawnTransaction::commit() {
     for (const auto &[player_id, spawns] : commands) {
         for (const SpawnCommand &spawn : spawns) {
             auto &player = store.get_player(player_id);
-            auto energy = spawn.energy;
-            player.energy -= cost + energy;
+            player.energy -= cost;
             auto &cell = map.at(player.factory);
             if (cell.entity == Entity::None) {
-                auto &entity = store.new_entity(energy, player.id);
+                auto &entity = store.new_entity(0, player.id);
                 player.add_entity(entity.id, player.factory);
                 cell.entity = entity.id;
                 entity_updated(entity.id);
-                event_generated<SpawnEvent>(player.factory, energy, player.id, entity.id);
+                event_generated<SpawnEvent>(player.factory, 0, player.id, entity.id);
             } else {
                 error_generated<SelfCollisionError<SpawnCommand>>(player_id, spawn, ErrorContext(), player.factory,
                                                                   std::vector<Entity::id_type>{cell.entity},
@@ -290,7 +289,7 @@ void SpawnTransaction::commit() {
                 // There is a collision, destroy the existing.
                 auto &entity = store.get_entity(cell.entity);
                 auto &player = store.get_player(entity.owner);
-                player.energy += entity.energy + energy;
+                player.energy += entity.energy;
                 player.remove_entity(cell.entity);
                 store.delete_entity(cell.entity);
                 cell.entity = Entity::None;

@@ -185,9 +185,9 @@ class Dropoff:
 
 
 class Shipyard(Dropoff):
-    def spawn(self, energy):
+    def spawn(self):
         """Return a move to spawn a new ship."""
-        return "g {}".format(energy)
+        return "g"
 
 
 class Game:

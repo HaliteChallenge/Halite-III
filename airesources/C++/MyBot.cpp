@@ -48,8 +48,7 @@ int main() {
         if (turn_number <= 200 &&
             game.players[game.my_id].halite >= hlt::SHIP_COST &&
             !at_home) {
-            // We don't want to put any halite in the newly spawned ship.
-            command_queue.push_back(game.me().shipyard.spawn(0));
+            command_queue.push_back(game.me().shipyard.spawn());
         }
 
         // Send our moves back to the game environment

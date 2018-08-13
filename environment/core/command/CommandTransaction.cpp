@@ -78,7 +78,7 @@ void CommandTransaction::add_command(Player &player, const MoveCommand &command)
  * @param command The command.
  */
 void CommandTransaction::add_command(Player &player, const SpawnCommand &command) {
-    add_expense(player, command, Constants::get().NEW_ENTITY_ENERGY_COST + command.energy);
+    add_expense(player, command, Constants::get().NEW_ENTITY_ENERGY_COST);
     spawn_transaction.add_command(player, command);
 }
 
