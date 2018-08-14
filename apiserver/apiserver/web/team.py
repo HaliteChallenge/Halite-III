@@ -7,6 +7,8 @@ import secrets
 import flask
 import sqlalchemy
 
+from profanity import profanity
+
 from .. import model, util
 
 from . import util as web_util
@@ -132,6 +134,9 @@ def list_teams():
 def create_team(*, user_id):
     if "name" not in flask.request.json:
         raise util.APIError(400, message="Please provide a team name.")
+
+    if profanity.contains_profanity(flask.request.json["name"]):
+        raise util.APIError(400, message="Invalid team name.")
 
     team_name = "Team " + flask.request.json["name"]
 

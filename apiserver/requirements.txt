@@ -29,6 +29,7 @@ MarkupSafe==1.0
 oauth2client==4.1.1
 oauthlib==2.0.2
 passlib==1.7.1
+profanity==1.1
 protobuf==3.3.0
 psycopg2-binary==2.7.5
 pyasn1==0.4.3
