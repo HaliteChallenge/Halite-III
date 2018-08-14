@@ -7,6 +7,7 @@ import time
 import urllib.parse
 
 import flask
+import sqlalchemy
 from flask_cors import cross_origin as flask_cross_origin
 
 from . import config
@@ -94,6 +95,41 @@ def response_success(more=None, status_code=200):
     if more is not None:
         response.update(more)
     return flask.jsonify(response), status_code
+
+
+def validate_api_key(api_key):
+    """
+    Validate the given API key and retrieve the corresponding user record.
+
+    :raises: APIError if the key is invalid
+    """
+    if not api_key:
+        return None
+
+    if ":" not in api_key:
+        raise APIError(403, message="API key is in invalid format.")
+
+    # Lazy import to avoid circularity
+    from . import model
+
+    user_id, api_key = api_key.split(":", 1)
+    user_id = int(user_id)
+    with model.read_conn() as conn:
+        user = conn.execute(sqlalchemy.sql.select([
+            model.users.c.id.label("user_id"),
+            model.users.c.is_admin,
+            model.users.c.api_key_hash,
+            model.users.c.is_email_good,
+            model.users.c.is_active,
+        ]).where(model.users.c.id == user_id)).first()
+
+        if not user:
+            return None
+
+        if config.api_key_context.verify(api_key, user["api_key_hash"]):
+            return user
+
+    return None
 
 
 def build_site_url(page, params, base_url=config.SITE_URL):

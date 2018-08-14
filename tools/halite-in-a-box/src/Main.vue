@@ -60,13 +60,19 @@
         },
         methods: {
             async checkLogin() {
+                let loggedIn = false;
                 for await (const value of util.call(['auth', '-m'])) {
-                    this.loggedIn = value.status === "success";
-                    if (this.loggedIn) {
+                    loggedIn = value.status === "success";
+                    if (loggedIn) {
                         this.apiKey = value.api_key;
                         this.userId = value.id;
                     }
                 }
+                const request = await util.fetchApi(this.apiKey, 'login/me');
+                const verification = await request.json();
+
+                this.loggedIn = loggedIn && verification;
+
                 return this.loggedIn;
             },
             async updateRemoteBot() {
