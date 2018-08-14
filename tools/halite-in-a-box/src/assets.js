@@ -41,7 +41,9 @@ export function appData() {
 // TODO: change for Windows/Linux
 
 export function embeddedResourcesPath() {
-    if (electronRemote.app.isPackaged) {
+    // TODO: use remote.app.isPackaged in newer Electron
+    // (see https://github.com/electron/electron/issues/7714)
+    if (process.mainModule.filename.indexOf('app.asar') !== -1) {
         // .app/production executable, use resourcesPath
         return path.join(process.resourcesPath, 'extra');
     }
