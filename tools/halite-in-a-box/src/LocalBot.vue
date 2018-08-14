@@ -64,20 +64,19 @@
             },
 
             async benchmark() {
-                // TODO: loading screen
+                // Should have been loaded before
                 const paths = await assets();
 
                 const action = await this.showModal('benchmark-modal', {
                     status: 'setup',
                     benchmarkBots: paths.benchmarkBots,
                 });
-                console.log(action);
                 if (action === 'cancel') {
                     this.closeModal();
                     return;
                 }
 
-                const params = ['gym', '-i', action.games,
+                const params = ['play', '-i', action.games,
                                 '-b', paths.environmentPath,
                                 '--output-dir', paths.replayDir,
                                 '-r', 'python3 ' + this.localBot];
@@ -87,7 +86,6 @@
                     name: '(your bot)',
                 }];
 
-                // TODO: input validation
                 for (const bot of action.bots) {
                     stats.push({
                         won: 0,

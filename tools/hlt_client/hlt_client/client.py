@@ -37,11 +37,12 @@ API_KEY_HEADER = 'X-API-KEY'
 
 AUTH_MODE = 'auth'
 GYM_MODE = 'gym'
+PLAY_MODE = 'play'
 REPLAY_MODE = 'replay'
 BOT_MODE = 'bot'
 BOT_UPLOAD_MODE = 'upload'
 BOT_DOWNLOAD_MODE = 'download'
-MODES = str({AUTH_MODE, GYM_MODE, REPLAY_MODE, BOT_MODE})
+MODES = str({AUTH_MODE, GYM_MODE, PLAY_MODE, REPLAY_MODE, BOT_MODE})
 REPLAY_MODE_DATE = 'date'
 REPLAY_MODE_USER = 'user'
 
@@ -247,7 +248,7 @@ def main():
                                    getattr(args, 'date', None), getattr(args, 'all', None),
                                    Config().user_id if Config.auth_exists() else None, getattr(args, 'user_id', None),
                                    getattr(args, 'limit', None))
-        elif args.mode == GYM_MODE:
+        elif args.mode == PLAY_MODE:
             compare_bots.play_games(args.halite_binary,
                                     args.game_output_dir,
                                     args.map_width, args.map_height,

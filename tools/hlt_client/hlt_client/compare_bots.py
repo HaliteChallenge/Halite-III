@@ -78,7 +78,7 @@ def play_games(binary, game_output_dir, map_width, map_height, bot_commands, num
 
 
 def parse_arguments(subparser):
-    bot_parser = subparser.add_parser('gym', help='Train your Bot(s)!')
+    bot_parser = subparser.add_parser('play', help='Train your Bot(s)!')
     bot_parser.add_argument('-r', '--run-command',
                             dest='run_commands',
                             action='append',

@@ -6,7 +6,6 @@
             <template v-if="params.status === 'setup'">
                 <p v-if="error" class="error">{{error}}</p>
                 <fieldset>
-                    <!-- TODO: drag-and-drop bots from left to right so you can multiple copies of a bot -->
                     <legend>Select Bots (1 or 3)</legend>
                     <div class="draggables">
                         <div>
