@@ -12,6 +12,9 @@ _HALITE_LIBRARY_FOLDER = 'hlt/'
 _FIRST_BOT_INDEX = 0
 _VERSION_NUMBER_KEY = 'version_number'
 
+# File extensions included in a bot upload by default
+_BOT_FILE_EXTENSION_WHITELIST = {'.py', '.java', '.cpp', '.cxx', '.c', '.h', '.hpp'}
+
 
 def _bot_exists(user_id):
     """
@@ -92,6 +95,36 @@ def _zip_file_integrity_check(file_path):
         output.warning("WARNING: Could not find an hlt/ library folder. Proceeding with upload. {}".format(os.linesep))
 
 
+def _create_bot_upload(bot_path, extension_whitelist=None):
+    """
+    Given the path to a MyBot.* file, create a ZIP to upload.
+    """
+
+    if not extension_whitelist:
+        extension_whitelist = _BOT_FILE_EXTENSION_WHITELIST
+
+    files_to_include = []
+    for dirpath, _, filenames in os.walk(os.path.dirname(bot_path)):
+        for filename in filenames:
+            _, ext = os.path.splitext(filename)
+            if ext in extension_whitelist:
+                files_to_include.append(os.path.join(dirpath, filename))
+    output.print_list("Files that will be included:", files_to_include)
+    if dry_run:
+        output.output("Dry run, not continuing.")
+        return
+
+    # Create ZIP and upload
+    bot_file = io.BytesIO()
+    with zipfile.ZipFile(bot_file, mode='w') as bot_zip:
+        for filename in files_to_include:
+            destname = os.path.relpath(filename, os.path.dirname(bot_path))
+            bot_zip.write(filename, arcname=destname)
+
+    bot_file.seek(0)
+    return bot_file
+
+
 def upload(bot_path, dry_run):
     """
     Uploads the bot placed under bot_path. May only be called once Config is properly initialized.
@@ -106,24 +139,10 @@ def upload(bot_path, dry_run):
     # We only support this for Python bots (for now), though.
     bot_filename = os.path.basename(bot_path)
     if os.path.exists(bot_path) and bot_filename.startswith(_BOT_FILE_NAME_PREPEND):
-        files_to_include = []
-        for dirpath, _, filenames in os.walk(os.path.dirname(bot_path)):
-            for filename in filenames:
-                if filename.endswith(".py"):
-                    files_to_include.append(os.path.join(dirpath, filename))
-        output.print_list("Files that will be included:", files_to_include)
-        if dry_run:
-            output.output("Dry run, not continuing.")
+        bot_file = _create_bot_upload(bot_path)
+        if not bot_file:
+            # Dry run
             return
-
-        # Create ZIP and upload
-        bot_file = io.BytesIO()
-        with zipfile.ZipFile(bot_file, mode='w') as bot_zip:
-            for filename in files_to_include:
-                destname = os.path.relpath(filename, os.path.dirname(bot_path))
-                bot_zip.write(filename, arcname=destname)
-
-        bot_file.seek(0)
     else:
         _zip_file_integrity_check(bot_path)
         if not bot_path or not os.path.isfile(bot_path):
