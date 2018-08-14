@@ -6,8 +6,9 @@
         </header>
         <template v-if="localBot">
             <p>Bot path: {{localBot}}</p>
-            <button @click="benchmark">Benchmark</button>
-            <button>Gym</button>
+            <p v-if="message">{{message}}</p>
+            <button @click="benchmark" :disabled="!assetsReady">Benchmark</button>
+            <button :disabled="!assetsReady">Gym</button>
             <button @click="upload">Submit</button>
             <button @click="chooseLocalBot">Select Different Bot</button>
         </template>
@@ -37,12 +38,19 @@
         data() {
             return {
                 localBot: null,
+                assetsReady: false,
+                message: 'Preparing game environment...',
             };
         },
         mounted() {
             if (window.localStorage.getItem('local-bot-path')) {
                 this.localBot = window.localStorage.getItem('local-bot-path');
             }
+
+            assets().then(() => {
+                this.assetsReady = true;
+                this.message = null;
+            });
         },
         methods: {
             chooseLocalBot() {
