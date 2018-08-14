@@ -86,7 +86,7 @@
                         name: bot.name,
                     });
                     params.push('-r');
-                    if (bot === 'self') {
+                    if (bot.path === 'self') {
                         params.push(`python3 "${this.localBot}"`);
                     }
                     else {

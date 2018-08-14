@@ -8,20 +8,28 @@
                 <fieldset>
                     <!-- TODO: drag-and-drop bots from left to right so you can multiple copies of a bot -->
                     <legend>Select Bots (1 or 3)</legend>
-                    <div v-for="(bot, index) in params.benchmarkBots">
-                        <input
-                            type="checkbox"
-                            name="bots"
-                            :id="`bot-${index}`"
-                            :value="bot"
-                            v-model="bots"
-                        />
-                        <label :for="`bot-${index}`">{{bot.name}}</label>
+                    <div class="draggables">
+                        <div>
+                            <h3>Available Bots</h3>
+                            <draggable v-model="availableBots" :options="{group: {name: 'bots', pull: 'clone', put: false}}" >
+                                <div v-for="(bot, index) in availableBots" :key="index">
+                                    {{bot.name}}
+                                </div>
+                            </draggable>
+                        </div>
+                        <div>
+                            <h3>Selected Bots</h3>
+                            <draggable v-model="bots" :options="{group: {name: 'bots'}}" >
+                                <div v-for="(bot, index) in bots" :key="index">
+                                    {{bot.name}}
+                                </div>
+                            </draggable>
+                        </div>
                     </div>
-                    <div>
-                        <input type="checkbox" name="bots" id="bot-self" value="self" v-model="bots" />
-                        <label for="bot-self">(against itself)</label>
-                    </div>
+                    <!-- <div>
+                         <input type="checkbox" name="bots" id="bot-self" value="self" v-model="bots" />
+                         <label for="bot-self">(against itself)</label>
+                         </div> -->
                 </fieldset>
                 <label for="rounds">Number of games to play:</label>
                 <input type="number" name="rounds" id="rounds" v-model="rounds" min="1" />
@@ -101,10 +109,13 @@
 
 <script>
     import { shell } from 'electron';
+    import draggable from 'vuedraggable'
+
     import * as util from '../util';
 
     export default {
         props: ['event', 'params'],
+        components: { draggable },
         data() {
             return {
                 rounds: 10,
@@ -129,6 +140,19 @@
             },
             showErrorLog(path) {
                 shell.openItem(path);
+            },
+        },
+        computed: {
+            availableBots() {
+                const result = [];
+                for (const bot of this.params.benchmarkBots) {
+                    result.push(bot);
+                }
+                result.push({
+                    name: '(a copy of your bot)',
+                    path: 'self',
+                });
+                return result;
             },
         },
     }
@@ -162,6 +186,30 @@
             top: 1.5em;
             background: #FFF;
             background-clip: padding-box;
+        }
+    }
+
+    .draggables {
+        display: flex;
+
+        >div {
+            flex: 1;
+
+            h3 {
+                font-size: 1em;
+                font-style: italic;
+                margin: 0;
+            }
+
+            >div {
+                /* Draggable container */
+                min-height: 2em;
+            }
+        }
+
+        >div:last-child {
+            border-left: 0.1rem solid #d1d1d1;
+            padding-left: 0.5em;
         }
     }
 </style>
