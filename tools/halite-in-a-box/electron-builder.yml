@@ -1,0 +1,10 @@
+directories:
+  output: electron-dist
+files:
+  - index.html
+  - visualizer.html
+  - index.js
+  - dist/
+  - src/
+extraResources:
+  - extra/
