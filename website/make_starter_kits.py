@@ -5,6 +5,7 @@ Generate starter kit downloads and a download page.
 
 import argparse
 import glob
+import hashlib
 import itertools
 import json
 import os
@@ -32,6 +33,7 @@ ENVIRONMENT_OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_{platform}.zip"
 ALL_LANGUAGES_OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_all_{platform}.zip"
 SOURCE_FILE = "assets/downloads/Halite3Source.zip"
 BENCHMARK_FILE = "assets/downloads/Halite3Benchmark.zip"
+BENCHMARK_MANIFEST = "assets/downloads/Halite3Benchmark.json"
 TOOLS_FILE = "assets/downloads/Halite3Tools.zip"
 
 versions =  {"Python3" : "1.0", "C++" : "1.0", "Java" : "1.0", "CSharp" : "1.0" ,"JavaScript": "1.0",
@@ -112,6 +114,7 @@ def make_source_download():
 def make_benchmark_download():
     included_files = []
 
+    manifest = []
     for directory, _, file_list in itertools.chain(os.walk("../airesources/benchmark"),
                                                    os.walk("../airesources/Python3")):
         for filename in file_list:
@@ -122,10 +125,20 @@ def make_benchmark_download():
                     os.path.join("benchmark/", filename))
 
                 included_files.append((source_path, target_path))
+                digest = hashlib.sha256()
+                with open(source_path, "rb") as source_file:
+                    digest.update(source_file.read())
+                manifest.append((target_path, digest.hexdigest()))
 
     with zipfile.ZipFile(BENCHMARK_FILE, "w", zipfile.ZIP_DEFLATED) as archive:
         for source_path, target_path in included_files:
             archive.write(source_path, target_path)
+
+    with open(BENCHMARK_MANIFEST, "w") as manifest_file:
+        json.dump({
+            "digest_type": "SHA-256",
+            "manifest": manifest,
+        }, manifest_file)
 
 
 def make_tools_download():
