@@ -36,9 +36,8 @@
                 </p>
             </template>
             <template v-else>
-                <p>{{params.message}} ({{params.gamesPlayed}}/{{params.gamesTotal}} games played)</p>
+                <p style="margin: 0;">{{params.message}} ({{params.gamesPlayed}}/{{params.gamesTotal}} games played)</p>
                 <table>
-                    <caption>Game Results Summary</caption>
                     <thead>
                         <tr>
                             <th>Bot</th>
@@ -200,7 +199,15 @@
 
             >div {
                 /* Draggable container */
-                min-height: 2em;
+                height: 100%;
+
+                button {
+                    height: 2em;
+                    padding: 0.25em 2em;
+                    line-height: 1.5em;
+                    float: right;
+                    margin: 0;
+                }
             }
         }
 
