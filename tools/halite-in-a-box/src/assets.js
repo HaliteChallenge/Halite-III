@@ -57,12 +57,18 @@ export function pythonPath() {
     if (process.platform === 'darwin') {
         return path.join(pythonBasePath(), 'MacOS/python');
     }
+    else if (process.platform === 'win32') {
+        return path.join(pythonBasePath(), 'python.exe');
+    }
     return 'python3';
 }
 
 export function pythonBasePath() {
     if (process.platform === 'darwin') {
         return path.join(embeddedResourcesPath(), 'python-macos/Contents');
+    }
+    else if (process.platform === 'win32') {
+        return path.join(embeddedResourcesPath(), 'python-windows');
     }
     return '';
 }
@@ -73,6 +79,7 @@ export function pythonPackagePath(otherPackages) {
         packages.push(path.join(pythonBasePath(), 'Resources/lib/python37.zip'));
         packages.push(path.join(pythonBasePath(), 'Resources/lib/python3.7/lib-dynload'));
     }
+    // On Windows, portable Python distribution takes care of this
     return packages.join(':');
 }
 

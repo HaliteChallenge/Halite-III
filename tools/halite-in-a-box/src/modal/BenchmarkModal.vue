@@ -31,8 +31,7 @@
                 </p>
             </template>
             <template v-else>
-                <p>{{params.message}}</p>
-                <p>{{params.gamesPlayed}}/{{params.gamesTotal}} games played</p>
+                <p>{{params.message}} ({{params.gamesPlayed}}/{{params.gamesTotal}} games played)</p>
                 <table>
                     <caption>Game Results Summary</caption>
                     <thead>
@@ -78,7 +77,7 @@
                                     <a v-if="game.error_logs && game.error_logs[0]"
                                        href="javascript: void 0;"
                                        @click="showErrorLog(game.error_logs[0])">
-                                        View Error/Warning Log
+                                        View Log
                                     </a>
                                 </td>
                             </tr>
@@ -148,7 +147,7 @@
     }
 
     .scroll-table {
-        max-height: 20vh;
+        max-height: 30vh;
         overflow-y: scroll;
 
         caption {
