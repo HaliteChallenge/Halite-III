@@ -10,10 +10,20 @@ files:
 extraResources:
   - extra/hlt_client
 
+linux:
+  target:
+    - tar.gz
+    - AppImage
+
 # Include embedded Python
 mac:
+  target:
+    - dmg
   extraResources:
     - extra/python-macos
 win:
+  target:
+    - nsis
+    - portable
   extraResources:
     - extra/python-windows
