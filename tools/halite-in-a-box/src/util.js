@@ -3,7 +3,7 @@ import { remote as electronRemote, shell } from 'electron';
 import fs from 'fs';
 import readline from 'readline';
 
-import { pythonPath, pythonPackagePath, appData } from './assets';
+import { pythonPath, pythonPackagePath, embeddedResourcesPath } from './assets';
 
 const DONE_READING = Symbol();
 
@@ -14,7 +14,7 @@ export async function* call(args) {
     const fullArgs = ['-m', 'hlt_client', '--json'].concat(args);
     const subprocess = spawn(pythonPath(), fullArgs, {
         env: {
-            'PYTHONPATH': pythonPackagePath([ appData() ]),
+            'PYTHONPATH': pythonPackagePath([ embeddedResourcesPath() ]),
         },
     });
     const rl = readline.createInterface({

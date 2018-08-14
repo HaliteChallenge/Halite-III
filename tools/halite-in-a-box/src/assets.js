@@ -38,8 +38,18 @@ export function appData() {
     return dataDir;
 }
 
-// TODO: auto-download
 // TODO: change for Windows/Linux
+
+export function embeddedResourcesPath() {
+    if (electronRemote.app.isPackaged) {
+        // .app/production executable, use resourcesPath
+        return path.join(process.resourcesPath, 'extra');
+    }
+    else {
+        // XXX this is fragile but only applies during development
+        return path.join(process.cwd(), 'extra');
+    }
+}
 
 export function pythonPath() {
     if (process.platform === 'darwin') {
@@ -50,7 +60,7 @@ export function pythonPath() {
 
 export function pythonBasePath() {
     if (process.platform === 'darwin') {
-        return path.join(appData(), 'python-macos/Contents');
+        return path.join(embeddedResourcesPath(), 'python-macos/Contents');
     }
     return '';
 }
@@ -65,7 +75,7 @@ export function pythonPackagePath(otherPackages) {
 }
 
 export function toolsPath() {
-    return path.join(appData(), 'hlt_client');
+    return path.join(embeddedResourcesPath(), 'hlt_client');
 }
 
 /**
