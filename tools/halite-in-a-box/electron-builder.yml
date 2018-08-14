@@ -27,3 +27,5 @@ win:
     - portable
   extraResources:
     - extra/python-windows
+    - extra/deps.zip
+    - extra/zstd.pyd

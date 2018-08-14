@@ -41,6 +41,15 @@ else
     # (embedded Python ignores things like PYTHONPATH)
     # https://bugs.python.org/issue28245
     echo ".." >> extra/python-windows/python37._pth
+    echo "../deps.zip" >> extra/python-windows/python37._pth
+fi
+if [[ ! -f extra/zstd.pyd ]]; then
+    error "Windows zstd module not found."
+    exit 1
+fi
+if [[ ! -f extra/deps.zip ]]; then
+    error "Windows Python dependencies ZIP not found."
+    exit 1
 fi
 
 info "Copying hlt_client."
