@@ -54,9 +54,7 @@
             };
         },
         async mounted() {
-            if (await this.checkLogin()) {
-                this.updateRemoteBot();
-            }
+            this.checkLogin();
         },
         methods: {
             async checkLogin() {
@@ -68,10 +66,16 @@
                         this.userId = value.id;
                     }
                 }
+
+                // Check that API key is actually valid
                 const request = await util.fetchApi(this.apiKey, 'login/me');
                 const verification = await request.json();
 
                 this.loggedIn = loggedIn && verification;
+
+                if (this.loggedIn) {
+                    this.updateRemoteBot();
+                }
 
                 return this.loggedIn;
             },

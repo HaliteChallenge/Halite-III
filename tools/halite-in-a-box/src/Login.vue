@@ -42,13 +42,17 @@
                     this.apiKeyError = 'API key is invalid.';
                 }
                 else {
+                    this.apiKeyError = 'Checking API key...';
                     for await (const value of util.call(['auth', '-k', newValue])) {
                         if (value.status === 'error') {
                             this.apiKeyError = value.message;
                         }
+                        else {
+                            this.apiKeyError = '';
+                        }
                     }
                     if (!this.apiKeyError) {
-                        this.$emit('login')
+                        this.$emit('login');
                     }
                 }
             },
