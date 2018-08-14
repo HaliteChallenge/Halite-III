@@ -22,14 +22,11 @@
                             <draggable v-model="bots" :options="{group: {name: 'bots'}}" >
                                 <div v-for="(bot, index) in bots" :key="index">
                                     {{bot.name}}
+                                    <button @click="() => bots.splice(index, 1)">Delete</button>
                                 </div>
                             </draggable>
                         </div>
                     </div>
-                    <!-- <div>
-                         <input type="checkbox" name="bots" id="bot-self" value="self" v-model="bots" />
-                         <label for="bot-self">(against itself)</label>
-                         </div> -->
                 </fieldset>
                 <label for="rounds">Number of games to play:</label>
                 <input type="number" name="rounds" id="rounds" v-model="rounds" min="1" />
