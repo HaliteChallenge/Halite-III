@@ -8,6 +8,21 @@
   }
 }
 
+.visualizer-row {
+    display: flex;
+    flex-wrap: wrap;
+
+    .visualizer-column {
+        flex: 0 0;
+        margin: 0 1em;
+        width: 700px;
+    }
+
+    .visualizer-stats-column {
+        flex: 1;
+    }
+}
+
 .visuallizer-loading-message {
   text-align: center;
   padding: 20px 0px;
@@ -367,7 +382,12 @@
   position: relative;
   padding: 20px 0;
 }
-.dashboard-graph{
+.dashboard-graphs {
+  display: flex;
+  flex-wrap: wrap;
+}
+.dashboard-graph {
+  flex: 1 0 200px;
   &-heading{
     font-family: $font-heading;
     text-transform: uppercase;

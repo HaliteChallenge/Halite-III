@@ -1,7 +1,128 @@
 import * as PIXI from "pixi.js";
+import * as d3ScaleChromatic from "d3-scale-chromatic";
+import {AdvancedBloomFilter} from '@pixi/filter-advanced-bloom';
 
 import * as assets from "./assets";
 import {PLAYER_COLORS} from "./assets";
+
+// Color scale modified from Colorcet linear_blue_5-95_c73
+// TODO: add attribution to website
+// https://github.com/bokeh/colorcet/blob/master/LICENSE.txt
+
+const COLOR_SCALE = [
+    [0.17286, 0.51122, 0.9952],
+    [0.17386, 0.51627, 0.99519],
+    [0.17503, 0.52131, 0.99516],
+    [0.17629, 0.52633, 0.9951],
+    [0.17778, 0.53132, 0.99503],
+    [0.17936, 0.5363, 0.99494],
+    [0.1811, 0.54125, 0.99482],
+    [0.18299, 0.5462, 0.99469],
+    [0.18504, 0.55111, 0.99454],
+    [0.1872, 0.55601, 0.99436],
+    [0.18948, 0.5609, 0.99417],
+    [0.19189, 0.56577, 0.99396],
+    [0.19443, 0.57063, 0.99373],
+    [0.19686, 0.5755, 0.99349],
+    [0.19906, 0.58036, 0.99326],
+    [0.2011, 0.58524, 0.99303],
+    [0.20297, 0.59011, 0.99281],
+    [0.20464, 0.59499, 0.9926],
+    [0.20612, 0.59989, 0.99239],
+    [0.2074, 0.60479, 0.99218],
+    [0.2085, 0.60969, 0.99198],
+    [0.20942, 0.6146, 0.99179],
+    [0.21016, 0.61953, 0.9916],
+    [0.21072, 0.62445, 0.99142],
+    [0.21111, 0.62938, 0.99124],
+    [0.21132, 0.63432, 0.99107],
+    [0.21135, 0.63926, 0.9909],
+    [0.2112, 0.64421, 0.99074],
+    [0.21086, 0.64918, 0.99058],
+    [0.21033, 0.65414, 0.99043],
+    [0.20961, 0.65911, 0.99029],
+    [0.2087, 0.66409, 0.99015],
+    [0.2076, 0.66908, 0.99002],
+    [0.20631, 0.67406, 0.98989],
+    [0.20478, 0.67906, 0.98977],
+    [0.20305, 0.68406, 0.98965],
+    [0.20108, 0.68908, 0.98954],
+    [0.1989, 0.69409, 0.98943],
+    [0.19651, 0.69911, 0.98933],
+    [0.19382, 0.70414, 0.98924],
+    [0.19088, 0.70918, 0.98914],
+    [0.18788, 0.71421, 0.98905],
+    [0.18488, 0.71923, 0.98895],
+    [0.18198, 0.72423, 0.98883],
+    [0.17926, 0.72923, 0.98871],
+    [0.17665, 0.73421, 0.98857],
+    [0.17423, 0.73918, 0.98842],
+    [0.17193, 0.74412, 0.98825],
+    [0.16983, 0.74906, 0.98808],
+    [0.16785, 0.75399, 0.98789],
+    [0.16608, 0.7589, 0.9877],
+    [0.16452, 0.76381, 0.98749],
+    [0.16316, 0.76869, 0.98727],
+    [0.16202, 0.77357, 0.98703],
+    [0.1611, 0.77844, 0.98679],
+    [0.16037, 0.7833, 0.98653],
+    [0.15991, 0.78814, 0.98626],
+    [0.1597, 0.79298, 0.98597],
+    [0.15972, 0.7978, 0.98568],
+    [0.15999, 0.80261, 0.98537],
+    [0.16053, 0.80742, 0.98505],
+    [0.16137, 0.81221, 0.98472],
+    [0.16241, 0.81699, 0.98438],
+    [0.16373, 0.82176, 0.98402],
+    [0.16523, 0.82652, 0.98365],
+    [0.16707, 0.83127, 0.98327],
+    [0.1691, 0.83601, 0.98287],
+    [0.17134, 0.84074, 0.98247],
+    [0.17387, 0.84546, 0.98205],
+    [0.17729, 0.85015, 0.98162],
+    [0.18258, 0.85474, 0.98119],
+    [0.19003, 0.85923, 0.98076],
+    [0.19916, 0.86363, 0.98033],
+    [0.20965, 0.86794, 0.97991],
+    [0.22117, 0.87217, 0.97948],
+    [0.23338, 0.87632, 0.97905],
+    [0.24622, 0.88041, 0.97862],
+    [0.25953, 0.88443, 0.9782],
+    [0.27309, 0.8884, 0.97777],
+    [0.28681, 0.89231, 0.97734],
+    [0.30063, 0.89617, 0.97691],
+    [0.31448, 0.89998, 0.97648],
+    [0.32832, 0.90375, 0.97605],
+    [0.34224, 0.90747, 0.97562],
+    [0.35613, 0.91115, 0.97518],
+    [0.36991, 0.91479, 0.97475],
+    [0.38361, 0.9184, 0.97431],
+    [0.39728, 0.92197, 0.97387],
+    [0.4109, 0.9255, 0.97343],
+    [0.42439, 0.92899, 0.973],
+    [0.43779, 0.93247, 0.97255],
+    [0.45116, 0.9359, 0.97211],
+    [0.46443, 0.93931, 0.97166],
+    [0.47755, 0.94269, 0.97121],
+    [0.49069, 0.94603, 0.97076],
+    [0.5037, 0.94935, 0.97031],
+    [0.51659, 0.95265, 0.96986],
+    [0.52949, 0.95592, 0.9694],
+    [0.54227, 0.95916, 0.96894],
+    [0.55496, 0.96238, 0.96849],
+    [0.56763, 0.96557, 0.96803],
+    [0.58018, 0.96874, 0.96756],
+    [0.59271, 0.97189, 0.9671],
+    [0.60515, 0.97501, 0.96663],
+    [0.61751, 0.97812, 0.96616],
+    [0.62987, 0.98119, 0.96569],
+    [0.64213, 0.98425, 0.96521],
+    [0.65436, 0.98729, 0.96474],
+    [0.66654, 0.9903, 0.96426],
+    [0.67864, 0.9933, 0.96378],
+    [0.69072, 0.99626, 0.9633],
+    [0.70271, 0.99922, 0.96282]
+];
 
 /**
  * Manages a Map on screen.
@@ -52,32 +173,26 @@ export class Map {
         // Generate the texture for a single map cell (16x16 white
         // square with a 2 pixel 70% black border blended on top)
         // Could probably be replaced with a real texture
-        const borderWidth = 1;
+        const borderWidth = 0;//1; TWEAK -- remove board
         const textureWidth = 16;
         let g = new PIXI.Graphics();
+
+        // TWEAK: circular cells
+        // g.beginFill(0xFFFFFF, 1.0);
+        // g.drawCircle(8, 8, 8);
+
+        // TWEAK: square cells
         g.beginFill(0xFFFFFF, 1.0);
         g.drawRect(0, 0, textureWidth, textureWidth);
-        g.beginFill(0x000000, 0.7);
         // Be careful not to overlap when drawing the border, or else
         // some parts will be darker than others
+        g.beginFill(0x000000, 0.5);
         g.drawRect(0, 0, textureWidth, borderWidth);
         g.drawRect(0, borderWidth, borderWidth, textureWidth - borderWidth);
         g.drawRect(textureWidth - borderWidth, borderWidth, borderWidth, textureWidth - borderWidth);
         g.drawRect(borderWidth, textureWidth - borderWidth, textureWidth - 2*borderWidth, borderWidth);
+        // END TWEAK: square cells
         const normalTex = renderer.generateTexture(g);
-
-        // Now do the same, but for a highlighted map cell (white
-        // border)
-        // TODO: actually implement this
-        g = new PIXI.Graphics();
-        g.beginFill(0x999999, 1.0);
-        g.drawRect(0, 0, textureWidth, textureWidth);
-        g.beginFill(0xFFFFFF, 0.7);
-        g.drawRect(0, 0, textureWidth, borderWidth);
-        g.drawRect(0, borderWidth, borderWidth, textureWidth - borderWidth);
-        g.drawRect(textureWidth - borderWidth, borderWidth, borderWidth, textureWidth - borderWidth);
-        g.drawRect(borderWidth, textureWidth - borderWidth, textureWidth - 2*borderWidth, borderWidth);
-        const highlightTex = renderer.generateTexture(g);
 
         this.cells = [];
 
@@ -93,8 +208,10 @@ export class Map {
                 cell.alpha = 0.9;
                 cell.width = this.scale;
                 cell.height = this.scale;
-                cell.position.x = col * this.scale;
-                cell.position.y = row * this.scale;
+                cell.anchor.x = 0.5;
+                cell.anchor.y = 0.5;
+                cell.position.x = (col + 0.5) * this.scale;
+                cell.position.y = (row + 0.5) * this.scale;
                 const [ base, baseOpacity ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
                 cell.tint = alphaBlend(base, this.renderer.backgroundColor, baseOpacity);
                 this.cells.push(cell);
@@ -116,19 +233,28 @@ export class Map {
      */
     productionToColor(productions, row, col, MAX_PRODUCTION) {
         const production = productions[row][col];
-        if (production === 0) {
-            return [assets.FACTORY_BASE_COLOR, 1];
-        }
         let production_fraction = production / MAX_PRODUCTION;
-        if (production_fraction <= 0.3333) {
-            return [alphaBlend(0x282828, assets.MAP_COLOR_LIGHT, 1-3*production_fraction), .75];
-        }
-        else if (production_fraction <= 0.6666) {
-            return [alphaBlend(assets.MAP_COLOR_LIGHT, assets.MAP_COLOR_MEDIUM, 2-3*production_fraction), .75];
-        }
-        else {
-            return [alphaBlend(assets.MAP_COLOR_MEDIUM, assets.MAP_COLOR_DARK, 3-3*production_fraction), .75];
-        }
+
+        // TWEAK: this uses a light blue color scale
+        const index = Math.floor(Math.max(0, Math.min(1, production_fraction)) * (COLOR_SCALE.length - 1));
+        const [r,g,b] = COLOR_SCALE[index];
+        let result = 0;
+        result += Math.floor(r * 255) << 16;
+        result += Math.floor(g * 255) << 8;
+        result += Math.floor(b * 255);
+
+        // TWEAK: choose one of the two lines below, and the lines
+        // under it, to choose different color scales. More scales at
+        // https://github.com/d3/d3-scale-chromatic
+
+        // const rgbString = d3ScaleChromatic.interpolateCool(production_fraction);
+        // const rgbString = d3ScaleChromatic.interpolateBlues(production_fraction);
+        // const parts = rgbString.slice(4, -1).split(", ");
+        // let result = 0;
+        // result += parseInt(parts[0], 10) << 16;
+        // result += parseInt(parts[1], 10) << 8;
+        // result += parseInt(parts[2], 10);
+        return [ result, 1 ];
     }
 
     /**
@@ -140,6 +266,9 @@ export class Map {
         container.addChild(this.pointer);
         container.addChild(this.tintMap);
         container.addChild(this.highlight);
+        container.filters = [new AdvancedBloomFilter({threshold: 0, brightness: 1.0})];
+        container.filterArea = new PIXI.Rectangle(0, 0, this.renderer.width, this.renderer.height);
+
         this.container = container;
     }
 
@@ -202,15 +331,24 @@ export class Map {
         // Redraw map cells, both for new production colors and possible resizing due to zooming
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
+                const production = this.productions[row][col];
+                const production_fraction = production / this.constants.MAX_CELL_PRODUCTION;
                 const [ base, baseOpacity ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
                 const cell = this.cells[row * this.cols + col];
                 const bg = this.renderer.backgroundColor;
                 cell.tint = alphaBlend(base, bg, baseOpacity);
-                cell.width = this.scale;
-                cell.height = this.scale;
+                // TWEAK: uncomment to make size vary with amount of halite
+                if (production_fraction <= 0.2) {
+                    cell.width = Math.sqrt(production_fraction) * this.scale
+                    cell.height = Math.sqrt(production_fraction) * this.scale
+                }
+                else {
+                    cell.width = (0.3 + 0.7 * production_fraction) * this.scale;
+                    cell.height = (0.3 + 0.7 * production_fraction) * this.scale;    
+                }
                 const [ cellX, cellY ] = this.camera.worldToCamera(col, row);
-                cell.position.x = cellX * this.scale;
-                cell.position.y = cellY * this.scale;
+                cell.position.x = (cellX + 0.5) * this.scale;
+                cell.position.y = (cellY + 0.5) * this.scale;
             }
         }
     }

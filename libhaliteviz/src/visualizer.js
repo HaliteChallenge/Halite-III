@@ -46,7 +46,7 @@ export class HaliteVisualizer {
         this.replay = replay;
         this.map_width = replay.production_map.width;
         this.map_height = replay.production_map.height;
-        //this.stats = new statistics.Statistics(replay);
+        this.stats = new statistics.Statistics(replay);
 
         this.frame = 0;
         this.prevFrame = -1;
@@ -79,7 +79,8 @@ export class HaliteVisualizer {
         this.application = new PIXI.Application(
             this.width, this.height,
             {
-                backgroundColor: 0x222222,
+                // TWEAK: background color (most visible with circles)
+                backgroundColor: 0x141EA0, // greener blue 0x2CF2DF //  darker green blue  0x34CBD3// darker blue 0x141EA0, // lighter blue 0x0938BB, // 0x000000, // cyan 0x5AE4EF,
                 antialias: true,
                 resolution: 1,
             }
