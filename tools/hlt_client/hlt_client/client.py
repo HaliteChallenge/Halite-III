@@ -171,6 +171,12 @@ def _parse_arguments():
                             help="The path wherein your bot zip lives.")
     bot_upload_parser.add_argument('--dry-run', dest='dry_run', action='store_true',
                                    help="Verify the bot upload but do not actually upload.")
+    bot_upload_parser.add_argument('-i', '--include',
+                                   dest='include_extensions',
+                                   action='append',
+                                   type=str,
+                                   required=False,
+                                   help="Include files with these extensions in the upload. May pass 0 or more times (if not given, defaults to Python/Java/C++)")
     # .Modes.Gym
     compare_bots.parse_arguments(subparser)
     # .Modes.Replay
@@ -240,7 +246,7 @@ def main():
                 output.output(Config())
         elif args.mode == BOT_MODE:
             if args.bot_mode == BOT_UPLOAD_MODE:
-                upload_bot.upload(args.bot_path, args.dry_run)
+                upload_bot.upload(args.bot_path, args.dry_run, args.include_extensions)
             else:
                 upload_bot.download(args.bot_path)
         elif args.mode == REPLAY_MODE:

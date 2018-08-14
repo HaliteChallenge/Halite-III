@@ -95,7 +95,7 @@ def _zip_file_integrity_check(file_path):
         output.warning("WARNING: Could not find an hlt/ library folder. Proceeding with upload. {}".format(os.linesep))
 
 
-def _create_bot_upload(bot_path, extension_whitelist=None):
+def _create_bot_upload(bot_path, dry_run=False, extension_whitelist=None):
     """
     Given the path to a MyBot.* file, create a ZIP to upload.
     """
@@ -125,7 +125,7 @@ def _create_bot_upload(bot_path, extension_whitelist=None):
     return bot_file
 
 
-def upload(bot_path, dry_run):
+def upload(bot_path, dry_run, include_extensions):
     """
     Uploads the bot placed under bot_path. May only be called once Config is properly initialized.
     :param bot_path: The path wherein the bot is located
@@ -139,7 +139,7 @@ def upload(bot_path, dry_run):
     # We only support this for Python bots (for now), though.
     bot_filename = os.path.basename(bot_path)
     if os.path.exists(bot_path) and bot_filename.startswith(_BOT_FILE_NAME_PREPEND):
-        bot_file = _create_bot_upload(bot_path)
+        bot_file = _create_bot_upload(bot_path, dry_run, include_extensions)
         if not bot_file:
             # Dry run
             return
