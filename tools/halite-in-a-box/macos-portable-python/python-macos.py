@@ -267,7 +267,9 @@ import zipfile
 import zipimport
 import zlib
 
+import appdirs
 import requests
+import trueskill
 import zstd
 
 exec(open(sys.argv[1]).read())
