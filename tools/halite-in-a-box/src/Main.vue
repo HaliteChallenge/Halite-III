@@ -12,13 +12,13 @@
                     <button @click="chooseReplay">Watch Replay</button>
                 </nav>
                 <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
-                <LocalBot :apiKey="apiKey" :userId="userId" />
+                <LocalBot :apiKey="apiKey" :userId="userId" @change="localBot = $event" />
                 <div id="scroll-down">
                     ▼Past Replays & Analytics▼
                 </div>
             </div>
             <RemoteBotHistory :userId="userId" />
-            <LocalBotGym />
+            <LocalBotGym :localBot="localBot" />
         </template>
         <component v-if="modal" :is="modal" :params="modalProps" :event="modalEvent">
         </component>

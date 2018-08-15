@@ -42,7 +42,7 @@
     import * as util from './util';
 
     export default {
-        props: [],
+        props: ['localBot'],
         data() {
             return {
                 bots: [],
@@ -93,6 +93,33 @@
             async refresh() {
                 for await (const value of util.call(['gym', 'bots'])) {
                     this.bots = value.items;
+                }
+            },
+        },
+        watch: {
+            async localBot(path) {
+                if (!path) return;
+
+                // Make sure we have current bot list
+                let bots = [];
+                for await (const value of util.call(['gym', 'bots'])) {
+                    bots = value.items;
+                }
+
+                // Register player bot if necessary
+                const fullPath = `${pythonPath()} "${path}"`;
+                let found = false;
+                for (const registeredBot of bots) {
+                    if (registeredBot.name === "My Bot") {
+                        found = registeredBot.path === fullPath;
+                    }
+                }
+
+                if (!found) {
+                    const args = ['gym', 'register', "My Bot", fullPath];
+                    for await (const _ of util.call(args)) {
+                        ;
+                    }
                 }
             },
         },

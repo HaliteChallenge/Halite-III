@@ -43,6 +43,7 @@
         mounted() {
             if (window.localStorage.getItem('local-bot-path')) {
                 this.localBot = window.localStorage.getItem('local-bot-path');
+                this.$emit('change', this.localBot);
             }
         },
         methods: {
@@ -53,6 +54,7 @@
                 });
                 if (result && result.length > 0) {
                     this.localBot = result[0];
+                    this.$emit('change', this.localBot);
                 }
             },
 
