@@ -88,10 +88,10 @@ def register_bot(conn, name, path):
     # If bot with name exists, update bot, else insert record
     existing = conn.execute('select * from bots where name = ?', (name,)).fetchall()
     if existing:
-        query = 'update bots set version = version + 1, sigma = ?, path = ? where id = ?'
+        query = 'update bots set games_played = 0, version = version + 1, sigma = ?, path = ? where id = ?'
         conn.execute(query, (BASE_SIGMA, path, existing[0]['id']))
     else:
-        query = 'insert into bots (name, version, mu, sigma, path) values (?, ?, ?, ?, ?)'
+        query = 'insert into bots (name, version, mu, sigma, path, games_played) values (?, ?, ?, ?, ?, 0)'
         conn.execute(query, (name, 1, BASE_MU, BASE_SIGMA, path))
 
     rerank_bots(conn)
@@ -130,6 +130,8 @@ def add_match(conn, bots, results):
                                      bot['rank'],
                                      bot['mu'],
                                      bot['sigma']))
+        games_played_query = 'update bots set games_played=games_played + 1 where id = ?'
+        conn.execute(games_played_query, (bot['id'],))
 
     trueskill.setup(tau=0.008, draw_probability=0.001)
     teams = [[trueskill.Rating(mu=bot["mu"], sigma=bot["sigma"])]
@@ -203,8 +205,9 @@ def main(args):
         def _prettyprint_bot(bot):
             return "\n".join([
                 'Bot "{}" (ID {}, version {})'.format(bot['name'], bot['id'], bot['version']),
-                'Rank {} (μ={}, σ={})'.format(bot['rank'], bot['mu'], bot['sigma']),
+                'Rank {} (score={:.02f}, μ={:.02f}, σ={:.02f})'.format(bot['rank'], bot['mu'] - 3*bot['sigma'], bot['mu'], bot['sigma']),
                 'Path: {}'.format(bot['path']),
+                'Games Played: {}'.format(bot['games_played']),
             ])
 
         if args.bot_name:
