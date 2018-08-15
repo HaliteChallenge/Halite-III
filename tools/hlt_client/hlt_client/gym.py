@@ -33,6 +33,7 @@ create table bots (
     mu REAL,
     sigma REAL,
     path TEXT,
+    games_played INTEGER,
     rank INTEGER
 );
 create table games (
@@ -43,6 +44,14 @@ create table games (
     results JSON,
     FOREIGN KEY(winner) REFERENCES bots(id)
 );
+create table rank_history (
+    bot_id INTEGER,
+    rank INTEGER,
+    datetime TEXT,
+    mu REAL,
+    sigma REAL,
+    FOREIGN KEY(bot_id) REFERENCES bots(id)
+)
 '''
 
 def connect(db_path=None):
@@ -108,10 +117,19 @@ def add_match(conn, bots, results):
 
     query = 'insert into games (datetime, winner, participants, results) values (?, ?, ?, ?)'
     del results['final_snapshot']
-    conn.execute(query, (datetime.datetime.now().isoformat(),
+    current_time = datetime.datetime.now().isoformat()
+    conn.execute(query, (current_time,
                          bots[winner]['id'],
                          json.dumps(bots),
                          json.dumps(results)))
+
+    for bot in bots:
+        history_query = 'insert into rank_history (bot_id, datetime, rank, mu, sigma) values (?, ?, ?, ?, ?)'
+        conn.execute(history_query, (bot['id'],
+                                     current_time,
+                                     bot['rank'],
+                                     bot['mu'],
+                                     bot['sigma']))
 
     trueskill.setup(tau=0.008, draw_probability=0.001)
     teams = [[trueskill.Rating(mu=bot["mu"], sigma=bot["sigma"])]
@@ -174,14 +192,34 @@ def list_matches(conn):
     return result
 
 
+def get_rank_history(conn, bot_id):
+    records = conn.execute('select datetime, rank, mu, sigma from rank_history where bot_id = ?', (bot_id,))
+    return [dict(row) for row in records]
+
+
 def main(args):
     if args.gym_mode == BOTS_MODE:
+
         def _prettyprint_bot(bot):
             return "\n".join([
                 'Bot "{}" (ID {}, version {})'.format(bot['name'], bot['id'], bot['version']),
                 'Rank {} (μ={}, σ={})'.format(bot['rank'], bot['mu'], bot['sigma']),
                 'Path: {}'.format(bot['path']),
             ])
+
+        if args.bot_name:
+            with connect(args.db_path) as conn:
+                bots = list_bots(conn)
+                for bot in bots:
+                    if bot['name'] == args.bot_name:
+                        output.output(_prettyprint_bot(bot),
+                                      bot=bot,
+                                      history=get_rank_history(conn, bot['id']))
+                        break
+                else:
+                    output.error('Bot not found.')
+                    sys.exit(1)
+            return
 
         with connect(args.db_path) as conn:
             bots = list_bots(conn)
@@ -250,3 +288,7 @@ def parse_arguments(subparser):
     stats_parser = gym_subparser.add_parser(STATS_MODE, help='Get stats from the gym.')
 
     bots_parser = gym_subparser.add_parser(BOTS_MODE, help='List registered bots.')
+    bots_parser.add_argument('bot_name', type=str,
+                             nargs='?',
+                             default=None,
+                             help="The name of the bot to query.")
