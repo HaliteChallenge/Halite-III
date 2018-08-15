@@ -22,6 +22,7 @@
                         <th>Name</th>
                         <th>Bot Version</th>
                         <th>Rank</th>
+                        <th># Games Played</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -29,6 +30,25 @@
                         <td>{{bot.name}}</td>
                         <td>{{bot.version}}</td>
                         <td>{{bot.rank}} (score={{(bot.mu - 3*bot.sigma).toFixed(2)}}, μ={{bot.mu.toFixed(2)}}, σ={{bot.sigma.toFixed(2)}})</td>
+                        <td>{{bot.games_played}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="bot-history" v-if="botHistory && botHistory.length > 0">
+            <table>
+                <caption>Your Bot's Performance History</caption>
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Rank</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="record in botHistory">
+                        <td>{{record.datetime}}</td>
+                        <td>{{record.rank}} (score={{(record.mu - 3*record.sigma).toFixed(2)}}, μ={{record.mu.toFixed(2)}}, σ={{record.sigma.toFixed(2)}})</td>
                     </tr>
                 </tbody>
             </table>
@@ -46,6 +66,7 @@
         data() {
             return {
                 bots: [],
+                botHistory: [],
                 message: null,
                 iterations: 10,
             };
@@ -73,6 +94,8 @@
                     ;
                 }
             }
+
+            this.refresh();
         },
         methods: {
             async runGymGames() {
@@ -95,6 +118,13 @@
             async refresh() {
                 for await (const value of util.call(['gym', 'bots'])) {
                     this.bots = value.items;
+                }
+
+                // Get bot score history
+                for await (const value of util.call(['gym', 'bots', 'My Bot'])) {
+                    if (value.status === 'success') {
+                        this.botHistory = value.history;
+                    }
                 }
             },
         },
