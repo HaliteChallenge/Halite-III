@@ -155,6 +155,13 @@ def run_matches(db_path, hlt_path, output_dir, map_dimensions, iterations):
         with connect(db_path) as conn:
             add_match(conn, bots, results)
 
+        output.output('Played {}/{} matches...'.format(i + 1, iterations),
+                      progress=i + 1,
+                      iterations=iterations,
+                      results=results,
+                      participants=bots)
+    output.output('Done playing games.', progress=iterations, iterations=iterations)
+
 
 def list_matches(conn):
     matches = conn.execute('select * from games').fetchall()
@@ -168,8 +175,6 @@ def list_matches(conn):
 
 
 def main(args):
-    print(args)
-
     if args.gym_mode == BOTS_MODE:
         def _prettyprint_bot(bot):
             return "\n".join([
