@@ -7,6 +7,7 @@ import sys
 import subprocess
 
 import appdirs
+import trueskill
 
 from . import compare_bots, output
 
@@ -111,6 +112,17 @@ def add_match(conn, bots, results):
                          bots[winner]['id'],
                          json.dumps(bots),
                          json.dumps(results)))
+
+    trueskill.setup(tau=0.008, draw_probability=0.001)
+    teams = [[trueskill.Rating(mu=bot["mu"], sigma=bot["sigma"])]
+             for bot in bots]
+    new_ratings = trueskill.rate(teams)
+
+    update_query = 'update bots set mu=?, sigma=? where id=?'
+    for bot, rating in zip(bots, new_ratings):
+        conn.execute(update_query, (rating[0].mu, rating[0].sigma, bot['id']))
+
+    rerank_bots(conn)
 
 
 def run_matches(db_path, hlt_path, output_dir, map_dimensions, iterations):
