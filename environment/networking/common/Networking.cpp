@@ -58,6 +58,10 @@ void Networking::connect_player(hlt::Player &player) {
 void Networking::initialize_player(Player &player) {
     std::stringstream message_stream;
     Logging::log("Sending init message", Logging::Level::Debug, player.id);
+    // Send the game constants
+    nlohmann::json constants = Constants::get();
+    message_stream << constants.dump() << std::endl;
+
     // Send the number of players and player ID
     message_stream << game.store.players.size()
                    << " " << player.id << std::endl;
