@@ -10,6 +10,7 @@ from . import output
 from . import upload_bot
 from . import download_game
 from . import compare_bots
+from . import gym
 
 """client.py: Client for interacting with the Halite II servers."""
 
@@ -177,8 +178,10 @@ def _parse_arguments():
                                    type=str,
                                    required=False,
                                    help="Include files with these extensions in the upload. May pass 0 or more times (if not given, defaults to Python/Java/C++)")
-    # .Modes.Gym
+    # .Modes.Play
     compare_bots.parse_arguments(subparser)
+    # .Modes.Gym
+    gym.parse_arguments(subparser)
     # .Modes.Replay
     replay_parser = subparser.add_parser('replay', help='Actions associated with replay files')
     # .Modes.Replay.Modes
@@ -259,6 +262,8 @@ def main():
                                     args.game_output_dir,
                                     args.map_width, args.map_height,
                                     args.run_commands, args.iterations, [])
+        elif args.mode == GYM_MODE:
+            gym.main(args)
     except (IndexError, TypeError, ValueError, IOError) as err:
         output.error(str(err))
         exit(-1)

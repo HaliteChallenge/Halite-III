@@ -4,6 +4,7 @@ Utilities to switch between console and JSON output.
 
 import json
 import sys
+import textwrap
 
 _mode = 'text'
 
@@ -57,10 +58,10 @@ def warning(message, **fields):
     output(message, status="warning", **fields)
 
 
-def print_list(title, items):
+def print_list(title, items, formatter=lambda x: str(x)):
     if mode() == JSON:
         output(title, items=items)
     else:
         print(title)
         for item in items:
-            print(' *', item)
+            print(' *', textwrap.indent(formatter(item), prefix='   ').lstrip())
