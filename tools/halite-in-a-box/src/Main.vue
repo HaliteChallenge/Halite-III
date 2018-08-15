@@ -27,6 +27,8 @@
 
 <script>
     import { remote as electronRemote } from 'electron';
+
+    import assets from './assets';
     import * as util from './util';
 
     import Login from './Login.vue';
@@ -54,9 +56,19 @@
                 modal: null,
                 modalProps: null,
                 modalResolve: null,
+                assetsReady: false,
+                assetsMessage: 'Preparing game assets...',
             };
         },
         async mounted() {
+            assets().then(() => {
+                this.assetsReady = true;
+                this.assetsMessage = null;
+            }).catch((err) => {
+                console.error(err);
+                this.assetsMessage = 'Could not set up game assets. Please try again later.';
+            });
+
             this.checkLogin();
         },
         methods: {
@@ -116,11 +128,15 @@
                 this.modal = null;
                 this.modalProps = null;
             },
+            areAssetsReady() {
+                return this.assetsReady;
+            },
         },
         provide() {
             return {
                 showModal: this.showModal,
                 closeModal: this.closeModal,
+                assetsReady: this.areAssetsReady,
             };
         },
     };
