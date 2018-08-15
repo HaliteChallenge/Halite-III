@@ -50,6 +50,9 @@
             assets().then(() => {
                 this.assetsReady = true;
                 this.message = null;
+            }).catch((err) => {
+                console.error(err);
+                this.message = 'Could not set up game assets. Please try again later.';
             });
         },
         methods: {

@@ -1,4 +1,5 @@
 import { remote as electronRemote } from 'electron';
+import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import JSZip from 'jszip';
@@ -126,18 +127,20 @@ export function assetPaths() {
     };
 }
 
-/**
- * Make sure the environment, benchmark bots, and other assets are
- * prepared and up-to-date.
- */
+// Keep track of loading the assets
 let _resolveAssets;
 const assetsReady = new Promise((resolve) => {
     _resolveAssets = resolve;
 });
 let loading = false;
 
+/**
+ * Make sure the environment, benchmark bots, and other assets are
+ * prepared and up-to-date.
+ */
 export default async function assets() {
     if (loading) {
+        // Bail if already loading
         const result = await assetsReady;
         return result;
     }
@@ -153,6 +156,8 @@ export default async function assets() {
         botsPath,
     } = paths;
 
+    // Download the halite executable if needed
+    // TODO: try executing environment to get version
     if (!fs.existsSync(environmentPath)) {
         console.info(`Downloading environment to ${environmentPath}`);
 
@@ -164,11 +169,39 @@ export default async function assets() {
         fs.chmodSync(environmentPath, 0o775);
     }
 
-    // TODO: try executing environment to get version
-
     // Download benchmark bots
+    let downloadBots = false;
     if (!fs.existsSync(botsPath)) {
         fs.mkdirSync(botsPath);
+        downloadBots = true;
+    }
+    else {
+        // Grab the manifest and make sure everything is there
+        const request = await util.download(`assets/downloads/Halite3Benchmark.json`);
+        const manifest = await request.json();
+        const promises = [];
+        for (const [ filePath, sha256hash ] of manifest.manifest) {
+            const destPath = path.join(botsPath, path.basename(filePath));
+            promises.push(new Promise((resolve, reject) => {
+                const input = fs.createReadStream(destPath);
+                input.on('error', (err) => {
+                    resolve(true);
+                });
+
+                const hmac = crypto.createHash('sha256');
+                input.pipe(hmac);
+                hmac.on('data', (d) => {
+                    resolve(d.toString('hex') !== sha256hash);
+                });
+            }));
+        }
+
+        const results = await Promise.all(promises);
+        downloadBots = results.some(x => x);
+    }
+
+    if (downloadBots) {
+        console.info('Downloading benchmark bots.');
         const request = await util.download(`assets/downloads/Halite3Benchmark.zip`);
         const rawZip = await request.arrayBuffer();
         const zip = await JSZip.loadAsync(rawZip);
