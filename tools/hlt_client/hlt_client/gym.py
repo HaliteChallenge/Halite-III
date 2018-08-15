@@ -130,7 +130,7 @@ def run_matches(db_path, hlt_path, output_dir, map_dimensions, iterations):
 
     if output_dir:
         abs_output_dir = os.path.abspath(output_dir)
-        os.mkdir(abs_output_dir, exist_ok=True)
+        os.makedirs(abs_output_dir, exist_ok=True)
         flags = ['-i', abs_output_dir]
 
     for i in range(iterations):
