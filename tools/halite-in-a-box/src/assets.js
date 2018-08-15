@@ -179,6 +179,8 @@ export default async function assets() {
         // Grab the manifest and make sure everything is there
         const request = await util.download(`assets/downloads/Halite3Benchmark.json`);
         const manifest = await request.json();
+        // Promise is resolved as true if the file needs to be
+        // redownloaded
         const promises = [];
         for (const [ filePath, sha256hash ] of manifest.manifest) {
             const destPath = path.join(botsPath, path.basename(filePath));
@@ -197,6 +199,7 @@ export default async function assets() {
         }
 
         const results = await Promise.all(promises);
+        // Redownload all bots if any promise was resolved true
         downloadBots = results.some(x => x);
     }
 
@@ -225,7 +228,9 @@ export default async function assets() {
             path.basename(filename, path.extname(filename)),
     }));
 
-    _resolveAssets(Object.assign({}, paths, {
+    const result = Object.assign({}, paths, {
         benchmarkBots,
-    }));
+    });
+    _resolveAssets(result);
+    return result;
 }

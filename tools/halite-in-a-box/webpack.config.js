@@ -20,6 +20,17 @@ module.exports = {
                 test: /\.js$/,
                 loader: 'babel-loader',
                 exclude: /(libzstd|encoding-indexes)/,
+                options: {
+                    presets: [
+                        ['env', {
+                            targets: {
+                                electron: '2.0.7',
+                            },
+                            modules: false,
+                            useBuiltIns: true,
+                        }],
+                    ]
+                },
             },
             {
                 test: /\.css$/,
