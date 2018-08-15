@@ -9,7 +9,10 @@
             benchmarks. As games are run, your bot is ranked against
             ours. Track your progress over time.
         </p>
-        <button>Run Games</button>
+        <button @click="runGymGames">Run Games</button>
+        <p v-if="message">{{message}}</p>
+        <label for="iterations">Number of games:</label>
+        <input type="number" min="1" step="1" id="iterations" v-model="iterations" />
 
         <p> TODO: some graphs would be nice </p>
         <div class="gym-bots">
@@ -43,6 +46,8 @@
         data() {
             return {
                 bots: [],
+                message: null,
+                iterations: 10,
             };
         },
         async mounted() {
@@ -70,6 +75,26 @@
             }
         },
         methods: {
+            async runGymGames() {
+                const paths = await assets();
+                const args = [
+                    'gym', 'evaluate',
+                    '-b', paths.environmentPath,
+                    '-i', this.iterations,
+                    '--output-dir', paths.replayDir,
+                ];
+
+                for await (const value of util.call(args)) {
+                    this.message = value.message;
+                    await this.refresh();
+                }
+            },
+
+            async refresh() {
+                for await (const value of util.call(['gym', 'bots'])) {
+                    this.bots = value.items;
+                }
+            },
         },
     }
 </script>
