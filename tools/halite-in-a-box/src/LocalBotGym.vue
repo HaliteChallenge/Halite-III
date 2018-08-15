@@ -28,7 +28,7 @@
                     <tr v-for="bot in bots">
                         <td>{{bot.name}}</td>
                         <td>{{bot.version}}</td>
-                        <td>{{bot.rank}} (μ={{bot.mu.toFixed(2)}}, σ={{bot.sigma.toFixed(2)}})</td>
+                        <td>{{bot.rank}} (score={{(bot.mu - 3*bot.sigma).toFixed(2)}}, μ={{bot.mu.toFixed(2)}}, σ={{bot.sigma.toFixed(2)}})</td>
                     </tr>
                 </tbody>
             </table>
@@ -76,6 +76,8 @@
         },
         methods: {
             async runGymGames() {
+                this.message = 'Running games...';
+
                 const paths = await assets();
                 const args = [
                     'gym', 'evaluate',
@@ -120,6 +122,8 @@
                     for await (const _ of util.call(args)) {
                         ;
                     }
+
+                    await this.refresh();
                 }
             },
         },
