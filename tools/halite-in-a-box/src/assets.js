@@ -86,10 +86,9 @@ export function toolsPath() {
 }
 
 /**
- * Make sure the environment, benchmark bots, and other assets are
- * prepared and up-to-date.
+ * Get paths to bundled assets without checking if they're ready.
  */
-export default async function assets() {
+export function assetPaths() {
     const dataDir = appData();
 
     console.info(`Data directory: ${dataDir}`);
@@ -112,8 +111,48 @@ export default async function assets() {
         environmentBinary = 'halite';
     }
 
-    // Download halite game executable if necessary
+    // Path to halite executable
     const environmentPath = path.join(dataDir, environmentBinary);
+    // Path to benchmark bots
+    const botsPath = path.join(dataDir, BENCHMARK_BOT_DIRECTORY);
+
+    return {
+        dataDir,
+        replayDir,
+        environmentPath,
+        platform,
+        environmentBinary,
+        botsPath,
+    };
+}
+
+/**
+ * Make sure the environment, benchmark bots, and other assets are
+ * prepared and up-to-date.
+ */
+let _resolveAssets;
+const assetsReady = new Promise((resolve) => {
+    _resolveAssets = resolve;
+});
+let loading = false;
+
+export default async function assets() {
+    if (loading) {
+        const result = await assetsReady;
+        return result;
+    }
+    loading = true;
+
+    const paths = assetPaths();
+    const {
+        dataDir,
+        replayDir,
+        environmentPath,
+        platform,
+        environmentBinary,
+        botsPath,
+    } = paths;
+
     if (!fs.existsSync(environmentPath)) {
         console.info(`Downloading environment to ${environmentPath}`);
 
@@ -128,7 +167,6 @@ export default async function assets() {
     // TODO: try executing environment to get version
 
     // Download benchmark bots
-    const botsPath = path.join(dataDir, BENCHMARK_BOT_DIRECTORY);
     if (!fs.existsSync(botsPath)) {
         fs.mkdirSync(botsPath);
         const request = await util.download(`assets/downloads/Halite3Benchmark.zip`);
@@ -154,10 +192,7 @@ export default async function assets() {
             path.basename(filename, path.extname(filename)),
     }));
 
-    return {
-        dataDir,
-        environmentPath,
-        replayDir,
+    _resolveAssets(Object.assign({}, paths, {
         benchmarkBots,
-    };
+    }));
 }
