@@ -29,6 +29,7 @@
     import JSZip from 'jszip';
 
     import assets from './assets';
+    import { pythonPath } from './assets';
     import * as util from './util';
 
     export default {
@@ -78,7 +79,7 @@
                 const params = ['play', '-i', action.games,
                                 '-b', paths.environmentPath,
                                 '--output-dir', paths.replayDir,
-                                '-r', 'python3 ' + this.localBot];
+                                '-r', `${pythonPath()} "${this.localBot}"`];
 
                 const stats = [{
                     won: 0,
@@ -92,10 +93,10 @@
                     });
                     params.push('-r');
                     if (bot.path === 'self') {
-                        params.push(`python3 "${this.localBot}"`);
+                        params.push(`${pythonPath()} "${this.localBot}"`);
                     }
                     else {
-                        params.push(`python3 "${bot.path}"`);
+                        params.push(`${pythonPath()} "${bot.path}"`);
                     }
                 }
 
