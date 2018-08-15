@@ -18,6 +18,7 @@
                 </div>
             </div>
             <RemoteBotHistory :userId="userId" />
+            <LocalBotGym />
         </template>
         <component v-if="modal" :is="modal" :params="modalProps" :event="modalEvent">
         </component>
@@ -32,6 +33,7 @@
     import RemoteBot from './RemoteBot.vue';
     import RemoteBotHistory from './RemoteBotHistory.vue';
     import LocalBot from './LocalBot.vue';
+    import LocalBotGym from './LocalBotGym.vue';
 
     export default {
         components: {
@@ -39,6 +41,7 @@
             RemoteBot,
             RemoteBotHistory,
             LocalBot,
+            LocalBotGym,
         },
         data() {
             return {
