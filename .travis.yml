@@ -1,14 +1,15 @@
 language: cpp
 services: docker
 
+os:
+  - linux
+  - osx
+
 matrix:
   include:
     - os: osx
       osx_image: xcode9.4
       node_js: "10"
-      env:
-        - ELECTRON_CACHE=$HOME/.cache/electron
-        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
     - os: linux
       services: docker
       sudo: true
@@ -43,6 +44,7 @@ jobs:
     - script:
         - docker exec build /bin/bash -c "cd /project/airesources/C++; CC=$CCOMPILE CXX=$CXXCOMPILE make MyBot"
       name: "C++ starter kit"
+      env: COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
     - stage: build website
       env: []
       script:
