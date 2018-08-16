@@ -6,9 +6,12 @@ set -e
 env
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
+    mkdir -p artifacts/
+
     pushd environment
     cmake .
     make -j2
+    mv ./halite ../artifacts/Halite-MacOS-$(date +%Y%m%d%H%M%S)-$(git rev-parse HEAD)
     popd
 
     pushd libhaliteviz
@@ -26,9 +29,9 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
           ../hlt_client/hlt_client/ extra/hlt_client
     npm install
     $(npm root)/.bin/electron-builder -m
-    # Clean up things that aren't .dmg
-    # Make sure we don't terminate script by accident (set -e)
-    find $(pwd)/dist/* \! -name '*.dmg' -exec rm -rf "{}" \; || true
+    mv ./electron-dist/*.dmg ../../artifacts
+
+    ls artifacts
 else
     docker exec build /bin/bash -c "which $CCOMPILE"
     docker exec build /bin/bash -c "which $CXXCOMPILE"
