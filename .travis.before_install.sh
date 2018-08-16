@@ -7,7 +7,6 @@ env
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     brew install lcov
-    brew install python
     sudo pip3 install virtualenv
 else
     docker pull ubuntu:bionic
