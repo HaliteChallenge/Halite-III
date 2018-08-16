@@ -39,6 +39,11 @@ struct Constants {
     double PERSISTENCE = 0.7; // Determines relative weight of local vs global features.
     double FACTOR_EXP_1 = 2; // Determines initial spikiness of map. Higher values weight towards 0.
     double FACTOR_EXP_2 = 2; // Determines final spikiness of map. Higher values weight towards 0.
+
+    dimension_type CAPTURE_RADIUS = 4; /**< The distance in which a ship is considered for the capture calculation */
+    unsigned long SHIPS_ABOVE_FOR_CAPTURE = 3; /**< If enemyships - friendlyships is above or equal to this threshold,
+                                                        the ship is captured*/
+
     /*
     The two FACTOR_EXP constants do related things but they are not the same.
     FACTOR_EXP_1 exponentiates the distribution used to seed the randomness.
