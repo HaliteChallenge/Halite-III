@@ -24,10 +24,8 @@ matrix:
       dist: trusty
       env: COMPILER="clang-6.0" CCOMPILE=clang-6.0 CXXCOMPILE=clang++-6.0
 
-before_install:
-  - ./.travis.before_install.sh
-script:
-  - ./travis.script.sh
+before_install: ./.travis.before_install.sh
+script: ./travis.script.sh
 jobs:
   include:
     - stage: test starter kits
