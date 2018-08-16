@@ -5,9 +5,8 @@ set -e
 
 env
 
+mkdir -p artifacts/
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
-    mkdir -p artifacts/
-
     pushd environment
     cmake .
     make -j2
@@ -31,6 +30,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     $(npm root)/.bin/electron-builder -m
     mv ./electron-dist/*.dmg ../../artifacts
 
+    cd ../../
     ls artifacts
 else
     docker exec build /bin/bash -c "which $CCOMPILE"
@@ -38,4 +38,5 @@ else
     docker exec build /bin/bash -c "$CXXCOMPILE --version"
     docker exec build /bin/bash -c "cd /project/environment; CC=$CCOMPILE CXX=$CXXCOMPILE cmake ."
     docker exec build /bin/bash -c "cd /project/environment; CC=$CCOMPILE CXX=$CXXCOMPILE make -j2"
+    cp ./environment/halite ./artifacts/Halite-Linux-$(date +%Y%m%d%H%M%S)-$(git rev-parse HEAD)
 fi
