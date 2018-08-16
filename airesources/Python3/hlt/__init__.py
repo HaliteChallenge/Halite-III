@@ -70,8 +70,10 @@ class Ship(Entity):
         Return a move to move this ship in a direction without
         checking for collisions.
         """
-        return "{} {} {}".format(commands.MOVE, self.id,
-                                 Direction.convert(direction) if direction not in "nsew" else direction)
+        raw_direction = direction
+        if not isinstance(direction, str) or direction not in "nsew":
+            raw_direction = Direction.convert(direction)
+        return "{} {} {}".format(commands.MOVE, self.id, raw_direction)
 
     def stay_still(self):
         """

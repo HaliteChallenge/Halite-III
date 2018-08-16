@@ -42,11 +42,11 @@ while True:
     for ship in me.get_ships():  # For each of our ships
         # Check if there's a reasonable amount of halite on the square.
         # If so, extract halite. If not, move randomly. If we don't move we can assume we're extracting Halite
-        if game_map[ship.position].halite < constants.MAX_HALITE / 10 or ship.is_full():
+        if game_map[ship.position].halite < constants.MAX_HALITE / 10 or ship.is_full:
             # Move this ship in a random direction, picking from one of the cardinals
             command_queue.append(
                 ship.move(
-                    random.choice(Direction.North, Direction.South, Direction.East, Direction.West)))
+                    random.choice([ Direction.North, Direction.South, Direction.East, Direction.West ])))
         else:
             ship.stay_still()  # Don't move
 
