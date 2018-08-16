@@ -333,11 +333,11 @@ class GameMap:
         y_cardinality, x_cardinality = self._get_target_direction(source.position, destination.position)
 
         if distance.x != 0:
-            possible_moves.append(Position(*x_cardinality if distance.x < (self.width / 2)
-                                  else Direction.invert(x_cardinality)))
+            possible_moves.append(x_cardinality if distance.x < (self.width / 2)
+                                  else Direction.invert(x_cardinality))
         if distance.y != 0:
-            possible_moves.append(Position(*y_cardinality if distance.y < (self.height / 2)
-                                  else Direction.invert(y_cardinality)))
+            possible_moves.append(y_cardinality if distance.y < (self.height / 2)
+                                  else Direction.invert(y_cardinality))
         return possible_moves
 
     def _bfs_traverse_safely(self, source, destination):
