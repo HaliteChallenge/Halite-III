@@ -27,6 +27,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
           --exclude __pycache__ --exclude '*~' --exclude '*.pyc' \
           ../hlt_client/hlt_client/ extra/hlt_client
     npm install
+    $(npm root)/.bin/webpack --mode=production
     $(npm root)/.bin/electron-builder -m
     mv ./electron-dist/*.dmg ../../artifacts
 
