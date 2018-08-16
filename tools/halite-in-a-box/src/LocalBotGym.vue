@@ -9,10 +9,14 @@
             benchmarks. As games are run, your bot is ranked against
             ours. Track your progress over time.
         </p>
-        <button @click="runGymGames">Run Games</button>
-        <p v-if="message">{{message}}</p>
-        <label for="iterations">Number of games:</label>
-        <input type="number" min="1" step="1" id="iterations" v-model="iterations" />
+
+        <fieldset>
+            <legend>Run Ranking Games</legend>
+            <label for="iterations">Number of games:</label>
+            <input type="number" min="1" step="1" id="iterations" v-model="iterations" />
+            <button @click="runGymGames">Start</button>
+            <p v-if="message">{{message}}</p>
+        </fieldset>
 
         <p> TODO: some graphs would be nice </p>
         <div class="gym-bots">
@@ -69,33 +73,11 @@
                 botHistory: [],
                 message: null,
                 iterations: 10,
+
+                registeringBots: false,
             };
         },
-        async mounted() {
-            const { benchmarkBots } = await assets();
-            for await (const value of util.call(['gym', 'bots'])) {
-                this.bots = value.items;
-            }
-
-            for (const bot of benchmarkBots) {
-                let found = false;
-                for (const registeredBot of this.bots) {
-                    if (bot.name === registeredBot.name) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                // Don't re-register bots each time
-                if (found) continue;
-
-                const args = ['gym', 'register', bot.name, `${pythonPath()} "${bot.path}"`];
-                for await (const _ of util.call(args)) {
-                    ;
-                }
-            }
-
-            this.refresh();
+        mounted() {
         },
         methods: {
             async runGymGames() {
@@ -127,34 +109,66 @@
                     }
                 }
             },
-        },
-        watch: {
-            async localBot(path) {
-                if (!path) return;
 
-                // Make sure we have current bot list
-                let bots = [];
-                for await (const value of util.call(['gym', 'bots'])) {
-                    bots = value.items;
-                }
+            async registerBots() {
+                if (this.registeringBots) return;
 
-                // Register player bot if necessary
-                const fullPath = `${pythonPath()} "${path}"`;
-                let found = false;
-                for (const registeredBot of bots) {
-                    if (registeredBot.name === "My Bot") {
-                        found = registeredBot.path === fullPath;
+                this.registeringBots = true;
+
+                try {
+                    const { benchmarkBots } = await assets();
+                    for await (const value of util.call(['gym', 'bots'])) {
+                        this.bots = value.items;
                     }
-                }
 
-                if (!found) {
-                    const args = ['gym', 'register', "My Bot", fullPath];
-                    for await (const _ of util.call(args)) {
-                        ;
+                    for (const bot of benchmarkBots) {
+                        let found = false;
+                        for (const registeredBot of this.bots) {
+                            if (bot.name === registeredBot.name) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        // Don't re-register bots each time
+                        if (found) continue;
+
+                        const args = ['gym', 'register', bot.name, `${pythonPath()} "${bot.path}"`];
+                        for await (const _ of util.call(args)) {
+                            ;
+                        }
+                    }
+
+                    // Register player bot if necessary
+                    if (this.localBot) {
+                        const fullPath = `${pythonPath()} "${this.localBot}"`;
+                        let found = false;
+                        for (const registeredBot of this.bots) {
+                            if (registeredBot.name === "My Bot") {
+                                found = registeredBot.path === fullPath;
+                            }
+                        }
+
+                        if (!found) {
+                            const args = ['gym', 'register', "My Bot", fullPath];
+                            for await (const _ of util.call(args)) {
+                                ;
+                            }
+                        }
                     }
 
                     await this.refresh();
                 }
+                finally {
+                    this.registeringBots = false;
+                }
+            },
+        },
+        watch: {
+            localBot(path) {
+                if (!path) return;
+
+                this.registerBots();
             },
         },
     }
@@ -162,6 +176,20 @@
 
 <style lang="scss" scoped>
     #local-bot-gym {
-        height: 100vh;
+        min-height: 100vh;
+        padding: 0 1em;
+
+        header {
+            background: #FFF;
+            position: sticky;
+            top: 0;
+        }
+
+        fieldset {
+            label, input {
+                display: inline-block;
+                width: auto;
+            }
+        }
     }
 </style>

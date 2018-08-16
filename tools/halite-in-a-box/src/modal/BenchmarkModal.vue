@@ -159,12 +159,6 @@
         font-weight: normal;
     }
 
-    fieldset {
-        border: 0.1rem solid #d1d1d1;
-        border-radius: 5px;
-        padding: 0 1em;
-    }
-
     .scroll-table {
         max-height: 30vh;
         overflow-y: scroll;

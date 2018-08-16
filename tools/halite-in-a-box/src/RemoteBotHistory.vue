@@ -52,6 +52,7 @@
 <style lang="scss" scoped>
     #remote-bot-history {
         height: 100vh;
+        padding: 0 1em;
     }
 
     .history-table {
