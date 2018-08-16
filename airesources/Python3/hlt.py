@@ -1,342 +1,404 @@
 #!/usr/bin/env python
-
-import copy
+import abc
 import logging
-import random
-import sys
+import queue
 
-# Game constants for reference
-MAX_HALITE = 1000
-SHIP_COST = 500
-DROPOFF_COST = 2000
+from . import commands, networking, constants
+from .positionals import Direction, Position
 
 
-# Store the most recent game map globally (would rather not, but
-# easier than threading it everywhere)
-_global_map = None
-
-
-class Location:
+class Entity(abc.ABC):
     """
-    A location utility class.
+    Base Entity Class from whence Ships, Dropoffs and Shipyards inherit
     """
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, owner, id, position):
+        self.owner = owner
+        self.id = id
+        self.position = position
 
-    def distance(self, other):
+    @staticmethod
+    def _generate(player_id):
         """
-        Compute the Manhattan distance to the given point.
-
-        Accounts for wraparound.
+        Method which creates a ship for a specific player given input form the engine.
+        :param player_id: The player id for the player who owns this ship
+        :return: An instance of ship along with its id
         """
-        global _global_map
-        return _global_map.distance(self, other)
-
-    def with_offset(self, dx, dy):
-        """
-        Create a new Location with the given offset from this.
-
-        Normalizes the coordinates afterwards.
-        """
-        global _global_map
-        return _global_map.location_with_offset(self, dx, dy)
-
-    def with_direction(self, direction):
-        """
-        Create a new Location one unit away in the given direction.
-
-        Normalizes the coordinates afterwards.
-        """
-        global _global_map
-        return _global_map.location_with_direction(self, direction)
-
-    def normalized(self):
-        """
-        Create a copy of this location with the coordinates normalized.
-        """
-        global _global_map
-        return _global_map.normalize(self)
-
-    def towards(self, target):
-        """
-        Return the direction to move closer to the target point, or
-        None if the points are the same.
-        """
-        global _global_map
-        if self.x != target.x:
-            if self.x > target.x:
-                west_dist = self.x - target.x
-                east_dist = _global_map.width - west_dist
-            else:
-                east_dist = target.x - self.x
-                west_dist = _global_map.width - east_dist
-            if west_dist < east_dist:
-                return "w"
-            return "e"
-        elif self.y != target.y:
-            if self.y > target.y:
-                north_dist = self.y - target.y
-                south_dist = _global_map.height - north_dist
-            else:
-                south_dist = self.y - target.y
-                north_dist = _global_map.height - south_dist
-            if north_dist < south_dist:
-                return "n"
-            return "s"
-
-    def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
+        ship_id, x_position, y_position = map(int, input().split())
+        return ship_id, Entity(player_id, ship_id, Position(x_position, y_position))
 
     def __repr__(self):
-        return "Location({}, {})".format(self.x, self.y)
+        return "{}(id={}, {})".format(self.__class__.__name__,
+                                      self.id,
+                                      self.position)
 
 
-class SafeMover:
+class Dropoff(Entity):
     """
-    Helper class that prevents your own ships from crashing into each
-    other.
-
-    To use, create a new instance on each turn. This class keeps track
-    of where ships are and where your ships are moving, and changes
-    your moves in case they conflict.
-
-    This only offers basic collision avoidance: it cannot do things
-    like swap the position of ships, and it isn't very cautious near
-    other players' ships.
-
+    Dropoff class for housing dropoffs
     """
-    def __init__(self, game_map, players):
-        self.game_map = game_map
-        self.players = players
-        # Map of ship ID to target location
-        self.moves = {}
-
-    def move(self, ship, direction, tries=5):
-        """
-        Move the given ship in the given direction, or try and move in
-        a different direction if the original direction is unsafe to move in.
-
-        We try to move in a different direction, instead of staying
-        still, to avoid deadlocks, where two or more ships are trying
-        to swap positions. (This is technically safe, but we will
-        leave that up to you.) In such cases, moving randomly prevents
-        ships from waiting for each other forever.
-        """
-        if tries <= 0:
-            return None
-
-        my_target = ship.location.with_direction(direction)
-        for other_target in self.moves.values():
-            if my_target == other_target:
-                return self.move(ship, random.choice("nsew"), tries - 1)
-
-        for player in self.players.values():
-            for other_ship in player.ships.values():
-                if other_ship.location == my_target:
-                    return self.move(ship, random.choice("nsew"), tries - 1)
-
-        self.moves[ship.id] = my_target
-        return ship.move_unsafe(direction)
-
-    def move_towards(self, ship, target):
-        """
-        Safely move this ship towards the given point.
-        """
-        return self.move(ship, ship.location.towards(target))
+    pass
 
 
-class Ship:
-    def __init__(self, id, location, halite):
-        self.id = id
-        self.location = location
-        self.halite = halite
+class Shipyard(Entity):
+    """
+    Shipyard class to house shipyards
+    """
+    def spawn(self):
+        """Return a move to spawn a new ship."""
+        return commands.GENERATE
+
+
+class Ship(Entity):
+    """
+    Ship class to house ship entities
+    """
+    def __init__(self, owner, id, position, halite_amount):
+        super().__init__(owner, id, position)
+        self.halite_amount = halite_amount
 
     @property
     def is_full(self):
         """Is this ship at max capacity?"""
-        return self.halite == MAX_HALITE
+        return self.halite_amount >= constants.MAX_HALITE
 
-    def construct_dropoff(self):
-        """Return a move to convert this ship into a dropoff."""
-        return "c {}".format(self.id)
+    def make_dropoff(self):
+        """Return a move to transform this ship into a dropoff."""
+        return "{} {}".format(commands.CONSTRUCT, self.id)
 
-    def move_unsafe(self, direction):
+    def move(self, direction):
         """
         Return a move to move this ship in a direction without
         checking for collisions.
         """
-        return "m {} {}".format(self.id, direction)
+        return "{} {} {}".format(commands.MOVE, self.id,
+                                 Direction.convert(direction) if direction not in "nsew" else direction)
+
+    def stay_still(self):
+        """
+        Don't move this ship.
+        """
+        return "{} {} {}".format(commands.MOVE, self.id, commands.STAY_STILL)
+
+    @staticmethod
+    def _generate(player_id):
+        """
+        Creates an instance of a ship or a given player given the engine's input.
+        :param player_id: The id of the player who owns this ship
+        :return: The ship id and ship object
+        """
+        ship_id, x_position, y_position, halite = map(int, input().split())
+        return ship_id, Ship(player_id, ship_id, Position(x_position, y_position), halite)
 
     def __repr__(self):
-        return "Ship(id={}, {}, cargo={} halite)".format(self.id, self.location, self.halite)
-
-
-class Dropoff:
-    def __init__(self, id, location):
-        self.id = id
-        self.location = location
-
-
-class Shipyard(Dropoff):
-    def spawn(self):
-        """Return a move to spawn a new ship."""
-        return "g"
+        return "{}(id={}, {}, cargo={} halite)".format(self.__class__.__name__,
+                                                       self.id,
+                                                       self.position,
+                                                       self.halite_amount)
 
 
 class Game:
-    def __init__(self):
-        self.name = None
-        self.my_id = None
-        self.players = None
-        self.base_players = None
-        self.game_map = None
-
-    def get_init(self):
+    """
+    The game object holds all metadata pertinent to the game and all its contents
+    """
+    def __init__(self, name):
         """
-        Get the initial game state.
-
-        :returns: The initial game map, list of players, and your player ID.
+        Initiates a game object collecting all start-state instances for the contained items for pre-game.
+        Sets your bot name as name. Also sets up basic logging.
+        :param name: The name of your bot
         """
-        num_players, my_id = map(int, input().split())
-
-        self.my_id = my_id
+        self.turn_number = 0
+        num_players, self.my_id = map(int, input().split())
 
         logging.basicConfig(
-            filename="bot-{}.log".format(my_id),
+            filename="bot-{}.log".format(name),
             filemode="w",
             level=logging.DEBUG,
         )
 
-        players = {}
-        for _ in range(num_players):
-            player, shipyard_x, shipyard_y = map(int, input().split())
-            players[player] = Player(Shipyard(-1, Location(shipyard_x, shipyard_y)))
-        self.base_players = copy.copy(players)
-        self.players = players
+        self.players = {}
+        for player in range(num_players):
+            self.players[player] = Player._generate()
+        self.me = self.players[self.my_id]
+        self.game_map = GameMap._generate()
+        networking.send_commands([name])
 
-        map_w, map_h = map(int, input().split())
-        game_map = [[None for _ in range(map_w)] for _ in range(map_h)]
-        for y in range(map_h):
-            row_cells = [MapCell(int(cell)) for cell in input().split()]
-            for x in range(map_w):
-                game_map[y][x] = row_cells[x]
-
-        self.game_map = GameMap(game_map, map_w, map_h)
-        global _global_map
-        _global_map = self.game_map
-
-        return self.game_map, players, my_id
-
-    def send_init(self, name):
+    def update_frame(self):
         """
-        Tell the engine that you are done initializing.
-
-        :param name: The name of your bot. (Only used locally.)
+        Updates the game object's state.
+        :returns: nothing.
         """
-        self.name = name
-        print(name)
-        sys.stdout.flush()
-
-    def get_frame(self):
-        """
-        Get the next turn's game state.
-
-        :returns: The turn number, an updated map, and an updated player list.
-        """
-        turn_number = int(input())
-        logging.info("=============== TURN {:03} ================".format(turn_number))
-        self.players = copy.copy(self.base_players)
+        self.turn_number = int(input())
+        logging.info("=============== TURN {:03} ================".format(self.turn_number))
 
         for _ in range(len(self.players)):
             player, num_ships, num_dropoffs, halite = map(int, input().split())
-            self.players[player].halite = halite
-            self.players[player].ships = {}
-            self.players[player].dropoffs = {}
-            for _ in range(num_ships):
-                ship_id, x, y, halite = map(int, input().split())
-                self.players[player].ships[ship_id] = Ship(ship_id, Location(x, y), halite)
-            for _ in range(num_dropoffs):
-                dropoff_id, x, y = map(int, input().split())
-                self.players[player].dropoffs[dropoff_id] = Dropoff(dropoff_id, Location(x, y))
+            self.players[player]._update(num_ships, num_dropoffs, halite)
 
-        # Get changed cells
-        num_changed_cells = int(input())
-        for _ in range(num_changed_cells):
-            cell_x, cell_y, cell_energy = map(int, input().split())
-            self.game_map[cell_y][cell_x].halite = cell_energy
+        self.game_map._update()
 
-        global _global_map
-        _global_map = self.game_map
-
-        return turn_number, self.game_map, self.players
-
-    def end_turn(self, commands):
-        print(" ".join(filter(lambda x: x is not None, commands)))
-        sys.stdout.flush()
+    @staticmethod
+    def end_turn(commands):
+        """
+        Method to send all commands to the game engine, effectively ending your turn.
+        :param commands: Array of commands to send to engine
+        :return: nothing.
+        """
+        networking.send_commands(commands)
 
 
 class Player:
-    def __init__(self, shipyard):
+    """
+    Player object containing all items/metadata pertinent to the player.
+    """
+    def __init__(self, player_id, shipyard, halite=0):
+        self.id = player_id
         self.shipyard = shipyard
-        self.halite = 0
-        self.ships = {}
-        self.dropoffs = {}
+        self.halite = halite
+        self._ships = {}
+        self._dropoffs = {}
+
+    def get_ship(self, ship_id):
+        """
+        Returns a singular ship mapped by the ship id
+        :param ship_id: The ship id of the ship you wish to return
+        :return: the ship object.
+        """
+        return self._ships[ship_id]
+
+    def get_ships(self):
+        """
+        :return: Returns all ship objects in a list
+        """
+        return self._ships.values()
+
+    def get_dropoff(self, dropoff_id):
+        """
+        Returns a singular dropoff mapped by its id
+        :param dropoff_id: The dropoff id to return
+        :return: The dropoff object
+        """
+        return self._dropoffs[dropoff_id]
+
+    def get_dropoffs(self):
+        """
+        :return: Returns all dropoff objects in a list
+        """
+        return self._dropoffs.values()
+
+
+    @staticmethod
+    def _generate():
+        """
+        Creates a player object from the input given by the game engine
+        :return: The player object
+        """
+        player, shipyard_x, shipyard_y = map(int, input().split())
+        return Player(player, Shipyard(player, -1, Position(shipyard_x, shipyard_y)))
+
+    def _update(self, num_ships, num_dropoffs, halite):
+        """
+        Updates this player object considering the input from the game engine for the current specific turn.
+        :param num_ships: The number of ships this player has this turn
+        :param num_dropoffs: The number of dropoffs this player has this turn
+        :param halite: How much halite the player has in total
+        :return: nothing.
+        """
+        self.halite = halite
+        self._ships = {id: ship for (id, ship) in [Ship._generate(self.id) for _ in range(num_ships)]}
+        self._dropoffs = {id: dropoff for (id, dropoff) in [Dropoff._generate(self.id) for _ in range(num_dropoffs)]}
 
 
 class MapCell:
     """A cell on the game map."""
-    def __init__(self, halite):
+    def __init__(self, position, halite):
+        self.position = position
         self.halite = halite
-        self.ships = {}
+        self.ship = None
+        self.structure = None
+
+    def is_empty(self):
+        """
+        :return: Whether this cell has no ships or structures
+        """
+        return self.ship is None and self.structure is None
+
+    def is_occupied(self):
+        """
+        :return: Whether this cell has any ships
+        """
+        return self.ship is not None
+
+    def has_structure(self):
+        """
+        :return: Whether this cell has any structures
+        """
+        return self.structure is not None
+
+    def structure_type(self):
+        """
+        :return: What is the structure type in this cell
+        """
+        return None if not self.structure else type(self.structure)
+
+    def __eq__(self, other):
+        return self.position == other.position
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 class GameMap:
     """
     The game map.
 
-    Can be indexed by a location, or by row and then
-    column. Coordinates start at 0. This class does not normalize
-    coordinates for you.
+    Can be indexed by a position, or by a contained entity.
+    Coordinates start at 0. Coordinates are normalized for you
     """
     def __init__(self, cells, width, height):
         self.width = width
         self.height = height
-        self.cells = cells
+        self._cells = cells
 
-    def __getitem__(self, row):
-        if isinstance(row, Location):
-            return self.cells[row.y][row.x]
-        return self.cells[row]
-
-    def distance(self, loc1, loc2):
-        """Compute the Manhattan distance between two locations.
-
-        Accounts for wrap-around.
+    def __getitem__(self, location):
         """
-        x_dist = abs(loc1.x - loc2.x)
-        y_dist = abs(loc1.y - loc2.y)
-        return min(x_dist, self.width - x_dist) + \
-            min(y_dist, self.height - y_dist)
+        Getter for position object or entity objects within the game map
+        :param location: the position or entity to access in this map
+        :return: the contents housing that cell or entity
+        """
+        if isinstance(location, Position):
+            location = self.normalize(location)
+            return self._cells[location.y][location.x]
+        elif isinstance(location, Entity):
+            return self._cells[location.position.y][location.position.x]
+        return None
 
-    def location_with_offset(self, location, dx, dy):
-        return self.normalize(Location(location.x + dx, location.y + dy))
+    def calculate_distance(self, source, target):
+        """
+        Compute the Manhattan distance between two locations.
+        Accounts for wrap-around.
+        :param source: The source from where to calculate
+        :param target: The target to where calculate
+        :return: The distance between these items
+        """
+        resulting_position = abs(source - target)
+        return min(resulting_position.x, self.width - resulting_position.x) + \
+            min(resulting_position.y, self.height - resulting_position.y)
 
-    def location_with_direction(self, location, direction):
-        dx = 0
-        dy = 0
+    def normalize(self, position):
+        """
+        Normalized the position within the bounds of the Thoroid.
+        i.e.: Takes a point which may or may not be within width and height bounds and places it within those
+        bounds considering wraparound.
+        :param position: A position objects.
+        :return: A normalized position objects fitting within the bounds of the map
+        """
+        return Position(position.x % self.width, position.y % self.height)
 
-        if direction == "n":
-            dy = -1
-        elif direction == "s":
-            dy = 1
-        elif direction == "w":
-            dx = -1
-        elif direction == "e":
-            dx = 1
+    @staticmethod
+    def _get_target_direction(source, target):
+        """
+        Returns where in the cardinality spectrum the target is from source. e.g.: North, East; South, West; etc.
+        NOTE: Ignores toroid
+        :param source: The source position
+        :param target: The target position
+        :return: A tuple containing the target Direction. A tuple item (or both) could be None if within same coords
+        """
+        return (Direction.South if target.y > source.y else Direction.North if target.y < source.y else None,
+                Direction.East if target.x > source.x else Direction.West if target.x < source.x else None)
 
-        return self.location_with_offset(location, dx, dy)
+    def get_unsafe_moves(self, source, destination):
+        """
+        Return the Direction(s) to move closer to the target point, or empty if the points are the same.
+        This move mechanic does not account fo collisions. The multiple directions are if both directional movements
+        are viable.
+        :param source: The source object (likely a Ship) that you wish to move
+        :param destination: The destination towards which you wish to move your object.
+        :return: A list of valid (closets) Directions towards your target.
+        """
+        if not isinstance(source, MapCell) or not isinstance(destination, MapCell):
+            raise AttributeError("Source and Destination must be of type MapCell")
+        possible_moves = []
+        distance = abs(destination.position - source.position)
+        y_cardinality, x_cardinality = self._get_target_direction(source.position, destination.position)
 
-    def normalize(self, location):
-        return Location((location.x + self.width) % self.width,
-                        (location.y + self.height) % self.height)
+        if distance.x != 0:
+            possible_moves.append(Position(*x_cardinality if distance.x < (self.width / 2)
+                                  else Direction.invert(x_cardinality)))
+        if distance.y != 0:
+            possible_moves.append(Position(*y_cardinality if distance.y < (self.height / 2)
+                                  else Direction.invert(y_cardinality)))
+        return possible_moves
+
+    def _bfs_traverse_safely(self, source, destination):
+        """
+        Use a BFS to traverse the map safely, storing each previous cell in a visited cell.
+        :param source: The source object
+        :param destination: The destination object
+        :return: The visited map if reachable. None otherwise
+        """
+        visited_map = [[None for _ in range(self.width)] for _ in range(self.height)]
+        potentials_queue = queue.Queue()
+        potentials_queue.put(source)
+        while not potentials_queue.empty():
+            current_square = potentials_queue.get()
+            if current_square == destination:
+                return visited_map
+            for suitor in current_square.position.get_surrounding_cardinals():
+                if not self[suitor].is_occupied() and not visited_map[suitor.y][suitor.x]:
+                    potentials_queue.put(self[suitor])
+                    visited_map[suitor.y][suitor.x] = current_square
+        return None
+
+    @staticmethod
+    def _find_first_move(source, destination, visited):
+        """
+        Given a visited map, find the viable first move near the source and return it
+        :param source: The first position
+        :param destination: The target
+        :param visited: A map containing the visited cell information from _bfs_traverse_safely
+        :return: The first viable move
+        """
+        current_square = destination
+        previous = None
+        while current_square is not None and current_square != source:
+            previous = current_square
+            current_square = visited[current_square.position.y][current_square.position.x]
+        return previous
+
+    def get_safe_move(self, source, destination):
+        """
+        Returns the best (read: most optimal) singular safe move towards the
+        :param source: The source object (likely a Ship) that you wish to move
+        :param destination: The destination towards which you wish to move your object.
+        :return: A single valid direction towards the destination accounting for collisions.
+        """
+        if not isinstance(source, MapCell) or not isinstance(destination, MapCell):
+            raise AttributeError("Source and Destination must be of type MapCell")
+        if source == destination:
+            return None
+        visited_map = self._bfs_traverse_safely(source, destination)
+        return self._find_first_move(source, destination, visited_map)
+
+    @staticmethod
+    def _generate():
+        """
+        Creates a map object from the input given by the game engine
+        :return: The map object
+        """
+        map_width, map_height = map(int, input().split())
+        game_map = [[None for _ in range(map_width)] for _ in range(map_height)]
+        for y_position in range(map_height):
+            cells = input().split()
+            for x_position in range(map_width):
+                game_map[y_position][x_position] = MapCell(Position(x_position, y_position),
+                                                           int(cells[x_position]))
+        return GameMap(game_map, map_width, map_height)
+
+    def _update(self):
+        """
+        Updates this map object from the input given by teh game engine
+        :return: nothing
+        """
+        for _ in range(int(input())):
+            cell_x, cell_y, cell_energy = map(int, input().split())
+            self[Position(cell_x, cell_y)].halite = cell_energy
