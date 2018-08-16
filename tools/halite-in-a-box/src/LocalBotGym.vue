@@ -60,6 +60,35 @@
                     :lines="[[botHistory, drawRank]]" />
             </section>
         </section>
+
+        <div class="gym-bots">
+            <table>
+                <caption>Games</caption>
+                <thead>
+                    <tr>
+                        <th>Date Played</th>
+                        <th>Participants</th>
+                        <th>Map Parameters</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="game in games">
+                        <td>{{game.datetime}}</td>
+                        <td>
+                            <span v-for="participant in matchParticipants(game)">
+                                "{{participant.name}}" (rank {{participant.rank}})
+                            </span>
+                        </td>
+                        <td>{{game.results.map_width}}x{{game.results.map_height}}, seed: {{game.results.map_seed}}</td>
+                        <td>
+                            <a @click="watchReplay(game.results.replay)">Watch Replay</a>
+                            View Log
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 </template>
 
@@ -78,6 +107,7 @@
         data() {
             return {
                 bots: [],
+                games: [],
                 botHistory: [],
                 message: null,
                 iterations: 10,
@@ -94,6 +124,15 @@
 
             drawScore(d) {
                 return d.mu - 3*d.sigma;
+            },
+
+            matchParticipants(game) {
+                const participants = game.participants.slice();
+                for (const [ key, stats ] of Object.entries(game.results.stats)) {
+                    participants[stats.rank - 1] = game.participants[key];
+                    participants[stats.rank - 1].rank = stats.rank;
+                }
+                return participants;
             },
 
             async runGymGames() {
@@ -116,6 +155,10 @@
             async refresh() {
                 for await (const value of util.call(['gym', 'bots'])) {
                     this.bots = value.items;
+                }
+
+                for await (const value of util.call(['gym', 'stats'])) {
+                    this.games = value.items;
                 }
 
                 // Get bot score history
@@ -174,6 +217,10 @@
                 finally {
                     this.registeringBots = false;
                 }
+            },
+
+            watchReplay(path) {
+                util.watchReplay(path);
             },
         },
         watch: {
