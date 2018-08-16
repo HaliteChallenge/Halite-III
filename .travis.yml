@@ -14,22 +14,22 @@ matrix:
       services: docker
       sudo: true
       dist: trusty
+      env: COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
+    - os: linux
+      services: docker
+      sudo: true
+      dist: trusty
+      env: COMPILER="clang-5.0" CCOMPILE=clang-5.0 CXXCOMPILE=clang++-5.0
+    - os: linux
+      services: docker
+      sudo: true
+      dist: trusty
+      env: COMPILER="clang-6.0" CCOMPILE=clang-6.0 CXXCOMPILE=clang++-6.0
 
 before_install: ./.travis.before_install.sh
+script: ./.travis.script.sh
 jobs:
   include:
-    - stage: build environment
-      script: ./.travis.script.sh
-      name: "GCC 7"
-      env: COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
-    - stage: build environment
-      script: ./.travis.script.sh
-      name: "Clang 5"
-      env: COMPILER="clang-5.0" CCOMPILE=clang-5.0 CXXCOMPILE=clang++-5.0
-    - stage: build environment
-      script: ./.travis.script.sh
-      name: "Clang 6"
-      env: COMPILER="clang-6.0" CCOMPILE=clang-6.0 CXXCOMPILE=clang++-6.0
     - stage: test starter kits
       name: "Java starter kit"
       script:

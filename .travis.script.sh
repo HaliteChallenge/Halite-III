@@ -6,7 +6,9 @@ set -e
 env
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
-    echo ""
+    cd environment
+    cmake .
+    make
 else
     docker exec build /bin/bash -c "which $CCOMPILE"
     docker exec build /bin/bash -c "which $CXXCOMPILE"
