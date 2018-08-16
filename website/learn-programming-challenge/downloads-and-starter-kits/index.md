@@ -67,12 +67,22 @@ System requirements are detailed [here](system-requirements).
         <tbody>
             <tr>
                 <td>Source</td>
-                <td>NA</td>
+                <td>{{ site.data.downloads.version }}</td>
                 <td><a href="{{ site.baseurl }}/{{ site.data.downloads.source }}">Download</a></td>
                 <td>NA</td>
                 <td>NA</td>
                 <td>NA</td>
             </tr>
+            {% for tool in site.data.downloads.tools %}
+            <tr>
+                <td>{{ tool.name }}</td>
+                <td>NA</td>
+                <td><a href="{{ site.baseurl }}/{{ tool.files[0] }}">Download</a></td>
+                <td>NA</td>
+                <td>NA</td>
+                <td>NA</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>

@@ -48,7 +48,15 @@ def me():
             "user_id": flask.session["user_id"],
         })
     else:
-        return flask.jsonify(None)
+        user = util.validate_api_key(
+            flask.request.headers.get(config.API_KEY_HEADER))
+
+        if user:
+            return flask.jsonify({
+                "user_id": user["user_id"],
+            })
+
+    return flask.jsonify(None)
 
 
 @oauth_logout.route("/", methods=["POST"])

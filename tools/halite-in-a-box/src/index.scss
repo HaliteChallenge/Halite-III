@@ -1,0 +1,22 @@
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: "Fira Sans", sans-serif;
+}
+
+.error {
+    color: red;
+}
+
+fieldset {
+    border: 0.1rem solid #d1d1d1;
+    border-radius: 5px;
+    padding: 0 1em;
+}
+
+th {
+    font-weight: bold;
+}

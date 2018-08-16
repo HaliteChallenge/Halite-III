@@ -6,9 +6,11 @@ import sys
 import json
 import argparse
 
+from . import output
 from . import upload_bot
 from . import download_game
 from . import compare_bots
+from . import gym
 
 """client.py: Client for interacting with the Halite II servers."""
 
@@ -21,7 +23,7 @@ __license__ = "MIT"
 __status__ = "Production"
 __version__ = "1.5"
 
-URI_HALITE_API = 'http://api.halite.io/v1/api'
+URI_HALITE_API = 'http://35.190.92.101/v1/api'
 URI_API_CREATE_BOT = URI_HALITE_API + "/user/{}/bot"
 URI_API_EXISTING_BOT = URI_HALITE_API + "/user/{}/bot/{}"
 URI_HALITE_WEB_PAGE = 'http://halite.io'
@@ -36,11 +38,12 @@ API_KEY_HEADER = 'X-API-KEY'
 
 AUTH_MODE = 'auth'
 GYM_MODE = 'gym'
+PLAY_MODE = 'play'
 REPLAY_MODE = 'replay'
 BOT_MODE = 'bot'
 BOT_UPLOAD_MODE = 'upload'
 BOT_DOWNLOAD_MODE = 'download'
-MODES = str({AUTH_MODE, GYM_MODE, REPLAY_MODE, BOT_MODE})
+MODES = str({AUTH_MODE, GYM_MODE, PLAY_MODE, REPLAY_MODE, BOT_MODE})
 REPLAY_MODE_DATE = 'date'
 REPLAY_MODE_USER = 'user'
 
@@ -140,6 +143,9 @@ class Config:
     def __str__(self):
         return "* id:\t\t{}{}* api_key:\t{}".format(self.user_id, os.linesep, self.api_key)
 
+    def to_json(self):
+        return { "id": self.user_id, "api_key": self.api_key }
+
     def __repr__(self):
         return self.__str__()
 
@@ -150,11 +156,13 @@ def _parse_arguments():
     :return: parsed arguments if any. Prints help otherwise
     """
     parser = argparse.ArgumentParser(description="Halite 2.0 CLI")
+    parser.add_argument('--json', action='store_true', help="Disable interactivity and output as JSON.")
     # .Modes
     subparser = parser.add_subparsers(dest='mode', metavar=MODES)
     # .Modes.Auth
     auth_parser = subparser.add_parser(AUTH_MODE, help='Authorize client to make requests on your behalf')
     auth_parser.add_argument('-m', '--metadata', action='store_true', help="Print auth metadata")
+    auth_parser.add_argument('-k', '--key', help="Specify API key (meant for use with --json)")
     # .Modes.Bot
     bot_parser = subparser.add_parser('bot', help='Actions associated with a bot')
     bot_subparser = bot_parser.add_subparsers(dest='bot_mode', required=True)
@@ -162,19 +170,18 @@ def _parse_arguments():
     bot_download_parser = bot_subparser.add_parser(BOT_DOWNLOAD_MODE, help='Actions associated with a bot')
     bot_parser.add_argument('-b', '--bot-path', dest='bot_path', action='store', type=str, required=True,
                             help="The path wherein your bot zip lives.")
+    bot_upload_parser.add_argument('--dry-run', dest='dry_run', action='store_true',
+                                   help="Verify the bot upload but do not actually upload.")
+    bot_upload_parser.add_argument('-i', '--include',
+                                   dest='include_extensions',
+                                   action='append',
+                                   type=str,
+                                   required=False,
+                                   help="Include files with these extensions in the upload. May pass 0 or more times (if not given, defaults to Python/Java/C++)")
+    # .Modes.Play
+    compare_bots.parse_arguments(subparser)
     # .Modes.Gym
-    bot_parser = subparser.add_parser('gym', help='Train your Bot(s)!')
-    bot_parser.add_argument('-r', '--run-command', dest='run_commands', action='append', type=str, required=True,
-                            help="The command to run a specific bot. You may pass either 2 or 4 of these arguments")
-    bot_parser.add_argument('-b', '--binary', dest='halite_binary', action='store', type=str, required=True,
-                            help="The halite executable/binary path, used to run the games")
-
-    bot_parser.add_argument('-W', '--width', dest='map_width', action='store', type=int, default=240,
-                            help="The map width the simulations will run in")
-    bot_parser.add_argument('-H', '--height', dest='map_height', action='store', type=int, default=160,
-                            help="The map height the simulations will run in")
-    bot_parser.add_argument('-i', '--iterations', dest='iterations', action='store', type=int,  default=100,
-                            help="Number of games to be run")
+    gym.parse_arguments(subparser)
     # .Modes.Replay
     replay_parser = subparser.add_parser('replay', help='Actions associated with replay files')
     # .Modes.Replay.Modes
@@ -208,6 +215,11 @@ def authorize():
     Create the config for the user. This will ask the user to visit a webpage and paste the api key encountered.
     :return: Nothing
     """
+
+    if output.mode() == output.JSON:
+        output.error("Not logged in.")
+        sys.exit(1)
+
     api_key = input("Please go to {} to obtain an api_key, and paste here: ".format(URI_WEB_API_KEY))
     Config(api_key)
     print("Successfully set up user account")
@@ -221,14 +233,23 @@ def main():
     """
     try:
         args = _parse_arguments()
+
+        if args.json:
+            output.set_mode('json')
+
         if args.mode == AUTH_MODE:
+            if args.key:
+                Config(args.key)
+                output.output("Saved API key.")
+                return
+
             if not (args.metadata and Config.auth_exists()):
                 authorize()
             if args.metadata:
-                print(Config())
+                output.output(Config())
         elif args.mode == BOT_MODE:
             if args.bot_mode == BOT_UPLOAD_MODE:
-                upload_bot.upload(args.bot_path)
+                upload_bot.upload(args.bot_path, args.dry_run, args.include_extensions)
             else:
                 upload_bot.download(args.bot_path)
         elif args.mode == REPLAY_MODE:
@@ -236,12 +257,15 @@ def main():
                                    getattr(args, 'date', None), getattr(args, 'all', None),
                                    Config().user_id if Config.auth_exists() else None, getattr(args, 'user_id', None),
                                    getattr(args, 'limit', None))
-        elif args.mode == GYM_MODE:
+        elif args.mode == PLAY_MODE:
             compare_bots.play_games(args.halite_binary,
+                                    args.game_output_dir,
                                     args.map_width, args.map_height,
-                                    args.run_commands, args.iterations)
+                                    args.run_commands, args.iterations, [])
+        elif args.mode == GYM_MODE:
+            gym.main(args)
     except (IndexError, TypeError, ValueError, IOError) as err:
-        sys.stderr.write(str(err) + os.linesep)
+        output.error(str(err))
         exit(-1)
 
 
