@@ -22,7 +22,8 @@ import logging
 
 # Creates a bot with the name MyPythonBot, registering for the game
 # This game object contains the start game state
-game = hlt.Game("MyPythonBot")
+game = hlt.Game()
+game.ready("MyPythonBot")
 
 # Now that we're initialized, let's save a message to ourselves in the log file with some important information.
 #   Specifically we log here our id, which we can always fetch from the game object by using my_id.

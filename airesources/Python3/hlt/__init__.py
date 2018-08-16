@@ -102,11 +102,10 @@ class Game:
     """
     The game object holds all metadata pertinent to the game and all its contents
     """
-    def __init__(self, name):
+    def __init__(self):
         """
         Initiates a game object collecting all start-state instances for the contained items for pre-game.
-        Sets your bot name as name. Also sets up basic logging.
-        :param name: The name of your bot
+        Also sets up basic logging.
         """
         self.turn_number = 0
 
@@ -116,7 +115,7 @@ class Game:
         num_players, self.my_id = map(int, input().split())
 
         logging.basicConfig(
-            filename="bot-{}.log".format(name),
+            filename="bot-{}.log".format(self.my_id),
             filemode="w",
             level=logging.DEBUG,
         )
@@ -126,6 +125,12 @@ class Game:
             self.players[player] = Player._generate()
         self.me = self.players[self.my_id]
         self.game_map = GameMap._generate()
+
+    def ready(self, name):
+        """
+        Indicate that your bot is ready to play.
+        :param name: The name of your bot
+        """
         networking.send_commands([name])
 
     def update_frame(self):
