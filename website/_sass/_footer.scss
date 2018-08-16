@@ -1,4 +1,8 @@
 .footer{
+  background-image: url("/assets/images/bg-footer.png");
+  background-position: bottom center;
+  background-size: contain;
+  background-repeat: no-repeat;
   color: $foreground;
   a{
     color: $foreground;

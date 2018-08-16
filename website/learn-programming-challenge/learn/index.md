@@ -1,6 +1,6 @@
 ---
 layout: doc_page
-title: Basic Game Rules
+title: Learn
 toc: false
 description: Get an introduction to the rules of the game to win the Halite AI Programming Challenge.
 sort_key: 0
