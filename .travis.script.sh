@@ -8,7 +8,7 @@ env
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     pushd environment
     cmake .
-    make
+    make -j2
     popd
 
     pushd tools/halite-in-a-box
@@ -26,5 +26,5 @@ else
     docker exec build /bin/bash -c "which $CXXCOMPILE"
     docker exec build /bin/bash -c "$CXXCOMPILE --version"
     docker exec build /bin/bash -c "cd /project/environment; CC=$CCOMPILE CXX=$CXXCOMPILE cmake ."
-    docker exec build /bin/bash -c "cd /project/environment; CC=$CCOMPILE CXX=$CXXCOMPILE make"
+    docker exec build /bin/bash -c "cd /project/environment; CC=$CCOMPILE CXX=$CXXCOMPILE make -j2"
 fi
