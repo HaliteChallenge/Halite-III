@@ -75,7 +75,7 @@ export function pythonBasePath() {
 export function pythonHomePath() {
     // Otherwise packaged Python doesn't know where it is
     if (process.platform === 'darwin') {
-        return path.join(embeddedResourcesPath(), 'python-macos/Resources');
+        return path.join(pythonBasePath(), 'Resources');
     }
     return '';
 }
