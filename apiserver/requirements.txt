@@ -29,6 +29,7 @@ MarkupSafe==1.0
 oauth2client==4.1.1
 oauthlib==2.0.2
 passlib==1.7.1
+profanity==1.1
 protobuf==3.3.0
 psycopg2-binary==2.7.5
 pyasn1==0.4.3
@@ -50,4 +51,5 @@ trueskill==0.4.4
 uritemplate==3.0.0
 urllib3==1.21.1
 Werkzeug==0.12.2
+wordfilter==0.2.6.2
 zstandard==0.8.1
