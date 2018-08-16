@@ -251,7 +251,7 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
 
             const tooltip = [];
             for (let i = 0; i < this.replay.players.length; i++) {
-                tooltip.push(`Player ${i}: ${energies[i]} halite stored.`);
+                tooltip.push(`Player ${i} (${this.replay.players[i].name}): ${energies[i]} halite stored.`);
             }
             clashbar.setAttribute("title", tooltip.join(" "));
         });
