@@ -6,9 +6,21 @@ set -e
 env
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
-    cd environment
+    pushd environment
     cmake .
     make
+    popd
+
+    pushd tools/halite-in-a-box
+    pushd macos-portable-python
+    ./build.sh
+    popd
+
+    cp -r macos-portable-python/dist/python-macos.app extra/python-macos
+    rsync -r \
+          --exclude __pycache__ --exclude '*~' --exclude '*.pyc' \
+          ../hlt_client/hlt_client/ extra/hlt_client
+    $(npm root)/.bin/electron-builder -m
 else
     docker exec build /bin/bash -c "which $CCOMPILE"
     docker exec build /bin/bash -c "which $CXXCOMPILE"
