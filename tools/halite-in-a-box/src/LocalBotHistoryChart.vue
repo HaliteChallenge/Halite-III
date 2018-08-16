@@ -1,7 +1,7 @@
 <template>
     <svg :width="width" :height="height" ref="svg">
         <g :transform="`translate(${margin.left}, ${margin.top})`">
-            <path class="line"></path>
+            <path v-for="data in lines" class="line"></path>
             <g class="axis-x" :transform="`translate(0, ${chartHeight})`"></g>
             <g class="axis-y"></g>
         </g>
@@ -13,14 +13,14 @@
     import * as d3 from 'd3';
 
     export default {
-        props: ['width', 'height', 'data'],
+        props: ['width', 'height', 'lines', 'invertY', 'startYZero'],
         data() {
             return {
                 margin: { top: 20, left: 30, bottom: 30, right: 0 },
             };
         },
         mounted() {
-            this.draw(this.data);
+            this.draw();
         },
         computed: {
             chartWidth() {
@@ -31,25 +31,48 @@
             },
         },
         methods: {
-            draw(rawData) {
-                const x = d3.scaleTime().range([ 0, this.chartWidth ]);
-                const y = d3.scaleLinear().range([ this.chartHeight, 0 ]);
-
-                const line = d3.line()
-                               .x(d => x(d.datetime))
-                               .y(d => y(d.mu - 3*d.sigma));
+            draw() {
+                const x = d3.scaleLinear().range([ 0, this.chartWidth ]);
+                const y = d3.scaleLinear().range(this.invertY ?
+                                                 [ 0, this.chartHeight ] :
+                                                 [ this.chartHeight, 0 ]);
 
                 const svg = d3.select(this.$refs.svg);
-                const data = rawData.map((d) => {
-                    d.datetime = new Date(d.datetime);
-                    return d;
-                });
 
-                x.domain(d3.extent(data, (d) => d.datetime));
-                y.domain([0, d3.max(data, (d) => d.mu - 3*d.sigma)]);
-                svg.select('path')
-                   .data([ data ])
-                   .attr('d', line);
+                let dataMin = 2;
+                let dataMax = 1;
+                let allData = [];
+                let dataLists = [];
+                for (let i = 0; i < this.lines.length; i++) {
+                    const [ rawData, yFunc ] = this.lines[i];
+
+                    const data = rawData.map((d) => {
+                        d.datetime = new Date(d.datetime);
+                        return d;
+                    });
+                    data.sort((a, b) => d3.ascending(a.datetime, b.datetime));
+                    data.forEach((d, i) => {
+                        d.gamesPlayed = i;
+                    });
+                    dataLists.push(data);
+                    allData = allData.concat(data);
+                    dataMax = Math.max(dataMax, d3.max(data, yFunc));
+                    dataMin = Math.min(dataMin, d3.min(data, yFunc));
+                }
+                x.domain(d3.extent(allData, (d) => d.gamesPlayed));
+                y.domain([this.startYZero ? 0 : dataMin, dataMax]);
+
+                for (let i = 0; i < this.lines.length; i++) {
+                    const [ _, yFunc ] = this.lines[i];
+                    const line = d3.line()
+                                   .x(d => x(d.gamesPlayed))
+                                   .y(d => y(yFunc(d)));
+
+                    svg.select(`path:nth-child(${i + 1})`)
+                       .data([ dataLists[i] ])
+                       .attr('d', line);
+                }
+
 
                 svg.select('.axis-x')
                    .call(d3.axisBottom(x));
@@ -58,10 +81,10 @@
             },
         },
         watch: {
-            data(data) {
-                this.draw(data);
+            lines() {
+                this.draw();
             },
-        }
+        },
     };
 </script>
 

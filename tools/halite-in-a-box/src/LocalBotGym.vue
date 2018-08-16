@@ -40,11 +40,26 @@
             </table>
         </div>
 
-        <h3>Bot score (=μ-3σ) over time</h3>
-        <history-chart
-            v-if="botHistory && botHistory.length > 0"
-            width="640" height="480"
-            :data="botHistory" />
+        <section class="graphs">
+            <section class="graph">
+                <h3>Bot score (=μ-3σ) over time</h3>
+                <history-chart
+                    v-if="botHistory && botHistory.length > 0"
+                    :invertY="false"
+                    :startYZero="true"
+                    width="400" height="320"
+                    :lines="[[botHistory, drawScore]]" />
+            </section>
+            <section class="graph">
+                <h3>Bot rank over time</h3>
+                <history-chart
+                    v-if="botHistory && botHistory.length > 0"
+                    :invertY="true"
+                    :startYZero="false"
+                    width="400" height="320"
+                    :lines="[[botHistory, drawRank]]" />
+            </section>
+        </section>
     </section>
 </template>
 
@@ -73,6 +88,14 @@
         mounted() {
         },
         methods: {
+            drawRank(d) {
+                return d.rank;
+            },
+
+            drawScore(d) {
+                return d.mu - 3*d.sigma;
+            },
+
             async runGymGames() {
                 this.message = 'Running games...';
 
@@ -178,6 +201,25 @@
             label, input {
                 display: inline-block;
                 width: auto;
+            }
+        }
+
+        .graphs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+
+            .graph {
+                flex: 1 0 400px;
+
+                h3 {
+                    text-align: center;
+                }
+
+                svg {
+                    display: block;
+                    margin: 0 auto;
+                }
             }
         }
     }
