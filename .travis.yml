@@ -1,7 +1,17 @@
-sudo: true
-dist: trusty
-language: cpp
-services: docker
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode9.4
+      language: node_js
+      node_js: "10"
+      env:
+        - ELECTRON_CACHE=$HOME/.cache/electron
+        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+    - os: linux
+      sudo: true
+      dist: trusty
+      services: docker
+      language: cpp
 
 before_install:
   - docker pull ubuntu:bionic
