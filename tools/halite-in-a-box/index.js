@@ -1,15 +1,84 @@
-const { app, BrowserWindow } = require('electron');
+const { app, Menu, BrowserWindow } = require('electron');
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
+// Keep reference to prevent garbage collection
 let win;
 
 function createWindow () {
-    // Create the browser window.
     win = new BrowserWindow({width: 1024, height: 640});
+    win.setMenu(null);
+
+    // Create browser menu
+    // https://github.com/electron/electron/blob/master/docs/api/menu.md
+    const template = [
+        {
+            label: 'Edit',
+            submenu: [
+                {role: 'undo'},
+                {role: 'redo'},
+                {type: 'separator'},
+                {role: 'cut'},
+                {role: 'copy'},
+                {role: 'paste'},
+                {role: 'pasteandmatchstyle'},
+                {role: 'delete'},
+                {role: 'selectall'}
+            ]
+        },
+        {
+            label: 'View',
+            submenu: [
+                {role: 'reload'},
+                {role: 'forcereload'},
+                {role: 'toggledevtools'},
+                {type: 'separator'},
+                {role: 'resetzoom'},
+                {role: 'zoomin'},
+                {role: 'zoomout'},
+                {type: 'separator'},
+                {role: 'togglefullscreen'}
+            ]
+        },
+        {
+            role: 'window',
+            submenu: [
+                {role: 'minimize'},
+                {role: 'close'}
+            ]
+        },
+    ];
+
+    if (process.platform === 'darwin') {
+        template.unshift({
+            label: "Halite III in a Box",
+            submenu: [
+                {role: 'about'},
+                {type: 'separator'},
+                {role: 'services', submenu: []},
+                {type: 'separator'},
+                {role: 'hide'},
+                {role: 'hideothers'},
+                {role: 'unhide'},
+                {type: 'separator'},
+                {role: 'quit'}
+            ]
+        });
+
+        // Window menu
+        template[3].submenu = [
+            {role: 'close'},
+            {role: 'minimize'},
+            {role: 'zoom'},
+            {type: 'separator'},
+            {role: 'front'}
+        ];
+    };
+
+    const menu = Menu.buildFromTemplate(template);
 
     // and load the index.html of the app.
     win.loadFile("index.html");
+    Menu.setApplicationMenu(menu);
+    win.setMenu(menu);
 
     // Open the DevTools.
     win.webContents.openDevTools();
