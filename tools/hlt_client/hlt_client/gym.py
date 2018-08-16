@@ -167,10 +167,14 @@ def run_matches(db_path, hlt_path, output_dir, map_dimensions, iterations):
             random.shuffle(all_bots)
             bots = all_bots[:num_players]
 
+        overrides = []
+        for bot in bots:
+            overrides.append('-o')
+            overrides.append(bot['name'])
         raw_results = compare_bots._play_game(hlt_path,
                                               map_size[0], map_size[1],
                                               [bot['path'] for bot in bots],
-                                              flags)
+                                              flags + overrides)
         results = json.loads(raw_results)
         with connect(db_path) as conn:
             add_match(conn, bots, results)
