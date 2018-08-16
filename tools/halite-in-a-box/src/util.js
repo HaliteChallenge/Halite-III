@@ -3,7 +3,7 @@ import { remote as electronRemote, shell } from 'electron';
 import fs from 'fs';
 import readline from 'readline';
 
-import { pythonPath, pythonPackagePath, embeddedResourcesPath } from './assets';
+import { pythonPath, pythonHomePath, pythonPackagePath, embeddedResourcesPath } from './assets';
 
 const DONE_READING = Symbol();
 
@@ -15,6 +15,7 @@ export async function* call(args) {
     const subprocess = spawn(pythonPath(), fullArgs, {
         env: {
             'PYTHONPATH': pythonPackagePath([ embeddedResourcesPath() ]),
+            'PYTHONHOME': pythonHomePath(),
         },
     });
     const rl = readline.createInterface({
