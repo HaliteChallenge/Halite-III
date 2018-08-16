@@ -126,6 +126,9 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
 
         super.attach(realContainer, $(containerEl)[0]);
 
+        // Default faster
+        this.playSpeed = 20;
+
         // Display of relative energy stores
         const clashbar = document.createElement("div");
         clashbar.classList.add("embedded-clashbar");
@@ -267,7 +270,7 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
             this.playSpeed = Math.max(1, this.playSpeed - 1);
         });
         faster.addEventListener("click", () => {
-            this.playSpeed = Math.min(20, this.playSpeed + 1);
+            this.playSpeed = Math.min(30, this.playSpeed + 1);
         });
         slider.addEventListener("change", () => {
             if (this.isPlaying()) this.pause();
