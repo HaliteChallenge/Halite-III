@@ -1,33 +1,33 @@
+language: cpp
+
 matrix:
   include:
     - os: osx
       osx_image: xcode9.4
-      language: node_js
       node_js: "10"
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
     - os: linux
+      services: docker
       sudo: true
       dist: trusty
+      env: COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
+    - os: linux
       services: docker
-      language: cpp
+      sudo: true
+      dist: trusty
+      env: COMPILER="clang-5.0" CCOMPILE=clang-5.0 CXXCOMPILE=clang++-5.0
+    - os: linux
+      services: docker
+      sudo: true
+      dist: trusty
+      env: COMPILER="clang-6.0" CCOMPILE=clang-6.0 CXXCOMPILE=clang++-6.0
 
 before_install:
-  - docker pull ubuntu:bionic
-  - docker run -itd --name build -v $(pwd):/project ubuntu:bionic /bin/bash
-  - docker exec build apt-get update
-  - docker exec build apt-get install -y cmake lcov $COMPILER
+  - ./.travis.before_install.sh
 script:
-  - docker exec build /bin/bash -c "which $CCOMPILE"
-  - docker exec build /bin/bash -c "which $CXXCOMPILE"
-  - docker exec build /bin/bash -c "$CXXCOMPILE --version"
-  - docker exec build /bin/bash -c "cd /project/environment; CC=$CCOMPILE CXX=$CXXCOMPILE cmake ."
-  - docker exec build /bin/bash -c "cd /project/environment; CC=$CCOMPILE CXX=$CXXCOMPILE make"
-env:
-  - COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
-  - COMPILER="clang-5.0" CCOMPILE=clang-5.0 CXXCOMPILE=clang++-5.0
-  - COMPILER="clang-6.0" CCOMPILE=clang-6.0 CXXCOMPILE=clang++-6.0
+  - ./travis.script.sh
 jobs:
   include:
     - stage: test starter kits
