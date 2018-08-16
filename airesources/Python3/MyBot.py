@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 # Here we import the Halite SDK. This library will help you interact with the game
-from . import hlt
+import hlt
 
 # This library contains constant values throughout the game. Things like how much halite can your ship carry, etc.
-from . import constants
+from hlt import constants
 
 # This library contains direction metadata to better interface with the game
-from .positionals import Direction
+from hlt.positionals import Direction
 
 # This library allows us to generate random numbers
 import random
