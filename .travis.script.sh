@@ -21,6 +21,9 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
           --exclude __pycache__ --exclude '*~' --exclude '*.pyc' \
           ../hlt_client/hlt_client/ extra/hlt_client
     $(npm root)/.bin/electron-builder -m
+    # Clean up things that aren't .dmg
+    # Make sure we don't terminate script by accident (set -e)
+    find $(pwd)/dist/* \! -name '*.dmg' -exec rm -rf "{}" \; || true
 else
     docker exec build /bin/bash -c "which $CCOMPILE"
     docker exec build /bin/bash -c "which $CXXCOMPILE"
