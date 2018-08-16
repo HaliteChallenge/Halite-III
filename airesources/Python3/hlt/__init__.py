@@ -109,6 +109,10 @@ class Game:
         :param name: The name of your bot
         """
         self.turn_number = 0
+
+        # Grab constants JSON
+        input()
+
         num_players, self.my_id = map(int, input().split())
 
         logging.basicConfig(
