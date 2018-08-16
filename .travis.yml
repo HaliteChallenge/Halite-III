@@ -2,20 +2,17 @@ language: cpp
 services: docker
 sudo: true
 dist: trusty
+osx_image: xcode9.4
+node_js: "10"
 
 os:
   - linux
+  - osx
 
 env:
   - COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
   - COMPILER="clang-5.0" CCOMPILE=clang-5.0 CXXCOMPILE=clang++-5.0
   - COMPILER="clang-6.0" CCOMPILE=clang-6.0 CXXCOMPILE=clang++-6.0
-
-matrix:
-  include:
-    - os: osx
-      osx_image: xcode9.4
-      node_js: "10"
 
 before_install: ./.travis.before_install.sh
 script: ./.travis.script.sh
