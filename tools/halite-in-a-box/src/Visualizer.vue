@@ -26,6 +26,7 @@
                     const dim = Math.min(window.innerWidth, window.innerHeight);
                     const visualizer = new libhaliteviz.EmbeddedVisualizer(replay, dim, dim);
                     visualizer.attach(this.$refs.visualizer);
+                    visualizer.play();
                 });
             });
         },
