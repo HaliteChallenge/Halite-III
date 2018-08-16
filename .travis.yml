@@ -1,4 +1,5 @@
 language: cpp
+services: docker
 
 matrix:
   include:
@@ -28,6 +29,10 @@ before_install: ./.travis.before_install.sh
 script: ./travis.script.sh
 jobs:
   include:
+    - stage: build environment
+      name: "GCC 7"
+      script: ./travis.script.sh
+      env: COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
     - stage: test starter kits
       name: "Java starter kit"
       script:
