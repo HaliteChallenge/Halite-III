@@ -11,6 +11,10 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     make -j2
     popd
 
+    pushd libhaliteviz
+    npm install
+    popd
+
     pushd tools/halite-in-a-box
     pushd macos-portable-python
     ./build.sh
@@ -20,6 +24,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     rsync -r \
           --exclude __pycache__ --exclude '*~' --exclude '*.pyc' \
           ../hlt_client/hlt_client/ extra/hlt_client
+    npm install
     $(npm root)/.bin/electron-builder -m
     # Clean up things that aren't .dmg
     # Make sure we don't terminate script by accident (set -e)
