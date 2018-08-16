@@ -165,7 +165,7 @@ def _parse_arguments():
     auth_parser.add_argument('-k', '--key', help="Specify API key (meant for use with --json)")
     # .Modes.Bot
     bot_parser = subparser.add_parser('bot', help='Actions associated with a bot')
-    bot_subparser = bot_parser.add_subparsers(dest='bot_mode', required=True)
+    bot_subparser = bot_parser.add_subparsers(dest='bot_mode')
     bot_upload_parser = bot_subparser.add_parser(BOT_UPLOAD_MODE, help='Actions associated with a bot')
     bot_download_parser = bot_subparser.add_parser(BOT_DOWNLOAD_MODE, help='Actions associated with a bot')
     bot_parser.add_argument('-b', '--bot-path', dest='bot_path', action='store', type=str, required=True,
@@ -266,7 +266,7 @@ def main():
             gym.main(args)
     except (IndexError, TypeError, ValueError, IOError) as err:
         output.error(str(err))
-        exit(-1)
+        sys.exit(-1)
 
 
 if __name__ == "__main__":

@@ -266,7 +266,7 @@ def parse_arguments(subparser):
                             required=False,
                             default=None,
                             help="Specify an alternate database file.")
-    gym_subparser = gym_parser.add_subparsers(dest='gym_mode', required=True)
+    gym_subparser = gym_parser.add_subparsers(dest='gym_mode')
 
     register_parser = gym_subparser.add_parser(REGISTER_MODE, help='Register or update a bot with the gym.')
     register_parser.add_argument('name', type=str,
