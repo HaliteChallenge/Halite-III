@@ -6,7 +6,7 @@ set -e
 env
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
-    echo ""
+    brew install lcov
 else
     docker pull ubuntu:bionic
     docker run -itd --name build -v $(pwd):/project ubuntu:bionic /bin/bash
