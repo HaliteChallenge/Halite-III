@@ -12,6 +12,11 @@ Vue.component('modal', Modal);
 Vue.component('benchmark-modal', BenchmarkModal);
 Vue.component('upload-modal', UploadModal);
 
+window.addEventListener('unhandledrejection', (event) => {
+    console.error(event.promise);
+    console.error(event.reason);
+});
+
 const app = new Vue({
     el: '#app',
     render: h => h(Main),

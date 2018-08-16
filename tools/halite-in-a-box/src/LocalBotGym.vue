@@ -40,23 +40,11 @@
             </table>
         </div>
 
-        <div class="bot-history" v-if="botHistory && botHistory.length > 0">
-            <table>
-                <caption>Your Bot's Performance History</caption>
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Rank</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="record in botHistory">
-                        <td>{{record.datetime}}</td>
-                        <td>{{record.rank}} (score={{(record.mu - 3*record.sigma).toFixed(2)}}, μ={{record.mu.toFixed(2)}}, σ={{record.sigma.toFixed(2)}})</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <h3>Bot score (=μ-3σ) over time</h3>
+        <history-chart
+            v-if="botHistory && botHistory.length > 0"
+            width="640" height="480"
+            :data="botHistory" />
     </section>
 </template>
 
@@ -65,8 +53,13 @@
     import { pythonPath } from './assets';
     import * as util from './util';
 
+    import LocalBotHistoryChart from './LocalBotHistoryChart.vue';
+
     export default {
         props: ['localBot'],
+        components: {
+            "history-chart": LocalBotHistoryChart,
+        },
         data() {
             return {
                 bots: [],
@@ -134,9 +127,7 @@
                         if (found) continue;
 
                         const args = ['gym', 'register', bot.name, `${pythonPath()} "${bot.path}"`];
-                        for await (const _ of util.call(args)) {
-                            ;
-                        }
+                        await util.collectCall(args);
                     }
 
                     // Register player bot if necessary
@@ -151,9 +142,7 @@
 
                         if (!found) {
                             const args = ['gym', 'register', "My Bot", fullPath];
-                            for await (const _ of util.call(args)) {
-                                ;
-                            }
+                            await util.collectCall(args);
                         }
                     }
 

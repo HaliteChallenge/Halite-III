@@ -63,6 +63,14 @@ export async function* call(args) {
     }
 }
 
+export async function collectCall(args) {
+    const result = [];
+    for await (const value of call(args)) {
+        result.push(value);
+    }
+    return result;
+}
+
 export function openBrowserTab(url) {
     shell.openExternal(url);
 }
