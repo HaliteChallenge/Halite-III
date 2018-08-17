@@ -149,6 +149,11 @@ class Game:
 
         self.game_map._update()
 
+        # Mark cells with ships as unsafe for navigation
+        for player in self.players.values():
+            for ship in player.get_ships():
+                self.game_map[ship.position].mark_unsafe(ship)
+
     @staticmethod
     def end_turn(commands):
         """
@@ -252,6 +257,14 @@ class MapCell:
         :return: What is the structure type in this cell
         """
         return None if not self.structure else type(self.structure)
+
+    def mark_unsafe(self, ship):
+        """
+        Mark this cell as unsafe (occupied) for navigation.
+
+        Use in conjunction with GameMap.get_safe_move.
+        """
+        self.ship = ship
 
     def __eq__(self, other):
         return self.position == other.position
@@ -361,6 +374,7 @@ class GameMap:
                 if not self[suitor].is_occupied() and not visited_map[suitor.y][suitor.x]:
                     potentials_queue.put(self[suitor])
                     visited_map[suitor.y][suitor.x] = current_square
+
         return None
 
     @staticmethod
@@ -415,6 +429,12 @@ class GameMap:
         Updates this map object from the input given by teh game engine
         :return: nothing
         """
+        # Mark cells as safe for navigation (will re-mark unsafe cells
+        # later)
+        for y in range(self.height):
+            for x in range(self.width):
+                self[Position(x, y)].ship = None
+
         for _ in range(int(input())):
             cell_x, cell_y, cell_energy = map(int, input().split())
             self[Position(cell_x, cell_y)].halite = cell_energy
