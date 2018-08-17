@@ -331,8 +331,9 @@ void HaliteImpl::process_turn() {
         entities.erase(entities.find(entity.id));
 
         auto new_entity = game.store.new_entity(entity.energy, new_player_id);
+        // XXX new_entity seems to be a copy not a real reference
         cell.entity = new_entity.id;
-        new_entity.was_captured = true;
+        game.store.get_entity(new_entity.id).was_captured = true;
         game.store.get_player(new_player_id).add_entity(new_entity.id, location);
 
         game.replay.full_frames.back().events.push_back(

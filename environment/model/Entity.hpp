@@ -15,9 +15,9 @@ using player_id_type = class_id<Player>;
 struct Entity final : public Enumerated<Entity> {
     friend class Factory<Entity>;
 
-    bool was_captured;          /**< Track whether this entity was captured for statistics purposes. */
     const player_id_type owner; /**< Owner of the entity. */
     energy_type energy;         /**< Energy of the entity. */
+    bool was_captured;          /**< Track whether this entity was captured for statistics purposes. */
 
     /**
      * Convert an Entity to JSON format.
@@ -41,7 +41,7 @@ private:
      * @param owner The owner ID.
      * @param energy The energy.
      */
-    Entity(id_type id, player_id_type owner, energy_type energy) : Enumerated(id), owner(owner), energy(energy) {}
+    Entity(id_type id, player_id_type owner, energy_type energy) : Enumerated(id), owner(owner), energy(energy), was_captured(false) {}
 };
 
 }
