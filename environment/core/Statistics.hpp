@@ -24,6 +24,8 @@ struct PlayerStatistics {
     long interaction_opportunities{};            /**< The number of times a player's entity was within a short distance of another player. */
     long ships_captured{};                       /**< The number of ships captured by this player. */
     long ships_given{};                          /**< The number of ships captured from this player. */
+    long self_collisions{};                      /**< The number of ships involved in collisions with allied ships. */
+    long all_collisions{};                       /**< The number of ships involved in collisions with any ships, allied or not. Note there may be overlap with self_collisions if a 3+ ship collision occurs. */
     /**
      * Convert Player statistics to JSON format.
      * @param[out] json The output JSON.

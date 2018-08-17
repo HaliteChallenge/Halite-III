@@ -52,6 +52,25 @@ void CollisionEvent::to_json(nlohmann::json &json) const {
             FIELD_TO_JSON(ships)};
 }
 
+/** Update statistics after collision */
+void CollisionEvent::update_stats(const Store &store, const Map &map,
+                                  GameStatistics &stats) {
+    (void) map;
+
+    ordered_id_map<Player, int> ships_involved;
+    for (const auto &ship_id : ships) {
+        const auto &entity = store.get_entity(ship_id);
+        stats.player_statistics.at(entity.owner.value).all_collisions++;
+        ships_involved[entity.owner]++;
+    }
+    for (const auto &[player_id, num_ships] : ships_involved) {
+        // Increment self-collision to account for uncounted ship
+        if (num_ships > 1) {
+            stats.player_statistics.at(player_id.value).self_collisions += num_ships;
+        }
+    }
+}
+
 /**
  * Convert death event to json format
  * @param[out] json JSON to be filled with death event

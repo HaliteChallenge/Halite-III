@@ -188,7 +188,8 @@ void HaliteImpl::process_turn() {
 
         CommandTransaction transaction{game.store, game.map};
         std::unordered_set<Player::id_type> offenders;
-        transaction.on_event([&frames = game.replay.full_frames](GameEvent event) {
+        transaction.on_event([&frames = game.replay.full_frames, this](GameEvent event) {
+            event->update_stats(game.store, game.map, game.game_statistics);
             // Create new game event for replay file.
             frames.back().events.push_back(std::move(event));
         });

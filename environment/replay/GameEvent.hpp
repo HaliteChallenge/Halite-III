@@ -4,6 +4,9 @@
 #include "Location.hpp"
 #include "Entity.hpp"
 #include "Player.hpp"
+#include "Store.hpp"
+#include "Map.hpp"
+#include "Statistics.hpp"
 
 #include "nlohmann/json_fwd.hpp"
 
@@ -38,6 +41,11 @@ public:
     BaseEvent(Location location) : location(location) {};
 
     virtual ~BaseEvent() = default;
+    virtual void update_stats(const Store &store, const Map &map, GameStatistics &stats) {
+        (void) store;
+        (void) map;
+        (void) stats;
+    }
 };
 
 /** An event for entity spawning */
@@ -118,6 +126,8 @@ public:
      */
     CollisionEvent(Location location, std::vector<Entity::id_type> ships) : BaseEvent(location), ships(ships) {};
     ~CollisionEvent() override  = default;
+
+    virtual void update_stats(const Store &store, const Map &map, GameStatistics &stats) override;
 };
 
 /** An event for Dropoff construction */
