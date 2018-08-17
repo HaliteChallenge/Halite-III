@@ -17,6 +17,7 @@ struct PlayerStatistics {
     long rank{};                                 /**< The rank of the player (1 = highest) */
     long last_turn_alive{};                      /**< The last turn the player remained alive */
     std::vector<energy_type> turn_productions{}; /**< Production granted to player each turn, turn 1 at front of vector. */
+    energy_type total_mined{};                   /**< Total amount mined, including energy not deposited (lost due to collision or some other means). */
     dimension_type max_entity_distance{};        /**< The maximum distance any entity traveled from the player's factory. */
     dimension_type total_distance{};             /**< The total distance of all entities over all turns from factory. */
     dimension_type total_entity_lifespan{};      /**< Total lifespan of all entities (ie 1 entity for 10 turns plus 1 for 300 = 310. */

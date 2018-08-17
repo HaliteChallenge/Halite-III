@@ -40,6 +40,12 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
     if (!stats.turn_productions.empty()) {
         final_production = stats.turn_productions.back();
     }
+    double mining_efficiency = 0.0;
+
+    if (stats.total_mined > 0) {
+        mining_efficiency = final_production / static_cast<double>(stats.total_mined);
+    }
+
     json = {FIELD_TO_JSON(player_id),
             FIELD_TO_JSON(random_id),
             FIELD_TO_JSON(rank),
@@ -52,6 +58,8 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
             FIELD_TO_JSON(ships_given),
             FIELD_TO_JSON(self_collisions),
             FIELD_TO_JSON(all_collisions),
+            FIELD_TO_JSON(total_mined),
+            {"mining_efficiency", mining_efficiency},
             {"average_entity_distance", average_distance}};
 }
 

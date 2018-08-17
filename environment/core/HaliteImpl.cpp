@@ -260,6 +260,7 @@ void HaliteImpl::process_turn() {
             if (max_energy - entity.energy < extracted) {
                 extracted = max_energy - entity.energy;
             }
+            game.game_statistics.player_statistics.at(entity.owner.value).total_mined += extracted;
             entity.energy += extracted;
             cell.energy -= extracted;
             game.store.map_total_energy -= extracted;
