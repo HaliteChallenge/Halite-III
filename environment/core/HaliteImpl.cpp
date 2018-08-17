@@ -329,8 +329,8 @@ void HaliteImpl::process_turn() {
         game.store.get_player(new_player_id).add_entity(new_entity.id, location);
 
         game.replay.full_frames.back().events.push_back(
-            std::make_unique<SpawnEvent>(
-                    location, new_entity.energy, new_player_id, new_entity.id));
+            std::make_unique<CaptureEvent>(location, entity.owner, entity.id,
+                                           new_player_id, new_entity.id));
     }
 
 

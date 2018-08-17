@@ -67,6 +67,38 @@ public:
     ~SpawnEvent() override = default;
 };
 
+/** An event for entity captures */
+class CaptureEvent : public BaseEvent {
+    Player::id_type old_owner;                              /**< ID of player giving entity */
+    Entity::id_type old_id;                                 /**< ID of lost entity */
+    Player::id_type new_owner;                              /**< ID of player receiving entity */
+    Entity::id_type new_id;                                 /**< ID of gained entity */
+    static constexpr auto GAME_EVENT_TYPE_NAME = "capture"; /**< Name of event */
+
+public:
+    /**
+     * Convert spawn event to json format
+     *
+     * @param[out] json JSON to be filled by spawn event
+     */
+    void to_json(nlohmann::json &json) const override;
+
+    /**
+     * Create spawn event from location, energy, and owner id
+     *
+     * @param location Location of spawn
+     * @param energy Energy associated with spawn
+     * @param owner_id Id of owner who spawned this entity
+     */
+    CaptureEvent(Location location,
+                 Player::id_type old_owner, Entity::id_type old_id,
+                 Player::id_type new_owner, Entity::id_type new_id) :
+        BaseEvent(location),
+        old_owner{old_owner}, old_id{old_id},
+        new_owner{new_owner}, new_id{new_id} {};
+    ~CaptureEvent() override = default;
+};
+
 /** An event for entity deaths */
 class CollisionEvent : public BaseEvent {
     std::vector<Entity::id_type> ships;   /**< ids of entities involved in the collision */

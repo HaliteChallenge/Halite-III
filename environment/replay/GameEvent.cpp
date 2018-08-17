@@ -30,6 +30,19 @@ void SpawnEvent::to_json(nlohmann::json &json) const {
 }
 
 /**
+ * Convert capture event to json format
+ * @param[out] json JSON to be filled by spawn event
+ */
+void CaptureEvent::to_json(nlohmann::json &json) const {
+    json = {{JSON_TYPE_KEY, GAME_EVENT_TYPE_NAME},
+            FIELD_TO_JSON(location),
+            FIELD_TO_JSON(old_owner),
+            FIELD_TO_JSON(new_owner),
+            FIELD_TO_JSON(old_id),
+            FIELD_TO_JSON(new_id)};
+}
+
+/**
  * Convert death event to json format
  * @param[out] json JSON to be filled with death event
  */
