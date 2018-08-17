@@ -68,6 +68,10 @@
             </div>
         </transition-group>
     </div>
+    <div class="banner" v-if="banner_message">
+      {{banner_message}}
+      <button @click="banner_message = null">Close</button>
+    </div>
   </div>
 </template>
 
@@ -172,6 +176,7 @@ export default {
       allSaved: false,
       saveCallback: null,
       is_picking_language: false,
+      banner_message: '',
     }
   },
   props: {
@@ -540,7 +545,7 @@ export default {
       const cutoff = moment().subtract(1, 'minutes')
       this.gameTimes = this.gameTimes.filter(time => time.isSameOrAfter(cutoff))
       if (this.gameTimes.length > 3) {
-        this.alert("No more than 3 games per minute allowed, please wait and try again.")
+        this.banner_message = "No more than 3 games per minute allowed, please wait and try again."
         return;
       }
 
@@ -560,10 +565,11 @@ export default {
 
       if (taskResult.status !== "success") {
         if (taskResult.message) {
-          this.alert(taskResult.message)
+          this.banner_message = taskResult.message
         }
         return
       }
+      this.banner_message = ''
 
       const startResult = await api.update_ondemand_task(user_id, {
         "turn-limit": 500,
@@ -954,6 +960,26 @@ export default {
   font-size: 1.25em;
   color: #FFF;
   text-align: center;
+}
+
+.body {
+  position: relative;
+}
+
+.banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1em;
+  background: #F00;
+  text-align: center;
+  z-index: 20000;
+
+  button {
+    position: absolute;
+    right: 1em;
+  }
 }
 </style>
 
