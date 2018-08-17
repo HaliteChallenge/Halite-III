@@ -457,6 +457,12 @@ void HaliteImpl::rank_players() {
     for (size_t index = 0; index < statistics.size(); ++index) {
         statistics[index].rank = index + 1l;
     }
+
+    // Re-sort by player ID
+    std::stable_sort(statistics.begin(), statistics.end(),
+                     [](const PlayerStatistics &a, const PlayerStatistics &b) -> bool {
+                         return a.player_id.value < b.player_id.value;
+                     });
 }
 
 void HaliteImpl::kill_player(const Player::id_type &player_id) {
