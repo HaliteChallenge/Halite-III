@@ -258,6 +258,21 @@
             setTimeout(function() {
                 $('.container-empty').addClass('container-loaded');
             }, 250);
+
+            // update body class when expand menu in mobile
+            var updateBodyMenuClass = function(){
+                if ($('header .navbar-toggle').hasClass('collapsed')){
+                    $('body').removeClass('menu-opened');
+                } else {
+                    $('body').addClass('menu-opened');
+                }
+            }
+            $('.navbar-toggle').on('click', function(e){
+                var $el = $(e.currentTarget);
+                setTimeout(updateBodyMenuClass, 10); // have to wait a moment
+            });
+            updateBodyMenuClass();
+            // setTimeout(updateBodyMenuClass, 500);
         });
 
         $(window).on('resize', () => {

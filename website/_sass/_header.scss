@@ -82,11 +82,20 @@ header.unloaded{
     color: #91DBFF;
     text-shadow: 0 -1px 13px #00ABFF;
   }
+  .navbar-collapse{
+    box-shadow: none;
+  }
 }
 
 .navbar-inverse{
   $g-color: #b9b8b8;
   background-color: #FFF;
+
+  // disable border color when expand menu
+  .navbar-collapse{
+    border-color: transparent;
+    
+  }
   // color: #000;
   .navbar-nav{
     > li > a {
@@ -169,6 +178,9 @@ header.unloaded{
             padding: 0;
           }
         }
+        &.active > a{
+          color: inherit;
+        }
       }
     }
   }
@@ -192,7 +204,7 @@ header.navbar{
     min-height: 50px;
     margin: 15px;
     border-radius: 8px;
-    box-shadow: 0 0 10px 10px rgba(0, 45, 119, 0.2);
+    // box-shadow: 0 0 10px 10px rgba(0, 45, 119, 0.2);
   }
   @media (max-width: $mobile-breakpoint){
     #submitbutton{
@@ -565,4 +577,23 @@ header.navbar{
   width: 100vw;
   bottom: 0;
   top: 0;
+}
+
+// body class affect the nav in mobile version
+@media screen and (max-width: $mobile-breakpoint){
+  body{
+    header{
+      height: 61px;
+      transition: height 300ms;
+    }
+    &.menu-opened{
+      header{
+        height: 100vh;
+        background-position: bottom left;
+        background-repeat: repeat-x;
+        background-size: contain;
+        background-image: url("/assets/images/menu-bg.png"), linear-gradient(0deg, #002D77 0%, #003A99 100%);
+      }
+    }
+  }
 }
