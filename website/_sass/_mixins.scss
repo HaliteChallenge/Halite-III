@@ -60,3 +60,25 @@
 @mixin br($color: #474951){
   border-right: 1px solid $color;
 }
+@mixin before-block() {
+  &:before{
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+@mixin after-block() {
+  &:after{
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
