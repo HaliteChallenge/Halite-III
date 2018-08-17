@@ -391,7 +391,9 @@ class GameMap:
         if source == destination:
             return None
         visited_map = self._bfs_traverse_safely(source, destination)
-        return self._find_first_move(source, destination, visited_map)
+        if visited_map:
+            return self._find_first_move(source, destination, visited_map)
+        return None
 
     @staticmethod
     def _generate():
