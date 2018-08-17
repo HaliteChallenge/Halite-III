@@ -15,6 +15,8 @@ additional_css: ["built-codeEdit", "dark-codeEdit"]
 
 <div id="onboarding-container"></div>
 
+<div class="doc-section" markdown="1">
+
 Welcome to the Halite III alpha! Let's get you set up to play.
 
 ### 1) SIGN UP
@@ -44,6 +46,7 @@ Check out your [user profile][profile] and the [leaderboard][leaderboard] to vie
 
 ### May the best bot win!
 
+</div>
 
 [login]: {{ site.login_server_url }}/github
 [downloads]: {{ site.baseurl }}/learn-programming-challenge/downloads-and-starter-kits

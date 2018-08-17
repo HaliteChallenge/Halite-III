@@ -6,6 +6,8 @@ description: Get an introduction to the rules of the game to win the Halite AI P
 sort_key: 0
 ---
 
+<div class="doc-section" markdown="1">
+
 Halite III, codenamed Shipyard, is an exploratory resource management game, in which 2-4 players command a fleet of ships that trawl the sea for halite, a sparkling energy resource.
 
 The object of the game is to collect and deposit the most halite into shipyards and drop-off zones, over the course of 500 turns. The winner is whoever has the most halite in their reserves on the last turn.
@@ -22,8 +24,12 @@ Ships can carry up to 1000 halite as cargo, and each turn can:
 * Remain still. In this state, ships collect 25% of the available halite per turn (rounded to the nearest integer).
 * Be converted into a drop-off site for 2000 halite, additional locations for halite drop-off. Ships pay no fee when using their own dropoff sites; when using another player’s dropoff, they pay a 25% tax on delivered cargo, paid to the player who constructed the site.
 
+</div>
 
-## Gameplay
+
+<div class="doc-section" markdown="1">
+
+#### Gameplay
 
 Halite III proceeds as follows:
 
@@ -40,7 +46,7 @@ The game engine, upon receiving instructions from the player, will execute them 
 
 Bots have up to 6 seconds to issue commands each turn.
 
-## Win conditions
+#### Win conditions
 
 At the end of the game, players are ranked according to the last turn they were alive, then (in case of ties) by their stored halite on the last turn, then by their stored halite on the penultimate turn, and so on and so forth.
 
@@ -48,5 +54,7 @@ A player is "alive" on a turn if they have either a ship or enough energy to con
 
 The game ends after 500 turns, or when no players are alive, whichever comes first.
 
-## Note on game rules changes
+#### Note on game rules changes
 The Two Sigma and Halite team reserves the right to make changes on game rules during the course of the game. We promise we won't do this without a very good reason that improves the competition and the fun of the game, and we will try to make any changes as backwards compatible as possible.
+
+</div>

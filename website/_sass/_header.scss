@@ -165,15 +165,15 @@ header.unloaded{
 }
 
 header.navbar{
-  margin: 15px;
   border-bottom: 1px transparent;
   height: 61px;
   background-image: linear-gradient(0deg, #002D77 0%, #003A99 100%);
-  border-radius: 8px;
-  box-shadow: 0 0 10px 10px rgba(0, 45, 119, 0.2);
 
   @media (min-width: $screen-md-min){
     min-height: 50px;
+    margin: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px 10px rgba(0, 45, 119, 0.2);
   }
   @media (max-width: $mobile-breakpoint){
     #submitbutton{
@@ -359,13 +359,47 @@ header.navbar{
 
   .navbar-toggle{
     border: 0;
+    &:hover, &:focus{
+      background-color: transparent;
+    }
+
+    .icon-bar{
+      transition: all 300ms;
+    }
+
+    .icon-bar:nth-child(4){
+      transform-origin: 4px -2px;
+      transform: rotate(-45deg);
+    }
+
+    .icon-bar:nth-child(3){
+      opacity: 0;
+    }
+
+    .icon-bar:nth-child(2){
+      transform-origin: 3px 4px;
+      transform: rotate(45deg);
+    }
+
+    &.collapsed {
+      .icon-bar{
+        transform: rotate(0deg);
+      }
+      .icon-bar:nth-child(3){
+        opacity: 1;
+      }
+      .icon-bar:nth-child(4){
+        width: 11px;
+        margin-left: 11px;
+      }
+    }
   }
 
   .navbar-right{
     padding: 5px 20px;
     display: none;
     margin-right: 0;
-    border-left: #1d549c;
+    border-left: 1px solid #1d549c;
     @media (min-width: $screen-md-min){
       display: block;
     }
@@ -423,7 +457,7 @@ header.navbar{
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  padding: 3px 0;
+  padding: 0;
   
   @media screen and (min-width: 768px) {
     width: 750px;
