@@ -12,6 +12,15 @@ namespace hlt {
  */
 void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands,
                                  const Snapshot &snapshot) {
+    // Update max turn # by map size (300 @ 32x32 to 500 at 80x80)
+    auto &mut_constants = Constants::get_mut();
+    auto turns = mut_constants.MIN_TURNS;
+    const unsigned long max_dimension = std::max(game.map.width, game.map.height);
+    if (max_dimension > mut_constants.MIN_TURN_THRESHOLD) {
+        turns += static_cast<unsigned long>(((max_dimension - mut_constants.MIN_TURN_THRESHOLD) / static_cast<double>(mut_constants.MAX_TURN_THRESHOLD - mut_constants.MIN_TURN_THRESHOLD)) * (mut_constants.MAX_TURNS - mut_constants.MIN_TURNS));
+    }
+    mut_constants.MAX_TURNS = turns;
+
     const auto &constants = Constants::get();
     auto &players = game.store.players;
     assert(game.map.factories.size() >= player_commands.size());
@@ -293,7 +302,7 @@ void HaliteImpl::process_turn() {
                             to_visit_locs.emplace(neighbor);
                         } else {
                             visited_locs.emplace(neighbor);
-                        } 
+                        }
                     }
                 }
             }
@@ -316,7 +325,7 @@ void HaliteImpl::process_turn() {
     for(const auto &[location, new_player_id] : entity_switches) {
         auto &cell = game.map.at(location);
         const auto entity = game.store.get_entity(cell.entity);
-        
+
         game.store.delete_entity(entity.id);
         auto &entities = game.store.get_player(entity.owner).entities;
         entities.erase(entities.find(entity.id));
