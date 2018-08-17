@@ -355,6 +355,7 @@ class GameMap:
             if current_square == destination:
                 return visited_map
             for suitor in current_square.position.get_surrounding_cardinals():
+                suitor = self.normalize(suitor)
                 if not self[suitor].is_occupied() and not visited_map[suitor.y][suitor.x]:
                     potentials_queue.put(self[suitor])
                     visited_map[suitor.y][suitor.x] = current_square
