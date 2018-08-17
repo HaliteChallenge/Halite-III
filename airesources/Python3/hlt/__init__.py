@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import abc
+import json
 import logging
 import queue
 
@@ -110,7 +111,8 @@ class Game:
         self.turn_number = 0
 
         # Grab constants JSON
-        input()
+        raw_constants = input()
+        constants.load_constants(json.loads(raw_constants))
 
         num_players, self.my_id = map(int, input().split())
 
