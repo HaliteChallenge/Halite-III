@@ -260,7 +260,11 @@ void HaliteImpl::process_turn() {
             if (max_energy - entity.energy < extracted) {
                 extracted = max_energy - entity.energy;
             }
-            game.game_statistics.player_statistics.at(entity.owner.value).total_mined += extracted;
+            auto &player_stats = game.game_statistics.player_statistics.at(entity.owner.value);
+            player_stats.total_mined += extracted;
+            if (entity.was_captured) {
+                player_stats.total_mined_from_captured += extracted;
+            }
             entity.energy += extracted;
             cell.energy -= extracted;
             game.store.map_total_energy -= extracted;
@@ -326,8 +330,9 @@ void HaliteImpl::process_turn() {
         auto &entities = game.store.get_player(entity.owner).entities;
         entities.erase(entities.find(entity.id));
 
-        const auto new_entity = game.store.new_entity(entity.energy, new_player_id);
+        auto new_entity = game.store.new_entity(entity.energy, new_player_id);
         cell.entity = new_entity.id;
+        new_entity.was_captured = true;
         game.store.get_player(new_player_id).add_entity(new_entity.id, location);
 
         game.replay.full_frames.back().events.push_back(

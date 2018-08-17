@@ -59,6 +59,7 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
             FIELD_TO_JSON(self_collisions),
             FIELD_TO_JSON(all_collisions),
             FIELD_TO_JSON(total_mined),
+            FIELD_TO_JSON(total_mined_from_captured),
             {"mining_efficiency", mining_efficiency},
             {"average_entity_distance", average_distance}};
 }
