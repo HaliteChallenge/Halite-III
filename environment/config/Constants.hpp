@@ -29,7 +29,7 @@ struct Constants {
     energy_type MIN_CELL_PRODUCTION = 900;      /**< The minimum maximum amount of production on a cell. */
     energy_type MAX_ENERGY = 1000;              /**< The maximum amount of energy per entity. */
     energy_type NEW_ENTITY_ENERGY_COST = 1000;  /**< The base cost of a new entity. */
-    energy_type INITIAL_ENERGY = 1000;          /**< The initial amount of energy for a player. */
+    energy_type INITIAL_ENERGY = 2000;          /**< The initial amount of energy for a player. */
 
     energy_type DROPOFF_COST = 4000;            /**< The cost of a dropoff construction. */
     unsigned long MOVE_COST_RATIO = 10;         /**< The cost of a move is the source's energy divided by this. */
