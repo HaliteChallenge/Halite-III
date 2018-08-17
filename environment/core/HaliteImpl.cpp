@@ -293,7 +293,7 @@ void HaliteImpl::process_turn() {
                             to_visit_locs.emplace(neighbor);
                         } else {
                             visited_locs.emplace(neighbor);
-                        } 
+                        }
                     }
                 }
             }
@@ -316,7 +316,10 @@ void HaliteImpl::process_turn() {
     for(const auto &[location, new_player_id] : entity_switches) {
         auto &cell = game.map.at(location);
         const auto entity = game.store.get_entity(cell.entity);
-        
+
+        game.game_statistics.player_statistics.at(entity.owner.value).ships_given++;
+        game.game_statistics.player_statistics.at(new_player_id.value).ships_captured++;
+
         game.store.delete_entity(entity.id);
         auto &entities = game.store.get_player(entity.owner).entities;
         entities.erase(entities.find(entity.id));

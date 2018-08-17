@@ -22,6 +22,8 @@ struct PlayerStatistics {
     dimension_type total_entity_lifespan{};      /**< Total lifespan of all entities (ie 1 entity for 10 turns plus 1 for 300 = 310. */
     long number_dropoffs{};                      /**< Number of dropoffs the player owns. */
     long interaction_opportunities{};            /**< The number of times a player's entity was within a short distance of another player. */
+    long ships_captured{};                       /**< The number of ships captured by this player. */
+    long ships_given{};                          /**< The number of ships captured from this player. */
     /**
      * Convert Player statistics to JSON format.
      * @param[out] json The output JSON.

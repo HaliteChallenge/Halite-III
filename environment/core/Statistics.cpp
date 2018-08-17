@@ -48,6 +48,8 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
             FIELD_TO_JSON(max_entity_distance),
             FIELD_TO_JSON(number_dropoffs),
             FIELD_TO_JSON(interaction_opportunities),
+            FIELD_TO_JSON(ships_captured),
+            FIELD_TO_JSON(ships_given),
             {"average_entity_distance", average_distance}};
 }
 
