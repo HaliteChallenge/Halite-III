@@ -612,6 +612,7 @@ export default {
         this.visualizerVisible = true
         this.add_console_text("Starting replay.\n")
 
+        const energy = replay.full_frames[replay.full_frames.length - 1].energy || {};
         for (let i = 0; i < status.opponents.length; i++) {
           this.add_console_text({
             text: `Player ${i}`,
@@ -628,7 +629,8 @@ export default {
           else {
             displayName = `"${displayName}"`
           }
-          this.add_console_text(` ${displayName} was rank ${status.game_output.stats[i].rank}.\n`)
+          const last_energy = typeof energy[i] === "undefined" ? replay.GAME_CONSTANTS.INITIAL_ENERGY : energy[i];
+          this.add_console_text(` ${displayName} was rank ${status.game_output.stats[i].rank} with ${last_energy} energy.\n`)
         }
 
         if (status.error_log) {
