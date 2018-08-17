@@ -269,7 +269,7 @@ export default {
     /* Init the Orion Editor */
     create_editor: function (code) {
       logInfo('Creating editor...')
-      const codeEdit = new orion.codeEdit({editorConfig: {wordWrap: true, overviewRuler: false, annotationRuler: false}})
+      const codeEdit = new orion.codeEdit({editorConfig: {wordWrap: true, overviewRuler: false, lineNumberRuler: true, annotationRuler: false}})
       var opts = {parent: 'embeddedEditor', contentType: this.bot_info().mimeType, contents: code}
       codeEdit.create(opts).then((editorViewer) => {
         logInfo('Initializing editor...')
@@ -339,6 +339,7 @@ export default {
 
         // Load saved settings
         this.state.load()
+        this.editorViewer.editor.setLineNumberRulerVisible(true);
 
         logInfo('Editor ready!')
 
@@ -380,6 +381,7 @@ export default {
         this.active_file.contents = this.get_editor_code()
       }
       this.set_editor_contents(sel_file.contents)
+      this.editorViewer.editor.setLineNumberRulerVisible(true);
       this.active_file = sel_file
     },
     load_user_code: function() {
@@ -746,6 +748,7 @@ export default {
     state: {
       handler(newState) {
         this.editorViewer.updateSettings(newState.editor)
+        this.editorViewer.editor.setLineNumberRulerVisible(true);
         this.state.save()
         this.alert("Updated settings")
       },
