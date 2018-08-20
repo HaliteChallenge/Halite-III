@@ -7,6 +7,8 @@ content: website
 sort_key: 3
 ---
 
+<div class="doc-section" markdown="1">
+
 Download a language specific starter kit as a quick and easy way to get started playing in the Halite AI competition. Can't find your preferred language? We love contributions! Check out our [guide](create-new-starter-kit) on how to build a new starter bot.
 
 ## System Requirements
@@ -76,4 +78,6 @@ System requirements are detailed [here](system-requirements).
             </tr>
         </tbody>
     </table>
+</div>
+
 </div>

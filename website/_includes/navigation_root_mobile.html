@@ -1,0 +1,15 @@
+<div class="responsive-toc-nav">
+  <span class="current-nav-item" data-toggle="collapse" data-target="#res_nav_selector">
+    {% if page.short_title %}{{ page.short_title }}{% else %}{{ page.title }}{% endif %}
+  </span>
+  <ul id="res_nav_selector" class="select-nav collapse" aria-expanded="false"> 
+    {% for subpage in include.level.pages %}
+      <li class="{% if subpage.url == page.url %}active{% endif %}">
+        <a href="{{ subpage.url }}">{% if subpage.short_title %}{{ subpage.short_title }}{% else %}{{ subpage.title }}{% endif %}</a>
+      </li>
+    {% endfor %}
+    {% for level in include.level.sublevels %}
+    {% include navigation_level_mobile.html level=level %}
+    {% endfor %}
+  </ul>
+</div>
