@@ -184,31 +184,39 @@ export default async function assets() {
         downloadBots = true;
     }
     else {
-        // Grab the manifest and make sure everything is there
-        const request = await util.download(`assets/downloads/Halite3Benchmark.json`);
-        const manifest = await request.json();
-        // Promise is resolved as true if the file needs to be
-        // redownloaded
-        const promises = [];
-        for (const [ filePath, sha256hash ] of manifest.manifest) {
-            const destPath = path.join(botsPath, path.basename(filePath));
-            promises.push(new Promise((resolve, reject) => {
-                const input = fs.createReadStream(destPath);
-                input.on('error', (err) => {
-                    resolve(true);
-                });
+        try {
+            // Grab the manifest and make sure everything is there
+            const request = await util.download(`assets/downloads/Halite3Benchmark.json`);
+            const manifest = await request.json();
+            // Promise is resolved as true if the file needs to be
+            // redownloaded
+            const promises = [];
+            for (const [ filePath, sha256hash ] of manifest.manifest) {
+                const destPath = path.join(botsPath, path.basename(filePath));
+                promises.push(new Promise((resolve, reject) => {
+                    const input = fs.createReadStream(destPath);
+                    input.on('error', (err) => {
+                        resolve(true);
+                    });
 
-                const hmac = crypto.createHash('sha256');
-                input.pipe(hmac);
-                hmac.on('data', (d) => {
-                    resolve(d.toString('hex') !== sha256hash);
-                });
-            }));
+                    const hmac = crypto.createHash('sha256');
+                    input.pipe(hmac);
+                    hmac.on('data', (d) => {
+                        resolve(d.toString('hex') !== sha256hash);
+                    });
+                }));
+            }
+
+            const results = await Promise.all(promises);
+            // Redownload all bots if any promise was resolved true
+            downloadBots = results.some(x => x);
         }
-
-        const results = await Promise.all(promises);
-        // Redownload all bots if any promise was resolved true
-        downloadBots = results.some(x => x);
+        catch (e) {
+            console.warn('Could not download bot manifest?');
+            console.warn(e);
+            // Couldn't download the manifest or something?
+            downloadBots = true;
+        }
     }
 
     if (downloadBots) {
