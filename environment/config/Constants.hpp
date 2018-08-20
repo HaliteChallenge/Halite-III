@@ -20,7 +20,6 @@ struct Constants {
 
     bool STRICT_ERRORS = false;                 /**< Whether strict error checking mode is enabled. */
 
-    unsigned long MAX_TURNS = 500;              /**< The maximum number of turns. */
     unsigned long MAX_PLAYERS = 16;             /**< The maximum number of players. */
     dimension_type DEFAULT_MAP_WIDTH = 48;      /**< The default width of generated maps. */
     dimension_type DEFAULT_MAP_HEIGHT = 48;     /**< The default height of generated maps. */
@@ -39,6 +38,11 @@ struct Constants {
     double PERSISTENCE = 0.7; // Determines relative weight of local vs global features.
     double FACTOR_EXP_1 = 2; // Determines initial spikiness of map. Higher values weight towards 0.
     double FACTOR_EXP_2 = 2; // Determines final spikiness of map. Higher values weight towards 0.
+
+    unsigned long MIN_TURNS = 300;
+    unsigned long MIN_TURN_THRESHOLD = 32;
+    unsigned long MAX_TURNS = 500;
+    unsigned long MAX_TURN_THRESHOLD = 80;
 
     dimension_type CAPTURE_RADIUS = 4; /**< The distance in which a ship is considered for the capture calculation */
     unsigned long SHIPS_ABOVE_FOR_CAPTURE = 3; /**< If enemyships - friendlyships is above or equal to this threshold,
@@ -63,6 +67,16 @@ struct Constants {
     static const Constants &get() { return get_mut(); }
 
     /**
+     * Get a mutable reference to the singleton constants.
+     * @return Mutable reference to the singleton constants.
+     */
+    static Constants &get_mut() {
+        // Guaranteed initialized only once by C++11
+        static Constants instance;
+        return instance;
+    }
+
+    /**
      * Encode the constants to JSON.
      * @param[out] json The JSON output.
      * @param constants The constants.
@@ -82,16 +96,6 @@ struct Constants {
 private:
     /** Hide the default constructor. */
     Constants() = default;
-
-    /**
-     * Get a mutable reference to the singleton constants.
-     * @return Mutable reference to the singleton constants.
-     */
-    static Constants &get_mut() {
-        // Guaranteed initialized only once by C++11
-        static Constants instance;
-        return instance;
-    }
 };
 
 }

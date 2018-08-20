@@ -234,12 +234,15 @@ def main(args):
     elif args.gym_mode == STATS_MODE:
         def _prettyprint_match(match):
             winner = match['participants'][match['winner'] - 1]
-            return 'Match #{}: "{}" beat {}'.format(
+            return 'Match #{}: "{}" beat {}\nMap Size: {}x{}\nReplay: {}'.format(
                 match['id'],
                 winner['name'],
                 ' '.join([ '"{}"'.format(bot['name'])
                            for bot in match['participants']
-                           if bot['id'] != winner['id'] ])
+                           if bot['id'] != winner['id'] ]),
+                match['results']['map_width'],
+                match['results']['map_height'],
+                match['results']['replay'],
             )
 
         with connect(args.db_path) as conn:
