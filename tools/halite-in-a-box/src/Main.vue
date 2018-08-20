@@ -164,12 +164,6 @@
         }
     }
 
-    h1 {
-        span {
-            font-size: 0.6em;
-        }
-    }
-
     #main-logged-in {
         display: grid;
         box-sizing: border-box;

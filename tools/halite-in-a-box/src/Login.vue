@@ -1,21 +1,22 @@
 <template>
     <div id="main">
-        <h1>Halite III <span>in a box</span></h1>
-
         <div>
-            <button v-on:click="openProfile">Log In</button>
-            <ol>
-                <li>Go to your profile on the website.</li>
-                <li>Click "Generate API key".</li>
-                <li>Copy and paste the result below.</li>
-            </ol>
-        </div>
+            <h1>Halite III <span>in a box</span></h1>
 
-        <form>
-            <label for="api-key">Paste API key:</label>
-            <input type="text" id="api-key" v-model="apiKey" />
-            <p class="error" v-if="apiKeyError">{{apiKeyError}}</p>
-        </form>
+            <div>
+                <ol>
+                    <li><a href="#" @click="openProfile">Click here to open your settings page on the website.</a></li>
+                    <li>Click "Generate API key".</li>
+                    <li>Copy and paste the result below.</li>
+                </ol>
+            </div>
+
+            <form>
+                <label for="api-key">Paste API key:</label>
+                <input type="text" id="api-key" v-model="apiKey" />
+                <p class="error" v-if="apiKeyError">{{apiKeyError}}</p>
+            </form>
+        </div>
     </div>
 </template>
 
@@ -59,3 +60,11 @@
         },
     }
 </script>
+
+<style lang="scss" scoped>
+    #main {
+        display: flex;
+        justify-content: center;
+        height: 100vh;
+    }
+</style>
