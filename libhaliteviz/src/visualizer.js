@@ -643,6 +643,13 @@ export class HaliteVisualizer {
                     }
                     this.current_commands[event.owner_id][event.id] = {"type" : "g"};
                 }
+                else if (event.type === "capture") {
+                    // TODO: use new Halite 3 spawn animation
+                    this.animationQueue.push(
+                        new animation.ShipExplosionFrameAnimation(
+                            event.location, 0xFFFFFF,
+                            this.frame, 2, cellSize, this.entityContainer));
+                }
                 else if (event.type === "construct") {
                     /// TODO: create new sprite class for dropoffs, construct one, add to list (dict?) of dropoffs
                     // Temporarily draw as factory

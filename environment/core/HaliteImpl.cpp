@@ -188,7 +188,8 @@ void HaliteImpl::process_turn() {
 
         CommandTransaction transaction{game.store, game.map};
         std::unordered_set<Player::id_type> offenders;
-        transaction.on_event([&frames = game.replay.full_frames](GameEvent event) {
+        transaction.on_event([&frames = game.replay.full_frames, this](GameEvent event) {
+            event->update_stats(game.store, game.map, game.game_statistics);
             // Create new game event for replay file.
             frames.back().events.push_back(std::move(event));
         });
@@ -259,6 +260,11 @@ void HaliteImpl::process_turn() {
             if (max_energy - entity.energy < extracted) {
                 extracted = max_energy - entity.energy;
             }
+            auto &player_stats = game.game_statistics.player_statistics.at(entity.owner.value);
+            player_stats.total_mined += extracted;
+            if (entity.was_captured) {
+                player_stats.total_mined_from_captured += extracted;
+            }
             entity.energy += extracted;
             cell.energy -= extracted;
             game.store.map_total_energy -= extracted;
@@ -293,7 +299,7 @@ void HaliteImpl::process_turn() {
                             to_visit_locs.emplace(neighbor);
                         } else {
                             visited_locs.emplace(neighbor);
-                        } 
+                        }
                     }
                 }
             }
@@ -316,18 +322,23 @@ void HaliteImpl::process_turn() {
     for(const auto &[location, new_player_id] : entity_switches) {
         auto &cell = game.map.at(location);
         const auto entity = game.store.get_entity(cell.entity);
-        
+
+        game.game_statistics.player_statistics.at(entity.owner.value).ships_given++;
+        game.game_statistics.player_statistics.at(new_player_id.value).ships_captured++;
+
         game.store.delete_entity(entity.id);
         auto &entities = game.store.get_player(entity.owner).entities;
         entities.erase(entities.find(entity.id));
 
-        const auto new_entity = game.store.new_entity(entity.energy, new_player_id);
+        auto new_entity = game.store.new_entity(entity.energy, new_player_id);
+        // XXX new_entity seems to be a copy not a real reference
         cell.entity = new_entity.id;
+        game.store.get_entity(new_entity.id).was_captured = true;
         game.store.get_player(new_player_id).add_entity(new_entity.id, location);
 
         game.replay.full_frames.back().events.push_back(
-            std::make_unique<SpawnEvent>(
-                    location, new_entity.energy, new_player_id, new_entity.id));
+            std::make_unique<CaptureEvent>(location, entity.owner, entity.id,
+                                           new_player_id, new_entity.id));
     }
 
 
@@ -446,6 +457,12 @@ void HaliteImpl::rank_players() {
     for (size_t index = 0; index < statistics.size(); ++index) {
         statistics[index].rank = index + 1l;
     }
+
+    // Re-sort by player ID
+    std::stable_sort(statistics.begin(), statistics.end(),
+                     [](const PlayerStatistics &a, const PlayerStatistics &b) -> bool {
+                         return a.player_id.value < b.player_id.value;
+                     });
 }
 
 void HaliteImpl::kill_player(const Player::id_type &player_id) {
