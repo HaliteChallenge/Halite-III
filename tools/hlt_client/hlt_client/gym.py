@@ -142,6 +142,7 @@ def add_match(conn, bots, results):
         games_played_query = 'update bots set games_played=games_played + 1 where id = ?'
         conn.execute(games_played_query, (bot['id'],))
 
+    bots.sort(key=lambda bot: bot['rank'])
     trueskill.setup(tau=0.008, draw_probability=0.001)
     teams = [[trueskill.Rating(mu=bot["mu"], sigma=bot["sigma"])]
              for bot in bots]
