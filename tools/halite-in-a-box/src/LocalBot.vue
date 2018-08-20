@@ -17,7 +17,8 @@
                 evaluate its performance vs your currently uploaded
                 bot, or upload it to the server.
             </p>
-            <button v-on:click="chooseLocalBot">Select Bot</button>
+            <button @click="chooseLocalBot">Select Bot</button>
+            <button @click="goToStarterKit">Download Starter Kit</button>
         </template>
     </section>
 </template>
@@ -83,6 +84,10 @@
                     top: document.querySelector('#local-bot-gym').offsetTop,
                     behavior: 'smooth',
                 })
+            },
+
+            goToStarterKit() {
+                util.openBrowserTab(`${util.WEBSITE_URL}/learn-programming-challenge/downloads-and-starter-kits/`);
             },
 
             async benchmark() {
