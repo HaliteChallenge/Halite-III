@@ -4,21 +4,10 @@ import fs from 'fs';
 import path from 'path';
 import JSZip from 'jszip';
 
+import * as bot from './bot';
 import * as util from './util';
 
 export const BENCHMARK_BOT_DIRECTORY = 'benchmark-bots/';
-
-/**
- * Download the manifest for the benchmark bots from halite.io. Return
- * the cached one if possible.
- *
- * If available from in-memory cache, use that.
- * If available from network, use that.
- * Else try from disk cache.
- */
-export async function getBotManifest() {
-
-}
 
 export function appData() {
     // Create directory in application data directory
@@ -238,11 +227,12 @@ export default async function assets() {
             resolve(files.filter(f => f.endsWith('.py') && f !== 'hlt.py'));
         });
     });
-    const benchmarkBots = bots.map(filename => ({
-        path: path.join(botsPath, filename),
-        name: filename === 'MyBot.py' ? 'Python Starter Bot' :
+    const benchmarkBots = bots.map(filename => new bot.InterpretedBot(
+        filename === 'MyBot.py' ? 'Python Starter Bot' :
             path.basename(filename, path.extname(filename)),
-    }));
+        bot.InterpretedBot.languages.Python,
+        path.join(botsPath, filename)
+    ));
 
     const result = Object.assign({}, paths, {
         benchmarkBots,

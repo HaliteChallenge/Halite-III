@@ -192,7 +192,8 @@
                         // Don't re-register bots each time
                         if (found) continue;
 
-                        const args = ['gym', 'register', bot.name, `${pythonPath()} "${bot.path}"`];
+                        const args = ['gym', 'register', bot.name, await bot.makePath()];
+                        console.info('Registering bot with args', args);
                         await util.collectCall(args);
                     }
 

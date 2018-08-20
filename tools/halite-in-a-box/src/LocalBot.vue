@@ -137,7 +137,7 @@
                         params.push(`${pythonPath()} "${this.localBot}"`);
                     }
                     else {
-                        params.push(`${pythonPath()} "${bot.path}"`);
+                        params.push(await bot.makePath());
                     }
                 }
 
