@@ -68,6 +68,10 @@
             </div>
         </transition-group>
     </div>
+    <div class="banner" v-if="banner_message">
+      {{banner_message}}
+      <button @click="banner_message = null">Close</button>
+    </div>
   </div>
 </template>
 
@@ -172,6 +176,7 @@ export default {
       allSaved: false,
       saveCallback: null,
       is_picking_language: false,
+      banner_message: '',
     }
   },
   props: {
@@ -269,7 +274,7 @@ export default {
     /* Init the Orion Editor */
     create_editor: function (code) {
       logInfo('Creating editor...')
-      const codeEdit = new orion.codeEdit({editorConfig: {wordWrap: true, overviewRuler: false, annotationRuler: false}})
+      const codeEdit = new orion.codeEdit({editorConfig: {wordWrap: true, overviewRuler: false, lineNumberRuler: true, annotationRuler: false}})
       var opts = {parent: 'embeddedEditor', contentType: this.bot_info().mimeType, contents: code}
       codeEdit.create(opts).then((editorViewer) => {
         logInfo('Initializing editor...')
@@ -339,6 +344,7 @@ export default {
 
         // Load saved settings
         this.state.load()
+        this.editorViewer.editor.setLineNumberRulerVisible(true);
 
         logInfo('Editor ready!')
 
@@ -380,6 +386,7 @@ export default {
         this.active_file.contents = this.get_editor_code()
       }
       this.set_editor_contents(sel_file.contents)
+      this.editorViewer.editor.setLineNumberRulerVisible(true);
       this.active_file = sel_file
     },
     load_user_code: function() {
@@ -538,7 +545,7 @@ export default {
       const cutoff = moment().subtract(1, 'minutes')
       this.gameTimes = this.gameTimes.filter(time => time.isSameOrAfter(cutoff))
       if (this.gameTimes.length > 3) {
-        this.alert("No more than 3 games per minute allowed, please wait and try again.")
+        this.banner_message = "No more than 3 games per minute allowed, please wait and try again."
         return;
       }
 
@@ -558,10 +565,11 @@ export default {
 
       if (taskResult.status !== "success") {
         if (taskResult.message) {
-          this.alert(taskResult.message)
+          this.banner_message = taskResult.message
         }
         return
       }
+      this.banner_message = ''
 
       const startResult = await api.update_ondemand_task(user_id, {
         "turn-limit": 500,
@@ -610,6 +618,7 @@ export default {
         this.visualizerVisible = true
         this.add_console_text("Starting replay.\n")
 
+        const energy = replay.full_frames[replay.full_frames.length - 1].energy || {};
         for (let i = 0; i < status.opponents.length; i++) {
           this.add_console_text({
             text: `Player ${i}`,
@@ -626,7 +635,8 @@ export default {
           else {
             displayName = `"${displayName}"`
           }
-          this.add_console_text(` ${displayName} was rank ${status.game_output.stats[i].rank}.\n`)
+          const last_energy = typeof energy[i] === "undefined" ? replay.GAME_CONSTANTS.INITIAL_ENERGY : energy[i];
+          this.add_console_text(` ${displayName} was rank ${status.game_output.stats[i].rank} with ${last_energy} energy.\n`)
         }
 
         if (status.error_log) {
@@ -746,6 +756,7 @@ export default {
     state: {
       handler(newState) {
         this.editorViewer.updateSettings(newState.editor)
+        this.editorViewer.editor.setLineNumberRulerVisible(true);
         this.state.save()
         this.alert("Updated settings")
       },
@@ -949,6 +960,26 @@ export default {
   font-size: 1.25em;
   color: #FFF;
   text-align: center;
+}
+
+.body {
+  position: relative;
+}
+
+.banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1em;
+  background: #F00;
+  text-align: center;
+  z-index: 20000;
+
+  button {
+    position: absolute;
+    right: 1em;
+  }
 }
 </style>
 

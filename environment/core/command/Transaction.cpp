@@ -188,9 +188,9 @@ void MoveTransaction::commit() {
                 if (auto cause = causes.find(entity_id); cause != causes.end()) {
                     self_collision_commands[entity.owner].emplace_back(cause->second);
                 }
-                // Dump the energy.
-                dump_energy(store, entity, cell, entity.energy);
-                store.delete_entity(entity_id);
+                // Don't delete entities/dump energy until after
+                // generating the event, so that HaliteImpl has a
+                // chance to collect statistics.
             }
             for (const auto &[player_id, self_collision_entities] : self_collisions) {
                 if (self_collision_entities.size() > MAX_ENTITIES_PER_CELL) {
@@ -203,7 +203,18 @@ void MoveTransaction::commit() {
                                                                      !Constants::get().STRICT_ERRORS);
                 }
             }
+
+            // When generating the event, HaliteImpl will record
+            // statistics.
             event_generated<CollisionEvent>(destination, collision_ids);
+            // Now we can delete the entities.
+            for (const auto &entity_id : collision_ids) {
+                auto &entity = store.get_entity(entity_id);
+                // Dump the energy.
+                dump_energy(store, entity, cell, entity.energy);
+                store.delete_entity(entity_id);
+            }
+
             cell_updated(destination);
         } else {
             auto &entity_id = entities.front();

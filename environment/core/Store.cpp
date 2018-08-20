@@ -27,6 +27,18 @@ Entity &Store::get_entity(const Entity::id_type &id) {
 }
 
 /**
+ * Get an entity by ID.
+ *
+ * @param id The entity ID.
+ * @return The entity.
+ */
+const Entity &Store::get_entity(const Entity::id_type &id) const {
+    auto iterator = entities.find(id);
+    assert(iterator != entities.end());
+    return iterator->second;
+}
+
+/**
  * Obtain a new entity.
  *
  * @param energy The energy of the entity.

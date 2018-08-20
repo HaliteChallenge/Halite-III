@@ -59,6 +59,14 @@ public:
      * @param id The entity ID.
      * @return The entity.
      */
+    const Entity &get_entity(const Entity::id_type &id) const;
+
+    /**
+     * Get an entity by ID.
+     *
+     * @param id The entity ID.
+     * @return The entity.
+     */
     Entity &get_entity(const Entity::id_type &id);
 
     /**
