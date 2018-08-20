@@ -10,8 +10,9 @@
                     <div class="draggables">
                         <div>
                             <h3>Available Bots</h3>
+                            <p>Drag-and drop bots to the other side to place them in the match.</p>
                             <draggable v-model="availableBots" :options="{group: {name: 'bots', pull: 'clone', put: false}}" >
-                                <div v-for="(bot, index) in availableBots" :key="index">
+                                <div class="draggable-item" v-for="(bot, index) in availableBots" :key="index">
                                     {{bot.name}}
                                 </div>
                             </draggable>
@@ -19,7 +20,7 @@
                         <div>
                             <h3>Selected Bots</h3>
                             <draggable v-model="bots" :options="{group: {name: 'bots'}}" >
-                                <div v-for="(bot, index) in bots" :key="index">
+                                <div class="draggable-item" v-for="(bot, index) in bots" :key="index">
                                     {{bot.name}}
                                     <button @click="() => bots.splice(index, 1)">Delete</button>
                                 </div>
@@ -181,6 +182,18 @@
     .draggables {
         display: flex;
 
+        p {
+            margin: 1rem 0;
+        }
+
+        .draggable-item {
+            border: 1px solid #d1d1d1;
+            border-radius: 5px;
+            margin: 0.5em 0;
+            cursor: move;
+            position: relative;
+        }
+
         >div {
             flex: 1;
 
@@ -195,13 +208,20 @@
                 height: 100%;
 
                 button {
-                    height: 2em;
+                    height: auto;
                     padding: 0.25em 2em;
                     line-height: 1.5em;
-                    float: right;
                     margin: 0;
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
                 }
             }
+        }
+
+        >div:first-child {
+            margin-right: 0.5em;
         }
 
         >div:last-child {
