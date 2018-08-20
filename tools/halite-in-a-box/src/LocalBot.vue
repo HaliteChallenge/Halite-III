@@ -32,6 +32,8 @@
     import { pythonPath } from './assets';
     import * as util from './util';
 
+    const RECOGNIZED_EXTENSIONS = [ '.py', '.java', '.cpp', '.js', '.zip' ];
+
     export default {
         props: ['apiKey', 'userId'],
         inject: ['assetsReady', 'showModal', 'closeModal'],
@@ -52,8 +54,26 @@
                     title: 'Choose bot folder or MyBot file',
                     properties: ['openFile', 'openDirectory'],
                 });
-                if (result && result.length > 0) {
-                    this.localBot = result[0];
+                if (!result || result.length === 0) {
+                    return;
+                }
+
+                const botFile = result[0];
+                const extension = path.extname(botFile);
+
+                if (RECOGNIZED_EXTENSIONS.indexOf(extension) === -1) {
+                    this.showModal('local-bot-confirm-modal', {
+                        localBot: botFile,
+                        localBotExtension: extension,
+                    }).then((action) => {
+                        if (action === 'override') {
+                            this.localBot = botFile;
+                            this.$emit('change', this.localBot);
+                        }
+                    }).finally(() => this.closeModal());
+                }
+                else {
+                    this.localBot = botFile;
                     this.$emit('change', this.localBot);
                 }
             },
