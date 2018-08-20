@@ -76,6 +76,11 @@ export default {
         }
   },
       mounted: function () {
+        api.me().then((user) => {
+          if (!user) {
+            window.location.replace(`${api.LOGIN_SERVER_URL}/github`)
+          }
+        })
 
         this.gpu_states.push( {label: "Yes",value: 1});
         this.gpu_states.push( {label: "No",value: 0});
