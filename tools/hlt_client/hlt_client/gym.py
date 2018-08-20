@@ -232,6 +232,27 @@ def main(args):
             bots = list_bots(conn)
             output.print_list("Registered Bots:", bots, formatter=_prettyprint_bot)
     elif args.gym_mode == STATS_MODE:
+        if args.query:
+            with connect(args.db_path) as conn:
+                results = list(conn.execute(args.query).fetchall())
+                if not results:
+                    output.output("No results.", results=results)
+                    return
+
+                # TODO: table output func
+                keys = list(results[0].keys())
+                for key in keys:
+                    print('{:>20}'.format(key), end='|')
+                print()
+                for key in keys:
+                    print('-' * 20, end='+')
+                print()
+                for index, row in enumerate(results):
+                    for key in keys:
+                        print('{:>20}'.format(row[key]), end='|')
+                    print()
+            return
+
         def _prettyprint_match(match):
             winner = [p for p in match['participants'] if p['id'] == match['winner']][0]
             return 'Match #{}: "{}" beat {}\nMap Size: {}x{}\nReplay: {}'.format(
@@ -296,6 +317,8 @@ def parse_arguments(subparser):
                                  help="Number of games to play.")
 
     stats_parser = gym_subparser.add_parser(STATS_MODE, help='Get stats from the gym.')
+    stats_parser.add_argument('query', nargs='?', type=str,
+                              help="An SQL query to run (this is NOT SANITIZED in any way!)")
 
     bots_parser = gym_subparser.add_parser(BOTS_MODE, help='List registered bots.')
     bots_parser.add_argument('bot_name', type=str,
