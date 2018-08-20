@@ -402,12 +402,23 @@ class GameMap:
         """
         if not isinstance(source, MapCell) or not isinstance(destination, MapCell):
             raise AttributeError("Source and Destination must be of type MapCell")
+
         if source == destination:
             return None
+
         visited_map = self._bfs_traverse_safely(source, destination)
-        if visited_map:
-            return self._find_first_move(source, destination, visited_map)
-        return None
+        if not visited_map:
+            return None
+
+        safe_target_cell = self._find_first_move(source, destination, visited_map)
+        if not safe_target_cell:
+            return None
+
+        potential_moves = self.get_unsafe_moves(source, safe_target_cell)
+        if not potential_moves:
+            return None
+
+        return potential_moves[0]
 
     @staticmethod
     def _generate():
