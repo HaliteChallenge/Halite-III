@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import abc
+import json
 import logging
 import queue
 
@@ -70,8 +71,10 @@ class Ship(Entity):
         Return a move to move this ship in a direction without
         checking for collisions.
         """
-        return "{} {} {}".format(commands.MOVE, self.id,
-                                 Direction.convert(direction) if direction not in "nsew" else direction)
+        raw_direction = direction
+        if not isinstance(direction, str) or direction not in "nsew":
+            raw_direction = Direction.convert(direction)
+        return "{} {} {}".format(commands.MOVE, self.id, raw_direction)
 
     def stay_still(self):
         """
@@ -100,17 +103,21 @@ class Game:
     """
     The game object holds all metadata pertinent to the game and all its contents
     """
-    def __init__(self, name):
+    def __init__(self):
         """
         Initiates a game object collecting all start-state instances for the contained items for pre-game.
-        Sets your bot name as name. Also sets up basic logging.
-        :param name: The name of your bot
+        Also sets up basic logging.
         """
         self.turn_number = 0
+
+        # Grab constants JSON
+        raw_constants = input()
+        constants.load_constants(json.loads(raw_constants))
+
         num_players, self.my_id = map(int, input().split())
 
         logging.basicConfig(
-            filename="bot-{}.log".format(name),
+            filename="bot-{}.log".format(self.my_id),
             filemode="w",
             level=logging.DEBUG,
         )
@@ -120,6 +127,12 @@ class Game:
             self.players[player] = Player._generate()
         self.me = self.players[self.my_id]
         self.game_map = GameMap._generate()
+
+    def ready(self, name):
+        """
+        Indicate that your bot is ready to play.
+        :param name: The name of your bot
+        """
         networking.send_commands([name])
 
     def update_frame(self):
@@ -135,6 +148,11 @@ class Game:
             self.players[player]._update(num_ships, num_dropoffs, halite)
 
         self.game_map._update()
+
+        # Mark cells with ships as unsafe for navigation
+        for player in self.players.values():
+            for ship in player.get_ships():
+                self.game_map[ship.position].mark_unsafe(ship)
 
     @staticmethod
     def end_turn(commands):
@@ -240,6 +258,14 @@ class MapCell:
         """
         return None if not self.structure else type(self.structure)
 
+    def mark_unsafe(self, ship):
+        """
+        Mark this cell as unsafe (occupied) for navigation.
+
+        Use in conjunction with GameMap.get_safe_move.
+        """
+        self.ship = ship
+
     def __eq__(self, other):
         return self.position == other.position
 
@@ -322,11 +348,11 @@ class GameMap:
         y_cardinality, x_cardinality = self._get_target_direction(source.position, destination.position)
 
         if distance.x != 0:
-            possible_moves.append(Position(*x_cardinality if distance.x < (self.width / 2)
-                                  else Direction.invert(x_cardinality)))
+            possible_moves.append(x_cardinality if distance.x < (self.width / 2)
+                                  else Direction.invert(x_cardinality))
         if distance.y != 0:
-            possible_moves.append(Position(*y_cardinality if distance.y < (self.height / 2)
-                                  else Direction.invert(y_cardinality)))
+            possible_moves.append(y_cardinality if distance.y < (self.height / 2)
+                                  else Direction.invert(y_cardinality))
         return possible_moves
 
     def _bfs_traverse_safely(self, source, destination):
@@ -344,9 +370,11 @@ class GameMap:
             if current_square == destination:
                 return visited_map
             for suitor in current_square.position.get_surrounding_cardinals():
+                suitor = self.normalize(suitor)
                 if not self[suitor].is_occupied() and not visited_map[suitor.y][suitor.x]:
                     potentials_queue.put(self[suitor])
                     visited_map[suitor.y][suitor.x] = current_square
+
         return None
 
     @staticmethod
@@ -377,7 +405,9 @@ class GameMap:
         if source == destination:
             return None
         visited_map = self._bfs_traverse_safely(source, destination)
-        return self._find_first_move(source, destination, visited_map)
+        if visited_map:
+            return self._find_first_move(source, destination, visited_map)
+        return None
 
     @staticmethod
     def _generate():
@@ -399,6 +429,12 @@ class GameMap:
         Updates this map object from the input given by teh game engine
         :return: nothing
         """
+        # Mark cells as safe for navigation (will re-mark unsafe cells
+        # later)
+        for y in range(self.height):
+            for x in range(self.width):
+                self[Position(x, y)].ship = None
+
         for _ in range(int(input())):
             cell_x, cell_y, cell_energy = map(int, input().split())
             self[Position(cell_x, cell_y)].halite = cell_energy

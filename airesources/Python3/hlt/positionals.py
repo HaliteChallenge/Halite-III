@@ -5,8 +5,8 @@ class Direction:
     """
     Holds positional tuples in relation to cardinal directions
     """
-    North = (0, 1)
-    South = (0, -1)
+    North = (0, -1)
+    South = (0, 1)
     East = (1, 0)
     West = (-1, 0)
 
