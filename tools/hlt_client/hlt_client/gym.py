@@ -9,7 +9,7 @@ import subprocess
 import appdirs
 import trueskill
 
-from . import compare_bots, output
+from . import compare_bots, output, util
 
 
 APP_NAME = 'hlt_client3'
@@ -18,6 +18,7 @@ APP_AUTHOR = 'Halite'
 BOTS_MODE = 'bots'
 EVALUATE_MODE = 'evaluate'
 REGISTER_MODE = 'register'
+DEREGISTER_MODE = 'deregister'
 STATS_MODE = 'stats'
 
 BASE_MU = 25.0
@@ -97,8 +98,16 @@ def register_bot(conn, name, path):
     rerank_bots(conn)
 
 
-def deregister_bot():
-    pass
+def deregister_bot(conn, name):
+    existing = conn.execute('select * from bots where name = ?', (name,)).fetchall()
+    if existing and util.confirm("Delete bot {}?".format(existing[0]['id']), json_confirm=True):
+        query = 'delete from bots where id = ?'
+        conn.execute(query, (existing[0]['id'],))
+        output.output("Bot deregistered.")
+    else:
+        output.output("No bot to deregister.")
+
+    rerank_bots(conn)
 
 
 def list_bots(conn):
@@ -272,6 +281,9 @@ def main(args):
     elif args.gym_mode == REGISTER_MODE:
         with connect(args.db_path) as conn:
             register_bot(conn, args.name, args.path)
+    elif args.gym_mode == DEREGISTER_MODE:
+        with connect(args.db_path) as conn:
+            deregister_bot(conn, args.name)
     elif args.gym_mode == EVALUATE_MODE:
         hlt_path = args.halite_binary
         output_dir = args.game_output_dir
@@ -297,6 +309,10 @@ def parse_arguments(subparser):
                                  help="The name of the bot to add/update.")
     register_parser.add_argument('path', type=str,
                                  help="The command to run to start the bot.")
+
+    deregister_parser = gym_subparser.add_parser(DEREGISTER_MODE, help='Delete a bot.')
+    deregister_parser.add_argument('name', type=str,
+                                   help="The name of the bot to delete.")
 
     evaluate_parser = gym_subparser.add_parser(EVALUATE_MODE, help='Run games with bots in the gym.')
     evaluate_parser.add_argument('-b', '--binary',
