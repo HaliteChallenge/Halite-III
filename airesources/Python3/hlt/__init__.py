@@ -230,7 +230,7 @@ class MapCell:
     """A cell on the game map."""
     def __init__(self, position, halite):
         self.position = position
-        self.halite = halite
+        self.halite_amount = halite
         self.ship = None
         self.structure = None
 

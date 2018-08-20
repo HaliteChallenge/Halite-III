@@ -43,7 +43,7 @@ while True:
     for ship in me.get_ships():  # For each of our ships
         # Check if there's a reasonable amount of halite on the square.
         # If so, extract halite. If not, move randomly. If we don't move we can assume we're extracting Halite
-        if game_map[ship.position].halite < constants.MAX_HALITE / 10 or ship.is_full:
+        if game_map[ship.position].halite_amount < constants.MAX_HALITE / 10 or ship.is_full:
             # Move this ship in a random direction, picking from one of the cardinals
             command_queue.append(
                 ship.move(
@@ -53,7 +53,7 @@ while True:
 
     # If we're in the first 200 turns and have enough halite, spawn a ship.
     # Don't spawn a ship if we currently have a ship at port, though.
-    if game.turn_number <= 200 and me.halite >= constants.SHIP_COST and not game_map[me.shipyard].is_occupied():
+    if game.turn_number <= 200 and me.halite_amount >= constants.SHIP_COST and not game_map[me.shipyard].is_occupied():
         command_queue.append(game.me.shipyard.spawn())
 
     game.end_turn(command_queue)  # Send our moves back to the game environment
