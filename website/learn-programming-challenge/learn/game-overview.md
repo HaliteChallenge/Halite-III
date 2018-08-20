@@ -3,7 +3,7 @@ layout: doc_page
 title: Game Overview
 toc: false
 description: Get an introduction to the rules of the game to win the Halite AI Programming Challenge.
-sort_key: 0
+sort_key: 1
 ---
 
 <div class="doc-section" markdown="1">
@@ -57,4 +57,8 @@ The game ends after 500 turns, or when no players are alive, whichever comes fir
 #### Note on game rules changes
 The Two Sigma and Halite team reserves the right to make changes on game rules during the course of the game. We promise we won't do this without a very good reason that improves the competition and the fun of the game, and we will try to make any changes as backwards compatible as possible.
 
+</div>
+
+<div class="build-a-bot text-center">
+  <a class="btn btn-primary">Build a bot</a>
 </div>

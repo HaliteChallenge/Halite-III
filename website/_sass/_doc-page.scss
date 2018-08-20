@@ -111,12 +111,6 @@
     background: transparent;
     border: 0px;
   }
-  a {
-    color: #2980B9;
-    &:hover {
-      color: #44a3e2;
-    }
-  }
   h2{
     text-transform: uppercase;
   }
@@ -167,4 +161,16 @@
   background-position: top center;
   background-size: contain;
   background-repeat: no-repeat;
+}
+
+.build-a-bot{
+  background-image: url("/assets/images/bg-build.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 30px;
+  border-radius: 8px;
+  a{
+    color: #fff;
+  }
 }

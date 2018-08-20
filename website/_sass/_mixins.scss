@@ -82,3 +82,10 @@
     height: 100%;
   }
 }
+@mixin heading($fontsize){
+  font-weight: 600;
+  font-size: $fontsize;
+  text-transform: uppercase;
+  color: #B4E6FF;
+  text-shadow: 0 1px 8px #00ABFF;
+}

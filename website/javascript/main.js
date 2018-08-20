@@ -1,4 +1,5 @@
 /* jshint esversion: 6 */
+/* eslint-disable */
 
 import Vue from 'vue'
 import 'url-search-params-polyfill'
@@ -11,7 +12,7 @@ import HackathonLeaderboard from './templates/HackathonLeaderboard.vue'
 import LeaderboardContainer from './templates/LeaderboardContainer.vue'
 import Upload from './templates/Upload.vue'
 import UserProfile from './templates/UserProfile.vue'
-import UserProfileBar from './templates/UserProfileBar.vue'
+// import UserProfileBar from './templates/UserProfileBar.vue'
 import EditUserProfile from './templates/EditUserProfile.vue'
 import VerifyEmail from './templates/VerifyEmail.vue'
 import VisualizerContainer from './templates/VisualizerContainer.vue'
@@ -27,15 +28,14 @@ import Settings from './templates/Settings.vue'
 import View404 from './templates/404.vue'
 import BeginnerTutorial from './templates/BeginnerTutorial.vue'
 import CodeTutorial from './templates/CodeTutorial.vue'
-import WalkthroughSubsteps from "./templates/WalkthroughSubsteps.vue"
-import WalkthroughSubstep from "./templates/WalkthroughSubstep.vue"
+import WalkthroughSubsteps from './templates/WalkthroughSubsteps.vue'
+import WalkthroughSubstep from './templates/WalkthroughSubstep.vue'
 
 // Include bootstrap.js - do not remove
 import _ from '../vendor_assets/bootstrap-sass-3.3.7/assets/javascripts/bootstrap'
 
 import * as api from './api'
 import * as utils from './utils'
-
 
 Vue.use(require('vue-moment'))
 Vue.use(require('vue-cookie'))
