@@ -6,8 +6,11 @@
         </header>
         <template v-if="localBot">
             <p>Bot path: {{localBot}}</p>
-            <button @click="benchmark" :disabled="!assetsReady()">Benchmark</button>
-            <button @click="goToGym">Gym</button>
+            <p v-if="!canRunGame && botExtension === '.zip'">
+                Zip files can only be uploaded, not benchmarked or bench-pressed.
+            </p>
+            <button @click="benchmark" :disabled="!canRunGame">Benchmark</button>
+            <button @click="goToGym" :disabled="!canRunGame">Gym</button>
             <button @click="upload">Submit</button>
             <button @click="chooseLocalBot">Select Different Bot</button>
         </template>
@@ -48,6 +51,17 @@
                 this.localBot = window.localStorage.getItem('local-bot-path');
                 this.$emit('change', this.localBot);
             }
+        },
+        computed: {
+            botExtension() {
+                if (this.localBot) {
+                    return path.extname(this.localBot).toLowerCase();
+                }
+                return null;
+            },
+            canRunGame() {
+                return this.assetsReady() && this.botExtension !== '.zip';
+            },
         },
         methods: {
             chooseLocalBot() {
