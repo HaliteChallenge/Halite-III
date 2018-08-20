@@ -233,7 +233,7 @@ def main(args):
             output.print_list("Registered Bots:", bots, formatter=_prettyprint_bot)
     elif args.gym_mode == STATS_MODE:
         def _prettyprint_match(match):
-            winner = match['participants'][match['winner'] - 1]
+            winner = [p for p in match['participants'] if p['id'] == match['winner']][0]
             return 'Match #{}: "{}" beat {}\nMap Size: {}x{}\nReplay: {}'.format(
                 match['id'],
                 winner['name'],
