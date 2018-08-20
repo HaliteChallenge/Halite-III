@@ -33,6 +33,7 @@
     import JSZip from 'jszip';
 
     import assets from './assets';
+    import * as bot from './bot';
     import { pythonPath } from './assets';
     import * as util from './util';
 
@@ -110,7 +111,9 @@
 
                 const action = await this.showModal('benchmark-modal', {
                     status: 'setup',
-                    benchmarkBots: paths.benchmarkBots,
+                    benchmarkBots: paths.benchmarkBots.concat([
+                        new bot.RemoteBot("(currently uploaded bot)"),
+                    ]),
                 });
                 if (action === 'cancel') {
                     this.closeModal();

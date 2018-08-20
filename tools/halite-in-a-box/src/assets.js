@@ -9,6 +9,21 @@ import * as util from './util';
 
 export const BENCHMARK_BOT_DIRECTORY = 'benchmark-bots/';
 
+let __userId = null;
+let __apiKey = null;
+
+export function setCredentials(userId, key) {
+    __userId = userId;
+    __apiKey = key;
+}
+
+export function getCredentials() {
+    return {
+        userId: __userId,
+        apiKey: __apiKey,
+    };
+}
+
 export function appData() {
     // Create directory in application data directory
     const dataDir = path.join(electronRemote.app.getPath('appData'),

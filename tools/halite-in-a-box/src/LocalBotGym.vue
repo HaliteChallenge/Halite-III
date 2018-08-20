@@ -181,6 +181,11 @@
                     }
 
                     for (const bot of benchmarkBots) {
+                        // Don't register the online bot
+                        if (!bot.local) {
+                            continue;
+                        }
+
                         let found = false;
                         for (const registeredBot of this.bots) {
                             if (bot.name === registeredBot.name) {

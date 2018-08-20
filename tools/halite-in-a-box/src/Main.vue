@@ -28,7 +28,7 @@
 <script>
     import { remote as electronRemote } from 'electron';
 
-    import assets from './assets';
+    import * as assets from './assets';
     import * as util from './util';
 
     import Login from './Login.vue';
@@ -61,7 +61,7 @@
             };
         },
         async mounted() {
-            assets().then(() => {
+            assets.default().then(() => {
                 this.assetsReady = true;
                 this.assetsMessage = null;
             }).catch((err) => {
@@ -79,6 +79,8 @@
                     if (loggedIn) {
                         this.apiKey = value.api_key;
                         this.userId = value.id;
+
+                        assets.setCredentials(this.userId, this.apiKey);
                     }
                 }
 
