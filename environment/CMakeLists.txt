@@ -16,7 +16,7 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHsc /DNOMINMAX")
 else()
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -pedantic -Wextra -Wno-unused-variable")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pedantic -Wextra -Wno-unused-variable -g -O0 -fno-inline")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pedantic -Wextra -Wno-unused-variable -g -O0 -fno-inline -fsanitize=undefined,address")
 endif()
 
 # versions of cmake before 3.4 always link with -rdynamic on linux, which breaks static linkage with clang
