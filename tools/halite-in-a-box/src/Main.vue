@@ -13,9 +13,9 @@
                 </nav>
                 <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
                 <LocalBot :apiKey="apiKey" :userId="userId" @change="localBot = $event" />
-                <div id="scroll-down">
+                <a id="scroll-down" href="#remote-bot-history">
                     ▼Past Replays & Analytics▼
-                </div>
+                </a>
             </div>
             <RemoteBotHistory :userId="userId" />
             <LocalBotGym :localBot="localBot" />
@@ -203,6 +203,8 @@
             grid-row: footer;
             grid-column: left / -1;
             text-align: center;
+            color: inherit;
+            text-decoration: none;
         }
 
         #remote-bot, #local-bot {
