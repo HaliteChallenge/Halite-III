@@ -18,11 +18,76 @@
                         <h3>Competition Updates</h3>
                     </div>
                     <div class="feed-body">
-                        <p>aaa</p>
+                        <article class="feed-item">
+                            <h3>5 Tips for this year's Halite competition</h3>
+                            <p>The Two Sigma Investments, LP Deep Learning team worked on a new write-up about </p>
+                            <div class="feed-item-bottom">
+                                <span class="date">
+                                    <span class="icon-date"></span>
+                                    11 Aug 2018
+                                </span>
+                                <a class="read-more" href="#">
+                                    Read more
+                                    <span class="icon-readmore"></span>
+                                </a>
+                            </div>
+                        </article>
+                        <article class="feed-item">
+                            <h3>5 Tips for this year's Halite competition</h3>
+                            <p>The Two Sigma Investments, LP Deep Learning team worked on a new write-up about </p>
+                            <div class="feed-item-bottom">
+                                <span class="date">
+                                    <span class="icon-date"></span>
+                                    11 Aug 2018
+                                </span>
+                                <a class="read-more" href="#">
+                                    Read more
+                                    <span class="icon-readmore"></span>
+                                </a>
+                            </div>
+                        </article>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4"></div>
+            <div class="col-md-4">
+
+                <div class="feed-block">
+                    <div class="feed-header">
+                        <img src="/assets/images/icon-medal.svg" alt="medal" class="feed-icon">
+                        <h3>In The Press</h3>
+                    </div>
+                    <div class="feed-body">
+                        <article class="feed-item">
+                            <h3>5 Tips for this year's Halite competition</h3>
+                            <p>The Two Sigma Investments, LP Deep Learning team worked on a new write-up about </p>
+                            <div class="feed-item-bottom">
+                                <span class="date">
+                                    <span class="icon-date"></span>
+                                    11 Aug 2018
+                                </span>
+                                <a class="read-more" href="#">
+                                    Read more
+                                    <span class="icon-readmore"></span>
+                                </a>
+                            </div>
+                        </article>
+                        <article class="feed-item">
+                            <h3>5 Tips for this year's Halite competition</h3>
+                            <p>The Two Sigma Investments, LP Deep Learning team worked on a new write-up about </p>
+                            <div class="feed-item-bottom">
+                                <span class="date">
+                                    <span class="icon-date"></span>
+                                    11 Aug 2018
+                                </span>
+                                <a class="read-more" href="#">
+                                    Read more
+                                    <span class="icon-readmore"></span>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-4">
                 <div class="parnter-block">
                     <h3>Partner ship</h3>

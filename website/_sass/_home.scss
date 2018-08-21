@@ -36,18 +36,19 @@
       background-size: contain;
       padding: 20px 15px;
       border-bottom: 1px solid #d5dadf;
-      &:after{
-        content: "";
-        display: block;
-        clear: both;
-      }
+      display: flex;
+      align-items: center;
+      // &:after{
+      //   content: "";
+      //   display: block;
+      //   clear: both;
+      // }
       .feed-icon{
-        float: left;
+        // float: left;
         width: 55px;
         display: block;
       }
       h3{
-        margin: 0 0 0 70px;
         font-size: 24px;
         font-weight: 600;
         text-transform: uppercase;
@@ -58,6 +59,7 @@
 
     .feed-body{
       color: #52678D;
+      padding: 0 15px;
     }
   }
 
@@ -127,4 +129,64 @@
       }
     }
   }
+}
+
+.feed-item{
+  padding: 15px 0;
+  border-bottom: 1px solid #d5dadf;
+  h3{
+    font-size: 20px;
+    font-weight: 600;
+    color: #1A1A1A;
+    line-height: 27px;
+    margin: 0 0 10px 0;
+  }
+  p{
+    font-size: 18px;
+    color: #52678D;
+    letter-spacing: 0.22px;
+    line-height: 27px;
+  }
+  &-bottom{
+    display: flex;
+    justify-content: space-between;
+    .date{
+      font-size: 14px;
+      color: #A6B0C1;
+      text-transform: uppercase;
+    }
+    .read-more{
+      font-family: ProximaNovaSoft-Medium;
+      font-size: 18px;
+      color: #F7862D;
+      text-transform: uppercase;
+    }
+    .icon-date{
+      margin-right: 5px;
+      transform: translateY(2px);
+    }
+    .icon-readmore{
+      margin-left: 5px;
+    }
+  }
+}
+
+.icon-date{
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  background-image: url("/assets/images/icon-calendar.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.icon-readmore{
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  background-image: url("/assets/images/icon-orange-arrow.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
