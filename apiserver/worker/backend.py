@@ -157,6 +157,12 @@ def gameResult(users, game_output, extra_metadata, url_path="game"):
     for path in game_output["error_logs"].values():
         files[os.path.basename(path)] = open(path, "rb").read()
 
+    for user in users:
+        if user.get('bot_logs'):
+            log_filename = '{}_{}_{}.log'.format(user['user_id'], user['bot_id'], user['username'])
+            files[log_filename] = user['bot_logs']
+            user['log_filename'] = log_filename
+
     data = {
         "users": json.dumps(users),
         "game_output": json.dumps(game_output),

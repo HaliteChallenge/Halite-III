@@ -231,6 +231,15 @@ def update_task(user_id, game_output, files):
         task["error_log"] = None
         task["crashed"] = False
 
+    if "bot_log" in files:
+        bucket = model.get_ondemand_replay_bucket()
+        log_key = "ondemand_bot_log_{}".format(user_id)
+        blob = gcloud_storage.Blob(log_key, bucket, chunk_size=262144)
+        blob.upload_from_file(files["bot_log"])
+        task["bot_log"] = True
+    else:
+        task["bot_log"] = None
+
     if "compile_error" in files:
         task["compile_error"] = files["compile_error"]
     else:
