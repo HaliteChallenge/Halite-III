@@ -20,9 +20,9 @@ class Entity(abc.ABC):
     @staticmethod
     def _generate(player_id):
         """
-        Method which creates a ship for a specific player given input form the engine.
-        :param player_id: The player id for the player who owns this ship
-        :return: An instance of ship along with its id
+        Method which creates an entity for a specific player given input from the engine.
+        :param player_id: The player id for the player who owns this entity
+        :return: An instance of Entity along with its id
         """
         ship_id, x_position, y_position = map(int, input().split())
         return ship_id, Entity(player_id, ship_id, Position(x_position, y_position))
@@ -59,7 +59,7 @@ class Ship(Entity):
 
     @property
     def is_full(self):
-        """Is this ship at max capacity?"""
+        """Is this ship at max halite capacity?"""
         return self.halite_amount >= constants.MAX_HALITE
 
     def make_dropoff(self):
@@ -85,7 +85,7 @@ class Ship(Entity):
     @staticmethod
     def _generate(player_id):
         """
-        Creates an instance of a ship or a given player given the engine's input.
+        Creates an instance of a ship for a given player given the engine's input.
         :param player_id: The id of the player who owns this ship
         :return: The ship id and ship object
         """
@@ -234,24 +234,28 @@ class MapCell:
         self.ship = None
         self.structure = None
 
+    @property
     def is_empty(self):
         """
         :return: Whether this cell has no ships or structures
         """
         return self.ship is None and self.structure is None
 
+    @property
     def is_occupied(self):
         """
         :return: Whether this cell has any ships
         """
         return self.ship is not None
 
+    @property
     def has_structure(self):
         """
         :return: Whether this cell has any structures
         """
         return self.structure is not None
 
+    @property
     def structure_type(self):
         """
         :return: What is the structure type in this cell
@@ -271,6 +275,9 @@ class MapCell:
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def __str__(self):
+        return 'MapCell({}, halite={})'.format(self.position, self.halite_amount)
 
 
 class GameMap:
@@ -312,11 +319,12 @@ class GameMap:
 
     def normalize(self, position):
         """
-        Normalized the position within the bounds of the Thoroid.
-        i.e.: Takes a point which may or may not be within width and height bounds and places it within those
-        bounds considering wraparound.
-        :param position: A position objects.
-        :return: A normalized position objects fitting within the bounds of the map
+        Normalized the position within the bounds of the toroidal map.
+        i.e.: Takes a point which may or may not be within width and
+        height bounds, and places it within those bounds considering
+        wraparound.
+        :param position: A position object.
+        :return: A normalized position object fitting within the bounds of the map
         """
         return Position(position.x % self.width, position.y % self.height)
 
@@ -335,11 +343,11 @@ class GameMap:
     def get_unsafe_moves(self, source, destination):
         """
         Return the Direction(s) to move closer to the target point, or empty if the points are the same.
-        This move mechanic does not account fo collisions. The multiple directions are if both directional movements
+        This move mechanic does not account for collisions. The multiple directions are if both directional movements
         are viable.
         :param source: The source object (likely a Ship) that you wish to move
         :param destination: The destination towards which you wish to move your object.
-        :return: A list of valid (closets) Directions towards your target.
+        :return: A list of valid (closest) Directions towards your target.
         """
         if not isinstance(source, MapCell) or not isinstance(destination, MapCell):
             raise AttributeError("Source and Destination must be of type MapCell")
@@ -437,7 +445,7 @@ class GameMap:
 
     def _update(self):
         """
-        Updates this map object from the input given by teh game engine
+        Updates this map object from the input given by the game engine
         :return: nothing
         """
         # Mark cells as safe for navigation (will re-mark unsafe cells
@@ -448,4 +456,4 @@ class GameMap:
 
         for _ in range(int(input())):
             cell_x, cell_y, cell_energy = map(int, input().split())
-            self[Position(cell_x, cell_y)].halite = cell_energy
+            self[Position(cell_x, cell_y)].haliteAmount = cell_energy
