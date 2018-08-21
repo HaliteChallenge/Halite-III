@@ -137,12 +137,16 @@ elseif(MSVC)
     target_link_libraries(halite libzstd_static)
     target_link_libraries(halite_test libzstd_static Catch2::Catch)
 else()
-    # On Linux, make sure to link using the whole-archive option
-    # See: https://stackoverflow.com/questions/35116327
-    target_link_libraries(halite -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static)
-    target_link_libraries(halite_test -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static Catch2::Catch)
     if(CMAKE_BUILD_TYPE MATCHES Debug)
+        # Link dynamically on Linux since AddressSanitizer doesn't work with static linkage
+        target_link_libraries(halite pthread libzstd_static)
+        target_link_libraries(halite_test pthread libzstd_static Catch2::Catch)
         target_link_libraries(halite_test gcov)
+    else()
+        # On Linux, make sure to link using the whole-archive option
+        # See: https://stackoverflow.com/questions/35116327
+        target_link_libraries(halite -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static)
+        target_link_libraries(halite_test -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static Catch2::Catch)
     endif()
 endif()
 
