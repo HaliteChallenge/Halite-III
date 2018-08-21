@@ -48,6 +48,19 @@ class Ship extends Entity {
         return `${commands.CONSTRUCT} ${this.id}`;
     }
 
+    /**
+     * Return a command to move this ship in a direction without
+     * checking for collisions.
+     * @param {String|Direction} direction the direction to move in
+     * @returns {String} the command
+     */
+    move(direction) {
+        if (direction.toWireFormat) {
+            direction = direction.toWireFormat();
+        }
+        return `${commands.MOVE} ${this.id} ${direction}`;
+    }
+
     stayStill() {
         return `${commands.MOVE} ${this.id} ${commands.STAY_STILL}`;
     }
@@ -106,7 +119,6 @@ class Game {
               .map(tok => parseInt(tok, 10));
         this.myId = myId;
 
-        // TODO: LOGGING
         logging.setup(`bot-${myId}.log`);
 
         this.players = new Map();
@@ -136,6 +148,14 @@ class Game {
         }
 
         await this.gameMap._update(this._getLine);
+
+        // Mark cells with ships as unsafe for navigation
+
+        for (const player of this.players.values()) {
+            for (const ship of player.getShips()) {
+                this.gameMap.get(ship.position).markUnsafe(ship);
+            }
+        }
     }
 
     async endTurn(commands) {
@@ -157,7 +177,7 @@ class Player {
     }
 
     getShips() {
-
+        return this._ships.values();
     }
 
     getDropoff(dropoffId) {
@@ -200,24 +220,46 @@ class MapCell {
         this.structure = null;
     }
 
+    /**
+     * @returns {Boolean} whether this cell has no ships or structures.
+     */
     get isEmpty() {
-
+        return !this.isOccupied && !this.hasStructure;
     }
 
+    /**
+     * @returns {Boolean} whether this cell has any ships.
+     */
     get isOccupied() {
-
+        return this.ship !== null;
     }
 
+    /**
+     * @returns {Boolean} whether this cell has any structures.
+     */
     get hasStructure() {
-
+        return this.structure !== null;
     }
 
+    /**
+     * @returns The type of the structure in this cell, or null.
+     */
     get structureType() {
-
+        if (this.hasStructure) {
+            return this.structure.constructor;
+        }
+        return null;
     }
 
+    /**
+     * Mark this cell as unsafe (occupied) for navigation.
+     *
+     * Use in conjunction with {@link GameMap#getSafeMove}.
+     *
+     * @param {Ship} ship The ship occupying this cell.
+     */
     markUnsafe(ship) {
-
+        this.ship = ship;
     }
 
     equals(other) {
@@ -251,7 +293,7 @@ class GameMap {
         if (args.length === 2) {
             return this._cells[args[1]][args[0]];
         }
-        const [ location ] = args;
+        let [ location ] = args;
         if (location instanceof Position) {
             location = this.normalize(location);
             return this._cells[location.y][location.x];
@@ -394,7 +436,6 @@ class GameMap {
             const [ cellX, cellY, cellEnergy ] = line
                   .split(/\s+/)
                   .map(x => parseInt(x, 10));
-            logging.info(`'${line}' ${cellX} ${cellY} ${cellEnergy}`);
             this.get(cellX, cellY).haliteAmount = cellEnergy;
         }
     }
