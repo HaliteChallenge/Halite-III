@@ -4,6 +4,11 @@
 
 module.exports = {
     /**
+     * The maximum number of map cells to consider in navigation.
+     */
+    MAX_BFS_STEPS: 1024,  // search an entire 32x32 region
+
+    /**
      * The maximum amount of halite a ship can carry.
      */
     MAX_HALITE: 1000,

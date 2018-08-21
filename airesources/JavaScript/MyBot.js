@@ -16,16 +16,28 @@ game.initialize().then(async () => {
         const commandQueue = [];
 
         for (const ship of me.getShips()) {
-            if (ship.haliteAmount > 500) {
-
+            if (ship.haliteAmount > hlt.constants.MAX_HALITE / 2) {
+                const destination = me.shipyard.position;
+                const safeMove = gameMap.getSafeMove(gameMap.get(ship), gameMap.get(destination));
+                if (safeMove) {
+                    gameMap.get(ship.position.directionalOffset(safeMove)).markUnsafe(ship);
+                    commandQueue.push(ship.move(safeMove));
+                }
             }
-            else if (gameMap.get(ship.position).haliteAmount < 100) {
+            else if (gameMap.get(ship.position).haliteAmount < hlt.constants.MAX_HALITE / 10) {
                 const direction = Direction.getAllCardinals()[Math.floor(4 * Math.random())];
-                commandQueue.push(ship.move(direction));
+                const destination = ship.position.directionalOffset(direction);
+                const safeMove = gameMap.getSafeMove(gameMap.get(ship), gameMap.get(destination));
+                if (safeMove) {
+                    gameMap.get(ship.position.directionalOffset(safeMove)).markUnsafe(ship);
+                    commandQueue.push(ship.move(safeMove));
+                }
             }
         }
 
-        if (game.turnNumber === 0) {
+        if (game.turnNumber < 0.75 * hlt.constants.MAX_TURNS &&
+            me.haliteAmount >= hlt.constants.SHIP_COST &&
+            !gameMap.get(me.shipyard).isOccupied) {
             commandQueue.push(me.shipyard.spawn());
         }
 

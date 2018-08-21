@@ -186,6 +186,10 @@ class Game {
             for (const ship of player.getShips()) {
                 this.gameMap.get(ship.position).markUnsafe(ship);
             }
+            this.gameMap.get(player.shipyard.position).structure = player.shipyard;
+            for (const dropoff of player.getDropoffs()) {
+                this.gameMap.get(dropoff.position).structure = dropoff;
+            }
         }
     }
 
@@ -379,8 +383,8 @@ class GameMap {
     normalize(position) {
         let x = position.x % this.width;
         let y = position.y % this.height;
-        while (x < 0) position.x += this.width;
-        while (y < 0) position.y += this.height;
+        while (x < 0) x += this.width;
+        while (y < 0) y += this.height;
         return new Position(x, y);
     }
 
@@ -435,16 +439,120 @@ class GameMap {
         return possibleMoves;
     }
 
-    _bfsTraverseSafely(source, direction) {
+    /**
+     * Use a BFS to traverse the map safely, storing each previous
+     * cell in a visited cell.
+     * @param {MapCell} source
+     * @param {MapCell} destination
+     * @return {Array|null}
+     */
+    _bfsTraverseSafely(source, destination) {
+        const visitedMap = [];
+        for (let i = 0; i < this.height; i++) {
+            const row = [];
+            for (let j = 0; j < this.width; j++) {
+                row.push(null);
+            }
+            visitedMap.push(row);
+        }
 
+        const potentialsQueue = [source];
+        let stepsTaken = 0;
+
+        while (potentialsQueue.length > 0) {
+            const currentSquare = potentialsQueue.shift();
+            if (currentSquare.equals(destination)) {
+                return visitedMap;
+            }
+
+            for (let suitor of currentSquare.position.getSurroundingCardinals()) {
+                suitor = this.normalize(suitor);
+                if (!this.get(suitor).isOccupied && !visitedMap[suitor.y][suitor.x]) {
+                    potentialsQueue.push(this.get(suitor));
+                    visitedMap[suitor.y][suitor.x] = currentSquare;
+                }
+            }
+
+            // logging.info(`${stepsTaken}`);
+            stepsTaken++;
+            if (stepsTaken >= constants.MAX_BFS_STEPS) {
+                break;
+            }
+        }
+
+        return null;
     }
 
+    /**
+     * Given a visited map, find the viable first move near the source
+     * and return it
+     * @param {MapCell} source
+     * @param {MapCell} destination
+     * @param {Array} visisted
+     */
     _findFirstMove(source, destination, visited) {
+        let currentSquare = destination;
+        let previous = null;
 
+        while (currentSquare !== null && !currentSquare.equals(source)) {
+            logging.info(`csq ${currentSquare}`);
+            previous = currentSquare;
+            currentSquare = visited[currentSquare.position.y][currentSquare.position.x];
+        }
+
+        return previous;
     }
 
-    getSafeMove(source, destination) {
+    /**
+     * Returns a singular safe move towards the destination.
+     * @param {Position} source
+     * @param {Position} destination
+     * @return {Direction|null}
+     */
+    _naiveNavigate(source, destination) {
+        for (const direction of this.getUnsafeMoves(source, destination)) {
+            const targetPos = source.directionalOffset(direction);
 
+            if (!this.get(targetPos).isOccupied) {
+                return direction;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the best (read: most optimal) singular safe move
+     * towards the destination.
+     * @param {MapCell} source
+     * @param {MapCell} destination
+     * @returns {Direction|null}
+     */
+    getSafeMove(source, destination) {
+        if (!(source instanceof MapCell && destination instanceof MapCell)) {
+            throw new Error('source and destination must be of type MapCell');
+        }
+
+        if (source.equals(destination)) {
+            return null;
+        }
+
+        const visitedMap = this._bfsTraverseSafely(source, destination);
+        if (!visitedMap) {
+            return this._naiveNavigate(source.position, destination.position);
+        }
+
+        const safeTargetCell = this._findFirstMove(source, destination, visitedMap);
+        if (!safeTargetCell) {
+            return null;
+        }
+
+        const potentialMoves = this.getUnsafeMoves(source.position, safeTargetCell.position);
+        if (!potentialMoves) {
+            return null;
+        }
+
+        return potentialMoves[0];
     }
 
     static async _generate(getLine) {
@@ -501,4 +609,6 @@ module.exports = {
     Player,
     MapCell,
     GameMap,
+    constants,
+    logging,
 };
