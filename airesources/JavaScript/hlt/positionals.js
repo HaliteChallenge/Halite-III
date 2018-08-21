@@ -62,12 +62,12 @@ class Position {
     }
 
     directionalOffset(direction) {
-
+        return this.add(new Position(direction.dx, direction.dy));
     }
 
     getSurroundingCardinals() {
         return Direction.getAllCardinals()
-            .map(currentDirection => self.directionalOffset(currentDirection));
+            .map(currentDirection => this.directionalOffset(currentDirection));
     }
 
     add(other) {

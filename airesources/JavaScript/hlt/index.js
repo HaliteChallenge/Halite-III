@@ -7,6 +7,7 @@ const networking = require('./networking');
 
 const { Direction, Position } = require('./positionals');
 
+/** Base entity class for Ships, Dropoffs, and Shipyards. */
 class Entity {
     constructor(owner, id, position) {
         this.owner = owner;
@@ -19,7 +20,15 @@ class Entity {
     }
 }
 
+/** Represents a dropoff. */
 class Dropoff extends Entity {
+    /**
+     * Create a Dropoff for a specific player from the engine input.
+     * @private
+     * @param playerId the player that owns this dropoff
+     * @param {Function} getLine function to read a line of input
+     * @returns {Dropoff}
+     */
     static async _generate(playerId, getLine) {
         const [ id, xPos, yPos ] = (await getLine())
               .split(/\s+/)
@@ -28,22 +37,27 @@ class Dropoff extends Entity {
     }
 }
 
+/** Represents a shipyard. */
 class Shipyard extends Entity {
+    /** Return a move to spawn a new ship at your shipyard. */
     spawn() {
         return commands.GENERATE;
     }
 }
 
+/** Represents a ship. */
 class Ship extends Entity {
     constructor(owner, id, position, haliteAmount) {
         super(owner, id, position);
         this.haliteAmount = haliteAmount;
     }
 
+    /** Is this ship at max halite capacity? */
     get isFull() {
         return this.haliteAmount >= constants.MAX_HALITE;
     }
 
+    /** Return a move to turn this ship into a dropoff. */
     makeDropoff() {
         return `${commands.CONSTRUCT} ${this.id}`;
     }
@@ -61,10 +75,21 @@ class Ship extends Entity {
         return `${commands.MOVE} ${this.id} ${direction}`;
     }
 
+    /**
+     * Return a command to not move this ship.
+     *
+     * Not strictly needed, since ships do nothing by default.
+     */
     stayStill() {
         return `${commands.MOVE} ${this.id} ${commands.STAY_STILL}`;
     }
 
+    /**
+     * Create a Ship instance for a player using the engine input.
+     * @param playerId the owner
+     * @return The ship ID and ship object.
+     * @private
+     */
     static async _generate(playerId, getLine) {
         const [ shipId, xPos, yPos, halite ] = (await getLine())
               .split(/\s+/)
@@ -110,6 +135,11 @@ class Game {
         this._getLine = getLine;
     }
 
+    /**
+     * Initialize a game object collecting all the start-state
+     * instances for pre-game. Also sets up a log file in
+     * "bot-<bot_id>.log".
+     */
     async initialize() {
         const rawConstants = await this._getLine();
         constants.loadConstants(JSON.parse(rawConstants));
@@ -129,6 +159,7 @@ class Game {
         this.gameMap = await GameMap._generate(this._getLine);
     }
 
+    /** Indicate that your bot is ready to play. */
     async ready(name) {
         await networking.sendCommands([ name ]);
     }
@@ -155,14 +186,24 @@ class Game {
             for (const ship of player.getShips()) {
                 this.gameMap.get(ship.position).markUnsafe(ship);
             }
+            this.gameMap.get(player.shipyard.position).structure = player.shipyard;
+            for (const dropoff of player.getDropoffs()) {
+                this.gameMap.get(dropoff.position).structure = dropoff;
+            }
         }
     }
 
+    /**
+     * Send all commands to the game engine, effectively ending your
+     * turn.
+     * @param {Array} commands
+     */
     async endTurn(commands) {
         await networking.sendCommands(commands);
     }
 }
 
+/** Player object, containing all entities/metadata for the player. */
 class Player {
     constructor(playerId, shipyard, halite=0) {
         this.id = playerId;
@@ -172,22 +213,30 @@ class Player {
         this._dropoffs = new Map();
     }
 
+    /** Get a single ship by its ID. */
     getShip(shipId) {
-
+        return this._ships.get(shipId);
     }
 
+    /** Get an iterator over all of the player's ships. */
     getShips() {
         return this._ships.values();
     }
 
+    /** Get a single dropoff by its ID. */
     getDropoff(dropoffId) {
-
+        return this._dropoffs.get(dropoffId);
     }
 
+    /** Get an iterator over all of the player's dropoffs. */
     getDropoffs() {
-
+        return this._dropoffs.values();
     }
 
+    /**
+     * Create a player object using input from the game engine.
+     * @private
+     */
     static async _generate(getLine) {
         const line = await getLine();
         const [ playerId, shipyardX, shipyardY ] = line
@@ -197,6 +246,11 @@ class Player {
                           new Shipyard(playerId, -1, new Position(shipyardX, shipyardY)));
     }
 
+    /**
+     * Update the player object for the current turn using input from
+     * the game engine.
+     * @private
+     */
     async _update(numShips, numDropoffs, halite, getLine) {
         this.haliteAmount = halite;
         this._ships = new Map();
@@ -212,6 +266,7 @@ class Player {
     }
 }
 
+/** A cell on the game map. */
 class MapCell {
     constructor(position, halite) {
         this.position = position;
@@ -263,11 +318,11 @@ class MapCell {
     }
 
     equals(other) {
-
+        return this.position.equals(other.position);
     }
 
     toString() {
-
+        return `MapCell(${this.position}, halite=${this.haliteAmount})`;
     }
 }
 
@@ -328,8 +383,8 @@ class GameMap {
     normalize(position) {
         let x = position.x % this.width;
         let y = position.y % this.height;
-        while (x < 0) position.x += this.width;
-        while (y < 0) position.y += this.height;
+        while (x < 0) x += this.width;
+        while (y < 0) y += this.height;
         return new Position(x, y);
     }
 
@@ -384,16 +439,120 @@ class GameMap {
         return possibleMoves;
     }
 
-    _bfsTraverseSafely(source, direction) {
+    /**
+     * Use a BFS to traverse the map safely, storing each previous
+     * cell in a visited cell.
+     * @param {MapCell} source
+     * @param {MapCell} destination
+     * @return {Array|null}
+     */
+    _bfsTraverseSafely(source, destination) {
+        const visitedMap = [];
+        for (let i = 0; i < this.height; i++) {
+            const row = [];
+            for (let j = 0; j < this.width; j++) {
+                row.push(null);
+            }
+            visitedMap.push(row);
+        }
 
+        const potentialsQueue = [source];
+        let stepsTaken = 0;
+
+        while (potentialsQueue.length > 0) {
+            const currentSquare = potentialsQueue.shift();
+            if (currentSquare.equals(destination)) {
+                return visitedMap;
+            }
+
+            for (let suitor of currentSquare.position.getSurroundingCardinals()) {
+                suitor = this.normalize(suitor);
+                if (!this.get(suitor).isOccupied && !visitedMap[suitor.y][suitor.x]) {
+                    potentialsQueue.push(this.get(suitor));
+                    visitedMap[suitor.y][suitor.x] = currentSquare;
+                }
+            }
+
+            // logging.info(`${stepsTaken}`);
+            stepsTaken++;
+            if (stepsTaken >= constants.MAX_BFS_STEPS) {
+                break;
+            }
+        }
+
+        return null;
     }
 
+    /**
+     * Given a visited map, find the viable first move near the source
+     * and return it
+     * @param {MapCell} source
+     * @param {MapCell} destination
+     * @param {Array} visisted
+     */
     _findFirstMove(source, destination, visited) {
+        let currentSquare = destination;
+        let previous = null;
 
+        while (currentSquare !== null && !currentSquare.equals(source)) {
+            logging.info(`csq ${currentSquare}`);
+            previous = currentSquare;
+            currentSquare = visited[currentSquare.position.y][currentSquare.position.x];
+        }
+
+        return previous;
     }
 
-    getSafeMove(source, destination) {
+    /**
+     * Returns a singular safe move towards the destination.
+     * @param {Position} source
+     * @param {Position} destination
+     * @return {Direction|null}
+     */
+    _naiveNavigate(source, destination) {
+        for (const direction of this.getUnsafeMoves(source, destination)) {
+            const targetPos = source.directionalOffset(direction);
 
+            if (!this.get(targetPos).isOccupied) {
+                return direction;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the best (read: most optimal) singular safe move
+     * towards the destination.
+     * @param {MapCell} source
+     * @param {MapCell} destination
+     * @returns {Direction|null}
+     */
+    getSafeMove(source, destination) {
+        if (!(source instanceof MapCell && destination instanceof MapCell)) {
+            throw new Error('source and destination must be of type MapCell');
+        }
+
+        if (source.equals(destination)) {
+            return null;
+        }
+
+        const visitedMap = this._bfsTraverseSafely(source, destination);
+        if (!visitedMap) {
+            return this._naiveNavigate(source.position, destination.position);
+        }
+
+        const safeTargetCell = this._findFirstMove(source, destination, visitedMap);
+        if (!safeTargetCell) {
+            return null;
+        }
+
+        const potentialMoves = this.getUnsafeMoves(source.position, safeTargetCell.position);
+        if (!potentialMoves) {
+            return null;
+        }
+
+        return potentialMoves[0];
     }
 
     static async _generate(getLine) {
@@ -450,4 +609,6 @@ module.exports = {
     Player,
     MapCell,
     GameMap,
+    constants,
+    logging,
 };
