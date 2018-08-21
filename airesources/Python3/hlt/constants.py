@@ -2,6 +2,9 @@
 Global constants relating to the game engine.
 """
 
+"""Maximum number of steps to consider in pathfinding."""
+MAX_BFS_STEPS = 1024  # = can search a 32x32 area completely
+
 """The maximum amount of halite a ship can carry."""
 MAX_HALITE = 1000
 """The cost to build a single ship."""

@@ -154,6 +154,10 @@ class Game:
             for ship in player.get_ships():
                 self.game_map[ship.position].mark_unsafe(ship)
 
+            self.game_map[player.shipyard.position].structure = player.shipyard
+            for dropoff in player.get_dropoffs():
+                self.game_map[dropoff.position].structure = dropoff
+
     @staticmethod
     def end_turn(commands):
         """
@@ -345,15 +349,13 @@ class GameMap:
         Return the Direction(s) to move closer to the target point, or empty if the points are the same.
         This move mechanic does not account for collisions. The multiple directions are if both directional movements
         are viable.
-        :param source: The source object (likely a Ship) that you wish to move
+        :param source: The starting position
         :param destination: The destination towards which you wish to move your object.
         :return: A list of valid (closest) Directions towards your target.
         """
-        if not isinstance(source, MapCell) or not isinstance(destination, MapCell):
-            raise AttributeError("Source and Destination must be of type MapCell")
         possible_moves = []
-        distance = abs(destination.position - source.position)
-        y_cardinality, x_cardinality = self._get_target_direction(source.position, destination.position)
+        distance = abs(destination - source)
+        y_cardinality, x_cardinality = self._get_target_direction(source, destination)
 
         if distance.x != 0:
             possible_moves.append(x_cardinality if distance.x < (self.width / 2)
@@ -373,15 +375,21 @@ class GameMap:
         visited_map = [[None for _ in range(self.width)] for _ in range(self.height)]
         potentials_queue = queue.Queue()
         potentials_queue.put(source)
+        steps_taken = 0
         while not potentials_queue.empty():
             current_square = potentials_queue.get()
             if current_square == destination:
                 return visited_map
             for suitor in current_square.position.get_surrounding_cardinals():
                 suitor = self.normalize(suitor)
-                if not self[suitor].is_occupied() and not visited_map[suitor.y][suitor.x]:
+                if not self[suitor].is_occupied and not visited_map[suitor.y][suitor.x]:
                     potentials_queue.put(self[suitor])
                     visited_map[suitor.y][suitor.x] = current_square
+
+            steps_taken += 1
+
+            if steps_taken >= constants.MAX_BFS_STEPS:
+                break
 
         return None
 
@@ -401,12 +409,31 @@ class GameMap:
             current_square = visited[current_square.position.y][current_square.position.x]
         return previous
 
+    def _naive_navigate(self, source, destination):
+        """
+        Returns a singular safe move towards the destination.
+
+        :param source: Starting position
+        :param destination: Ending position
+        :return: A direction, or None if no such move exists.
+        """
+        for direction in self.get_unsafe_moves(source, destination):
+            target_pos = source.directional_offset(direction)
+            if not self[target_pos].is_occupied:
+                return direction
+
+        return None
+
     def get_safe_move(self, source, destination):
         """
-        Returns the best (read: most optimal) singular safe move towards the
-        :param source: The source object (likely a Ship) that you wish to move
-        :param destination: The destination towards which you wish to move your object.
-        :return: A single valid direction towards the destination accounting for collisions.
+        Returns the best (read: most optimal) singular safe move
+        towards the destination.
+
+        :param source: The source MapCell that you wish to move
+        :param destination: The destination MapCell towards which you
+        wish to move your object.
+        :return: A single valid direction towards the destination
+        accounting for collisions, or None if no such move exists.
         """
         if not isinstance(source, MapCell) or not isinstance(destination, MapCell):
             raise AttributeError("Source and Destination must be of type MapCell")
@@ -416,13 +443,13 @@ class GameMap:
 
         visited_map = self._bfs_traverse_safely(source, destination)
         if not visited_map:
-            return None
+            return self._naive_navigate(source.position, destination.position)
 
         safe_target_cell = self._find_first_move(source, destination, visited_map)
         if not safe_target_cell:
             return None
 
-        potential_moves = self.get_unsafe_moves(source, safe_target_cell)
+        potential_moves = self.get_unsafe_moves(source.position, safe_target_cell.position)
         if not potential_moves:
             return None
 
@@ -456,4 +483,4 @@ class GameMap:
 
         for _ in range(int(input())):
             cell_x, cell_y, cell_energy = map(int, input().split())
-            self[Position(cell_x, cell_y)].haliteAmount = cell_energy
+            self[Position(cell_x, cell_y)].halite_amount = cell_energy
