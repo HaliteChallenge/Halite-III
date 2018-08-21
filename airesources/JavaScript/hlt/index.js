@@ -7,6 +7,7 @@ const networking = require('./networking');
 
 const { Direction, Position } = require('./positionals');
 
+/** Base entity class for Ships, Dropoffs, and Shipyards. */
 class Entity {
     constructor(owner, id, position) {
         this.owner = owner;
@@ -19,7 +20,15 @@ class Entity {
     }
 }
 
+/** Represents a dropoff. */
 class Dropoff extends Entity {
+    /**
+     * Create a Dropoff for a specific player from the engine input.
+     * @private
+     * @param playerId the player that owns this dropoff
+     * @param {Function} getLine function to read a line of input
+     * @returns {Dropoff}
+     */
     static async _generate(playerId, getLine) {
         const [ id, xPos, yPos ] = (await getLine())
               .split(/\s+/)
@@ -28,22 +37,27 @@ class Dropoff extends Entity {
     }
 }
 
+/** Represents a shipyard. */
 class Shipyard extends Entity {
+    /** Return a move to spawn a new ship at your shipyard. */
     spawn() {
         return commands.GENERATE;
     }
 }
 
+/** Represents a ship. */
 class Ship extends Entity {
     constructor(owner, id, position, haliteAmount) {
         super(owner, id, position);
         this.haliteAmount = haliteAmount;
     }
 
+    /** Is this ship at max halite capacity? */
     get isFull() {
         return this.haliteAmount >= constants.MAX_HALITE;
     }
 
+    /** Return a move to turn this ship into a dropoff. */
     makeDropoff() {
         return `${commands.CONSTRUCT} ${this.id}`;
     }
@@ -61,10 +75,21 @@ class Ship extends Entity {
         return `${commands.MOVE} ${this.id} ${direction}`;
     }
 
+    /**
+     * Return a command to not move this ship.
+     *
+     * Not strictly needed, since ships do nothing by default.
+     */
     stayStill() {
         return `${commands.MOVE} ${this.id} ${commands.STAY_STILL}`;
     }
 
+    /**
+     * Create a Ship instance for a player using the engine input.
+     * @param playerId the owner
+     * @return The ship ID and ship object.
+     * @private
+     */
     static async _generate(playerId, getLine) {
         const [ shipId, xPos, yPos, halite ] = (await getLine())
               .split(/\s+/)
@@ -110,6 +135,11 @@ class Game {
         this._getLine = getLine;
     }
 
+    /**
+     * Initialize a game object collecting all the start-state
+     * instances for pre-game. Also sets up a log file in
+     * "bot-<bot_id>.log".
+     */
     async initialize() {
         const rawConstants = await this._getLine();
         constants.loadConstants(JSON.parse(rawConstants));
@@ -129,6 +159,7 @@ class Game {
         this.gameMap = await GameMap._generate(this._getLine);
     }
 
+    /** Indicate that your bot is ready to play. */
     async ready(name) {
         await networking.sendCommands([ name ]);
     }
@@ -158,11 +189,17 @@ class Game {
         }
     }
 
+    /**
+     * Send all commands to the game engine, effectively ending your
+     * turn.
+     * @param {Array} commands
+     */
     async endTurn(commands) {
         await networking.sendCommands(commands);
     }
 }
 
+/** Player object, containing all entities/metadata for the player. */
 class Player {
     constructor(playerId, shipyard, halite=0) {
         this.id = playerId;
@@ -172,22 +209,30 @@ class Player {
         this._dropoffs = new Map();
     }
 
+    /** Get a single ship by its ID. */
     getShip(shipId) {
-
+        return this._ships.get(shipId);
     }
 
+    /** Get an iterator over all of the player's ships. */
     getShips() {
         return this._ships.values();
     }
 
+    /** Get a single dropoff by its ID. */
     getDropoff(dropoffId) {
-
+        return this._dropoffs.get(dropoffId);
     }
 
+    /** Get an iterator over all of the player's dropoffs. */
     getDropoffs() {
-
+        return this._dropoffs.values();
     }
 
+    /**
+     * Create a player object using input from the game engine.
+     * @private
+     */
     static async _generate(getLine) {
         const line = await getLine();
         const [ playerId, shipyardX, shipyardY ] = line
@@ -197,6 +242,11 @@ class Player {
                           new Shipyard(playerId, -1, new Position(shipyardX, shipyardY)));
     }
 
+    /**
+     * Update the player object for the current turn using input from
+     * the game engine.
+     * @private
+     */
     async _update(numShips, numDropoffs, halite, getLine) {
         this.haliteAmount = halite;
         this._ships = new Map();
@@ -212,6 +262,7 @@ class Player {
     }
 }
 
+/** A cell on the game map. */
 class MapCell {
     constructor(position, halite) {
         this.position = position;
@@ -263,11 +314,11 @@ class MapCell {
     }
 
     equals(other) {
-
+        return this.position.equals(other.position);
     }
 
     toString() {
-
+        return `MapCell(${this.position}, halite=${this.haliteAmount})`;
     }
 }
 
