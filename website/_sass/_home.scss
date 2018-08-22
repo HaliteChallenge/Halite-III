@@ -11,9 +11,6 @@
 
   .section-overview{
     padding: 50px 0;
-    display: flex;
-    align-items: center;
-    
     p{
       letter-spacing: 0.25px;
     }
@@ -24,11 +21,31 @@
     img{
       max-width: 100%;
     }
+
+    @media (max-width: $screen-sm-max){
+      text-align: center;
+      p{
+        font-size: 18px;
+      }
+      h1{
+        font-size: 28px;
+      }
+      img{
+        margin-top: 30px;
+      }
+    }
+    @media (min-width: $screen-md-min){
+      display: flex;
+      align-items: center;
+    }
   }
 
   .feed-block{
     background-color: #f1f9ff;
     border-radius: 4px;
+    @media (max-width: $screen-sm-max){
+      margin-top: 30px;
+    }
     .feed-header{
       background-image: url("/assets/images/bg-pixel.png");
       background-position: top center;
@@ -54,6 +71,9 @@
         text-transform: uppercase;
         color: #033C89;
         line-height: 28px;
+        margin-left: 10px;
+        margin-top: 0;
+        margin-bottom: 0;
       }
     }
 
@@ -66,6 +86,9 @@
   .parnter-block{
     h3{
       @include heading(24px);
+      @media screen and (max-width: $screen-sm-max) {
+        text-align: center;
+      }
     }
     .partner-main{
       padding: 30px 15px;
