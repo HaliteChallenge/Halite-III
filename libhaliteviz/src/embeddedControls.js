@@ -60,6 +60,7 @@ const css = `
     height: 1em;
     transition: opacity 0.3s ease-in;
     display: flex;
+    flex-direction: column;
     cursor: help;
 }
 
@@ -207,6 +208,8 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
             selection = null;
             selected.classList.remove("show");
         });
+
+        let bestEnergySoFar = 500;
         this.onUpdate.add(() => {
             progress.innerText = `${this.frame}`;
 
@@ -236,29 +239,15 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
             }
 
             const energies = this.currentFrame.energy;
-            const widths = {};
-            let total = 0;
-            let usedWidth = 0;
-            for (const [ id, energy ] of Object.entries(energies)) {
-                total += energy;
-                if (energy === 0) {
-                    widths[id] = 10;
-                    usedWidth += 10;
-                }
+            for (const energy of Object.values(energies)) {
+                bestEnergySoFar = Math.max(bestEnergySoFar, energy);
             }
             for (const [ id, energy ] of Object.entries(energies)) {
-                if (typeof widths[id] === "undefined") {
-                    widths[id] = (energy / total) * (100 - usedWidth);
-                }
-                else if (total === 0) {
-                    widths[id] = 100 / Object.keys(energies).length;
-                }
-            }
-            for (const [ id, width ] of Object.entries(widths)) {
+                const width = 100 * Math.max(0.10, energy / bestEnergySoFar);
                 const bar = clashbar
                       .querySelector(`div:nth-child(${parseInt(id, 10) + 1})`);
                 bar.style.width = `${width}%`;
-                bar.innerText = `${energies[id]} energy`;
+                bar.innerText = `${energy} energy`;
             }
 
             const tooltip = [];
