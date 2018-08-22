@@ -5,7 +5,7 @@ version: "{build}"
 skip_non_tags: true
 
 # Build worker image (VM template)
-image: Windows Server 2012 R2
+image: Visual Studio 2017
 
 # clone directory
 clone_folder: C:\Halite
@@ -25,5 +25,5 @@ build_script:
   - .\make.bat
 
 artifacts:
-  - path: environment\halite.exe
+  - path: environment\build\Release\halite.exe
     name: halite.exe
