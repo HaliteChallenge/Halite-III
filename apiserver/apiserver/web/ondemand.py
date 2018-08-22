@@ -31,6 +31,7 @@ def check_ondemand(intended_user, *, user_id):
         for field_name in ("environment_parameters",
                            "compile_error",
                            "error_log",
+                           "bot_log",
                            "game_output",
                            "opponents",
                            "objective",
@@ -176,6 +177,40 @@ def get_ondemand_log(intended_user, *, user_id):
 
     bucket = model.get_ondemand_replay_bucket()
     blob = gcloud_storage.Blob("ondemand_log_{}".format(user_id), bucket, chunk_size=262144)
+    buffer = io.BytesIO()
+
+    try:
+        blob.download_to_file(buffer)
+    except gcloud_exceptions.NotFound:
+        raise util.APIError(404, message="Error log not found.")
+
+    buffer.seek(0)
+    response = flask.make_response(flask.send_file(
+        buffer,
+        mimetype="text/plain",
+        as_attachment=True,
+        attachment_filename="{}.log".format(user_id)))
+
+    response.headers["Content-Length"] = str(buffer.getbuffer().nbytes)
+    # Don't cache this
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    response.headers["Cache-Control"] = "public, max-age=0"
+
+    return response
+
+
+@web_api.route("/ondemand/<int:intended_user>/bot_log", methods=["GET"])
+@util.cross_origin(methods=["GET"])
+@web_util.requires_login(accept_key=False)
+def get_ondemand_bot_log(intended_user, *, user_id):
+    if user_id != intended_user:
+        raise web_util.user_mismatch_error(
+            message="Cannot get bot log for another user.")
+
+    bucket = model.get_ondemand_replay_bucket()
+    blob = gcloud_storage.Blob("ondemand_bot_log_{}".format(user_id), bucket, chunk_size=262144)
     buffer = io.BytesIO()
 
     try:

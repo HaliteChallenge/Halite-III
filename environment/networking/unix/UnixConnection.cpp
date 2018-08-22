@@ -165,7 +165,8 @@ int check_pipe(int pipe, std::chrono::milliseconds timeout) {
 std::string UnixConnection::get_string(std::chrono::milliseconds timeout) {
     // Try the queue first
     if (!message_queue.empty()) {
-        const auto &message = message_queue.front();
+        // COPY not reference since pop_front invalidates references
+        const std::string message = message_queue.front();
         message_queue.pop_front();
         return message;
     }

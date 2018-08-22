@@ -1,4 +1,9 @@
-def confirm(prompt):
+from . import output
+
+def confirm(prompt, json_confirm=False):
+    if output.mode() == output.JSON:
+        return json_confirm
+
     while True:
         print(prompt + " [yn]:", end=' ')
         result = input().lower().strip()

@@ -5,6 +5,8 @@ Generate starter kit downloads and a download page.
 
 import argparse
 import glob
+import hashlib
+import itertools
 import json
 import os
 import zipfile
@@ -22,14 +24,17 @@ PLATFORM_AGNOSTIC = "None"
 
 # Names of generated downloads
 # Standard language + platform
-OUTPUT_FILE_FORMAT = "assets/downloads/Halite2_{language}_{platform}.zip"
+OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_{language}_{platform}.zip"
 
 # Platform only
-ENVIRONMENT_OUTPUT_FILE_FORMAT = "assets/downloads/Halite2_{platform}.zip"
+ENVIRONMENT_OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_{platform}.zip"
 
 # All languages + platform
-ALL_LANGUAGES_OUTPUT_FILE_FORMAT = "assets/downloads/Halite2_all_{platform}.zip"
-SOURCE_FILE = "assets/downloads/Halite2Source.zip"
+ALL_LANGUAGES_OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_all_{platform}.zip"
+SOURCE_FILE = "assets/downloads/Halite3Source.zip"
+BENCHMARK_FILE = "assets/downloads/Halite3Benchmark.zip"
+BENCHMARK_MANIFEST = "assets/downloads/Halite3Benchmark.json"
+TOOLS_FILE = "assets/downloads/Halite3Tools.zip"
 
 versions =  {"Python3" : "1.0", "C++" : "1.0", "Java" : "1.0", "CSharp" : "1.0" ,"JavaScript": "1.0",
 "ML-StarterBot-Python":"1.0", "Rust" : "1.0", "Scala" : "1.0", "Go" : "1.0", "Ruby" : "1.0-beta" , "Kotlin" : "0.9.0-beta", "Clojure" : "0.9.0-beta", "Julia" : "0.9.0-beta", "OCaml" : "0.9.0-beta", "Haskell" : "0.9.0-beta", "Elixir" : "0.9.0-beta", "PHP": "0.9.0-beta","Dart": "0.9.0-beta", "Swift": "0.9.0-beta",  "Cython3": "0.9.0-beta","FSharp": "0.9.0-beta",}
@@ -106,6 +111,52 @@ def make_source_download():
             archive.write(source_path, target_path)
 
 
+def make_benchmark_download():
+    included_files = []
+
+    manifest = []
+    for directory, _, file_list in itertools.chain(os.walk("../airesources/benchmark"),
+                                                   os.walk("../airesources/Python3")):
+        for filename in file_list:
+            _, ext = os.path.splitext(filename)
+            if ext.lower() in {".py"}:
+                source_path = os.path.join(directory, filename)
+                target_path = os.path.normpath(
+                    os.path.join("benchmark/", filename))
+
+                included_files.append((source_path, target_path))
+                digest = hashlib.sha256()
+                with open(source_path, "rb") as source_file:
+                    digest.update(source_file.read())
+                manifest.append((target_path, digest.hexdigest()))
+
+    with zipfile.ZipFile(BENCHMARK_FILE, "w", zipfile.ZIP_DEFLATED) as archive:
+        for source_path, target_path in included_files:
+            archive.write(source_path, target_path)
+
+    with open(BENCHMARK_MANIFEST, "w") as manifest_file:
+        json.dump({
+            "digest_type": "SHA-256",
+            "manifest": manifest,
+        }, manifest_file)
+
+
+def make_tools_download():
+    included_files = []
+    for directory, _, file_list in os.walk("../tools/hlt_client/hlt_client"):
+        for filename in file_list:
+            _, ext = os.path.splitext(filename)
+            if ext.lower() in {".py"}:
+                source_path = os.path.join(directory, filename)
+                target_path = os.path.normpath(
+                    os.path.join("hlt_client/", filename))
+                included_files.append((source_path, target_path))
+
+    with zipfile.ZipFile(TOOLS_FILE, "w", zipfile.ZIP_DEFLATED) as archive:
+        for source_path, target_path in included_files:
+            archive.write(source_path, target_path)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("version", help=VERSION_HELP)
@@ -124,6 +175,8 @@ def main():
             pass
 
     make_source_download()
+    make_benchmark_download()
+    make_tools_download()
 
     # Keep paths of all source files around so we can make a single combined
     # download at the end
@@ -134,7 +187,7 @@ def main():
         if not os.path.isdir(full_path):
             continue
 
-        if directory == "starterkitdocs":
+        if directory in ("starterkitdocs", "benchmark"):
             continue
 
         language = directory
@@ -176,6 +229,16 @@ def main():
         "platforms": [environment[0] for environment in environments],
         "languages": [],
         "environments": [],
+        "tools": [
+            {
+                "name": "Benchmark Bots",
+                "files": [BENCHMARK_FILE],
+            },
+            {
+                "name": "CLI Client",
+                "files": [TOOLS_FILE],
+            },
+        ],
         "source": SOURCE_FILE,
         "version": args.version,
     }

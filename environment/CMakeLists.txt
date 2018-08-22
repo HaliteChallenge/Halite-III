@@ -13,10 +13,10 @@ endif(NOT CMAKE_BUILD_TYPE)
 if (MSVC)
     # define NOMINMAX so we can use std::min/std::max normally
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /EHsc /DNOMINMAX")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHsc /DNOMINMAX")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHsc /DNOMINMAX /Z7")
 else()
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -pedantic -Wextra -Wno-unused-variable")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pedantic -Wextra -Wno-unused-variable -g -O0 -fno-inline")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pedantic -Wextra -Wno-unused-variable -g -O0 -fno-inline -fsanitize=undefined,address")
 endif()
 
 # versions of cmake before 3.4 always link with -rdynamic on linux, which breaks static linkage with clang
@@ -137,12 +137,16 @@ elseif(MSVC)
     target_link_libraries(halite libzstd_static)
     target_link_libraries(halite_test libzstd_static Catch2::Catch)
 else()
-    # On Linux, make sure to link using the whole-archive option
-    # See: https://stackoverflow.com/questions/35116327
-    target_link_libraries(halite -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static)
-    target_link_libraries(halite_test -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static Catch2::Catch)
     if(CMAKE_BUILD_TYPE MATCHES Debug)
+        # Link dynamically on Linux since AddressSanitizer doesn't work with static linkage
+        target_link_libraries(halite pthread libzstd_static)
+        target_link_libraries(halite_test pthread libzstd_static Catch2::Catch)
         target_link_libraries(halite_test gcov)
+    else()
+        # On Linux, make sure to link using the whole-archive option
+        # See: https://stackoverflow.com/questions/35116327
+        target_link_libraries(halite -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static)
+        target_link_libraries(halite_test -Wl,--whole-archive pthread -Wl,--no-whole-archive -static libzstd_static Catch2::Catch)
     endif()
 endif()
 
