@@ -110,6 +110,20 @@ const css = `
 }
 `).join('\n');
 
+const speedList = [
+    ['0.5x', 0.5],
+    ['1x', 1],
+    ['2x', 2],
+    ['3x', 3],
+    ['4x', 4],
+    ['5x', 5],
+    ['6x', 6],
+    ['7x', 7],
+    ['8x', 8],
+    ['9x', 9],
+    ['10x', 10],
+];
+
 function button(label, klass) {
     const el = document.createElement("button");
     el.innerText = label;
@@ -156,8 +170,7 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         const pf = button("<", "embedded-toolbar-prev-frame");
         const play = button("Play", "embedded-toolbar-play");
         const nf = button(">", "embedded-toolbar-next-frame");
-        const slower = button("Slower", "embedded-toolbar-slower");
-        const faster = button("Faster", "embedded-toolbar-faster");
+        const speed = button("", "embedded-toolbar-speed");
         const progress = document.createElement("span");
         const slider = document.createElement("input");
         const final = document.createElement("span");
@@ -165,11 +178,10 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         toolbar.appendChild(pf);
         toolbar.appendChild(play);
         toolbar.appendChild(nf);
-        toolbar.appendChild(slower);
+        toolbar.appendChild(speed);
         toolbar.appendChild(progress);
         toolbar.appendChild(slider);
         toolbar.appendChild(final);
-        toolbar.appendChild(faster);
 
         slider.setAttribute("type", "range");
         slider.setAttribute("min", 0);
@@ -266,11 +278,16 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         nf.addEventListener("click", () => {
             this.scrub(Math.min(this.replay.full_frames.length - 1, this.frame + 1), 0);
         });
-        slower.addEventListener("click", () => {
-            this.playSpeed = Math.max(1, this.playSpeed - 1);
-        });
-        faster.addEventListener("click", () => {
-            this.playSpeed = Math.min(30, this.playSpeed + 1);
+
+        let speedIndex = 3;
+        const updateSpeed = () => {
+            speed.innerText = speedList[speedIndex][0];
+            this.playSpeed = speedList[speedIndex][1];
+        };
+        updateSpeed();
+        speed.addEventListener("click", () => {
+            speedIndex = (speedIndex + 1) % speedList.length;
+            updateSpeed();
         });
         slider.addEventListener("change", () => {
             if (this.isPlaying()) this.pause();
