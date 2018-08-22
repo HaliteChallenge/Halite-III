@@ -17,7 +17,6 @@
                     ▼Past Replays & Analytics▼
                 </a>
             </div>
-            <RemoteBotHistory :userId="userId" />
             <LocalBotGym :localBot="localBot" />
         </template>
         <component v-if="modal" :is="modal" :params="modalProps" :event="modalEvent">
@@ -33,7 +32,6 @@
 
     import Login from './Login.vue';
     import RemoteBot from './RemoteBot.vue';
-    import RemoteBotHistory from './RemoteBotHistory.vue';
     import LocalBot from './LocalBot.vue';
     import LocalBotGym from './LocalBotGym.vue';
 
@@ -41,7 +39,6 @@
         components: {
             Login,
             RemoteBot,
-            RemoteBotHistory,
             LocalBot,
             LocalBotGym,
         },
