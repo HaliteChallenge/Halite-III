@@ -8,6 +8,8 @@ constexpr auto PIPE_PAIR = 2;
 constexpr auto PIPE_HEAD = 0;
 /** The index of the tail of the pipe. */
 constexpr auto PIPE_TAIL = 1;
+/** The size of the pipe buffer. */
+constexpr auto PIPE_BUFFER_SIZE = 64 * 1024;
 
 namespace net {
 
@@ -29,7 +31,7 @@ WinConnection::WinConnection(const std::string &command, NetworkingConfig config
     saAttr.lpSecurityDescriptor = nullptr;
 
     // Child stdout pipe
-    if (!CreatePipe(&read[PIPE_HEAD], &read[PIPE_TAIL], &saAttr, 0)) {
+    if (!CreatePipe(&read[PIPE_HEAD], &read[PIPE_TAIL], &saAttr, PIPE_BUFFER_SIZE)) {
         throw NetworkingError("Could not create pipe");
     }
     if (!SetHandleInformation(read[PIPE_HEAD], HANDLE_FLAG_INHERIT, 0)) {
@@ -39,7 +41,7 @@ WinConnection::WinConnection(const std::string &command, NetworkingConfig config
     }
 
     // Child stdin pipe
-    if (!CreatePipe(&write[PIPE_HEAD], &write[PIPE_TAIL], &saAttr, 0)) {
+    if (!CreatePipe(&write[PIPE_HEAD], &write[PIPE_TAIL], &saAttr, PIPE_BUFFER_SIZE)) {
         CloseHandle(read[PIPE_HEAD]);
         CloseHandle(read[PIPE_TAIL]);
         throw NetworkingError("Could not create pipe");
@@ -83,9 +85,12 @@ WinConnection::WinConnection(const std::string &command, NetworkingConfig config
         CloseHandle(write[PIPE_TAIL]);
         throw NetworkingError("Could not start process");
     }
+    CloseHandle(piProcInfo.hProcess);
     CloseHandle(piProcInfo.hThread);
     read_pipe = read[PIPE_HEAD];
     write_pipe = write[PIPE_TAIL];
+    CloseHandle(read[PIPE_TAIL]);
+    CloseHandle(write[PIPE_HEAD]);
     process = piProcInfo.hProcess;
 }
 

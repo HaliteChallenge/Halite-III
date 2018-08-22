@@ -247,6 +247,13 @@ export function get_ondemand_error_log(userId) {
   }).then(r => r.text())
 }
 
+export function get_ondemand_bot_log(userId) {
+  return window.fetch(`${API_SERVER_URL}/ondemand/${userId}/bot_log?_=${new Date().getTime()}`, {
+    method: 'GET',
+    credentials: 'include'
+  }).then(r => r.text())
+}
+
 export function get_bot_zip(userId, botId) {
   return window.fetch(`${API_SERVER_URL}/user/${userId}/bot/${botId}`, {
     method: 'GET',

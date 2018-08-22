@@ -645,6 +645,12 @@ export default {
           this.add_console_text(log)
         }
 
+        if (status.bot_log) {
+          this.add_console_text("Fetching bot log...\n")
+          const log = await api.get_ondemand_bot_log(this.user_id)
+          this.add_console_text(log)
+        }
+
         return
       }
       else if (status.status === "failed") {

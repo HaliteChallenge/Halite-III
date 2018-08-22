@@ -57,16 +57,18 @@ def ondemand_result():
 
     game_output = json.loads(flask.request.values["game_output"])
     replay_name = os.path.basename(game_output["replay"])
+    users = json.loads(flask.request.values["users"])
     task_user_id = int(flask.request.values["task_user_id"])
     if replay_name not in flask.request.files:
         raise util.APIError(
             400, message="Replay file not found in uploaded files.")
 
-    print(game_output)
-
     files = {
         "replay": flask.request.files[replay_name],
     }
+
+    if len(users) >= 1 and 'log_filename' in users[0]:
+        files['bot_log'] = flask.request.files[users[0]['log_filename']]
 
     if "0" in game_output["error_logs"]:
         filepath = game_output["error_logs"]["0"]

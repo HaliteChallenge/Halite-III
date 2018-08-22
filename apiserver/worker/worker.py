@@ -31,6 +31,10 @@ app = Flask(__name__)
 # Log it real good
 LOG_FILENAME = "worker-log-{}.data".format(uuid.uuid4())
 
+# Constraints on # and size of log files read from bots
+MAX_LOG_FILES = 1
+MAX_LOG_FILE_SIZE = 50 * 1024  # 50 KiB
+
 # Used to ensure system is running (watchdog timer)
 TIME = datetime.datetime.now()
 TIME_THRESHOLD = 60 * 10 # 10 mins in s
@@ -229,7 +233,7 @@ def setupParticipant(user_index, user, temp_dir):
     )
     bot_name = "{} v{}".format(user["username"], user["version_number"])
 
-    return bot_command, bot_name
+    return bot_command, bot_name, bot_dir
 
 
 def runGame(environment_parameters, users, offset=0):
@@ -254,10 +258,11 @@ def runGame(environment_parameters, users, offset=0):
         os.chmod(temp_dir, 0o755)
 
         for user_index, user in enumerate(users):
-            bot_command, bot_name = setupParticipant(user_index + offset, user, temp_dir)
+            bot_command, bot_name, bot_dir = setupParticipant(user_index + offset, user, temp_dir)
             command.append(bot_command)
             command.append("-o")
             command.append(bot_name)
+            user['bot_dir'] = bot_dir
 
         logging.debug("Run game command %s\n" % command)
         print(command)
@@ -268,9 +273,29 @@ def runGame(environment_parameters, users, offset=0):
         logging.debug("\n-----Here is game output: -----")
         logging.debug("\n".join(lines))
         logging.debug("--------------------------------\n")
+
         # tempdir will automatically be cleaned up, but we need to do things
         # manually because the bot might have made files it owns
         for user_index, user in enumerate(users):
+            # keep any bot logs
+            user['bot_logs'] = ''
+            log_files_read = 0
+            for filename in os.listdir(user['bot_dir']):
+                try:
+                    _, ext = os.path.splitext(filename)
+                    if ext.lower() == '.log':
+                        log_files_read += 1
+                        user['bot_logs'] += '===== Log file {}\n'.format(filename)
+                        with open(os.path.join(user['bot_dir'], filename)) as logfile:
+                            user['bot_logs'] += logfile.read(MAX_LOG_FILE_SIZE)
+                        user['bot_logs'] += '\n===== End of log {}\n'.format(filename)
+                except Exception:
+                    # Ignore log and move on if we fail
+                    pass
+
+                if log_files_read >= MAX_LOG_FILES:
+                    break
+
             bot_user = "bot_{}".format(user_index + offset)
             rm_as_user(bot_user, temp_dir)
 
