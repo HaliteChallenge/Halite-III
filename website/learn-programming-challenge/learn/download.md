@@ -1,10 +1,13 @@
 ---
 layout: doc_page
-title: Downloads and Starter Kits
+title: Download
 description: Halite engine and language specific starter kit downloads
 image: assets/images/opengraph.png
 content: website
+sort_key: 3
 ---
+
+<div class="doc-section" markdown="1">
 
 Download a language specific starter kit as a quick and easy way to get started playing in the Halite AI competition. Can't find your preferred language? We love contributions! Check out our [guide](create-new-starter-kit) on how to build a new starter bot.
 
@@ -85,4 +88,6 @@ System requirements are detailed [here](system-requirements).
             {% endfor %}
         </tbody>
     </table>
+</div>
+
 </div>

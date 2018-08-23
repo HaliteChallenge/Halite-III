@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="10px" height="5px" viewBox="0 0 10 5" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Home" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Learn---Game-Overview-Res@2x" transform="translate(-329.000000, -114.000000)" fill="#F2FAFD">
+            <g id="Group-5" transform="translate(22.000000, 91.000000)">
+                <polyline id="Shape" transform="translate(312.000000, 25.400000) rotate(90.000000) translate(-312.000000, -25.400000) " points="310 21 314 25.4 310 29.8"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>

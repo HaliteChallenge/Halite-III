@@ -1,4 +1,5 @@
-$mobile-breakpoint: 1160px;
+$mobile-breakpoint: 991px;
+// $mobile-breakpoint: 1160px;
 
 header.unloaded{
   opacity: 0;
@@ -6,7 +7,7 @@ header.unloaded{
 }
 
 .navbar-brand{
-  padding: 6px 15px 0 15px;
+  padding: 15px 15px 0 15px;
   img{
     max-width: 100px;
     width: 100px;
@@ -24,7 +25,6 @@ header.unloaded{
 #navbar{
   @media (max-width: $mobile-breakpoint){
     transform: translateY(9px);
-    background: #25242f;
   }
 }
 .navbar-header{
@@ -38,10 +38,8 @@ header.unloaded{
 
 #navbar{
   @media (max-width: $mobile-breakpoint){
-    border-top: 1px solid #101010;
     margin-right: -15px;
     margin-left: -15px;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
   .navbar-nav{
     @media (max-width: $mobile-breakpoint){
@@ -53,12 +51,12 @@ header.unloaded{
       }
       > li > a{
         text-align: center;
-        border-bottom: 1px solid $border;
         line-height: 40px;
       }
     }
   }
 }
+
 .navbar-fixed-top .navbar-collapse, .navbar-fixed-bottom .navbar-collapse{
   max-height: 540px;
 }
@@ -80,27 +78,40 @@ header.unloaded{
     position: relative;
     padding: 5px;
     min-height: 50px;
-    color: #000;
     text-transform: uppercase;
+    color: #91DBFF;
+    text-shadow: 0 -1px 13px #00ABFF;
+  }
+  .navbar-collapse{
+    box-shadow: none;
   }
 }
 
 .navbar-inverse{
   $g-color: #b9b8b8;
   background-color: #FFF;
-  color: #000;
+
+  // disable border color when expand menu
+  .navbar-collapse{
+    border-color: transparent;
+    
+  }
+  // color: #000;
   .navbar-nav{
-    li a {
+    > li > a {
       position: relative;
       min-height: 50px;
-      color: #000;
+      color: #91DBFF;
+      text-shadow: 0 -1px 13px #00ABFF;
       text-transform: uppercase;
       font-size: 0.8em;
-      padding: 15px 3px;
+      padding: 15px;
+      background-color: transparent;
       @media (max-width: $mobile-breakpoint){
         padding: 5px;
       }
       span{
+        font-weight: 400;
         display: block;
         padding: 5px 15px;
       }
@@ -116,17 +127,59 @@ header.unloaded{
           color: #20bfc1 !important;
       }
     }
-    li.active{
-      .xline-bottom{
-        opacity: 1;
-      }
-      a{
+    > li.active{
+      > a{
         background-color: transparent;
-        &:hover{
-          background-color: transparent;
+        position: relative;
+        @media (min-width: $mobile-breakpoint + 1){
+          &:before{
+            content: "";
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.2;
+            background-image: linear-gradient(-179deg, rgba(149,255,145,0.00) 0%, #8CF392 100%);
+          }
+          &:after{
+            content: "";
+            position: absolute;
+            display: block;
+            left: 0;
+            bottom: -1px;
+            width: 100%;
+            height: 2px;
+            opacity: 0.3;
+            background-color: #95FF91;
+          }
+          &:hover{
+            background-color: transparent;
+          }
+          span{
+            font-weight: bold;
+            color: #95FF91;
+            text-shadow: 0 -1px 13px #91FF8C;
+          }
         }
-        span{
-          background-color: #20bfc1;
+      }
+    }
+
+    @media screen and (max-width: $mobile-breakpoint) {
+      > li {
+        border-bottom: 1px solid rgba(145, 219, 255, 0.2);
+        padding: 15px 0;
+        > a{
+          line-height: 35px;
+          padding: 0 5px;
+          min-height: auto;
+          > span{
+            padding: 0;
+          }
+        }
+        &.active > a{
+          color: inherit;
         }
       }
     }
@@ -138,11 +191,20 @@ header.unloaded{
 }
 
 header.navbar{
-  border-bottom: 1px solid $border;
+  border-bottom: 1px transparent;
   height: 61px;
-  background: #FFF;
+  background-image: linear-gradient(0deg, #002D77 0%, #003A99 100%);
+
+  @media (max-width: $mobile-breakpoint){
+    height: auto;
+    min-height: 61px;
+  }
+
   @media (min-width: $screen-md-min){
     min-height: 50px;
+    margin: 15px;
+    border-radius: 8px;
+    // box-shadow: 0 0 10px 10px rgba(0, 45, 119, 0.2);
   }
   @media (max-width: $mobile-breakpoint){
     #submitbutton{
@@ -307,6 +369,77 @@ header.navbar{
     }
   }
 
+  // display subnav when hover
+  @media (min-width: $screen-md-min){
+    .navbar-nav > li:hover{
+      > .nav-sub{
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+  // Sub nav style
+  .nav-sub{
+    background-color: transparent;
+    > li {
+      > a{
+        padding: 13px 15px;
+        display: block;
+        line-height: 1.4em;
+        opacity: 0.6;
+        font-size: 14px;
+        color: #97DDFF;
+        font-weight: 600;
+        height: auto;
+        position: relative;
+      }
+    }
+
+    // mobile version
+    @media (max-width: $screen-sm-max){
+      > li {
+        > a{
+          text-align: center;
+        }
+      }
+    }
+
+    // desktop version
+    @media (min-width: $screen-md-min){
+      opacity: 0;
+      visibility: hidden;
+      transition: all 300ms;
+      border: 1px solid #003A95;
+      border-radius: 0 0 4px 4px;
+      position: absolute;
+      top: calc(100% + 1px);
+      left: 0;
+      > li:last-child{
+        border-radius: 0 0 4px 4px;
+      }
+      > li {
+        background: #001C4C;
+        min-width: 230px;
+        > a {
+          padding: 13px 15px;
+          border-left: 2px solid transparent;
+          @include before-block();
+        }
+        &.active > a, > a:hover{
+          color: #95FE91;
+          text-shadow: 0 1px 13px #95FF91;
+          border-left-color: #95FF91;
+          background-color: transparent;
+          &:before{
+            opacity: 0.4;
+            background-image: linear-gradient(269deg, rgba(149,255,145,0.00) 0%, #8CF392 100%);
+          }
+        }
+      }
+      
+    }
+  }
+
   // button sign in in mobile
   .navbar-signin{
     @media (min-width: $screen-md-min){
@@ -328,13 +461,47 @@ header.navbar{
 
   .navbar-toggle{
     border: 0;
+    &:hover, &:focus{
+      background-color: transparent;
+    }
+
+    .icon-bar{
+      transition: all 300ms;
+    }
+
+    .icon-bar:nth-child(4){
+      transform-origin: 4px -2px;
+      transform: rotate(-45deg);
+    }
+
+    .icon-bar:nth-child(3){
+      opacity: 0;
+    }
+
+    .icon-bar:nth-child(2){
+      transform-origin: 3px 4px;
+      transform: rotate(45deg);
+    }
+
+    &.collapsed {
+      .icon-bar{
+        transform: rotate(0deg);
+      }
+      .icon-bar:nth-child(3){
+        opacity: 1;
+      }
+      .icon-bar:nth-child(4){
+        width: 11px;
+        margin-left: 11px;
+      }
+    }
   }
 
   .navbar-right{
-                background: #FFF;
     padding: 5px 20px;
     display: none;
     margin-right: 0;
+    border-left: 1px solid #1d549c;
     @media (min-width: $screen-md-min){
       display: block;
     }
@@ -354,9 +521,11 @@ header.navbar{
       }
       a{
         cursor: pointer;
-        color: #30242F;
+        color: #91DBFF;
+        text-shadow: 0 -1px 13px #00ABFF;
         &:hover{
-          color: #30242F;
+          text-shadow: 0 -1px 13px #00ABFF;
+          // color: #30242F;
         }
       }
     }
@@ -383,5 +552,51 @@ header.navbar{
     color: #d0cccc;
     opacity: 1;
     text-shadow: none;
+  }
+}
+
+header.navbar{
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  padding: 0;
+  
+  @media screen and (min-width: 768px) {
+    width: 750px;
+  }
+  @media screen and (min-width: 992px) {
+    width: 97.5%;
+  }
+  @media screen and (min-width: 1200px) {
+    width: 1170px;
+  }
+  @media screen and (min-width: 1400px) {
+    width: 1350px;
+  }
+}
+
+.header-bg{
+  position: absolute;
+  width: 100vw;
+  bottom: 0;
+  top: 0;
+}
+
+// body class affect the nav in mobile version
+@media screen and (max-width: $mobile-breakpoint){
+  body{
+    header{
+      height: 61px;
+      transition: height 300ms;
+    }
+    &.menu-opened{
+      header{
+        height: 100vh;
+        background-position: bottom left;
+        background-repeat: repeat-x;
+        background-size: contain;
+        background-image: url("/assets/images/menu-bg.png"), linear-gradient(0deg, #002D77 0%, #003A99 100%);
+      }
+    }
   }
 }

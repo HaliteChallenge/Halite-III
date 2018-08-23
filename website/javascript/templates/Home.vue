@@ -1,9 +1,129 @@
 <template>
     <div class="home-container">
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row section-overview">
+            <div class="col-md-4">
+                <h1>Game Overview</h1>
+                <p>Halite is an open source artificial intelligence programming challenge, created by Two Sigma, where players build bots using the coding language of their choice to battle on a two-dimensional virtual board.</p>
+                <a class="btn btn-primary" href="">Play now</a>
+            </div>
+            <div class="col-md-8">
+                <img src="/assets/images/home-map.png" alt="Map">
+            </div>
+        </div>
+        <div class="row section-feed">
+            <div class="col-md-4">
+                <div class="feed-block">
+                    <div class="feed-header">
+                        <img src="/assets/images/icon-trophy.svg" alt="trophy" class="feed-icon">
+                        <h3>Competition Updates</h3>
+                    </div>
+                    <div class="feed-body">
+                        <article class="feed-item">
+                            <h3>5 Tips for this year's Halite competition</h3>
+                            <p>The Two Sigma Investments, LP Deep Learning team worked on a new write-up about </p>
+                            <div class="feed-item-bottom">
+                                <span class="date">
+                                    <span class="icon-date"></span>
+                                    11 Aug 2018
+                                </span>
+                                <a class="read-more" href="#">
+                                    Read more
+                                    <span class="icon-readmore"></span>
+                                </a>
+                            </div>
+                        </article>
+                        <article class="feed-item">
+                            <h3>5 Tips for this year's Halite competition</h3>
+                            <p>The Two Sigma Investments, LP Deep Learning team worked on a new write-up about </p>
+                            <div class="feed-item-bottom">
+                                <span class="date">
+                                    <span class="icon-date"></span>
+                                    11 Aug 2018
+                                </span>
+                                <a class="read-more" href="#">
+                                    Read more
+                                    <span class="icon-readmore"></span>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+
+                <div class="feed-block">
+                    <div class="feed-header">
+                        <img src="/assets/images/icon-medal.svg" alt="medal" class="feed-icon">
+                        <h3>In The Press</h3>
+                    </div>
+                    <div class="feed-body">
+                        <article class="feed-item">
+                            <h3>5 Tips for this year's Halite competition</h3>
+                            <p>The Two Sigma Investments, LP Deep Learning team worked on a new write-up about </p>
+                            <div class="feed-item-bottom">
+                                <span class="date">
+                                    <span class="icon-date"></span>
+                                    11 Aug 2018
+                                </span>
+                                <a class="read-more" href="#">
+                                    Read more
+                                    <span class="icon-readmore"></span>
+                                </a>
+                            </div>
+                        </article>
+                        <article class="feed-item">
+                            <h3>5 Tips for this year's Halite competition</h3>
+                            <p>The Two Sigma Investments, LP Deep Learning team worked on a new write-up about </p>
+                            <div class="feed-item-bottom">
+                                <span class="date">
+                                    <span class="icon-date"></span>
+                                    11 Aug 2018
+                                </span>
+                                <a class="read-more" href="#">
+                                    Read more
+                                    <span class="icon-readmore"></span>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="parnter-block">
+                    <h3>Partner ship</h3>
+                    <div class="partner-main">
+                        <div class="logo">
+                            <img src="/assets/images/logo-two-sigma.png" alt="two sigma">
+                        </div>
+                        <div class="name">Two <br>Sigma</div>
+                    </div>
+                    <div class="partners">
+                        <div class="partner">
+                            <div class="logo">
+                                <img src="/assets/images/logo-google-cloud.png" alt="google cloud">
+                            </div>
+                            <div class="name">
+                                Google Cloud
+                            </div>
+                        </div>
+                        <div class="partner">
+                            <div class="logo">
+                                <img src="/assets/images/logo-university.png" alt="university">
+                            </div>
+                            <div class="name">
+                                University (TBD)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <!-- 
+            <div class="row">
+                <div class="col-md-12">
                 <p class="t1 c-wht font-headline">HALITE III ALPHA</p>
-                <p class="d1 c-org font-headline">MAY THE BEST BOT WIN</p>
+                <p class="d1 c-org font-headline">MAY THE BEST BOT WIN</p> -->
            <!-- <div v-if="!me_in" class="not-me ha-button-container">
                     <div class="hidden-xs hidden-sm">
                         <a class="ha-button" href="/learn-programming-challenge"><span>Get Started</span></a>
@@ -12,7 +132,7 @@
                         <a class="ha-button" href="https://api.halite.io/v1/login/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;"><span>SIGN UP</span></a>
                     </div>
                 </div> -->
-            </div>
+            <!-- </div>
             <div class="col-md-12 des">
                 <div class="col-md-offset-2 col-md-4 bot-1">
                     <img :src="`${baseUrl}/assets/images/temp/bot_2.png`"/>
@@ -34,8 +154,8 @@
                 </div>
            </div>
             <div class="col-md-12 ha-line">
-            </div>
-        </div>
+            </div> 
+        </div>-->
     </div>
 </template>
 

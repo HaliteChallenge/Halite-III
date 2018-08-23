@@ -1,19 +1,45 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 19.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 746 223" enable-background="new 0 0 746 223" xml:space="preserve">
-<g>
-	<path fill="#E37222" d="M134.1,66.5v86.9h-10.4v-39.1H52.1v39.1H41.7V66.5h10.4v37.9h71.5V66.5H134.1z"/>
-	<path fill="#E37222" d="M391.2,143.7v9.7h-77V66.5h10.4v77.3H391.2z"/>
-	<path fill="#E37222" d="M433.3,153.4V66.5h10.4v86.9H433.3z"/>
-	<path fill="#E37222" d="M578.3,75.9h-41.1v77.5h-10.4V75.9h-41v-9.4h92.5V75.9z"/>
-	<path fill="#E37222" d="M704.3,143.7v9.7h-84.1V66.5h82.9v9.7h-72.4v28.2H692v9.7h-61.4v29.7H704.3z"/>
-	<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="223.5256" y1="205" x2="223.5256" y2="102.3279">
-		<stop  offset="0" style="stop-color:#FFBE00;stop-opacity:0"/>
-		<stop  offset="1" style="stop-color:#FFBE00;stop-opacity:0.4"/>
-	</linearGradient>
-	<polygon fill="url(#SVGID_1_)" points="223.5,205 172.2,153.7 223.5,102.3 274.9,153.7 	"/>
-	<polygon fill="#E37222" points="223.5,52.9 223.5,102.4 274.8,153.7 274.8,104.2 	"/>
-	<polygon fill="#FFBE00" points="223.5,52.9 223.5,102.4 172.2,153.7 172.2,104.2 	"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="143px" height="33px" viewBox="0 0 143 33" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 4</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="150" height="37"></rect>
+        <linearGradient x1="49.9762415%" y1="100%" x2="49.9762415%" y2="0.0271665044%" id="linearGradient-3">
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0.4" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Home" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Drop-Down-Menu@2x" transform="translate(-74.000000, -76.000000)">
+            <g id="Normal-state-nav" transform="translate(44.000000, 59.000000)">
+                <g id="Group-11">
+                    <g id="NAV">
+                        <g id="Group-3">
+                            <g id="Group-4" transform="translate(27.000000, 15.000000)">
+                                <mask id="mask-2" fill="white">
+                                    <use xlink:href="#path-1"></use>
+                                </mask>
+                                <g id="Rectangle-2"></g>
+                                <g id="full_logo" mask="url(#mask-2)">
+                                    <g transform="translate(3.000000, 2.000000)">
+                                        <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="20 3 20 22 17.7489177 22 17.7489177 13.4510932 2.25108225 13.4510932 2.25108225 22 0 22 0 3 2.25108225 3 2.25108225 11.2865362 17.7272727 11.2865362 17.7272727 3"></polygon>
+                                        <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="76 19.8791715 76 22 59 22 59 3 61.2961039 3 61.2961039 19.9010357 76 19.9010357"></polygon>
+                                        <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="84 22 84 3 86 3 86 22"></polygon>
+                                        <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="116 5.0552359 107.113514 5.0552359 107.113514 22 104.864865 22 104.864865 5.0552359 96 5.0552359 96 3 116 3"></polygon>
+                                        <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="143 19.8791715 143 22 125 22 125 3 142.743163 3 142.743163 5.12082854 127.247325 5.12082854 127.247325 11.2865362 140.36742 11.2865362 140.36742 13.4073648 127.225922 13.4073648 127.225922 19.9010357 143 19.9010357"></polygon>
+                                        <g id="Group-14" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(28.000000, 0.000000)">
+                                            <polygon id="Shape" fill="url(#linearGradient-3)" fill-rule="nonzero" points="10.9892892 33 0 22.0107108 10.9892892 11 22 22.0107108"></polygon>
+                                            <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="11 0 11 10.8035714 22 22 22 11.1964286"></polygon>
+                                            <polygon id="Shape" fill="#E5E5E5" fill-rule="nonzero" points="11 0 11 10.8035714 0 22 0 11.1964286"></polygon>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
 </svg>

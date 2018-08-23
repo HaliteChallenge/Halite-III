@@ -1,6 +1,5 @@
 <template>
   <div class="play-container">
-
     <div class="row" id="replay-filename" v-if="currentView=='replay'">
       <div class="col-sm-8 replay-header">
         <div class="replay-breadcrumb">

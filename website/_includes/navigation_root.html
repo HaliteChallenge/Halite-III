@@ -1,11 +1,12 @@
 <ul class="list-ha list-nav">
-    {% for subpage in include.level.pages %}
-    <li class="{% if subpage.url == page.url %}active{% endif %}">
-        <i class="xline xline-top"></i>
-        <a href="{{ subpage.url }}"><span>{% if subpage.short_title %}{{ subpage.short_title }}{% else %}{{ subpage.title }}{% endif %}</span></a>
+    <li class="toc-group">
+        <a class="sub-list-parent" href=""><span>{{ page.breadcrumb }}</span></a>
     </li>
-    {% endfor %}
-    {% for level in include.level.sublevels %}
-    {% include navigation_level.html level=level %}
-    {% endfor %}
+    <ul class="sub-list-ha">
+        {% for subpage in include.level.pages %}
+        <li class="{% if subpage.url == page.url %}active{% endif %}">
+            <a href="{{ subpage.url }}"><span>{% if subpage.short_title %}{{ subpage.short_title }}{% else %}{{ subpage.title }}{% endif %}</span></a>
+        </li>
+        {% endfor %}
+    </ul>
 </ul>
