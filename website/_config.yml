@@ -41,6 +41,7 @@ gems:
   - jekyll-toc
   - jekyll-seo-tag
 sass:
+  style: compressed
   load_paths:
     - _sass
     - vendor_assets
