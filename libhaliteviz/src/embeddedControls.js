@@ -316,6 +316,12 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         reset.addEventListener("click", () => {
             this.camera.reset();
         });
+        download.addEventListener("click", () => {
+            const temp = document.createElement("a");
+            temp.setAttribute("href", `data:application/json;charset=utf8,` + encodeURIComponent(JSON.stringify(this.replay)));
+            temp.setAttribute("download", "replay.json.hlt");
+            temp.click();
+        });
 
         slider.addEventListener("change", () => {
             if (this.isPlaying()) this.pause();
