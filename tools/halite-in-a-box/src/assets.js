@@ -5,6 +5,7 @@ import path from 'path';
 import JSZip from 'jszip';
 
 import * as bot from './bot';
+import * as logger from './logger';
 import * as util from './util';
 
 export const BENCHMARK_BOT_DIRECTORY = 'benchmark-bots/';
@@ -37,6 +38,7 @@ export function appData() {
         }
         else {
             console.error(e);
+            logger.error(e);
             throw e;
         }
     }
@@ -216,6 +218,7 @@ export default async function assets() {
             downloadBots = results.some(x => x);
         }
         catch (e) {
+            logger.warn('Could not download bot manifest?', e);
             console.warn('Could not download bot manifest?');
             console.warn(e);
             // Couldn't download the manifest or something?

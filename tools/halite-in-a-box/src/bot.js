@@ -41,6 +41,49 @@ InterpretedBot.languages = {
     Python: "Python",
 };
 
+export class CompiledBot extends Bot {
+    constructor(name, language, path) {
+        super(name);
+        this.language = language;
+        this.path = path;
+    }
+
+    async makePath() {
+        if (this.language === CompiledBot.languages.CXX) {
+            // Detect path to C++ compiler, then compile and return
+            // path to actual binary
+
+            // TODO: how to handle things like multiple CPP files?
+            // TODO: offer a bailout for more advanced users?  (a
+            // shell script or batch file we invoke instead of trying
+            // to figure things out ourselves)
+        }
+
+        throw new Error("Unrecognized bot compiler ${this.language}");
+    }
+}
+
+function findCxxCompiler() {
+    if (process.platform === 'darwin') {
+    }
+}
+
+function findJavaCompiler() {
+    if (process.platform === 'darwin') {
+
+    }
+    else if (process.platform === 'win32') {
+
+    }
+    // Assume it's on PATH
+    return 'javac';
+}
+
+CompiledBot.languages = {
+    CXX: "CXX",
+    Java: "Java",
+};
+
 export function guessInterpreter(path) {
     // TODO: actually guess
     return InterpretedBot.languages.Python;
