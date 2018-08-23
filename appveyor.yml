@@ -27,7 +27,12 @@ build_script:
   - cd C:\Halite\environment
   - call "%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
   - .\make.bat
+  - call "%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
+  - cmake -H. -Bbuild32
+  - cmake --build build32 --config Release
 
 artifacts:
   - path: environment\build\Release\halite.exe
     name: halite.exe
+  - path: environment\build32\Release\halite.exe
+    name: halite32.exe
