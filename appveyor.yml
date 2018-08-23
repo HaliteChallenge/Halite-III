@@ -15,11 +15,10 @@ branches:
   only:
     - master
 
-#before_build:
-#  - dir \s
-
 install:
-  - choco install cmake --install-directory 'C:\cmake' -y
+  - ps: Invoke-WebRequest https://cmake.org/files/v3.12/cmake-3.12.1-win64-x64.zip -OutFile C:\cmake.zip
+  - ps: Expand-Archive c:\cmake.zip -DestinationPath c:\cmake
+  - ps: dir c:\cmake
   - set path=C:\cmake\bin;%path%
 
 # scripts that run after cloning repository
