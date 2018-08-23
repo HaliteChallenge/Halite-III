@@ -36,7 +36,7 @@ export default class Camera {
 
     // Adjust coordinates to account for scaling on canvas
     scaledToScreen(x, y) {
-        const canvas = document.querySelector('.game-replay-viewer canvas');
+        const canvas = this.visualizer.application.renderer.view;
         const rawZoom = canvas.style.zoom ? canvas.style.zoom : '1';
         let zoom = parseFloat(rawZoom);
         if (!Number.isFinite(zoom)) {
