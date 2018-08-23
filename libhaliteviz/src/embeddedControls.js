@@ -2,7 +2,6 @@
  * Provide an embeddable visualizer with integrated controls.
  */
 
-import $ from "jquery";
 import {PLAYER_COLORS} from "./assets";
 import {HaliteVisualizer} from "./visualizer";
 
@@ -134,12 +133,13 @@ function button(label, klass) {
 
 export default class EmbeddedVisualizer extends HaliteVisualizer {
     attach(containerEl, keyboardEl=null) {
-        const container = $(containerEl)[0];
+        const container = typeof containerEl === "string" ?
+              document.querySelector(containerEl) : containerEl;
         const realContainer = document.createElement("div");
         container.appendChild(realContainer);
         container.classList.add("embedded-visualizer");
 
-        super.attach(realContainer, $(containerEl)[0]);
+        super.attach(realContainer, container);
 
         // Default faster
         this.playSpeed = 20;
@@ -169,17 +169,17 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         toolbar.classList.add("embedded-toolbar");
 
         const pf = button("<", "embedded-toolbar-prev-frame");
-        const play = button("Play", "embedded-toolbar-play");
+        const play = button("►", "embedded-toolbar-play");
         const nf = button(">", "embedded-toolbar-next-frame");
         const speed = button("", "embedded-toolbar-speed");
         const progress = document.createElement("span");
         const slider = document.createElement("input");
         const final = document.createElement("span");
 
+        toolbar.appendChild(speed);
         toolbar.appendChild(pf);
         toolbar.appendChild(play);
         toolbar.appendChild(nf);
-        toolbar.appendChild(speed);
         toolbar.appendChild(progress);
         toolbar.appendChild(slider);
         toolbar.appendChild(final);
@@ -195,7 +195,7 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
             play.innerText = "Pause";
         });
         this.onPause.add(() => {
-            play.innerText = "Play";
+            play.innerText = "►";
         });
         this.onSelect.add((kind, args) => {
             selection = Object.assign({
