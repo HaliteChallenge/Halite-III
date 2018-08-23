@@ -11,13 +11,16 @@
                 <nav id="toolbar">
                     <button @click="chooseReplay">Watch Replay</button>
                 </nav>
-                <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
-                <LocalBot :apiKey="apiKey" :userId="userId" @change="localBot = $event" />
-                <a id="scroll-down" href="#remote-bot-history">
-                    ▼Past Replays & Analytics▼
-                </a>
+                <tab-bar :tabs="['Bots', 'Gym', 'Settings']">
+                    <section class="bots-tab" slot="tab-0">
+                        <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
+                        <LocalBot :apiKey="apiKey" :userId="userId" @change="localBot = $event" />
+                    </section>
+                    <template slot="tab-1">
+                        <LocalBotGym :localBot="localBot" />
+                    </template>
+                </tab-bar>
             </div>
-            <LocalBotGym :localBot="localBot" />
         </template>
         <component v-if="modal" :is="modal" :params="modalProps" :event="modalEvent">
         </component>
@@ -194,28 +197,20 @@
             align-items: center;
         }
 
-        #scroll-down {
-            grid-row: footer;
+        .tab-bar {
+            grid-row: content;
             grid-column: left / -1;
-            text-align: center;
-            color: inherit;
-            text-decoration: none;
         }
 
-        #remote-bot, #local-bot {
+        .bots-tab {
+            display: flex;
+        }
+
+        .bots-tab > section {
             align-self: center;
             padding: 1em;
             text-align: center;
-        }
-
-        #remote-bot {
-            grid-row: content;
-            grid-column: left;
-        }
-
-        #local-bot {
-            grid-row: content;
-            grid-column: right;
+            flex: 1;
         }
     }
 </style>

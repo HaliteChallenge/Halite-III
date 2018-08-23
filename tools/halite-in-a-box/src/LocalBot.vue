@@ -10,7 +10,6 @@
                 Zip files can only be uploaded, not benchmarked or bench-pressed.
             </p>
             <button @click="benchmark" :disabled="!canRunGame">Benchmark</button>
-            <button @click="goToGym" :disabled="!canRunGame">Gym</button>
             <button @click="upload">Submit</button>
             <button @click="chooseLocalBot">Select Different Bot</button>
         </template>
@@ -92,13 +91,6 @@
                     this.localBot = botFile;
                     this.$emit('change', this.localBot);
                 }
-            },
-
-            goToGym() {
-                window.scrollTo({
-                    top: document.querySelector('#local-bot-gym').offsetTop,
-                    behavior: 'smooth',
-                })
             },
 
             goToStarterKit() {
