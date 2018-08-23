@@ -98,6 +98,7 @@
 
     {% if page.no_header %}
     {% else %}
+    
     <header class="navbar navbar-inverse navbar-fixed-top unloaded">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -107,12 +108,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="btn btn-sm navbar-signin" href="{{ site.login_server_url }}/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;">
+                <!-- <a class="btn btn-sm navbar-signin" href="{{ site.login_server_url }}/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;">
                     <span>
                         <i class="fa fa-github"></i>
                         Sign in
                     </span>
-                </a>
+                </a> -->
                 <a class="navbar-brand" href="{{ site.baseurl }}/">
                     <img alt="Halite" src="{{ site.baseurl }}/assets/images/full_logo.svg">
                 </a>
@@ -120,14 +121,28 @@
             <div id="navbar" class="navbar-collapse collapse">
                 {% if page.hide_nav != true %}
                 <ul class="nav navbar-nav">
-                    <li class="{% if page.menu == 'learn' or page.dir contains '/learn-programming-challenge' %} active {% endif %}"><a href="{{ site.baseurl }}/learn-programming-challenge"><span>Learn</span><i class="xline xline-bottom"></i></a></li>
-                    <li class="{% if page.menu == 'play' %} active {% endif %}"><a href="{{ site.baseurl }}/play-programming-challenge"><span>Play</span><i class="xline xline-bottom"></i></a></li>
-                    <li class="{% if page.menu == 'leaderboard' %} active {% endif %}"><a href="{{ site.baseurl }}/programming-competition-leaderboard"><span>Leaderboard</span><i class="xline xline-bottom"></i></a></li>
+                    <li class="{% if page.menu == 'learn' or page.dir contains '/learn-programming-challenge' %} active {% endif %}">
+                        <a href="{{ site.baseurl }}/learn-programming-challenge"><span>Learn</span></a>
+                        <ul class="nav nav-sub">
+                            <li><a href="#">Game Overview</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">Download</a></li>
+                        </ul>
+                    </li>
+                    <li class="{% if page.menu == 'play' %} active {% endif %}">
+                        <a href="{{ site.baseurl }}/play-programming-challenge"><span>Play</span></a>
+                        <ul class="nav nav-sub">
+                            <li><a href="#">Competition Overview</a></li>
+                            <li><a href="#">Current Rankings</a></li>
+                            <li><a href="#">Watch games</a></li>
+                        </ul>
+                    </li>
+                    <li class="{% if page.menu == 'leaderboard' %} active {% endif %}"><a href="{{ site.baseurl }}/programming-competition-leaderboard"><span>Community</span></a></li>
                 </ul>
                 {% endif %}
                 <ul class="nav navbar-nav navbar-right not-logged-in container-empty">
-                    <li><a href="{{ site.login_server_url }}/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;"><i class="fa fa-github"></i>&nbsp;&nbsp;Sign Up</a></li>
-                    <li><a href="{{ site.login_server_url }}/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;">Sign In</a></li>
+                    <li><a href="{{ site.login_server_url }}/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;"><i class="fa fa-github"></i>&nbsp;&nbsp;Sign Up/Log in</a></li>
+                    <!-- <li><a href="{{ site.login_server_url }}/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;">Sign In</a></li> -->
                 </ul>
                 <ul class="nav navbar-nav halite-nav-right">
                     <div id="user-profile-bar-container"></div>
@@ -150,50 +165,30 @@
     <footer class="footer container-empty">
     </footer>
     {% else %}
-    <footer class="footer container-empty">
-        <nav class="navbar">
-            <div class="container-fluid">
-                <ul class="nav">
-                    <li><a href="{{ site.baseurl }}/about">About</a></li>
-                    <li><a href="{{ site.baseurl }}/about/contact">Contact</a></li>
-                    <li><a href="{{ site.baseurl }}/about/terms-and-conditions">Terms and Conditions</a></li>
-                    <li><a href="{{ site.baseurl }}/about/privacy">Privacy Policy</a></li>
-                    <li><a href="/about/frequently-asked-questions">FAQ</a></li>
-                    <li><a href="https://2016.halite.io" onclick="javascript:handleOutboundLinkClicks('click-external', 'click-halite1','footer');return true;" target="_blank">Halite I</a></li>
-                    <li><a href="https://status.halite.io" onclick="javascript:handleOutboundLinkClicks('click-external', 'click-status','footer');return true;" target="_blank">Status</a></li>
-                </ul>
-            </div>
-        </nav>
-        <div class="footer-below">
-            <div class="container-fluid">
-                <div class="footer-below-wrap">
-                    <div class="footer-subscribe" id="subscribeFooter">
-                        <p class="footer-subscribe-top">Subscribe to our newsletter</p>
-                        <div class="footer-subscribe-field">
-                            <input id="tmpid" type="email" type="text" required="required" placeholder="Your email...">
-                            <button class="btn" onClick="javascript:check();"><span>SUBSCRIBE</span></button>
-                        </div>
-                        <br/>
-                        <p id="status" class="t4 c-gry"></p>
-                    </div>
-                    <div class="footer-copy">
-                        <img src="{{ site.baseurl }}/assets/images/full_logo.svg" class="footer-copy-logo" alt="">
-                        <p> &copy; Halite by <a class="base-link" href="https://www.twosigma.com" onclick="javascript:handleOutboundLinkClicks('click-external', 'click-ts','footer');return true;" target="_blank">Two Sigma</a>, 2017. All rights reserved.</p>
-                    </div>
-                    <div class="footer-social">
-                        <p class="footer-social-top">
-                            Follow us
-                        </p>
-                        <p class="footer-social-icons">
-                            <a href="https://www.reddit.com/r/Halite/" onclick="javascript:handleOutboundLinkClicks('follow', 'follow-reddit','footer');return true;" target="_blank"><i class="fa fa-reddit-alien"></i></a>
-                            <a href="https://www.facebook.com/haliteAI/" onclick="javascript:handleOutboundLinkClicks('follow', 'follow-facebook','footer');return true;" target="_blank"><i class="fa fa-facebook-official"></i></a>
-                            <a href="https://twitter.com/intent/follow?screen_name=haliteai" onclick="javascript:handleOutboundLinkClicks('follow', 'follow-twitter','footer');return true;" target="_blank"><i class="fa fa-twitter"></i></a>
-                            <a href="https://github.com/halitechallenge/Halite-II" onclick="javascript:handleOutboundLinkClicks('follow', 'follow-github','footer');return true;" target="_blank"><i class="fa fa-github"></i></a>
-                        </p>
-                    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="footer-copy col-md-3">
+                    <img src="{{ site.baseurl }}/assets/images/full_logo_color.svg" class="footer-copy-logo" alt="">
+                    <p> &copy; Halite by <a class="base-link" href="https://www.twosigma.com" onclick="javascript:handleOutboundLinkClicks('click-external', 'click-ts','footer');return true;" target="_blank">Two Sigma</a>, 2017. All rights reserved.</p>
+                </div>
+                <div class="col-md-9">
+                    <nav class="navbar">
+                        <ul class="nav">
+                            <li><a href="{{ site.baseurl }}/about">About Us</a></li>
+                            <li><a href="{{ site.baseurl }}/about/contact">Contact Us</a></li>
+                            <li><a href="{{ site.baseurl }}/about/terms-and-conditions">Terms and Conditions</a></li>
+                            <li><a href="{{ site.baseurl }}/about/privacy">Privacy Policy</a></li>
+                            <li><a href="https://2016.halite.io" onclick="javascript:handleOutboundLinkClicks('click-external', 'click-halite1','footer');return true;" target="_blank">Halite I</a></li>
+                            <li><a href="https://status.halite.io" onclick="javascript:handleOutboundLinkClicks('click-external', 'click-status','footer');return true;" target="_blank">Status</a></li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
+            
         </div>
+        
     </footer>
     {% endif %}
 
@@ -243,6 +238,21 @@
             setTimeout(function() {
                 $('.container-empty').addClass('container-loaded');
             }, 250);
+
+            // update body class when expand menu in mobile
+            var updateBodyMenuClass = function(){
+                if ($('header .navbar-toggle').hasClass('collapsed')){
+                    $('body').removeClass('menu-opened');
+                } else {
+                    $('body').addClass('menu-opened');
+                }
+            }
+            $('.navbar-toggle').on('click', function(e){
+                var $el = $(e.currentTarget);
+                setTimeout(updateBodyMenuClass, 10); // have to wait a moment
+            });
+            updateBodyMenuClass();
+            // setTimeout(updateBodyMenuClass, 500);
         });
 
         $(window).on('resize', () => {

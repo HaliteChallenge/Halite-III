@@ -1,20 +1,11 @@
 ---
 layout: doc_page
-title: Game Overview
+title: Learn
 breadcrumb: Learn
 toc: false
-menu: learn
-description: Welcome to the Halite II competition! Learn how to quickly get started downloading, building, and submitting an AI bot.
-mount_view: Onboarding
-additional_js: ["FileSaver.min", "jszip.min", "jszip-utils.min", "editorBuild/code_edit/built-codeEdit.min"]
-additional_css: ["built-codeEdit", "dark-codeEdit"]
+description: Get an introduction to the rules of the game to win the Halite AI Programming Challenge.
+sort_key: 0
 ---
-<script>
-  var site_downloads = {{ site.data.downloads | jsonify }};
-</script>
-
-<div id="onboarding-container"></div>
-
 
 <div class="doc-section" markdown="1">
 
@@ -60,17 +51,3 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sem ante, tinci
 <div class="build-a-bot text-center">
   <a href="#" class="btn btn-primary">Build a bot</a>
 </div>
-
-[login]: {{ site.login_server_url }}/github
-[downloads]: {{ site.baseurl }}/learn-programming-challenge/downloads-and-starter-kits
-[editor]: {{ site.baseurl }}/editor
-[contact]: {{ site.baseurl }}/about/contact-us
-[play]: {{ site.baseurl }}/play-programming-challenge
-[submit]: {{ site.baseurl }}/learn-programming-challenge/downloads-and-starter-kits/submit
-[leaderboard]: {{ site.baseurl }}/programming-competition-leaderboard
-[game rules]: {{ site.baseurl }}/learn-programming-challenge/basic-game-rules
-[profile]: /user/?me
-[improve bot]: /learn-programming-challenge/downloads-and-starter-kits/improve-basic-bot
-[example game 1]: {{ site.baseurl }}/play/?game_id=3996012&replay_class=1&replay_name=replay-20180730-134819%2B0000-1532958122-96-96
-[example game 2]: {{ site.baseurl }}/play/?game_id=3995999&replay_class=1&replay_name=replay-20180730-133054%2B0000-1532957367-48-48
-[david game]: /play/?game_id=1658857&replay_class=0&replay_name=replay-20171016-183304%2B0000--998929535-240-160-1508178764
