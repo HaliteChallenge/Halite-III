@@ -18,6 +18,11 @@ branches:
 #before_build:
 #  - dir \s
 
+install:
+  - choco uninstall cmake
+  - choco install cmake --install-directory 'C:\cmake' -y
+  - set path=C:\cmake\bin;%path%
+
 # scripts that run after cloning repository
 build_script:
   - cd C:\Halite\environment
