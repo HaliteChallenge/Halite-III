@@ -7,7 +7,7 @@ env
 
 mkdir -p artifacts/
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
-    pushd environment
+    pushd game_engine
     cmake .
     make -j2
     mv ./halite ../artifacts/Halite-MacOS-$(date +%Y%m%d%H%M%S)-$(git rev-parse HEAD)
@@ -37,7 +37,7 @@ else
     docker exec build /bin/bash -c "which $CCOMPILE"
     docker exec build /bin/bash -c "which $CXXCOMPILE"
     docker exec build /bin/bash -c "$CXXCOMPILE --version"
-    docker exec build /bin/bash -c "cd /project/environment; CC=$CCOMPILE CXX=$CXXCOMPILE cmake ."
-    docker exec build /bin/bash -c "cd /project/environment; CC=$CCOMPILE CXX=$CXXCOMPILE make -j2"
-    cp ./environment/halite ./artifacts/Halite-Linux-$(date +%Y%m%d%H%M%S)-$(git rev-parse HEAD)
+    docker exec build /bin/bash -c "cd /project/game_engine; CC=$CCOMPILE CXX=$CXXCOMPILE cmake ."
+    docker exec build /bin/bash -c "cd /project/game_engine; CC=$CCOMPILE CXX=$CXXCOMPILE make -j2"
+    cp ./game_engine/halite ./artifacts/Halite-Linux-$(date +%Y%m%d%H%M%S)-$(git rev-parse HEAD)
 fi

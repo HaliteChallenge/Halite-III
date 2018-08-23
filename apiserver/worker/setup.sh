@@ -4,7 +4,7 @@
 # written to the profile, so make sure those variables actually get loaded.
 source ~/.profile
 
-cd ../../environment
+cd ../../game_engine
 
 cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
 cmake --build build -- -j4
@@ -13,7 +13,7 @@ cp build/halite .
 
 cd ../apiserver/worker
 
-cp ../../environment/halite .
+cp ../../game_engine/halite .
 
 # Grab configuration values
 python3 grab_config.py

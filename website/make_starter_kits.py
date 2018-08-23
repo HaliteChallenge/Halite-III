@@ -18,7 +18,7 @@ VERSION_HELP = "The version string to embed in the downloads page."
 IGNORED_EXTENSIONS = [".exe", ".class", ".pyc", ".obj"]
 INCLUDED_EXTENSIONS = [".py", ".java", ".cpp", ".hpp", ".cs", ".csproj", ".scala", ".js", ".sh", ".bat", ".toml", ".rs",".go",".txt",".rb", ".kt", ".clj",".jl", ".ml", ".hs", ".exs", ".ex", ".lock",".php", ".sln",".dart",".sbt",".properties",".swift",".pyx",".pxd",".fs",".fsproj"]
 INCLUDED_FILES = ["Makefile", "README", "REQUIRE","LANGUAGE","build.gradle"]
-STARTER_KIT_DIR = "../airesources"
+STARTER_KIT_DIR = "../starter_kits"
 DOWNLOAD_DATA = "_data/downloads.json"
 PLATFORM_AGNOSTIC = "None"
 
@@ -94,8 +94,8 @@ def make_archive(output, environment, base_path, included_files):
 def make_source_download():
     included_files = []
 
-    for directory, _, file_list in os.walk("../environment"):
-        target_dir = os.path.relpath(directory, "../environment")
+    for directory, _, file_list in os.walk("../game_engine"):
+        target_dir = os.path.relpath(directory, "../game_engine")
         for filename in file_list:
             _, ext = os.path.splitext(filename)
             if ext.lower() in {".cpp", ".c", ".hpp", ".h", ".bat"} or \
@@ -115,8 +115,8 @@ def make_benchmark_download():
     included_files = []
 
     manifest = []
-    for directory, _, file_list in itertools.chain(os.walk("../airesources/benchmark"),
-                                                   os.walk("../airesources/Python3")):
+    for directory, _, file_list in itertools.chain(os.walk("../starter_kits/benchmark"),
+                                                   os.walk("../starter_kits/Python3")):
         for filename in file_list:
             _, ext = os.path.splitext(filename)
             if ext.lower() in {".py"}:
@@ -215,7 +215,7 @@ def main():
         filename = ALL_LANGUAGES_OUTPUT_FILE_FORMAT.format(platform=platform)
         all_output = "./" + filename
         print("\tMaking:", all_output)
-        make_archive(all_output, (platform, source, target), "../airesources", all_files)
+        make_archive(all_output, (platform, source, target), "../starter_kits", all_files)
         panlanguage_kits.append(filename)
 
         # Make downloads including no languages
