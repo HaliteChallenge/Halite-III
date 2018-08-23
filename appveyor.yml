@@ -19,7 +19,6 @@ branches:
 #  - dir \s
 
 install:
-  - choco uninstall cmake
   - choco install cmake --install-directory 'C:\cmake' -y
   - set path=C:\cmake\bin;%path%
 
