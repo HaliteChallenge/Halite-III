@@ -20,6 +20,7 @@ install:
   - ps: Expand-Archive c:\cmake.zip -DestinationPath c:\cmake
   - ps: dir c:\cmake
   - set path=C:\cmake\cmake-3.12.1-win64-x64\bin;%path%
+  - where cmake
 
 # scripts that run after cloning repository
 build_script:
