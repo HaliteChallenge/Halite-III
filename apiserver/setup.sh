@@ -27,10 +27,10 @@ done <<< "$DB_INSTANCE"
 
 
 screen -S api -d -m /bin/bash -c \
-    "NEWRELIC_CONFIG_FILE=newrelic.ini PYTHONPATH=$(pwd) FLASK_APP=apiserver.server newrelic-admin run-program flask run --with-threads -h 0.0.0.0 -p 5000"
+    "NEW_RELIC_CONFIG_FILE=newrelic.ini PYTHONPATH=$(pwd) FLASK_APP=apiserver.server newrelic-admin run-program flask run --with-threads -h 0.0.0.0 -p 5000"
 
 screen -S coordinator_internal -d -m /bin/bash -c \
-    "NEWRELIC_CONFIG_FILE=newrelic.ini PYTHONPATH=$(pwd) FLASK_APP=apiserver.coordinator_server newrelic-admin run-program flask run --with-threads -h 0.0.0.0 -p 5001"
+    "NEW_RELIC_CONFIG_FILE=newrelic.ini PYTHONPATH=$(pwd) FLASK_APP=apiserver.coordinator_server newrelic-admin run-program flask run --with-threads -h 0.0.0.0 -p 5001"
 
 # Run game deletion job at 8 AM UTC = midnight PST (DOES NOT account
 # for DST)
