@@ -11,6 +11,57 @@ const DONE_READING = Symbol();
 export const WEBSITE_URL = 'http://35.241.33.112';
 export const API_SERVER_URL = 'http://35.190.92.101/v1';
 
+export async function* callAny(process, args, env) {
+    const subprocess = spawn(process, args, {
+        env,
+    });
+    const rl = readline.createInterface({
+        input: subprocess.stdout,
+        crlfDelay: Infinity,
+    });
+
+    let iterating = true;
+    let currentResolve = null;
+    let currentReject = null;
+    const makePromise = () => new Promise((resolve, reject) => {
+        currentResolve = resolve;
+        currentReject = reject;
+    });
+    let currentPromise = makePromise();
+
+    const buffer = [];
+
+    subprocess.stderr.on('data', (a) => logger.warn(`stderr output from ${process}:`, new TextDecoder("utf-8").decode(a)));
+
+    rl.on('line', (line) => {
+        const result = JSON.parse(line);
+        buffer.push(result);
+        const resolve = currentResolve;
+        currentPromise = makePromise();
+        resolve();
+    });
+    rl.on('close', () => {
+        iterating = false;
+        currentReject(DONE_READING);
+    });
+
+    while (iterating) {
+        try {
+            while (buffer.length > 0) {
+                yield buffer.shift();
+            }
+            await currentPromise;
+        }
+        catch (e) {
+            if (e !== DONE_READING) {
+                console.error(e);
+                logger.error(e);
+            }
+            return;
+        }
+    }
+}
+
 export async function* call(args) {
     const fullArgs = ['-m', 'hlt_client', '--json'].concat(args);
     const subprocess = spawn(pythonPath(), fullArgs, {
