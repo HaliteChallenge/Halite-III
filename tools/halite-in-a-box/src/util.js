@@ -4,6 +4,7 @@ import fs from 'fs';
 import readline from 'readline';
 
 import { pythonPath, pythonHomePath, pythonPackagePath, embeddedResourcesPath } from './assets';
+import * as logger from './logger';
 
 const DONE_READING = Symbol();
 
@@ -34,7 +35,7 @@ export async function* call(args) {
 
     const buffer = [];
 
-    subprocess.stderr.on('data', (a) => console.warn(new TextDecoder("utf-8").decode(a)));
+    subprocess.stderr.on('data', (a) => logger.warn(`stderr output from hlt_client:`, new TextDecoder("utf-8").decode(a)));
 
     rl.on('line', (line) => {
         const result = JSON.parse(line);
@@ -58,6 +59,7 @@ export async function* call(args) {
         catch (e) {
             if (e !== DONE_READING) {
                 console.error(e);
+                logger.error(e);
             }
             return;
         }
@@ -100,6 +102,7 @@ export function writeFile(path, contents) {
         fs.writeFile(path, contents, (err) => {
             if (err) {
                 console.error(err);
+                logger.error(err);
                 reject(err);
                 return;
             }

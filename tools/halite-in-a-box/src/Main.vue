@@ -28,6 +28,7 @@
     import { remote as electronRemote } from 'electron';
 
     import * as assets from './assets';
+    import * as logger from './logger';
     import * as util from './util';
 
     import Login from './Login.vue';
@@ -62,6 +63,7 @@
                 this.assetsReady = true;
                 this.assetsMessage = null;
             }).catch((err) => {
+                logger.error(err);
                 console.error(err);
                 this.assetsMessage = 'Could not set up game assets. Please try again later.';
             });
