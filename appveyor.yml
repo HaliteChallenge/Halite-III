@@ -27,20 +27,29 @@ install:
 # scripts that run after cloning repository
 build_script:
   - cd C:\Halite\game_engine
+  - setlocal
   - call "%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
   - .\make.bat
+  - endlocal
+  - setlocal
   - call "%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
   - cmake -H. -Bbuild32
   - cmake --build build32 --config Release
+  - endlocal
 
   # Now build the offline tools.
   # First, bundle up the dependencies into the Python embeddable distribution.
-  # Activate the proper compiler
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+  # Activate the proper compiler and install deps via pip
   - cd C:\Halite\tools\hlt_client
+  - setlocal
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   - C:\Python37-x64\python.exe -m pip install -r requirements.txt -t C:\deps-amd64
+  - endlocal
+  - setlocal
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
   - C:\Python37\python.exe -m pip install -r requirements.txt -t C:\deps-x86
+  - endlocal
+
   - ps: Invoke-WebRequest http://www.python.org/ftp/python/3.7.0/python-3.7.0-embed-amd64.zip -OutFile python37.zip
   - ps: Expand-Archive python37.zip -DestinationPath C:\python-windows
   - ps: Copy-Item C:\deps-amd64\zstd*.pyd C:\python-windows\zstd.pyd
