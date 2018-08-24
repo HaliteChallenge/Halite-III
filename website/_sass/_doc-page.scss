@@ -152,6 +152,7 @@
   }
 }
 
+
 .doc-section{
   padding: 40px 15px 15px 15px;
   background-color: #fff;
@@ -162,8 +163,19 @@
   background-size: contain;
   background-repeat: no-repeat;
   overflow: hidden;
+  color: #52678D;
   @media screen and (min-width: $screen-md-min){
     padding: 40px 30px 15px 30px;
+  }
+  .sub-title{
+    font-size: 20px;
+    font-weight: 600;
+    color: #414141;
+  }
+  h4{
+    font-size: 24px;
+    font-weight: 600;
+    color: #033C89;
   }
   h5{
     font-size: 20px;
