@@ -32,9 +32,29 @@ build_script:
   - call "%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
   - cmake -H. -Bbuild32
   - cmake --build build32 --config Release
+  # Now build the offline tools.
+  # First, bundle up the dependencies into the Python embeddable distribution.
+  - cd C:\Halite\tools\hlt_client
+  - C:\Python37-x64\python.exe -m pip install -r requirements.txt -t C:\deps-amd64
+  - C:\Python37\python.exe -m pip install -r requirements.txt -t C:\deps-x86
+  - ps: Invoke-WebRequest http://www.python.org/ftp/python/3.7.0/python-3.7.0-embed-amd64.zip -OutFile python37.zip
+  - ps: Expand-Archive python37.zip -DestinationPath C:\python-windows
+  - ps: Copy-Item C:\deps-amd64\zstd*.pyd C:\python-windows\zstd.pyd
+  # This just adds our deps into the root of the stdlib ZIP file.
+  - ps: Compress-Archive -Update -Path C:\deps-amd64\* -DestinationPath C:\python-windows\python37.zip
+  - ps: Compress-Archive C:\python-windows C:\Halite\python-windows-amd64.zip
+  - ps: Remove-Item C:\python-windows -Force -Recurse
+
+  - ps: Invoke-WebRequest http://www.python.org/ftp/python/3.7.0/python-3.7.0-embed-win32.zip -OutFile python37-x86.zip
+  - ps: Expand-Archive python37-x86.zip -DestinationPath C:\python-windows
+  - ps: Copy-Item C:\deps-x86\zstd*.pyd C:\python-windows\zstd.pyd
+  - ps: Compress-Archive -Update -Path C:\deps-x86\* -DestinationPath C:\python-windows\python37.zip
+  - ps: Compress-Archive C:\python-windows C:\Halite\python-windows-x86.zip
 
 artifacts:
   - path: game_engine\build\Release\halite.exe
-    name: halite.exe
+    name: halite-amd64.exe
   - path: game_engine\build32\Release\halite.exe
-    name: halite32.exe
+    name: halite-x86.exe
+  - path: python-windows-amd64.zip
+  - path: python-windows-x86.zip
