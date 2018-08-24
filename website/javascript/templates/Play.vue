@@ -1,7 +1,7 @@
 <template>
   <div class="play-container">
 
-    <div class="play-navbar">
+    <div class="play-navbar only-desktop">
       <ul>
         <li class="active">
           <a href="#">Competition Overview</a>
@@ -14,6 +14,18 @@
         </li>
       </ul>
     </div>
+    
+    <div class="responsive-toc-nav only-mobile">
+      <span class="current-nav-item" data-toggle="collapse" data-target="#res_nav_selector">
+        Competition Overview
+      </span>
+      <ul id="res_nav_selector" class="select-nav collapse" aria-expanded="false"> 
+        <li><a href="#">Competition Overview</a></li>
+        <li><a href="#">Current Ranking</a></li>
+        <li><a href="#">Watch Games</a></li>
+      </ul>
+    </div>
+
 
     <div class="container-fluid">
       <h1 class="page-heading">Competition summary</h1>

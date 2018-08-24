@@ -6,6 +6,9 @@
   text-shadow: 0 1px 8px #00ABFF;
   text-transform: uppercase;
   margin-top: 50px;
+  @media screen and (max-width: $screen-sm-max) {
+    margin-top: 20px;
+  }
 }
 
 .doc-section-play{
@@ -61,6 +64,9 @@
 .play-container{
   .play-navbar{
     margin-top: 50px;
+  }
+  .responsive-toc-nav{
+    margin-top: 40px;
   }
 }
 
