@@ -96,9 +96,9 @@
     }(document, 'script', 'facebook-jssdk'));</script>
     <div id="message-placeholder"></div>
 
-    {% if page.no_header %}
+    {% if page.no_header or page.no_navbar %}
     {% else %}
-    
+
     <header class="navbar navbar-inverse navbar-fixed-top unloaded">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -155,6 +155,10 @@
 
     {% if page.no_header %}
     {{ content }}
+    {% else if page.no_navbar %}
+    <div class="body">
+        {{ content }}
+    </div>
     {% else %}
     <div class="body container-empty">
         {{ content }}
@@ -186,9 +190,9 @@
                     </nav>
                 </div>
             </div>
-            
+
         </div>
-        
+
     </footer>
     {% endif %}
 
