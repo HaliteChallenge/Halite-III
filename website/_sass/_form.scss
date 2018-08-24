@@ -1,19 +1,22 @@
 .form-group{
   margin-bottom: 20px;
   label{
-    font-size: 18px;
-    color: #ECFFFB;
-    letter-spacing: 0.5px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
   }
 }
 
 .form-control{
-  background-color: #000;
-  color: #fff;
-  border-radius: 0;
-  border: 0;
   padding: 5px;
-  height: 45px;
+  height: 40px;
+  font-size: 14px;
+  background: #FFFFFF;
+  border-radius: 4px;
+  border: 0;
+  color: rgba(0, 19, 51, 0.6);
+  &:focus{
+    color: #001333;
+  }
 }
 
 select.form-control{
