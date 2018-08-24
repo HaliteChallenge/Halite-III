@@ -32,10 +32,14 @@ build_script:
   - call "%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
   - cmake -H. -Bbuild32
   - cmake --build build32 --config Release
+
   # Now build the offline tools.
   # First, bundle up the dependencies into the Python embeddable distribution.
+  # Activate the proper compiler
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   - cd C:\Halite\tools\hlt_client
   - C:\Python37-x64\python.exe -m pip install -r requirements.txt -t C:\deps-amd64
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
   - C:\Python37\python.exe -m pip install -r requirements.txt -t C:\deps-x86
   - ps: Invoke-WebRequest http://www.python.org/ftp/python/3.7.0/python-3.7.0-embed-amd64.zip -OutFile python37.zip
   - ps: Expand-Archive python37.zip -DestinationPath C:\python-windows
