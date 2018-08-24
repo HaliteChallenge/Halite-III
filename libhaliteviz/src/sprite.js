@@ -23,7 +23,7 @@ export default class Ship {
 
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);
 
-        this.sprite = new PIXI.Sprite(spriteTexture);
+        this.sprite = new PIXI.Sprite(assets.TURTLE_SPRITES[record.owner]);
         this.highlight = new PIXI.Sprite(spriteTexture);
         this.highlight.visible = false;
         this.motionblur = new MotionBlurFilter([0, 0], 9, 0);
@@ -50,7 +50,7 @@ export default class Ship {
 
         // Set up sprite size & anchors
         const width = assets.CELL_SIZE * this.visualizer.camera.scale;
-        setupSprite(this.sprite, width);
+        setupSprite(this.sprite, width * 4);
         setupSprite(this.highlight, width * 1.25);
 
         this.sprite.tint = PLAYER_COLORS[this.owner];
@@ -119,7 +119,7 @@ export default class Ship {
 
             if (command.type === "m") {
                 if (command.direction === "n") {
-                    direction = Math.PI;
+                    direction = 0;
                     x_move = 0;
                     y_move = -1;
                 }
@@ -129,7 +129,7 @@ export default class Ship {
                     y_move = 0;
                 }
                 else if (command.direction === "s") {
-                    direction = 0;
+                    direction = Math.PI;
                     x_move = 0;
                     y_move = 1;
                 }
@@ -137,6 +137,10 @@ export default class Ship {
                     direction = -Math.PI / 2;
                     x_move = -1;
                     y_move = 0;
+                }
+                else {
+                    // If still, preserve rotation
+                    direction = this.sprite.rotation;
                 }
                 this.sprite.rotation = direction;
 
@@ -206,7 +210,7 @@ export default class Ship {
         const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
         this.sprite.position.x = pixelX;
         this.sprite.position.y = pixelY;
-        this.sprite.width = this.sprite.height = size;
+        this.sprite.width = this.sprite.height = size * 1.5;
 
         const camera = this.visualizer.camera;
         if (camera.selected && camera.selected.type === "ship" &&
