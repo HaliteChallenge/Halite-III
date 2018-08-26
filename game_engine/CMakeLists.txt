@@ -16,7 +16,10 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHsc /DNOMINMAX /Z7")
 else()
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -pedantic -Wextra -Wno-unused-variable")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pedantic -Wextra -Wno-unused-variable -g -O0 -fno-inline -fsanitize=undefined,address")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pedantic -Wextra -Wno-unused-variable -g -O0 -fno-inline")
+    if(NOT MINGW)
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=undefined,address")
+    endif()
 endif()
 
 # versions of cmake before 3.4 always link with -rdynamic on linux, which breaks static linkage with clang
@@ -137,8 +140,9 @@ elseif(MSVC)
     target_link_libraries(halite libzstd_static)
     target_link_libraries(halite_test libzstd_static Catch2::Catch)
 else()
-    if(CMAKE_BUILD_TYPE MATCHES Debug)
+    if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT MINGW)
         # Link dynamically on Linux since AddressSanitizer doesn't work with static linkage
+        # But link statically on MinGW, since it doesn't have address sanitizer and keeping MinGW dlls around is a pain
         target_link_libraries(halite pthread libzstd_static)
         target_link_libraries(halite_test pthread libzstd_static Catch2::Catch)
         target_link_libraries(halite_test gcov)
