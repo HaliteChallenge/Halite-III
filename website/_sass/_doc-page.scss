@@ -13,6 +13,18 @@
   //     }
   //   }
   // }
+
+  // customize the width of the side bar in the doc
+  .doc-nav{
+    @media screen and (min-width: $screen-md-min) {
+      width: 20%; 
+    }
+  }
+  .learnpage-content{
+    @media screen and (min-width: $screen-md-min) {
+      width: 80%;
+    }
+  }
 }
 
 .sidebar-heading{
