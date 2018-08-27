@@ -10,6 +10,7 @@
 #include <unordered_set>
 #include <fstream>
 #include <random>
+#include <ctime>
 
 typedef long halite_type;
 typedef long id_type;
