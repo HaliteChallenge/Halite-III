@@ -61,6 +61,13 @@ header.unloaded{
   max-height: 540px;
 }
 
+.navbar-fixed-top{
+  @media screen and (min-width: $screen-md-min) {
+    position: relative;
+    top: auto;  
+  }
+}
+
 @media (max-width: $mobile-breakpoint){
   .navbar-collapse.collapse {
     display: none !important;
@@ -539,7 +546,7 @@ header.navbar{
   }
 }
 .mobile-strict-container{
-  position: fixed;
+  // position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
