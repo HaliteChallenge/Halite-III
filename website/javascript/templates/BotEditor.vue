@@ -144,6 +144,20 @@
     return file_tree
   }
 
+class EditorFile {
+  constructor(name, contents) {
+    this.name = name;
+    this.contents = contents;
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      contents: this.contents,
+    };
+  }
+}
+
 export default {
   name: 'bot_editor',
   components: { InputModal, CheckModal, TreeElement, LanguageModal },
@@ -152,7 +166,7 @@ export default {
     const theme = DARK_THEME
     return {
       state: editorState,
-      active_file: {name: '', contents: ''},
+      active_file: new EditorFile('', ''),
       status_message: null,
       logged_in: false,
       needs_login: false,
@@ -253,10 +267,7 @@ export default {
           Object.values(zip.files)
                 .map(key => key.async("text").then(contents => [ key.name, contents ])))
         for (const [ key, contents ] of files) {
-          window.localStorage.setItem(key, JSON.stringify({
-            name: key,
-            contents,
-          }))
+          window.localStorage.setItem(key, JSON.stringify(new EditorFile(key, contents).toJSON()))
         }
         window.localStorage.setItem("@@editor-filelist",
                                     JSON.stringify(files.map(([key]) => key)))
@@ -375,7 +386,7 @@ export default {
         let editor_files = {}
         for(let a = 0; a < names.length; a++) {
           let name = names[a]
-          editor_files[name] = {name: name, contents: values.shift()}
+          editor_files[name] = new EditorFile(name, values.shift())
         }
         return parse_to_file_tree(editor_files)
       })
@@ -395,12 +406,7 @@ export default {
         return Promise.all(
           file_list.map((file_name) => {
             return api.get_editor_file(ctx.user_id, file_name)
-               .then((contents) => {
-                 return {
-                   contents,
-                   name: file_name
-                 }
-               })
+               .then((contents) => new EditorFile(file_name, contents))
           }))
       }
 
@@ -430,7 +436,7 @@ export default {
 
       return filePromise.then((file_contents) => {
         let editor_files =  file_contents.reduce(function(prev, cur) {
-          prev[cur.name] = {name: cur.name, contents: cur.contents}
+          prev[cur.name] = new EditorFile(cur.name, cur.contents)
           return prev
         }, {})
         return parse_to_file_tree(editor_files)
@@ -479,13 +485,30 @@ export default {
     /* Return a zip file object with our starter pack files + our mybot file */
     get_user_zip_promise: function () {
       let zip = new JSZip();
-      for(let name in this.editor_files) {
-        zip.file(name, this.editor_files[name].contents)
+
+      const files = [];
+      // Queue of [ parent path, Object { pathname: file | Object } ]
+      const queue = [ [ '', this.editor_files ] ];
+
+      while (queue.length > 0) {
+        const [ parentPath, pathEntries ] = queue.shift();
+
+        for (const [ pathName, entry ] of Object.entries(pathEntries)) {
+          if (entry instanceof EditorFile) {
+            files.push([ parentPath + pathName, entry.contents ]);
+          }
+          else {
+            queue.push([ parentPath + pathName + '/', entry ]);
+          }
+        }
+      }
+      for (const [path, fileContents] of files) {
+        zip.file(path, fileContents)
       }
       return zip.generateAsync({type: 'blob'})
     },
     create_new_file: function(name) {
-      this.$set(this.editor_files, name, {name: name, contents: ""})
+      this.$set(this.editor_files, name, new EditorFile(name, ''))
       this.file_selected(this.editor_files[name])
       this.close_new_file_modal()
     },
@@ -678,7 +701,7 @@ export default {
     },
     save_file: function(file) {
       if (this.localStorage) {
-        window.localStorage.setItem(file.name, JSON.stringify(file))
+        window.localStorage.setItem(file.name, JSON.stringify(file.toJSON()))
         window.localStorage.setItem(
           "@@editor-filelist",
           JSON.stringify(JSON.parse(window.localStorage.getItem("@@editor-filelist"))
