@@ -35,16 +35,16 @@ jobs:
   - stage: test starter kits
     name: Java starter kit
     script:
-    - cd ./airesources/Java
+    - cd ./starter_kits/Java
     - javac MyBot.java
     env: []
   - script:
-    - cd ./airesources/Python3
+    - cd ./starter_kits/Python3
     - python3 -m py_compile MyBot.py
     name: Python starter kit
     env: []
   - script:
-    - docker exec build /bin/bash -c "cd /project/airesources/C++; CC=$CCOMPILE CXX=$CXXCOMPILE
+    - docker exec build /bin/bash -c "cd /project/starter_kits/C++; CC=$CCOMPILE CXX=$CXXCOMPILE
       make MyBot"
     name: C++ starter kit
     env: COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7

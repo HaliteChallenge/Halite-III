@@ -2,7 +2,6 @@
  * Provide an embeddable visualizer with integrated controls.
  */
 
-import $ from "jquery";
 import {PLAYER_COLORS} from "./assets";
 import {HaliteVisualizer} from "./visualizer";
 
@@ -60,15 +59,17 @@ const css = `
     height: 1em;
     transition: opacity 0.3s ease-in;
     display: flex;
+    flex-direction: column;
     cursor: help;
+    font-size: 1.25em;
 }
 
 .embedded-clashbar-energybar {
-    height: 1.25rem;
+    height: 1.25em;
     transition: width 0.2s ease;
     color: #FFF;
     font-size: 0.75em;
-    line-height: 1.25rem;
+    line-height: 1.25em;
 }
 
 .embedded-toolbar {
@@ -81,10 +82,22 @@ const css = `
     transition: opacity 0.3s ease-in;
     padding: 0.25em 0;
     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.7));
+    font-size: 1.25em;
 }
 
 .embedded-toolbar span {
     padding: 0 0.5em;
+    line-height: 1.5em;
+}
+
+.embedded-toolbar input[type=range] {
+    flex: 3;
+}
+
+.embedded-toolbar .divider {
+    border-left: 0.1em solid #FFF;
+    margin: 0 0.5em;
+    padding: 0;
 }
 
 .embedded-toolbar button {
@@ -110,21 +123,40 @@ const css = `
 }
 `).join('\n');
 
-function button(label, klass) {
+const speedList = [
+    ['0.5x', 0.5],
+    ['1x', 1],
+    ['2x', 2],
+    ['3x', 3],
+    ['4x', 4],
+    ['5x', 5],
+    ['6x', 6],
+    ['7x', 7],
+    ['8x', 8],
+    ['9x', 9],
+    ['10x', 10],
+];
+
+function button(label, klass, title=null) {
     const el = document.createElement("button");
-    el.innerText = label;
+    el.innerHTML = label;
     el.classList.add(klass);
+    if (title) {
+        el.setAttribute("aria-label", title);
+        el.setAttribute("title", title);
+    }
     return el;
 }
 
 export default class EmbeddedVisualizer extends HaliteVisualizer {
     attach(containerEl, keyboardEl=null) {
-        const container = $(containerEl)[0];
+        const container = typeof containerEl === "string" ?
+              document.querySelector(containerEl) : containerEl;
         const realContainer = document.createElement("div");
         container.appendChild(realContainer);
         container.classList.add("embedded-visualizer");
 
-        super.attach(realContainer, $(containerEl)[0]);
+        super.attach(realContainer, container);
 
         // Default faster
         this.playSpeed = 20;
@@ -153,23 +185,35 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         const toolbar = document.createElement("div");
         toolbar.classList.add("embedded-toolbar");
 
-        const pf = button("<", "embedded-toolbar-prev-frame");
-        const play = button("Play", "embedded-toolbar-play");
-        const nf = button(">", "embedded-toolbar-next-frame");
-        const slower = button("Slower", "embedded-toolbar-slower");
-        const faster = button("Faster", "embedded-toolbar-faster");
+        const pf = button('<i aria-hidden class="fa fa-step-backward"></i>', "embedded-toolbar-prev-frame", "Previous Frame");
+        const play = button("", "embedded-toolbar-play");
+        const nf = button('<i aria-hidden class="fa fa-step-forward"></i>', "embedded-toolbar-next-frame", "Next Frame");
+        const speed = button("", "embedded-toolbar-speed");
+        const reset = button('<i aria-hidden class="fa fa-refresh"></i>', "embedded-toolbar-reset", "Reset View");
+        const download = button('<i aria-hidden class="fa fa-download"></i>', "embedded-toolbar-download", "Save Replay");
         const progress = document.createElement("span");
         const slider = document.createElement("input");
         const final = document.createElement("span");
 
+        const divider = () => {
+            const el = document.createElement("span");
+            el.classList.add("divider");
+            el.setAttribute("aria-hidden", "aria-hidden");
+            return el;
+        };
+
+        toolbar.appendChild(speed);
+        toolbar.appendChild(divider());
         toolbar.appendChild(pf);
         toolbar.appendChild(play);
         toolbar.appendChild(nf);
-        toolbar.appendChild(slower);
+        toolbar.appendChild(divider());
+        toolbar.appendChild(reset);
+        toolbar.appendChild(download);
+        toolbar.appendChild(divider());
         toolbar.appendChild(progress);
         toolbar.appendChild(slider);
         toolbar.appendChild(final);
-        toolbar.appendChild(faster);
 
         slider.setAttribute("type", "range");
         slider.setAttribute("min", 0);
@@ -179,10 +223,12 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
 
         let selection = null;
         this.onPlay.add(() => {
-            play.innerText = "Pause";
+            play.innerHTML = '<i class="fa fa-pause" title="Pause" aria-hidden></i>';
+            play.setAttribute("aria-label", "Pause");
         });
         this.onPause.add(() => {
-            play.innerText = "Play";
+            play.innerHTML = '<i class="fa fa-play" title="Play" aria-hidden></i>';
+            play.setAttribute("aria-label", "Play");
         });
         this.onSelect.add((kind, args) => {
             selection = Object.assign({
@@ -195,6 +241,8 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
             selection = null;
             selected.classList.remove("show");
         });
+
+        let bestEnergySoFar = 500;
         this.onUpdate.add(() => {
             progress.innerText = `${this.frame}`;
 
@@ -224,29 +272,15 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
             }
 
             const energies = this.currentFrame.energy;
-            const widths = {};
-            let total = 0;
-            let usedWidth = 0;
-            for (const [ id, energy ] of Object.entries(energies)) {
-                total += energy;
-                if (energy === 0) {
-                    widths[id] = 10;
-                    usedWidth += 10;
-                }
+            for (const energy of Object.values(energies)) {
+                bestEnergySoFar = Math.max(bestEnergySoFar, energy);
             }
             for (const [ id, energy ] of Object.entries(energies)) {
-                if (typeof widths[id] === "undefined") {
-                    widths[id] = (energy / total) * (100 - usedWidth);
-                }
-                else if (total === 0) {
-                    widths[id] = 100 / Object.keys(energies).length;
-                }
-            }
-            for (const [ id, width ] of Object.entries(widths)) {
+                const width = 100 * Math.max(0.10, energy / bestEnergySoFar);
                 const bar = clashbar
                       .querySelector(`div:nth-child(${parseInt(id, 10) + 1})`);
                 bar.style.width = `${width}%`;
-                bar.innerText = `${energies[id]} energy`;
+                bar.innerText = `${energy} energy`;
             }
 
             const tooltip = [];
@@ -266,12 +300,29 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         nf.addEventListener("click", () => {
             this.scrub(Math.min(this.replay.full_frames.length - 1, this.frame + 1), 0);
         });
-        slower.addEventListener("click", () => {
-            this.playSpeed = Math.max(1, this.playSpeed - 1);
+
+        let speedIndex = 3;
+        const updateSpeed = () => {
+            speed.innerText = speedList[speedIndex][0];
+            speed.setAttribute("title", `Speed multiplier is ${speedList[speedIndex][0]}`);
+            this.playSpeed = speedList[speedIndex][1];
+        };
+        updateSpeed();
+        speed.addEventListener("click", () => {
+            speedIndex = (speedIndex + 1) % speedList.length;
+            updateSpeed();
         });
-        faster.addEventListener("click", () => {
-            this.playSpeed = Math.min(30, this.playSpeed + 1);
+
+        reset.addEventListener("click", () => {
+            this.camera.reset();
         });
+        download.addEventListener("click", () => {
+            const temp = document.createElement("a");
+            temp.setAttribute("href", `data:application/json;charset=utf8,` + encodeURIComponent(JSON.stringify(this.replay)));
+            temp.setAttribute("download", "replay.json.hlt");
+            temp.click();
+        });
+
         slider.addEventListener("change", () => {
             if (this.isPlaying()) this.pause();
             progress.innerText = slider.value;
@@ -286,7 +337,13 @@ export default class EmbeddedVisualizer extends HaliteVisualizer {
         if (!injectedCSS) {
             const style = document.createElement("style");
             style.innerText = css;
+
+            const icofont = document.createElement("link");
+            icofont.setAttribute("href", "https://unpkg.com/@icon/font-awesome@4.7.0-2/font-awesome.css");
+            icofont.setAttribute("rel", "stylesheet");
+
             document.body.appendChild(style);
+            document.querySelector("head").appendChild(icofont);
             injectedCSS = true;
         }
 

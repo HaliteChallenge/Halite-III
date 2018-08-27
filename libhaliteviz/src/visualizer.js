@@ -1,5 +1,4 @@
 const PIXI = require("pixi.js");
-const $ = require("jquery");
 
 import Ship from "./sprite";
 import {Dropoff, Factory} from "./factory";
@@ -374,7 +373,9 @@ export class HaliteVisualizer {
     }
 
     attach(containerEl, keyboardEl=null) {
-        $(containerEl).append(this.application.view);
+        containerEl = typeof containerEl === "string" ?
+            document.querySelector(containerEl) : containerEl;
+        containerEl.appendChild(this.application.view);
         if (!keyboardEl) {
             keyboardEl = document.body;
         }

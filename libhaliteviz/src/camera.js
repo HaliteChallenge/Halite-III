@@ -1,5 +1,3 @@
-import { default as jQuery } from 'jquery';
-
 export default class Camera {
     constructor(visualizer, initScale) {
         this.visualizer = visualizer;
@@ -38,7 +36,9 @@ export default class Camera {
 
     // Adjust coordinates to account for scaling on canvas
     scaledToScreen(x, y) {
-        let zoom = parseFloat(jQuery('.game-replay-viewer').find('>canvas').css('zoom'));
+        const canvas = this.visualizer.application.renderer.view;
+        const rawZoom = canvas.style.zoom ? canvas.style.zoom : '1';
+        let zoom = parseFloat(rawZoom);
         if (!Number.isFinite(zoom)) {
             zoom = 1;
         }

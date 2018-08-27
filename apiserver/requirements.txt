@@ -26,6 +26,7 @@ itsdangerous==0.24
 Jinja2==2.9.6
 Mako==1.0.7
 MarkupSafe==1.0
+newrelic==4.2.0.100
 oauth2client==4.1.1
 oauthlib==2.0.2
 passlib==1.7.1

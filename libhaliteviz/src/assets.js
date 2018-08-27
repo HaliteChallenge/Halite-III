@@ -7,7 +7,7 @@ export const BASE_VISUALIZER_HEIGHT = 600;
 export const STATS_SIZE = 20;
 export const CELL_SIZE = 1;
 
-export const PLAYER_COLORS = [0x00FF00, 0xBA55D3, 0xffae42, 0xFF69B4,
+export const PLAYER_COLORS = [0xff2d55, 0x605dd8, 0x4caaa6, 0xc59300,
                               0xff0000, 0xbd00db, 0xFFFF00, 0x009900,
                               0xFF8C00, 0xff0000, 0x00FF00, 0xBA55D3,
                               0xffae42, 0xbd00db, 0xFF69B4, 0xFFFF00];
@@ -37,11 +37,10 @@ export const DRAW_LINES_OWNER_MAP = false;
 export const MIN_FISH_SIZE = 1;
 export const MAX_FISH_SIZE = 15;
 export const MAX_FISH_SPEED = 5;
-export let FISH_IMAGE = "";
-
 
 export let PLANET_EXPLOSION_SHEET = null;
 export let SHIP_EXPLOSION_SHEET = null;
+export let TURTLE_SPRITES = [];
 
 
 function loadSpritesheet(meta, textureImage) {
@@ -74,11 +73,29 @@ export function prepareAll(renderer, prepare) {
 }
 
 export function setAssetRoot(path) {
+    if (ASSET_ROOT === path) {
+        // Bail if asset root already set
+        return Promise.resolve();
+    }
+
+    // TODO: clear PIXI.loader to avoid exception
+
     ASSET_ROOT = path;
 
-    FISH_IMAGE = ASSET_ROOT + require("../assets/fish.png");
-
     return Promise.all([
+        new Promise((resolve) => {
+            PIXI.loader.add("turtle1", require("../assets/p1.png"))
+                .add("turtle2", require("../assets/p2.png"))
+                .add("turtle3", require("../assets/p3.png"))
+                .add("turtle4", require("../assets/p4.png"))
+                .load((loader, resources) => {
+                    TURTLE_SPRITES.push(resources.turtle1.texture);
+                    TURTLE_SPRITES.push(resources.turtle2.texture);
+                    TURTLE_SPRITES.push(resources.turtle3.texture);
+                    TURTLE_SPRITES.push(resources.turtle4.texture);
+                    resolve();
+                });
+        }),
         loadSpritesheet(
             require("../assets/planet-explosion.json"),
             ASSET_ROOT + require("../assets/planet-explosion.png"),

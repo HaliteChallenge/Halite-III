@@ -77,6 +77,7 @@
 
 <script>
   import moment from "moment";
+  import JSZip from "jszip";
   import * as api from '../api'
   import editorState from '../editorState'
   import * as utils from '../utils'

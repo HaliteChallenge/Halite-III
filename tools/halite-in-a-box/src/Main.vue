@@ -11,14 +11,16 @@
                 <nav id="toolbar">
                     <button @click="chooseReplay">Watch Replay</button>
                 </nav>
-                <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
-                <LocalBot :apiKey="apiKey" :userId="userId" @change="localBot = $event" />
-                <a id="scroll-down" href="#remote-bot-history">
-                    ▼Past Replays & Analytics▼
-                </a>
+                <tab-bar :tabs="['Bots', 'Gym', 'Settings']">
+                    <section class="bots-tab" slot="tab-0">
+                        <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
+                        <LocalBot :apiKey="apiKey" :userId="userId" @change="localBot = $event" />
+                    </section>
+                    <template slot="tab-1">
+                        <LocalBotGym :localBot="localBot" />
+                    </template>
+                </tab-bar>
             </div>
-            <RemoteBotHistory :userId="userId" />
-            <LocalBotGym :localBot="localBot" />
         </template>
         <component v-if="modal" :is="modal" :params="modalProps" :event="modalEvent">
         </component>
@@ -29,11 +31,11 @@
     import { remote as electronRemote } from 'electron';
 
     import * as assets from './assets';
+    import * as logger from './logger';
     import * as util from './util';
 
     import Login from './Login.vue';
     import RemoteBot from './RemoteBot.vue';
-    import RemoteBotHistory from './RemoteBotHistory.vue';
     import LocalBot from './LocalBot.vue';
     import LocalBotGym from './LocalBotGym.vue';
 
@@ -41,7 +43,6 @@
         components: {
             Login,
             RemoteBot,
-            RemoteBotHistory,
             LocalBot,
             LocalBotGym,
         },
@@ -65,6 +66,7 @@
                 this.assetsReady = true;
                 this.assetsMessage = null;
             }).catch((err) => {
+                logger.error(err);
                 console.error(err);
                 this.assetsMessage = 'Could not set up game assets. Please try again later.';
             });
@@ -195,28 +197,20 @@
             align-items: center;
         }
 
-        #scroll-down {
-            grid-row: footer;
+        .tab-bar {
+            grid-row: content;
             grid-column: left / -1;
-            text-align: center;
-            color: inherit;
-            text-decoration: none;
         }
 
-        #remote-bot, #local-bot {
+        .bots-tab {
+            display: flex;
+        }
+
+        .bots-tab > section {
             align-self: center;
             padding: 1em;
             text-align: center;
-        }
-
-        #remote-bot {
-            grid-row: content;
-            grid-column: left;
-        }
-
-        #local-bot {
-            grid-row: content;
-            grid-column: right;
+            flex: 1;
         }
     }
 </style>

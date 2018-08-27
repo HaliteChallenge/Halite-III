@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-GCLOUD_PROJECT="halite-2"
+GCLOUD_PROJECT="halite-3"
 GCLOUD_ZONE="us-east1-b"
 GCLOUD_GPU_ZONE="us-east1-c"
 
