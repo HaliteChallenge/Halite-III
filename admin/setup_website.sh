@@ -9,13 +9,14 @@ gcloud compute --project "${GCLOUD_PROJECT}" \
     --machine-type "${WEBSITE_MACHINE_TYPE}" \
     --network "default" \
     --metadata "^#&&#^startup-script=$(cat setup_website__startup_script.sh)" \
-    --maintenance-policy "MIGRATE" \
+    --maintenance-policy "TERMINATE" \
     --service-account "${SERVICE_ACCOUNT}@${GCLOUD_PROJECT}.iam.gserviceaccount.com" \
     --image-family "${WEBSITE_IMAGE}" --image-project "${GCLOUD_PROJECT}" \
-    --boot-disk-size "250" --boot-disk-type "pd-ssd" \
+    --boot-disk-size "25" --boot-disk-type "pd-ssd" \
     --tags "website" \
+    --preemptible \
     --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring.write","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" \
-    --tags "http-server","https-server"
+    --tags "website-backend"
 
 gcloud compute --project "${GCLOUD_PROJECT}" \
     instance-groups managed create "website-instances-prodxi" \

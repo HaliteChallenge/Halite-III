@@ -4,7 +4,7 @@ GCLOUD_PROJECT="halite-3"
 GCLOUD_ZONE="us-east1-b"
 GCLOUD_GPU_ZONE="us-east1-c"
 
-WEBSITE_MACHINE_TYPE="n1-standard-2"
+WEBSITE_MACHINE_TYPE="n1-standard-1"
 MACHINE_TYPE="custom-4-6144"
 GPU_MACHINE_TYPE=${MACHINE_TYPE}
 IMAGE="halite-worker"
