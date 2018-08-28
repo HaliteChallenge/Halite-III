@@ -1,9 +1,17 @@
 """
-Global constants relating to the game engine.
+Constants representing the game variation being played.
+Most constants are global and come from game engine and are immutable and are strictly informational.
+Some constants are only used by the local game client and so are mutable.
 """
+
+################################################
+# Local and mutable constants.
 
 """Maximum number of steps to consider in pathfinding."""
 MAX_BFS_STEPS = 1024  # = can search a 32x32 area completely
+
+################################################
+# Global and immutable constants.
 
 """The maximum amount of halite a ship can carry."""
 MAX_HALITE = 1000
@@ -17,19 +25,16 @@ MAX_TURNS = 500
 EXTRACT_RATIO = 4
 """1/MOVE_COST_RATIO halite (rounded) is needed to move off a cell."""
 MOVE_COST_RATIO = 10
-"""Whether the engine will terminate bots for nonsensical commands."""
-STRICT_ERRORS = False
 
 def load_constants(constants):
     """
     Load constants from JSON given by the game engine.
     """
     global SHIP_COST, DROPOFF_COST, MAX_HALITE, MAX_TURNS
-    global EXTRACT_RATIO, MOVE_COST_RATIO, STRICT_ERRORS
+    global EXTRACT_RATIO, MOVE_COST_RATIO
     SHIP_COST = constants.get('NEW_ENTITY_ENERGY_COST', SHIP_COST)
     DROPOFF_COST = constants.get('DROPOFF_COST', DROPOFF_COST)
     MAX_HALITE = constants.get('MAX_ENERGY', MAX_HALITE)
     MAX_TURNS = constants.get('MAX_TURNS', MAX_TURNS)
     EXTRACT_RATIO = constants.get('EXTRACT_RATIO', EXTRACT_RATIO)
     MOVE_COST_RATIO = constants.get('MOVE_COST_RATIO', MOVE_COST_RATIO)
-    STRICT_ERRORS = constants.get('STRICT_ERRORS', STRICT_ERRORS)
