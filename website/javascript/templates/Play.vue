@@ -1,6 +1,7 @@
 <template>
   <div class="play-container">
-
+    
+    <!--
     <div class="play-navbar only-desktop">
       <ul>
         <li class="active">
@@ -25,6 +26,7 @@
         <li><a href="#">Watch Games</a></li>
       </ul>
     </div>
+    -->
 
 
     <div class="container-fluid">
