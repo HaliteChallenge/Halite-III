@@ -7,7 +7,7 @@
     popper-class="tier-popover"
   >
     <a slot="reference" class='tier-clickable'>
-      <span>Settings</span><i class="xline xline-bottom"></i>
+      <span>Settings</span>
     </a>
     <div class="tier-description">
       <div class="header">
