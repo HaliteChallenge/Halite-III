@@ -257,30 +257,43 @@ void HaliteImpl::process_turn() {
     update_inspiration();
 
     // Resolve ship mining
-    const auto ratio = Constants::get().EXTRACT_RATIO;
     const auto max_energy = Constants::get().MAX_ENERGY;
     const auto ships_threshold = Constants::get().SHIPS_ABOVE_FOR_CAPTURE;
+    const auto bonus_ratio = Constants::get().INSPIRED_EXTRACT_RATIO;
     for (auto &[entity_id, entity] : game.store.entities) {
         if (changed_entities.find(entity_id) == changed_entities.end()
             && entity.energy < max_energy) {
             // Allow this entity to extract
             const auto location = game.store.get_player(entity.owner).get_entity_location(entity_id);
             auto &cell = game.map.at(location);
+
+            const auto ratio = entity.is_inspired ?
+                Constants::get().INSPIRED_EXTRACT_RATIO :
+                Constants::get().EXTRACT_RATIO;
             energy_type extracted = cell.energy / ratio;
+            energy_type gained = extracted;
+
             // If energy is small, give it all to the entity.
             if (extracted == 0 && cell.energy > 0) {
-                extracted = cell.energy;
+                extracted = gained = cell.energy;
             }
+
+            // Apply bonus for inspired entities
+            if (entity.is_inspired && bonus_ratio > 0) {
+                gained += gained / bonus_ratio;
+            }
+
             // Do not allow entity to exceed capacity.
-            if (max_energy - entity.energy < extracted) {
-                extracted = max_energy - entity.energy;
+            if (max_energy - entity.energy < gained) {
+                gained = max_energy - entity.energy;
             }
             auto &player_stats = game.game_statistics.player_statistics.at(entity.owner.value);
             player_stats.total_mined += extracted;
+            player_stats.total_bonus += gained > extracted ? gained - extracted : 0;
             if (entity.was_captured) {
-                player_stats.total_mined_from_captured += extracted;
+                player_stats.total_mined_from_captured += gained;
             }
-            entity.energy += extracted;
+            entity.energy += gained;
             cell.energy -= extracted;
             game.store.map_total_energy -= extracted;
             game.store.changed_cells.emplace(location);
