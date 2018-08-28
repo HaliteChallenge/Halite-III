@@ -89,7 +89,6 @@ export default class Ship {
         });
     }
 
-
     /**
      * Update this sprite's display with the latest state from the replay.
      * @param command
@@ -209,17 +208,29 @@ export default class Ship {
         this.sprite.position.x = pixelX;
         this.sprite.position.y = pixelY;
         this.sprite.width = this.sprite.height = size * 1.5;
+        this.highlight.position.x = pixelX;
+        this.highlight.position.y = pixelY;
+        this.highlight.width = this.highlight.height = 1.25 * size;
 
         const camera = this.visualizer.camera;
-        if (camera.selected && camera.selected.type === "ship" &&
-            camera.selected.id === this.id && camera.selected.owner === this.owner) {
-            this.highlight.visible = true;
-            this.highlight.position.x = pixelX;
-            this.highlight.position.y = pixelY;
-            this.highlight.width = this.highlight.height = 1.25 * size;
+        this.highlight.visible =
+            camera.selected &&
+            camera.selected.type === "ship" &&
+            camera.selected.id === this.id &&
+            camera.selected.owner === this.owner;
+
+        if (!this.visualizer.currentFrame || !this.visualizer.currentFrame.entities) {
+            return;
         }
-        else {
-            this.highlight.visible = false;
+        if (!this.visualizer.currentFrame.entities[this.owner]) {
+            return;
         }
+        if (!this.visualizer.currentFrame.entities[this.owner][this.id]) {
+            return;
+        }
+
+        this.highlight.visible =
+            this.highlight.visible ||
+            this.visualizer.currentFrame.entities[this.owner][this.id].is_inspired;
     }
 }
