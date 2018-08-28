@@ -253,9 +253,6 @@ void HaliteImpl::process_turn() {
         }
     }
 
-    // Update inspiration flags, so they can be used for mining.
-    update_inspiration();
-
     // Resolve ship mining
     const auto max_energy = Constants::get().MAX_ENERGY;
     const auto ships_threshold = Constants::get().SHIPS_ABOVE_FOR_CAPTURE;
@@ -433,7 +430,8 @@ void HaliteImpl::update_inspiration() {
             }
 
             // Mark ship as inspired or not
-            game.store.get_entity(entity_id).is_inspired =
+            auto &entity = game.store.get_entity(entity_id);
+            entity.is_inspired =
                 ships_in_radius[player_id] <= opponent_entities + ships_threshold;
         }
     }

@@ -12,6 +12,7 @@ namespace hlt {
  */
 void to_json(nlohmann::json &json, const Entity &entity) {
     json = {FIELD_TO_JSON(id),
+            FIELD_TO_JSON(is_inspired),
             FIELD_TO_JSON(energy)};
 }
 
