@@ -144,8 +144,13 @@ void HaliteImpl::run_game() {
         }, Logging::Level::Debug);
         // Create new turn struct for replay file, to be filled by further turn actions
         game.replay.full_frames.emplace_back();
-        // Add state of entities at start of turn
+
+        // Add state of entities at start of turn.
+        // First, update inspiration flags, so they can be used for
+        // movement/mining and so they are part of the replay.
+        update_inspiration();
         game.replay.full_frames.back().add_entities(game.store);
+
         process_turn();
 
         if (game_ended()) {
@@ -188,9 +193,6 @@ void HaliteImpl::process_turn() {
             commands.erase(player_id);
         }
     }
-
-    // Update inspiration flags, so they can be used for movement.
-    update_inspiration();
 
     // Process valid player commands, removing players if they submit invalid ones.
     std::unordered_set<Entity::id_type> changed_entities;
@@ -389,7 +391,7 @@ void HaliteImpl::update_inspiration() {
         for (const auto &[entity_id, location] : player.entities) {
             // map from player ID to # of ships within the inspiration
             // radius of the current ship
-            id_map<Player, unsigned long> ships_in_radius;
+            id_map<Player, long> ships_in_radius;
             for (const auto &[pid, _] : game.store.players) {
                 ships_in_radius[pid] = 0;
             }
@@ -422,7 +424,7 @@ void HaliteImpl::update_inspiration() {
             }
 
             // Total up ships of other player
-            unsigned long opponent_entities = 0;
+            long opponent_entities = 0;
             for (const auto &[pid, count] : ships_in_radius) {
                 if (pid != player_id) {
                     opponent_entities += count;
@@ -432,6 +434,7 @@ void HaliteImpl::update_inspiration() {
             // Mark ship as inspired or not
             auto &entity = game.store.get_entity(entity_id);
             entity.is_inspired =
+                opponent_entities + ships_threshold >= 0 &&
                 ships_in_radius[player_id] <= opponent_entities + ships_threshold;
         }
     }
