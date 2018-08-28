@@ -173,15 +173,9 @@ export class Map {
         // Generate the texture for a single map cell (16x16 white
         // square with a 2 pixel 70% black border blended on top)
         // Could probably be replaced with a real texture
-        const borderWidth = 0;//1; TWEAK -- remove board
+        const borderWidth = 0;
         const textureWidth = 16;
         let g = new PIXI.Graphics();
-
-        // TWEAK: circular cells
-        // g.beginFill(0xFFFFFF, 1.0);
-        // g.drawCircle(8, 8, 8);
-
-        // TWEAK: square cells
         g.beginFill(0xFFFFFF, 1.0);
         g.drawRect(0, 0, textureWidth, textureWidth);
         // Be careful not to overlap when drawing the border, or else
@@ -344,7 +338,7 @@ export class Map {
                 }
                 else {
                     cell.width = (0.3 + 0.7 * production_fraction) * this.scale;
-                    cell.height = (0.3 + 0.7 * production_fraction) * this.scale;    
+                    cell.height = (0.3 + 0.7 * production_fraction) * this.scale;
                 }
                 const [ cellX, cellY ] = this.camera.worldToCamera(col, row);
                 cell.position.x = (cellX + 0.5) * this.scale;

@@ -53,8 +53,6 @@ export default class Ship {
         setupSprite(this.sprite, width * 4);
         setupSprite(this.highlight, width * 1.25);
 
-        this.sprite.tint = PLAYER_COLORS[this.owner];
-
         // add to board in correct position
         const pixelX = this.visualizer.camera.scale * CELL_SIZE * this.x + this.visualizer.camera.scale * CELL_SIZE / 2;
         const pixelY = this.visualizer.camera.scale * CELL_SIZE * this.y + this.visualizer.camera.scale * CELL_SIZE / 2;
