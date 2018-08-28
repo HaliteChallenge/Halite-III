@@ -189,6 +189,9 @@ void HaliteImpl::process_turn() {
         }
     }
 
+    // Update inspiration flags, so they can be used for movement.
+    update_inspiration();
+
     // Process valid player commands, removing players if they submit invalid ones.
     std::unordered_set<Entity::id_type> changed_entities;
     while (!commands.empty()) {
@@ -250,6 +253,9 @@ void HaliteImpl::process_turn() {
         }
     }
 
+    // Update inspiration flags, so they can be used for mining.
+    update_inspiration();
+
     // Resolve ship mining
     const auto ratio = Constants::get().EXTRACT_RATIO;
     const auto max_energy = Constants::get().MAX_ENERGY;
@@ -282,72 +288,74 @@ void HaliteImpl::process_turn() {
     }
 
     // Resolve ship capture
-    const auto capture_radius = Constants::get().CAPTURE_RADIUS;
-    std::unordered_map<Location, Player::id_type> entity_switches;
-    for (const auto &[player_id, player] : game.store.players) {
-        for (const auto &[entity_id, location] : player.entities) {
-            id_map<Player, unsigned long> ships_in_radius;
-            for(const auto &[pid, _] : game.store.players) ships_in_radius[pid] = 0;
+    if (Constants::get().CAPTURE_ENABLED) {
+        const auto capture_radius = Constants::get().CAPTURE_RADIUS;
+        std::unordered_map<Location, Player::id_type> entity_switches;
+        for (const auto &[player_id, player] : game.store.players) {
+            for (const auto &[entity_id, location] : player.entities) {
+                id_map<Player, unsigned long> ships_in_radius;
+                for(const auto &[pid, _] : game.store.players) ships_in_radius[pid] = 0;
 
-            std::unordered_set<Location> visited_locs{};
-            std::unordered_set<Location> to_visit_locs{location};
-            while(!to_visit_locs.empty()) {
-                const Location cur = *to_visit_locs.begin();
-                visited_locs.emplace(cur);
-                to_visit_locs.erase(to_visit_locs.begin());
+                std::unordered_set<Location> visited_locs{};
+                std::unordered_set<Location> to_visit_locs{location};
+                while(!to_visit_locs.empty()) {
+                    const Location cur = *to_visit_locs.begin();
+                    visited_locs.emplace(cur);
+                    to_visit_locs.erase(to_visit_locs.begin());
 
-                Cell cur_cell = game.map.at(cur);
-                if(cur_cell.entity != Entity::None) {
-                    ships_in_radius[game.store.get_entity(cur_cell.entity).owner]++;
-                }
+                    Cell cur_cell = game.map.at(cur);
+                    if(cur_cell.entity != Entity::None) {
+                        ships_in_radius[game.store.get_entity(cur_cell.entity).owner]++;
+                    }
 
-                for(const Location &neighbor : game.map.get_neighbors(cur)) {
-                    if((visited_locs.find(neighbor) == visited_locs.end())
-                        && (to_visit_locs.find(neighbor) == to_visit_locs.end())) {
-                        if(game.map.distance(location, neighbor) <= capture_radius) {
-                            to_visit_locs.emplace(neighbor);
-                        } else {
-                            visited_locs.emplace(neighbor);
+                    for(const Location &neighbor : game.map.get_neighbors(cur)) {
+                        if((visited_locs.find(neighbor) == visited_locs.end())
+                           && (to_visit_locs.find(neighbor) == to_visit_locs.end())) {
+                            if(game.map.distance(location, neighbor) <= capture_radius) {
+                                to_visit_locs.emplace(neighbor);
+                            } else {
+                                visited_locs.emplace(neighbor);
+                            }
                         }
                     }
                 }
-            }
 
-            unsigned long max_val = 0;
-            Player::id_type max_id = Player::None;
-            for(const auto &[pid, val] : ships_in_radius) {
-                if(pid != player_id && val > max_val) {
-                    max_val = val;
-                    max_id = pid;
+                unsigned long max_val = 0;
+                Player::id_type max_id = Player::None;
+                for(const auto &[pid, val] : ships_in_radius) {
+                    if(pid != player_id && val > max_val) {
+                        max_val = val;
+                        max_id = pid;
+                    }
+                }
+                if(ships_in_radius[player_id]+ships_threshold <= max_val) {
+                    entity_switches[location] = max_id;
                 }
             }
-            if(ships_in_radius[player_id]+ships_threshold <= max_val) {
-                entity_switches[location] = max_id;
-            }
         }
-    }
 
-    // Flip the ships that have been captured
-    for(const auto &[location, new_player_id] : entity_switches) {
-        auto &cell = game.map.at(location);
-        const auto entity = game.store.get_entity(cell.entity);
+        // Flip the ships that have been captured
+        for(const auto &[location, new_player_id] : entity_switches) {
+            auto &cell = game.map.at(location);
+            const auto entity = game.store.get_entity(cell.entity);
 
-        game.game_statistics.player_statistics.at(entity.owner.value).ships_given++;
-        game.game_statistics.player_statistics.at(new_player_id.value).ships_captured++;
+            game.game_statistics.player_statistics.at(entity.owner.value).ships_given++;
+            game.game_statistics.player_statistics.at(new_player_id.value).ships_captured++;
 
-        game.store.delete_entity(entity.id);
-        auto &entities = game.store.get_player(entity.owner).entities;
-        entities.erase(entities.find(entity.id));
+            game.store.delete_entity(entity.id);
+            auto &entities = game.store.get_player(entity.owner).entities;
+            entities.erase(entities.find(entity.id));
 
-        auto new_entity = game.store.new_entity(entity.energy, new_player_id);
-        // XXX new_entity seems to be a copy not a real reference
-        cell.entity = new_entity.id;
-        game.store.get_entity(new_entity.id).was_captured = true;
-        game.store.get_player(new_player_id).add_entity(new_entity.id, location);
+            auto new_entity = game.store.new_entity(entity.energy, new_player_id);
+            // XXX new_entity seems to be a copy not a real reference
+            cell.entity = new_entity.id;
+            game.store.get_entity(new_entity.id).was_captured = true;
+            game.store.get_player(new_player_id).add_entity(new_entity.id, location);
 
-        game.replay.full_frames.back().events.push_back(
-            std::make_unique<CaptureEvent>(location, entity.owner, entity.id,
-                                           new_player_id, new_entity.id));
+            game.replay.full_frames.back().events.push_back(
+                                                            std::make_unique<CaptureEvent>(location, entity.owner, entity.id,
+                                                                                           new_player_id, new_entity.id));
+        }
     }
 
 
@@ -356,6 +364,66 @@ void HaliteImpl::process_turn() {
         game.replay.full_frames.back().energy.insert({{player_id, player.energy}});
     }
     update_player_stats();
+}
+
+void HaliteImpl::update_inspiration() {
+    if (!Constants::get().INSPIRATION_ENABLED) {
+        return;
+    }
+
+    const auto inspiration_radius = Constants::get().INSPIRATION_RADIUS;
+    const auto ships_threshold = Constants::get().INSPIRATION_SHIP_ADVANTAGE_COUNT;
+
+    // Check every ship of every player
+    for (const auto &[player_id, player] : game.store.players) {
+        for (const auto &[entity_id, location] : player.entities) {
+            // map from player ID to # of ships within the inspiration
+            // radius of the current ship
+            id_map<Player, unsigned long> ships_in_radius;
+            for (const auto &[pid, _] : game.store.players) {
+                ships_in_radius[pid] = 0;
+            }
+
+            // Explore locations around this ship
+            std::unordered_set<Location> visited_locs{};
+            std::unordered_set<Location> to_visit_locs{location};
+            while (!to_visit_locs.empty()) {
+                const Location cur = *to_visit_locs.begin();
+                visited_locs.emplace(cur);
+                to_visit_locs.erase(to_visit_locs.begin());
+
+                const auto &cur_cell = game.map.at(cur);
+                if (cur_cell.entity != Entity::None) {
+                    const auto &other_entity = game.store.get_entity(cur_cell.entity);
+                    ships_in_radius[other_entity.owner]++;
+                }
+
+                for (const Location &neighbor : game.map.get_neighbors(cur)) {
+                    if((visited_locs.find(neighbor) == visited_locs.end())
+                       && (to_visit_locs.find(neighbor) == to_visit_locs.end())) {
+                        if (game.map.distance(location, neighbor) <= inspiration_radius) {
+                            to_visit_locs.emplace(neighbor);
+                        }
+                        else {
+                            visited_locs.emplace(neighbor);
+                        }
+                    }
+                }
+            }
+
+            // Total up ships of other player
+            unsigned long opponent_entities = 0;
+            for (const auto &[pid, count] : ships_in_radius) {
+                if (pid != player_id) {
+                    opponent_entities += count;
+                }
+            }
+
+            // Mark ship as inspired or not
+            game.store.get_entity(entity_id).is_inspired =
+                ships_in_radius[player_id] <= opponent_entities + ships_threshold;
+        }
+    }
 }
 
 /**
