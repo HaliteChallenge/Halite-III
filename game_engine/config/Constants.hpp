@@ -44,7 +44,7 @@ struct Constants {
     unsigned long MAX_TURNS = 500;
     unsigned long MAX_TURN_THRESHOLD = 80;
 
-    dimension_type CAPTURE_RADIUS = 4; /**< The distance in which a ship is considered for the capture calculation */
+    dimension_type CAPTURE_RADIUS = 3; /**< The distance in which a ship is considered for the capture calculation */
     unsigned long SHIPS_ABOVE_FOR_CAPTURE = 3; /**< If enemyships - friendlyships is above or equal to this threshold,
                                                         the ship is captured*/
 
