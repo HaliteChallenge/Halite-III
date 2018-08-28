@@ -7,11 +7,11 @@
         <div class="panel-body">
             <img class="upload-zone-icon" :src="icon" alt="">
             <h2 v-if="title">{{ title }}</h2>
-            <p v-if="description" class="upload-zone-desc">{{description}}</p>
+            <p v-if="description" v-html="description" class="upload-zone-desc"></p>
 
-            <div class="upload-zone-btn text-center">
+            <!-- <div class="upload-zone-btn text-center">
                 <button class="btn-ha btn-ha-lg"><span>{{ buttonText }}</span></button>
-            </div>
+            </div> -->
 
             <p class="hidden" v-if="message">{{ message }}</p>
             <input class="form-control" type="file" v-on:change="on_changed" />

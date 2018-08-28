@@ -1,5 +1,5 @@
 .doc-container{
-  margin-top: 50px;
+  margin-top: 20px;
   // .list-nav{
   //   > li > a, > li > span{
   //     color: #858E92;
@@ -13,6 +13,18 @@
   //     }
   //   }
   // }
+
+  // customize the width of the side bar in the doc
+  .doc-nav{
+    @media screen and (min-width: $screen-md-min) {
+      width: 20%; 
+    }
+  }
+  .learnpage-content{
+    @media screen and (min-width: $screen-md-min) {
+      width: 80%;
+    }
+  }
 }
 
 .sidebar-heading{
@@ -69,7 +81,7 @@
     padding-bottom: 0;
   }
   h1{
-    font-weight: bold;
+    font-weight: 400;
     font-size: 36px;
     margin: 0;
     color: #B4E6FF;
@@ -152,6 +164,7 @@
   }
 }
 
+
 .doc-section{
   padding: 40px 15px 15px 15px;
   background-color: #fff;
@@ -162,10 +175,21 @@
   background-size: contain;
   background-repeat: no-repeat;
   overflow: hidden;
+  color: #52678D;
   @media screen and (min-width: $screen-md-min){
     padding: 40px 30px 15px 30px;
   }
-  h5{
+  .sub-title{
+    font-size: 20px;
+    font-weight: 600;
+    color: #414141;
+  }
+  h2{
+    font-size: 24px;
+    font-weight: 600;
+    color: #033C89;
+  }
+  h3{
     font-size: 20px;
     font-weight: 600;
     color: #292929;
@@ -173,37 +197,6 @@
     line-height: 1.3em;
   }
   .table-container{
-    width: auto;
-  }
-  table{
-    @media screen and (min-width: $screen-md-min) {
-      width: 100%;
-    }
-    thead{
-      tr{
-        background: #f1f3f7;
-        th, td{
-          padding: 12px 7px;
-          font-size: 12px;
-          color: #343434;
-          text-transform: uppercase;
-          font-weight: 600;
-        }
-      }
-    }
-    tbody{
-      tr{
-        td{
-          border-bottom: 1px solid #DBDDDF;
-          padding: 12px 7px;
-          font-size: 14px;
-          a{
-            font-weight: 600;
-            color: #033C89;
-          }
-        }
-      }
-    }
   }
 }
 

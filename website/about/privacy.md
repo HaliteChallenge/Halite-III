@@ -5,6 +5,9 @@ permalink: /about/privacy
 description: Halite and Two Sigma take your privacy seriously. Read our privacy policy to learn how we treat personal information.
 ---
 
+
+<div class="doc-section" markdown="1">
+
 ### Effective Date July 17, 2017 (last updated October 15, 2017).
 
 ## THIS PRIVACY POLICY APPLIES TO OUR WEBSITES AND PLATFORMS.
@@ -112,5 +115,7 @@ at:
 ## We may update this Policy.
 
 From time to time we may change our privacy policies.  We will notify you of any material changes to our Policy as required by law.  We will also post an updated copy on our Sites.  Please check our Sites periodically for updates.
+
+</div>
 
 [cookie policy]: {{ site.baseurl }}/about/cookie-policy

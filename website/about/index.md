@@ -6,6 +6,9 @@ toc: false
 description: Halite is an Artificial Intelligence programming game run by Two Sigma where players build smart bots that battle on a virtual two-dimensional board.
 ---
 
+
+<div class="doc-section" markdown="1">
+
 Halite is an artificial intelligence programming challenge, created by [Two Sigma](https://www.twosigma.com){:target="_blank"}, where players build bots using the coding language of their choice to battle on a two-dimensional virtual board.
  
 This year’s challenge, Halite II, had a space theme, where players’ bots control ships that mine planets to grow their fleets and defeat their opponents. [Learn to play Halite II here]({{ site.baseurl }}/learn-programming-challenge).
@@ -50,11 +53,11 @@ And our greatest appreciation goes to [Janzert](https://github.com/Janzert), who
 
 ## May the best bot win!
 
+</div>
 
-<div class="ha-button-container btn-center">
-    <div>
-        <a class="ha-button" href="/learn-programming-challenge"><span>GET STARTED</span></a>
-    </div>
+
+<div class="build-a-bot text-center">
+  <a href="/learn-programming-challenge" class="btn btn-primary">GET STARTEDt</a>
 </div>
 
 [story]: {{ site.baseurl }}/learn-programming-challenge/the-halite-codex

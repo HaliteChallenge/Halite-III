@@ -1,3 +1,39 @@
+
+.table-container{
+  width: auto;
+}
+
+.table, .doc-section table{
+  @media screen and (min-width: $screen-md-min) {
+    width: 100%;
+  }
+  > thead{
+    > tr{
+      background: #f1f3f7;
+      > th, >td{
+        padding: 12px 7px;
+        font-size: 12px;
+        color: #343434;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+    }
+  }
+  > tbody{
+    > tr{
+      > td{
+        border-bottom: 1px solid #DBDDDF;
+        padding: 12px 7px;
+        font-size: 14px;
+        a{
+          font-weight: 600;
+          color: #033C89;
+        }
+      }
+    }
+  }
+}
+
 .table-leader{
   width: 100%;
   > thead > tr > th,

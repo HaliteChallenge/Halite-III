@@ -1,3 +1,96 @@
+.page-heading{
+  font-size: 36px;
+  font-weight: 400;
+  color: #B4E6FF;
+  text-align: center;
+  text-shadow: 0 1px 8px #00ABFF;
+  text-transform: uppercase;
+  margin-top: 50px;
+  @media screen and (max-width: $screen-sm-max) {
+    margin-top: 20px;
+  }
+}
+
+.doc-section-play{
+  margin-top: 40px;
+  text-align: center;
+  max-width: 950px;
+  margin-left: auto;
+  margin-right: auto;
+
+  p + h4{
+    margin-top: 30px;
+  }
+}
+
+.play-navbar{
+  border-radius: 100px;
+  ul{
+    list-style: none;
+    list-style-image: none;
+    list-style-position: outside;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+  }
+  li{
+    background: rgba(255,255,255,0.10);
+    display: block;
+    padding: 10px 0;
+    &:first-child{
+      border-radius: 100px 0 0 100px;
+    }
+    &:last-child{
+      border-radius: 0 100px 100px 0;
+      a{
+        border-right: 1px transparent;
+      }
+    }
+    a{
+      padding: 5px 30px;
+      display: block;
+      font-weight: 400;
+      font-size: 20px;
+      text-transform: uppercase;
+      border-right: 1px solid rgba(180,230, 255, 0.3);
+      @include link();
+    }
+    &.active a{
+      @include link-active();
+    }
+  }
+}
+
+.play-container{
+  .play-navbar{
+    margin-top: 50px;
+  }
+  .responsive-toc-nav{
+    margin-top: 40px;
+  }
+}
+
+.upload-zone{
+  background: #e1ecf8;
+  border: 1px dashed #ADC9EF;
+  border-radius: 5px;
+  padding: 50px 0;
+  h2{
+    font-family: ProximaNovaSoft-Semibold;
+    font-size: 18px;
+    color: #0A2E67;
+    text-align: center;
+    line-height: 24px;
+  }
+  &-desc{
+    font-size: 18px;
+    font-weight: 400;
+    color: #0A2E67;
+    line-height: 24px;
+  }
+}
+
+/*
 .upload-container{
   background-color: #FFF;
   border-radius: 12px;
@@ -207,3 +300,4 @@
     height: 45px;
   }
 }
+*/

@@ -6,6 +6,9 @@ toc: false
 description: Contact the Halite team with questions, suggestions, press requests or technical support needs.
 ---
 
+
+<div class="doc-section" markdown="1">
+
 Contact the Halite team with questions, suggestions, press requests or technical support needs.
 
 
@@ -46,5 +49,7 @@ You are free to use our logos as long as you follow the guidelines below.
 * Please check with us before replicating the logo on any public materials you generate.
 
 For any questions on logo usage, contact the Halite team at <mailto:halite@halite.io>.
+
+</div>
 
 [FAQ]: {{ site.baseurl }}/about/frequently-asked-questions

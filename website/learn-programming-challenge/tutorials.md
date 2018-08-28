@@ -9,7 +9,7 @@ sort_key: 2
 
 <div class="doc-section" markdown="1">
 
-#### Introduction
+## Introduction
 
 Try a tutorial: Learn more about the game rules, 
 build your first bot, engage with advanced strategies, and more.
@@ -23,9 +23,9 @@ build your first bot, engage with advanced strategies, and more.
 <div class="column-container">
   <div class="col" markdown="1">
 
-#### Beginner
+## Beginner
 
-##### Tutorial 1
+### Tutorial 1
 
 Interactively learn the game rules
 
@@ -33,9 +33,9 @@ Interactively learn the game rules
   <div class="col" markdown="1">
 
 
-#### Advanced
+## Advanced
 
-##### Tutorial 1
+### Tutorial 1
 
 Add a new strategy to your bot and learn a new technique. Climb up the leaderboard
 
@@ -46,14 +46,14 @@ Add a new strategy to your bot and learn a new technique. Climb up the leaderboa
 <div class="column-container">
   <div class="col" markdown="1">
 
-##### Tutorial 2
+### Tutorial 2
 
 Improve the Starter bot and make your first competition submission
 
   </div>
   <div class="col" markdown="1">
 
-##### Tutorial 2
+### Tutorial 2
 
 Add a new strategy to your bot and learn a new technique. Climb up the leaderboard
 
@@ -62,9 +62,9 @@ Add a new strategy to your bot and learn a new technique. Climb up the leaderboa
 
 ---
 
-#### Beginner
+## Beginner
 
-##### Tutorial 1
+### Tutorial 1
 
 Add a new strategy to your bot and learn a new technique. <br>Climb up the leaderboard
 

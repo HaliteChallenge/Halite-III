@@ -5,6 +5,9 @@ permalink: /about/terms-and-conditions
 description: Read about Halite's terms and conditions and contact us if you have any questions.
 ---
 
+
+<div class="doc-section" markdown="1">
+
 Your use of the game, Halite (also known as Halite I or Halite II), and the website on which these terms reside (collectively, the “Site”), and the features at this Site are subject to these Terms of Use, which we may update from time to time. Please read these Terms of Use carefully before using this Site. By accessing Halite, this website and any materials presented herein, or by downloading any products or materials from the Site, you acknowledge that you have read, understood, and agree to be legally bound by these Terms of Use and our Privacy Policy, which is hereby incorporated by reference (collectively, these “Terms”).  
 
 The Site is owned or controlled by Two Sigma Open Source, LLC ( “Two Sigma”).
@@ -129,8 +132,10 @@ This Site is not an offer to, or solicitation of, any potential clients or inves
 ## 15. Privacy Policy
 Two Sigma’s Privacy Policy posted on this website applies to use of this Site, and its terms are made a part of these Terms by this reference. Please read our [Privacy Policy][Privacy Policy] for more information about our information collection and use practices. By using the Site, you hereby acknowledge that you have read our Privacy Policy and [Cookie Policy][cookie policy] and consent to the practices set forth therein. 
 
-Last Updated October 23, 2017
+Last Updated October 23, 2017<br>
 © 2017 Two Sigma Open Source, LLC. ALL RIGHTS RESERVED.
+
+</div>
  
 [Privacy Policy]: {{ site.baseurl }}/about/privacy
 [cookie policy]: {{ site.baseurl }}/about/cookie-policy

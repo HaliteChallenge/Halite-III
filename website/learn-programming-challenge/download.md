@@ -14,13 +14,13 @@ Check out our guide on how to build a new starter bot.
 
 ---
 
-#### System Requirements
+## System Requirements
 
 System requirements are detailed here.
 
 ---
 
-#### STARTER KITS DOWNLOAD
+## STARTER KITS DOWNLOAD
 
 
 <div class="table-container" markdown="1">

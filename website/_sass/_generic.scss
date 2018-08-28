@@ -35,7 +35,7 @@ body{
   font-size: 1.6rem;
 
   > .body {
-    margin-top: 61px;
+    margin-top: 30px;
   }
 
   &.noscroll{
@@ -71,6 +71,19 @@ h1, h2, h3{
   }
   @media (min-width: $screen-llg-min){
     width: 1380px;
+  }
+}
+
+
+.only-mobile{
+  @media screen and (min-width: $screen-md-min){
+    display: none;
+  }
+}
+
+.only-desktop{
+  @media screen and (max-width: $screen-sm-max){
+    display: none;
   }
 }
 
@@ -327,60 +340,7 @@ input:focus{
   }
 }
 
-.hex-li{
-  display: flex;
-  align-items: center;
-  .hex-li-content{
 
-  }
-  .hex-bullet{
-    display: inline-block;
-    flex: 0 0 71px;
-    width: 71px;
-    height: 84px;
-    line-height: 83px;
-    text-align: center;
-    font-family: $font-heading;
-    font-size: 36px;
-    color: $yellow;
-    text-shadow: 0 2px 30px rgba(0,0,0,0.20);
-    background-image: url("/assets/images/hexagon.svg");
-    background-repeat: no-repeat;
-    background-size: contain;
-    margin-right: 10px;
-  }
-}
-
-.ha-button-container{
-  margin-left: auto;
-  margin-right: auto;
-  font-size: 1.5rem;
-  background: #FFF;
-  border-radius: 10px;
-  padding: 5px 20px;
-  display: inline-block;
-  height: auto;
-  >div{
-    position: relative;
-    display: block;
-    height: 30px;
-    line-height: 30px;
-    a{
-      padding: 15px 3px;
-    }
-  }
-}
-
-.ha-button{
-  span{
-    transform: translateY(2px);
-    color: $dark-gray;
-    line-height: 20px;
-    padding: 3px;
-    display: inline-block;
-    letter-spacing: 1px;
-  }
-}
 
 .no-bg-button{
 }
