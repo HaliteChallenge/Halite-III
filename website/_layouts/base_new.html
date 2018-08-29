@@ -126,18 +126,18 @@
                         <ul class="nav nav-sub">
                             <li><a href="#">Game Overview</a></li>
                             <li><a href="#">Tutorials</a></li>
-                            <li><a href="#">Download</a></li>
+                            <li><a href="#">Downloads</a></li>
                         </ul>
                     </li>
                     <li class="{% if page.menu == 'play' %} active {% endif %}">
                         <a href="{{ site.baseurl }}/play-programming-challenge"><span>Play</span></a>
-                        <ul class="nav nav-sub">
-                            <li><a href="#">Competition Overview</a></li>
-                            <li><a href="#">Current Rankings</a></li>
-                            <li><a href="#">Watch games</a></li>
-                        </ul>
                     </li>
-                    <li class="{% if page.menu == 'leaderboard' %} active {% endif %}"><a href="{{ site.baseurl }}/programming-competition-leaderboard"><span>Community</span></a></li>
+                    <li class="{% if page.menu == 'watch' %} active {% endif %}">
+                            <a href="{{ site.baseurl }}/watch-games"><span>Watch</span></a>
+                        </li>
+                    <li class="{% if page.menu == 'leaderboard' %} active {% endif %}">
+                        <a href="{{ site.baseurl }}/programming-competition-leaderboard"><span>Leaderboard</span></a>
+                    </li>
                 </ul>
                 {% endif %}
                 <ul class="nav navbar-nav navbar-right not-logged-in container-empty">
