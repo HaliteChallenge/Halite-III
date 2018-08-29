@@ -118,7 +118,7 @@ window.views = {
   },
   HaliteTV: function () {
     new Vue({
-      el: '#halite-tv-container',
+      el: '#watch-container',
       render: (h) => h(HaliteTV, { props: { baseUrl: _global.baseUrl } })
     })
   },

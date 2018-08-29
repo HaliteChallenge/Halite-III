@@ -2,13 +2,13 @@
 layout: default
 toc: false
 full_width: true
-menu: halite-tv
-mount_views: ["HaliteTV"]
+menu: watch-games
+mount_views: ["Watch"]
 additional_js: []
-permalink: /halite-tv
-title: Halite TV
+permalink: /watch-games
+title: Watch games
 content: website
-description: Halite TV
+description: Watch games
 ---
 
-<div id="halite-tv-container"></div>
+<div id="watch-container"></div>
