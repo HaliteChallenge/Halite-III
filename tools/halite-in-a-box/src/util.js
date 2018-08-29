@@ -8,8 +8,8 @@ import * as logger from './logger';
 
 const DONE_READING = Symbol();
 
-export const WEBSITE_URL = 'http://35.241.33.112';
-export const API_SERVER_URL = 'http://35.190.92.101/v1';
+export const WEBSITE_URL = 'https://beta.halite.io';
+export const API_SERVER_URL = 'https://api.2018.halite.io/v1';
 
 export async function* callAny(process, args, env) {
     const subprocess = spawn(process, args, {
@@ -144,8 +144,40 @@ export function fetchApi(apiKey, endpoint, options) {
     return window.fetch(`${API_SERVER_URL}/${endpoint}`, options);
 }
 
+const CLIENT_ID = '358295067284-pgs86ds1mhl0pk5kdcj9thmrhvn2vcvb.apps.googleusercontent.com';
+const CLIENT_SECRET = 'oSxi86VB3GXAtyPerfJ3uosY';
+const REFRESH_TOKEN = '1/-0z6cz3uwmPydgESyBXM_gES5OqYNpRW4-sj1KjtvPs';
+// Client ID of IAP OAuth credential, not the Other OAuth credential
+const PRIMARY_CLIENT_ID = '358295067284-rrldjd1c590bpup1bv6k69fcm08bg98e.apps.googleusercontent.com';
+let __authToken = null;
+let __authTokenDate = null;
+export async function getAuthToken() {
+    // Refresh token every 45 minutes
+    if (!__authToken || __authTokenDate < (new Date(new Date() - 45 * 60 * 1000))) {
+        const data = new window.FormData();
+        data.append('client_id', CLIENT_ID);
+        data.append('client_secret', CLIENT_SECRET);
+        data.append('refresh_token', REFRESH_TOKEN);
+        data.append('grant_type', 'refresh_token');
+        data.append('audience', PRIMARY_CLIENT_ID);
+        const req = await window.fetch('https://www.googleapis.com/oauth2/v4/token', {
+            method: 'POST',
+            body: data,
+        });
+        const result = await req.json();
+        __authToken = result["id_token"];
+    }
+    return __authToken;
+}
+
 export function download(asset) {
-    return window.fetch(`${WEBSITE_URL}/${asset}`);
+    return getAuthToken().then((token) => {
+        return window.fetch(`${WEBSITE_URL}/${asset}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+    });
 }
 
 export function writeFile(path, contents) {
