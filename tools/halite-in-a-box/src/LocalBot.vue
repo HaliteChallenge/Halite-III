@@ -9,9 +9,25 @@
             <p v-if="!canRunGame && botExtension === '.zip'">
                 Zip files can only be uploaded, not benchmarked or bench-pressed.
             </p>
-            <button @click="benchmark" :disabled="!canRunGame">Benchmark</button>
-            <button @click="upload">Submit</button>
-            <button @click="chooseLocalBot">Select Different Bot</button>
+            <section class="button-group">
+                <button @click="remoteBenchmark" :disabled="!canRunGame">Compare With Uploaded Bot</button>
+                <p>
+                    Play your bot against the bot you currently have
+                    on the server for 10 matches, to see which is
+                    better.
+                </p>
+            </section>
+            <section class="button-group">
+                <button @click="localBenchmark" :disabled="!canRunGame">Compare With Benchmarks</button>
+                <p>
+                    Play your bot against various benchmark bots, to
+                    get an idea of where you stand.
+                </p>
+            </section>
+            <section>
+                <button @click="upload">Upload Bot</button>
+                <button @click="chooseLocalBot">Select Different Bot</button>
+            </section>
         </template>
         <template v-else>
             <p>
@@ -97,7 +113,61 @@
                 util.openBrowserTab(`${util.WEBSITE_URL}/learn-programming-challenge/downloads-and-starter-kits/`);
             },
 
-            async benchmark() {
+            async remoteBenchmark() {
+                // Should have been loaded before
+                const paths = await assets();
+                const params = ['play', '-i', 10,
+                                '-b', paths.environmentPath,
+                                '--output-dir', paths.replayDir,
+                                '-r', `${pythonPath()} "${this.localBot}"`];
+
+                const stats = [{
+                    won: 0,
+                    name: '(your bot)',
+                }];
+
+                const remote = new bot.RemoteBot("(currently uploaded bot)");
+                stats.push({
+                    won: 0,
+                    name: remote.name,
+                });
+                params.push('-r');
+                params.push(await remote.makePath());
+                console.log(params);
+
+                const state = {
+                    status: 'running',
+                    games: [],
+                    gamesPlayed: 0,
+                    gamesTotal: 10,
+                    stats,
+                    message: 'Running games...',
+                };
+                this.showModal('benchmark-modal', state);
+
+                for await (const value of util.call(params)) {
+                    console.log(value);
+                    if (value.games_played) {
+                        state.gamesPlayed = value.games_played;
+                    }
+                    if (value.stats) {
+                        for (const [stringKey, gamesWon] of Object.entries(value.stats)) {
+                            state.stats[parseInt(stringKey, 10)].won = gamesWon;
+                        }
+                    }
+                    if (value.results) {
+                        state.games.push(value.results);
+                    }
+                    this.showModal('benchmark-modal', state);
+                }
+
+                state.status = 'finished';
+                state.message = 'Done playing games!';
+                await this.showModal('benchmark-modal', state);
+                this.closeModal();
+            },
+
+            async localBenchmark() {
                 // Should have been loaded before
                 const paths = await assets();
 
@@ -212,3 +282,15 @@
         },
     }
 </script>
+
+<style lang="scss" scoped>
+    .button-group {
+        border-bottom: 0.1em solid #d1d1d1;
+
+        p {
+            margin-bottom: 0.5em;
+        }
+
+        margin-bottom: 0.5em;
+    }
+</style>

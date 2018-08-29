@@ -28,7 +28,7 @@
         </template>
 
         <p v-else>
-            No bot submitted. Select a bot on the right.
+            No bot uploaded. Select a bot on the right to upload it.
         </p>
     </section>
 </template>
