@@ -44,9 +44,19 @@ struct Constants {
     unsigned long MAX_TURNS = 500;
     unsigned long MAX_TURN_THRESHOLD = 80;
 
-    dimension_type CAPTURE_RADIUS = 4; /**< The distance in which a ship is considered for the capture calculation */
+    /** Capture */
+    bool CAPTURE_ENABLED = true; /**< whether to use capture */
+    dimension_type CAPTURE_RADIUS = 3; /**< The distance in which a ship is considered for the capture calculation */
     unsigned long SHIPS_ABOVE_FOR_CAPTURE = 3; /**< If enemyships - friendlyships is above or equal to this threshold,
                                                         the ship is captured*/
+
+    /** Inspiration **/
+    bool INSPIRATION_ENABLED = true; /**< whether to use inspiration **/
+    unsigned long INSPIRED_EXTRACT_RATIO = EXTRACT_RATIO; /**< alternative mining ratio for inspired ships */
+    unsigned long INSPIRED_EFFICIENCY_RATIO = 5; /**< The benefit ratio of mining when inspired. (Removing Y halite from a cell gives you (1/X) * Y additional halite.) */
+    unsigned long INSPIRED_MOVE_COST_RATIO = 12; /**< Alternative move cost ratio for inspired ships. */
+    dimension_type INSPIRATION_RADIUS = 5; /** Maximum distance away for ships to count towards inspiration. */
+    long INSPIRATION_SHIP_ADVANTAGE_COUNT = -3; /**< If your ships <= enemy ships + X, then you are inspired. Negative values mean you are inspired with fewer ships around. */
 
     /*
     The two FACTOR_EXP constants do related things but they are not the same.
