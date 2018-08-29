@@ -44,7 +44,7 @@
           description="Drop a replay file here to <br>upload your bot"
           buttonText = "Select File"
           :icon="`/assets/images/icon-upload.svg`"
-          v-on:change="play_replay"
+          v-on:change="upload_bot"
           :progressBar="is_downloading"
           :progress="uploadProgress"
           :message="uploadMessage">
@@ -239,7 +239,10 @@
       },
       gaData: function (category, action, label) {
         utils.gaEvent(category, action, label)
-      }
+      },
+      upload_bot(files) {
+        api.update_bot(this.user.user_id, this.botsList.length > 0 ? 0 : null, files[0], (progress) => {})
+      },
     }
   }
 </script>
