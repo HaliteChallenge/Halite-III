@@ -110,7 +110,12 @@ export class RemoteBot extends Bot {
 
         let botPath = null;
         for (const [ zipFilePath, file ] of Object.entries(zip.files)) {
-            if (path.basename(zipFilePath).startsWith('MyBot')) {
+            if (file.dir) {
+                const destPath = path.join(tempDir, zipFilePath);
+                await mkdirp(destPath);
+                continue;
+            }
+            else if (path.basename(zipFilePath).startsWith('MyBot')) {
                 botPath = zipFilePath;
             }
 
