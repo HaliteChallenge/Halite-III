@@ -1,6 +1,8 @@
 import { spawn } from 'child_process';
 import { remote as electronRemote, shell } from 'electron';
 import fs from 'fs';
+import mkdirp from 'mkdirp';
+import path from 'path';
 import readline from 'readline';
 
 import { pythonPath, pythonHomePath, pythonPackagePath, embeddedResourcesPath } from './assets';
@@ -204,4 +206,18 @@ export function watchReplay(path) {
     win.webContents.on('did-finish-load', () => {
         win.webContents.send('watch', path);
     });
+}
+
+export async function extractZip(zip, destination) {
+    for (const [ zipFilePath, file ] of Object.entries(zip.files)) {
+        const destPath = path.join(destination, zipFilePath);
+        if (file.dir) {
+            await mkdirp(destPath);
+            continue;
+        }
+
+        await mkdirp(path.dirname(destPath));
+        const binary = await file.async('uint8array');
+        await writeFile(destPath, binary);
+    }
 }

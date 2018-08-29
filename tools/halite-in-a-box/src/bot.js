@@ -110,20 +110,11 @@ export class RemoteBot extends Bot {
 
         let botPath = null;
         for (const [ zipFilePath, file ] of Object.entries(zip.files)) {
-            if (file.dir) {
-                const destPath = path.join(tempDir, zipFilePath);
-                await mkdirp(destPath);
-                continue;
-            }
-            else if (path.basename(zipFilePath).startsWith('MyBot')) {
+            if (!file.dir && path.basename(zipFilePath).startsWith('MyBot')) {
                 botPath = zipFilePath;
             }
-
-            const destPath = path.join(tempDir, zipFilePath);
-            await mkdirp(path.dirname(destPath));
-            const binary = await file.async('uint8array');
-            await util.writeFile(destPath, binary);
         }
+        await util.extractZip(zip, tempDir);
 
         const result = path.join(tempDir, botPath);
         console.info('Remote bot temp path:', result);
