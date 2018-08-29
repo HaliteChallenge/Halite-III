@@ -250,7 +250,7 @@ export default async function assets() {
         filename === 'MyBot.py' ? 'Python Starter Bot' :
             path.basename(filename, path.extname(filename)),
         bot.InterpretedBot.languages.Python,
-        path.join(botsPath, filename)
+        path.join(botsPath, 'benchmark', filename)
     ));
 
     const result = Object.assign({}, paths, {

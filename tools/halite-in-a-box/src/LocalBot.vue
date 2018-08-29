@@ -119,7 +119,7 @@
                 const params = ['play', '-i', 10,
                                 '-b', paths.environmentPath,
                                 '--output-dir', paths.replayDir,
-                                '-r', `${pythonPath()} "${this.localBot}"`];
+                                '-r', `"${pythonPath()}" "${this.localBot}"`];
 
                 const stats = [{
                     won: 0,
@@ -185,7 +185,7 @@
                 const params = ['play', '-i', action.games,
                                 '-b', paths.environmentPath,
                                 '--output-dir', paths.replayDir,
-                                '-r', `${pythonPath()} "${this.localBot}"`];
+                                '-r', `"${pythonPath()}" "${this.localBot}"`];
 
                 const stats = [{
                     won: 0,
