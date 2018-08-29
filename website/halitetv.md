@@ -3,7 +3,7 @@ layout: default
 toc: false
 full_width: true
 menu: watch-games
-mount_views: ["Watch"]
+mount_views: ["HaliteTV"]
 additional_js: []
 permalink: /watch-games
 title: Watch games
