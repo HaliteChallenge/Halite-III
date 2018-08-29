@@ -10,7 +10,7 @@
                 Zip files can only be uploaded, not benchmarked or bench-pressed.
             </p>
             <section class="button-group">
-                <button @click="remoteBenchmark" :disabled="!canRunGame">Compare With Uploaded Bot</button>
+                <button @click="remoteBenchmark" :disabled="!canRunGame">Play Against Uploaded Bot</button>
                 <p>
                     Play your bot against the bot you currently have
                     on the server for 10 matches, to see which is
@@ -18,7 +18,7 @@
                 </p>
             </section>
             <section class="button-group">
-                <button @click="localBenchmark" :disabled="!canRunGame">Compare With Benchmarks</button>
+                <button @click="localBenchmark" :disabled="!canRunGame">Play Against Benchmark Bots</button>
                 <p>
                     Play your bot against various benchmark bots, to
                     get an idea of where you stand.
