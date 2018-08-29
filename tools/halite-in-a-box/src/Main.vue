@@ -11,14 +11,14 @@
                 <nav id="toolbar">
                     <button @click="chooseReplay">Watch Replay</button>
                 </nav>
-                <tab-bar :tabs="['Bots', 'Local Match History', 'Gym', 'Settings']">
+                <tab-bar :tabs="['Bots', 'Local Match History']">
                     <section class="bots-tab" slot="tab-0">
                         <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
                         <LocalBot :apiKey="apiKey" :userId="userId" @change="localBot = $event" />
                     </section>
                     <MatchHistory slot="tab-1" />
-                    <LocalBotGym slot="tab-2" :localBot="localBot" />
-                    <Settings slot="tab-3" />
+                    <!-- <LocalBotGym slot="tab-2" :localBot="localBot" /> -->
+                    <!-- <Settings slot="tab-3" /> -->
                 </tab-bar>
             </div>
         </template>

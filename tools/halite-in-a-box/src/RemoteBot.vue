@@ -1,7 +1,7 @@
 <template>
     <section id="remote-bot">
         <header>
-            <h2>Current Bot</h2>
+            <h2>Current Submission</h2>
         </header>
 
         <template v-if="remoteBot">

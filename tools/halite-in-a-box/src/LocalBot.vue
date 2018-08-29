@@ -5,7 +5,10 @@
             <h2 v-else>Select Local Bot</h2>
         </header>
         <template v-if="localBot">
-            <p>Bot path: {{localBot}}</p>
+            <section class="local-bot-path">
+                <p>Bot path: {{localBot}}</p>
+                <button @click="chooseLocalBot">Select Different Bot</button>
+            </section>
             <p v-if="!canRunGame && botExtension === '.zip'">
                 Zip files can only be uploaded, not benchmarked or bench-pressed.
             </p>
@@ -26,7 +29,6 @@
             </section>
             <section>
                 <button @click="upload">Upload Bot</button>
-                <button @click="chooseLocalBot">Select Different Bot</button>
             </section>
         </template>
         <template v-else>
@@ -291,6 +293,14 @@
             margin-bottom: 0.5em;
         }
 
+        margin-bottom: 0.5em;
+    }
+
+    .local-bot-path {
+        p {
+            margin: 0;
+        }
+        border-bottom: 0.1em solid #d1d1d1;
         margin-bottom: 0.5em;
     }
 </style>
