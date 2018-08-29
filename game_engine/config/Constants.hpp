@@ -56,7 +56,7 @@ struct Constants {
     unsigned long INSPIRED_EFFICIENCY_RATIO = 5; /**< The benefit ratio of mining when inspired. (Removing Y halite from a cell gives you (1/X) * Y additional halite.) */
     unsigned long INSPIRED_MOVE_COST_RATIO = 12; /**< Alternative move cost ratio for inspired ships. */
     dimension_type INSPIRATION_RADIUS = 5; /** Maximum distance away for ships to count towards inspiration. */
-    long INSPIRATION_SHIP_ADVANTAGE_COUNT = -3; /**< If your ships <= enemy ships + X, then you are inspired. Negative values mean you are inspired with fewer ships around. */
+    unsigned long INSPIRATION_SHIP_COUNT = 3; /**< If there are at least X enemy ships, then you are inspired. */
 
     /*
     The two FACTOR_EXP constants do related things but they are not the same.

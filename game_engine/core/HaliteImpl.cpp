@@ -384,7 +384,7 @@ void HaliteImpl::update_inspiration() {
     }
 
     const auto inspiration_radius = Constants::get().INSPIRATION_RADIUS;
-    const auto ships_threshold = Constants::get().INSPIRATION_SHIP_ADVANTAGE_COUNT;
+    const auto ships_threshold = Constants::get().INSPIRATION_SHIP_COUNT;
 
     // Check every ship of every player
     for (const auto &[player_id, player] : game.store.players) {
@@ -424,7 +424,7 @@ void HaliteImpl::update_inspiration() {
             }
 
             // Total up ships of other player
-            long opponent_entities = 0;
+            unsigned long opponent_entities = 0;
             for (const auto &[pid, count] : ships_in_radius) {
                 if (pid != player_id) {
                     opponent_entities += count;
@@ -433,9 +433,7 @@ void HaliteImpl::update_inspiration() {
 
             // Mark ship as inspired or not
             auto &entity = game.store.get_entity(entity_id);
-            entity.is_inspired =
-                opponent_entities + ships_threshold >= 0 &&
-                ships_in_radius[player_id] <= opponent_entities + ships_threshold;
+            entity.is_inspired = opponent_entities >= ships_threshold;
         }
     }
 }
