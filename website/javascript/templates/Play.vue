@@ -1,6 +1,6 @@
 <template>
   <div class="play-container">
-    
+
     <!--
     <div class="play-navbar only-desktop">
       <ul>
@@ -15,12 +15,12 @@
         </li>
       </ul>
     </div>
-    
+
     <div class="responsive-toc-nav only-mobile">
       <span class="current-nav-item" data-toggle="collapse" data-target="#res_nav_selector">
         Competition Overview
       </span>
-      <ul id="res_nav_selector" class="select-nav collapse" aria-expanded="false"> 
+      <ul id="res_nav_selector" class="select-nav collapse" aria-expanded="false">
         <li><a href="#">Competition Overview</a></li>
         <li><a href="#">Current Ranking</a></li>
         <li><a href="#">Watch Games</a></li>
@@ -98,7 +98,7 @@
       return libhaliteviz;
     }).then((libhaliteviz) => {
       return libhaliteviz.parseReplay(buffer).then((replay) => {
-        let outerContainer = document.getElementById('halitetv-visualizer')
+        let outerContainer = document.querySelector('.play-container > .container-fluid')
         outerContainer.innerHTML = ''
 
         let container = document.createElement('div')
@@ -188,8 +188,8 @@
             // TODO: upload
           }
           else {
-            let outerContainer = document.getElementById('halitetv-visualizer')
-            outerContainer.innerHTML = ''
+            /* let outerContainer = document.getElementById('halitetv-visualizer') */
+            /* outerContainer.innerHTML = '' */
             ins.play_replay(files)
           }
         }
@@ -245,5 +245,5 @@
 </script>
 
 <style lang="scss" scoped>
-  
+
 </style>
