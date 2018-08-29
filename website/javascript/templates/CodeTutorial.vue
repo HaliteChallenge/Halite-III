@@ -3,16 +3,24 @@
         <template slot="steps">
             <Step title="The Starter Bot" name="starter-bot">
               <p>
-                Let’s take a look at the starting code. Your bot is in
-                the “MyBot” file. The “hlt” file is the helper library
-                which lets your code interact with the game. We’ve
-                also imported “random” and “logging” to get started -
-                we will talk about those later. Your code appears to
-                the right, and the visualizer and game output is on
-                the far right. This online editor is available outside
-                this tutorial.
+                This tutorial guides you through creating your first 
+                Halite III bot. You’ll write code that tells your bot 
+                to build ships, explore the ocean, and collect halite. 
               </p>
-
+              
+              <p>
+                Let’s take a look at the web editor. The visualizer and 
+                game output is on the far right. This web editor is 
+                available outside this tutorial. Your code is on the 
+                left in the “MyBot.py” file. The “hlt” folder contains 
+                helper library files which let your code interact with 
+                the game engine. 
+              </p>
+              
+              <p>
+                The starting code imports some helpers from the “hlt” 
+                files. We also import “random” and “logging” to get 
+                started - we will talk about those later. 
               <p>
                 At the moment, this bot doesn’t do very much, so let’s
                 get started.
@@ -46,7 +54,7 @@
                 game changes every turn, and and we will get the
                 newest information by running <tt>game.update_frame()</tt>.
                 We will extract some key information and store it in
-                the variables `me` and `game_map`, to give us fast
+                the variables <tt>me</tt> and <tt>game_map</tt>, to give us fast
                 access to important parts of the game state.
               </p>
 
@@ -94,9 +102,9 @@
 
               <p>
                 The <tt>ship.move(ship, direction)</tt> function accepts the
-                single letter strings `“n”, “s”, “e”, “w”`, which
+                single letter strings <tt>“n”, “s”, “e”, “w”</tt>, which
                 correspond to the cardinal directions, as its second
-                argument. It also accepts `”o”`, meaning origin, which
+                argument. It also accepts <tt>”o”</tt>, meaning origin, which
                 tells the ship to stay put and collect halite. We’ll
                 use this command in a moment.
               </p>
