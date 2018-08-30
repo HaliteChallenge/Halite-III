@@ -132,6 +132,7 @@ void HaliteImpl::run_game() {
     for (auto &[player_id, result] : results) {
         try {
             result.get();
+            Logging::log("Initialized player " + game.store.get_player(player_id).name, Logging::Level::Info, player_id);
         } catch (const BotError &e) {
             kill_player(player_id);
         }
@@ -437,6 +438,9 @@ void HaliteImpl::update_inspiration() {
             // Mark ship as inspired or not
             auto &entity = game.store.get_entity(entity_id);
             entity.is_inspired = opponent_entities >= ships_threshold;
+            if (entity.is_inspired) {
+                Logging::log("Entity is inspired: " + to_string(entity.owner) + " " + to_string(entity_id), Logging::Level::Info);
+            }
         }
     }
 }
