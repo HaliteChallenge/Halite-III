@@ -81,8 +81,6 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
         }
         players.emplace(player.id, player);
     }
-    game.replay.full_frames.back().add_cells(game.map, changed_cells);
-
     game.replay.game_statistics = game.game_statistics;
 
     for (auto &[player_id, player] : game.store.players) {
@@ -94,6 +92,11 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
         // Prepare the log.
         game.logs.add(player_id);
     }
+    game.replay.full_frames.back().add_cells(game.map, changed_cells);
+    for (const auto &[player_id, player] : game.store.players) {
+        game.replay.full_frames.back().energy.insert({{player_id, player.energy}});
+    }
+    update_player_stats();
 }
 
 /** Run the game. */
@@ -136,7 +139,7 @@ void HaliteImpl::run_game() {
     game.replay.players.insert(game.store.players.begin(), game.store.players.end());
     Logging::log("Player initialization complete");
 
-    for (game.turn_number = 0; game.turn_number < constants.MAX_TURNS; game.turn_number++) {
+    for (game.turn_number = 1; game.turn_number <= constants.MAX_TURNS; game.turn_number++) {
         Logging::set_turn_number(game.turn_number);
         game.logs.set_turn_number(game.turn_number);
         Logging::log([turn_number = game.turn_number]() {
@@ -258,7 +261,7 @@ void HaliteImpl::process_turn() {
     // Resolve ship mining
     const auto max_energy = Constants::get().MAX_ENERGY;
     const auto ships_threshold = Constants::get().SHIPS_ABOVE_FOR_CAPTURE;
-    const auto bonus_ratio = Constants::get().INSPIRED_EXTRACT_RATIO;
+    const auto bonus_ratio = Constants::get().INSPIRED_EFFICIENCY_RATIO;
     for (auto &[entity_id, entity] : game.store.entities) {
         if (changed_entities.find(entity_id) == changed_entities.end()
             && entity.energy < max_energy) {

@@ -39,6 +39,7 @@ class Signal {
 export class HaliteVisualizer {
     constructor(replay, width, height) {
         window.replay = replay;
+        window.visualizer = this;
         this.width = width || assets.BASE_VISUALIZER_WIDTH;
         this.height = height || assets.BASE_VISUALIZER_HEIGHT;
 
@@ -334,7 +335,9 @@ export class HaliteVisualizer {
      */
     findCurrentProduction(frameId, x, y) {
         // TODO: this is inefficient AF
-        for (let i = frameId; i >= 0; i--) {
+        // Start at previous frame because current frame's changed
+        // cells record applies to the next frame. (Confused yet?)
+        for (let i = frameId - 1; i >= 0; i--) {
             const frame = this.replay.full_frames[i];
             for (const cell of frame.cells) {
                 if (cell.x == x && cell.y == y) {
@@ -493,9 +496,11 @@ export class HaliteVisualizer {
         this.process_entity_events(delta);
 
         // Process map ownership
-        if (this.currentFrame) {
-            this.baseMap.update(this.frame, this.currentFrame.cells, delta);
-        }
+        // The game writes the cells that changed during a turn to
+        // that turn's frame, but we don't want to apply those changes
+        // until the beginning of next turn.
+        const cellsUpdatedLastTurn = this.replay.full_frames[this.frame - 1];
+        this.baseMap.update(this.frame, cellsUpdatedLastTurn || [], delta);
     }
 
     /** Update/rerender after panning. */
