@@ -500,7 +500,7 @@ export class HaliteVisualizer {
         // that turn's frame, but we don't want to apply those changes
         // until the beginning of next turn.
         const cellsUpdatedLastTurn = this.replay.full_frames[this.frame - 1];
-        this.baseMap.update(this.frame, cellsUpdatedLastTurn || [], delta);
+        this.baseMap.update(this.frame, cellsUpdatedLastTurn ? cellsUpdatedLastTurn.cells : [], delta);
     }
 
     /** Update/rerender after panning. */
