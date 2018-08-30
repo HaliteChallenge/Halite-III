@@ -101,9 +101,9 @@ h1, h2, h3{
   border-bottom: 0;
   position: relative;
   h1, .h1{
-    font-family: "Teko";
     font-size: 3.6rem;
     letter-spacing: 2px;
+    font-weight: 600;
     text-align: center;
     text-transform: uppercase;
   }
@@ -138,7 +138,7 @@ h1, h2, h3{
 }
 
 body #message-placeholder .ha-alert{
-  position: fixed;
+  position: absolute;
   z-index: 999;
   top: 61px;
   left: 0;
