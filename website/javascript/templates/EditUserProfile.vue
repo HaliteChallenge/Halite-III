@@ -83,19 +83,6 @@
                             :options="regions">
                         </v-select>
                     </div>
-
-
-                    <div class="line-container"><i class="xline xline-top"></i></div>
-
-
-
-                    <h2 id="section_hackathons" class="form-heading">Hackathons</h2>
-                    <div class="form-group">
-                        <label for="hackathon">Join a Hackathon</label>
-                        <input type="text" class="form-control" placeholder="Enter hackathon code" v-model="hackathon_code">
-                         <p style="margin-top: 20px;color: red;">{{hackathon_error_message}}</p>
-                    </div>
-
                     <div class="form-group has-error" v-if="error">
                         <span id="error-help" class="help-block">{{ error }}</span>
                     </div>
