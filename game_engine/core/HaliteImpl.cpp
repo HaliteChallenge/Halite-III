@@ -262,7 +262,7 @@ void HaliteImpl::process_turn() {
     // Resolve ship mining
     const auto max_energy = Constants::get().MAX_ENERGY;
     const auto ships_threshold = Constants::get().SHIPS_ABOVE_FOR_CAPTURE;
-    const auto bonus_ratio = Constants::get().INSPIRED_EFFICIENCY_RATIO;
+    const auto bonus_multiplier = Constants::get().INSPIRED_BONUS_MULTIPLIER;
     for (auto &[entity_id, entity] : game.store.entities) {
         if (changed_entities.find(entity_id) == changed_entities.end()
             && entity.energy < max_energy) {
@@ -282,8 +282,8 @@ void HaliteImpl::process_turn() {
             }
 
             // Apply bonus for inspired entities
-            if (entity.is_inspired && bonus_ratio > 0) {
-                gained += gained / bonus_ratio;
+            if (entity.is_inspired && bonus_multiplier > 0) {
+                gained += bonus_multiplier * gained;
             }
 
             // Do not allow entity to exceed capacity.
