@@ -24,10 +24,13 @@ export default class Ship {
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);
 
         this.sprite = new PIXI.Sprite(assets.TURTLE_SPRITES[record.owner]);
+        this.inspiredSprite = new PIXI.Sprite(spriteTexture);
+        this.inspiredSprite.tint = assets.PLAYER_COLORS[record.owner];
         this.highlight = new PIXI.Sprite(spriteTexture);
         this.highlight.visible = false;
         this.motionblur = new MotionBlurFilter([0, 0], 9, 0);
         this.sprite.filters = [this.motionblur];
+        this.inspiredSprite.filters = [this.motionblur];
 
         this.container = null;
         this.visualizer = visualizer;
@@ -51,6 +54,8 @@ export default class Ship {
         // Set up sprite size & anchors
         const width = assets.CELL_SIZE * this.visualizer.camera.scale;
         setupSprite(this.sprite, width * 4);
+        setupSprite(this.inspiredSprite, width * 4);
+        this.inspiredSprite.visible = false;
         setupSprite(this.highlight, width * 1.25);
 
         // add to board in correct position
@@ -67,6 +72,7 @@ export default class Ship {
     attach(container) {
         container.addChild(this.highlight);
         container.addChild(this.sprite);
+        container.addChild(this.inspiredSprite);
         this.container = container;
     }
 
@@ -74,6 +80,7 @@ export default class Ship {
      * Remove this sprite from the visualizer(as in, when it runs out of health)
      */
     destroy() {
+        this.container.removeChild(this.inspiredSprite);
         this.container.removeChild(this.sprite);
         this.container.removeChild(this.highlight);
         delete this.container;
@@ -88,7 +95,6 @@ export default class Ship {
             id: this.id,
         });
     }
-
 
     /**
      * Update this sprite's display with the latest state from the replay.
@@ -209,17 +215,37 @@ export default class Ship {
         this.sprite.position.x = pixelX;
         this.sprite.position.y = pixelY;
         this.sprite.width = this.sprite.height = size * 1.5;
+        this.inspiredSprite.position.x = pixelX;
+        this.inspiredSprite.position.y = pixelY;
+        this.inspiredSprite.width = this.inspiredSprite.height = size * 1.5;
+        this.highlight.position.x = pixelX;
+        this.highlight.position.y = pixelY;
+        this.highlight.width = this.highlight.height = 1.25 * size;
 
         const camera = this.visualizer.camera;
-        if (camera.selected && camera.selected.type === "ship" &&
-            camera.selected.id === this.id && camera.selected.owner === this.owner) {
-            this.highlight.visible = true;
-            this.highlight.position.x = pixelX;
-            this.highlight.position.y = pixelY;
-            this.highlight.width = this.highlight.height = 1.25 * size;
+        this.highlight.visible =
+            camera.selected &&
+            camera.selected.type === "ship" &&
+            camera.selected.id === this.id &&
+            camera.selected.owner === this.owner;
+
+        if (!this.visualizer.currentFrame || !this.visualizer.currentFrame.entities) {
+            return;
+        }
+        if (!this.visualizer.currentFrame.entities[this.owner]) {
+            return;
+        }
+        if (!this.visualizer.currentFrame.entities[this.owner][this.id]) {
+            return;
+        }
+
+        if (this.visualizer.currentFrame.entities[this.owner][this.id].is_inspired) {
+            this.inspiredSprite.visible = true;
+            this.sprite.visible = false;
         }
         else {
-            this.highlight.visible = false;
+            this.inspiredSprite.visible = false;
+            this.sprite.visible = true;
         }
     }
 }

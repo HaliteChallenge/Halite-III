@@ -27,6 +27,7 @@ void to_json(nlohmann::json &json, const CellInfo &info) {
 void to_json(nlohmann::json &json, const EntityInfo &info) {
     json = {INFO_FIELD_TO_JSON(x),
             INFO_FIELD_TO_JSON(y),
+            INFO_FIELD_TO_JSON(is_inspired),
             INFO_FIELD_TO_JSON(energy)};
 }
 
