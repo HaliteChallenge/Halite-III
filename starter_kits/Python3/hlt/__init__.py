@@ -424,6 +424,21 @@ class GameMap:
 
         return None
 
+    def basic_move(self, ship, destination):
+        """
+        Returns a singular safe move towards the destination.
+
+        :param source: Starting position
+        :param destination: Ending position
+        :return: A direction, or None if no such move exists.
+        """
+        safe_move = self._naive_navigate(ship.position, destination)
+        if safe_move:
+            self[ship.position.directional_offset(safe_move)].mark_unsafe(ship)
+            return safe_move
+
+        return Direction.STILL
+
     def get_safe_move(self, source, destination):
         """
         Returns the best (read: most optimal) singular safe move
