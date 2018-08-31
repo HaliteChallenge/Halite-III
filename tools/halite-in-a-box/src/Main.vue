@@ -11,14 +11,14 @@
                 <nav id="toolbar">
                     <button @click="chooseReplay">Watch Replay</button>
                 </nav>
-                <tab-bar :tabs="['Bots', 'Gym', 'Settings']">
+                <tab-bar :tabs="['Bots', 'Local Match History']">
                     <section class="bots-tab" slot="tab-0">
                         <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
                         <LocalBot :apiKey="apiKey" :userId="userId" @change="localBot = $event" />
                     </section>
-                    <template slot="tab-1">
-                        <LocalBotGym :localBot="localBot" />
-                    </template>
+                    <MatchHistory slot="tab-1" />
+                    <!-- <LocalBotGym slot="tab-2" :localBot="localBot" /> -->
+                    <!-- <Settings slot="tab-3" /> -->
                 </tab-bar>
             </div>
         </template>
@@ -35,16 +35,20 @@
     import * as util from './util';
 
     import Login from './Login.vue';
+    import MatchHistory from './MatchHistory.vue';
     import RemoteBot from './RemoteBot.vue';
     import LocalBot from './LocalBot.vue';
     import LocalBotGym from './LocalBotGym.vue';
+    import Settings from './SettingsPage.vue';
 
     export default {
         components: {
             Login,
+            MatchHistory,
             RemoteBot,
             LocalBot,
             LocalBotGym,
+            Settings,
         },
         data() {
             return {

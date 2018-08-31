@@ -109,7 +109,6 @@ void ConstructTransaction::commit() {
  */
 bool MoveTransaction::check() {
     auto success = true;
-    auto cost = Constants::get().MOVE_COST_RATIO;
     for (const auto &[player_id, moves] : commands) {
         auto &player = store.get_player(player_id);
         for (const MoveCommand &command : moves) {
@@ -125,7 +124,6 @@ bool MoveTransaction::check() {
 
 /** If the transaction may be committed, commit the transaction. */
 void MoveTransaction::commit() {
-    auto cost = Constants::get().MOVE_COST_RATIO;
     // Map from destination location to all the entities that want to go there.
     std::unordered_map<Location, std::vector<Entity::id_type>> destinations;
     /** Map from entity to the command that caused it to move. */
@@ -140,9 +138,14 @@ void MoveTransaction::commit() {
             }
             auto location = player.get_entity_location(command.entity);
             auto &source = map.at(location);
-            // Check if entity has enough energy
-            energy_type required = source.energy / cost;
             auto &entity = store.get_entity(command.entity);
+
+            // Check if entity has enough energy
+            const auto cost = entity.is_inspired ?
+                Constants::get().INSPIRED_MOVE_COST_RATIO :
+                Constants::get().MOVE_COST_RATIO;
+            energy_type required = source.energy / cost;
+
             if (entity.energy < required) {
                 // Entity does not have enough energy, ignore command.
                 error_generated<InsufficientEnergyError<MoveCommand>>(player_id, command, entity.energy,

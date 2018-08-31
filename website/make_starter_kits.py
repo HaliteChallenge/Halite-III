@@ -113,22 +113,28 @@ def make_source_download():
 
 def make_benchmark_download():
     included_files = []
-
     manifest = []
-    for directory, _, file_list in itertools.chain(os.walk("../starter_kits/benchmark"),
-                                                   os.walk("../starter_kits/Python3")):
-        for filename in file_list:
-            _, ext = os.path.splitext(filename)
-            if ext.lower() in {".py"}:
-                source_path = os.path.join(directory, filename)
-                target_path = os.path.normpath(
-                    os.path.join("benchmark/", filename))
 
-                included_files.append((source_path, target_path))
-                digest = hashlib.sha256()
-                with open(source_path, "rb") as source_file:
-                    digest.update(source_file.read())
-                manifest.append((target_path, digest.hexdigest()))
+    def add_directory(root):
+        for directory, _, file_list in os.walk(root):
+            for filename in file_list:
+                _, ext = os.path.splitext(filename)
+                if ext.lower() in {".py"}:
+                    source_path = os.path.join(directory, filename)
+                    target_path = os.path.normpath(
+                        os.path.join("benchmark/", os.path.relpath(source_path, start=root)))
+                    if filename == 'MyBot.py':
+                        target_path = os.path.normpath(
+                            os.path.join("benchmark/", os.path.relpath(os.path.join(directory, 'RandomBot.py'), start=root)))
+
+                    included_files.append((source_path, target_path))
+                    digest = hashlib.sha256()
+                    with open(source_path, "rb") as source_file:
+                        digest.update(source_file.read())
+                    manifest.append((target_path, digest.hexdigest()))
+
+    add_directory("../starter_kits/benchmark")
+    add_directory("../starter_kits/Python3")
 
     with zipfile.ZipFile(BENCHMARK_FILE, "w", zipfile.ZIP_DEFLATED) as archive:
         for source_path, target_path in included_files:

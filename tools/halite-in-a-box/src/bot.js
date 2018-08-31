@@ -30,7 +30,7 @@ export class InterpretedBot extends Bot {
 
     async makePath() {
         if (this.language === InterpretedBot.languages.Python) {
-            return `${assets.pythonPath()} ${this.path}`;
+            return `"${assets.pythonPath()}" "${this.path}"`;
         }
 
         throw new Error("Unrecognized bot interpreter ${this.language}");
@@ -110,15 +110,11 @@ export class RemoteBot extends Bot {
 
         let botPath = null;
         for (const [ zipFilePath, file ] of Object.entries(zip.files)) {
-            if (path.basename(zipFilePath).startsWith('MyBot')) {
+            if (!file.dir && path.basename(zipFilePath).startsWith('MyBot')) {
                 botPath = zipFilePath;
             }
-
-            const destPath = path.join(tempDir, zipFilePath);
-            await mkdirp(path.dirname(destPath));
-            const binary = await file.async('uint8array');
-            await util.writeFile(destPath, binary);
         }
+        await util.extractZip(zip, tempDir);
 
         const result = path.join(tempDir, botPath);
         console.info('Remote bot temp path:', result);

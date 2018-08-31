@@ -113,20 +113,9 @@ set(TEST_FILES "${TEST_FILES}" ${SOURCE})
 
 if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
     set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules)
-    include(CodeCoverage)
-    set(COVERAGE_EXCLUDES '${CMAKE_SOURCE_DIR}/external/*' '${CMAKE_SOURCE_DIR}/test/*' '/usr/include/*')
-    if(APPLE)
-        set(COVERAGE_EXCLUDES ${COVERAGE_EXCLUDES} '/Applications/Xcode.app/*')
-    endif()
-
-    add_library(halite_core_coverage OBJECT ${SOURCE_FILES})
-    target_compile_options(halite_core_coverage PRIVATE -fprofile-arcs -ftest-coverage)
 
     file(GLOB_RECURSE TEST_FILES ${CMAKE_SOURCE_DIR}/test/*.[ch]*)
-    add_executable(halite_test $<TARGET_OBJECTS:halite_core_coverage> ${TEST_FILES} ${CMAKE_SOURCE_DIR}/test/TestMain.cpp)
-
-    setup_target_for_coverage(NAME coverage EXECUTABLE halite_test)
-    target_compile_options(halite_test PRIVATE -fprofile-arcs -ftest-coverage)
+    add_executable(halite_test $<TARGET_OBJECTS:halite_core> ${TEST_FILES} ${CMAKE_SOURCE_DIR}/test/TestMain.cpp)
 else()
     add_executable(halite_test $<TARGET_OBJECTS:halite_core> ${TEST_FILES} ${CMAKE_SOURCE_DIR}/test/TestMain.cpp)
 endif()
@@ -145,7 +134,6 @@ else()
         # But link statically on MinGW, since it doesn't have address sanitizer and keeping MinGW dlls around is a pain
         target_link_libraries(halite pthread libzstd_static)
         target_link_libraries(halite_test pthread libzstd_static Catch2::Catch)
-        target_link_libraries(halite_test gcov)
     else()
         # On Linux, make sure to link using the whole-archive option
         # See: https://stackoverflow.com/questions/35116327
