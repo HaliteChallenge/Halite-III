@@ -6,7 +6,7 @@ full_width: true
 permalink: /editor
 menu: editor
 mount_views: ["BotEditorPage"]
-additional_js: ["FileSaver.min", "jszip.min", "jszip-utils.min", "editorBuild/code_edit/built-codeEdit.min"]
+additional_js: ["FileSaver.min", "editorBuild/code_edit/built-codeEdit.min"]
 additional_css: ["built-codeEdit", "dark-codeEdit"]
 ---
 
@@ -27,10 +27,10 @@ additional_css: ["built-codeEdit", "dark-codeEdit"]
 	}
 	::-webkit-scrollbar {
 		width: 8px;
-		background-color: #25242f; 
+		background-color: #25242f;
 	}
 	::-webkit-scrollbar-thumb {
-		background-color: #26343F; 
+		background-color: #26343F;
 		border-radius: 3px;
 		width: 100%;
 		border: 0.5px solid #30414f;
