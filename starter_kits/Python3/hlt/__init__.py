@@ -435,8 +435,11 @@ class GameMap:
         :return: A single valid direction towards the destination
         accounting for collisions, or None if no such move exists.
         """
-        if not isinstance(source, MapCell) or not isinstance(destination, MapCell):
-            raise AttributeError("Source and Destination must be of type MapCell")
+        if not isinstance(source, MapCell):
+            source = self[source]
+
+        if not isinstance(destination, MapCell):
+            destination = self[destination]
 
         if source == destination:
             return None
