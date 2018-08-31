@@ -268,17 +268,12 @@
   import _ from 'lodash'
 
   const speedList = {
-      1: '&frac12x',
-      2: '1x',
-      4: '2x',
-      6: '3x',
-      8: '4x',
-      10: '5x',
-      12: '6x',
-      14: '7x',
-      16: '8x',
-      18: '9x',
-      20: '10x',
+      2: '&frac12x',
+      4: '1x',
+      8: '2x',
+      12: '3x',
+      16: '4x',
+      20: '5x',
     }
 
   const loadGame = (game) => {
