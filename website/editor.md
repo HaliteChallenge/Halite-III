@@ -1,12 +1,11 @@
 ---
 layout: base_new
-no_header: true
 stoc: false
 full_width: true
 permalink: /editor
 menu: editor
 mount_views: ["BotEditorPage"]
-additional_js: ["FileSaver.min", "editorBuild/code_edit/built-codeEdit.min"]
+additional_js: ["editorBuild/code_edit/built-codeEdit.min"]
 additional_css: ["built-codeEdit", "dark-codeEdit"]
 ---
 

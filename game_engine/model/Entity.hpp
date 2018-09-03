@@ -18,6 +18,7 @@ struct Entity final : public Enumerated<Entity> {
     const player_id_type owner; /**< Owner of the entity. */
     energy_type energy;         /**< Energy of the entity. */
     bool was_captured;          /**< Track whether this entity was captured for statistics purposes. */
+    bool is_inspired;           /**< Track whether or not this entity is currently inspired. */
 
     /**
      * Convert an Entity to JSON format.
@@ -41,7 +42,7 @@ private:
      * @param owner The owner ID.
      * @param energy The energy.
      */
-    Entity(id_type id, player_id_type owner, energy_type energy) : Enumerated(id), owner(owner), energy(energy), was_captured(false) {}
+    Entity(id_type id, player_id_type owner, energy_type energy) : Enumerated(id), owner(owner), energy(energy), was_captured(false), is_inspired(false) {}
 };
 
 }

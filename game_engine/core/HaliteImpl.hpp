@@ -67,6 +67,9 @@ class HaliteImpl final {
      */
     void rank_players();
 
+    /** Update the inspiration flag on entities based on the current game state. */
+    void update_inspiration();
+
     /** Retrieve and process commands, and update the game state for the current turn. */
     void process_turn();
 

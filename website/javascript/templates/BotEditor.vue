@@ -1,9 +1,9 @@
 <template>
-  <div v-if="needs_login" class="body needs-login" style="margin-top: 61px">
+  <div v-if="needs_login" class="body needs-login">
     <p>You must be logged in to use the editor.</p>
     <a :href="login_url">Log In</a>
   </div>
-  <div style='margin-top: 61px' class="body" v-else>
+  <div class="body" v-else>
     <div class="container-fluid h-100 page_container">
       <div class="row flex-xl-nowrap h-100 page_row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 py-md-8 pl-md-8 bd-content big_col">
@@ -990,10 +990,6 @@ export default {
   font-size: 1.25em;
   color: #FFF;
   text-align: center;
-}
-
-.body {
-  position: relative;
 }
 
 .banner {

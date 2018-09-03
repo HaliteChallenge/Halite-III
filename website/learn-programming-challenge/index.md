@@ -66,6 +66,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sem ante, tinci
 [editor]: {{ site.baseurl }}/editor
 [contact]: {{ site.baseurl }}/about/contact-us
 [play]: {{ site.baseurl }}/play-programming-challenge
+[watch]: {{ site.baseurl }}/watch-games
 [submit]: {{ site.baseurl }}/learn-programming-challenge/downloads-and-starter-kits/submit
 [leaderboard]: {{ site.baseurl }}/programming-competition-leaderboard
 [game rules]: {{ site.baseurl }}/learn-programming-challenge/basic-game-rules

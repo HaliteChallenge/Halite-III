@@ -185,6 +185,7 @@ export default async function assets() {
 
     // Download benchmark bots
     let downloadBots = false;
+    console.log(botsPath);
     if (!fs.existsSync(botsPath)) {
         fs.mkdirSync(botsPath);
         downloadBots = true;
@@ -198,10 +199,11 @@ export default async function assets() {
             // redownloaded
             const promises = [];
             for (const [ filePath, sha256hash ] of manifest.manifest) {
-                const destPath = path.join(botsPath, path.basename(filePath));
+                const destPath = path.join(botsPath, filePath);
                 promises.push(new Promise((resolve, reject) => {
                     const input = fs.createReadStream(destPath);
                     input.on('error', (err) => {
+                        console.log(`Hash of bot file ${destPath} does not match.`).
                         resolve(true);
                     });
 
@@ -231,16 +233,15 @@ export default async function assets() {
         const request = await util.download(`assets/downloads/Halite3Benchmark.zip`);
         const rawZip = await request.arrayBuffer();
         const zip = await JSZip.loadAsync(rawZip);
-        for (const [ zipFilePath, file ] of Object.entries(zip.files)) {
-            const fileName = path.basename(zipFilePath);
-            const destPath = path.join(botsPath, fileName);
-            const binary = await file.async('uint8array');
-            await util.writeFile(destPath, binary);
-        }
+        await util.extractZip(zip, botsPath);
+        console.info('Downloaded benchmark bots.');
+    }
+    else {
+        console.info('Benchmark bots already present.');
     }
 
     const bots = await new Promise((resolve) => {
-        fs.readdir(botsPath, (err, files) => {
+        fs.readdir(path.join(botsPath, 'benchmark'), (err, files) => {
             // TODO: magic string
             resolve(files.filter(f => f.endsWith('.py') && f !== 'hlt.py'));
         });
@@ -249,7 +250,7 @@ export default async function assets() {
         filename === 'MyBot.py' ? 'Python Starter Bot' :
             path.basename(filename, path.extname(filename)),
         bot.InterpretedBot.languages.Python,
-        path.join(botsPath, filename)
+        path.join(botsPath, 'benchmark', filename)
     ));
 
     const result = Object.assign({}, paths, {
