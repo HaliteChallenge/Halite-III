@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 // https://github.com/vuejs-templates/webpack-simple
 module.exports = {
@@ -47,5 +48,8 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env.ASSET_PATH': JSON.stringify("/assets/js/")
         }),
+        new MomentLocalesPlugin({
+            localesToKeep: ['es-us', 'ru'],
+        })
     ],
 };

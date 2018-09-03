@@ -19,6 +19,10 @@
   }
 }
 
+.form-control[disabled]{
+  background-color: #fff;
+}
+
 select.form-control{
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -40,7 +44,7 @@ select.form-control::-ms-expand {
 }
 
 .form-inline-button{
-  background-color: #000;
+  background-color: #fff;
   display: flex;
   padding: 5px;
   input{
@@ -84,8 +88,8 @@ select.form-control::-ms-expand {
 }
 
 .v-select.dropdown{
-  background-color: #000;
-  color: #fff;
+  background-color: #fff;
+  color: rgba(0,19,51, 0.6);
   flex: 1;
   min-width: 0;
   min-height: 45px;
@@ -105,8 +109,8 @@ select.form-control::-ms-expand {
     /** select tag **/
     .selected-tag{
       border: 0;
-      background-color: $yellow;
-      color: #30242F;
+      background-color: #6dc3f5;
+      color: #fff;
     }
     
     background-image: url("/assets/images/chevron-down.svg");
