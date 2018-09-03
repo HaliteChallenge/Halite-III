@@ -44,6 +44,7 @@ CAPTURE_RADIUS = 3
 """A ship is captured if an opponent has this many more ships than you within CAPTURE_RADIUS distance."""
 CAPTURE_SHIP_ADVANTAGE = 3
 
+
 def load_constants(constants):
     """
     Load constants from JSON given by the game engine.
