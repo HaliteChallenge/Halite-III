@@ -34,6 +34,7 @@ export const DRAW_LINES_OWNER_MAP = false;
 export let PLANET_EXPLOSION_SHEET = null;
 export let SHIP_EXPLOSION_SHEET = null;
 export let TURTLE_SPRITES = [];
+export let BASE_SPRITES = [];
 export let HALO_SPRITE = null;
 
 
@@ -79,8 +80,16 @@ export function setAssetRoot(path) {
     return Promise.all([
         new Promise((resolve) => {
             PIXI.loader.add("halo", require("../assets/halo2.png"))
+                .add("base_green", require("../assets/base-green.png"))
+                .add("base_purple", require("../assets/base-purple.png"))
+                .add("base_red", require("../assets/base-red.png"))
+                .add("base_yellow", require("../assets/base-yellow.png"))
                 .load((loader, resources) => {
                     HALO_SPRITE = resources.halo.texture;
+                    BASE_SPRITES.push(resources.base_green.texture);
+                    BASE_SPRITES.push(resources.base_purple.texture);
+                    BASE_SPRITES.push(resources.base_red.texture);
+                    BASE_SPRITES.push(resources.base_yellow.texture);
                     resolve();
                 });
         }),
