@@ -83,19 +83,6 @@ export function setAssetRoot(path) {
     ASSET_ROOT = path;
 
     return Promise.all([
-        new Promise((resolve) => {
-            PIXI.loader.add("turtle1", require("../assets/p1.png"))
-                .add("turtle2", require("../assets/p2.png"))
-                .add("turtle3", require("../assets/p3.png"))
-                .add("turtle4", require("../assets/p4.png"))
-                .load((loader, resources) => {
-                    TURTLE_SPRITES.push(resources.turtle1.texture);
-                    TURTLE_SPRITES.push(resources.turtle2.texture);
-                    TURTLE_SPRITES.push(resources.turtle3.texture);
-                    TURTLE_SPRITES.push(resources.turtle4.texture);
-                    resolve();
-                });
-        }),
         loadSpritesheet(
             require("../assets/planet-explosion.json"),
             ASSET_ROOT + require("../assets/planet-explosion.png"),
@@ -107,6 +94,31 @@ export function setAssetRoot(path) {
             ASSET_ROOT + require("../assets/ship-explosion.png"),
         ).then((sheet) => {
             SHIP_EXPLOSION_SHEET = sheet;
+        }),
+        loadSpritesheet(
+            require("../assets/turtle.json"),
+            ASSET_ROOT + require("../assets/turtle.png"),
+        ).then((sheet) => {
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-green-low.png"],
+                sheet.textures["turtle-green-medium.png"],
+                sheet.textures["turtle-green-high.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-purple-low.png"],
+                sheet.textures["turtle-purple-medium.png"],
+                sheet.textures["turtle-purple-high.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-red-low.png"],
+                sheet.textures["turtle-red-medium.png"],
+                sheet.textures["turtle-red-high.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-yellow-low.png"],
+                sheet.textures["turtle-yellow-medium.png"],
+                sheet.textures["turtle-yellow-high.png"],
+            ]);
         }),
     ]);
 }

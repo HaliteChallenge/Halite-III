@@ -54,8 +54,8 @@ export class HaliteVisualizer {
         this._playing = false;
 
         this.timeStep = 0.01;
-        this.playSpeed = 2.0;
-        this.scrubSpeed = 0.25;
+        this.playSpeed = 5.0;
+        this.scrubSpeed = 0.5;
         // Keyboard controls - map a key name to an action, or directly to
         // a handler
         this.keyboardControls = new keyboard.KeyboardControls(this, {

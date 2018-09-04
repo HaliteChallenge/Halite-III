@@ -24,6 +24,7 @@
     "babel-preset-babili": "^0.1.4",
     "babel-preset-env": "^1.7.0",
     "file-loader": "^1.1.11",
+    "spritesheet-js": "^1.2.6",
     "text-encoding": "^0.6.4",
     "webpack": "^4.16.1",
     "webpack-cli": "^3.0.8",

@@ -23,7 +23,7 @@ export default class Ship {
 
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);
 
-        this.sprite = new PIXI.Sprite(assets.TURTLE_SPRITES[record.owner]);
+        this.sprite = new PIXI.extras.AnimatedSprite(assets.TURTLE_SPRITES[record.owner]);
         this.inspiredSprite = new PIXI.Sprite(spriteTexture);
         this.inspiredSprite.tint = assets.PLAYER_COLORS[record.owner];
         this.highlight = new PIXI.Sprite(spriteTexture);
@@ -239,7 +239,21 @@ export default class Ship {
             return;
         }
 
-        if (this.visualizer.currentFrame.entities[this.owner][this.id].is_inspired) {
+        const spriteRecord = this.visualizer.currentFrame.entities[this.owner][this.id];
+        const maxEnergy = this.visualizer.replay.GAME_CONSTANTS.MAX_ENERGY;
+        const energyPercent = spriteRecord.energy / maxEnergy;
+
+        if (energyPercent < 0.25) {
+            this.sprite.gotoAndStop(0);
+        }
+        else if (energyPercent < 0.75) {
+            this.sprite.gotoAndStop(1);
+        }
+        else {
+            this.sprite.gotoAndStop(2);
+        }
+
+        if (spriteRecord.is_inspired) {
             this.inspiredSprite.visible = true;
             this.sprite.visible = false;
         }

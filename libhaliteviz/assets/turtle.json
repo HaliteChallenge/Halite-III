@@ -1,0 +1,105 @@
+{
+	"meta": {
+		"image": "turtle.png",
+		"size": {"w":184,"h":144},
+		"scale": "1"
+	},
+	"frames": {
+		"turtle-green-high.png":
+		{
+			"frame": {"x":46,"y":0,"w":46,"h":48},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":46,"h":48},
+			"sourceSize": {"w":46,"h":48}
+		},
+		"turtle-red-high.png":
+		{
+			"frame": {"x":0,"y":0,"w":46,"h":48},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":46,"h":48},
+			"sourceSize": {"w":46,"h":48}
+		},
+		"turtle-green-medium.png":
+		{
+			"frame": {"x":92,"y":0,"w":46,"h":48},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":46,"h":48},
+			"sourceSize": {"w":46,"h":48}
+		},
+		"turtle-purple-high.png":
+		{
+			"frame": {"x":0,"y":48,"w":46,"h":48},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":46,"h":48},
+			"sourceSize": {"w":46,"h":48}
+		},
+		"turtle-purple-low.png":
+		{
+			"frame": {"x":46,"y":48,"w":46,"h":48},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":46,"h":48},
+			"sourceSize": {"w":46,"h":48}
+		},
+		"turtle-purple-medium.png":
+		{
+			"frame": {"x":92,"y":48,"w":46,"h":48},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":46,"h":48},
+			"sourceSize": {"w":46,"h":48}
+		},
+		"turtle-yellow-high.png":
+		{
+			"frame": {"x":138,"y":96,"w":44,"h":48},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":44,"h":48},
+			"sourceSize": {"w":44,"h":48}
+		},
+		"turtle-red-low.png":
+		{
+			"frame": {"x":138,"y":48,"w":46,"h":48},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":46,"h":48},
+			"sourceSize": {"w":46,"h":48}
+		},
+		"turtle-red-medium.png":
+		{
+			"frame": {"x":0,"y":96,"w":46,"h":48},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":46,"h":48},
+			"sourceSize": {"w":46,"h":48}
+		},
+		"turtle-yellow-low.png":
+		{
+			"frame": {"x":46,"y":96,"w":46,"h":48},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":46,"h":48},
+			"sourceSize": {"w":46,"h":48}
+		},
+		"turtle-yellow-medium.png":
+		{
+			"frame": {"x":92,"y":96,"w":46,"h":48},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":46,"h":48},
+			"sourceSize": {"w":46,"h":48}
+		},
+		"turtle-green-low.png":
+		{
+			"frame": {"x":138,"y":0,"w":46,"h":48},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":46,"h":48},
+			"sourceSize": {"w":46,"h":48}
+		}
+	}
+}
