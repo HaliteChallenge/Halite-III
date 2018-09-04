@@ -54,7 +54,7 @@ struct Constants {
     bool INSPIRATION_ENABLED = true; /**< whether to use inspiration **/
     unsigned long INSPIRED_EXTRACT_RATIO = EXTRACT_RATIO; /**< alternative mining ratio for inspired ships */
     double INSPIRED_BONUS_MULTIPLIER = 2; /**< The benefit ratio of mining when inspired. (Removing Y halite from a cell gives you X*Y additional halite.) */
-    unsigned long INSPIRED_MOVE_COST_RATIO = 12; /**< Alternative move cost ratio for inspired ships. */
+    unsigned long INSPIRED_MOVE_COST_RATIO = MOVE_COST_RATIO; /**< Alternative move cost ratio for inspired ships. */
     dimension_type INSPIRATION_RADIUS = 4; /** Maximum distance away for ships to count towards inspiration. */
     unsigned long INSPIRATION_SHIP_COUNT = 2; /**< If there are at least X enemy ships, then you are inspired. */
 
