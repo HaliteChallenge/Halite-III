@@ -28,6 +28,7 @@ export default class Ship {
         this.inspiredSprite.tint = assets.PLAYER_COLORS[record.owner];
         this.highlight = new PIXI.Sprite(spriteTexture);
         this.highlight.visible = false;
+        this.highlight.alpha = 0.7;
         this.motionblur = new MotionBlurFilter([0, 0], 9, 0);
         this.sprite.filters = [this.motionblur];
         this.inspiredSprite.filters = [this.motionblur];
@@ -227,10 +228,10 @@ export default class Ship {
         this.inspiredSprite.width = this.inspiredSprite.height = size * 1.25;
         this.highlight.position.x = pixelX;
         this.highlight.position.y = pixelY;
-        this.highlight.width = this.highlight.height = 1.25 * size;
+        this.highlight.width = this.highlight.height = 0.9 * size;
         this.halo.position.x = pixelX;
         this.halo.position.y = pixelY;
-        this.halo.width = this.halo.height = (0.75 + 0.5 * Math.sin(this.visualizer.time * Math.PI)) * size;
+        this.halo.width = this.halo.height = (1 + 0.25 * Math.sin(this.visualizer.time * Math.PI)) * size;
 
         const camera = this.visualizer.camera;
         this.highlight.visible =
