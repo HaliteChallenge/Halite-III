@@ -133,4 +133,5 @@ def delete_user_file(intended_user, file_id, *, user_id):
 def list_opponent_bots(user_id):
     bucket = model.get_gym_bot_bucket()
     files = [os.path.splitext(blob.name)[0] for blob in bucket.list_blobs()]
+    files.sort()
     return flask.jsonify(files)

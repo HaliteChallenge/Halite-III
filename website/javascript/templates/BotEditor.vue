@@ -354,13 +354,13 @@ export default {
 
         jQuery('.textview').addClass('editorTheme')
 
-        // Load saved settings
-        this.state.load()
         this.editorViewer.editor.setLineNumberRulerVisible(true);
 
-        logInfo('Editor ready!')
-
-        this._readyResolve();
+        // Load saved settings
+        this.state.load().then(() => {
+          logInfo('Editor ready!')
+          this._readyResolve();
+        })
       })
     },
     // Schedule a function to be called when we're ready

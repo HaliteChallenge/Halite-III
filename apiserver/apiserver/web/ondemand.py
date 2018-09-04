@@ -82,11 +82,6 @@ def create_ondemand(intended_user, *, user_id):
                 400,
                 message="Duplicate bot name {}".format(opponent["name"]))
 
-        if opponent["bot_id"] != "self" and not opponent["bot_id"].isdigit():
-            raise util.APIError(
-                400,
-                message="Bot ID must be number or 'self'.")
-
         opponents.append({
             "name": opponent["name"],
             "bot_id": opponent["bot_id"],
