@@ -67,7 +67,7 @@
     </div>
     <div v-if="leaderboard.length > 0">
       <div class="table-container">
-        <table class="table table-leader leaderboard-table">
+        <table class="table">
           <thead>
           <tr>
             <th class="text-center">Rank</th>

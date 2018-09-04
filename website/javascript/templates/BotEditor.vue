@@ -7,26 +7,6 @@
     <div class="container-fluid h-100 page_container">
       <div class="row flex-xl-nowrap h-100 page_row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 py-md-8 pl-md-8 bd-content big_col">
-          <div class="file_tree_col">
-            <div class="file_command_center_cont">
-              <div class="file_command_center">
-                <div class="command_icon"><a @click="open_new_file_modal()"><span class="glyphicon glyphicon-file"></span></a></div>
-                <div class="command_icon"><a @click="open_new_folder_modal()"><span class="glyphicon glyphicon-folder-open"></span></a></div>
-                <div class="command_icon"><a><span class="glyphicon glyphicon-pencil"></span></a></div>
-                <div class="command_center_right">
-                  <div class="command_icon"><a @click="open_delete_modal(active_file)"><span class="glyphicon glyphicon-trash"></span></a></div>
-                </div>
-              </div>
-            </div>
-            <nav class="tree_nav"><div class="bd-toc-item active">
-              <ul class="nav bd-sidenav">
-                <TreeElement
-                  :obj="editor_files"
-                  :depth="-1"
-                  @event_file_selected="file_selected"></TreeElement>
-              </ul>
-            </div></nav>
-          </div>
           <div class="editor_col">
             <div class="editorArea">
               <div class="editorBody" id="embeddedEditor">
@@ -84,7 +64,6 @@
   import LanguageModal from './BotEditorLanguageModal.vue'
   import InputModal from './InputModal.vue'
   import CheckModal from './CheckModal.vue'
-  import TreeElement from './TreeElement.vue'
 
   const botLanguagePacks = {
     'Python3': {
@@ -160,7 +139,7 @@ class EditorFile {
 
 export default {
   name: 'bot_editor',
-  components: { InputModal, CheckModal, TreeElement, LanguageModal },
+  components: { InputModal, CheckModal, LanguageModal },
   data: function () {
     const lang = 'Python3'
     const theme = DARK_THEME
