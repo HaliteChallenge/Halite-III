@@ -14,7 +14,7 @@
                 <tab-bar :tabs="['Bots', 'Local Match History']">
                     <section class="bots-tab" slot="tab-0">
                         <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
-                        <LocalBot :apiKey="apiKey" :userId="userId" @change="localBot = $event" />
+                        <LocalBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" @change="localBot = $event" />
                     </section>
                     <MatchHistory slot="tab-1" />
                     <!-- <LocalBotGym slot="tab-2" :localBot="localBot" /> -->

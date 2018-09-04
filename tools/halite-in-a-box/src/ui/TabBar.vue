@@ -24,6 +24,14 @@
         },
         mounted() {
         },
+        watch: {
+            currentTab(newIndex) {
+                const tab = this.$slots[`tab-${newIndex}`];
+                if (tab && tab[0].componentInstance && tab[0].componentInstance.tabOpened) {
+                    tab[0].componentInstance.tabOpened();
+                }
+            },
+        },
     };
 </script>
 

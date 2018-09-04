@@ -51,13 +51,14 @@
 
     import assets from './assets';
     import * as bot from './bot';
+    import * as games from './games';
     import { pythonPath } from './assets';
     import * as util from './util';
 
     const RECOGNIZED_EXTENSIONS = [ '.py', '.java', '.cpp', '.js', '.zip' ];
 
     export default {
-        props: ['apiKey', 'userId'],
+        props: ['apiKey', 'userId', 'remoteBot'],
         inject: ['assetsReady', 'showModal', 'closeModal'],
         data() {
             return {
@@ -158,6 +159,7 @@
                         }
                     }
                     if (value.results) {
+                        games.addGame(['Your Local Bot', `(your uploaded bot v${this.remoteBot.version_number})`], value.results);
                         state.games.push(value.results);
                     }
                     this.showModal('benchmark-modal', state);
@@ -173,11 +175,13 @@
                 // Should have been loaded before
                 const paths = await assets();
 
+                const benchmarkBots = paths.benchmarkBots.slice();
+                if (this.remoteBot) {
+                    benchmarkBots.push(new bot.RemoteBot(`(your uploaded bot v${this.remoteBot.version_number})`));
+                }
                 const action = await this.showModal('benchmark-modal', {
                     status: 'setup',
-                    benchmarkBots: paths.benchmarkBots.concat([
-                        new bot.RemoteBot("(currently uploaded bot)"),
-                    ]),
+                    benchmarkBots,
                 });
                 if (action === 'cancel') {
                     this.closeModal();
@@ -193,6 +197,7 @@
                     won: 0,
                     name: '(your bot)',
                 }];
+                const participants = ['Your Local Bot'];
 
                 for (const bot of action.bots) {
                     stats.push({
@@ -206,6 +211,7 @@
                     else {
                         params.push(await bot.makePath());
                     }
+                    participants.push(bot.name);
                 }
 
                 console.log(params);
@@ -231,6 +237,7 @@
                         }
                     }
                     if (value.results) {
+                        games.addGame(participants, value.results);
                         state.games.push(value.results);
                     }
                     this.showModal('benchmark-modal', state);
