@@ -42,6 +42,18 @@ class Player:
         """
         return self._dropoffs.values()
 
+    def has_ship(self, ship_id):
+        """
+        Check whether the player has a ship with a given ID.
+
+        Useful if you track ships via IDs elsewhere and want to make
+        sure the ship still exists.
+
+        :param ship_id: The ID to check.
+        :return: True if and only if the ship exists.
+        """
+        return ship_id in self._ships
+
 
     @staticmethod
     def _generate():

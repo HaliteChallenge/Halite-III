@@ -32,6 +32,11 @@ class Player {
         return this._dropoffs.values();
     }
 
+    /** Check whether a ship with a given ID exists. */
+    hasShip(shipId) {
+        return this._ships.has(shipId);
+    }
+
     /**
      * Create a player object using input from the game engine.
      * @private
