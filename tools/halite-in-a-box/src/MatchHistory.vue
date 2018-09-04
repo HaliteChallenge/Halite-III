@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section class="local-match-history">
         <h2>Local Match History</h2>
 
         <table>
@@ -67,3 +67,17 @@
         },
     };
 </script>
+
+<style lang="scss" scoped>
+    .local-match-history {
+        padding: 1em;
+    }
+
+    td ul {
+        margin: 0;
+
+        li {
+            margin: 0;
+        }
+    }
+</style>

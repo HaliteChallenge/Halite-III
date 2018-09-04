@@ -40,6 +40,7 @@
         border-bottom: 0.1em solid #d1d1d1;
         button {
             background: none;
+            letter-spacing: 0;
             color: inherit;
             border: 0;
             border-right: 0.1em solid #d1d1d1;
