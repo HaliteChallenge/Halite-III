@@ -81,6 +81,19 @@
             canRunGame() {
                 return this.assetsReady() && this.botExtension !== '.zip';
             },
+            localBotPath() {
+                if (this.localBot) {
+                    if (path.extname(this.localBot).toLowerCase() === '.py') {
+                        return `"${pythonPath()}" "${this.localBot}"`;
+                    }
+                    // Assume bot is executable; chdir to its directory first
+                    else if (process.platform === 'win32') {
+                        return `cmd.exe /C "cd /d "${path.dirname(this.localBot)}"; "${this.localBot}""`;
+                    }
+                    return `sh -c 'cd "${path.dirname(this.localBot)}"; "${this.localBot}"'`;
+                }
+                return null;
+            },
         },
         methods: {
             chooseLocalBot() {
@@ -122,7 +135,7 @@
                 const params = ['play', '-i', 10,
                                 '-b', paths.environmentPath,
                                 '--output-dir', paths.replayDir,
-                                '-r', `"${pythonPath()}" "${this.localBot}"`];
+                                '-r', this.localBotPath];
 
                 const stats = [{
                     won: 0,
@@ -191,7 +204,7 @@
                 const params = ['play', '-i', action.games,
                                 '-b', paths.environmentPath,
                                 '--output-dir', paths.replayDir,
-                                '-r', `"${pythonPath()}" "${this.localBot}"`];
+                                '-r', this.localBotPath];
 
                 const stats = [{
                     won: 0,
@@ -206,7 +219,7 @@
                     });
                     params.push('-r');
                     if (bot.path === 'self') {
-                        params.push(`${pythonPath()} "${this.localBot}"`);
+                        params.push(this.localBotPath);
                     }
                     else {
                         params.push(await bot.makePath());
