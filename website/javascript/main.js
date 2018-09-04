@@ -226,8 +226,8 @@ window.refreshStickyTable = function () {
 (function () {
   if (document.location.hash) {
     const hash = document.location.hash.slice(1)
-    const targetElement = document.getElementById(hash)
-    const top = targetElement.getBoundingClientRect().top - document.body.getBoundingClientRect().top
+    // const targetElement = document.getElementById(hash)
+    // const top = targetElement.getBoundingClientRect().top - document.body.getBoundingClientRect().top
     setTimeout(function () {
       window.scrollTo(0, 250)
     }, 1000)
