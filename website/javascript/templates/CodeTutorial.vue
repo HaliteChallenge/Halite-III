@@ -131,7 +131,7 @@ logging.info(“Ship {} has {} halite.”.format(ship.id, ship.halite_amount))</
     </Step>
     <Step title="Depositing Halite" name="dropoffs">
       <p>
-        You can see now that your ships are filling up with halite. It’s not much use until it is brought back to port, so let’s add another condition: if a ship is full, send it back to the shipyard.
+        You can see now that your ships are filling up with halite. You won't receive credit for the halite until it is brought back to port, so let’s add another condition: if a ship is full, send it back to the shipyard.
       </p>
 
       <p>
@@ -212,7 +212,7 @@ logging.info(“Ship {} has {} halite.”.format(ship.id, ship.halite_amount))</
     </Step>
     <Step title="Start Playing!" name="collision-avoidance">
       <p>
-        Your bot works! At this point, your bot explores the map, collects halite, and brins it back to port. It should also build new ships and dropoffs according to your criteria. Let’s submit your bot so that it can start playing against other bots. If you’re
+        Your bot works! At this point, your bot explores the map, collects halite, and brings it back to port. It should also build new ships and dropoffs according to your criteria. Let’s submit your bot so that it can start playing against other bots. If you’re
         stuck, we’ve put together a guide to help you debug your bot, or check out our community pages to get help from other players.
       </p>
       <p v-if="uploadMessage">
