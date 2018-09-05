@@ -5,10 +5,30 @@ export class Statistics {
     constructor(replay) {
         this.frames = [];
 
+        const cellMap = [];
+        for (const row of replay.production_map.grid) {
+            for (const cell of row) {
+                cellMap.push(cell.energy);
+            }
+        }
+        this.totalHalite = cellMap.reduce((total, cell) => total + cell, 0);
+
         for (let frameIdx = 0; frameIdx < replay.full_frames.length; frameIdx++) {
             const frameStats = {
                 players: {},
+                remainingHalite: this.frames.length > 0 ?
+                    this.frames[this.frames.length - 1].remainingHalite :
+                    this.totalHalite,
             };
+
+            if (frameIdx > 0) {
+                const changedCells = replay.full_frames[frameIdx - 1].cells;
+                for (const cell of changedCells) {
+                    cellMap[cell.y * replay.production_map.width + cell.x] = cell.production;
+                }
+
+                frameStats.remainingHalite = cellMap.reduce((total, cell) => total + cell, 0);
+            }
 
             const curFrame = replay.full_frames[frameIdx];
 
@@ -17,6 +37,9 @@ export class Statistics {
                     totalShips: 0,
                     currentShips: 0,
                     currentEnergy: 0,
+                    currentDropoffs: 0,
+                    currentCollisions: 0,
+                    depositedHalite: 0, // net halite
                 };
 
                 if (frameIdx > 0) {
@@ -35,7 +58,7 @@ export class Statistics {
             }
 
             if (curFrame.events) {
-                for (let event of curFrame.events) {
+                for (const event of curFrame.events) {
                 }
             }
 
