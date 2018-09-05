@@ -35,11 +35,11 @@
         <p><img src="/assets/images/icon-flag.svg" width="30" alt="flag"></p>
         <h4 class="mt3">SEASON DURATION</h4>
         <p class="sub-title">1st sep 2018 - 2nd feb 2019</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sem ante, tincidunt in augue eu, sodales pellentesque massa. Cras congue lectus quis risus pellentesque, quis aliquam purus sollicitudin. Maecenas feugiat lorem erat, eget ornare elit volutpat eget. </p>
+        <p class="text-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sem ante, tincidunt in augue eu, sodales pellentesque massa. Cras congue lectus quis risus pellentesque, quis aliquam purus sollicitudin. Maecenas feugiat lorem erat, eget ornare elit volutpat eget. </p>
       </div>
       <div class="doc-section doc-section-play text-center">
-        <h4 class="mt3">DROP OFF AREA</h4>
-        <p class="sub-title">SUBMIT YOUR BOT HERE</p>
+        <h4 class="mt3">DROP-OFF AREA</h4>
+        <p class="sub-title">Submit your bot here</p>
         <halite-upload-zone
           description="Drop a replay file here to <br>upload your bot"
           buttonText = "Select File"
@@ -248,5 +248,24 @@
 </script>
 
 <style lang="scss" scoped>
-
+  $primary-blue-text: #033C89;
+  $primary-black-text: #414141;
+  $text-content-color: #52678D;
+  .mt3 {
+    color: $primary-blue-text;
+    font-size: 24px;
+    line-height: 29px;
+  }
+  .sub-title {
+    color: $primary-black-text;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    font-size: 20px;
+  }
+  .text-content {
+    color: $text-content-color;
+    font-size: 18px;
+    line-height: 27px;
+    letter-spacing: 0.12px;
+  }
 </style>

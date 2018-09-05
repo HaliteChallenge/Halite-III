@@ -70,6 +70,12 @@
   }
 }
 
+@media screen and (max-width: $screen-xs-max) {
+  .play-container{
+    margin-top: 80px;
+  }
+}
+
 .upload-zone{
   background: #e1ecf8;
   border: 1px dashed #ADC9EF;
