@@ -11,6 +11,9 @@ struct Dropoff final : Enumerated<Dropoff> {
     /** Location of the dropoff. */
     const Location location;
 
+    /** How much halite has been deposited here so far. */
+    energy_type deposited_halite{};
+
     /**
      * Output the dropoff to a stream.
      * @param ostream The output stream.

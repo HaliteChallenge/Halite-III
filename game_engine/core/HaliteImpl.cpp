@@ -504,6 +504,11 @@ void HaliteImpl::update_player_stats() {
                     player_stats.interaction_opportunities++;
                 }
             }
+
+            player_stats.halite_per_dropoff[player.factory] = player.factory_energy_deposited;
+            for (const auto &dropoff : player.dropoffs) {
+                player_stats.halite_per_dropoff[dropoff.location] = dropoff.deposited_halite;
+            }
         } else {
             player_stats.turn_productions.push_back(0);
         }

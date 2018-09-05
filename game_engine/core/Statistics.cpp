@@ -62,6 +62,7 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
             FIELD_TO_JSON(total_bonus),
             FIELD_TO_JSON(total_mined_from_captured),
             {"mining_efficiency", mining_efficiency},
+            FIELD_TO_JSON(halite_per_dropoff),
             {"average_entity_distance", average_distance}};
 }
 
