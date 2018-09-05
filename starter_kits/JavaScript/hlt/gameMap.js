@@ -244,117 +244,22 @@ class GameMap {
     }
 
     /**
-     * Use a BFS to traverse the map safely, storing each previous
-     * cell in a visited cell.
-     * @param {MapCell} source
-     * @param {MapCell} destination
-     * @return {Array|null}
-     */
-    _bfsTraverseSafely(source, destination) {
-        const visitedMap = [];
-        for (let i = 0; i < this.height; i++) {
-            const row = [];
-            for (let j = 0; j < this.width; j++) {
-                row.push(null);
-            }
-            visitedMap.push(row);
-        }
-
-        const potentialsQueue = [source];
-        let stepsTaken = 0;
-
-        while (potentialsQueue.length > 0) {
-            const currentSquare = potentialsQueue.shift();
-            if (currentSquare.equals(destination)) {
-                return visitedMap;
-            }
-
-            for (let suitor of currentSquare.position.getSurroundingCardinals()) {
-                suitor = this.normalize(suitor);
-                if (!this.get(suitor).isOccupied && !visitedMap[suitor.y][suitor.x]) {
-                    potentialsQueue.push(this.get(suitor));
-                    visitedMap[suitor.y][suitor.x] = currentSquare;
-                }
-            }
-
-            stepsTaken++;
-            if (stepsTaken >= constants.MAX_BFS_STEPS) {
-                break;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Given a visited map, find the viable first move near the source
-     * and return it
-     * @param {MapCell} source
-     * @param {MapCell} destination
-     * @param {Array} visisted
-     */
-    _findFirstMove(source, destination, visited) {
-        let currentSquare = destination;
-        let previous = null;
-
-        while (currentSquare !== null && !currentSquare.equals(source)) {
-            previous = currentSquare;
-            currentSquare = visited[currentSquare.position.y][currentSquare.position.x];
-        }
-
-        return previous;
-    }
-
-    /**
      * Returns a singular safe move towards the destination.
-     * @param {Position} source
-     * @param {Position} destination
-     * @return {Direction|null}
+     * @param {Ship} ship - the ship to move
+     * @param {Position} destination - the location to move towards
+     * @return {Direction}
      */
-    _naiveNavigate(source, destination) {
-        for (const direction of this.getUnsafeMoves(source, destination)) {
-            const targetPos = source.directionalOffset(direction);
+    naiveNavigate(ship, destination) {
+        for (const direction of this.getUnsafeMoves(ship.position, destination)) {
+            const targetPos = ship.position.directionalOffset(direction);
 
             if (!this.get(targetPos).isOccupied) {
+                this.get(targetPos).markUnsafe(ship);
                 return direction;
             }
         }
 
-        return null;
-    }
-
-    /**
-     * Returns the best (read: most optimal) singular safe move
-     * towards the destination.
-     * @param {MapCell} source
-     * @param {MapCell} destination
-     * @returns {Direction|null}
-     */
-    getSafeMove(source, destination) {
-        if (!(source instanceof MapCell && destination instanceof MapCell)) {
-            throw new Error('source and destination must be of type MapCell');
-        }
-
-        if (source.equals(destination)) {
-            return null;
-        }
-
-        const visitedMap = this._bfsTraverseSafely(source, destination);
-        if (!visitedMap) {
-            return this._naiveNavigate(source.position, destination.position);
-        }
-
-        const safeTargetCell = this._findFirstMove(source, destination, visitedMap);
-        if (!safeTargetCell) {
-            return null;
-        }
-
-        const potentialMoves = this.getUnsafeMoves(source.position, safeTargetCell.position);
-        if (!potentialMoves) {
-            return null;
-        }
-
-        return potentialMoves[0];
+        return Direction.Still;
     }
 
     static async _generate(getLine) {
