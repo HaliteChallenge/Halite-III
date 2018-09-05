@@ -14,6 +14,42 @@ sort_key: 3
 Welcome to the Halite III API Documentation.
 
 <br/>
+#### Game
+
+  The game object holds all metadata to run the game, and is an organizing layer between your code and the game engine. Game initializes the game, which includes generating the map and registering the players.
+
+<br/>
+  * **Initialization phase**
+
+     A game of Halite III is initialized when each player sends a string name. Game forwards this to the engine, and launches the game.
+
+     `game.ready(“name”)`
+
+<br/>
+  * **Game loop**
+
+     The game loop sends the game state to the players and processes commands returned from the players. This repeats for each turn. Games last between 300 and 500 turns per game depending on map size. If your code takes more than 2,000 milliseconds to process, the game engine kills your bot.
+
+     `game.update_frame()` updates the game state, and returns nothing.
+
+<br/>
+  * **Command queue**
+
+     The command queue is a list of commands. The player’s code fills this list with commands and sends it to the game object, where it is sent to the game engine. If there are multiple commands to one ship, the game engine kills your bot.
+
+     `game.end_turn([commands])`
+
+     Valid commands that can be sent to the engine:
+
+     | Action | Engine Command |
+     | ---|--- |
+     | GENERATE | `g` |
+     | CONSTRUCT | `c` |
+     | MOVE | `m` |
+     | Move Commands | `n`, `s`, `e`, `w` and `o` for origin (stay still) |
+
+
+<br/>
 #### PLAYER
 Players have an `id`, a `shipyard`, a `halite_amount`, and dictionaries of ships and dropoffs as member variables.
 
@@ -168,41 +204,6 @@ Methods take and return directions, positions, or map cells. Some methods also t
 * A *position* is an object with x and y values indicating the absolute position on the game map.
 
 ---
-
-<br/>
-#### Game
-
-  The game object holds all metadata to run the game, and is an organizing layer between your code and the game engine. Game initializes the game, which includes generating the map and registering the players.
-
-<br/>
-  * **Initialization phase**
-
-     A game of Halite III is initialized when each player sends a string name. Game forwards this to the engine, and launches the game.
-
-     `game.ready(“name”)`
-
-<br/>
-  * **Game loop**
-
-     The game loop sends the game state to the players and processes commands returned from the players. This repeats for each turn. Games last between 300 and 500 turns per game depending on map size. If your code takes more than 2,000 milliseconds to process, the game engine kills your bot.
-
-     `game.update_frame()` updates the game state, and returns nothing.
-
-<br/>
-  * **Command queue**
-
-     The command queue is a list of commands. The player’s code fills this list with commands and sends it to the game object, where it is sent to the game engine. If there are multiple commands to one ship, the game engine kills your bot.
-
-     `game.end_turn([commands])`
-
-     Valid commands that can be sent to the engine:
-
-     | Action | Engine Command |
-     | ---|--- |
-     | GENERATE | `g` |
-     | CONSTRUCT | `c` |
-     | MOVE | `m` |
-     | Move Commands | `n`, `s`, `e`, `w` and `o` for origin (stay still) |
 
 
 </div>
