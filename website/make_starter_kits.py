@@ -9,11 +9,13 @@ import hashlib
 import itertools
 import json
 import os
+import shutil
 import zipfile
 
 
 ENVIRONMENT_DIR_HELP = "Directory containing precompiled Halite environment " \
                        "executables, each named after their platform. "
+BOX_DIR_HELP = "Directory containing precompiled Halite-in-a-Box builds, each named after their platform."
 VERSION_HELP = "The version string to embed in the downloads page."
 IGNORED_EXTENSIONS = [".exe", ".class", ".pyc", ".obj"]
 INCLUDED_EXTENSIONS = [".py", ".java", ".cpp", ".hpp", ".cs", ".csproj", ".scala", ".js", ".sh", ".bat", ".toml", ".rs",".go",".txt",".rb", ".kt", ".clj",".jl", ".ml", ".hs", ".exs", ".ex", ".lock",".php", ".sln",".dart",".sbt",".properties",".swift",".pyx",".pxd",".fs",".fsproj"]
@@ -28,6 +30,7 @@ OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_{language}_{platform}.zip"
 
 # Platform only
 ENVIRONMENT_OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_{platform}.zip"
+BOX_OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_Offline_{platform}{extension}"
 
 # All languages + platform
 ALL_LANGUAGES_OUTPUT_FILE_FORMAT = "assets/downloads/Halite3_all_{platform}.zip"
@@ -46,8 +49,8 @@ def detect_environments(directory):
     for filename in os.listdir(directory):
         platform, platform_ext = os.path.splitext(filename)
 
-        if platform == ".DS_Store":
-            # Dang it, MacOS
+        if platform.startswith("."):
+            # .DS_Store, .gitignore, etc.
             continue
 
         print("Detected platform", platform)
@@ -163,10 +166,30 @@ def make_tools_download():
             archive.write(source_path, target_path)
 
 
+def make_box_halite_download(box_dir):
+    # Result is [platform independent, Mac, Linux, Windows] path links
+    result = [None, None, None, None]
+    # Halite-in-a-Box
+    for filename in os.listdir(box_dir):
+        platform, extension = os.path.splitext(os.path.basename(filename))
+        destination = BOX_OUTPUT_FILE_FORMAT.format(platform=platform, extension=extension)
+        shutil.copy(os.path.join(box_dir, filename), destination)
+
+        if platform == 'MacOS':
+            result[1] = destination
+        elif platform == 'Linux':
+            result[2] = destination
+        elif platform == 'Windows':
+            result[3] = destination
+
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("version", help=VERSION_HELP)
     parser.add_argument("environment_dir", help=ENVIRONMENT_DIR_HELP)
+    parser.add_argument("box_dir", help=BOX_DIR_HELP)
 
     args = parser.parse_args()
 
@@ -238,11 +261,15 @@ def main():
         "tools": [
             {
                 "name": "Benchmark Bots",
-                "files": [BENCHMARK_FILE],
+                "files": [BENCHMARK_FILE, None, None, None],
             },
             {
                 "name": "CLI Client",
-                "files": [TOOLS_FILE],
+                "files": [TOOLS_FILE, None, None, None],
+            },
+            {
+                "name": "Halite in a Box",
+                "files": make_box_halite_download(args.box_dir),
             },
         ],
         "source": SOURCE_FILE,

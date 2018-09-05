@@ -87,10 +87,13 @@ System requirements are detailed here.
             <tr>
                 <td>{{ tool.name }}</td>
                 <td>NA</td>
-                <td><a href="{{ site.baseurl }}/{{ tool.files[0] }}">Download</a></td>
+                {% for url in tool.files %}
+                {% if url %}
+                <td><a href="{{ site.baseurl }}/{{ url }}">Download</a></td>
+                {% else %}
                 <td>NA</td>
-                <td>NA</td>
-                <td>NA</td>
+                {% endif %}
+                {% endfor %}
             </tr>
             {% endfor %}
         </tbody>
