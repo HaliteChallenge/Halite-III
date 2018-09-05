@@ -28,6 +28,7 @@ void dump_energy(Store &store, Entity &entity, const Location &location, Cell &c
         player.energy += energy;
 
         // Track how much energy is deposited in each dropoff
+        player.total_energy_deposited += energy;
         if (location == player.factory) {
             player.factory_energy_deposited += energy;
         }

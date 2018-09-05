@@ -21,6 +21,7 @@ struct Player final : public Enumerated<Player> {
     std::vector<Dropoff> dropoffs;       /**< The dropoffs this player owns. */
     energy_type energy{};                /**< The amount of energy stockpiled by the player. */
     energy_type factory_energy_deposited{}; /**< The amount of energy deposited at the factory so far. */
+    energy_type total_energy_deposited{}; /**< The amount of energy collected so far. */
     const std::string command;           /**< The bot command for the player. */
     id_map<Entity, Location> entities{}; /**< Mapping from entity to location. */
     bool terminated;                     /**< Whether the player was kicked out of the game. */

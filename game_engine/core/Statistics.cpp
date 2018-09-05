@@ -43,7 +43,7 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
     double mining_efficiency = 0.0;
 
     if (stats.total_mined > 0) {
-        mining_efficiency = final_production / static_cast<double>(stats.total_mined);
+        mining_efficiency = stats.total_production / static_cast<double>(stats.total_mined);
     }
 
     json = {FIELD_TO_JSON(player_id),
@@ -51,6 +51,7 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
             FIELD_TO_JSON(rank),
             FIELD_TO_JSON(last_turn_alive),
             {"final_production", final_production},
+            FIELD_TO_JSON(total_production),
             FIELD_TO_JSON(max_entity_distance),
             FIELD_TO_JSON(number_dropoffs),
             FIELD_TO_JSON(interaction_opportunities),

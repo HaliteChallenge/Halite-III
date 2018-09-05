@@ -17,6 +17,7 @@ struct PlayerStatistics {
     long rank{};                                 /**< The rank of the player (1 = highest) */
     long last_turn_alive{};                      /**< The last turn the player remained alive */
     std::vector<energy_type> turn_productions{}; /**< Production granted to player each turn, turn 1 at front of vector. */
+    energy_type total_production{};              /**< Production granted to player each turn, turn 1 at front of vector. */
     energy_type total_mined{};                   /**< Total amount extracted from map, including energy not deposited (lost due to collision or some other means), but not including bonuses from inspiration. */
     energy_type total_bonus{};                   /**< Total halite collected from inspiration bonuses, including energy not deposited (lost due to collision or some other means). */
     energy_type total_mined_from_captured{};     /**< Total amount mined, including energy not deposited (lost due to collision or some other means) and bonuses from inspiration, by ships captured from other players. */

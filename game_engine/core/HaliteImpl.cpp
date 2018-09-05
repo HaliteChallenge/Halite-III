@@ -506,6 +506,7 @@ void HaliteImpl::update_player_stats() {
             }
 
             player_stats.halite_per_dropoff[player.factory] = player.factory_energy_deposited;
+            player_stats.total_production = player.total_energy_deposited;
             for (const auto &dropoff : player.dropoffs) {
                 player_stats.halite_per_dropoff[dropoff.location] = dropoff.deposited_halite;
             }
