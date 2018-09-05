@@ -73,7 +73,7 @@ artifacts:
     name: halite-amd64.exe
   - path: game_engine\build32\Release\halite.exe
     name: halite-x86.exe
-  - path: "tools\halite-in-a-box\electron-dist\halite-in-a-box 1.0.0.exe"
+  - path: 'tools\halite-in-a-box\electron-dist\halite-in-a-box 1.0.0.exe'
     name: halite-in-a-box.exe
   - path: python-windows-amd64.zip
   - path: python-windows-x86.zip
