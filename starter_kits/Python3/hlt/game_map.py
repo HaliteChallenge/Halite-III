@@ -213,113 +213,21 @@ class GameMap:
                                   else Direction.invert(y_cardinality))
         return possible_moves
 
-    def _bfs_traverse_safely(self, source, destination):
-        """
-        Use a BFS to traverse the map safely, storing each previous cell in a visited cell.
-        :param source: The source object
-        :param destination: The destination object
-        :return: The visited map if reachable. None otherwise
-        """
-        visited_map = [[None for _ in range(self.width)] for _ in range(self.height)]
-        potentials_queue = queue.Queue()
-        potentials_queue.put(source)
-        steps_taken = 0
-        while not potentials_queue.empty():
-            current_square = potentials_queue.get()
-            if current_square == destination:
-                return visited_map
-            for suitor in current_square.position.get_surrounding_cardinals():
-                suitor = self.normalize(suitor)
-                if not self[suitor].is_occupied and not visited_map[suitor.y][suitor.x]:
-                    potentials_queue.put(self[suitor])
-                    visited_map[suitor.y][suitor.x] = current_square
-
-            steps_taken += 1
-
-            if steps_taken >= constants.MAX_BFS_STEPS:
-                break
-
-        return None
-
-    @staticmethod
-    def _find_first_move(source, destination, visited):
-        """
-        Given a visited map, find the viable first move near the source and return it
-        :param source: The first position
-        :param destination: The target
-        :param visited: A map containing the visited cell information from _bfs_traverse_safely
-        :return: The first viable move
-        """
-        current_square = destination
-        previous = None
-        while current_square is not None and current_square != source:
-            previous = current_square
-            current_square = visited[current_square.position.y][current_square.position.x]
-        return previous
-
-    def _naive_navigate(self, source, destination):
+    def naive_navigate(self, ship, destination):
         """
         Returns a singular safe move towards the destination.
 
-        :param source: Starting position
+        :param ship: The ship to move.
         :param destination: Ending position
-        :return: A direction, or None if no such move exists.
+        :return: A direction.
         """
-        for direction in self.get_unsafe_moves(source, destination):
-            target_pos = source.directional_offset(direction)
+        for direction in self.get_unsafe_moves(ship.position, destination):
+            target_pos = ship.position.directional_offset(direction)
             if not self[target_pos].is_occupied:
+                self[target_pos].mark_unsafe(ship)
                 return direction
 
-        return None
-
-    def basic_move(self, ship, destination):
-        """
-        Returns a singular safe move towards the destination.
-
-        :param source: Starting position
-        :param destination: Ending position
-        :return: A direction, or None if no such move exists.
-        """
-        safe_move = self._naive_navigate(ship.position, destination)
-        if safe_move:
-            self[ship.position.directional_offset(safe_move)].mark_unsafe(ship)
-            return safe_move
-
-        return Direction.STILL
-
-    def get_safe_move(self, source, destination):
-        """
-        Returns the best (read: most optimal) singular safe move
-        towards the destination.
-
-        :param source: The source MapCell that you wish to move
-        :param destination: The destination MapCell towards which you
-        wish to move your object.
-        :return: A single valid direction towards the destination
-        accounting for collisions, or None if no such move exists.
-        """
-        if not isinstance(source, MapCell):
-            source = self[source]
-
-        if not isinstance(destination, MapCell):
-            destination = self[destination]
-
-        if source == destination:
-            return None
-
-        visited_map = self._bfs_traverse_safely(source, destination)
-        if not visited_map:
-            return self._naive_navigate(source.position, destination.position)
-
-        safe_target_cell = self._find_first_move(source, destination, visited_map)
-        if not safe_target_cell:
-            return None
-
-        potential_moves = self.get_unsafe_moves(source.position, safe_target_cell.position)
-        if not potential_moves:
-            return None
-
-        return potential_moves[0]
+        return Direction.Still
 
     @staticmethod
     def _generate():

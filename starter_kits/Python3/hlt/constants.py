@@ -1,14 +1,7 @@
 """
 Constants representing the game variation being played.
 Most constants are global and come from game engine and are immutable and are strictly informational.
-Some constants are only used by the local game client and so are mutable.
 """
-
-################################################
-# Local and mutable constants.
-
-"""Maximum number of steps to consider in pathfinding."""
-MAX_BFS_STEPS = 1024  # = can search a 32x32 area completely
 
 ################################################
 # Global and immutable constants.
