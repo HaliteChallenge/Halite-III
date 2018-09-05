@@ -171,6 +171,9 @@ def make_box_halite_download(box_dir):
     result = [None, None, None, None]
     # Halite-in-a-Box
     for filename in os.listdir(box_dir):
+        if filename.startswith('.'):
+            continue
+
         platform, extension = os.path.splitext(os.path.basename(filename))
         destination = BOX_OUTPUT_FILE_FORMAT.format(platform=platform, extension=extension)
         shutil.copy(os.path.join(box_dir, filename), destination)
