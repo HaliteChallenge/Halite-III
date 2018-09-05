@@ -27,6 +27,8 @@ void Networking::handle_player_error(Player::id_type player, std::string receive
     if (!received_input.empty()) {
         game.logs.log(player, "Last input received was:");
         game.logs.log(player, received_input);
+        Logging::log("Player's last input was:", Logging::Level::Error, player);
+        Logging::log(received_input, Logging::Level::Error);
     }
     std::string errors;
     try {
@@ -37,6 +39,14 @@ void Networking::handle_player_error(Player::id_type player, std::string receive
     if (!errors.empty()) {
         game.logs.log(player, "Bot error output was:");
         game.logs.log(player, errors);
+
+        // Log line by line
+        std::stringstream ss{errors};
+        std::string line;
+        Logging::log("Player's error output was:", Logging::Level::Error, player);
+        while (std::getline(ss, line, '\n')) {
+            Logging::log(line, Logging::Level::Error);
+        }
     }
 }
 
