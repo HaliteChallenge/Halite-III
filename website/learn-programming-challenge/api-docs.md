@@ -9,9 +9,16 @@ sort_key: 3
 
 <div class="doc-section" markdown="1">
 
-#### API Documentation
+#### Overview
 
-Welcome to the Halite III API Documentation.
+This API Documentation refers to objects shipped with Halite III starter kits:
+* [GAME](#game)
+* [PLAYER](#player)
+* [SHIP](#ship)
+* [SHIPYARD](#shipyard)
+* [DROPOFF](#dropoff)
+* [MAP](#map)
+* [DIRECTIONS, POSITIONS, & MAP CELLS](#directions-positions-and-map-cells)
 
 <br/>
 #### Game
@@ -154,7 +161,17 @@ Gameplay takes place on a wrapping rectangular grid which varies in size. The ma
   `gamemap.naive_navigate(source, destination)` returns a single valid destination toward a given target.
 
 <br/>
-#### MAP CELL
+
+---
+#### Directions, Positions, and Map Cells
+Methods take and return map cells, positions, or directions. Some methods also take references to whole objects, for example a ship or ship.id versus a game_map[ship.id].position. It’s important to know the difference.
+
+* A *map cell* is an object inside the game map, and has detailed information about what is in this position on the map.
+* A *position* is an object with x and y values indicating the absolute position on the game map.
+* A *direction* is an (x, y) tuple indicating the direction of movement from an origin cell.
+
+<br/>
+##### MAP CELL
 A map cell is an object representation of a cell on the game map. Map cell has `position`, `halite_amount`, `ship`, and `structure` as member variables.
 
 <br/>
@@ -176,7 +193,7 @@ A map cell is an object representation of a cell on the game map. Map cell has `
    `map_cell.mark_unsafe()` is used to mark this cell as unsafe (occupied) for collision avoidance.
 
 <br/>
-#### POSITION
+##### POSITION
 A position is an object with x and y values indicating the absolute position on the game map. Position is defined in the file hlt/positionals.py.
 
   `position.directional_offset(direction)` returns a new position based on moving one unit in the given direction from the given position.
@@ -184,7 +201,7 @@ A position is an object with x and y values indicating the absolute position on 
   `position.get_surrounding_cardinals()` returns a list of all positions around the given position in each cardinal direction.
 
 <br/>
-#### DIRECTION
+##### DIRECTION
 A direction is an (x, y) tuple indicating the direction of movement from an origin cell. Direction is defined in the file hlt/positionals.py.
 
   `Direction.get_all_cardinals()` returns an array of all cardinal tuples.
@@ -194,17 +211,6 @@ A direction is an (x, y) tuple indicating the direction of movement from an orig
   `Direction.invert()` returns a letter command of the opposite cardinal direction given a direction tuple.
 
 <br/>
-
----
-##### Directions, Positions, and Map Cells
-Methods take and return directions, positions, or map cells. Some methods also take references to whole objects, for example a ship or ship.id versus a game_map[ship.id].position. It’s important to know the difference.
-
-* A *map cell* is an object inside the game map, and has detailed information about what is in this position on the map.
-* A *direction* is an (x, y) tuple indicating the direction of movement from an origin cell.
-* A *position* is an object with x and y values indicating the absolute position on the game map.
-
----
-
 
 </div>
 
