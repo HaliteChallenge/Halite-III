@@ -22,18 +22,6 @@
       </p>
 
     </Step>
-    <Step title="Pathfinding" name="pathfinding">
-      <p>
-        TODO: a placeholder for a discussion of bfs in Halite III.
-      </p>
-      <p>
-        Your code currently uses <code>gamemap.basic_move(source, destination)</code> to move ships without colliding. This method avoids collision by checking if the locations that take a shaip closer to its destination are currently occupied or not. An alternative method for movement is available that uses breadth-first search to ensure a clear path toward a target. Let’s look at the <code>gamemap.get_safe_move(source, destination)</code> and see how it improves basic_move.
-      </p>
-      <p>
-<code>get_safe_move</code> uses breadth first search to look through the entire map, marking cells as explored. Another method, <code>_get_first_move</code>, looks backward from the reached destination for the shortest route seen during the bfs. The first steps on that path are the candidates for the direction the ship should move in this turn. You can inspect these functions in the "hlt" folder.
-
-      </p>
-    </Step>
 
     <Step title="Player Interaction" name="player interaction">
       <p>
