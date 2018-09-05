@@ -28,6 +28,7 @@ import Settings from './templates/Settings.vue'
 import View404 from './templates/404.vue'
 import BeginnerTutorial from './templates/BeginnerTutorial.vue'
 import CodeTutorial from './templates/CodeTutorial.vue'
+import NextTutorial from './templates/NextTutorial.vue'
 import WalkthroughSubsteps from './templates/WalkthroughSubsteps.vue'
 import WalkthroughSubstep from './templates/WalkthroughSubstep.vue'
 
@@ -186,6 +187,12 @@ window.views = {
     new Vue({
       el: '#code-tutorial-container',
       render: (h) => h(CodeTutorial, { props: { baseUrl: _global.baseUrl } })
+    })
+  },
+  NextTutorial: function () {
+    new Vue({
+      el: '#code-tutorial-container',
+      render: (h) => h(NextTutorial, { props: { baseUrl: _global.baseUrl } })
     })
   },
 }
