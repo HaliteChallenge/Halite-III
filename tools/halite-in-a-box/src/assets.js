@@ -203,7 +203,7 @@ export default async function assets() {
                 promises.push(new Promise((resolve, reject) => {
                     const input = fs.createReadStream(destPath);
                     input.on('error', (err) => {
-                        console.log(`Hash of bot file ${destPath} does not match.`).
+                        console.log(`Hash of bot file ${destPath} does not match.`);
                         resolve(true);
                     });
 
