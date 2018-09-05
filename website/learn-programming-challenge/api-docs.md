@@ -39,7 +39,7 @@ Players have an `id`, a `shipyard`, a `halite_amount`, and dictionaries of ships
 
 <br/>
 #### SHIP
-Ships carry up to 1,000 halite as cargo and can be issued one command per turn via the command queue. Ships automatically deposit their cargo when positioned over the Shipyard or Dropoff points. If two ships collide, both are destroyed; their cargo falls back into the sea at the collision site.
+Ships carry up to 1,000 halite as cargo and can be issued one command per turn via the command queue. Ships automatically deposit their cargo when positioned over the shipyard or dropoff points. If two ships collide, both are destroyed; their cargo falls back into the sea at the collision site.
 
 Ships have an `owner`, an `id`, a `position`, and a `halite_amount`.
 
@@ -124,7 +124,7 @@ A map cell is an object representation of a cell on the game map. Map cell has `
 <br/>
 * **Property Accessors**
 
-   Map Cell has property accessors that you can use to get information.
+   Map cell has property accessors that you can use to get information.
 
   `map_cell.is_empty` returns True if the cell is empty.
 
@@ -172,7 +172,7 @@ Methods take and return directions, positions, or map cells. Some methods also t
 <br/>
 #### Game
 
-  The Game object holds all metadata to run the game, and is an organizing layer between your code and the game engine. Game initializes the game, which includes generating the map and registering the players.
+  The game object holds all metadata to run the game, and is an organizing layer between your code and the game engine. Game initializes the game, which includes generating the map and registering the players.
 
 <br/>
   * **Initialization phase**
