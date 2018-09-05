@@ -27,8 +27,9 @@ void Networking::handle_player_error(Player::id_type player, std::string receive
     if (!received_input.empty()) {
         game.logs.log(player, "Last input received was:");
         game.logs.log(player, received_input);
-        Logging::log("Player's last input was:", Logging::Level::Error, player);
-        Logging::log(received_input, Logging::Level::Error);
+
+        // Log line by line
+        Logging::log_lines("Last input received was:\n" + received_input, Logging::Level::Error, player);
     }
     std::string errors;
     try {
@@ -41,12 +42,7 @@ void Networking::handle_player_error(Player::id_type player, std::string receive
         game.logs.log(player, errors);
 
         // Log line by line
-        std::stringstream ss{errors};
-        std::string line;
-        Logging::log("Player's error output was:", Logging::Level::Error, player);
-        while (std::getline(ss, line, '\n')) {
-            Logging::log(line, Logging::Level::Error);
-        }
+        Logging::log_lines("Player's error output was:\n" + errors, Logging::Level::Error, player);
     }
 }
 
