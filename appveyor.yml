@@ -27,7 +27,7 @@ install:
 # scripts that run after cloning repository
 build_script:
   - cd C:\Halite
-  # - call .appveyor.bat
+  - call .appveyor.bat
 
   # Now build the offline tools.
   # First, bundle up the dependencies into the Python embeddable distribution.
