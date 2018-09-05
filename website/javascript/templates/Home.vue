@@ -233,5 +233,15 @@
 </script>
 
 <style lang="scss" scoped>
-
+    .btn.btn-primary {
+        &:after {
+            content: "";
+            display: inline-block;
+            margin-left: 10px;
+            width: 12px;
+            height: 18px;
+            background: url("/assets/images/icons/pixelate-arrow.png") center center no-repeat;
+            background-size: cover;
+        }
+    }
 </style>
