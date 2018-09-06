@@ -52,6 +52,7 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
             FIELD_TO_JSON(last_turn_alive),
             {"final_production", final_production},
             FIELD_TO_JSON(total_production),
+            FIELD_TO_JSON(turn_deposited),
             FIELD_TO_JSON(max_entity_distance),
             FIELD_TO_JSON(number_dropoffs),
             FIELD_TO_JSON(interaction_opportunities),

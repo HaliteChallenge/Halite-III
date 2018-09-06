@@ -7,7 +7,8 @@
           <span :class="'circle bg-player-' + (parseInt(index)+1)"></span>
         </h4>
         <div class="card-player-stats-list">
-          <div class="card-player-stats"><span class="icon-lightning"></span> Current Energy: {{replay.full_frames[frame].energy[index]}}</div>
+          <!-- Replay stores energy at -end- of turn, so use previous frame's energy to be accurate. -->
+          <div class="card-player-stats"><span class="icon-lightning"></span> Current Energy: {{frame > 0 ? replay.full_frames[frame - 1].energy[index] : replay.GAME_CONSTANTS.INITIAL_ENERGY}}</div>
           <div class="card-player-stats"><span class="icon-ship"></span> Current Ships: {{player.ships}}</div>
           <div class="card-player-stats"><span class="icon-planet"></span> Dropoffs Built: {{player.planets}}</div>
           <div class="card-player-stats"><span class="icon-lightning"></span> Collisions: {{playerInfo ? playerInfo[index].totalDamages : ''}}</div>

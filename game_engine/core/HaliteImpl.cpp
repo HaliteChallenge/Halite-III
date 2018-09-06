@@ -493,6 +493,7 @@ void HaliteImpl::update_player_stats() {
                 player_stats.last_turn_alive = game.turn_number;
             }
             player_stats.turn_productions.push_back(player.energy);
+            player_stats.turn_deposited.push_back(player.total_energy_deposited);
             player_stats.number_dropoffs = player.dropoffs.size();
             for (const auto &[_entity_id, location] : player.entities) {
                 const dimension_type entity_distance = game.map.distance(location, player.factory);

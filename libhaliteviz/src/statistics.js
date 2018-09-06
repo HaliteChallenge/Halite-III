@@ -43,19 +43,31 @@ export class Statistics {
                     currentCollisions: frameIdx > 0 ?
                         this.frames[frameIdx - 1].players[playerId].currentCollisions :
                         0,
-                    depositedHalite: 0, // net halite
+                    depositedHalite: frameIdx > 0 ?
+                        this.frames[frameIdx - 1].players[playerId].depositedHalite :
+                        0, // net halite
                 };
 
                 if (frameIdx > 0) {
                     let prevFrameStats = this.frames[this.frames.length - 1].players[playerId];
                     playerStats = Object.assign({}, prevFrameStats);
+
+                    // Replay records player energy at -end- of turn, annoyingly.
+                    const prevFrame = replay.full_frames[frameIdx - 1];
+                    if (prevFrame.energy && typeof prevFrame.energy[playerId] !== "undefined") {
+                        playerStats.currentEnergy = prevFrame.energy[playerId];
+                    }
+                }
+                else {
+                    playerStats.currentEnergy = replay.GAME_CONSTANTS.INITIAL_ENERGY;
                 }
 
                 if (curFrame.entities) {
                     playerStats.currentShips = Object.keys(curFrame.entities[playerId] || {}).length;
                 }
-                if (curFrame.energy && typeof curFrame.energy[playerId] !== "undefined") {
-                    playerStats.currentEnergy = curFrame.energy[playerId];
+
+                if (replay.game_statistics.player_statistics[playerId].turn_deposited) {
+                    playerStats.depositedHalite = replay.game_statistics.player_statistics[playerId].turn_deposited[frameIdx];
                 }
 
                 frameStats.players[playerId] = playerStats;
