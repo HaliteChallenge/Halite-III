@@ -1,53 +1,73 @@
 ---
 layout: doc_page
 title: Tutorials
-breadcrumb: Tutorials
+breadcrumb: Learn
 toc: false
 description: Get an introduction to the rules of the game to win the Halite AI Programming Challenge.
-sort_key: 0
+#sort_key: 2
 ---
-
+<!--
 <div class="doc-section" markdown="1">
 
 ## Introduction
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sem ante, tincidunt in augue eu, sodales pellentesque massa. Cras congue lectus quis risus pellentesque, quis aliquam purus sollicitudin. Maecenas feugiat lorem erat, eget ornare elit volutpat eget. Mauris vulputate, mauris non porta laoreet, neque nunc mollis nisl, nec elementum orci nibh ac sapien. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque ut urna turpis.
+Learn more about the game rules, 
+build your first bot, engage with advanced strategies, and more.
 
-</div>
+</div> -->
 
 
 <div class="doc-section" markdown="1">
 
-## Game Rules
 
 <div class="column-container">
   <div class="col" markdown="1">
+<br>
+## Getting Started
+<br>
+### [Code Tutorial](/learn-programming-challenge/tutorials/code-tutorial)
 
-### Rule 1
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sem ante, tincidunt in augue eu, sodales pellentesque massa. Cras congue lectus quis risus pellentesque, quis aliquam purus sollicitudin. Maecenas feugiat lorem erat, eget ornare elit volutpat eget. Mauris vulputate, mauris non porta laoreet, neque nunc mollis nisl
+This tutorial guides you through creating your first Halite III bot. You'll write code that tells your bot to build ships, navigate the map, and collect halite.
 
   </div>
-  <div class="col">
-    <img src="/assets/images/game-1.jpg">
+  <div class="col" markdown="1">
+
+<br>
+## Next Steps
+<br>
+### [Navigation and Interaction Tutorial](/learn-programming-challenge/tutorials/next-tutorial)
+
+Improvement your movement and player interaction strategies in this tutorial.
+
   </div>
 </div>
 
+<!--
 <div class="column-container">
   <div class="col" markdown="1">
 
-### Rule 2
+### Tutorial 2
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sem ante, tincidunt in augue eu, sodales pellentesque massa. Cras congue lectus quis risus pellentesque, quis aliquam purus sollicitudin. Maecenas feugiat lorem erat, eget ornare elit volutpat eget. Mauris vulputate, mauris non porta laoreet, neque nunc mollis nisl
+Improve the Starter bot and make your first competition submission
 
   </div>
-  <div class="col">
-    <img src="/assets/images/game-2.jpg">
+  <div class="col" markdown="1">
+
+### Tutorial 2
+
+Add a new strategy to your bot and learn a new technique. Climb up the leaderboard
+
   </div>
-</div>
+</div> -->
 
-</div>
+---
+<br>
+## Machine Learning
+<br>
+### Genetic Algorithm Bot
 
-<div class="build-a-bot text-center">
-  <a href="#" class="btn btn-primary">Build a bot</a>
-</div>
+Add a new strategy to your bot and learn a new technique. <br>Climb up the leaderboard
+
+### Supervised Learning Bot
+
+Improve the Starter bot and make your first <br>competition submission
