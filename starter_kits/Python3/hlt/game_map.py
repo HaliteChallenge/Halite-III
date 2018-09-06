@@ -118,7 +118,7 @@ class MapCell:
         """
         Mark this cell as unsafe (occupied) for navigation.
 
-        Use in conjunction with GameMap.get_safe_move.
+        Use in conjunction with GameMap.naive_navigate.
         """
         self.ship = ship
 
