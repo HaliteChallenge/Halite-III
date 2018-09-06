@@ -21,6 +21,10 @@
 
       </p>
 
+      <button class="run-game" v-on:click="runGame">
+        PLAY NOW
+        <img src="/assets/images/icons/pixelate-arrow.png" alt="play"/>
+      </button>
     </Step>
 
     <Step title="Player Interaction" name="player interaction">
@@ -42,6 +46,10 @@
 
       <img src="/assets/images/game-2.jpg" alt="some gifs/images showing successful capture formations">
 
+      <button class="run-game" v-on:click="runGame">
+        PLAY NOW
+        <img src="/assets/images/icons/pixelate-arrow.png" alt="play"/>
+      </button>
     </Step>
 
 
