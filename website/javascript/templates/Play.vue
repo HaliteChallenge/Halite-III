@@ -34,7 +34,7 @@
       <div class="doc-section doc-section-play text-center">
         <p><img src="/assets/images/icon-flag.svg" width="30" alt="flag"></p>
         <h4 class="mt3">COMPETITION INFORMATION</h4>
-        <p class="sub-title">October 16, 2018 - January 22, 2019</p>        
+        <p class="sub-title">October 16, 2018 - January 22, 2019</p>
         <p>Halite III bots can be developed locally or in a web-based editor. Submit your bot via one of the below options to participate in Halite III.</p>
       </div>
       <div class="col-sm-6">
@@ -45,7 +45,7 @@
           <a class="btn btn-primary" href="/editor">Go to Editor</a>
         </div>
       </div>
-      <div class="col-sm-6">  
+      <div class="col-sm-6">
         <div class="doc-section doc-section-play text-center">
           <h4 class="mt3">LOCAL DEVELOPMENT</h4>
      <!-- <p class="sub-title">Drop-off area</p> -->
@@ -260,5 +260,24 @@
 </script>
 
 <style lang="scss" scoped>
-
+  $primary-blue-text: #033C89;
+  $primary-black-text: #414141;
+  $text-content-color: #52678D;
+  .mt3 {
+    color: $primary-blue-text;
+    font-size: 24px;
+    line-height: 29px;
+  }
+  .sub-title {
+    color: $primary-black-text;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    font-size: 20px;
+  }
+  .text-content {
+    color: $text-content-color;
+    font-size: 18px;
+    line-height: 27px;
+    letter-spacing: 0.12px;
+  }
 </style>

@@ -291,12 +291,14 @@ export default {
       }, () => {
         this.uploadMessage = 'Hmm, something went wrong.'
       })
+      window.ga('send', 'event', 'tutorial', 'tutorial-flow', 'click-upload-bot')
     },
     runGame: function () {
       this.$refs.stepper.runGame({
         width: 32,
         height: 32
       })
+      window.ga('send', 'event', 'tutorial', 'tutorial-flow', 'click-run-game')
     }
   }
 }
@@ -319,12 +321,4 @@ export default {
   height: calc(100vh - 61px);
   /* TODO: Need to keep in sync with layout */
 }
-
-// .walkthrough-nav {
-//   h1,
-//   h2,
-//   p {
-//     padding-left: 0.5rem !important;
-//   }
-// }
 </style>
