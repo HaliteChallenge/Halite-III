@@ -9,14 +9,14 @@
             <a v-on:click.stop="slide_profile">
                 <img :src="profile_image + '?size=40'" :title="username + '\'s Profile'" :alt="username + '\'s profile image'" />
                 <i class="fa fa-sort-down"></i>
-                <ul class="nav" v-if="!isCreateAccount">
-                  <li><a v-on:click="gaData('account','click-view-profile','account-flow')" href="/user?me"><span>view profile</span><i class="line line-bottom"></i></a></li>
-                  <li><a v-on:click="gaData('account','click-edit-profile','account-flow')"href="/user/edit-user"><span>edit profile</span><i class="line line-bottom"></i></a></li>
-                  <li><a v-on:click="gaData('account','click-edit-settings','account-flow')"href="/user/settings"><span>settings</span><i class="line line-bottom"></i></a></li>
-                  <li><a v-on:click.stop.prevent="sign_out"><span>sign out</span><i class="line line-bottom"></i></a></li>
+                <ul class="nav profile-nav" v-if="!isCreateAccount">
+                  <li class="profile-nav-item"><a v-on:click="gaData('account','click-view-profile','account-flow')" href="/user?me"><span>view profile</span><i class="line line-bottom"></i></a></li>
+                  <li class="profile-nav-item"><a v-on:click="gaData('account','click-edit-profile','account-flow')"href="/user/edit-user"><span>edit profile</span><i class="line line-bottom"></i></a></li>
+                  <li class="profile-nav-item"><a v-on:click="gaData('account','click-edit-settings','account-flow')"href="/user/settings"><span>settings</span><i class="line line-bottom"></i></a></li>
+                  <li class="profile-nav-item"><a v-on:click.stop.prevent="sign_out"><span>sign out</span><i class="line line-bottom"></i></a></li>
                 </ul>
-                <ul class="nav" v-else>
-                  <li><a v-on:click.stop.prevent="sign_out"><span>sign out</span><i class="line line-bottom"></i></a></li>
+                <ul class="nav profile-nav" v-else>
+                  <li class="profile-nav-item"><a v-on:click.stop.prevent="sign_out"><span>sign out</span><i class="line line-bottom"></i></a></li>
                 </ul>
             </a>
         </div>
@@ -45,7 +45,7 @@ export default {
           username: '',
           profile_image: null,
           isMobile: isMobile,
-          isCreateAccount: window.location.pathname == '/create-account'
+          isCreateAccount: false // window.location.pathname == '/create-account'
         }
       },
       mounted: function () {
@@ -84,5 +84,35 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.profile-nav{
+  min-width: 230px;
+  li.profile-nav-item{
+    background: #001c4c;
+    a{
+      padding: 13px 15px;
+      font-size: 14px;
+      color: #97DDFF;
+      font-weight:400;
+      opacity: .6;
+      display: block;
+      &:hover {
+        color: #95FE91;
+        text-shadow: 0 1px 13px #95FF91;
+        border-left: 2px solid #95FF91;
+        background-color: transparent;
+        &:before {
+          opacity: 0.4;
+          background-image: linear-gradient(269deg, rgba(149,255,145,0) 0%, #8CF392 100%);
+          content: "";
+          display: block;
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
 </style>
