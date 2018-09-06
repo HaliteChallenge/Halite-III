@@ -317,18 +317,6 @@ export class HaliteVisualizer {
         return this.replay.full_frames[this.frame];
     }
 
-    get currentStatistics() {
-        let frame = this.currentFrame;
-        let entities = {};
-        let total_entities = 0;
-        // TODO: update with Halite 3 statistics (keep stubs of old statistics as they are expected by the rest of the website
-        return {
-            "planets": 0,
-            "ships": 0,
-            "total_ships": 0,
-        };
-    }
-
     /**
      * Helper method that figures out the current production present
      * on a cell, saving you from having to jump through the replay.
