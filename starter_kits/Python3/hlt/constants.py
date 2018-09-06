@@ -1,10 +1,9 @@
 """
-Constants representing the game variation being played.
-Most constants are global and come from game engine and are immutable and are strictly informational.
+The constants representing the game variation being played.
+They come from game engine and changing them has no effect.
+They are strictly informational.
 """
 
-################################################
-# Global and immutable constants.
 
 def load_constants(constants):
     """
