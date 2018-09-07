@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="page-container">
-      <a href="javascript:;" @click="updatePage(page - 1)"><img :src="`${baseUrl}/assets/images/page-prev.svg`"/></a>
-      <a href="javascript:;" @click="updatePage(1)">First page</a>
-      <a href="javascript:;" @click="updatePage(i)" :class="page === i? 'underline disabled': 'underline'" v-for="i in pageRange">{{i}}</a>
+      <a href="javascript:;" @click="updatePage(page - 1)" :class="page === 1? 'disabled': ''"><img :src="`${baseUrl}/assets/images/page-prev.svg`"/></a>
+      <a href="javascript:;" @click="updatePage(1)" :class="page === 1? 'disabled': ''">First page</a>
+      <a href="javascript:;" @click="updatePage(i)" :class="'page-number ' + (page === i? 'underline disabled': 'underline')" v-for="i in pageRange">{{i}}</a>
       <span v-show="hasMore">...</span>
-      <a href="javascript:;" @click="updatePage(lastPage)">Last page</a>
-      <a href="javascript:;" @click="updatePage(page + 1)"><img :src="`${baseUrl}/assets/images/page-next.svg`"/></a>
+      <a href="javascript:;" @click="updatePage(lastPage)" :class="page === lastPage? 'disabled': '' ">Last page</a>
+      <a href="javascript:;" @click="updatePage(page + 1)" :class="page === lastPage? 'disabled': '' "><img :src="`${baseUrl}/assets/images/page-next.svg`"/></a>
     </div>
   </div>
 </template>
@@ -60,7 +60,7 @@ export default {
     },
     methods: {
       updatePage: function (page) {
-        if (page > this.lastPage || page === this.page) return
+        if (page > this.lastPage || page === this.page || page < 1) return
         this.changePage(page)
       }
     }
@@ -75,18 +75,27 @@ export default {
     }
     a {
       margin-right: 10px;
-      color: #6E757C;
+      color: #B4E6FF;
       img {
         height: 18px;
       }
+      &.page-number {
+        display: inline-block;
+        width: 27px;
+        height: 27px;
+        line-height: 30px;
+      }
       &.underline {
         text-decoration: underline;
-        color: #6E757C;
       }
       &.disabled {
         text-decoration: none;
-        color: #ECFFFB;
         cursor: text;
+        opacity: 0.5;
+        &.page-number{
+          background-color: rgba(216,216,216,.2);
+          opacity: 1;
+        }
       }
     }
 
