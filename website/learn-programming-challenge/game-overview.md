@@ -24,7 +24,7 @@ Players begin play with a shipyard, and can use collected halite to build new sh
 
 #### Gameplay Overview
 
-Players each start the game with 1,000 stored halite, a shipyard, and knowledge of the game map. The map is a 2d grid (32x32, 64x64, or 80x80) with a unique symmetric pattern of halite. Each player's shipyard position is fixed on the map, and the shipyard is the only place a player can spawn new ships.
+Players each start the game with 5,000 stored halite, a shipyard, and knowledge of the game map. The map is a 2d grid (32x32, 48x48, 64x64, or 80x80) with a unique symmetric pattern of halite. Each player's shipyard position is fixed on the map, and the shipyard is the only place a player can spawn new ships.
 
 Ships are the main actors in a game of Halite III. Ships explore the board, collect precious halite, and can interact with opposing players. Ships are powered by the energy they collect and store, and any move costs halite. Ships can make one action per turn: they can move one unit in any cardinal direction, collect halite, or convert into dropoffs.
 
