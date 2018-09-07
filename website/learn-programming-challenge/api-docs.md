@@ -130,7 +130,7 @@ Dropoffs have an `owner`, an `id`, and a `position`.
 
 <br/>
 #### MAP
-Gameplay takes place on a wrapping rectangular grid which varies in size. The map edges wrap to their opposite edge and create a torus shape. The game map can be indexed by a position or by a contained entity (ship, shipyard, or dropoff). The game map has `width` and `height` as member variables.
+Gameplay takes place on a wrapping rectangular grid 32x32, 48x48, 64x64, or 80x80 in dimension. The map edges wrap to their opposite edge and create a torus shape. The game map can be indexed by a position or by a contained entity (ship, shipyard, or dropoff). The game map has `width` and `height` as member variables.
 
 <br/>
 * **Calculate distance**
