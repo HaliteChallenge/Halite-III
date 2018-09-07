@@ -48,9 +48,6 @@ Check us out on Github (todo), and make a contribution to Halite III (todo).
 <br/>
 </div>
 
-<div class="build-a-bot text-center">
-  <a href="#" class="btn btn-primary">Build a bot</a>
-</div>
 
 <script>
   var site_downloads = {{ site.data.downloads | jsonify }};
