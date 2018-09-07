@@ -119,7 +119,7 @@ Each player begins the game with a shipyard. Shipyards have an `owner`, an `id`,
 <br/>
 * **Spawn**
 
-   `shipyard.spawn(0)` returns an engine command to generate a new ship.
+   `shipyard.spawn()` returns an engine command to generate a new ship.
 
 
 <br/>
@@ -158,7 +158,7 @@ Gameplay takes place on a wrapping rectangular grid which varies in size. The ma
 
   A method that returns a direction to move closer to a target without colliding with other entities. Returns a direction of “still” if no such move exists.
 
-  `gamemap.naive_navigate(source, destination)` returns a single valid destination toward a given target.
+  `gamemap.naive_navigate(ship, destination)` returns a single valid destination toward a given target.
 
 <br/>
 
@@ -169,6 +169,9 @@ Methods take and return map cells, positions, or directions. Some methods also t
 * A *map cell* is an object inside the game map, and has detailed information about what is in this position on the map.
 * A *position* is an object with x and y values indicating the absolute position on the game map.
 * A *direction* is an (x, y) tuple indicating the direction of movement from an origin cell.
+
+---
+
 
 <br/>
 ##### MAP CELL
@@ -190,7 +193,7 @@ A map cell is an object representation of a cell on the game map. Map cell has `
 <br/>
 * **Navigational Marking**
 
-   `map_cell.mark_unsafe()` is used to mark this cell as unsafe (occupied) for collision avoidance.
+   `map_cell.mark_unsafe(ship)` is used to mark the cell under this ship as unsafe (occupied) for collision avoidance.
 
 <br/>
 ##### POSITION
