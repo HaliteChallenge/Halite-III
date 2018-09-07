@@ -9,7 +9,7 @@ sort_key: 1
 
 <div class="doc-section" markdown="1">
 
-#### Introducing Halite III
+#### Game Rules
 
 Halite III is a resource management game in which players build and command ships that explore the ocean and collect halite. Ships use halite as an energy source, and the player with the most stored halite at the end of the game is the winner.
 
@@ -22,9 +22,9 @@ Players begin play with a shipyard, and can use collected halite to build new sh
 
 <div class="doc-section" markdown="1">
 
-#### Gameplay Details
+#### Gameplay Overview
 
-Games begin with a six second initialization phase. Players each start the game with 1,000 stored halite, a shipyard, and knowledge of the game map. The map is a 2d grid (32x32, 64x64, or 80x80) with a unique symmetric pattern of halite. Each player's shipyard position is fixed on the map, and the shipyard is the only place a player can spawn new ships.
+Players each start the game with 1,000 stored halite, a shipyard, and knowledge of the game map. The map is a 2d grid (32x32, 64x64, or 80x80) with a unique symmetric pattern of halite. Each player's shipyard position is fixed on the map, and the shipyard is the only place a player can spawn new ships.
 
 Ships are the main actors in a game of Halite III. Ships explore the board, collect precious halite, and can interact with opposing players. Ships are powered by the energy they collect and store; any move costs 10% of the halite in their cargo. Ships can make one action per turn: they can move one unit in any cardinal direction, collect halite, or convert into dropoffs.
 
