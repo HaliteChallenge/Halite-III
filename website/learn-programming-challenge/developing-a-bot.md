@@ -42,7 +42,7 @@ You will get an email notifying you if your bot fails to compile on the game ser
 ##### Timeout Failures
 Your bot will be killed if it exceeds the following time limits during game execution. You will receive a timeout email with a link to the log. You can also access these logs on your user profile. We will disable bots that time out excessively to ensure fair and productive games for everyone.
 * **Install Time:** Prior to game start, you have `10 minutes` to install any dependencies.
-* **Initialization Time:** Prior to the first turn, you have `1 minute` to compute any game specific data and return your bot’s name.
+* **Initialization Time:** Prior to the first turn, you have `30 seconds` to compute any game specific data and return your bot’s name.
 * **Per Turn Time:** Each player has at `max 2 seconds` per turn to respond with a command to the engine. If your bot exceeds this time limit, your bot is killed and loses the match.
 
 
