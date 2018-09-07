@@ -157,6 +157,14 @@ header.unloaded{
           }
       }
     }
+    > li.nav-login > a{
+      &:hover {
+        color: #20bfc1 !important;
+        &:before, &:after {
+          display: none;
+        }
+    }
+    }
     > li.active{
       > a{
         background-color: transparent;

@@ -3,8 +3,6 @@
     <div class="visualizer-row">
       <div class="visualizer-column">
         <div class="game-heading">
-          <i class="xline xline-top"></i>
-          <i class="xline xline-bottom"></i>
           <p class="game-heading-date" v-if="game">{{game.time_played | moment("MMM Do, YY - HH:mm:ss")}}</p>
           <div class="game-heading-players">
             <div class="short">
@@ -12,6 +10,8 @@
                 <TierPopover :tier="tierClass(sortedPlayers[0].tier)"/>
                 <a v-if="sortedPlayers[0].user_id" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].user_id}`">{{sortedPlayers[0].name}}</a>
                 <span v-if="!sortedPlayers[0].user_id" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
+                <a v-if="sortedPlayers[0].index" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].index}`">{{sortedPlayers[0].name}}</a>
+                <span v-if="!sortedPlayers[0].index" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
               </span>
               <span class="action">defeats</span>
               <span :class="`player color-${sortedPlayers[1].index + 1}`" v-if="sortedPlayers.length >= 2">
@@ -40,8 +40,6 @@
           <i class="xline xline-right"></i>
           <div class="game-replay-viewer"></div>
           <div class="game-replay-controller">
-            <i class="xline xline-top"></i>
-            <i class="xline xline-bottom"></i>
             <div class="game-replay-btn-table">
               <div class="game-replay-btn-cell">
                 <span class="replay-btn">
@@ -82,7 +80,8 @@
                   <div>{{sliderOptions.max}}</div>
                 </div>
               </div>
-              <div class="game-replay-share">
+              <!-- issues #361: Remove Share button & Share capabilities -->
+              <!-- <div class="game-replay-share">
                 <div class="popup-overlay" v-show="sharePopup" @click="toggleShare"></div>
                 <div class="popup-container" v-show="sharePopup">
                   <div class="popup-share">
@@ -94,22 +93,25 @@
                       </button>
                     </div>
                     <div class="share-socials">
-                      <a :href="shareSocial('facebook')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;"
-     target="_blank"><i class="fa fa-facebook-official"></i></a>
-                      <a :href="shareSocial('twitter')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;"
-     target="_blank"><i class="fa fa-twitter"></i></a>
-                      <a :href="shareSocial('linkedin')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;"
-     target="_blank"><i class="fa fa-linkedin"></i></a>
+                      <a :href="shareSocial('facebook')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank">
+                        <i class="fa fa-facebook-official"></i>
+                      </a>
+                      <a :href="shareSocial('twitter')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank">
+                        <i class="fa fa-twitter"></i>
+                      </a>
+                      <a :href="shareSocial('linkedin')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank">
+                        <i class="fa fa-linkedin"></i>
+                      </a>
                     </div>
-                    <!-- <div class="hr"></div>
+                    <div class="hr"></div>
                     <label>Share as a video</label>
-                    <a href="#" class="btn btn-block"><span>Create Video</span></a> -->
+                    <a href="#" class="btn btn-block"><span>Create Video</span></a>
                   </div>
                 </div>
                 <button class="btn" @click="toggleShare">
                   <span>SHARE</span>
                 </button>
-              </div>
+              </div> -->
             </div>
           </div>
           <div class="game-replay-controller" v-if="showHoliday">
@@ -117,7 +119,6 @@
                   <label for="holiday">Holiday Theme:</label>
                   <input type="checkbox" class="pull-left" style="margin-top: -5px;" id="holiday" v-bind:checked="isHoliday" v-on:click="toggleHoliday(this)">
               </div>
-              <i class="xline xline-bottom"></i>
           </div>
         </div>
       </div>
@@ -207,23 +208,21 @@
         </div>
       </div>
     </div>
-    <div class="post-game-dashboard hidden-xs hidden-sm" v-if="!isMobile && dashboard">
+
+    <!-- issues #361: Remove Post-Game dashboard -->
+    <!-- <div class="post-game-dashboard hidden-xs hidden-sm" v-if="!isMobile && dashboard">
       <div class="panel-group" aria-multiselectable="true">
           <div class="panel panel-stats">
             <div class="panel-heading" role="tab" id="heading_player_details">
               <a data-toggle="collapse" v-on:click="gaData('visualizer','click-postgame-dashboard','gameplay')"  @click.stop="toggleChartPanel" data-parent="#accordion" :aria-expanded="showChartPanel.toString()" aria-controls="widget_player_details">
-                <i class="xline xline-top"></i>
                 <h4>post game dashboard</h4>
                 <span class="toggle-icon expand"></span>
-                <i class="xline xline-bottom"></i>
               </a>
             </div>
             <div class="panel-collapse collapse" :class="{'in': showChartPanel}" role="tabpanel" :aria-expanded="showChartPanel.toString()" id="panel_post_game" aria-labelledby="panel_post_game">
               <div class="card-dashboard-list row">
                 <div class="col-md-3" v-for="(_player, _pIndex) in (players) || []">
                   <div :class="{'card-dashboard': true, 'active': selectedPlayers[_pIndex]}" @click="toggleSelectedPlayer(_pIndex)">
-                    <i class="xline xline-top"></i>
-                    <i class="xline xline-bottom"></i>
                     <div class="card-dashboard-thumb">
                       <img :src="`https://github.com/${_player.name}.png`">
                     </div>
@@ -246,7 +245,7 @@
             </div>
           </div>
         </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -324,11 +323,11 @@
         speedIndex: 3,
         speedLabel: '3x',
         stats: null,
-        sharePopup: false,
+        // sharePopup: false, // issues #361: Remove Share button & Share capabilities
         isHoliday: true,
         showHoliday: false,
         showChartPanel: true,
-        isMobile: window.mobileAndTabletcheck(),
+        // isMobile: window.mobileAndTabletcheck(), // issues #361
         user: null,
         showChart: false,
         selected: {
@@ -743,9 +742,10 @@
       gaData: function (category, action, label) {
         utils.gaEvent(category, action, label)
       },
-      toggleShare: function () {
-        this.sharePopup = !this.sharePopup
-      },
+      // issues #361: Remove Share button & Share capabilities
+      // toggleShare: function () {
+      //   this.sharePopup = !this.sharePopup
+      // },
       shareSocial: function (social) {
         let text = 'Halite Game Replay - '
         let tags = 'halitegame'
@@ -770,13 +770,15 @@
         this.$refs.shareInput.select()
         document.execCommand('copy')
       },
-      toggleSelectedPlayer: function (id) {
-        this.selectedPlayers[id] = !this.selectedPlayers[id]
-        this.$refs.chart1.refreshGraph()
-        this.$refs.chart2.refreshGraph()
-        this.$refs.chart3.refreshGraph()
-        this.$refs.chart4.refreshGraph()
-      },
+
+      // issues #361: Remove Post-Game dashboard
+      // toggleSelectedPlayer: function (id) {
+      //   this.selectedPlayers[id] = !this.selectedPlayers[id]
+      //   this.$refs.chart1.refreshGraph()
+      //   this.$refs.chart2.refreshGraph()
+      //   this.$refs.chart3.refreshGraph()
+      //   this.$refs.chart4.refreshGraph()
+      // },
       /**
        * Download link
        */
