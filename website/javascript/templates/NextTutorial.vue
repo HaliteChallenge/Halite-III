@@ -13,7 +13,7 @@
       <ul>
         <li><code>game_map[position].directional_offset(test_direction)</code> will return a location one square in the test_direction from your ship.</li>
         <li><code>game_map[position].get_surrounding_cardinals()</code> will return a list of the positions of each cardinal direction from the given position.</li>
-        <li><code>game_map[position].halite_amount/code> will return the halite at a given map location.</li>
+        <li><code>game_map[position].halite_amount</code> will return the halite at a given map location.</li>
       </ul>
       </p>
       <p>
