@@ -8,5 +8,11 @@ namespace hlt {
         PlayerId owner;
         EntityId id;
         Position position;
+
+        Entity(PlayerId owner, EntityId id, int x, int y) :
+            owner(owner),
+            id(id),
+            position(x, y)
+        {}
     };
 }

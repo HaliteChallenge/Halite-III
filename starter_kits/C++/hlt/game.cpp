@@ -4,7 +4,7 @@
 #include <sstream>
 
 hlt::Game::Game() : turn_number(0) {
-    std::cout.sync_with_stdio(false);
+    std::ios_base::sync_with_stdio(false);
 
     hlt::constants::populate_constants(hlt::get_string());
 
@@ -42,14 +42,14 @@ void hlt::Game::update_frame() {
 
         game_map->_update();
 
-        for (Player* player : players) {
+        for (auto player : players) {
             for (auto& ship_iterator : player->ships) {
-                Ship* ship = &ship_iterator.second;
+                auto ship = ship_iterator.second;
                 game_map->at(ship)->mark_unsafe(ship);
             }
-            game_map->at(player->shipyard)->structure = &player->shipyard;
+            game_map->at(player->shipyard)->structure = player->shipyard;
             for (auto& dropoff_iterator : player->dropoffs) {
-                Dropoff* dropoff = &dropoff_iterator.second;
+                auto dropoff = dropoff_iterator.second;
                 game_map->at(dropoff)->structure = dropoff;
             }
         }

@@ -11,8 +11,8 @@ namespace hlt {
     struct Game {
         int turn_number;
         PlayerId my_id;
-        std::vector<Player*> players;
-        Player* me;
+        std::vector<std::shared_ptr<Player>> players;
+        std::shared_ptr<Player> me;
         GameMap* game_map;
 
         Game();

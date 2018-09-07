@@ -9,22 +9,22 @@ namespace hlt {
     struct MapCell {
         Position position;
         Halite halite_amount;
-        Ship* ship;
-        Entity* structure;
+        std::shared_ptr<Ship> ship;
+        std::shared_ptr<Entity> structure;
 
         bool is_empty() const {
-            return ship == nullptr && structure == nullptr;
+            return !ship && !structure;
         }
 
         bool is_occupied() const {
-            return ship != nullptr;
+            return static_cast<bool>(ship);
         }
 
         bool has_structure() const {
-            return structure != nullptr;
+            return static_cast<bool>(structure);
         }
 
-        void mark_unsafe(Ship* ship) {
+        void mark_unsafe(std::shared_ptr<Ship>& ship) {
             this->ship = ship;
         }
     };

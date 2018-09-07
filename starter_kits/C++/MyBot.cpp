@@ -18,13 +18,13 @@ int main() {
 
     for (;;) {
         game.update_frame();
-        Player* me = game.me;
+        shared_ptr<Player> me = game.me;
         GameMap* game_map = game.game_map;
 
         vector<Command> command_queue;
 
         for (const auto& ship_iterator : me->ships) {
-            const hlt::Ship* ship = &ship_iterator.second;
+            shared_ptr<Ship> ship = ship_iterator.second;
             if (game_map->at(ship)->halite_amount < constants::MAX_HALITE / 10 || ship->is_full()) {
                 Direction random_direction = ALL_CARDINALS[prg() % 4];
                 command_queue.push_back(ship->move(random_direction));
@@ -38,7 +38,7 @@ int main() {
                 me->halite_amount >= constants::SHIP_COST &&
                 !game_map->at(me->shipyard)->is_occupied())
         {
-            command_queue.push_back(me->shipyard.spawn());
+            command_queue.push_back(me->shipyard->spawn());
         }
 
         if (!game.end_turn(command_queue)) {

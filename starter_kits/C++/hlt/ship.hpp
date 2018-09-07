@@ -4,9 +4,16 @@
 #include "constants.hpp"
 #include "command.hpp"
 
+#include <memory>
+
 namespace hlt {
     struct Ship : Entity {
         Halite halite_amount;
+
+        Ship(PlayerId player_id, EntityId ship_id, int x, int y, Halite halite) :
+            Entity(player_id, ship_id, x, y),
+            halite_amount(halite)
+        {}
 
         bool is_full() const {
             return halite_amount >= constants::MAX_HALITE;
@@ -23,5 +30,7 @@ namespace hlt {
         Command stay_still() const {
             return hlt::command::move(id, Direction::STILL);
         }
+
+        static std::shared_ptr<Ship> _generate(PlayerId player_id);
     };
 }
