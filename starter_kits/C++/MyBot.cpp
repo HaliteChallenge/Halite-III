@@ -1,59 +1,49 @@
-#include "hlt/hlt.hpp"
+#include "hlt/game.hpp"
+#include "hlt/constants.hpp"
+#include "hlt/log.hpp"
 
 #include <random>
+#include <ctime>
+
+using namespace std;
+using namespace hlt;
 
 int main() {
-    hlt::Game game{};
-    // Get the inital game state
-    game.get_init();
+    Game game;
+    game.ready("MyCppBot");
 
-    // Initialize the pseudorandom generator.
+    log::log("Successfully created bot! My Player ID is " + std::to_string(game.my_id) + ".");
+
     std::mt19937 prg(time(NULL));
 
-    // Respond with our name
-    game.send_init("MyC++Bot-" + std::to_string(game.my_id));
+    for (;;) {
+        game.update_frame();
+        shared_ptr<Player> me = game.me;
+        unique_ptr<GameMap>& game_map = game.game_map;
 
-    while (true) {
-        // Get the newest frame.
-        const auto turn_number = game.get_frame();
+        vector<Command> command_queue;
 
-        const auto me = game.players.at(game.my_id);
-        std::vector<std::unique_ptr<hlt::Command>> command_queue;
-        hlt::SafeMover safe_mover{game.game_map, game.players};
-
-        auto at_home = false;
-        // For each of our ships
-        for (const auto &id_ship : game.players[game.my_id].ships) {
-            const auto id = id_ship.first;
-            const auto &ship = id_ship.second;
-            // If we're on our shipyard and have enough halite, remember this.
-            if (ship.location == game.me().shipyard.location) {
-                at_home = true;
-                // Halite gets collected automatically when we move
-                // over the shipyard.
-            }
-
-            // Otherwise, check if there's a reasonable amount of halite on the square and we have capacity.
-            // If so, extract halite. If not, move randomly.
-            if (game.game_map[ship.location] > hlt::MAX_HALITE / 10 &&
-                     !ship.is_full()) {
-                continue; // Do nothing, which is to say, extract halite.
-            }
-            else {
-                // Move in a random direction
-                command_queue.push_back(safe_mover.move(ship, hlt::CARDINALS[prg() % 4]));
+        for (const auto& ship_iterator : me->ships) {
+            shared_ptr<Ship> ship = ship_iterator.second;
+            if (game_map->at(ship)->halite_amount < constants::MAX_HALITE / 10 || ship->is_full()) {
+                Direction random_direction = ALL_CARDINALS[prg() % 4];
+                command_queue.push_back(ship->move(random_direction));
+            } else {
+                command_queue.push_back(ship->stay_still());
             }
         }
 
-        // If we're in the first 200 turns and have enough halite, spawn a ship.
-        if (turn_number <= 200 &&
-            game.players[game.my_id].halite >= hlt::SHIP_COST &&
-            !at_home) {
-            command_queue.push_back(game.me().shipyard.spawn());
+        if (
+            game.turn_number <= 200 &&
+            me->halite_amount >= constants::SHIP_COST &&
+            !game_map->at(me->shipyard)->is_occupied())
+        {
+            command_queue.push_back(me->shipyard->spawn());
         }
 
-        // Send our moves back to the game environment
-        game.end_turn(command_queue);
+        if (!game.end_turn(command_queue)) {
+            break;
+        }
     }
 
     return 0;

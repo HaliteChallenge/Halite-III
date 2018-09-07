@@ -17,6 +17,8 @@ struct PlayerStatistics {
     long rank{};                                 /**< The rank of the player (1 = highest) */
     long last_turn_alive{};                      /**< The last turn the player remained alive */
     std::vector<energy_type> turn_productions{}; /**< Production granted to player each turn, turn 1 at front of vector. */
+    std::vector<energy_type> turn_deposited{};   /**< Running total of how much halite has been collected by this player each turn. */
+    energy_type total_production{};              /**< Production granted to player each turn, turn 1 at front of vector. */
     energy_type total_mined{};                   /**< Total amount extracted from map, including energy not deposited (lost due to collision or some other means), but not including bonuses from inspiration. */
     energy_type total_bonus{};                   /**< Total halite collected from inspiration bonuses, including energy not deposited (lost due to collision or some other means). */
     energy_type total_mined_from_captured{};     /**< Total amount mined, including energy not deposited (lost due to collision or some other means) and bonuses from inspiration, by ships captured from other players. */
@@ -29,6 +31,8 @@ struct PlayerStatistics {
     long ships_given{};                          /**< The number of ships captured from this player. */
     long self_collisions{};                      /**< The number of ships involved in collisions with allied ships. */
     long all_collisions{};                       /**< The number of ships involved in collisions with any ships, allied or not. Note there may be overlap with self_collisions if a 3+ ship collision occurs. */
+    std::unordered_map<Location, energy_type> halite_per_dropoff{}; /**< The amount of halite collected at each dropoff. */
+
     /**
      * Convert Player statistics to JSON format.
      * @param[out] json The output JSON.

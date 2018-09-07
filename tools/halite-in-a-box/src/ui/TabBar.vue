@@ -24,6 +24,14 @@
         },
         mounted() {
         },
+        watch: {
+            currentTab(newIndex) {
+                const tab = this.$slots[`tab-${newIndex}`];
+                if (tab && tab[0].componentInstance && tab[0].componentInstance.tabOpened) {
+                    tab[0].componentInstance.tabOpened();
+                }
+            },
+        },
     };
 </script>
 
@@ -32,6 +40,7 @@
         border-bottom: 0.1em solid #d1d1d1;
         button {
             background: none;
+            letter-spacing: 0;
             color: inherit;
             border: 0;
             border-right: 0.1em solid #d1d1d1;

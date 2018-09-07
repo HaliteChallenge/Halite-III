@@ -1,4 +1,5 @@
 import io
+import os
 
 import flask
 import sqlalchemy
@@ -106,12 +107,6 @@ def validate_file_submission():
 
     # Save to GCloud
     uploaded_file = flask.request.files["sourceFile"]
-    '''if not zipfile.is_zipfile(uploaded_file):
-        raise util.APIError(
-            400,
-            message="file does not appear to be a zip file.")
-
-    '''
     uploaded_file.seek(0)
     return uploaded_file
 
@@ -130,3 +125,13 @@ def delete_user_file(intended_user, file_id, *, user_id):
     blob.delete()
 
     return util.response_success()
+
+
+@web_api.route("/editor/opponents", methods=["GET"])
+@util.cross_origin(methods=["GET"])
+@api_util.requires_login(accept_key=True)
+def list_opponent_bots(user_id):
+    bucket = model.get_gym_bot_bucket()
+    files = [os.path.splitext(blob.name)[0] for blob in bucket.list_blobs()]
+    files.sort()
+    return flask.jsonify(files)

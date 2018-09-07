@@ -30,25 +30,37 @@
 
 
     <div class="container-fluid">
-      <h1 class="page-heading">Competition summary</h1>
+      <h1 class="page-heading">Play Halite III</h1>
       <div class="doc-section doc-section-play text-center">
         <p><img src="/assets/images/icon-flag.svg" width="30" alt="flag"></p>
-        <h4 class="mt3">SEASON DURATION</h4>
-        <p class="sub-title">1st sep 2018 - 2nd feb 2019</p>
-        <p class="text-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sem ante, tincidunt in augue eu, sodales pellentesque massa. Cras congue lectus quis risus pellentesque, quis aliquam purus sollicitudin. Maecenas feugiat lorem erat, eget ornare elit volutpat eget. </p>
+        <h4 class="mt3">COMPETITION INFORMATION</h4>
+        <p class="sub-title">October 16, 2018 - January 22, 2019</p>
+        <p>Halite III bots can be developed locally or in a web-based editor. Submit your bot via one of the below options to participate in Halite III.</p>
       </div>
-      <div class="doc-section doc-section-play text-center">
-        <h4 class="mt3">DROP-OFF AREA</h4>
-        <p class="sub-title">Submit your bot here</p>
-        <halite-upload-zone
-          description="Drop a replay file here to <br>upload your bot"
-          buttonText = "Select File"
-          :icon="`/assets/images/icon-upload.svg`"
-          v-on:change="upload_bot"
-          :progressBar="is_downloading"
-          :progress="uploadProgress"
-          :message="uploadMessage">
-          </halite-upload-zone>
+      <div class="col-sm-6">
+        <div class="doc-section doc-section-play text-center">
+          <h4 class="mt3">WEB-BASED DEVELOPMENT</h4>
+          <p>Create, replay, and submit a Python bot via a web-based editor.</p>
+          <br>
+          <a class="btn btn-primary" href="/editor">Go to Editor</a>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="doc-section doc-section-play text-center">
+          <h4 class="mt3">LOCAL DEVELOPMENT</h4>
+     <!-- <p class="sub-title">Drop-off area</p> -->
+          <p>Or, <a href="/learn-programming-challenge/download">download</a> the game environment and starter kit bundle for your platform and language of choice.</p>
+          <p>To submit your local Halite bot in the competition, upload a .zip file here. The root folder of your zip should contain a MyBot.{extension} file and the /hlt folder from the starter kit.</p>
+          <halite-upload-zone
+            description="<br>Drop your .zip file here to <br>upload your bot"
+            buttonText = "Select File"
+            :icon="`/assets/images/icon-upload.svg`"
+            v-on:change="upload_bot"
+            :progressBar="is_downloading"
+            :progress="uploadProgress"
+            :message="uploadMessage">
+            </halite-upload-zone>
+        </div>
       </div>
     </div>
 

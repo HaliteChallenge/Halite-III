@@ -11,10 +11,11 @@ namespace hlt {
  *
  * @param store The game store.
  * @param entity The entity dumping energy.
+ * @param location The location at which to dump.
  * @param cell The cell at which to dump.
  * @param energy The dumped amount of energy.
  */
-void dump_energy(Store &store, Entity &entity, Cell &cell, energy_type energy) {
+void dump_energy(Store &store, Entity &entity, const Location &location, Cell &cell, energy_type energy) {
     // Decrease the entity's energy.
     entity.energy -= energy;
     if (cell.owner == Player::None) {
@@ -23,7 +24,23 @@ void dump_energy(Store &store, Entity &entity, Cell &cell, energy_type energy) {
         store.map_total_energy += energy;
     } else {
         // The cell owner gets all the energy
-        store.get_player(cell.owner).energy += energy;
+        auto& player = store.get_player(cell.owner);
+        player.energy += energy;
+
+        // Track how much energy is deposited in each dropoff
+        player.total_energy_deposited += energy;
+        if (location == player.factory) {
+            player.factory_energy_deposited += energy;
+        }
+        else {
+            for (auto &dropoff : player.dropoffs) {
+                if (dropoff.location == location) {
+                    dropoff.deposited_halite += energy;
+                    return;
+                }
+            }
+            assert(false);
+        }
     }
 }
 
@@ -44,7 +61,7 @@ void DumpTransaction::commit() {
         const auto &location = player.get_entity_location(entity.id);
         auto &cell = map.at(location);
         if (cell.owner == entity.owner) {
-            dump_energy(store, entity, cell, entity.energy);
+            dump_energy(store, entity, location, cell, entity.energy);
             cell_updated(location);
             entity_updated(entity.id);
         }
@@ -214,7 +231,7 @@ void MoveTransaction::commit() {
             for (const auto &entity_id : collision_ids) {
                 auto &entity = store.get_entity(entity_id);
                 // Dump the energy.
-                dump_energy(store, entity, cell, entity.energy);
+                dump_energy(store, entity, destination, cell, entity.energy);
                 store.delete_entity(entity_id);
             }
 

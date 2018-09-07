@@ -46,18 +46,14 @@ while True:
         # If so, extract halite. If not, move randomly. If we don't move we can assume we're extracting Halite
         if ship.halite_amount > 500:
             destination = me.shipyard.position
-            safe_move = game_map.get_safe_move(game_map[ship], game_map[destination])
-            if safe_move:
-                game_map[ship.position.directional_offset(safe_move)].mark_unsafe(ship)
-                command_queue.append(ship.move(safe_move))
+            safe_direction = game_map.naive_navigate(ship, destination)
+            command_queue.append(ship.move(safe_direction))
         elif game_map[ship.position].halite_amount < constants.MAX_HALITE / 10:
             # Move this ship in a random direction, picking from one of the cardinals
             direction = random.choice([ Direction.North, Direction.South, Direction.East, Direction.West ])
             destination = ship.position.directional_offset(direction)
-            safe_move = game_map.get_safe_move(game_map[ship], game_map[destination])
-            if safe_move:
-                game_map[ship.position.directional_offset(safe_move)].mark_unsafe(ship)
-                command_queue.append(ship.move(safe_move))
+            safe_direction = game_map.naive_navigate(ship, destination)
+            command_queue.append(ship.move(safe_direction))
         else:
             command_queue.append(ship.stay_still())  # Don't move
 

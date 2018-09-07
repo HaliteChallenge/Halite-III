@@ -76,9 +76,11 @@ def download_bot():
     user_id = flask.request.values.get("user_id", None)
     bot_id = flask.request.values.get("bot_id", None)
     compile = flask.request.values.get("compile", False)
+    botname = "{}_{}".format(user_id, bot_id)
 
     if user_id == "gym":
         bucket = model.get_gym_bot_bucket()
+        botname = bot_id + ".zip"
     elif bot_id == "editor":
         return download_editor_bot(user_id)
     elif compile:
@@ -88,7 +90,6 @@ def download_bot():
 
     # Retrieve from GCloud
     try:
-        botname = "{}_{}".format(user_id, bot_id)
         blob = bucket.get_blob(botname)
         buffer = io.BytesIO()
         blob.download_to_file(buffer)

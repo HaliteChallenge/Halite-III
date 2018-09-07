@@ -1,16 +1,18 @@
 <template>
     <div class="home-container">
         <div class="row section-overview">
-            <div class="col-md-4">
-                <h1>Game Overview</h1>
-                <p>Halite is an open source artificial intelligence programming challenge, created by Two Sigma, where players build bots using the coding language of their choice to battle on a two-dimensional virtual board.</p>
-                <a class="btn btn-primary" href="">Play now</a>
+            <div class="col-md-6">
+                <h1>Welcome to Halite III!</h1>
+                <p>Halite is an open source artificial intelligence challenge, created by Two Sigma.</p>
+                <p>Halite III is a resource management game. Your goal is to build a bot that efficiently navigates the seas removing halite, a luminous energy resource.</p>
+                <br>
+                <a class="btn btn-primary" href="/learn-programming-challenge/game-overview">Play now</a>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <img src="/assets/images/home-map.png" alt="Map">
             </div>
         </div>
-        <div class="row section-feed">
+<!--        <div class="row section-feed">
             <div class="col-md-4">
                 <div class="feed-block">
                     <div class="feed-header">
@@ -90,7 +92,7 @@
             </div>
             <div class="col-md-4">
                 <div class="parnter-block">
-                    <h3>Partner ship</h3>
+                    <h3>Partners</h3>
                     <div class="partner-main">
                         <div class="logo">
                             <img src="/assets/images/logo-two-sigma.png" alt="two sigma">
@@ -117,7 +119,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
             <!-- 
             <div class="row">

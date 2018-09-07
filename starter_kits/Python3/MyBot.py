@@ -49,11 +49,11 @@ while True:
                 ship.move(
                     random.choice([ Direction.North, Direction.South, Direction.East, Direction.West ])))
         else:
-            ship.stay_still()  # Don't move
+            command_queue.append(ship.stay_still())  # Don't move
 
     # If we're in the first 200 turns and have enough halite, spawn a ship.
     # Don't spawn a ship if we currently have a ship at port, though.
-    if game.turn_number <= 0 and me.halite_amount >= constants.SHIP_COST and not game_map[me.shipyard].is_occupied:
-        command_queue.append(game.me.shipyard.spawn())
+    if game.turn_number <= 200 and me.halite_amount >= constants.SHIP_COST and not game_map[me.shipyard].is_occupied:
+        command_queue.append(me.shipyard.spawn())
 
     game.end_turn(command_queue)  # Send our moves back to the game environment

@@ -89,11 +89,11 @@ std::string InsufficientEnergyError<MoveCommand>::log_message() const {
            << command().entity
            << " was directed to use "
            << requested
-           << " energy to move "
+           << " halite to move "
            << direction_to_string(command().direction)
            << ", but only "
            << available
-           << " energy was available";
+           << " halite was available";
     return stream.str();
 }
 
@@ -105,9 +105,9 @@ std::string PlayerInsufficientEnergyError::log_message() const {
     std::ostringstream stream;
     stream << "player attempted to use "
            << requested
-           << " energy, but only "
+           << " halite, but only "
            << available
-           << " was available";
+           << " halite was available";
     return stream.str();
 }
 

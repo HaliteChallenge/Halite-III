@@ -97,24 +97,16 @@ while True:
                 if d < distance:
                     distance = d
                     destination = dest
-            safe_move = game_map.get_safe_move(game_map[ship], game_map[destination])
-            if safe_move:
-                game_map[ship.position.directional_offset(safe_move)].mark_unsafe(ship)
-                command_queue.append(ship.move(safe_move))
+            safe_direction = game_map.naive_navigate(ship, destination)
+            command_queue.append(ship.move(safe_direction))
         elif game.turn_number < 200 and not built_dropoff and should_dropoff(game_map, me, ship):
             built_dropoff = True
             command_queue.append(ship.make_dropoff())
         elif game_map[ship.position].halite_amount < constants.MAX_HALITE / 10:
             # Move this ship in a random direction, picking from one of the cardinals
-            target_pos = hlt.Position(best_cell[0], best_cell[1])
-            safe_move = game_map.get_safe_move(game_map[ship], game_map[target_pos])
-            if not safe_move:
-                direction = random.choice([ Direction.North, Direction.South, Direction.East, Direction.West ])
-                destination = ship.position.directional_offset(direction)
-                safe_move = game_map.get_safe_move(game_map[ship], game_map[destination])
-            if safe_move:
-                game_map[ship.position.directional_offset(safe_move)].mark_unsafe(ship)
-                command_queue.append(ship.move(safe_move))
+            destination = hlt.Position(best_cell[0], best_cell[1])
+            safe_direction = game_map.naive_navigate(ship, destination)
+            command_queue.append(ship.move(safe_direction))
         else:
             command_queue.append(ship.stay_still())  # Don't move
 

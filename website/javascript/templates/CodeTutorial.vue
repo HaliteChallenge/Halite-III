@@ -1,5 +1,5 @@
 <template>
-<Walkthrough title="Beginner Tutorial">
+<Walkthrough title="Code Tutorial">
   <template slot="steps">
     <Step title="The Starter Bot" name="starter-bot">
       <p>
@@ -12,7 +12,7 @@
       </p>
 
       <p>
-        The starting code imports some helpers from the “hlt” files. We also import “random” and “logging” to get started - we will talk about those later.
+        The starting code imports some helpers from the “hlt” file. We also import “random” and “logging” to get started - we will talk about those later.
         <p>
           At the moment, this bot doesn’t do very much, so let’s get started.
         </p>
@@ -32,7 +32,7 @@
     </Step>
     <Step title="The Game Loop" name="game-loop">
       <p>
-        Now that we’re set up, it’s time to run the game. The game changes every turn, and and we will get the newest information by running <code>game.update_frame()</code>. We will extract some key information and store it in the variables <code>me</code>        and <code>game_map</code>, to give us fast access to important parts of the game state.
+        Now that we’re set up, it’s time to run the game. The game changes every turn, and and we will get the newest information by running <code>game.update_frame()</code>. We will extract some key information and store it in the variables <code>me</code>        and <code>game_map</code> to give us fast access to important parts of the game state.
       </p>
 
       <p>
@@ -88,8 +88,8 @@
       </p>
 
       <p>
-        Right now, your code creates just one ship on your first turn. Let’s change the highlighted line to allow ships to be built on other turns. The test for
-        <code>me.halite_amount >= SHIP_COST</code> ensures that you have enough halite to build a ship. The test for
+        Right now, your code creates just one ship on your first turn. Let’s change the highlighted line to allow ships to be built on other turns. The test
+        <code>me.halite_amount >= SHIP_COST</code> ensures that you have enough halite to build a ship. The test
         <code>game_map[me.shipyard].is_occupied</code> makes sure that the shipyard is empty before you build a ship there - two ships in one square results in maritime disaster!
       </p>
 
@@ -131,11 +131,11 @@ logging.info(“Ship {} has {} halite.”.format(ship.id, ship.halite_amount))</
     </Step>
     <Step title="Depositing Halite" name="dropoffs">
       <p>
-        You can see now that your ships are filling up with halite. It’s not much use to you until it is brought back to port, so let’s add another condition: if a ship is full, send it back to the shipyard.
+        You can see now that your ships are filling up with halite. You won't receive credit for the halite until it is brought back to port, so let’s add another condition: if a ship is full, send it back to the shipyard.
       </p>
 
       <p>
-        Right now, our bot is stateless. It moves depending on conditions that are only true in this turn; it doesn’t know what it did on previous turns, and it can’t save knowledge to use on future turns.
+        Right now, your bot is stateless. It moves depending on conditions that are only true in this turn; it doesn’t know what it did on previous turns, and it can’t save knowledge to use on future turns.
       </p>
 
       <p>
@@ -212,7 +212,7 @@ logging.info(“Ship {} has {} halite.”.format(ship.id, ship.halite_amount))</
     </Step>
     <Step title="Start Playing!" name="collision-avoidance">
       <p>
-        Your bot works! At this point, your bot explores the map, collect halite, and bring it back to port. It should also build new ships and dropoffs according to your criteria. Let’s submit your bot so that it can start playing against other bots. If you’re
+        Your bot works! At this point, your bot explores the map, collects halite, and brings it back to port. It should also build new ships and dropoffs according to your criteria. Let’s submit your bot so that it can start playing against other bots. If you’re
         stuck, we’ve put together a guide to help you debug your bot, or check out our community pages to get help from other players.
       </p>
       <p v-if="uploadMessage">

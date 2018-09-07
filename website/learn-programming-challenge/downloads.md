@@ -1,6 +1,6 @@
 ---
 layout: doc_page
-title: Download
+title: Downloads
 breadcrumb: Learn
 toc: false
 description: Get an introduction to the rules of the game to win the Halite AI Programming Challenge.
@@ -9,7 +9,7 @@ sort_key: 3
 
 <div class="doc-section" markdown="1">
 
-Download a language specific starter kit as a quick and easy way to get started playing in the Halite AI competition. Can’t find your preferred language? We love contributions!
+Download a language-specific starter kit as a quick and easy way to get started playing in the Halite AI competition. Can’t find your preferred language? We love contributions!
 Check out our guide on how to build a new starter bot.
 
 ---
@@ -87,10 +87,13 @@ System requirements are detailed here.
             <tr>
                 <td>{{ tool.name }}</td>
                 <td>NA</td>
-                <td><a href="{{ site.baseurl }}/{{ tool.files[0] }}">Download</a></td>
+                {% for url in tool.files %}
+                {% if url %}
+                <td><a href="{{ site.baseurl }}/{{ url }}">Download</a></td>
+                {% else %}
                 <td>NA</td>
-                <td>NA</td>
-                <td>NA</td>
+                {% endif %}
+                {% endfor %}
             </tr>
             {% endfor %}
         </tbody>

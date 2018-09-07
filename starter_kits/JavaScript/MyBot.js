@@ -18,20 +18,14 @@ game.initialize().then(async () => {
         for (const ship of me.getShips()) {
             if (ship.haliteAmount > hlt.constants.MAX_HALITE / 2) {
                 const destination = me.shipyard.position;
-                const safeMove = gameMap.getSafeMove(gameMap.get(ship), gameMap.get(destination));
-                if (safeMove) {
-                    gameMap.get(ship.position.directionalOffset(safeMove)).markUnsafe(ship);
-                    commandQueue.push(ship.move(safeMove));
-                }
+                const safeMove = gameMap.naiveNavigate(ship, destination);
+                commandQueue.push(ship.move(safeMove));
             }
             else if (gameMap.get(ship.position).haliteAmount < hlt.constants.MAX_HALITE / 10) {
                 const direction = Direction.getAllCardinals()[Math.floor(4 * Math.random())];
                 const destination = ship.position.directionalOffset(direction);
-                const safeMove = gameMap.getSafeMove(gameMap.get(ship), gameMap.get(destination));
-                if (safeMove) {
-                    gameMap.get(ship.position.directionalOffset(safeMove)).markUnsafe(ship);
-                    commandQueue.push(ship.move(safeMove));
-                }
+                const safeMove = gameMap.naiveNavigate(ship, destination);
+                commandQueue.push(ship.move(safeMove));
             }
         }
 

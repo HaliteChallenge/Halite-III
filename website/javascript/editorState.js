@@ -1,4 +1,5 @@
 // https://vuejs.org/v2/guide/state-management.html
+import * as api from './api'
 
 export default {
   editor: {
@@ -7,7 +8,7 @@ export default {
   },
   mapSize: 32,
   opponent: 'self',
-  BOT_OPTIONS: {'self': 'Self', '0': 'GoodBot'},
+  BOT_OPTIONS: {'self': 'Self'},
   save () {
     const saved = Object.assign({}, this)
     delete saved.BOT_OPTIONS
@@ -15,11 +16,16 @@ export default {
     window.localStorage['editor'] = JSON.stringify(saved)
   },
   load () {
-    try {
-      const loaded = JSON.parse(window.localStorage.editor)
-      Object.assign(this, loaded)
-    } catch (e) {
+    return api.get_editor_bot_list().then((bots) => {
+      for (const bot of bots) {
+        this.BOT_OPTIONS[bot] = bot
+      }
 
-    }
+      try {
+        const loaded = JSON.parse(window.localStorage.editor)
+        Object.assign(this, loaded)
+      } catch (e) {
+      }
+    })
   }
 }
