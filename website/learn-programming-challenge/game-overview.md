@@ -26,9 +26,9 @@ Players begin play with a shipyard, and can use collected halite to build new sh
 
 Players each start the game with 1,000 stored halite, a shipyard, and knowledge of the game map. The map is a 2d grid (32x32, 64x64, or 80x80) with a unique symmetric pattern of halite. Each player's shipyard position is fixed on the map, and the shipyard is the only place a player can spawn new ships.
 
-Ships are the main actors in a game of Halite III. Ships explore the board, collect precious halite, and can interact with opposing players. Ships are powered by the energy they collect and store; any move costs 10% of the halite in their cargo. Ships can make one action per turn: they can move one unit in any cardinal direction, collect halite, or convert into dropoffs.
+Ships are the main actors in a game of Halite III. Ships explore the board, collect precious halite, and can interact with opposing players. Ships are powered by the energy they collect and store, and any move costs halite. Ships can make one action per turn: they can move one unit in any cardinal direction, collect halite, or convert into dropoffs.
 
-Ships interact in a number of ways. If two ships occupy the same location, they will sink, dropping all their halite into the sea. An outnumbered ship can be inspired by the competition, and can get an efficiency bonus to collecting halite when in the inspired state. Lastly, a ship can be captured and change owners if it is flanked by an opposing player’s ships.
+Ships interact in a number of ways. If two ships occupy the same location, they will sink, dropping all their halite into the sea. An outnumbered ship can be inspired by the competition, and can get an efficiency bonus to collecting halite when in the inspired state. A ship can be captured and change owners if it is flanked by an opposing player’s ships.
 
 Each turn, the game engine sends the players the positions of all ships and dropoffs, along with a new game map with updated values that changed on the previous turn. Players have up to two seconds to issue their commands for the turn. The game engine will parse and execute the commands, calculating each player’s resulting halite score and resolving all movement.
 
