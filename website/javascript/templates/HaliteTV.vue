@@ -12,88 +12,34 @@
     </div>
 
     <div class="play-body" v-if="currentView == 'upload'">
-      <div>
-        <div class="page-header">
-          <h1>PLAY HALITE III: Option 1</h1>
-        <i class="xline xline-bottom"></i>
-        </div>
-      </div>
-     <div class="row play-upload-section">
-        <div class="col-sm-20">
-            <div class="upload-container" id="bot-upload-container">
-                <div class="upload-desc text-center">
-                    <h2>WEB EDITOR EXPERIENCE</h2>
-                    <p>Create, replay, and submit a Python bot via a web-based editor.</p>
-                    <p><a href="/editor">Go to Editor</a></p>
-                </div>
-            </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="page-header">
-          <h1>PLAY HALITE III: Option 2</h1>
-        <i class="xline xline-bottom"></i>
-        </div>
-      </div>
-       <div class="row play-upload-section">
-        <div class="col-sm-20">
-            <div class="upload-container" id="bot-upload-container">
-                <div class="upload-desc text-center">
-                    <h2>LOCAL EXPERIENCE</h2>
-                    <p>Download the game environment and starter kit bundle for your platform and language of choice.</p>
-                    <p><a href="/learn-programming-challenge/downloads-and-starter-kits">Go to Downloads</a></p>
-                </div>
-            </div>
-        </div>
-      </div>
       <div class="row play-upload-section">
         <div class="col-sm-6">
-            <!-- <div data-v-2c45658c="" id="bot-upload-container" class="upload-container">
-                 <div data-v-2c45658c="" class="upload-desc text-center">
-                 <h2 data-v-2c45658c="">Submissions have closed</h2>
-                 <p data-v-2c45658c="">The 2017-2018 season of Halite has ended. But you can still<a data-v-8c5003f2="" href="https://api.halite.io/v1/login/github"> sign up </a>to join our newsletter to be the first to know about future competitions.</p>
-                 </div>
-                 </div> -->
-            <div class="upload-container" id="bot-upload-container">
-                <div class="upload-desc text-center">
-                    <h2>Submit a bot</h2>
-                    <p>To submit a Halite bot in the competition, upload a .zip file here. The root folder of your zip should contain a MyBot.{extension} file and the /hlt folder from the starter kit.</p>
-                </div>
-                <Upload :logged-in="loggedIn" :showMessage="showMessage"></Upload>
-            </div>
-
+          <div class="doc-section doc-section-play text-center">
+            <h2>GAME FEED</h2>
+            <p>Watch recent games played.</p>
+            <br>
+            <game-feed>
+            </game-feed>
+          </div>
         </div>
         <div class="col-sm-6">
           <div class="upload-container">
-            <div class="upload-desc text-center">
-              <h2>replay a file</h2>
+            <div class="doc-section doc-section-play text-center">
+              <h2>REPLAY A FILE</h2>
               <p>When you run the Halite executable locally, it will add a .hlt file to your directory. Upload that file here to watch your game.</p>
+              <halite-upload-zone
+                caption="Drop a replay file here to upload"
+                buttonText = "Select File"
+                :icon="`${baseUrl}/assets/images/icon-replay.svg`"
+                v-on:change="play_replay"
+                :progressBar="is_downloading"
+                :progress="uploadProgress"
+                :message="uploadMessage">
+              </halite-upload-zone>
             </div>
-            <halite-upload-zone
-              caption="Drop a replay file here to upload"
-              buttonText = "Select File"
-              :icon="`${baseUrl}/assets/images/icon-replay.svg`"
-              v-on:change="play_replay"
-              :progressBar="is_downloading"
-              :progress="uploadProgress"
-              :message="uploadMessage">
-            </halite-upload-zone>
           </div>
         </div>
       </div>
-      <div class="mobile-strict-section">
-        <img :src="`${baseUrl}/assets/images/temp/mobile_disable.png`">
-        <h2 class="font-headline">Sorry, Not Supported</h2>
-        <p>You must play Halite on a desktop device.<br>This page is not supported on mobile.</p>
-      </div>
-    </div>
-
-    <div id="halite-uploaded-bot" v-if="currentView=='botUpload'">
-
-      <bot-upload :user="user" :bot-file="botFile" :bots-list="botsList"  v-if="currentView='botUpload'"
-      :showMessage="showMessage"></bot-upload>
-
     </div>
 
     <div v-if="message" class="row">
@@ -107,18 +53,20 @@
     </div>
 
     <div id="halitetv-more-upload" :style="currentView=='replay' && !message ? `` : `display:none`">
-      <h2>Replay Another Bot</h2>
-      <div class="upload-container">
-        <halite-upload-zone
-          title="Replay a File"
-          description="Drop a replay file here to upload"
-          buttonText = "Select File"
-          :icon="`${baseUrl}/assets/images/icon-replay.svg`"
-          v-on:change="play_replay"
-          :progressBar="is_downloading"
-          :progress="uploadProgress"
-          :message="uploadMessage">
-        </halite-upload-zone>
+      <div class="doc-section doc-section-play text-center">
+        <h2>Replay Another Bot</h2>
+        <div class="upload-container">
+          <halite-upload-zone
+            title="Replay a File"
+            description="Drop a replay file here to upload"
+            buttonText = "Select File"
+            :icon="`${baseUrl}/assets/images/icon-replay.svg`"
+            v-on:change="play_replay"
+            :progressBar="is_downloading"
+            :progress="uploadProgress"
+            :message="uploadMessage">
+          </halite-upload-zone>
+        </div>
       </div>
     </div>
 
@@ -135,6 +83,7 @@
   import {Alert} from '../utils.js'
   import UploadZone from './UploadZone.vue'
   import Visualizer from './Visualizer.vue'
+  import GameFeed from './GameFeed.vue'
   import * as utils from '../utils'
   // showing game
   let visualizer = null
@@ -190,6 +139,7 @@ const showGame = (game) => {
       'bot-upload': BotUpload,
       'visualizer-container': VisualizerContainer,
       'halite-upload-zone': UploadZone,
+      'game-feed': GameFeed,
       HaliteBreadcrumb
     },
     data: function () {
