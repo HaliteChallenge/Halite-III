@@ -3,10 +3,8 @@
     <div class="panel panel-stats">
       <div class="panel-heading" role="tab" id="heading_player_details" style="display: none">
         <a data-toggle="collapse" id="toggle_filter" href="#panel_filter" @click="toggleFilter" aria-expanded="true" aria-controls="panel_filter">
-          <i class="xline xline-top"></i>
           <h4>Filters</h4>
           <span class="toggle-icon expand"></span>
-          <i class="xline xline-bottom"></i>
         </a>
       </div>
       <div class="panel-collapse collapse in" role="tabpanel" id="panel_filter" aria-labelledby="panel_filter" style="display: none">
