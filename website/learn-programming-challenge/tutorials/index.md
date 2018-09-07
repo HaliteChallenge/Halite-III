@@ -66,8 +66,8 @@ Add a new strategy to your bot and learn a new technique. Climb up the leaderboa
 <br>
 ### [Genetic Algorithm Bot](/learn-programming-challenge/tutorials/ml-ga)
 
-Add a new strategy to your bot and learn a new technique. <br>Climb up the leaderboard
+Learn about using machine learning to tune a bot with a genetic algorithm .
 
 ### [Supervised Learning Bot](/learn-programming-challenge/tutorials/ml-svm)
 
-Improve the Starter bot and make your first <br>competition submission
+Learn about using supervised learning to train a bot with a Support Vector Machine (SVM).
