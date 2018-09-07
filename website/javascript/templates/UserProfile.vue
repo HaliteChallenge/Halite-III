@@ -73,52 +73,6 @@
                     <h2 class="highest-rank" v-if="highestRank" title="This is either your current (top rank) or highest rank any of your bots had achieved when retired"> Highest Rank Achieved: {{highestRank}}</h2>
 
                 </div>
-                <div class="game-replay-share text-center">
-                    <div class="popup-overlay" v-show="sharePopup" @click="toggleShare"></div>
-                    <div class="popup-container" v-show="sharePopup">
-                        <div class="popup-share">
-                            <label>Share as a link</label>
-                            <div class="form-inline-button">
-                                <input ref="shareInput" type="text" :value="shareLink">
-                                <button class="btn" @click="copyToClipboard">
-                                    <span>Copy</span>
-                                </button>
-                            </div>
-                            <div class="share-socials">
-                                <a :href="shareSocial('facebook')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;"><i class="fa fa-facebook-official"></i></a>
-                                <a :href="shareSocial('twitter')"><i class="fa fa-twitter"></i></a>
-                                <a :href="shareSocial('linkedin')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank"><i class="fa fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div v-if="!is_my_page">
-                          <button class="btn" @click="openChallengeModal">
-                              <span>CHALLENGE</span>
-                          </button>
-                          <ChallengeModal :baseUrl="baseUrl" :isOn="isChallengeModalOpen" :close="closeChallengeModal" :username="user.username"></ChallengeModal>
-                        </div>
-                        <button v-else class="btn" @click="toggleShare">
-                            <span>SHARE</span>
-                        </button>
-                        <!-- <div class="user-profile-badge">
-                            <i class="xline xline-top"></i>
-                            <h2>Badges</h2>
-                            <div class="user-profile-badge-page"><img v-on:click.stop.prevent="prev_badge" :src="`${baseUrl}/assets/images/page-prev.svg`"><img v-on:click.stop.prevent="next_badge" :src="`${baseUrl}/assets/images/page-next.svg`"></div>
-                            <div class="user-profile-badge-content">
-                                <ul class="user-profile-badge-list">
-                                    <li><img :src="`${baseUrl}/assets/images/temp/badge_1.png`"></li>
-                                    <li><img :src="`${baseUrl}/assets/images/temp/badge_2.png`"></li>
-                                    <li><img :src="`${baseUrl}/assets/images/temp/badge_3.png`"></li>
-                                    <li><img :src="`${baseUrl}/assets/images/temp/badge_4.png`"></li>
-                                    <li><img :src="`${baseUrl}/assets/images/temp/badge_5.png`"></li>
-                                </ul>
-                            </div>
-                            <a v-if="is_my_page" class="user-profile-badge-button"><img :src="`${baseUrl}/assets/images/temp/add_profile.png`"></a>
-                        </div> -->
-                        <p v-if="userHistory.length" style="margin-top: 20px;"><a :href="`/programming-competition-leaderboard?show_user=${user.user_id}`">View on leaderboard</a></p>
-                    </div>
-                </div>
                 <div class="stats-1-section">
                     <i class="xline xline-top"></i>
                     <h2 v-if="season1stats && season1stats.num_submissions > 0">Halite 1 Stats</h2>
@@ -159,19 +113,14 @@
                         <i class="xline xline-bottom"></i>
                         </a>
                     </li>
-                    <li role="presentation">
-                        <a href="#hackathons" @click="refreshStickyTable" aria-controls="hackathons" role="tab" data-toggle="tab">
-                        <i class="xline xline-top"></i>
-                        <span>Hackathons</span>
-                        <i class="xline xline-bottom"></i>
-                        </a>
-                    </li>
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="games">
                         <div id="games_pane">
-                            <section class="profile-section">
+                            <section class="profile-section">                
+                                <h2>BETA ALERT:</br>This page is under construction.</h2>
+                                <br>
                                 <h2>
                                     <i class="xline xline-bottom"></i>
                                     Game Videos Feed
@@ -514,61 +463,6 @@
                             </section>
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="hackathons">
-                        <div id="map_stats_pane">
-                            <section class="profile-section profile-section-hackathon">
-                                <h2>
-                                    <i class="xline xline-bottom"></i>
-                                    Hackathons
-                                    <span title="All the hackathons in which you are as participant" class="info-icon icon-info pull-right"></span>
-                                </h2>
-
-                                <div v-if="!hackathons.length" class="section-empty">
-                                    <img :src="`${baseUrl}/assets/images/temp/event.png`" class="icon-"></img>
-                                    <h2>Not part of any Hackathons yet</h2>
-                                    <p v-if="is_my_page">If you have a Hackthon code, add it to your <br/>your profile</p>
-                                    <div v-if="is_my_page" class="ha-button-container">
-                                        <div>
-                                            <a :href="`${baseUrl}/user/edit-user`" class="ha-button"><span>Add your Hackathon code</span></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div v-if="hackathons.length > 0">
-                                    <div class="table-sticky-container">
-                                        <div class="table-wrapper">
-                                            <table class="table table-leader table-sticky">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Hackathon</th>
-                                                        <th>Location</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                            <div class="table-scrollable-content">
-                                                <table class="table table-leader">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Hackathon</th>
-                                                            <th>Location</th>
-                                                            <th>Status</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="hackathon in hackathons">
-                                                            <td><a :href="'/hackathon-individual?hackathon_id=' + hackathon.hackathon_id">{{hackathon.title}}</a></td>
-                                                            <td>{{hackathon.location}}</td>
-                                                            <td>{{hackathon.status.charAt(0).toUpperCase() + hackathon.status.slice(1)}}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -701,9 +595,6 @@
             }
           }
           return lang
-        },
-        shareLink: function () {
-          return window.location.href
         }
       },
       methods: {
@@ -1070,24 +961,6 @@
         },
         gaData: function (category, action, label) {
           utils.gaEvent(category, action, label)
-        },
-        toggleShare: function () {
-          this.sharePopup = !this.sharePopup
-        },
-        shareSocial: function (social) {
-          let text = 'Halite II Player - ' + this.user.username + ' Rank: ' + this.user.rank + ' Tier: ' + this.user.tier + ' '
-          let tags = 'haliteplayerstats'
-          switch (social) {
-            case 'facebook':
-              return 'https://www.facebook.com/sharer.php?u=' + encodeURIComponent(window.location.href)
-              break
-            case 'twitter':
-              return 'https://twitter.com/intent/tweet?text=' + text + '&url=' + encodeURIComponent(window.location.href) + '&hashtags=' + tags + '&via=haliteAI'
-              break
-            case 'linkedin':
-              return `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}`
-              break
-          }
         },
         sortChallenge: function(players) {
           return _.sortBy(players, (player) => -player.points)

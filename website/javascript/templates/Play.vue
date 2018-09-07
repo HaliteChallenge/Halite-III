@@ -40,7 +40,7 @@
       <div class="col-sm-6">
         <div class="doc-section doc-section-play text-center">
           <h4 class="mt3">WEB-BASED DEVELOPMENT</h4>
-          <p>Create, replay, and submit a Python bot via a web-based editor.</p>
+          <p>Create, replay, and submit a Python, Java, or C++ bot via a web-based editor.</p>
           <br>
           <a class="btn btn-primary" href="/editor">Go to Editor</a>
         </div>
@@ -49,7 +49,7 @@
         <div class="doc-section doc-section-play text-center">
           <h4 class="mt3">LOCAL DEVELOPMENT</h4>
      <!-- <p class="sub-title">Drop-off area</p> -->
-          <p>Or, <a href="/learn-programming-challenge/download">download</a> the game environment and starter kit bundle for your platform and language of choice.</p>
+          <p>Or, <a href="/learn-programming-challenge/downloads">download</a> the game environment and starter kit bundle for your platform and language of choice.</p>
           <p>To submit your local Halite bot in the competition, upload a .zip file here. The root folder of your zip should contain a MyBot.{extension} file and the /hlt folder from the starter kit.</p>
           <halite-upload-zone
             description="<br>Drop your .zip file here to <br>upload your bot"
