@@ -23,11 +23,11 @@ namespace hlt {
             return at(entity->position);
         }
 
-        MapCell* at(const std::shared_ptr<Entity> entity) {
+        MapCell* at(const std::shared_ptr<Entity>& entity) {
             return at(entity->position);
         }
 
         void _update();
-        static GameMap* _generate();
+        static std::unique_ptr<GameMap> _generate();
     };
 }

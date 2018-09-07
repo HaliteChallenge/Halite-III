@@ -12,6 +12,11 @@ namespace hlt {
         std::shared_ptr<Ship> ship;
         std::shared_ptr<Entity> structure;
 
+        MapCell(int x, int y, Halite halite_amount) :
+            position(x, y),
+            halite_amount(halite_amount)
+        {}
+
         bool is_empty() const {
             return !ship && !structure;
         }

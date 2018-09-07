@@ -42,7 +42,7 @@ void hlt::Game::update_frame() {
 
         game_map->_update();
 
-        for (auto player : players) {
+        for (const auto& player : players) {
             for (auto& ship_iterator : player->ships) {
                 auto ship = ship_iterator.second;
                 game_map->at(ship)->mark_unsafe(ship);

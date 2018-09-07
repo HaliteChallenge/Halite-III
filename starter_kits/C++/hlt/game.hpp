@@ -13,7 +13,7 @@ namespace hlt {
         PlayerId my_id;
         std::vector<std::shared_ptr<Player>> players;
         std::shared_ptr<Player> me;
-        GameMap* game_map;
+        std::unique_ptr<GameMap> game_map;
 
         Game();
         void ready(const std::string& name);

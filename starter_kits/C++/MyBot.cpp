@@ -19,7 +19,7 @@ int main() {
     for (;;) {
         game.update_frame();
         shared_ptr<Player> me = game.me;
-        GameMap* game_map = game.game_map;
+        unique_ptr<GameMap>& game_map = game.game_map;
 
         vector<Command> command_queue;
 
@@ -34,9 +34,9 @@ int main() {
         }
 
         if (
-                game.turn_number <= 200 &&
-                me->halite_amount >= constants::SHIP_COST &&
-                !game_map->at(me->shipyard)->is_occupied())
+            game.turn_number <= 200 &&
+            me->halite_amount >= constants::SHIP_COST &&
+            !game_map->at(me->shipyard)->is_occupied())
         {
             command_queue.push_back(me->shipyard->spawn());
         }
