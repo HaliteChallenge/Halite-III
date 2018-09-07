@@ -708,4 +708,37 @@ export default {
       height: 15px;
     }
   }
+  .table-container{
+    border-radius: 4px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #EDF6FF 0%, #FFFFFF 100%);
+    table{
+      margin: 0;
+      thead{
+        tr{
+          background: rgba(2,30,82, .05);
+          th{
+            border-right: 1.2px solid rgba(8,27,83, .1);
+            border-bottom: none;
+            padding: 25px 20px;
+            font-size: 14px;
+          }
+        }
+      }
+      tbody{
+        tr td{
+          border: 1.2px solid rgba(8,27,83, .1);
+          padding: 25px 20px;
+          color: #0c0c0c;
+          font-size: 18px;
+          .leaderboard-name > img {
+            margin-right: 10px;
+          }
+        }
+        tr:first-child td {
+          border-top: none;
+        }
+      }
+    }
+  }
 </style>
