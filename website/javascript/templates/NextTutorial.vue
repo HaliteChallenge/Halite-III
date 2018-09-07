@@ -6,14 +6,14 @@
         Ships often don’t notice halite-rich waters next to them, and move randomly away from the best spots on the map. Let’s write an improvement that chooses the best cell from the five available on each turn: the cells to the north, south, east, west, and the cell the ship is currently on.
       </p>
       <p>
-        You will want to loop through the available options and compare them, choosing the cell with the most halite. Then, instead of sending a random choice to the game engine, you’ll send `command_queue.append(ship, best_nearby_choice)`.
+        You will want to loop through the available options and compare them, choosing the cell with the most halite. Then, instead of sending a random choice to the game engine, you’ll send `command_queue.append(ship.move(direction_towards_best_nearby_choice))`.
       </p>
       <p>
         You might find a couple API methods helpful:
       <ul>
         <li><code>game_map[position].directional_offset(test_direction)</code> will return a location one square in the test_direction from your ship.</li>
         <li><code>game_map[position].get_surrounding_cardinals()</code> will return a list of the positions of each cardinal direction from the given position.</li>
-        <li><code>game_map[position].halite</code> will return the halite at a given map location.</li>
+        <li><code>game_map[position].halite_amount/code> will return the halite at a given map location.</li>
       </ul>
       </p>
       <p>
