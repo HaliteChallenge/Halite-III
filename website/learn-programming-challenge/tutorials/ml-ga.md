@@ -3,7 +3,7 @@ layout: doc_page
 title: Genetic Algorithm Bot
 breadcrumb: Learn
 toc: false
-description: Learn about using machine learning to tune a bot with a genetic algorithm
+description: Learn about using a genetic algorithm to tune a bot.
 #sort_key: 2
 ---
 
@@ -11,7 +11,7 @@ description: Learn about using machine learning to tune a bot with a genetic alg
 <div class="doc-section" markdown="1">
 
 #### Introduction
-Using machine learning to iterate quickly on the design of a bot is a strategy for Halite III. Using a genetic algorithm, we tried varying the parameters of a basic bot and testing the resulting permutations to discover the strongest bot.
+Using advanced algorithms to iterate quickly on the design of a bot is a strategy for Halite III. Using a genetic algorithm, we tried varying the parameters of a basic bot and testing the resulting permutations to discover the strongest bot.
 
 <br/>
 #### What is a Genetic Algorithm?

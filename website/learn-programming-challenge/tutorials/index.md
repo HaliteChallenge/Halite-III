@@ -62,11 +62,11 @@ Add a new strategy to your bot and learn a new technique. Climb up the leaderboa
 
 ---
 <br>
-## Machine Learning
+## Advanced
 <br>
 ### [Genetic Algorithm Bot](/learn-programming-challenge/tutorials/ml-ga)
 
-Learn about using machine learning to tune a bot with a genetic algorithm .
+Learn about using a genetic algorithm to tune a bot.
 
 ### [Supervised Learning Bot](/learn-programming-challenge/tutorials/ml-svm)
 
