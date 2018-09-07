@@ -11,7 +11,7 @@ description: Get an introduction to the rules of the game to win the Halite AI P
 
 ## Introduction
 
-Learn more about the game rules, 
+Learn more about the game rules,
 build your first bot, engage with advanced strategies, and more.
 
 </div> -->
@@ -68,6 +68,6 @@ Add a new strategy to your bot and learn a new technique. Climb up the leaderboa
 
 Add a new strategy to your bot and learn a new technique. <br>Climb up the leaderboard
 
-### Supervised Learning Bot
+### [Supervised Learning Bot](/learn-programming-challenge/ml-svm)
 
 Improve the Starter bot and make your first <br>competition submission
