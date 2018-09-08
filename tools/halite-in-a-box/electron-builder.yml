@@ -14,7 +14,6 @@ linux:
   target:
     - tar.gz
     - AppImage
-
 # Include embedded Python
 mac:
   target:
@@ -23,9 +22,6 @@ mac:
     - extra/python-macos
 win:
   target:
-    - nsis
     - portable
   extraResources:
     - extra/python-windows
-    - extra/deps.zip
-    - extra/zstd.pyd

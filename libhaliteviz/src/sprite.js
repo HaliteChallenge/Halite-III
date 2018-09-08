@@ -23,14 +23,19 @@ export default class Ship {
 
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);
 
-        this.sprite = new PIXI.Sprite(assets.TURTLE_SPRITES[record.owner]);
+        this.sprite = new PIXI.extras.AnimatedSprite(assets.TURTLE_SPRITES[record.owner]);
         this.inspiredSprite = new PIXI.Sprite(spriteTexture);
         this.inspiredSprite.tint = assets.PLAYER_COLORS[record.owner];
         this.highlight = new PIXI.Sprite(spriteTexture);
         this.highlight.visible = false;
+        this.highlight.alpha = 0.7;
         this.motionblur = new MotionBlurFilter([0, 0], 9, 0);
         this.sprite.filters = [this.motionblur];
         this.inspiredSprite.filters = [this.motionblur];
+
+        this.halo = new PIXI.Sprite(assets.HALO_SPRITE);
+        this.halo.filters = [this.motionblur];
+        this.halo.visible = false;
 
         this.container = null;
         this.visualizer = visualizer;
@@ -57,6 +62,7 @@ export default class Ship {
         setupSprite(this.inspiredSprite, width * 4);
         this.inspiredSprite.visible = false;
         setupSprite(this.highlight, width * 1.25);
+        setupSprite(this.halo, width * 1.25);
 
         // add to board in correct position
         const pixelX = this.visualizer.camera.scale * CELL_SIZE * this.x + this.visualizer.camera.scale * CELL_SIZE / 2;
@@ -71,8 +77,9 @@ export default class Ship {
      */
     attach(container) {
         container.addChild(this.highlight);
-        container.addChild(this.sprite);
         container.addChild(this.inspiredSprite);
+        container.addChild(this.halo);
+        container.addChild(this.sprite);
         this.container = container;
     }
 
@@ -82,6 +89,7 @@ export default class Ship {
     destroy() {
         this.container.removeChild(this.inspiredSprite);
         this.container.removeChild(this.sprite);
+        this.container.removeChild(this.halo);
         this.container.removeChild(this.highlight);
         delete this.container;
     }
@@ -217,10 +225,13 @@ export default class Ship {
         this.sprite.width = this.sprite.height = size * 1.5;
         this.inspiredSprite.position.x = pixelX;
         this.inspiredSprite.position.y = pixelY;
-        this.inspiredSprite.width = this.inspiredSprite.height = size * 1.5;
+        this.inspiredSprite.width = this.inspiredSprite.height = size * 1.25;
         this.highlight.position.x = pixelX;
         this.highlight.position.y = pixelY;
-        this.highlight.width = this.highlight.height = 1.25 * size;
+        this.highlight.width = this.highlight.height = 0.9 * size;
+        this.halo.position.x = pixelX;
+        this.halo.position.y = pixelY;
+        this.halo.width = this.halo.height = (1 + 0.25 * Math.sin(this.visualizer.time * Math.PI)) * size;
 
         const camera = this.visualizer.camera;
         this.highlight.visible =
@@ -239,13 +250,28 @@ export default class Ship {
             return;
         }
 
-        if (this.visualizer.currentFrame.entities[this.owner][this.id].is_inspired) {
-            this.inspiredSprite.visible = true;
-            this.sprite.visible = false;
+        const spriteRecord = this.visualizer.currentFrame.entities[this.owner][this.id];
+        const maxEnergy = this.visualizer.replay.GAME_CONSTANTS.MAX_ENERGY;
+        const energyPercent = spriteRecord.energy / maxEnergy;
+
+        if (energyPercent < 0.25) {
+            this.sprite.gotoAndStop(0);
+        }
+        else if (energyPercent < 0.75) {
+            this.sprite.gotoAndStop(1);
         }
         else {
-            this.inspiredSprite.visible = false;
-            this.sprite.visible = true;
+            this.sprite.gotoAndStop(2);
         }
+
+        this.halo.visible = spriteRecord.is_inspired;
+        // if (spriteRecord.is_inspired) {
+        //     this.inspiredSprite.visible = true;
+        //     this.sprite.visible = false;
+        // }
+        // else {
+        //     this.inspiredSprite.visible = false;
+        //     this.sprite.visible = true;
+        // }
     }
 }

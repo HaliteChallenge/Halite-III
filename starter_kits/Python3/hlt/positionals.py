@@ -10,6 +10,8 @@ class Direction:
     East = (1, 0)
     West = (-1, 0)
 
+    Still = (0, 0)
+
     @staticmethod
     def get_all_cardinals():
         """
@@ -33,6 +35,8 @@ class Direction:
             return commands.EAST
         if direction == Direction.West:
             return commands.WEST
+        if direction == Direction.Still:
+            return commands.STAY_STILL
         else:
             raise IndexError
 
@@ -51,6 +55,8 @@ class Direction:
             return Direction.West
         if direction == Direction.West:
             return Direction.East
+        if direction == Direction.Still:
+            return Direction.Still
         else:
             raise IndexError
 

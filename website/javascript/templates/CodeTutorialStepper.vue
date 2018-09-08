@@ -48,7 +48,7 @@
                 editor.highlightContaining("end_turn", "tutorial-highlight-alt");
               });
         }
-        else if (newStep === "carrier") {
+        else if (newStep === "more-ships") {
           this.$refs.editor
               .doReady((editor) => {
                 editor.clearHighlights();

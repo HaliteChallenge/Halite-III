@@ -23,12 +23,12 @@
 
   export default {
     name: 'InputModal',
-    props: ['isOn'],
+    props: ['isOn', 'tutorial'],
     mounted: function() {
     },
     data: function() {
       return {
-        languages: ["Python3", "Java", "C++"]
+        languages: this.tutorial ? ["Python3"] : ["Python3", "Java", "C++"]
       }
     },
     watch: {

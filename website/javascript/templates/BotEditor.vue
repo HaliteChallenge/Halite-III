@@ -39,7 +39,7 @@
     <InputModal ref="new_file_modal" :baseUrl="baseUrl" :isOn="is_new_file_modal_open" :createCallback="create_new_file" :closeCallback="close_new_file_modal" title_text="New File" cancel_text="Cancel" accept_text="Create"></InputModal>
     <InputModal ref="new_folder_modal" :baseUrl="baseUrl" :isOn="is_new_folder_modal_open" :createCallback="create_new_folder" :closeCallback="close_new_folder_modal" title_text="New Folder" cancel_text="Cancel" accept_text="Create"></InputModal>
     <CheckModal ref="delete_modal" :baseUrl="baseUrl" :isOn="is_delete_modal_open" :yesCallback="delete_file" :noCallback="close_delete_modal" title_text="Delete File" cancel_text="Cancel" accept_text="Delete" body_text="This will delete your file permanently!!!"></CheckModal>
-    <LanguageModal :baseUrl="baseUrl" :isOn="is_picking_language" @choose="pick_language" />
+    <LanguageModal :baseUrl="baseUrl" :tutorial="tutorial" :isOn="is_picking_language" @choose="pick_language" />
 
     <div class="toasts">
         <transition-group name="toast-pop-up" tag="div">
@@ -208,7 +208,8 @@ export default {
           }
           this.editor_files = parse_to_file_tree(editor_files)
           this.create_editor(this.get_active_file_code())
-        }).catch(() => {
+        }).catch((e) => {
+          console.warn(e)
           // No files, ask user to pick
           this.is_picking_language = true
         })
@@ -250,6 +251,9 @@ export default {
         }
         window.localStorage.setItem("@@editor-filelist",
                                     JSON.stringify(files.map(([key]) => key)))
+      }
+      else if (this.tutorial) {
+        await api.create_editor_file_space(this.user_id, language + '-Tutorial')
       }
       else {
         await api.create_editor_file_space(this.user_id, language)
@@ -333,13 +337,13 @@ export default {
 
         jQuery('.textview').addClass('editorTheme')
 
-        // Load saved settings
-        this.state.load()
         this.editorViewer.editor.setLineNumberRulerVisible(true);
 
-        logInfo('Editor ready!')
-
-        this._readyResolve();
+        // Load saved settings
+        this.state.load().then(() => {
+          logInfo('Editor ready!')
+          this._readyResolve();
+        })
       })
     },
     // Schedule a function to be called when we're ready

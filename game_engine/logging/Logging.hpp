@@ -3,6 +3,7 @@
 
 #include <mutex>
 #include <string>
+#include <sstream>
 
 #include "Enumerated.hpp"
 
@@ -84,10 +85,42 @@ struct Logging {
         }
         auto level_num = static_cast<int>(level);
         if (level_num >= static_cast<int>(Logging::level)) {
+            std::lock_guard<std::mutex> guard(Logging::cerr_mutex);
             if constexpr (std::is_convertible_v<Message, std::string>) {
                 _log(message, level, player);
             } else {
                 _log(message(), level, player);
+            }
+        }
+    }
+
+    /**
+     * Log a multiline message to console.
+     * @tparam Message The type of the suspended message.
+     * @param message The suspended message or callable.
+     * @param level The severity of the message, defaulting to Info.
+     * @param player The player sending the message.
+     */
+    template<class Message>
+    static void log_lines(const Message &message, Level level = Level::Info,
+                    class_id<hlt::Player> player = Enumerated<hlt::Player>::None) {
+        if (!Logging::enabled) {
+            return;
+        }
+        auto level_num = static_cast<int>(level);
+        if (level_num >= static_cast<int>(Logging::level)) {
+            std::lock_guard<std::mutex> guard(Logging::cerr_mutex);
+
+            std::stringstream ss;
+
+            if constexpr (std::is_convertible_v<Message, std::string>) {
+                ss = std::stringstream{message};
+            } else {
+                ss = std::stringstream{message()};
+            }
+            std::string line;
+            while (std::getline(ss, line, '\n')) {
+                _log(line, Logging::Level::Error, player);
             }
         }
     }

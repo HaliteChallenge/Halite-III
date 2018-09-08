@@ -322,8 +322,6 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
         ranked_users.c.rank.label("player_rank"),
         model.ranked_bots_users.c.num_submissions.label("version_number"),
         model.ranked_bots_users.c.mu,
-        # The database isn't smart enough to know that there is only one rank
-        # value for a given (user_id, bot_id).
         model.ranked_bots_users.c.rank.label('rank'),
     ]
     gamers_last_play = sqlalchemy.sql.select(columns).select_from(
@@ -335,7 +333,14 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
         ).join(
             model.game_participants.join(
                 model.games,
-                model.games.c.id == model.game_participants.c.game_id
+                (model.games.c.id == model.game_participants.c.game_id) &
+                # Only consider games in the past day. This speeds up
+                # performance drastically (1.2s -> 0.2s) and should
+                # not materially affect matchmaking: if a user hasn't
+                # received any games in the past day, they still
+                # really need one!
+                (model.games.c.time_played >
+                 sqlfunc.current_date() - sqlalchemy.sql.text("INTERVAL '1' DAY"))
             ),
             (ranked_users.c.user_id == model.game_participants.c.user_id)
             & (model.ranked_bots_users.c.bot_id

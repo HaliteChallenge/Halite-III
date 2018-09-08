@@ -103,14 +103,16 @@ h1, h2, h3{
   h1, .h1{
     font-size: 3.6rem;
     letter-spacing: 2px;
-    font-weight: 600;
+    font-weight: 400;
     text-align: center;
     text-transform: uppercase;
+    color: #B4E6FF;
+    text-shadow: 0 1px 8px #00ABFF;
   }
   .xline{
-    max-width: 150px;
-    left: 50%;
-    transform: translateX(-50%);
+    max-width: 0px;
+  //  left: 50%;
+  //  transform: translateX(-50%);
   }
 }
 

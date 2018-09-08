@@ -22,7 +22,7 @@
                             <draggable v-model="bots" :options="{group: {name: 'bots'}}" >
                                 <div class="draggable-item" v-for="(bot, index) in bots" :key="index">
                                     {{bot.name}}
-                                    <button @click="() => bots.splice(index, 1)">Delete</button>
+                                    <button @click="() => bots.splice(index, 1)">Remove</button>
                                 </div>
                             </draggable>
                         </div>

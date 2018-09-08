@@ -3,10 +3,8 @@
     <div class="panel panel-stats">
       <div class="panel-heading" role="tab" id="heading_player_details" style="display: none">
         <a data-toggle="collapse" id="toggle_filter" href="#panel_filter" @click="toggleFilter" aria-expanded="true" aria-controls="panel_filter">
-          <i class="xline xline-top"></i>
           <h4>Filters</h4>
           <span class="toggle-icon expand"></span>
-          <i class="xline xline-bottom"></i>
         </a>
       </div>
       <div class="panel-collapse collapse in" role="tabpanel" id="panel_filter" aria-labelledby="panel_filter" style="display: none">
@@ -706,6 +704,39 @@ export default {
     img{
       width: 15px;
       height: 15px;
+    }
+  }
+  .table-container{
+    border-radius: 4px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #EDF6FF 0%, #FFFFFF 100%);
+    table{
+      margin: 0;
+      thead{
+        tr{
+          background: rgba(2,30,82, .05);
+          th{
+            border-right: 1.2px solid rgba(8,27,83, .1);
+            border-bottom: none;
+            padding: 25px 20px;
+            font-size: 14px;
+          }
+        }
+      }
+      tbody{
+        tr td{
+          border: 1.2px solid rgba(8,27,83, .1);
+          padding: 25px 20px;
+          color: #0c0c0c;
+          font-size: 18px;
+          .leaderboard-name > img {
+            margin-right: 10px;
+          }
+        }
+        tr:first-child td {
+          border-top: none;
+        }
+      }
     }
   }
 </style>

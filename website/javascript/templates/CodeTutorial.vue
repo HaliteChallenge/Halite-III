@@ -1,5 +1,5 @@
 <template>
-<Walkthrough title="Beginner Tutorial">
+<Walkthrough title="Code Tutorial">
   <template slot="steps">
     <Step title="The Starter Bot" name="starter-bot">
       <p>
@@ -7,12 +7,11 @@
       </p>
 
       <p>
-        Let’s take a look at the web editor. The visualizer and game output is on the far right. This web editor is available outside this tutorial. Your code is on the left in the “MyBot.py” file. The “hlt” folder contains helper library files which let your
-        code interact with the game engine.
+        Let’s take a look at the web editor. The visualizer and game output is on the far right, and your code is in the center. This web editor is available outside this tutorial.
       </p>
 
       <p>
-        The starting code imports some helpers from the “hlt” files. We also import “random” and “logging” to get started - we will talk about those later.
+        The starting code imports some helper library files from the “hlt” file which let your code interact with the game engine. We also import “random” and “logging” to get started - we will talk about those later.
         <p>
           At the moment, this bot doesn’t do very much, so let’s get started.
         </p>
@@ -32,7 +31,7 @@
     </Step>
     <Step title="The Game Loop" name="game-loop">
       <p>
-        Now that we’re set up, it’s time to run the game. The game changes every turn, and and we will get the newest information by running <code>game.update_frame()</code>. We will extract some key information and store it in the variables <code>me</code>        and <code>game_map</code>, to give us fast access to important parts of the game state.
+        Now that we’re set up, it’s time to run the game. The game changes every turn, and and we get the newest information by running <code>game.update_frame()</code>. We extract some key information and store it in the variables <code>me</code>        and <code>game_map</code> to give us fast access to important parts of the game state.
       </p>
 
       <p>
@@ -40,12 +39,12 @@
       </p>
 
       <p>
-        Each turn, you will process this information and come up with a new set of moves according to your strategy. The last step of the game loop is to send your moves back to the game engine with
+        Each turn, you process this information and come up with a new set of moves according to your strategy. The last step of the game loop is to send your moves back to the game engine with
         <code>game.end_turn(command_queue)</code>.
       </p>
 
       <p>
-        We’ll repeat this loop every turn for 500 turns. You can always find out which turn you are on by using the
+        We repeat this loop every turn until the game is over. A small map has 300 turns in a game, but turns increase with map size up to 500. You can always find out which turn you are on by using the
         <code>game.turn_number</code> variable.
       </p>
 
@@ -65,8 +64,7 @@
       </p>
 
       <p>
-        The <code>ship.move(ship, direction)</code> function accepts the single letter strings <code>“n”, “s”, “e”, “w”</code>, which correspond to the cardinal directions, as its second argument. It also accepts <code>”o”</code>, meaning origin, which
-        tells the ship to stay put and collect halite. We’ll use this command in a moment.
+        The <code>ship.move(ship, direction)</code> function accepts the single letter strings <code>“n”, “s”, “e”, “w”</code>, which correspond to the cardinal directions, as its second argument. It costs halite to move. You might see some warnings about this in the log. If your ship does not have enough halite to move on a turn, it will stay still and collect halite. You can tell the ship to do this manually with the <code>”o”</code> move command.
       </p>
 
       <p>
@@ -82,14 +80,14 @@
         <img src="/assets/images/icons/pixelate-arrow.png" alt="play"/>
       </button>
     </Step>
-    <Step title="Build Your Fleet" name="tunneling">
+    <Step title="Build Your Fleet" name="more-ships">
       <p>
-        One ship does not make a fleet. For 500 halite, you can build a new ship at your shipyard. Let’s change the code to create more ships.
+        One ship does not make a fleet. For 1,000 halite, you can build a new ship at your shipyard. Let’s change the code to create more ships.
       </p>
 
       <p>
-        Right now, your code creates just one ship on your first turn. Let’s change the highlighted line to allow ships to be built on other turns. The test for
-        <code>me.halite_amount >= SHIP_COST</code> ensures that you have enough halite to build a ship. The test for
+        Right now, your code creates just one ship on your first turn. Let’s change the highlighted line to allow ships to be built on other turns. The test
+        <code>me.halite_amount >= SHIP_COST</code> ensures that you have enough halite to build a ship. The test
         <code>game_map[me.shipyard].is_occupied</code> makes sure that the shipyard is empty before you build a ship there - two ships in one square results in maritime disaster!
       </p>
 
@@ -112,8 +110,8 @@
         Let’s send a message to ourselves at this part of the code so that we can see how much halite there is in the ship’s cargo. Add this code above the movement if/else block.
       </p>
 
-      <pre>
-logging.info(“Ship {} has {} halite.”.format(ship.id, ship.halite_amount))</pre>
+      <code>
+logging.info("Ship {} has {} halite.".format(ship.id, ship.halite_amount))</code>
 
       <p>
         Logging is how your bot communicates with you. We use this logging method because the bot reserves the regular STDOUT (print statements) to communicate with the game engine. You can read logs under any error messages in the panel under the visualizer.
@@ -131,11 +129,11 @@ logging.info(“Ship {} has {} halite.”.format(ship.id, ship.halite_amount))</
     </Step>
     <Step title="Depositing Halite" name="dropoffs">
       <p>
-        You can see now that your ships are filling up with halite. It’s not much use to you until it is brought back to port, so let’s add another condition: if a ship is full, send it back to the shipyard.
+        You can see now that your ships are filling up with halite. You won't receive credit for the halite until it is brought back to port, so let’s add another condition: if a ship is full, send it back to the shipyard.
       </p>
 
       <p>
-        Right now, our bot is stateless. It moves depending on conditions that are only true in this turn; it doesn’t know what it did on previous turns, and it can’t save knowledge to use on future turns.
+        Right now, your bot is stateless. It moves depending on conditions that are only true in this turn; it doesn’t know what it did on previous turns, and it can’t save knowledge to use on future turns.
       </p>
 
       <p>
@@ -161,15 +159,15 @@ logging.info(“Ship {} has {} halite.”.format(ship.id, ship.halite_amount))</
             if ship.position == me.shipyard.position:
                 ship_status[ship.id] = "exploring"
             else:
-                move = game_map.get_safe_move(game_map[ship.position], game_map[me.shipyard.position])
+                move = game_map.naive_navigate(ship, game_map[me.shipyard.position])
                 command_queue.append(ship.move(move))
                 continue
         elif ship.halite_amount >= constants.MAX_HALITE / 4:
             ship_status[ship.id] = "returning"</pre>
 
       <p>
-        This code creates two new missions for ships, and provides instructions to ships depending on which mission they are assigned to. We are using some methods that are useful in moving ships around the map: <code>ship.move(direction)</code> and <code>game_map.basic_move(origin,
-                destination)</code>. We’ll talk in depth about movement in the Movement Improvement tutorial.
+        This code creates two new missions for ships, and provides instructions to ships depending on which mission they are assigned to. We are using some methods that are useful in moving ships around the map: <code>ship.move(direction)</code> and <code>game_map.naive_navigate(ship,
+                destination)</code>. We’ll talk in-depth about movement in the Movement Improvement tutorial.
       </p>
 
       <button class="run-game" v-on:click="runGame">
@@ -212,7 +210,7 @@ logging.info(“Ship {} has {} halite.”.format(ship.id, ship.halite_amount))</
     </Step>
     <Step title="Start Playing!" name="collision-avoidance">
       <p>
-        Your bot works! At this point, your bot explores the map, collect halite, and bring it back to port. It should also build new ships and dropoffs according to your criteria. Let’s submit your bot so that it can start playing against other bots. If you’re
+        Your bot works! At this point, your bot explores the map, collects halite, and brings it back to port. It should also build new ships and dropoffs according to your criteria. Let’s submit your bot so that it can start playing against other bots. If you’re
         stuck, we’ve put together a guide to help you debug your bot, or check out our community pages to get help from other players.
       </p>
       <p v-if="uploadMessage">
@@ -235,8 +233,9 @@ logging.info(“Ship {} has {} halite.”.format(ship.id, ship.halite_amount))</
       <p>
         If you want more guidance in improving your bot, there are more tutorial steps available.
       </p>
-      [ Better Movement ] [ Collision Avoidance ] [ Extra Mechanic ]
-
+      <p>
+      <a href="/learn-programming-challenge/tutorials/next-tutorial">Next Steps Tutorial</a>
+</p>
       <p>
         You can run games between your bot and other bots using the gym.
       </p>

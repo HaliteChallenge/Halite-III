@@ -51,13 +51,14 @@
 
     import assets from './assets';
     import * as bot from './bot';
+    import * as games from './games';
     import { pythonPath } from './assets';
     import * as util from './util';
 
     const RECOGNIZED_EXTENSIONS = [ '.py', '.java', '.cpp', '.js', '.zip' ];
 
     export default {
-        props: ['apiKey', 'userId'],
+        props: ['apiKey', 'userId', 'remoteBot'],
         inject: ['assetsReady', 'showModal', 'closeModal'],
         data() {
             return {
@@ -79,6 +80,19 @@
             },
             canRunGame() {
                 return this.assetsReady() && this.botExtension !== '.zip';
+            },
+            localBotPath() {
+                if (this.localBot) {
+                    if (path.extname(this.localBot).toLowerCase() === '.py') {
+                        return `"${pythonPath()}" "${this.localBot}"`;
+                    }
+                    // Assume bot is executable; chdir to its directory first
+                    else if (process.platform === 'win32') {
+                        return `cmd.exe /C "cd /d "${path.dirname(this.localBot)}"; "${this.localBot}""`;
+                    }
+                    return `sh -c 'cd "${path.dirname(this.localBot)}"; "${this.localBot}"'`;
+                }
+                return null;
             },
         },
         methods: {
@@ -121,7 +135,7 @@
                 const params = ['play', '-i', 10,
                                 '-b', paths.environmentPath,
                                 '--output-dir', paths.replayDir,
-                                '-r', `"${pythonPath()}" "${this.localBot}"`];
+                                '-r', this.localBotPath];
 
                 const stats = [{
                     won: 0,
@@ -158,6 +172,7 @@
                         }
                     }
                     if (value.results) {
+                        games.addGame(['Your Local Bot', `(your uploaded bot v${this.remoteBot.version_number})`], value.results);
                         state.games.push(value.results);
                     }
                     this.showModal('benchmark-modal', state);
@@ -173,11 +188,13 @@
                 // Should have been loaded before
                 const paths = await assets();
 
+                const benchmarkBots = paths.benchmarkBots.slice();
+                if (this.remoteBot) {
+                    benchmarkBots.push(new bot.RemoteBot(`(your uploaded bot v${this.remoteBot.version_number})`));
+                }
                 const action = await this.showModal('benchmark-modal', {
                     status: 'setup',
-                    benchmarkBots: paths.benchmarkBots.concat([
-                        new bot.RemoteBot("(currently uploaded bot)"),
-                    ]),
+                    benchmarkBots,
                 });
                 if (action === 'cancel') {
                     this.closeModal();
@@ -187,12 +204,13 @@
                 const params = ['play', '-i', action.games,
                                 '-b', paths.environmentPath,
                                 '--output-dir', paths.replayDir,
-                                '-r', `"${pythonPath()}" "${this.localBot}"`];
+                                '-r', this.localBotPath];
 
                 const stats = [{
                     won: 0,
                     name: '(your bot)',
                 }];
+                const participants = ['Your Local Bot'];
 
                 for (const bot of action.bots) {
                     stats.push({
@@ -201,11 +219,12 @@
                     });
                     params.push('-r');
                     if (bot.path === 'self') {
-                        params.push(`${pythonPath()} "${this.localBot}"`);
+                        params.push(this.localBotPath);
                     }
                     else {
                         params.push(await bot.makePath());
                     }
+                    participants.push(bot.name);
                 }
 
                 console.log(params);
@@ -231,6 +250,7 @@
                         }
                     }
                     if (value.results) {
+                        games.addGame(participants, value.results);
                         state.games.push(value.results);
                     }
                     this.showModal('benchmark-modal', state);

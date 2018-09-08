@@ -1,14 +1,14 @@
 <template>
   <div class="play-container">
-
     <div class="container-fluid" v-if="currentView == 'upload'">
       <h1 class="page-heading">Competition summary</h1>
       <div class="doc-section doc-section-play text-center">
         <p><img src="/assets/images/icon-flag.svg" width="30" alt="flag"></p>
-        <h4 class="mt3">SEASON DURATION</h4>
-        <p class="sub-title">1st sep 2018 - 2nd feb 2019</p>
-        <p class="text-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sem ante, tincidunt in augue eu, sodales pellentesque massa. Cras congue lectus quis risus pellentesque, quis aliquam purus sollicitudin. Maecenas feugiat lorem erat, eget ornare elit volutpat eget. </p>
+        <h4 class="mt3">COMPETITION INFORMATION</h4>
+        <p class="sub-title">October 16, 2018 - January 22, 2019</p>
+        <p>Halite III bots can be developed locally or in a web-based editor. Submit your bot via one of the below options to participate in Halite III.</p>
       </div>
+
       <div class="doc-section doc-section-play text-center">
         <h4 class="mt3">DROP-OFF AREA</h4>
         <p class="sub-title">Submit your bot here</p>

@@ -54,8 +54,8 @@ export class HaliteVisualizer {
         this._playing = false;
 
         this.timeStep = 0.01;
-        this.playSpeed = 2.0;
-        this.scrubSpeed = 0.25;
+        this.playSpeed = 5.0;
+        this.scrubSpeed = 0.5;
         // Keyboard controls - map a key name to an action, or directly to
         // a handler
         this.keyboardControls = new keyboard.KeyboardControls(this, {
@@ -315,18 +315,6 @@ export class HaliteVisualizer {
 
     get currentFrame() {
         return this.replay.full_frames[this.frame];
-    }
-
-    get currentStatistics() {
-        let frame = this.currentFrame;
-        let entities = {};
-        let total_entities = 0;
-        // TODO: update with Halite 3 statistics (keep stubs of old statistics as they are expected by the rest of the website
-        return {
-            "planets": 0,
-            "ships": 0,
-            "total_ships": 0,
-        };
     }
 
     /**

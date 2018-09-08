@@ -43,7 +43,6 @@ void Logging::set_enabled(bool enabled) {
  * @param player The player sending the message.
  */
 void Logging::_log(const std::string &message, Level level, class_id<hlt::Player> player) {
-    std::lock_guard<std::mutex> guard(Logging::cerr_mutex);
     auto level_num = static_cast<int>(level);
 #ifndef _WIN32
     std::cerr << "["

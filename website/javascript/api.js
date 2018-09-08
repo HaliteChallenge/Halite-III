@@ -146,6 +146,13 @@ export function get_editor_file_list (userId) {
   }).then(r => r.json())
 }
 
+export function get_editor_bot_list () {
+  const url = `${API_SERVER_URL}/editor/opponents`
+  return window.fetch(url, {
+    credentials: 'include'
+  }).then(r => r.json())
+}
+
 export function get_editor_file(userId, fileName) {
   const url = `${API_SERVER_URL}/editor/${userId}/file/${encodeURIComponent(fileName)}`;
   return window.fetch(url, {

@@ -24,7 +24,7 @@ import logging
 # Creates a bot with the name MyPythonBot, registering for the game
 # This game object contains the start game state
 game = hlt.Game()
-game.ready("Collector")
+game.ready("CapturePriorityCollector")
 
 # Now that we're initialized, let's save a message to ourselves in the log file with some important information.
 #   Specifically we log here our id, which we can always fetch from the game object by using my_id.
@@ -46,10 +46,8 @@ while True:
         if ship.id in capture_state:
             target = capture_state[ship.id]
             destination = target.position
-            safe_direction = game_map.get_safe_move(game_map[ship], game_map[destination])
-            if safe_direction:
-                game_map[ship.position.directional_offset(safe_direction)].mark_unsafe(ship)
-                return safe_direction
+            safe_direction = game_map.naive_navigate(ship, destination)
+            return safe_direction
 
         target = None
         allies = []
@@ -64,12 +62,10 @@ while True:
 
         if len(allies) >= 3 and target:
             destination = target.position
-            safe_direction = game_map.get_safe_move(game_map[ship], game_map[destination])
-            if safe_direction:
-                game_map[ship.position.directional_offset(safe_direction)].mark_unsafe(ship)
-                for ally in allies:
-                    capture_state[ally.id] = target
-                return safe_direction
+            safe_direction = game_map.naive_navigate(ship, destination)
+            for ally in allies:
+                capture_state[ally.id] = target
+            return safe_direction
 
 
     # Process map to find high-density regions
@@ -107,13 +103,8 @@ while True:
             state[ship.id] = 'return'
             logging.info("{} RETURN".format(ship))
             destination = me.shipyard.position
-            safe_direction = game_map.get_safe_move(game_map[ship], game_map[destination])
-            if safe_direction:
-                game_map[ship.position.directional_offset(safe_direction)].mark_unsafe(ship)
-                command_queue.append(ship.move(safe_direction))
-            else:
-                logging.info("{} STUCK".format(ship))
-
+            safe_direction = game_map.naive_navigate(ship, destination)
+            command_queue.append(ship.move(safe_direction))
             logging.info("Ship end {} {}".format(time.time(), ship))
         elif capture_move:
             command_queue.append(ship.move(capture_move))
@@ -128,17 +119,8 @@ while True:
 
             direction = random.choice(moves)
             destination = ship.position.directional_offset(direction)
-            safe_direction = game_map.get_safe_move(game_map[ship], game_map[destination])
-            if not safe_direction:
-                direction = random.choice([ Direction.North, Direction.South, Direction.East, Direction.West ])
-                destination = ship.position.directional_offset(direction)
-                safe_direction = game_map.get_safe_move(game_map[ship], game_map[destination])
-            if safe_direction:
-                game_map[ship.position.directional_offset(safe_direction)].mark_unsafe(ship)
-                command_queue.append(ship.move(safe_direction))
-            else:
-                logging.info("{} STUCK".format(ship))
-
+            safe_direction = game_map.naive_navigate(ship, destination)
+            command_queue.append(ship.move(safe_direction))
             logging.info("Ship end {} {}".format(time.time(), ship))
         else:
             logging.info("{} STILL {}".format(ship, game_map[ship.position].halite_amount))

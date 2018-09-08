@@ -326,15 +326,15 @@ export class Map {
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
                 const production = this.productions[row][col];
-                const production_fraction = production / this.constants.MAX_CELL_PRODUCTION;
+                const production_fraction = Math.min(1.25, production / this.constants.MAX_CELL_PRODUCTION);
                 const [ base, baseOpacity ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
                 const cell = this.cells[row * this.cols + col];
                 const bg = this.renderer.backgroundColor;
                 cell.tint = alphaBlend(base, bg, baseOpacity);
                 // TWEAK: uncomment to make size vary with amount of halite
                 if (production_fraction <= 0.2) {
-                    cell.width = Math.sqrt(production_fraction) * this.scale
-                    cell.height = Math.sqrt(production_fraction) * this.scale
+                    cell.width = Math.sqrt(production_fraction) * this.scale;
+                    cell.height = Math.sqrt(production_fraction) * this.scale;
                 }
                 else {
                     cell.width = (0.3 + 0.7 * production_fraction) * this.scale;

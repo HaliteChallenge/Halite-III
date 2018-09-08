@@ -12,6 +12,8 @@
   "author": "David Li <David.M.Li@TwoSigma.com>",
   "license": "MIT",
   "dependencies": {
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "babel-core": "^6.26.3",
     "d3": "^4.11.0",
     "dateformat": "^3.0.2",
     "element-ui": "^1.4.6",
@@ -47,6 +49,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "file-loader": "^1.1.11",
     "jshint": "^2.9.5",
+    "moment-locales-webpack-plugin": "^1.0.7",
     "node-sass": "^4.9.2",
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",

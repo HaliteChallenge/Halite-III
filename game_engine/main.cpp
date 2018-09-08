@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
         }
         Logging::log("Opening a file at " + output_filename);
         for (const auto &stats : replay.game_statistics.player_statistics) {
-            Logging::log("Player " + to_string(stats.player_id) + " was rank " + std::to_string(stats.rank) + " with " + std::to_string(stats.turn_productions.back()) + " halite");
+            Logging::log("Player " + to_string(stats.player_id) + ", " + replay.players.at(stats.player_id).name + ", was rank " + std::to_string(stats.rank) + " with " + std::to_string(stats.turn_productions.back()) + " halite");
         }
 
         // JSON results info, used by backend

@@ -26,8 +26,9 @@ deploy:
   bucket: ts2018-halite-3-ci-artifacts
   skip_cleanup: true
   local-dir: artifacts
+  tags: true
   on:
-    condition: "$TRAVIS_OS_NAME == 'osx'"
+    condition: "$TRAVIS_OS_NAME == 'osx' || $COMPILER = *gcc* "
 before_install: "./.travis.before_install.sh"
 script: "./.travis.script.sh"
 jobs:

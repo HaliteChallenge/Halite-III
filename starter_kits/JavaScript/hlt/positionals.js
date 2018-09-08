@@ -31,6 +31,9 @@ class Direction {
         else if (this.equals(Direction.West)) {
             return commands.WEST;
         }
+        else if (this.equals(Direction.Still)) {
+            return commands.STAY_STILL;
+        }
         throw new Error(`Non-cardinal direction cannot be converted to wire format: ${this}`);
     }
 
@@ -47,6 +50,9 @@ class Direction {
         else if (this.equals(Direction.West)) {
             return Direction.East;
         }
+        else if (this.equals(Direction.Still)) {
+            return Direction.Still;
+        }
         throw new Error(`Non-cardinal direction cannot be inverted: ${this}`);
     }
 }
@@ -54,6 +60,7 @@ Direction.North = new Direction(0, -1);
 Direction.South = new Direction(0, 1);
 Direction.East = new Direction(1, 0);
 Direction.West = new Direction(-1, 0);
+Direction.Still = new Direction(0, 0);
 
 class Position {
     constructor(x, y) {

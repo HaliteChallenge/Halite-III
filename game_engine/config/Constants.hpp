@@ -28,7 +28,7 @@ struct Constants {
     energy_type MIN_CELL_PRODUCTION = 900;      /**< The minimum maximum amount of production on a cell. */
     energy_type MAX_ENERGY = 1000;              /**< The maximum amount of energy per entity. */
     energy_type NEW_ENTITY_ENERGY_COST = 1000;  /**< The base cost of a new entity. */
-    energy_type INITIAL_ENERGY = 2000;          /**< The initial amount of energy for a player. */
+    energy_type INITIAL_ENERGY = 5000;          /**< The initial amount of energy for a player. */
 
     energy_type DROPOFF_COST = 4000;            /**< The cost of a dropoff construction. */
     unsigned long MOVE_COST_RATIO = 10;         /**< The cost of a move is the source's energy divided by this. */
@@ -54,9 +54,9 @@ struct Constants {
     bool INSPIRATION_ENABLED = true; /**< whether to use inspiration **/
     unsigned long INSPIRED_EXTRACT_RATIO = EXTRACT_RATIO; /**< alternative mining ratio for inspired ships */
     double INSPIRED_BONUS_MULTIPLIER = 2; /**< The benefit ratio of mining when inspired. (Removing Y halite from a cell gives you X*Y additional halite.) */
-    unsigned long INSPIRED_MOVE_COST_RATIO = 12; /**< Alternative move cost ratio for inspired ships. */
-    dimension_type INSPIRATION_RADIUS = 5; /** Maximum distance away for ships to count towards inspiration. */
-    unsigned long INSPIRATION_SHIP_COUNT = 3; /**< If there are at least X enemy ships, then you are inspired. */
+    unsigned long INSPIRED_MOVE_COST_RATIO = MOVE_COST_RATIO; /**< Alternative move cost ratio for inspired ships. */
+    dimension_type INSPIRATION_RADIUS = 4; /** Maximum distance away for ships to count towards inspiration. */
+    unsigned long INSPIRATION_SHIP_COUNT = 2; /**< If there are at least X enemy ships, then you are inspired. */
 
     /*
     The two FACTOR_EXP constants do related things but they are not the same.
