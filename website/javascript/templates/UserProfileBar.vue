@@ -84,6 +84,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.profile-container > a:hover{
+  text-decoration: none;
+}
 .profile-nav{
   min-width: 230px;
   li.profile-nav-item{
