@@ -152,7 +152,25 @@
            <PlayerDetail :replay="replay" :statistics="statistics" :stats="stats" :frame="frame"></PlayerDetail>
         </div>
       </div>
-      <div class="panel-group" aria-multiselectable="true">
+      <div class="stats-panel map-object">
+        <label class="panel-name">MAP OBJECT PROPERTIES</label>
+        <div class="panel-body">
+          <div v-if="selectedPlanet">
+            <SelectedPlanet :selected-planet="selectedPlanet" :players="players"></SelectedPlanet>
+          </div>
+          <div v-if="selectedPoint && !selectedPlanet">
+            <SelectedPoint :selected-point="selectedPoint" :players="players"></SelectedPoint>
+          </div>
+          <div v-if="selectedShip">
+            <SelectedShip :selected-ship="selectedShip" :players="players"></SelectedShip>
+          </div>
+          <div class="message-box" v-if="!selectedPoint && !selectedShip">
+            <p><span class="icon-info"></span></p>
+            <p>Click on a ship, planet, or other map location to see properties</p>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="panel-group" aria-multiselectable="true">
         <VisualizerPanel name="map-stats" title="game/map stats">
           <table class="map-stats-props">
             <tbody>
@@ -219,7 +237,7 @@
             <p>Click on a ship, planet, or other map location to see properties</p>
           </div>
         </VisualizerPanel>
-      </div>
+      </div> -->
     </div>
   </div>
 
@@ -270,10 +288,10 @@ import * as utils from '../utils'
 import moment from 'vue-moment'
 import vueSlider from 'vue-slider-component'
 import VisualizerPanel from './VisualizerPanel.vue'
-import PlayerStatsPane from './PlayerStatsPane.vue'
+// import PlayerStatsPane from './PlayerStatsPane.vue'
 import PlayerDetail from './PlayerDetail.vue'
-import PlayerDetailPane from './PlayerDetailPane.vue'
-import PlayerLineChart from './PlayerLineChart.vue'
+// import PlayerDetailPane from './PlayerDetailPane.vue'
+// import PlayerLineChart from './PlayerLineChart.vue'
 import SelectedPlanet from './SelectedPlanet.vue'
 import SelectedShip from './SelectedShip.vue'
 import SelectedPoint from './SelectedPoint.vue'
@@ -388,10 +406,10 @@ export default {
     }
   },
   components: {
-    PlayerLineChart,
+    // PlayerLineChart,
     vueSlider,
-    PlayerStatsPane,
-    PlayerDetailPane,
+    // PlayerStatsPane,
+    // PlayerDetailPane,
     PlayerDetail,
     VisualizerPanel,
     SelectedPlanet,
@@ -838,7 +856,7 @@ export default {
     line-height: 19px;
   }
   .panel-body{
-    margin-top: 15px;
+    margin: 15px 0;
     background: #fff;
     border-radius: 4px;
     box-shadow: inset 0 1px 3px 0 rgba(0,0,0,0.5), inset 0 1px 14px 0 rgba(151,182,255,0.45);
