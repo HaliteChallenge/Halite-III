@@ -23,7 +23,7 @@ Please send all feedback, starter kit inquiries, and new feature proposals to [*
 #### Get to know the Game
 Start with the [**game rules**](/learn-programming-challenge/game-overview).
 
-Then, learn more about how to play the game in a [**tutorial**]((/learn-programming-challenge/tutorials/)).
+Then, learn more about how to play the game in a [**tutorial**](/learn-programming-challenge/tutorials/).
 
 <br/>
 
