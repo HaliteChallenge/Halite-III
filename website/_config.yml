@@ -52,3 +52,4 @@ exclude:
   - vendor_assets/
   - javascript/
   - node_modules/
+  - countdown/
