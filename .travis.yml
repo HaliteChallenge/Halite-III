@@ -44,9 +44,9 @@ jobs:
     - python3 -m py_compile MyBot.py
     name: Python starter kit
     env: []
-  - script:
-    name: C++ starter kit
+  - name: C++ starter kit
     env: COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
+    script:
     - docker exec build /bin/bash -c "which $CCOMPILE"
     - docker exec build /bin/bash -c "which $CXXCOMPILE"
     - docker exec build /bin/bash -c "$CXXCOMPILE --version"
