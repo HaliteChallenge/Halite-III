@@ -52,6 +52,7 @@ jobs:
     - docker exec build /bin/bash -c "$CXXCOMPILE --version"
     - docker exec build /bin/bash -c "cd /project/starter_kits/C++; CC=$CCOMPILE CXX=$CXXCOMPILE cmake ."
     - docker exec build /bin/bash -c "cd /project/starter_kits/C++; CC=$CCOMPILE CXX=$CXXCOMPILE make -j2"
+    deploy:
   - stage: build website
     env: []
     script:
