@@ -45,10 +45,13 @@ jobs:
     name: Python starter kit
     env: []
   - script:
-    - docker exec build /bin/bash -c "cd /project/starter_kits/C++; CC=$CCOMPILE CXX=$CXXCOMPILE
-      make MyBot"
     name: C++ starter kit
     env: COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
+    - docker exec build /bin/bash -c "which $CCOMPILE"
+    - docker exec build /bin/bash -c "which $CXXCOMPILE"
+    - docker exec build /bin/bash -c "$CXXCOMPILE --version"
+    - docker exec build /bin/bash -c "cd /project/starter_kits/C++; CC=$CCOMPILE CXX=$CXXCOMPILE cmake ."
+    - docker exec build /bin/bash -c "cd /project/starter_kits/C++; CC=$CCOMPILE CXX=$CXXCOMPILE make -j2"
   - stage: build website
     env: []
     script:
