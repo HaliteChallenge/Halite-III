@@ -39,10 +39,10 @@ namespace hlt {
         }
 
         std::array<Position, 4> get_surrounding_cardinals() {
-            return {
+            return {{
                 directional_offset(Direction::NORTH), directional_offset(Direction::SOUTH),
                 directional_offset(Direction::EAST), directional_offset(Direction::WEST)
-            };
+            }};
         }
     };
 
