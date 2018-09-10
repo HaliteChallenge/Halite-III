@@ -8,13 +8,20 @@
 using namespace std;
 using namespace hlt;
 
-int main() {
+int main(int argc, char* argv[]) {
+    unsigned int rng_seed;
+    if (argc > 1) {
+        rng_seed = static_cast<unsigned int>(stoul(argv[1]));
+    } else {
+        rng_seed = static_cast<unsigned int>(time(nullptr));
+    }
+    mt19937 rng(rng_seed);
+
     Game game;
     game.ready("MyCppBot");
 
-    log::log("Successfully created bot! My Player ID is " + std::to_string(game.my_id) + ".");
-
-    std::mt19937 prg(time(NULL));
+    log::log("Successfully created bot! My Player ID is " + to_string(game.my_id) + ".");
+    log::log("rng seed: " + to_string(rng_seed));
 
     for (;;) {
         game.update_frame();
@@ -26,7 +33,7 @@ int main() {
         for (const auto& ship_iterator : me->ships) {
             shared_ptr<Ship> ship = ship_iterator.second;
             if (game_map->at(ship)->halite_amount < constants::MAX_HALITE / 10 || ship->is_full()) {
-                Direction random_direction = ALL_CARDINALS[prg() % 4];
+                Direction random_direction = ALL_CARDINALS[rng() % 4];
                 command_queue.push_back(ship->move(random_direction));
             } else {
                 command_queue.push_back(ship->stay_still());
