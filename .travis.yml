@@ -35,23 +35,25 @@ jobs:
   include:
   - stage: test starter kits
     name: Java starter kit
+    env: []
     script:
     - cd ./starter_kits/Java
     - javac MyBot.java
+    deploy:
+  - name: Python starter kit
     env: []
-  - script:
+    script:
     - cd ./starter_kits/Python3
     - python3 -m py_compile MyBot.py
-    name: Python starter kit
-    env: []
+    deploy:
   - name: C++ starter kit
-    env: COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
+    env: CC=gcc-7 CXX=g++-7
     script:
-    - docker exec build /bin/bash -c "which $CCOMPILE"
-    - docker exec build /bin/bash -c "which $CXXCOMPILE"
-    - docker exec build /bin/bash -c "$CXXCOMPILE --version"
-    - docker exec build /bin/bash -c "cd /project/starter_kits/C++; CC=$CCOMPILE CXX=$CXXCOMPILE cmake ."
-    - docker exec build /bin/bash -c "cd /project/starter_kits/C++; CC=$CCOMPILE CXX=$CXXCOMPILE make -j2"
+    - docker exec build /bin/bash -c "which $CC"
+    - docker exec build /bin/bash -c "which $CXX"
+    - docker exec build /bin/bash -c "$CXX --version"
+    - docker exec build /bin/bash -c "cd /project/starter_kits/C++; cmake ."
+    - docker exec build /bin/bash -c "cd /project/starter_kits/C++; make -j2"
     deploy:
   - stage: build website
     env: []
