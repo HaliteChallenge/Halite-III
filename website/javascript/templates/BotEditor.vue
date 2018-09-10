@@ -83,6 +83,11 @@
       fileName: 'MyBot.cpp',
       zipName: 'my-c++-bot.zip',
       starterZipPath: '/assets/downloads/Halite2_C++_None.zip'
+    },
+    'JavaScript': {
+      mimeType: 'application/javascript',
+      fileName: 'MyBot.js',
+      zipName: 'my-javascript-bot.zip',
     }
   }
 
