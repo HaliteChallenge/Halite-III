@@ -1,21 +1,67 @@
 ---
 layout: doc_page
-title: Game Overview
+title: Get Started
 breadcrumb: Learn
 toc: false
 menu: learn
-description: Welcome to the Halite II competition! Learn how to quickly get started downloading, building, and submitting an AI bot.
+description: Welcome to the Halite III competition! Learn how to quickly get started downloading, building, and submitting an AI bot.
 mount_view: Onboarding
 additional_js: ["FileSaver.min"]
 additional_css: []
 ---
+
+<div class="doc-section" markdown="1">
+
+#### Welcome to the Halite III Beta
+
+We look forward to seeing you on the leaderboard!
+
+Please send all feedback, starter kit inquiries, and new feature proposals to [**halite@halite.io**](mailto:halite@halite.io).
+
+<br/>
+
+#### Get to know the Game
+Start with the [**game rules**](/learn-programming-challenge/game-overview).
+
+Then, learn more about how to play the game in a [**tutorial**]((/learn-programming-challenge/tutorials/)).
+
+<br/>
+
+#### Build a Bot
+
+[**Download**](/learn-programming-challenge/downloads) a starter kit and game environment to build a bot locally on your computer. Submit your bot on the [**play**](/play-programming-challenge) page.
+###### OR
+Build and submit your bot via the [**online editor**](/editor), which includes built-in logging and game visualization.
+
+
+<br/>
+
+#### Reference
+Check out the [**API documentation**](/learn-programming-challenge/api-docs).
+
+Get tips on improving your bot in our [**next step tutorial**](/learn-programming-challenge/tutorials/next-tutorial).
+
+Stuck? Get help with best practices and [**debugging your bot**](/learn-programming-challenge/developing-a-bot).
+
+[comment]: Check out the blog post feed (todo).
+
+
+<br/>
+
+[comment]: #### Join the Community
+[comment]: Meet the community on the official [**forums**](https://forums.halite.io/).
+
+[comment]: Join us on Discord (todo)!
+
+[comment]: Check us out on Github (todo), and make a contribution to Halite III (todo).
+
+[comment]: <br/>
+</div>
+
+
 <script>
   var site_downloads = {{ site.data.downloads | jsonify }};
 </script>
-
-<div class="build-a-bot text-center">
-  <a href="#" class="btn btn-primary">Build a bot</a>
-</div>
 
 [login]: {{ site.login_server_url }}/github
 [downloads]: {{ site.baseurl }}/learn-programming-challenge/downloads-and-starter-kits
