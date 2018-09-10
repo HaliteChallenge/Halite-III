@@ -28,7 +28,7 @@
     },
     data: function() {
       return {
-        languages: this.tutorial ? ["Python3"] : ["Python3", "Java", "C++"]
+        languages: this.tutorial ? ["Python3"] : ["Python3", "Java", "C++", "JavaScript"]
       }
     },
     watch: {
