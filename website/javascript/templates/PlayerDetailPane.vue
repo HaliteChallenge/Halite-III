@@ -1,6 +1,6 @@
 <template>
   <div class="player-cards-list row">
-    <div class="col-sm-6" v-for="(player,index) in statistics">
+    <div class="col-sm-6" v-for="(player,index) in statistics" :key="index">
       <div class="card-player">
         <h4 class="card-player-name">
           {{replay.players[index].name}}

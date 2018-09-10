@@ -146,6 +146,12 @@
           </li>
         </ul>
       </div>
+      <div class="stats-panel plyer">
+        <label class="panel-name">PLAYER STATS</label>
+        <div class="panel-body not-padding">
+           <PlayerDetail :replay="replay" :statistics="statistics" :stats="stats" :frame="frame"></PlayerDetail>
+        </div>
+      </div>
       <div class="panel-group" aria-multiselectable="true">
         <VisualizerPanel name="map-stats" title="game/map stats">
           <table class="map-stats-props">
@@ -265,6 +271,7 @@ import moment from 'vue-moment'
 import vueSlider from 'vue-slider-component'
 import VisualizerPanel from './VisualizerPanel.vue'
 import PlayerStatsPane from './PlayerStatsPane.vue'
+import PlayerDetail from './PlayerDetail.vue'
 import PlayerDetailPane from './PlayerDetailPane.vue'
 import PlayerLineChart from './PlayerLineChart.vue'
 import SelectedPlanet from './SelectedPlanet.vue'
@@ -385,6 +392,7 @@ export default {
     vueSlider,
     PlayerStatsPane,
     PlayerDetailPane,
+    PlayerDetail,
     VisualizerPanel,
     SelectedPlanet,
     SelectedShip,
@@ -393,9 +401,6 @@ export default {
   },
   mounted: function () {
     // Grab a bit more vertical space
-    const l = this.replay.full_frames.length -1
-    console.log(this.replay)
-    console.log(this.replay.full_frames[l])
     document.querySelector('.navbar-fixed-top').style.position = 'absolute'
     this.getSortedPlayers()
     this.sliderOptions = Object.assign(this.sliderOptions, {
@@ -837,6 +842,10 @@ export default {
     background: #fff;
     border-radius: 4px;
     box-shadow: inset 0 1px 3px 0 rgba(0,0,0,0.5), inset 0 1px 14px 0 rgba(151,182,255,0.45);
+    &.not-padding {
+      padding: 0;
+      overflow: hidden;
+    }
   }
   .list-hori{
     list-style: none;
