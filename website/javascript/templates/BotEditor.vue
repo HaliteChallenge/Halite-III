@@ -616,6 +616,12 @@ export default {
           }
         }
 
+        if (status.compile_error) {
+          this.add_console_text("Your bot failed to compile :(\n")
+          this.add_console_text(status.compile_error)
+          return
+        }
+
         this.add_console_text("Fetching replay...\n")
 
         const replayBlob = await api.get_ondemand_replay(this.user_id)
