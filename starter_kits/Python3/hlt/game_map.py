@@ -227,6 +227,7 @@ class GameMap:
                 self[target_pos].mark_unsafe(ship)
                 return direction
 
+        self[ship.position].mark_unsafe(ship)
         return Direction.Still
 
     @staticmethod
