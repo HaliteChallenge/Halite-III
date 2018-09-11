@@ -152,18 +152,18 @@ logging.info("Ship {} has {} halite.".format(ship.id, ship.halite_amount))</code
       </p>
 
       <pre>
-        if ship.id not in ship_status:
-            ship_status[ship.id] = "exploring"
+if ship.id not in ship_status:
+    ship_status[ship.id] = "exploring"
 
-        if ship_status[ship.id] == "returning":
-            if ship.position == me.shipyard.position:
-                ship_status[ship.id] = "exploring"
-            else:
-                move = game_map.naive_navigate(ship, game_map[me.shipyard.position])
-                command_queue.append(ship.move(move))
-                continue
-        elif ship.halite_amount >= constants.MAX_HALITE / 4:
-            ship_status[ship.id] = "returning"</pre>
+if ship_status[ship.id] == "returning":
+    if ship.position == me.shipyard.position:
+        ship_status[ship.id] = "exploring"
+    else:
+        move = game_map.naive_navigate(ship, me.shipyard.position)
+        command_queue.append(ship.move(move))
+        continue
+elif ship.halite_amount >= constants.MAX_HALITE / 4:
+    ship_status[ship.id] = "returning"</pre>
 
       <p>
         This code creates two new missions for ships, and provides instructions to ships depending on which mission they are assigned to. We are using some methods that are useful in moving ships around the map: <code>ship.move(direction)</code> and <code>game_map.naive_navigate(ship,
