@@ -109,22 +109,20 @@
 
   function parse_to_file_tree(files) {
     let file_tree = {}
-    for(let file_name in files) {
-      let components = file_name.split('/')
-      for(let a = 0; a < components.length-1; a++) { // target for setting to {}
-        let current_obj = file_tree
-        for(let b = 0; b < a; b++) {
-          current_obj = current_obj[b]
-        }
-        if(current_obj[components[a]] === undefined) current_obj[components[a]] = {}
-      }
+    for (const [ file_name, file_obj ] of Object.entries(files)) {
+      const components = file_name.split('/')
+
+      // Create nested objects as necessary
       let current_obj = file_tree
-      for(let b = 0; b < components.length-1; b++) {
-        current_obj = current_obj[components[b]]
+      for (const component of components.slice(0, -1)) {
+        if (typeof current_obj[component] === "undefined") {
+          current_obj[component] = {}
+        }
+        current_obj = current_obj[component];
       }
-      current_obj[components[components.length-1]] = files[file_name]
+
+      current_obj[components[components.length - 1]] = file_obj
     }
-    //return files
     return file_tree
   }
 
