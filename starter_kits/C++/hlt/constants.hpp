@@ -9,7 +9,7 @@ namespace hlt {
      * They are strictly informational.
      */
     namespace constants {
-        void populate_constants(std::string string_from_engine);
+        void populate_constants(const std::string& string_from_engine);
 
         /** The maximum amount of halite a ship can carry. */
         extern int MAX_HALITE;
