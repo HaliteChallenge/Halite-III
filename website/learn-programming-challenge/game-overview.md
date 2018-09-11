@@ -37,11 +37,17 @@ Players spend halite to **build a ship**,  **move a ship**, and to **construct a
 
 Command|Halite Cost or Gain
 :---: | :---: | :---:
-Spawn | Spend: 500 halite
+Spawn | Spend: 1000 halite
 Construct a drop-off  | Spend: 2000 halite
 Move (n, s, e w) | Spend: 10% of halite available at turn origin cell is deducted from ship’s current halite
 Move (o) | Collect: 25% of halite available in cell. Ships can carry up to 1000 halite.
 
+<br/><br/>
+##### Interacting with Other Ships
+If your ship is outnumbered by three or more ships belonging to a single opponent within a three-cell radius, your ship is **captured**, and changes owners to the flanking player.
+
+
+If there are two or more ships belonging to any opponent within a four-cell radius of your ship, your ship is **inspired**, and collects halite with an efficiency bonus.
 <br/><br/>
 
 ##### Win Conditions
