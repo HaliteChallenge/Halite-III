@@ -10,7 +10,6 @@ void hlt::GameMap::_update() {
 
     int update_count;
     hlt::get_sstream() >> update_count;
-    hlt::log::log("update_count: " + std::to_string(update_count));
 
     for (int i = 0; i < update_count; ++i) {
         int x;

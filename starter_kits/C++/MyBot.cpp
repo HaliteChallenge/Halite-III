@@ -20,8 +20,7 @@ int main(int argc, char* argv[]) {
     Game game;
     game.ready("MyCppBot");
 
-    log::log("Successfully created bot! My Player ID is " + to_string(game.my_id) + ".");
-    log::log("rng seed: " + to_string(rng_seed));
+    log::log("Successfully created bot! My Player ID is " + to_string(game.my_id) + ". Bot rng seed is " + to_string(rng_seed) + ".");
 
     for (;;) {
         game.update_frame();

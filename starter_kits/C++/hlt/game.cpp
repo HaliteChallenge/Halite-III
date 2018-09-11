@@ -36,14 +36,10 @@ void hlt::Game::update_frame() {
         Halite halite_amount;
         hlt::get_sstream() >> current_player_id >> num_ships >> num_dropoffs >> halite_amount;
 
-        log::log("processing player " + std::to_string(current_player_id));
-
         players[current_player_id]->_update(num_ships, num_dropoffs, halite_amount);
     }
 
-    log::log("before game_map->_update()");
     game_map->_update();
-    log::log("after game_map->_update()");
 
     for (const auto& player : players) {
         for (auto& ship_iterator : player->ships) {
