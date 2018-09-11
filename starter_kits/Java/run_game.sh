@@ -2,5 +2,5 @@
 
 set -e
 
-javac MyBot.java hlt/*.java
+javac MyBot.java
 ./halite -vvv --width 32 --height 32 "java MyBot" "java MyBot"

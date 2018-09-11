@@ -1,26 +1,55 @@
 package hlt;
 
-import hlt.command.*;
+public class Ship extends Entity {
+    private final int halite;
 
-public class Ship {
-    private int id;
-    private Location location;
-    private int halite;
-
-    public Ship(int id_, Location location_, int halite_) {
-        id = id_;
-        location = location_;
-        halite = halite_;
+    public Ship(final PlayerId owner, final EntityId id, final Position position, final int halite) {
+        super(owner, id, position);
+        this.halite = halite;
     }
 
-    public Command moveUnsafe(Direction direction) {
-        return new Move(id, direction);
-    }
-    public Command construct() {
-        return new Construct(id);
+    public boolean isFull() {
+        return halite >= Constants.MAX_HALITE;
     }
 
-    public int getID() { return id; }
-    public int getHalite() { return halite; }
-    public Location getLocation() { return location; }
+    public Command makeDropoff() {
+        return Command.transformShipIntoDropoffSite(id);
+    }
+
+    public Command move(final Direction direction) {
+        return Command.move(id, direction);
+    }
+
+    public Command stayStill() {
+        return Command.move(id, Direction.STILL);
+    }
+
+    static Ship _generate(final PlayerId playerId) {
+        final Input input = Input.readInput();
+
+        final EntityId shipId = new EntityId(input.getInt());
+        final int x = input.getInt();
+        final int y = input.getInt();
+        final int halite = input.getInt();
+
+        return new Ship(playerId, shipId, new Position(x, y), halite);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Ship ship = (Ship) o;
+
+        return halite == ship.halite;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + halite;
+        return result;
+    }
 }

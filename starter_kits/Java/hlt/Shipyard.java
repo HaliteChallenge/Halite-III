@@ -1,13 +1,11 @@
 package hlt;
 
-import hlt.command.*;
-
-public class Shipyard extends Dropoff {
-    public Shipyard(Location location) {
-        super(-1, location);
+public class Shipyard extends Entity {
+    public Shipyard(final PlayerId owner, final Position position) {
+        super(owner, EntityId.NONE, position);
     }
 
     public Command spawn() {
-        return new Spawn();
+        return Command.spawnShip();
     }
 }
