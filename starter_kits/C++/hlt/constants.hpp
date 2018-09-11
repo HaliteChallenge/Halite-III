@@ -32,7 +32,7 @@ namespace hlt {
         /** An inspired ship mines 1/X halite from a cell per turn instead. */
         extern int INSPIRED_EXTRACT_RATIO;
         /** An inspired ship that removes Y halite from a cell collects X*Y additional halite. */
-        extern int INSPIRED_BONUS_MULTIPLIER;
+        extern double INSPIRED_BONUS_MULTIPLIER;
         /** An inspired ship instead spends 1/X% halite to move. */
         extern int INSPIRED_MOVE_COST_RATIO;
         /** Whether capture is enabled. */

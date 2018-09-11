@@ -21,7 +21,7 @@ namespace hlt {
         int INSPIRATION_RADIUS;
         int INSPIRATION_SHIP_COUNT;
         int INSPIRED_EXTRACT_RATIO;
-        int INSPIRED_BONUS_MULTIPLIER;
+        double INSPIRED_BONUS_MULTIPLIER;
         int INSPIRED_MOVE_COST_RATIO;
         bool CAPTURE_ENABLED;
         int CAPTURE_RADIUS;
@@ -31,24 +31,25 @@ namespace hlt {
 
 constexpr static unsigned int json_max_tokens = 128;
 
-static int get_int(std::unordered_map<std::string, std::string>& map, const std::string& key) {
+static std::string get_string(std::unordered_map<std::string, std::string>& map, const std::string& key) {
     auto it = map.find(key);
     if (it == map.end()) {
         log::log("Error: constants: server did not send " + key + " constant.");
         exit(1);
     }
+    return it->second;
+}
 
-    return stoi(it->second);
+static int get_int(std::unordered_map<std::string, std::string>& map, const std::string& key) {
+    return stoi(get_string(map, key));
+}
+
+static double get_double(std::unordered_map<std::string, std::string>& map, const std::string& key) {
+    return stod(get_string(map, key));
 }
 
 static bool get_bool(std::unordered_map<std::string, std::string>& map, const std::string& key) {
-    auto it = map.find(key);
-    if (it == map.end()) {
-        log::log("Error: constants: server did not send " + key + " constant.");
-        exit(1);
-    }
-
-    std::string string_value = it->second;
+    std::string string_value = get_string(map, key);
     if (string_value == "true") {
         return true;
     }
@@ -103,7 +104,7 @@ void hlt::constants::populate_constants(std::string string_from_engine) {
     INSPIRATION_RADIUS = get_int(constants_map, "INSPIRATION_RADIUS");
     INSPIRATION_SHIP_COUNT = get_int(constants_map, "INSPIRATION_SHIP_COUNT");
     INSPIRED_EXTRACT_RATIO = get_int(constants_map, "INSPIRED_EXTRACT_RATIO");
-    INSPIRED_BONUS_MULTIPLIER = get_int(constants_map, "INSPIRED_BONUS_MULTIPLIER");
+    INSPIRED_BONUS_MULTIPLIER = get_double(constants_map, "INSPIRED_BONUS_MULTIPLIER");
     INSPIRED_MOVE_COST_RATIO = get_int(constants_map, "INSPIRED_MOVE_COST_RATIO");
     CAPTURE_ENABLED = get_bool(constants_map, "CAPTURE_ENABLED");
     CAPTURE_RADIUS = get_int(constants_map, "CAPTURE_RADIUS");
