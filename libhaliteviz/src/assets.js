@@ -42,8 +42,10 @@ function loadSpritesheet(meta, textureImage) {
     return new Promise((resolve) => {
         const texture = PIXI.BaseTexture.fromImage(textureImage);
         const sheet = new PIXI.Spritesheet(texture, meta);
-        sheet.parse(() => {
-            resolve(sheet);
+        texture.on('loaded', () => {
+            sheet.parse(() => {
+                resolve(sheet);
+            });
         });
     });
 }
