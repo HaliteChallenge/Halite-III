@@ -1,3 +1,5 @@
+import theme from "./theme";
+
 const PIXI = require("pixi.js");
 
 export let ASSET_ROOT = "dist/";
@@ -80,6 +82,16 @@ export function setAssetRoot(path) {
     ASSET_ROOT = path;
 
     return Promise.all([
+        theme.name === "halite2" ? loadSpritesheet(
+            require("../assets/planet-small.json"),
+            ASSET_ROOT + require("../assets/planet-small.png"),
+        ).then((sheet) => {
+            BASE_SPRITES.push(sheet.textures["CoreSmall.png"]);
+            BASE_SPRITES.push(sheet.textures["CoreSmall.png"]);
+            BASE_SPRITES.push(sheet.textures["CoreSmall.png"]);
+            BASE_SPRITES.push(sheet.textures["CoreSmall.png"]);
+        }) : Promise.resolve(),
+
         new Promise((resolve) => {
             PIXI.loader.add("halo", require("../assets/halo2.png"))
                 .add("base_green", require("../assets/base-green.png"))
@@ -88,10 +100,12 @@ export function setAssetRoot(path) {
                 .add("base_yellow", require("../assets/base-yellow.png"))
                 .load((loader, resources) => {
                     HALO_SPRITE = resources.halo.texture;
-                    BASE_SPRITES.push(resources.base_green.texture);
-                    BASE_SPRITES.push(resources.base_purple.texture);
-                    BASE_SPRITES.push(resources.base_red.texture);
-                    BASE_SPRITES.push(resources.base_yellow.texture);
+                    if (theme.name === "shipyard") {
+                        BASE_SPRITES.push(resources.base_green.texture);
+                        BASE_SPRITES.push(resources.base_purple.texture);
+                        BASE_SPRITES.push(resources.base_red.texture);
+                        BASE_SPRITES.push(resources.base_yellow.texture);
+                    }
                     resolve();
                 });
         }),
