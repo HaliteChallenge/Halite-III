@@ -1,8 +1,8 @@
 #include "player.hpp"
 #include "input.hpp"
 
-void hlt::Player::_update(int num_ships, int num_dropoffs, Halite halite_amount) {
-    this->halite_amount = halite_amount;
+void hlt::Player::_update(int num_ships, int num_dropoffs, Halite halite) {
+    this->halite = halite;
 
     ships.clear();
     for (int i = 0; i < num_ships; ++i) {

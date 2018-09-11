@@ -8,13 +8,13 @@
 namespace hlt {
     struct MapCell {
         Position position;
-        Halite halite_amount;
+        Halite halite;
         std::shared_ptr<Ship> ship;
         std::shared_ptr<Entity> structure;
 
-        MapCell(int x, int y, Halite halite_amount) :
+        MapCell(int x, int y, Halite halite) :
             position(x, y),
-            halite_amount(halite_amount)
+            halite(halite)
         {}
 
         bool is_empty() const {

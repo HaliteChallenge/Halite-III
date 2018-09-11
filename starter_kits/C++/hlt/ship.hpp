@@ -8,15 +8,15 @@
 
 namespace hlt {
     struct Ship : Entity {
-        Halite halite_amount;
+        Halite halite;
 
         Ship(PlayerId player_id, EntityId ship_id, int x, int y, Halite halite) :
             Entity(player_id, ship_id, x, y),
-            halite_amount(halite)
+            halite(halite)
         {}
 
         bool is_full() const {
-            return halite_amount >= constants::MAX_HALITE;
+            return halite >= constants::MAX_HALITE;
         }
 
         Command make_dropoff() const {

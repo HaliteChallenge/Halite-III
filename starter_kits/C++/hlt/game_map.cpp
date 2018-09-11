@@ -14,9 +14,9 @@ void hlt::GameMap::_update() {
     for (int i = 0; i < update_count; ++i) {
         int x;
         int y;
-        int halite_amount;
-        hlt::get_sstream() >> x >> y >> halite_amount;
-        cells[y][x].halite_amount = halite_amount;
+        int halite;
+        hlt::get_sstream() >> x >> y >> halite;
+        cells[y][x].halite = halite;
     }
 }
 

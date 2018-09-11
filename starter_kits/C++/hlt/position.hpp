@@ -34,6 +34,9 @@ namespace hlt {
                 case Direction::STILL:
                     // No move
                     break;
+                default:
+                    log::log(std::string("Error: invert_direction: unknown direction ") + static_cast<char>(d));
+                    exit(1);
             }
             return Position{x + dx, y + dy};
         }
