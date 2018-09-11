@@ -194,8 +194,18 @@ def setupParticipant(user_index, user, temp_dir):
                                            user["bot_id"], bot_dir))
 
     if user.get("requires_compilation"):
+        compile_dir = bot_dir + '_compile'
         try:
-            language, errors = compiler.compile_anything(bot_dir)
+            # Move to temp directory to avoid permission problems
+            # (can't chown files created by compile user back to us)
+            shutil.move(bot_dir, compile_dir)
+
+            # Give the compilation user access
+            os.chmod(compile_dir, 0o2755)
+            # User needs to be able to write to the directory
+            give_ownership(compile_dir, "bots", 0o2774)
+
+            language, errors = compiler.compile_anything(compile_dir)
             didCompile = errors is None
         except Exception:
             language = "Other"
@@ -205,6 +215,14 @@ def setupParticipant(user_index, user, temp_dir):
         if not didCompile:
             # Abort and upload an error log
             raise OndemandCompileError(language, errors)
+
+        # Move back to original directory
+        try:
+            shutil.copytree(compile_dir, bot_dir)
+        except shutil.Error as e:
+            print(e)
+
+        rm_as_user("bot_compilation", compile_dir)
 
     # Make the start script executable
     os.chmod(os.path.join(bot_dir, RUNFILE), 0o755)
