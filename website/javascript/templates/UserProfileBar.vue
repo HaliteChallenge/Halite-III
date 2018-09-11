@@ -11,8 +11,8 @@
                 <i class="fa fa-sort-down"></i>
                 <ul class="nav profile-nav" v-if="!isCreateAccount">
                   <li class="profile-nav-item"><a v-on:click="gaData('account','click-view-profile','account-flow')" href="/user?me"><span>view profile</span><i class="line line-bottom"></i></a></li>
-                  <li class="profile-nav-item"><a v-on:click="gaData('account','click-edit-profile','account-flow')"href="/user/edit-user"><span>edit profile</span><i class="line line-bottom"></i></a></li>
-                  <li class="profile-nav-item"><a v-on:click="gaData('account','click-edit-settings','account-flow')"href="/user/settings"><span>settings</span><i class="line line-bottom"></i></a></li>
+                  <li class="profile-nav-item"><a v-on:click="gaData('account','click-edit-profile','account-flow')" href="/user/edit-user"><span>edit profile</span><i class="line line-bottom"></i></a></li>
+                  <li class="profile-nav-item"><a v-on:click="gaData('account','click-edit-settings','account-flow')" href="/user/settings"><span>settings</span><i class="line line-bottom"></i></a></li>
                   <li class="profile-nav-item"><a v-on:click.stop.prevent="sign_out"><span>sign out</span><i class="line line-bottom"></i></a></li>
                 </ul>
                 <ul class="nav profile-nav" v-else>

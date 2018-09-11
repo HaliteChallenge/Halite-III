@@ -1,8 +1,8 @@
 <template>
 <div class="map-props">
-  <div class="map-props-icon">
+<!--  <div class="map-props-icon">
     <span class="icon-ship"></span>
-  </div>
+  </div> -->
   <div class="map-props-list">
     <table>
       <tr>
