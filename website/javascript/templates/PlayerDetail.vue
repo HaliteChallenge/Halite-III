@@ -15,7 +15,7 @@
         <img class="stats-cube" :src="`/assets/images/visualizer/cube1.png`" alt="cube">
       </div>
       <div class="chat-box">
-        <PlayerHaliteChart :chartData="chartData[index]" :index="frame"/>
+        <PlayerHaliteChart :chartData="chartData[index]" :maxY="maxY" :index="frame"/>
       </div>
       <ul class="player-stats-list">
         <li>
@@ -38,6 +38,7 @@
 
 <script>
 import Vue from 'vue'
+import * as d3 from 'd3'
 import PlayerHaliteChart from './PlayerHaliteChart.vue'
 export default {
   name: 'PlayerDetail',
@@ -55,7 +56,13 @@ export default {
       if (!this.stats) return null
 
       return this.stats.frames[this.frame].players
-    }
+    },
+    maxY() {
+      if (!this.chartData || !this.chartData.length) {
+        return 0;
+      }
+      return d3.max(this.chartData.map(player => d3.max(player, (d) => d.y)), (y) => y);
+    },
   },
   methods: {
     numberSep: function (number) {

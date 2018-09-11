@@ -17,6 +17,10 @@ export default {
       type: Number,
       required: true
     },
+    maxY: {
+      type: Number,
+      required: true
+    },
     // maxLength: {
     //   type: Number,
     //   required: false
@@ -75,7 +79,7 @@ export default {
 
       let _dataSet = [].concat(dataSet)
 
-      y.domain([0, d3.max(_dataSet, function (d) { return d.y })])
+      y.domain([0, this.maxY])
       area.y0(y(0))
       let yAxis = g1.append('g')
           .call(d3.axisLeft(y).ticks(5, 's'))
