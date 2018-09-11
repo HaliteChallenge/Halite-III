@@ -18,8 +18,6 @@ Players begin play with a shipyard, and can use collected halite to build new sh
 <span style="display:block;text-align:center">![a centered gif showing wrapping map grid edges and collision](/assets/images/map_inspiration.gif)</span>
 </div>
 
-<br/><br/>
-
 <div class="doc-section" markdown="1">
 
 #### Gameplay Overview
