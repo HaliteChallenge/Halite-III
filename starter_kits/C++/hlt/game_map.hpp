@@ -72,7 +72,7 @@ namespace hlt {
                     return direction;
                 }
             }
-            at(ship)->mark_unsafe(ship);
+
             return Direction::STILL;
         }
 
