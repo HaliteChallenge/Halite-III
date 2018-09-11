@@ -259,6 +259,7 @@ class GameMap {
             }
         }
 
+        this.get(ship.position).markUnsafe(ship);
         return Direction.Still;
     }
 
