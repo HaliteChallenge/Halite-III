@@ -201,7 +201,8 @@ def update_task(user_id, game_output, files):
         #     "updated_at": current_time,
         # })
 
-    del game_output["final_snapshot"]
+        del game_output["final_snapshot"]
+
     task["game_output"] = game_output
     task["last_updated"] = current_time
     task["retries"] = 0
@@ -211,7 +212,7 @@ def update_task(user_id, game_output, files):
 
     # TODO: will the relevant player always be player 0?
     task["objective"] = {
-        "completed": game_output["stats"]["0"]["rank"] == 1,
+        "completed": game_output and game_output["stats"]["0"]["rank"] == 1,
     }
 
     if "replay" in files:
@@ -226,7 +227,7 @@ def update_task(user_id, game_output, files):
         blob = gcloud_storage.Blob(log_key, bucket, chunk_size=262144)
         blob.upload_from_file(files["error_log"])
         task["error_log"] = True
-        task["crashed"] = game_output["terminated"].get("0", False)
+        task["crashed"] = game_output and game_output["terminated"].get("0", False)
     else:
         task["error_log"] = None
         task["crashed"] = False
