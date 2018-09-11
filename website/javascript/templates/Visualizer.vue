@@ -149,7 +149,7 @@
       <div class="stats-panel plyer">
         <label class="panel-name">PLAYER STATS</label>
         <div class="panel-body not-padding">
-           <PlayerDetail :replay="replay" :statistics="statistics" :stats="stats" :frame="frame"></PlayerDetail>
+           <PlayerDetail :replay="replay" :statistics="statistics" :stats="stats" :frame="frame" :chartData="chartData.energy"></PlayerDetail>
         </div>
       </div>
       <div class="stats-panel map-object">

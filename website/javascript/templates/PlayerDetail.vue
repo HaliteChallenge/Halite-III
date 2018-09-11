@@ -14,7 +14,9 @@
         </div>
         <img class="stats-cube" :src="`/assets/images/visualizer/cube1.png`" alt="cube">
       </div>
-      <div class="chat-box"></div>
+      <div class="chat-box">
+        <PlayerHaliteChart :chartData="chartData[index]" :index="frame"/>
+      </div>
       <ul class="player-stats-list">
         <li>
           <label>Ship</label>
@@ -36,11 +38,15 @@
 
 <script>
 import Vue from 'vue'
+import PlayerHaliteChart from './PlayerHaliteChart.vue'
 export default {
   name: 'PlayerDetail',
-  props: ['replay', 'frame', 'stats', 'statistics'],
+  props: ['replay', 'frame', 'stats', 'statistics', 'chartData'],
   data: function () {
     return {}
+  },
+  components: {
+    PlayerHaliteChart
   },
   mounted: function () {},
   computed: {
@@ -70,14 +76,13 @@ export default {
     border-bottom: 1.2px solid rgba(8,27,83,.1);
   }
   .card-player-left{
-    width: 90px;
+    min-width: 100px;
   }
   .card-player-name{
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.53px;
     line-height: 17px;
-    text-overflow: unset;
     &.player-1{
       color: #1BB15A;
     }
@@ -99,14 +104,18 @@ export default {
     width: 60px;
     margin-top: 10px;
   }
+  .chat-box{
+    width: 100%;
+  }
   .player-stats-list{
     list-style: none;
     margin: 0;
+    padding-left: 10px;
     li{
       line-height: 33px;
       padding-top: 10px;
       border-bottom: 1.2px solid rgba(8,27,83,.1);
-      width: 153px;
+      width: 170px;
       font-size: 18px;
       padding-right: 20px;
       &:last-child{
