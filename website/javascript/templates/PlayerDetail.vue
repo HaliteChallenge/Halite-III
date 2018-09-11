@@ -20,15 +20,15 @@
       <ul class="player-stats-list">
         <li>
           <label>Ships</label>
-          <span>{{player.ships}}</span>
+          <span>{{stats.frames[frame].players[index].currentShips}}</span>
         </li>
         <li>
           <label>Dropoffs</label>
-          <span>{{player.planets}}</span>
+          <span>{{stats.frames[frame].players[index].currentDropoffs}}</span>
         </li>
         <li>
           <label>Collisions</label>
-          <span>{{playerInfo ? playerInfo[index].totalDamages : ''}}</span>
+          <span>{{stats.frames[frame].players[index].currentCollisions}}</span>
         </li>
       </ul>
     </div>
@@ -48,7 +48,8 @@ export default {
   components: {
     PlayerHaliteChart
   },
-  mounted: function () {},
+  mounted: function () {
+  },
   computed: {
     playerInfo: function () {
       if (!this.stats) return null
@@ -130,3 +131,8 @@ export default {
 }
 </style>
 
+<!--
+     Local Variables:
+     web-mode-script-padding: 0
+     End:
+     End: -->
