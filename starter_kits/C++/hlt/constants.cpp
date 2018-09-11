@@ -1,11 +1,9 @@
 #include "constants.hpp"
 #include "log.hpp"
 
-#include "jsmn/jsmn.h"
-
-#include <iostream>
-#include <cstring>
 #include <unordered_map>
+#include <sstream>
+#include <vector>
 
 using namespace hlt;
 
@@ -28,8 +26,6 @@ namespace hlt {
         int CAPTURE_SHIP_ADVANTAGE;
     }
 }
-
-constexpr static unsigned int json_max_tokens = 128;
 
 static std::string get_string(std::unordered_map<std::string, std::string>& map, const std::string& key) {
     auto it = map.find(key);
@@ -62,36 +58,45 @@ static bool get_bool(std::unordered_map<std::string, std::string>& map, const st
     exit(1);
 }
 
-void hlt::constants::populate_constants(std::string string_from_engine) {
-    const char* input = string_from_engine.c_str();
-    size_t length = string_from_engine.length();
-
-    jsmn_parser parser;
-    jsmn_init(&parser);
-
-    jsmntok_t tokens[json_max_tokens];
-    int result = jsmn_parse(&parser, input, length, tokens, json_max_tokens);
-    if (result < 0) {
-        log::log("Error: constants: json parser returned " + std::to_string(result));
-        exit(1);
+void hlt::constants::populate_constants(const std::string& string_from_engine) {
+    std::string input;
+    for (char c : string_from_engine) {
+        switch (c) {
+            case '{':
+            case '}':
+            case ',':
+            case ':':
+            case '"':
+                input.push_back(' ');
+                break;
+            default:
+                input.push_back(c);
+                break;
+        }
     }
 
-    if (result < 1 || tokens[0].type != JSMN_OBJECT) {
-        log::log("Error: constants: expected json object as first json token from server.");
-        exit(1);
+    std::stringstream input_stream = std::stringstream(input);
+    std::vector<std::string> tokens;
+
+    for (;;) {
+        std::string token;
+        if (!std::getline(input_stream, token, ' ')) {
+            break;
+        }
+        if (!token.empty()) {
+            tokens.push_back(token);
+        }
     }
 
-    if ((result % 2) != 1) {
-        log::log("Error: constants: expected odd number of json tokens from server (root object + key/value pairs).");
+    if ((tokens.size() % 2) != 0) {
+        log::log("Error: constants: expected even total number of key and value tokens from server.");
         exit(1);
     }
 
     std::unordered_map<std::string, std::string> constants_map;
 
-    for (int i = 1; i < result; i+=2) {
-        std::string key = std::string(input + tokens[i].start, (size_t)tokens[i].end - (size_t)tokens[i].start);
-        std::string value = std::string(input + tokens[i+1].start, (size_t)tokens[i+1].end - (size_t)tokens[i+1].start);
-        constants_map[key] = value;
+    for (int i = 0; i < tokens.size(); i+=2) {
+        constants_map[tokens[i]] = tokens[i+1];
     }
 
     SHIP_COST = get_int(constants_map, "NEW_ENTITY_ENERGY_COST");
