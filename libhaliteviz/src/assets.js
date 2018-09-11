@@ -7,7 +7,7 @@ export const BASE_VISUALIZER_HEIGHT = 600;
 export const STATS_SIZE = 20;
 export const CELL_SIZE = 1;
 
-export const PLAYER_COLORS = [0x00a54e, 0x9c781f, 0x850dff, 0xb24f0b,
+export const PLAYER_COLORS = [0x1BB15A, 0x966AFB, 0xF54356, 0xFABB2C,
                               0xff0000, 0xbd00db, 0xFFFF00, 0x009900,
                               0xFF8C00, 0xff0000, 0x00FF00, 0xBA55D3,
                               0xffae42, 0xbd00db, 0xFF69B4, 0xFFFF00];
