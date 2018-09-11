@@ -95,7 +95,7 @@ void hlt::constants::populate_constants(const std::string& string_from_engine) {
 
     std::unordered_map<std::string, std::string> constants_map;
 
-    for (int i = 0; i < tokens.size(); i+=2) {
+    for (size_t i = 0; i < tokens.size(); i += 2) {
         constants_map[tokens[i]] = tokens[i+1];
     }
 
