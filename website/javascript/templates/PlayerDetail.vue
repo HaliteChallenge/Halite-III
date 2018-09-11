@@ -77,7 +77,7 @@ export default {
     border-bottom: 1.2px solid rgba(8,27,83,.1);
   }
   .card-player-left{
-    min-width: 100px;
+    min-width: 125px;
   }
   .card-player-name{
     font-size: 14px;

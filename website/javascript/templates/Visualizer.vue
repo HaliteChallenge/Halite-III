@@ -130,17 +130,17 @@
           <li class="list-item">
             Map Size
             <br>
-            <span>{{`${replay.production_map.width}x${replay.production_map.height}`}}</span>
+            <span style="font-size: 1em">{{`${replay.production_map.width}x${replay.production_map.height}`}}, seed {{replay.map_generator_seed}}</span>
           </li>
           <li class="list-item">
             Halite Available
             <br>
-            <span>{{stats && stats.frames[stats.frames.length - 1].remainingHalite}}</span>
+            <span>{{stats && stats.frames[frame].remainingHalite}}</span>
           </li>
           <li class="list-item">
             Halite Collected
             <br>
-            <span>{{stats && ((stats.frames[stats.frames.length - 1].remainingHalite)/stats.totalHalite * 100).toFixed(2)}}%</span>
+            <span>{{stats && ((1 - (stats.frames[frame].remainingHalite/stats.totalHalite)) * 100).toFixed(2)}}%</span>
           </li>
         </ul>
       </div>
