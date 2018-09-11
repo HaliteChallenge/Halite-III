@@ -246,8 +246,7 @@ export class HaliteVisualizer {
 
         this.pause();
 
-        this.frame = 0;
-        this.time = 0;
+        this.scrub(0, 0);
         const recorder = RecordRTC.default.bind({})(this.application.renderer.view, {
             type: type,
         });
