@@ -1,8 +1,8 @@
 <template>
     <div class="map-props">
-        <div class="map-props-icon">
+ <!--   <div class="map-props-icon">
             <span class="icon-planet"></span>
-        </div>
+        </div>  -->
         <div class="map-props-list">
             <table>
                 <tr>
@@ -10,7 +10,7 @@
                     <td>{{info.location}}</td>
                 </tr>
                 <tr>
-                    <td>Dissolved Halite:</td>
+                    <td>Halite:</td>
                     <td>{{info.energy}}</td>
                 </tr>
             </table>

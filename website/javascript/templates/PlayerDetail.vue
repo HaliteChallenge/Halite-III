@@ -19,15 +19,15 @@
       </div>
       <ul class="player-stats-list">
         <li>
-          <label>Ship</label>
+          <label>Ships</label>
           <span>{{player.ships}}</span>
         </li>
         <li>
-          <label>Drop-off</label>
+          <label>Dropoffs</label>
           <span>{{player.planets}}</span>
         </li>
         <li>
-          <label>PlaceHolder</label>
+          <label>Collisions</label>
           <span>{{playerInfo ? playerInfo[index].totalDamages : ''}}</span>
         </li>
       </ul>

@@ -36,8 +36,6 @@
         </div>
       </div>
       <div class="game-replay">
-        <i class="xline xline-left"></i>
-        <i class="xline xline-right"></i>
         <div class="game-replay-viewer"></div>
         <div class="game-replay-controller">
           <div class="game-replay-btn-table">
@@ -57,9 +55,9 @@
               <span class="replay-btn">
                   <a href="javascript:;" @click="nextFrame"><span class="icon-next"></span></a>
               </span>
-              <span class="replay-btn reset-btn" style="text-align: center">
+              <!-- <span class="replay-btn reset-btn" style="text-align: center">
                   <a href="javascript:;" @click="resetView" title="Reset zoom/pan"><span class="icon-lightning"></span></a>
-              </span>
+              </span> -->
               <!-- <span class="replay-btn" style="text-align: center">
                      <a href="javascript:;" @click="snapshot" title="Snapshot state"><span class="icon-lightning"></span></a>
                      </span> -->
@@ -71,7 +69,7 @@
               <!-- <span class="replay-btn">
                   <span class="icon-volumn"></span>
                 </span> -->
-              <i class="xline xline-right" style="right: 0; top: 0; height: 100%"></i>
+              <!-- <i class="xline xline-right" style="right: 0; top: 0; height: 100%"></i> -->
             </div>
             <div class="game-replay-progress">
               <div class="game-replay-progress-inner">
