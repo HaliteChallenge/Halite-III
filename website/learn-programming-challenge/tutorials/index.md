@@ -37,7 +37,7 @@ This tutorial guides you through creating your first Halite III bot. You'll writ
 <br>
 ### [Navigation and Interaction Tutorial](/learn-programming-challenge/tutorials/next-tutorial)
 
-Improvement your movement and player interaction strategies in this tutorial.
+Improve your movement and player interaction strategies in this tutorial.
 
   </div>
 </div>
