@@ -29,22 +29,22 @@
 
     <Step title="Player Interaction" name="player interaction">
       <p>
-      There are three ways to directly interact with other players in a match of Halite III: collisions, capture, and inspiration. The Collision Avoidance tutorial covers collisions, so we’ll talk about capture and inspiration here.
+      There are three ways to directly interact with other players in a match of Halite III: collisions, capture, and inspiration. We’ll talk about capture and inspiration here.
       </p>
       <br>
       <h2>Inspiration</h2>
       <p>
-        When a ship is outnumbered by nearby opposing players, it becomes inspired, increasing its halite collection efficiency. This ship is motivated to fill its cargo hold with halite and get to safety!
+        When a ship is outnumbered by two or more nearby opposing players within a four-cell radius, it becomes inspired, increasing its halite collection efficiency. This ship is motivated to fill its cargo hold with halite and get to safety!
       </p>
 
       <img src="/assets/images/map_inspiration.gif" alt="TODO: an image showing an inspired ship.">
 
-      <br>
+      <br/><br/>
       <h2>Capture</h2>
-      <p>When a ship is outnumbered and flanked by an opposing player’s ships, it is captured and changes owners. This mechanic works like capture in the board game Othello/Reversi.
+      <p>When a ship is outnumbered and flanked by three more more of one opposing player’s ships within a three-cell radius, it is captured and changes owners.
       </p>
-
-      <img src="/assets/images/game-2.jpg" alt="some gifs/images showing successful capture formations">
+      <p>(Placeholder image)</p>
+      <img src="/assets/images/game-2.jpg" alt="TODO: some gifs/images showing successful capture formations">
 
       <button class="run-game" v-on:click="runGame">
         PLAY NOW
