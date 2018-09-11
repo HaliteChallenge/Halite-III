@@ -205,11 +205,22 @@ export default {
 
       if (me !== null || this.localStorage) {
         this.load_user_code().then((editor_files) => {
-          this.active_file = _.find(editor_files, {name: this.bot_info().fileName})
+          this.editor_files = parse_to_file_tree(editor_files)
+          for (const fileName of Object.keys(editor_files)) {
+            if (fileName.startsWith("MyBot")) {
+              this.active_file = editor_files[fileName]
+              for (const [lang, langInfo] of Object.entries(botLanguagePacks)) {
+                if (langInfo.fileName === fileName) {
+                  this.bot_lang = lang
+                  break
+                }
+              }
+              break
+            }
+          }
           if (!this.active_file) {
             this.active_file = editor_files[Object.keys(editor_files)[0]]
           }
-          this.editor_files = parse_to_file_tree(editor_files)
           this.create_editor(this.get_active_file_code())
         }).catch((e) => {
           console.warn(e)
