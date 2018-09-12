@@ -48,8 +48,7 @@ If multiple ships occupy the same location, they will **collide**. All ships wil
 If your ship is outnumbered by three or more ships belonging to a single opponent within a three-cell radius, your ship is **captured**, and changes owners to the flanking player.
 
 
-If there are two or more ships belonging to any opponent within a four-cell radius of your ship, your ship is **inspired**, and collects halite with an efficiency bonus.
-<br/><br/>
+If there are two or more ships belonging to any opponent within a four-cell radius of your ship, your ship is **inspired**, and collects halite with an efficiency bonus. An inspired ship collects halite at three times the normal halite collection rate.
 
 ##### Win Conditions
 The game continues for 300 to 500 turns, depending on the game map size. The winning player has the most stored halite at the end of the game. If a player does not have a ship or enough energy to construct a ship, they are considered “dead” and lose the game. In the case of a tie, players are ranked by their stored halite on the last turn, then by their stored halite on the penultimate turn, and so on.
