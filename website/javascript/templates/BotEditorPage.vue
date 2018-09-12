@@ -44,10 +44,6 @@
       }
     },
     mounted: function () {
-      for (const el of document.querySelectorAll('header.navbar')) {
-        el.style.marginBottom = "0";
-      }
-      document.querySelector('.body').style.marginTop = "0";
       utils.initUserProfileNav();
     },
     methods: {

@@ -193,6 +193,12 @@ export default {
     });
   },
   mounted: function () {
+    // Get rid of spacing to header
+    for (const el of document.querySelectorAll('header.navbar')) {
+      el.style.marginBottom = "0";
+    }
+    document.querySelector('.body').style.marginTop = "0";
+
     api.me().then((me) => {
       this.logged_in = me !== null
       if (me !== null) {
