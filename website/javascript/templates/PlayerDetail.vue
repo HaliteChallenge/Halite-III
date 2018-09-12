@@ -6,7 +6,7 @@
         <h4 :class="'card-player-name player-'+ (parseInt(index)+1) ">
           {{replay.players[index].name}}
         </h4>
-        <div class="player-current-halite">
+        <div class="player-current-halite" :title="extraPlayerStats(index)">
           {{frame > 0 ? replay.full_frames[frame - 1].energy[index] : replay.GAME_CONSTANTS.INITIAL_ENERGY}}
           <!-- <span>
             / {{stats && stats.frames[stats.frames.length -1].players[index].depositedHalite}}
@@ -67,7 +67,11 @@ export default {
   methods: {
     numberSep: function (number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    }
+    },
+    extraPlayerStats(index) {
+      const playerStats = replay.game_statistics.player_statistics[index];
+      return `Efficiency ${(playerStats.mining_efficiency * 100).toFixed(1)}%; total halite collected ${playerStats.total_mined}, inspiration bonus halite ${playerStats.total_bonus}, captured ships collected ${playerStats.total_mined_from_captured} halite`;
+    },
   }
 }
 </script>
