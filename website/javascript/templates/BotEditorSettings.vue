@@ -16,10 +16,12 @@
       </div>
 
       <h3>Editor</h3>
-      <label for="expandTab">Tab inserts spaces:</label>
-      <input type="checkbox" name="expandTab" @change="on_change" v-model="state.editor.expandTab" checked />
+      <div>
+        <label for="expandTab">Tab inserts spaces:</label>
+        <input type="checkbox" name="expandTab" @change="on_change" v-model="state.editor.expandTab" checked />
+      </div>
 
-      <button class="btn btn-primary" @click="$emit('deleteAll')">Delete All Files & Restart Bot</button>
+      <button class="btn-sm btn-primary" @click="$emit('deleteAll')">Delete All Files & Restart Bot</button>
 
       <h3>Games</h3>
 
