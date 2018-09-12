@@ -44,6 +44,10 @@
       }
     },
     mounted: function () {
+      for (const el of document.querySelectorAll('header.navbar')) {
+        el.style.marginBottom = "0";
+      }
+      document.querySelector('.body').style.marginTop = "0";
       utils.initUserProfileNav();
     },
     methods: {
@@ -101,16 +105,6 @@
 header.navbar {
   min-height: 0;
   height: auto;
-}
-</style>
-
-<style lang="scss">
-header.navbar {
-  margin-bottom: 0 !important;
-}
-
-.body {
-  margin-top: 0 !important;
 }
 </style>
 <!--
