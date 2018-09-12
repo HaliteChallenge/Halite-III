@@ -38,7 +38,9 @@ namespace hlt {
         }
 
         Position normalize(const Position& position) {
-            return { position.x % width, position.y % height };
+            const int x = ((position.x % width) + width) % width;
+            const int y = ((position.y % height) + height) % height;
+            return { x, y };
         }
 
         std::vector<Direction> get_unsafe_moves(const Position& source, const Position& destination) {

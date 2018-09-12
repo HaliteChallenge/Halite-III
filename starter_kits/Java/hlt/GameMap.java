@@ -36,7 +36,9 @@ public class GameMap {
     }
 
     public Position normalize(final Position position) {
-        return new Position(position.x % width, position.y % height);
+        final int x = ((position.x % width) + width) % width;
+        final int y = ((position.y % height) + height) % height;
+        return new Position(x, y);
     }
 
     public ArrayList<Direction> getUnsafeMoves(final Position source, final Position destination) {
