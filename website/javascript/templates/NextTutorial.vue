@@ -34,7 +34,7 @@
       <br>
       <h2>Inspiration</h2>
       <p>
-        When a ship is outnumbered by two or more nearby opposing players within a four-cell radius, it becomes inspired, increasing its halite collection efficiency. This ship is motivated to fill its cargo hold with halite and get to safety!
+        When a ship is outnumbered by two or more nearby opposing players within a four-cell radius, it becomes inspired, increasing its halite collection efficiency. The inspiration efficiency bonus is three times the normal halite collection rate. This ship is motivated to fill its cargo hold with halite and get to safety!
       </p>
 
       <img src="/assets/images/map_inspiration.gif" alt="TODO: an image showing an inspired ship.">
