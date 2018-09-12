@@ -12,7 +12,8 @@ namespace hlt {
         std::vector<std::vector<MapCell>> cells;
 
         MapCell* at(const Position& position) {
-            return &cells[position.y][position.x];
+            Position normalized = normalize(position);
+            return &cells[normalized.y][normalized.x];
         }
 
         MapCell* at(const Entity& entity) {

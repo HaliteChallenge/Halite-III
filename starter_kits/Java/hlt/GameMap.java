@@ -18,7 +18,8 @@ public class GameMap {
     }
 
     public MapCell at(final Position position) {
-        return cells[position.y][position.x];
+        final Position normalized = normalize(position);
+        return cells[normalized.y][normalized.x];
     }
 
     public MapCell at(final Entity entity) {
