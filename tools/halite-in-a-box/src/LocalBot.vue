@@ -126,7 +126,7 @@
             },
 
             goToStarterKit() {
-                util.openBrowserTab(`${util.WEBSITE_URL}/learn-programming-challenge/downloads-and-starter-kits/`);
+                util.openBrowserTab(`${util.WEBSITE_URL}/learn-programming-challenge/downloads/`);
             },
 
             async remoteBenchmark() {
