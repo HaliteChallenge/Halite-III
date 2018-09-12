@@ -645,7 +645,7 @@ export default {
             displayName = `"${displayName}"`
           }
           const last_energy = typeof energy[i] === "undefined" ? replay.GAME_CONSTANTS.INITIAL_ENERGY : energy[i];
-          this.add_console_text(` ${displayName} was rank ${status.game_output.stats[i].rank} with ${last_energy} energy.\n`)
+          this.add_console_text(` ${displayName} was rank ${status.game_output.stats[i].rank} with ${last_energy} halite.\n`)
         }
 
         if (status.error_log) {
