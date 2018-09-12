@@ -50,7 +50,7 @@
     </div>
     <div class="banner" v-if="banner_message">
       {{banner_message}}
-      <button @click="banner_message = null">Close</button>
+      <button class="btn-sm btn-primary" @click="banner_message = null">Close</button>
     </div>
   </div>
 </template>
@@ -983,13 +983,16 @@ export default {
   left: 0;
   right: 0;
   padding: 1em;
-  background: #F00;
+  background: #FF2D55;
+  color: #FFF;
   text-align: center;
   z-index: 20000;
 
   button {
     position: absolute;
     right: 1em;
+    top: 0.25em;
+    bottom: 0.25em;
   }
 }
 </style>
