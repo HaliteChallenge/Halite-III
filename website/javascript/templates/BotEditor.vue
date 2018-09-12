@@ -38,7 +38,7 @@
     </div>
     <InputModal ref="new_file_modal" :baseUrl="baseUrl" :isOn="is_new_file_modal_open" :createCallback="create_new_file" :closeCallback="close_new_file_modal" title_text="New File" cancel_text="Cancel" accept_text="Create"></InputModal>
     <InputModal ref="new_folder_modal" :baseUrl="baseUrl" :isOn="is_new_folder_modal_open" :createCallback="create_new_folder" :closeCallback="close_new_folder_modal" title_text="New Folder" cancel_text="Cancel" accept_text="Create"></InputModal>
-    <CheckModal ref="delete_modal" :baseUrl="baseUrl" :isOn="is_delete_modal_open" :yesCallback="delete_file" :noCallback="close_delete_modal" title_text="Delete File" cancel_text="Cancel" accept_text="Delete" body_text="This will delete your file permanently!!!"></CheckModal>
+    <CheckModal ref="delete_modal" :baseUrl="baseUrl" :isOn="is_delete_modal_open" :yesCallback="delete_file" :noCallback="close_delete_modal" title_text="Delete All Files?" cancel_text="Cancel" accept_text="Delete" body_text="This will PERMANENTLY delete all editor files."></CheckModal>
     <LanguageModal :baseUrl="baseUrl" :tutorial="tutorial" :isOn="is_picking_language" @choose="pick_language" />
 
     <div class="toasts">
@@ -92,18 +92,14 @@
   }
 
   var logVerbose = true
-  const BOT_LANG_KEY = 'bot_language'
-  const FILE_NAMES_KEY = 'file_names'
   const DARK_THEME = 'Dark'
   const RESET_MSG = 'Are you sure you want to reset your bot code to the default sample code?\n(All changes will be lost!)'
-  const EX_GAME_STRING = '{"ENGINE_VERSION":"1.5.521.g6df5","GAME_CONSTANTS":{"BASE_TURN_ENERGY_LOSS":5,"BLUR_FACTOR":0.75,"DEFAULT_MAP_HEIGHT":128,"DEFAULT_MAP_WIDTH":128,"INITIAL_ENERGY":1000,"MAX_CELL_PRODUCTION":255,"MAX_ENERGY":255,"MAX_PLAYERS":16,"MAX_TURNS":300,"MIN_CELL_PRODUCTION":85,"NEW_ENTITY_ENERGY":255,"NEW_ENTITY_ENERGY_COST":1000},"REPLAY_FILE_VERSION":1,"full_frames":[{"events":[],"moves":{"0":[{"direction":"w","entity_x":0,"entity_y":1,"type":"move"}],"1":[{"direction":"e","entity_x":1,"entity_y":1,"type":"move"}]}}],"game_statistics":{"number_turns":49,"player_statistics":[{"last_turn_alive":49,"player_id":1,"rank":1,"total_production":770},{"last_turn_alive":49,"player_id":0,"rank":2,"total_production":518}]},"map_generator_seed":1531318637,"number_of_players":2,"players":[{"energy":0,"entities":[{"energy":0,"x":1,"y":1}],"factory_location":[1,1],"name":"JavaSP","player_id":1},{"energy":0,"entities":[{"energy":0,"x":0,"y":1}],"factory_location":[0,1],"name":"JavaSP","player_id":0}],"production_map":{"grid":[[{"production":14,"type":"n"},{"production":14,"type":"n"}],[{"type":"f"},{"type":"f"}]],"height":2,"map_generator":"Fractal Value Noise Tile","width":2}}'
 
-
-  function logError (err) {
+  function logError(err) {
     console.error(err)
   }
 
-  function logInfo (msg) {
+  function logInfo(msg) {
     if (logVerbose) console.log(msg)
   }
 
@@ -356,6 +352,8 @@ export default {
         // Load saved settings
         this.state.load().then(() => {
           logInfo('Editor ready!')
+          this.allSaved = true
+          this.$emit('save', true)
           this._readyResolve();
         })
       })
@@ -521,24 +519,9 @@ export default {
 
 
     delete_file: function() {
-      if (this.localStorage) {
-        window.localStorage.setItem(
-          "@@editor-filelist",
-          JSON.stringify(JSON.parse(window.localStorage.getItem("@@editor-filelist"))
-                             .filter(name => name !== this.file_to_delete.name)))
-        window.localStorage.removeItem(this.file_to_delete.name)
-      }
-      else {
-        api.delete_source_file(this.user_id, this.file_to_delete.name)
-      }
-
-      let need_file_switch = this.file_to_delete === this.active_file
-      this.delete_from_tree(this.editor_files, this.file_to_delete)
-      if(need_file_switch) {
-        this.set_editor_contents("")
-        this.active_file = null
-      }
-      this.close_delete_modal()
+      api.delete_editor_files(this.user_id).then(() => {
+        window.location.reload()
+      })
     },
     delete_from_tree: function(files, elem) {
       for(let name in files) {
@@ -552,8 +535,7 @@ export default {
         }
       }
     },
-    open_delete_modal: function(file_to_delete) {
-      this.file_to_delete = file_to_delete;
+    delete_all_files: function() {
       this.is_delete_modal_open = true;
     },
     close_delete_modal: function() { this.is_delete_modal_open = false; },

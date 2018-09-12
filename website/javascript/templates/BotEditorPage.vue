@@ -13,12 +13,12 @@
             <li>
               <a v-on:click="save_current_file">
                 <span v-if="allSaved" class="saved">Saved</span>
-                <span v-else>Not Saved</span>
+                <span v-else class="not-saved">Not Saved</span>
                 <i class="xline xline-bottom"></i>
               </a>
             </li>
             <li>
-              <BotEditorSettings ref="settings_console" />
+              <BotEditorSettings @deleteAll="deleteAll" />
             </li>
           </ul>
         </div>
@@ -61,7 +61,11 @@
       },
       on_save(value) {
         this.allSaved = value
-      }
+      },
+      deleteAll() {
+        console.log('delete all')
+        this.$refs.editor_pane.delete_all_files()
+      },
     }
   }
 </script>
@@ -77,6 +81,10 @@
 
 .saved {
   color: #009900;
+}
+
+.not-saved {
+  color: #990000;
 }
 
 #navbar {

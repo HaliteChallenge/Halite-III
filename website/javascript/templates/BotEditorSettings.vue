@@ -6,20 +6,22 @@
     v-model="show"
     popper-class="tier-popover"
   >
-    <a slot="reference" class='tier-clickable'>
+    <a slot="reference" class='editor-settings-button'>
       <span>Settings</span>
     </a>
-    <div class="tier-description">
+    <div class="editor-settings-popover">
       <div class="header">
-        <p class="header-text">Settings</p>
+        <h2>Settings</h2>
         <span class="close-btn icon-remove" @click="show = false" />
       </div>
 
-      <h2>Editor</h2>
+      <h3>Editor</h3>
       <label for="expandTab">Tab inserts spaces:</label>
       <input type="checkbox" name="expandTab" @change="on_change" v-model="state.editor.expandTab" checked />
 
-      <h2>Games</h2>
+      <button class="btn btn-primary" @click="$emit('deleteAll')">Delete All Files & Restart Bot</button>
+
+      <h3>Games</h3>
 
       <p><i>Opponent Bot</i></p>
       <select v-on:change="on_change" v-model="state.opponent">
@@ -66,26 +68,14 @@
 </script>
 
 <style lang="scss" scoped>
-  .tier-clickable {
-    cursor: pointer;
-  }
-  .tier-popover {
-    background-color: rgb(36, 37, 44);
-    border-color: rgb(36, 37, 44);
-    padding: 10px 15px 15px;
-
-    .popper__arrow {
-      border-top-color: rgb(36, 37, 44) !important;
-      border-bottom-color: rgb(36, 37, 44) !important;
-      &::after {
-        border-top-color: rgb(36, 37, 44) !important;
-        border-bottom-color: rgb(36, 37, 44) !important;
-      }
-    }
+  .editor-settings-button {
+    color: #91DBFF !important;
+    text-shadow: 0 -1px 13px #00ABFF;
+    font-size: 0.8em;
+    padding: 0.5em 1.25em;
   }
 
-  .tier-description {
-
+  .editor-settings-popover {
     color: #FFFFFF;
     text-align: left;
 
@@ -100,13 +90,8 @@
       align-items: center;
     }
 
-    .header-text {
+    h2 {
       margin: 0;
-      text-transform: Uppercase;
-      color: rgb(99, 205, 202);
-      font-size: 24px;
-      letter-spacing: 1px;
-      font-family: Teko !important;
     }
 
     .close-btn {
