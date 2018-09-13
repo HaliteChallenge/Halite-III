@@ -298,20 +298,48 @@ header.navbar{
       height: 34px;
     }
     .profile-container{
-      padding: 13px 0 0 10px;
-      cursor: pointer;
-      display: inline-block;
+      display: flex;
+      align-items: center;
+      margin-right: -15px;
+      padding: 0 14px;
+      height: 60px;
       vertical-align: top;
+      background: linear-gradient(0deg, #081D57 0%, #05327B 100%);	
+      box-shadow: 8px 21px 36px 0 rgba(23,174, 219, 0.05);
+      border-left: 1px solid rgba(145, 219, 255, 0.2);
+      cursor: pointer;
+      .user-name {
+        margin-left: 5px;
+        font-size: 18px;
+        color: #91DBFF;
+        text-shadow: 0 -1px 13px 0 #00ABFF;
+      }
+      .fa-sort-down {
+        margin-top: -12px;
+        margin-left: 28px !important;
+        &::before{
+          position: relative;
+          top: -4px;
+        }
+      }
+      > a > img {
+        width: 42px;
+        height: 42px;
+        border: 0.8px solid #91DBFF;	
+        border-radius: 3.2px;
+      }
+      > a:hover{
+        text-decoration: none;
+      }
       i{
         color: #FFF;
         margin-left: 3px;
       }
       ul{
         display: none;
-        margin-top: 15px;
-        width: 135px;
         position: absolute;
-        transform: translateX(-85px);
+        top: 100%;
+        left: 0;
         list-style: none;
         background-color: $gray-bg;
         border-radius: 4px;

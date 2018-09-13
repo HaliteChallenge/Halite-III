@@ -8,6 +8,7 @@
         <div id="profile" class="profile-container">
             <a v-on:click.stop="slide_profile">
                 <img :src="profile_image + '?size=40'" :title="username + '\'s Profile'" :alt="username + '\'s profile image'" />
+                <span class="user-name">{{username}}</span>
                 <i class="fa fa-sort-down"></i>
                 <ul class="nav profile-nav" v-if="!isCreateAccount">
                   <li class="profile-nav-item"><a v-on:click="gaData('account','click-view-profile','account-flow')" href="/user?me"><span>view profile</span><i class="line line-bottom"></i></a></li>
@@ -84,9 +85,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.profile-container > a:hover{
-  text-decoration: none;
-}
 .profile-nav{
   min-width: 230px;
   li.profile-nav-item{
@@ -98,14 +96,16 @@ export default {
       font-weight:400;
       opacity: .6;
       display: block;
+      border-left: 2px solid transparent;
       &:hover {
-        color: #95FE91;
-        text-shadow: 0 1px 13px #95FF91;
-        border-left: 2px solid #95FF91;
+        color: #91DBFF;
+        text-shadow: 0 -1px 13px 0 #00ABFF;
+        border-left: 2px solid #91DBFF;
         background-color: transparent;
+        opacity: 1;
         &:before {
           opacity: 0.4;
-          background-image: linear-gradient(269deg, rgba(149,255,145,0) 0%, #8CF392 100%);
+          background-image: linear-gradient(269deg, rgba(117,182,219,0) 0%, #97DDFF 100%);
           content: "";
           display: block;
           position: absolute;

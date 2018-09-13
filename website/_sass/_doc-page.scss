@@ -91,6 +91,9 @@
     margin: 0;
     color: #B4E6FF;
     text-shadow: 0 1px 8px #00ABFF;
+    @media (max-width: $screen-md-min){
+      text-align: center;
+    }
   }
 
   .section-nav{
@@ -225,13 +228,16 @@
 }
 
 .build-a-bot{
-  background-image: url("/assets/images/bg-build.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   padding: 30px;
   border-radius: 8px;
+  @media (min-width: $screen-md-min){
+    background-image: url("/assets/images/bg-build.png");
+  }
   a{
+    width: 290px;
     color: #fff;
   }
 }
