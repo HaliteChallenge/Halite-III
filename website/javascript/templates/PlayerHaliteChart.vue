@@ -42,7 +42,6 @@ export default {
   },
   methods: {
     initChart(options) {
-      console.log('init chart')
       let {chartData} = options
       if (!chartData || !chartData.length) return
       const svg = d3.select(this.$refs.mainSvg).attr('class', 'main-svg')

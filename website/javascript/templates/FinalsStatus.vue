@@ -85,7 +85,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for='cutoff in cutoff_schedule' v-bind:class="{'hl': finals_pairing && cutoff.end_rank == current_cutoff}">
+          <tr v-for='cutoff in cutoff_schedule' :key="cutoff" v-bind:class="{'hl': finals_pairing && cutoff.end_rank == current_cutoff}">
             <td>
               <template v-if="cutoff.end_rank <= current_cutoff">Yes</template>
               <template v-else>No</template>

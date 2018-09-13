@@ -7,10 +7,10 @@
           {{replay.players[index].name}}
         </h4>
         <div class="player-current-halite">
-          {{frame > 0 ? replay.full_frames[frame - 1].energy[index] : replay.GAME_CONSTANTS.INITIAL_ENERGY}}
-          <!-- <span>
-            / {{stats && stats.frames[stats.frames.length -1].players[index].depositedHalite}}
-          </span> -->
+          {{currentHalite[index]}}
+          <span class="current-percent" :class="(totalHalite > 0 && currentHalite[index]/totalHalite > 0.5)? 'green':'red'">
+            {{totalHalite > 0 ? ((currentHalite[index]/totalHalite) * 100).toFixed(2)  + '%' : ''}}
+          </span>
         </div>
         <img class="stats-cube" :src="`/assets/images/visualizer/cube1.png`" alt="cube">
       </div>
@@ -59,6 +59,32 @@ export default {
   methods: {
     numberSep: function (number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    },
+
+  },
+  computed: {
+    totalHalite() {
+      let result = 0
+      if(this.frame > 0) {
+        let energy = this.replay.full_frames[this.frame - 1].energy
+        for(let item in energy) {
+          result += energy[item]
+        }
+      }
+      return result
+    },
+    currentHalite() {
+      let result = {
+      }
+      for(let index in this.statistics) {
+        result[index] = this.frame > 0? this.replay.full_frames[this.frame - 1].energy[index]: this.replay.GAME_CONSTANTS.INITIAL_ENERGY
+      }
+      return result
+    },
+    playerInfo: function () {
+      if (!this.stats) return null
+
+      return this.stats.frames[this.frame].players
     }
   }
 }
@@ -99,6 +125,20 @@ export default {
   .player-current-halite{
     font-size: 28px;
     line-height: 34px;
+    position: relative;
+    .current-percent{
+      font-size: 16px;
+      display: block;
+      position: absolute;
+      right: -10px;
+      margin-top: -10px;
+      &.red {
+        color: red;
+      }
+      &.green{
+        color: green;
+      }
+    }
   }
   .stats-cube{
     width: 60px;
