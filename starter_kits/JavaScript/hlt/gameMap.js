@@ -185,10 +185,8 @@ class GameMap {
      * @returns A normalized position object fitting within the bounds of the map
     */
     normalize(position) {
-        let x = position.x % this.width;
-        let y = position.y % this.height;
-        while (x < 0) x += this.width;
-        while (y < 0) y += this.height;
+        let x = ((position.x % this.width) + this.width) % this.width;
+        let y = ((position.y % this.height) + this.height) % this.height;
         return new Position(x, y);
     }
 

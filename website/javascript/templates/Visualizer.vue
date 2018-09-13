@@ -36,7 +36,7 @@
         </div>
       </div>
       <div class="game-replay">
-        <div class="game-replay-viewer"></div>
+        <div :class="{ 'game-replay-viewer': true, 'recording': recording }"></div>
         <div class="game-replay-controller">
           <div class="game-replay-btn-table">
             <div class="game-replay-btn-cell">
@@ -55,12 +55,12 @@
               <span class="replay-btn">
                   <a href="javascript:;" @click="nextFrame"><span class="icon-next"></span></a>
               </span>
-              <!-- <span class="replay-btn reset-btn" style="text-align: center">
-                  <a href="javascript:;" @click="resetView" title="Reset zoom/pan"><span class="icon-lightning"></span></a>
-              </span> -->
-              <!-- <span class="replay-btn" style="text-align: center">
-                     <a href="javascript:;" @click="snapshot" title="Snapshot state"><span class="icon-lightning"></span></a>
-                     </span> -->
+              <span class="replay-btn reset-btn" style="text-align: center">
+                  <a href="javascript:;" @click="resetView" title="Reset zoom/pan"><span class="fa fa-refresh"></span></a>
+              </span>
+              <span class="replay-btn" style="text-align: center">
+                     <a href="javascript:;" @click="recordView" title="Record video of game"><span class="fa fa-video-camera"></span></a>
+              </span>
               <span class="replay-btn">
                   <a style="text-align: center; margin-bottom: 4px;" v-if="game && game.game_id" :href="replay_download_link(game.game_id)">
                     <span class="icon-download"></span>
@@ -130,17 +130,17 @@
           <li class="list-item">
             Map Size
             <br>
-            <span>{{`${replay.production_map.width}x${replay.production_map.height}`}}</span>
+            <span style="font-size: 1em">{{`${replay.production_map.width}x${replay.production_map.height}`}}, seed {{replay.map_generator_seed}}</span>
           </li>
           <li class="list-item">
             Halite Available
             <br>
-            <span>{{stats && stats.frames[stats.frames.length - 1].remainingHalite}}</span>
+            <span>{{stats && stats.frames[frame].remainingHalite}}</span>
           </li>
           <li class="list-item">
             Halite Collected
             <br>
-            <span>{{stats && ((stats.frames[stats.frames.length - 1].remainingHalite)/stats.totalHalite * 100).toFixed(2)}}%</span>
+            <span>{{stats && ((1 - (stats.frames[frame].remainingHalite/stats.totalHalite)) * 100).toFixed(2)}}%</span>
           </li>
         </ul>
       </div>
@@ -280,16 +280,14 @@
 </template>
 
 <script>
+import { saveAs } from 'file-saver/FileSaver';
 import Vue from 'vue'
 import * as api from '../api'
 import * as utils from '../utils'
 import moment from 'vue-moment'
 import vueSlider from 'vue-slider-component'
 import VisualizerPanel from './VisualizerPanel.vue'
-// import PlayerStatsPane from './PlayerStatsPane.vue'
 import PlayerDetail from './PlayerDetail.vue'
-// import PlayerDetailPane from './PlayerDetailPane.vue'
-// import PlayerLineChart from './PlayerLineChart.vue'
 import SelectedPlanet from './SelectedPlanet.vue'
 import SelectedShip from './SelectedShip.vue'
 import SelectedPoint from './SelectedPoint.vue'
@@ -363,6 +361,7 @@ export default {
       // isMobile: window.mobileAndTabletcheck(), // issues #361
       user: null,
       showChart: false,
+      recording: false,
       selected: {
         kind: '',
         id: 0,
@@ -406,8 +405,6 @@ export default {
   components: {
     // PlayerLineChart,
     vueSlider,
-    // PlayerStatsPane,
-    // PlayerDetailPane,
     PlayerDetail,
     VisualizerPanel,
     SelectedPlanet,
@@ -529,6 +526,16 @@ export default {
       this.resetView = () => {
         if (visualizer) {
           visualizer.camera.reset();
+        }
+      }
+      this.recordView = () => {
+        if (visualizer) {
+          this.recording = true;
+          visualizer.encodeVideo().then((blob) => {
+            this.recording = false;
+            console.log(blob);
+            saveAs(blob, "video.webm");
+          });
         }
       }
       this.snapshot = () => {
@@ -775,6 +782,7 @@ export default {
     nextFrame: function () {},
     changeFrame: function (event) {},
     resetView: function () {},
+    recordView: function () {},
     snapshot: function () {},
     toggleChartPanel: function (e) {
       this.showChartPanel = !this.showChartPanel
@@ -838,9 +846,30 @@ export default {
 
 <style lang="scss">
 .game-replay-viewer {
+  position: relative;
   canvas {
     display: block;
     margin: 0 auto;
+  }
+}
+.game-replay-viewer.recording::after {
+  display: block;
+  content: "Recording…";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  font-size: 4em;
+  animation: blink 1s infinite alternate;
+}
+@keyframes blink {
+  0% {
+    color: rgba(151, 221, 255, 0);
+  }
+  100% {
+    color: rgba(151, 221, 255, 1);
   }
 }
 .stats-panel{

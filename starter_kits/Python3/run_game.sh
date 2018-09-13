@@ -1,3 +1,3 @@
 #!/bin/sh
 
-./halite -vvv --width 128 --height 128 "python3 MyBot.py" "python3 MyBot.py"
+./halite -vvv --width 32 --height 32 "python3 MyBot.py" "python3 MyBot.py"

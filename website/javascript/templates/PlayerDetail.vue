@@ -15,20 +15,20 @@
         <img class="stats-cube" :src="`/assets/images/visualizer/cube1.png`" alt="cube">
       </div>
       <div class="chat-box">
-        <PlayerHaliteChart :chartData="chartData[index]" :index="frame"/>
+        <PlayerHaliteChart :chartData="chartData[index]" :maxY="maxY" :index="frame"/>
       </div>
       <ul class="player-stats-list">
         <li>
           <label>Ships</label>
-          <span>{{player.ships}}</span>
+          <span>{{stats.frames[frame].players[index].currentShips}}</span>
         </li>
         <li>
           <label>Dropoffs</label>
-          <span>{{player.planets}}</span>
+          <span>{{stats.frames[frame].players[index].currentDropoffs}}</span>
         </li>
         <li>
           <label>Collisions</label>
-          <span>{{playerInfo ? playerInfo[index].totalDamages : ''}}</span>
+          <span>{{stats.frames[frame].players[index].currentCollisions}}</span>
         </li>
       </ul>
     </div>
@@ -38,6 +38,7 @@
 
 <script>
 import Vue from 'vue'
+import * as d3 from 'd3'
 import PlayerHaliteChart from './PlayerHaliteChart.vue'
 export default {
   name: 'PlayerDetail',
@@ -48,21 +49,20 @@ export default {
   components: {
     PlayerHaliteChart
   },
-  mounted: function () {},
+  mounted: function () {
+  },
   computed: {
     playerInfo: function () {
       if (!this.stats) return null
 
       return this.stats.frames[this.frame].players
-    }
-  },
-  methods: {
-    numberSep: function (number) {
-      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
-
-  },
-  computed: {
+    maxY() {
+      if (!this.chartData || !this.chartData.length) {
+        return 0;
+      }
+      return d3.max(this.chartData.map(player => d3.max(player, (d) => d.y)), (y) => y);
+    },
     totalHalite() {
       let result = 0
       if(this.frame > 0) {
@@ -80,12 +80,16 @@ export default {
         result[index] = this.frame > 0? this.replay.full_frames[this.frame - 1].energy[index]: this.replay.GAME_CONSTANTS.INITIAL_ENERGY
       }
       return result
-    },
-    playerInfo: function () {
-      if (!this.stats) return null
-
-      return this.stats.frames[this.frame].players
     }
+  },
+  methods: {
+    numberSep: function (number) {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    },
+    extraPlayerStats(index) {
+      const playerStats = replay.game_statistics.player_statistics[index];
+      return `Efficiency ${(playerStats.mining_efficiency * 100).toFixed(1)}%; total halite collected ${playerStats.total_mined}, inspiration bonus halite ${playerStats.total_bonus}, captured ships collected ${playerStats.total_mined_from_captured} halite`;
+    },
   }
 }
 </script>
@@ -102,7 +106,7 @@ export default {
     border-bottom: 1.2px solid rgba(8,27,83,.1);
   }
   .card-player-left{
-    min-width: 100px;
+    min-width: 125px;
   }
   .card-player-name{
     font-size: 14px;
@@ -170,3 +174,8 @@ export default {
 }
 </style>
 
+<!--
+     Local Variables:
+     web-mode-script-padding: 0
+     End:
+     End: -->

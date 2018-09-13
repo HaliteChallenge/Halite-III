@@ -1,14 +1,17 @@
 package hlt;
 
-public class Dropoff {
-    private int id;
-    private Location location;
-
-    public Dropoff(int id_, Location location_) {
-        id = id_;
-        location = location_;
+public class Dropoff extends Entity {
+    public Dropoff(final PlayerId owner, final EntityId id, final Position position) {
+        super(owner, id, position);
     }
 
-    public int getID() { return id; }
-    public Location getLocation() { return location; }
+    static Dropoff _generate(final PlayerId playerId) {
+        final Input input = Input.readInput();
+
+        final EntityId dropoffId = new EntityId(input.getInt());
+        final int x = input.getInt();
+        final int y = input.getInt();
+
+        return new Dropoff(playerId, dropoffId, new Position(x, y));
+    }
 }

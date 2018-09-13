@@ -1,2 +1,2 @@
 javac MyBot.java
-halite -vvv -d "240 160" "java MyBot" "java MyBot"
+halite.exe -vvv --width 32 --height 32 "java MyBot" "java MyBot"

@@ -3,5 +3,5 @@
 set -e
 
 cmake .
-make MyBot
-./halite -vvv --width 128 --height 128 "./MyBot" "./MyBot"
+make
+./halite -vvv --width 32 --height 32 "./MyBot" "./MyBot"

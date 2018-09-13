@@ -8,6 +8,7 @@ import * as statistics from "./statistics";
 import * as keyboard from "./keyboardControls";
 
 import * as assets from "./assets";
+import colorTheme from "./colors";
 
 import * as animation from "./animation";
 
@@ -79,8 +80,7 @@ export class HaliteVisualizer {
         this.application = new PIXI.Application(
             this.width, this.height,
             {
-                // TWEAK: background color (most visible with circles)
-                backgroundColor: 0x141EA0, // greener blue 0x2CF2DF //  darker green blue  0x34CBD3// darker blue 0x141EA0, // lighter blue 0x0938BB, // 0x000000, // cyan 0x5AE4EF,
+                backgroundColor: colorTheme()[0],
                 antialias: true,
                 resolution: 1,
             }
@@ -236,80 +236,35 @@ export class HaliteVisualizer {
         // TODO: destroy entities, factories
     }
 
-    encodeVideo(type="canvas") {
+    async encodeVideo(type="canvas") {
         console.log("Encoding video");
-        if (!window.RecordRTC) {
-            const error = "RecordRTC.js not loaded!";
-            console.error(error);
-            return Promise.error(error);
-        }
+        const [ RecordRTC, html2canvas ] = await Promise.all([
+            import(/* webpackChunkName: "recordrtc" */ 'recordrtc'),
+            import(/* webpackChunkName: "html2canvas" */ 'html2canvas'),
+        ]);
+        window.html2canvas = html2canvas.default;
+
         this.pause();
 
-        this.frame = 0;
-        this.time = 0;
-        const recorder = RecordRTC(this.application.renderer.view, {
+        this.scrub(0, 0);
+        const recorder = RecordRTC.default.bind({})(this.application.renderer.view, {
             type: type,
         });
         recorder.startRecording();
         this.play();
         const oldEnd = this.onEnd;
 
-        return new Promise((resolve) => {
-            this.onEnd = () => {
-                recorder.stopRecording(() => {
+        return await new Promise((resolve) => {
+            this.onEnd = new Signal("onEnd");
+            this.onEnd.add(() => {
+                this.onEnd = oldEnd;
+                 recorder.stopRecording(() => {
                     const blob = recorder.getBlob();
                     console.log(blob);
 
                     resolve(blob);
                 });
-                this.onEnd = oldEnd;
-            };
-        });
-    }
-
-    encodeGIF(start, stop, resolution=10) {
-        if (!window.GIF) {
-            const error = "GIF.js not loaded, can't encode GIF";
-            console.error(error);
-            return Promise.error(error);
-        }
-
-        this.pause();
-        PIXI.ticker.shared.stop();
-        const gif = new GIF({
-            workers: 2,
-            quality: 2,
-            // TODO:
-            workerScript: "assets/js/gif.worker.js",
-        });
-
-        this.frame = start.frame;
-        this.time = 0;
-
-        const timestep = 1.0 / resolution;
-
-        while (this.frame <= stop.frame) {
-            this.update();
-            this.time = 0;
-            for (let step = 0; step < resolution; step++) {
-                this.time = timestep * step;
-                // 4 game frames per second
-                this.draw(4 * 60 / resolution);
-                this.application.render();
-                const canvas = this.application.renderer.extract.canvas();
-                gif.addFrame(canvas, {
-                    copy: true,
-                    delay: 1000 / (4.0 * 10),
-                });
-            }
-            this.frame++;
-        }
-
-        return new Promise((resolve) => {
-            gif.on("finished", function(blob) {
-                resolve(blob);
             });
-            gif.render();
         });
     }
 

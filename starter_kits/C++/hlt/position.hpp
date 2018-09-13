@@ -34,15 +34,18 @@ namespace hlt {
                 case Direction::STILL:
                     // No move
                     break;
+                default:
+                    log::log(std::string("Error: invert_direction: unknown direction ") + static_cast<char>(d));
+                    exit(1);
             }
             return Position{x + dx, y + dy};
         }
 
         std::array<Position, 4> get_surrounding_cardinals() {
-            return {
+            return {{
                 directional_offset(Direction::NORTH), directional_offset(Direction::SOUTH),
                 directional_offset(Direction::EAST), directional_offset(Direction::WEST)
-            };
+            }};
         }
     };
 

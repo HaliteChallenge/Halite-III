@@ -1,11 +1,9 @@
 #include "constants.hpp"
 #include "log.hpp"
 
-#include "jsmn/jsmn.h"
-
-#include <iostream>
-#include <cstring>
 #include <unordered_map>
+#include <sstream>
+#include <vector>
 
 using namespace hlt;
 
@@ -21,7 +19,7 @@ namespace hlt {
         int INSPIRATION_RADIUS;
         int INSPIRATION_SHIP_COUNT;
         int INSPIRED_EXTRACT_RATIO;
-        int INSPIRED_BONUS_MULTIPLIER;
+        double INSPIRED_BONUS_MULTIPLIER;
         int INSPIRED_MOVE_COST_RATIO;
         bool CAPTURE_ENABLED;
         int CAPTURE_RADIUS;
@@ -29,26 +27,25 @@ namespace hlt {
     }
 }
 
-constexpr static unsigned int json_max_tokens = 128;
-
-static int get_int(std::unordered_map<std::string, std::string>& map, const std::string& key) {
+static std::string get_string(std::unordered_map<std::string, std::string>& map, const std::string& key) {
     auto it = map.find(key);
     if (it == map.end()) {
         log::log("Error: constants: server did not send " + key + " constant.");
         exit(1);
     }
+    return it->second;
+}
 
-    return stoi(it->second);
+static int get_int(std::unordered_map<std::string, std::string>& map, const std::string& key) {
+    return stoi(get_string(map, key));
+}
+
+static double get_double(std::unordered_map<std::string, std::string>& map, const std::string& key) {
+    return stod(get_string(map, key));
 }
 
 static bool get_bool(std::unordered_map<std::string, std::string>& map, const std::string& key) {
-    auto it = map.find(key);
-    if (it == map.end()) {
-        log::log("Error: constants: server did not send " + key + " constant.");
-        exit(1);
-    }
-
-    std::string string_value = it->second;
+    std::string string_value = get_string(map, key);
     if (string_value == "true") {
         return true;
     }
@@ -61,36 +58,45 @@ static bool get_bool(std::unordered_map<std::string, std::string>& map, const st
     exit(1);
 }
 
-void hlt::constants::populate_constants(std::string string_from_engine) {
-    const char* input = string_from_engine.c_str();
-    size_t length = string_from_engine.length();
-
-    jsmn_parser parser;
-    jsmn_init(&parser);
-
-    jsmntok_t tokens[json_max_tokens];
-    int result = jsmn_parse(&parser, input, length, tokens, json_max_tokens);
-    if (result < 0) {
-        log::log("Error: constants: json parser returned " + std::to_string(result));
-        exit(1);
+void hlt::constants::populate_constants(const std::string& string_from_engine) {
+    std::string input;
+    for (char c : string_from_engine) {
+        switch (c) {
+            case '{':
+            case '}':
+            case ',':
+            case ':':
+            case '"':
+                input.push_back(' ');
+                break;
+            default:
+                input.push_back(c);
+                break;
+        }
     }
 
-    if (result < 1 || tokens[0].type != JSMN_OBJECT) {
-        log::log("Error: constants: expected json object as first json token from server.");
-        exit(1);
+    std::stringstream input_stream = std::stringstream(input);
+    std::vector<std::string> tokens;
+
+    for (;;) {
+        std::string token;
+        if (!std::getline(input_stream, token, ' ')) {
+            break;
+        }
+        if (!token.empty()) {
+            tokens.push_back(token);
+        }
     }
 
-    if ((result % 2) != 1) {
-        log::log("Error: constants: expected odd number of json tokens from server (root object + key/value pairs).");
+    if ((tokens.size() % 2) != 0) {
+        log::log("Error: constants: expected even total number of key and value tokens from server.");
         exit(1);
     }
 
     std::unordered_map<std::string, std::string> constants_map;
 
-    for (int i = 1; i < result; i+=2) {
-        std::string key = std::string(input + tokens[i].start, (size_t)tokens[i].end - (size_t)tokens[i].start);
-        std::string value = std::string(input + tokens[i+1].start, (size_t)tokens[i+1].end - (size_t)tokens[i+1].start);
-        constants_map[key] = value;
+    for (size_t i = 0; i < tokens.size(); i += 2) {
+        constants_map[tokens[i]] = tokens[i+1];
     }
 
     SHIP_COST = get_int(constants_map, "NEW_ENTITY_ENERGY_COST");
@@ -103,7 +109,7 @@ void hlt::constants::populate_constants(std::string string_from_engine) {
     INSPIRATION_RADIUS = get_int(constants_map, "INSPIRATION_RADIUS");
     INSPIRATION_SHIP_COUNT = get_int(constants_map, "INSPIRATION_SHIP_COUNT");
     INSPIRED_EXTRACT_RATIO = get_int(constants_map, "INSPIRED_EXTRACT_RATIO");
-    INSPIRED_BONUS_MULTIPLIER = get_int(constants_map, "INSPIRED_BONUS_MULTIPLIER");
+    INSPIRED_BONUS_MULTIPLIER = get_double(constants_map, "INSPIRED_BONUS_MULTIPLIER");
     INSPIRED_MOVE_COST_RATIO = get_int(constants_map, "INSPIRED_MOVE_COST_RATIO");
     CAPTURE_ENABLED = get_bool(constants_map, "CAPTURE_ENABLED");
     CAPTURE_RADIUS = get_int(constants_map, "CAPTURE_RADIUS");

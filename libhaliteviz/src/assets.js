@@ -1,3 +1,5 @@
+import theme from "./theme";
+
 const PIXI = require("pixi.js");
 
 export let ASSET_ROOT = "dist/";
@@ -7,7 +9,7 @@ export const BASE_VISUALIZER_HEIGHT = 600;
 export const STATS_SIZE = 20;
 export const CELL_SIZE = 1;
 
-export const PLAYER_COLORS = [0x00a54e, 0x9c781f, 0x850dff, 0xb24f0b,
+export const PLAYER_COLORS = [0x1BB15A, 0x966AFB, 0xF54356, 0xFABB2C,
                               0xff0000, 0xbd00db, 0xFFFF00, 0x009900,
                               0xFF8C00, 0xff0000, 0x00FF00, 0xBA55D3,
                               0xffae42, 0xbd00db, 0xFF69B4, 0xFFFF00];
@@ -42,8 +44,10 @@ function loadSpritesheet(meta, textureImage) {
     return new Promise((resolve) => {
         const texture = PIXI.BaseTexture.fromImage(textureImage);
         const sheet = new PIXI.Spritesheet(texture, meta);
-        sheet.parse(() => {
-            resolve(sheet);
+        texture.on('loaded', () => {
+            sheet.parse(() => {
+                resolve(sheet);
+            });
         });
     });
 }
@@ -78,6 +82,16 @@ export function setAssetRoot(path) {
     ASSET_ROOT = path;
 
     return Promise.all([
+        theme.name === "halite2" ? loadSpritesheet(
+            require("../assets/planet-small.json"),
+            ASSET_ROOT + require("../assets/planet-small.png"),
+        ).then((sheet) => {
+            BASE_SPRITES.push(sheet.textures["CoreSmall.png"]);
+            BASE_SPRITES.push(sheet.textures["CoreSmall.png"]);
+            BASE_SPRITES.push(sheet.textures["CoreSmall.png"]);
+            BASE_SPRITES.push(sheet.textures["CoreSmall.png"]);
+        }) : Promise.resolve(),
+
         new Promise((resolve) => {
             PIXI.loader.add("halo", require("../assets/halo2.png"))
                 .add("base_green", require("../assets/base-green.png"))
@@ -86,10 +100,12 @@ export function setAssetRoot(path) {
                 .add("base_yellow", require("../assets/base-yellow.png"))
                 .load((loader, resources) => {
                     HALO_SPRITE = resources.halo.texture;
-                    BASE_SPRITES.push(resources.base_green.texture);
-                    BASE_SPRITES.push(resources.base_purple.texture);
-                    BASE_SPRITES.push(resources.base_red.texture);
-                    BASE_SPRITES.push(resources.base_yellow.texture);
+                    if (theme.name === "shipyard") {
+                        BASE_SPRITES.push(resources.base_green.texture);
+                        BASE_SPRITES.push(resources.base_purple.texture);
+                        BASE_SPRITES.push(resources.base_red.texture);
+                        BASE_SPRITES.push(resources.base_yellow.texture);
+                    }
                     resolve();
                 });
         }),

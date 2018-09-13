@@ -143,7 +143,7 @@ export default {
         }
       });
 
-      Alert.show("test", 'success', false);
+      // Alert.show("test", 'success', false);
 
       const codes = {}
       Object.entries(iso3166.codes).forEach((item) => {

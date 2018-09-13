@@ -9,8 +9,8 @@ sort_key: 3
 
 <div class="doc-section" markdown="1">
 
-Download a language-specific starter kit as a quick and easy way to get started playing in the Halite AI competition. Can’t find your preferred language? We love contributions!
-Check out our guide on how to build a new starter bot.
+Download a language-specific starter kit to start building your bot. Can’t find your preferred language? We love contributions!
+During the Beta period, contact [halite@halite.io](mailto:halite@halite.io) to submit a new starter kit.
 
 ---
 

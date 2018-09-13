@@ -1,30 +1,36 @@
 package hlt;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.ArrayList;
 
 public enum Direction {
     NORTH('n'),
-    SOUTH('s'),
     EAST('e'),
+    SOUTH('s'),
     WEST('w'),
     STILL('o');
-    private char charRepresent;
-    private Direction(char c) {
-        charRepresent = c;
-    }
-    public char getCharRepresent() {
-        return charRepresent;
+
+    public final char charValue;
+
+    public final static ArrayList<Direction> ALL_CARDINALS = new ArrayList<>();
+    static {
+        ALL_CARDINALS.add(NORTH);
+        ALL_CARDINALS.add(SOUTH);
+        ALL_CARDINALS.add(EAST);
+        ALL_CARDINALS.add(WEST);
     }
 
-    public static Direction randomDirection() {
-        int randInt = ThreadLocalRandom.current().nextInt(0, 5);
-        switch(randInt) {
-        case 0: return Direction.NORTH;
-        case 1: return Direction.SOUTH;
-        case 2: return Direction.EAST;
-        case 3: return Direction.WEST;
-        case 4: return Direction.STILL;
+    public Direction invertDirection() {
+        switch (this) {
+            case NORTH: return SOUTH;
+            case EAST: return WEST;
+            case SOUTH: return NORTH;
+            case WEST: return EAST;
+            case STILL: return STILL;
+            default: throw new IllegalStateException("Unknown direction " + this);
         }
-        return null;
+    }
+
+    Direction(final char charValue) {
+        this.charValue = charValue;
     }
 }

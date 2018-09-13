@@ -38,7 +38,7 @@
     </div>
     <InputModal ref="new_file_modal" :baseUrl="baseUrl" :isOn="is_new_file_modal_open" :createCallback="create_new_file" :closeCallback="close_new_file_modal" title_text="New File" cancel_text="Cancel" accept_text="Create"></InputModal>
     <InputModal ref="new_folder_modal" :baseUrl="baseUrl" :isOn="is_new_folder_modal_open" :createCallback="create_new_folder" :closeCallback="close_new_folder_modal" title_text="New Folder" cancel_text="Cancel" accept_text="Create"></InputModal>
-    <CheckModal ref="delete_modal" :baseUrl="baseUrl" :isOn="is_delete_modal_open" :yesCallback="delete_file" :noCallback="close_delete_modal" title_text="Delete File" cancel_text="Cancel" accept_text="Delete" body_text="This will delete your file permanently!!!"></CheckModal>
+    <CheckModal ref="delete_modal" :baseUrl="baseUrl" :isOn="is_delete_modal_open" :yesCallback="delete_file" :noCallback="close_delete_modal" title_text="Delete All Files?" cancel_text="Cancel" accept_text="Delete" body_text="This will PERMANENTLY delete all editor files."></CheckModal>
     <LanguageModal :baseUrl="baseUrl" :tutorial="tutorial" :isOn="is_picking_language" @choose="pick_language" />
 
     <div class="toasts">
@@ -50,7 +50,7 @@
     </div>
     <div class="banner" v-if="banner_message">
       {{banner_message}}
-      <button @click="banner_message = null">Close</button>
+      <button class="btn-sm btn-primary" @click="banner_message = null">Close</button>
     </div>
   </div>
 </template>
@@ -83,43 +83,42 @@
       fileName: 'MyBot.cpp',
       zipName: 'my-c++-bot.zip',
       starterZipPath: '/assets/downloads/Halite2_C++_None.zip'
+    },
+    'JavaScript': {
+      mimeType: 'application/javascript',
+      fileName: 'MyBot.js',
+      zipName: 'my-javascript-bot.zip',
     }
   }
 
   var logVerbose = true
-  const BOT_LANG_KEY = 'bot_language'
-  const FILE_NAMES_KEY = 'file_names'
   const DARK_THEME = 'Dark'
   const RESET_MSG = 'Are you sure you want to reset your bot code to the default sample code?\n(All changes will be lost!)'
-  const EX_GAME_STRING = '{"ENGINE_VERSION":"1.5.521.g6df5","GAME_CONSTANTS":{"BASE_TURN_ENERGY_LOSS":5,"BLUR_FACTOR":0.75,"DEFAULT_MAP_HEIGHT":128,"DEFAULT_MAP_WIDTH":128,"INITIAL_ENERGY":1000,"MAX_CELL_PRODUCTION":255,"MAX_ENERGY":255,"MAX_PLAYERS":16,"MAX_TURNS":300,"MIN_CELL_PRODUCTION":85,"NEW_ENTITY_ENERGY":255,"NEW_ENTITY_ENERGY_COST":1000},"REPLAY_FILE_VERSION":1,"full_frames":[{"events":[],"moves":{"0":[{"direction":"w","entity_x":0,"entity_y":1,"type":"move"}],"1":[{"direction":"e","entity_x":1,"entity_y":1,"type":"move"}]}}],"game_statistics":{"number_turns":49,"player_statistics":[{"last_turn_alive":49,"player_id":1,"rank":1,"total_production":770},{"last_turn_alive":49,"player_id":0,"rank":2,"total_production":518}]},"map_generator_seed":1531318637,"number_of_players":2,"players":[{"energy":0,"entities":[{"energy":0,"x":1,"y":1}],"factory_location":[1,1],"name":"JavaSP","player_id":1},{"energy":0,"entities":[{"energy":0,"x":0,"y":1}],"factory_location":[0,1],"name":"JavaSP","player_id":0}],"production_map":{"grid":[[{"production":14,"type":"n"},{"production":14,"type":"n"}],[{"type":"f"},{"type":"f"}]],"height":2,"map_generator":"Fractal Value Noise Tile","width":2}}'
 
-
-  function logError (err) {
+  function logError(err) {
     console.error(err)
   }
 
-  function logInfo (msg) {
+  function logInfo(msg) {
     if (logVerbose) console.log(msg)
   }
 
   function parse_to_file_tree(files) {
     let file_tree = {}
-    for(let file_name in files) {
-      let components = file_name.split('/')
-      for(let a = 0; a < components.length-1; a++) { // target for setting to {}
-        let current_obj = file_tree
-        for(let b = 0; b < a; b++) {
-          current_obj = current_obj[b]
-        }
-        if(current_obj[components[a]] === undefined) current_obj[components[a]] = {}
-      }
+    for (const [ file_name, file_obj ] of Object.entries(files)) {
+      const components = file_name.split('/')
+
+      // Create nested objects as necessary
       let current_obj = file_tree
-      for(let b = 0; b < components.length-1; b++) {
-        current_obj = current_obj[components[b]]
+      for (const component of components.slice(0, -1)) {
+        if (typeof current_obj[component] === "undefined") {
+          current_obj[component] = {}
+        }
+        current_obj = current_obj[component];
       }
-      current_obj[components[components.length-1]] = files[file_name]
+
+      current_obj[components[components.length - 1]] = file_obj
     }
-    //return files
     return file_tree
   }
 
@@ -194,6 +193,12 @@ export default {
     });
   },
   mounted: function () {
+    // Get rid of spacing to header
+    for (const el of document.querySelectorAll('header.navbar')) {
+      el.style.marginBottom = "0";
+    }
+    document.querySelector('.body').style.marginTop = "0";
+
     api.me().then((me) => {
       this.logged_in = me !== null
       if (me !== null) {
@@ -202,11 +207,22 @@ export default {
 
       if (me !== null || this.localStorage) {
         this.load_user_code().then((editor_files) => {
-          this.active_file = _.find(editor_files, {name: this.bot_info().fileName})
+          this.editor_files = parse_to_file_tree(editor_files)
+          for (const fileName of Object.keys(editor_files)) {
+            if (fileName.startsWith("MyBot")) {
+              this.active_file = editor_files[fileName]
+              for (const [lang, langInfo] of Object.entries(botLanguagePacks)) {
+                if (langInfo.fileName === fileName) {
+                  this.bot_lang = lang
+                  break
+                }
+              }
+              break
+            }
+          }
           if (!this.active_file) {
             this.active_file = editor_files[Object.keys(editor_files)[0]]
           }
-          this.editor_files = parse_to_file_tree(editor_files)
           this.create_editor(this.get_active_file_code())
         }).catch((e) => {
           console.warn(e)
@@ -342,6 +358,8 @@ export default {
         // Load saved settings
         this.state.load().then(() => {
           logInfo('Editor ready!')
+          this.allSaved = true
+          this.$emit('save', true)
           this._readyResolve();
         })
       })
@@ -507,24 +525,9 @@ export default {
 
 
     delete_file: function() {
-      if (this.localStorage) {
-        window.localStorage.setItem(
-          "@@editor-filelist",
-          JSON.stringify(JSON.parse(window.localStorage.getItem("@@editor-filelist"))
-                             .filter(name => name !== this.file_to_delete.name)))
-        window.localStorage.removeItem(this.file_to_delete.name)
-      }
-      else {
-        api.delete_source_file(this.user_id, this.file_to_delete.name)
-      }
-
-      let need_file_switch = this.file_to_delete === this.active_file
-      this.delete_from_tree(this.editor_files, this.file_to_delete)
-      if(need_file_switch) {
-        this.set_editor_contents("")
-        this.active_file = null
-      }
-      this.close_delete_modal()
+      api.delete_editor_files(this.user_id).then(() => {
+        window.location.reload()
+      })
     },
     delete_from_tree: function(files, elem) {
       for(let name in files) {
@@ -538,8 +541,7 @@ export default {
         }
       }
     },
-    open_delete_modal: function(file_to_delete) {
-      this.file_to_delete = file_to_delete;
+    delete_all_files: function() {
       this.is_delete_modal_open = true;
     },
     close_delete_modal: function() { this.is_delete_modal_open = false; },
@@ -611,6 +613,12 @@ export default {
           }
         }
 
+        if (status.compile_error) {
+          this.add_console_text("Your bot failed to compile :(\n")
+          this.add_console_text(status.compile_error)
+          return
+        }
+
         this.add_console_text("Fetching replay...\n")
 
         const replayBlob = await api.get_ondemand_replay(this.user_id)
@@ -643,7 +651,7 @@ export default {
             displayName = `"${displayName}"`
           }
           const last_energy = typeof energy[i] === "undefined" ? replay.GAME_CONSTANTS.INITIAL_ENERGY : energy[i];
-          this.add_console_text(` ${displayName} was rank ${status.game_output.stats[i].rank} with ${last_energy} energy.\n`)
+          this.add_console_text(` ${displayName} was rank ${status.game_output.stats[i].rank} with ${last_energy} halite.\n`)
         }
 
         if (status.error_log) {
@@ -981,13 +989,16 @@ export default {
   left: 0;
   right: 0;
   padding: 1em;
-  background: #F00;
+  background: #FF2D55;
+  color: #FFF;
   text-align: center;
   z-index: 20000;
 
   button {
     position: absolute;
     right: 1em;
+    top: 0.25em;
+    bottom: 0.25em;
   }
 }
 </style>

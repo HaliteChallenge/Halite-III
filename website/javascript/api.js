@@ -211,6 +211,13 @@ export function delete_source_file (userId, file_name) {
   })
 }
 
+export function delete_editor_files(userId) {
+  return window.fetch(`${API_SERVER_URL}/editor/${userId}`, {
+    method: 'DELETE',
+    credentials: 'include'
+  }).then(r => r.json())
+}
+
 export function start_ondemand_task(userId, options) {
   return window.fetch(`${API_SERVER_URL}/ondemand/${userId}`, {
     method: 'POST',

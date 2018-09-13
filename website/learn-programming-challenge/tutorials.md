@@ -6,15 +6,15 @@ toc: false
 description: Get an introduction to the rules of the game to win the Halite AI Programming Challenge.
 sort_key: 2
 ---
-
+<!--
 <div class="doc-section" markdown="1">
 
 ## Introduction
 
-Try a tutorial: Learn more about the game rules, 
+Learn more about the game rules,
 build your first bot, engage with advanced strategies, and more.
 
-</div>
+</div> -->
 
 
 <div class="doc-section" markdown="1">
@@ -22,27 +22,27 @@ build your first bot, engage with advanced strategies, and more.
 
 <div class="column-container">
   <div class="col" markdown="1">
+<br>
+## Getting Started
+<br>
+### [Code Tutorial](/learn-programming-challenge/tutorials/code-tutorial)
 
-## Beginner
-
-### Tutorial 1
-
-Interactively learn the game rules
+This tutorial guides you through creating your first Halite III bot. You'll write code that tells your bot to build ships, navigate the map, and collect halite.
 
   </div>
   <div class="col" markdown="1">
 
+<br>
+## Next Steps
+<br>
+### [Navigation and Interaction Tutorial](/learn-programming-challenge/tutorials/next-tutorial)
 
-## Advanced
-
-### Tutorial 1
-
-Add a new strategy to your bot and learn a new technique. Climb up the leaderboard
+Improve your movement and player interaction strategies in this tutorial.
 
   </div>
 </div>
 
-
+<!--
 <div class="column-container">
   <div class="col" markdown="1">
 
@@ -58,16 +58,16 @@ Improve the Starter bot and make your first competition submission
 Add a new strategy to your bot and learn a new technique. Climb up the leaderboard
 
   </div>
-</div>
+</div> -->
 
 ---
+<br>
+## Advanced
+<br>
+### [Genetic Algorithm Bot](/learn-programming-challenge/tutorials/ml-ga)
 
-## Beginner
+Learn about using a genetic algorithm to tune a bot.
 
-### Tutorial 1
+### [Supervised Learning Bot](/learn-programming-challenge/tutorials/ml-svm)
 
-Add a new strategy to your bot and learn a new technique. <br>Climb up the leaderboard
-
-##### Tutorial 2
-
-Improve the Starter bot and make your first <br>competition submission
+Learn about using supervised learning to train a bot with a Support Vector Machine (SVM).

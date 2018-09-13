@@ -12,7 +12,7 @@ from .blueprint import web_api
 
 # Get a list of users file names
 @web_api.route("/editor/<int:intended_user>", methods=["GET"])
-@util.cross_origin(methods=["GET"])
+@util.cross_origin(methods=["GET", "DELETE"])
 @api_util.requires_login(accept_key=True, association=True)
 def list_user_files(intended_user, *, user_id):
     if user_id != intended_user:
@@ -29,6 +29,24 @@ def list_user_files(intended_user, *, user_id):
             files.append(file_blob.name[len(directory):])
 
     return flask.jsonify(files)
+
+
+@web_api.route("/editor/<int:intended_user>", methods=["DELETE"])
+@util.cross_origin(methods=["GET", "DELETE"])
+@api_util.requires_login(accept_key=True, association=True)
+def delete_user_files(intended_user, *, user_id):
+    if user_id != intended_user:
+        raise api_util.user_mismatch_error(
+            message="Cannot delete files for another user.")
+
+    editor_bucket = model.get_editor_bucket()
+    directory = "{}/".format(intended_user)
+    for file_blob in editor_bucket.list_blobs(prefix=directory):
+        # Don't list root directory
+        if file_blob.name[:-1] != str(intended_user):
+            file_blob.delete()
+
+    return util.response_success()
 
 
 @web_api.route("/editor/<int:intended_user>/file/<path:file_id>", methods=["GET"])

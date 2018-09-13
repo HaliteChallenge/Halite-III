@@ -1,44 +1,47 @@
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-
 import hlt.*;
-import hlt.util.SafeMover;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class MyBot {
-    public static void main(String[] args) throws java.io.IOException {
+    public static void main(final String[] args) {
+        final long rngSeed;
+        if (args.length > 1) {
+            rngSeed = Integer.parseInt(args[1]);
+        } else {
+            rngSeed = System.nanoTime();
+        }
+        final Random rng = new Random(rngSeed);
+
         Game game = new Game();
-        game.getInit();
-        game.sendInit("MyJavaBot-" + game.getMyID());
+        game.ready("MyJavaBot");
 
-        while (true) {
-            // Get frame info
-            int turnNumber = game.getFrame();
+        Log.log("Successfully created bot! My Player ID is " + game.myId + ". Bot rng seed is " + rngSeed + ".");
 
-            Player me = game.getMe();
-            ArrayList<hlt.command.Command> commandQueue = new ArrayList<>();
-            SafeMover safeMover = new SafeMover(game.getMap(), game.getPlayers());
+        for (;;) {
+            game.updateFrame();
+            final Player me = game.me;
+            final GameMap gameMap = game.gameMap;
 
-            // Dump halite at our shipyard if a ship is sitting on top of it
-            // Otherwise, move our ships randomly
-            boolean atHome = false;
-            for (Ship ship: me.getShips()) {
-                if (ship.getLocation().equals(me.getShipyard().getLocation())) {
-                    atHome = true;
-                }
+            final ArrayList<Command> commandQueue = new ArrayList<>();
 
-                if (game.getMap().getHalite(ship.getLocation()) < Constants.MAX_HALITE / 10) {
-                    commandQueue.add(safeMover.move(ship, Direction.randomDirection()));
+            for (final Ship ship : me.ships.values()) {
+                if (gameMap.at(ship).halite < Constants.MAX_HALITE / 10 || ship.isFull()) {
+                    final Direction randomDirection = Direction.ALL_CARDINALS.get(rng.nextInt(4));
+                    commandQueue.add(ship.move(randomDirection));
+                } else {
+                    commandQueue.add(ship.stayStill());
                 }
             }
 
-            // Spawn a ship if we're in the start or middle of the game
-            // and if we have the available halite
-            if (turnNumber <= 200 && me.getHalite() >= Constants.SHIP_COST && !atHome)  {
-                commandQueue.add(me.getShipyard().spawn());
+            if (
+                game.turnNumber <= 200 &&
+                me.halite >= Constants.SHIP_COST &&
+                !gameMap.at(me.shipyard).isOccupied())
+            {
+                commandQueue.add(me.shipyard.spawn());
             }
 
-            //Send back our commands
             game.endTurn(commandQueue);
         }
     }

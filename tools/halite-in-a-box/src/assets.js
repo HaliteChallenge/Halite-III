@@ -101,6 +101,16 @@ export function toolsPath() {
 }
 
 /**
+ * Modify a command to set the CWD before running.
+ */
+export function setCwd(cwd, cmd) {
+    if (process.platform === 'win32') {
+        return `cmd.exe /C "cd /d "${cwd}"; ${cmd}"`;
+    }
+    return `sh -c 'cd "${cwd}"; ${cmd}'`;
+}
+
+/**
  * Get paths to bundled assets without checking if they're ready.
  */
 export function assetPaths() {

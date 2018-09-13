@@ -6,7 +6,7 @@
                 <p>Halite is an open source artificial intelligence challenge, created by Two Sigma.</p>
                 <p>Halite III is a resource management game. Your goal is to build a bot that efficiently navigates the seas removing halite, a luminous energy resource.</p>
                 <br>
-                <a class="btn btn-primary" href="/learn-programming-challenge/game-overview">Play now</a>
+                <a class="btn btn-primary" href="/learn-programming-challenge/">Play now</a>
             </div>
             <div class="col-md-6">
                 <img src="/assets/images/home-map.png" alt="Map">

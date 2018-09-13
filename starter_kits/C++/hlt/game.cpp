@@ -9,8 +9,8 @@ hlt::Game::Game() : turn_number(0) {
     hlt::constants::populate_constants(hlt::get_string());
 
     int num_players;
-    std::stringstream iss1(get_string());
-    iss1 >> num_players >> my_id;
+    std::stringstream input(get_string());
+    input >> num_players >> my_id;
 
     log::open(my_id);
 
@@ -33,24 +33,22 @@ void hlt::Game::update_frame() {
         PlayerId current_player_id;
         int num_ships;
         int num_dropoffs;
-        Halite halite_amount;
-        hlt::get_sstream() >> current_player_id >> num_ships >> num_dropoffs >> halite_amount;
+        Halite halite;
+        hlt::get_sstream() >> current_player_id >> num_ships >> num_dropoffs >> halite;
 
-        log::log("processing player " + std::to_string(current_player_id));
-
-        players[current_player_id]->_update(num_ships, num_dropoffs, halite_amount);
+        players[current_player_id]->_update(num_ships, num_dropoffs, halite);
     }
 
-    log::log("before game_map->_update()");
     game_map->_update();
-    log::log("after game_map->_update()");
 
     for (const auto& player : players) {
         for (auto& ship_iterator : player->ships) {
             auto ship = ship_iterator.second;
             game_map->at(ship)->mark_unsafe(ship);
         }
+
         game_map->at(player->shipyard)->structure = player->shipyard;
+
         for (auto& dropoff_iterator : player->dropoffs) {
             auto dropoff = dropoff_iterator.second;
             game_map->at(dropoff)->structure = dropoff;

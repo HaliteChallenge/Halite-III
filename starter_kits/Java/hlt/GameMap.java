@@ -1,97 +1,116 @@
 package hlt;
 
+import java.util.ArrayList;
+
 public class GameMap {
-    private int width, height;
-    private int[][] grid;
+    public final int width;
+    public final int height;
+    public final MapCell[][] cells;
 
-    public GameMap(int w, int h, int[][] g) {
-        width = w;
-        height = h;
-        grid = g;
+    public GameMap(final int width, final int height) {
+        this.width = width;
+        this.height = height;
+
+        cells = new MapCell[height][];
+        for (int y = 0; y < height; ++y) {
+            cells[y] = new MapCell[width];
+        }
     }
 
-    public int computeDistance(Location f, Location s) {
-        int x_dist = Math.abs(f.x - s.x);
-        int y_dist = Math.abs(f.y - s.y);
-        return Math.min(x_dist, width - x_dist)
-            + Math.min(y_dist, height - y_dist);
+    public MapCell at(final Position position) {
+        final Position normalized = normalize(position);
+        return cells[normalized.y][normalized.x];
     }
 
-    public int getHalite(Location l) { return grid[l.y][l.x]; }
-    public int[][] getGrid() { return grid; }
-    public int getWidth() { return width; }
-    public int getHeight() { return height; }
-
-    public void setSquare(int x, int y, int halite) {
-        grid[y][x] = halite;
+    public MapCell at(final Entity entity) {
+        return at(entity.position);
     }
 
-    public Location getLocation(Location l, Direction d) {
-        if(d == Direction.NORTH) {
-            l.y--;
-            if(l.y == -1) l.y = height-1;
-        }
-        else if(d == Direction.EAST) {
-            l.x++;
-            if(l.x == width) l.x = 0;
-        }
-        else if(d == Direction.SOUTH) {
-            l.y++;
-            if(l.y == height) l.y = 0;
-        }
-        else if(d == Direction.WEST) {
-            l.x--;
-            if(l.x == -1) l.x = width-1;
-        }
-        return l;
+    public int calculateDistance(final Position source, final Position target) {
+        final int dx = Math.abs(source.x - target.x);
+        final int dy = Math.abs(source.y - target.y);
+
+        final int toroidal_dx = Math.min(dx, width - dx);
+        final int toroidal_dy = Math.min(dy, height - dy);
+
+        return toroidal_dx + toroidal_dy;
     }
 
-    public Location normalize(Location l) {
-        l.x = (l.x + width) % width;
-        l.y = (l.y + height) % height;
-        return l;
+    public Position normalize(final Position position) {
+        final int x = ((position.x % width) + width) % width;
+        final int y = ((position.y % height) + height) % height;
+        return new Position(x, y);
     }
 
-    public Location locationWithDirection(Location l, Direction d) {
-        return normalize(getLocation(l.clone(), d));
+    public ArrayList<Direction> getUnsafeMoves(final Position source, final Position destination) {
+        final ArrayList<Direction> possibleMoves = new ArrayList<>();
+
+        final int dx = Math.abs(source.x - destination.x);
+        final int dy = Math.abs(source.y - destination.y);
+        final int wrapped_dx = width - dx;
+        final int wrapped_dy = height - dy;
+
+        if (source.x < destination.x) {
+            possibleMoves.add(dx > wrapped_dx ? Direction.WEST : Direction.EAST);
+        } else if (source.x > destination.x) {
+            possibleMoves.add(dx < wrapped_dx ? Direction.WEST : Direction.EAST);
+        }
+
+        if (source.y < destination.y) {
+            possibleMoves.add(dy > wrapped_dy ? Direction.NORTH : Direction.SOUTH);
+        } else if (source.y > destination.y) {
+            possibleMoves.add(dy < wrapped_dy ? Direction.NORTH : Direction.SOUTH);
+        }
+
+        return possibleMoves;
     }
 
-    public Direction towards(Location start, Location target) {
-        if (start.x != target.x) {
-            int east_dist = 0;
-            int west_dist = 0;
-            if (start.x > target.x) {
-                west_dist = start.x - target.x;
-                east_dist = width - west_dist;
+    public Direction naiveNavigate(final Ship ship, final Position destination) {
+        for (final Direction direction : getUnsafeMoves(ship.position, destination)) {
+            final Position targetPos = ship.position.directionalOffset(direction);
+            if (!at(targetPos).isOccupied()) {
+                at(targetPos).markUnsafe(ship);
+                return direction;
             }
-            else {
-                east_dist = target.x - start.x;
-                west_dist = width - east_dist;
-            }
-
-            if (west_dist < east_dist) {
-                return Direction.WEST;
-            }
-            return Direction.EAST;
         }
-        else if (start.y != target.y) {
-            int north_dist = 0;
-            int south_dist = 0;
 
-            if (start.y > target.y) {
-                north_dist = start.y - target.y;
-                south_dist = height - north_dist;
-            }
-            else {
-                south_dist = start.y - target.y;
-                north_dist = height - south_dist;
-            }
-
-            if (north_dist < south_dist) {
-                return Direction.NORTH;
-            }
-            return Direction.SOUTH;
-        }
         return Direction.STILL;
+    }
+
+    void _update() {
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                cells[y][x].ship = null;
+            }
+        }
+
+        final int updateCount = Input.readInput().getInt();
+
+        for (int i = 0; i < updateCount; ++i) {
+            final Input input = Input.readInput();
+            final int x = input.getInt();
+            final int y = input.getInt();
+
+            cells[y][x].halite = input.getInt();
+        }
+    }
+
+    static GameMap _generate() {
+        final Input mapInput = Input.readInput();
+        final int width = mapInput.getInt();
+        final int height = mapInput.getInt();
+
+        final GameMap map = new GameMap(width, height);
+
+        for (int y = 0; y < height; ++y) {
+            final Input rowInput = Input.readInput();
+
+            for (int x = 0; x < width; ++x) {
+                final int halite = rowInput.getInt();
+                map.cells[y][x] = new MapCell(new Position(x, y), halite);
+            }
+        }
+
+        return map;
     }
 }

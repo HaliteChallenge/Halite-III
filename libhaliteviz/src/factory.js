@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 
 import * as assets from "./assets";
+import theme from "./theme";
 
 export class Dropoff {
     /**
@@ -53,6 +54,10 @@ export class Dropoff {
         let factoryTexture = renderer.generateTexture(factoryShape);
         this.core = new PIXI.Sprite(assets.BASE_SPRITES[this.owner]);
         this.highlight = new PIXI.Sprite(factoryTexture);
+
+        if (theme.tintFactory) {
+            this.core.tint = assets.PLAYER_COLORS[this.owner];
+        }
     }
 
     /**

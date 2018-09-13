@@ -1,35 +1,6 @@
 <template>
   <div class="play-container">
-
-    <!--
-    <div class="play-navbar only-desktop">
-      <ul>
-        <li class="active">
-          <a href="#">Competition Overview</a>
-        </li>
-        <li>
-          <a href="#">Current Ranking</a>
-        </li>
-        <li>
-          <a href="#">Watch Games</a>
-        </li>
-      </ul>
-    </div>
-
-    <div class="responsive-toc-nav only-mobile">
-      <span class="current-nav-item" data-toggle="collapse" data-target="#res_nav_selector">
-        Competition Overview
-      </span>
-      <ul id="res_nav_selector" class="select-nav collapse" aria-expanded="false">
-        <li><a href="#">Competition Overview</a></li>
-        <li><a href="#">Current Ranking</a></li>
-        <li><a href="#">Watch Games</a></li>
-      </ul>
-    </div>
-    -->
-
-
-    <div class="container-fluid">
+    <div class="container-fluid" v-if="currentView == 'upload'">
       <h1 class="page-heading">Play Halite III</h1>
       <div class="doc-section doc-section-play text-center">
         <p><img src="/assets/images/icon-flag.svg" width="30" alt="flag"></p>
@@ -48,11 +19,11 @@
       <div class="col-sm-6">
         <div class="doc-section doc-section-play text-center">
           <h4 class="mt3">LOCAL DEVELOPMENT</h4>
-     <!-- <p class="sub-title">Drop-off area</p> -->
+    <!--  <p class="sub-title">Submit your bot here</p> -->
           <p>Or, <a href="/learn-programming-challenge/downloads">download</a> the game environment and starter kit bundle for your platform and language of choice.</p>
           <p>To submit your local Halite bot in the competition, upload a .zip file here. The root folder of your zip should contain a MyBot.{extension} file and the /hlt folder from the starter kit.</p>
           <halite-upload-zone
-            description="<br>Drop your .zip file here to <br>upload your bot"
+            description="Select File or Drop File to <br> Upload your Bot"
             buttonText = "Select File"
             :icon="`/assets/images/icon-upload.svg`"
             v-on:change="upload_bot"
@@ -63,20 +34,12 @@
         </div>
       </div>
     </div>
+    <div id="halite-uploaded-bot" v-if="currentView=='botUpload'">
+      <bot-upload :user="user" :bot-file="botFile" :bots-list="botsList"  v-if="currentView='botUpload'"
+      :showMessage="showMessage"></bot-upload>
+    </div>
 
   </div>
-
-
-        <!-- <halite-upload-zone
-          title="Replay a File"
-          description="Drop a replay file here to upload"
-          buttonText = "Select File"
-          :icon="`${baseUrl}/assets/images/icon-replay.svg`"
-          v-on:change="play_replay"
-          :progressBar="is_downloading"
-          :progress="uploadProgress"
-          :message="uploadMessage">
-        </halite-upload-zone> -->
 </template>
 <script>
   import * as api from '../api'
@@ -196,14 +159,15 @@
           e.preventDefault()
 
           const [f] = files;
-          if (f.type === "application/zip") {
-            // TODO: upload
+          if (f) { // f.type === "application/zip"
+            Vue.set(ins, 'botFile', f)
+            Vue.set(ins, 'currentView', 'botUpload')
           }
-          else {
-            /* let outerContainer = document.getElementById('halitetv-visualizer') */
-            /* outerContainer.innerHTML = '' */
-            ins.play_replay(files)
-          }
+          // else {
+          //   /* let outerContainer = document.getElementById('halitetv-visualizer') */
+          //   /* outerContainer.innerHTML = '' */
+          //   ins.play_replay(files)
+          // }
         }
       })
       $('body').on('dragenter', (e) => {
@@ -253,7 +217,15 @@
         utils.gaEvent(category, action, label)
       },
       upload_bot(files) {
-        api.update_bot(this.user.user_id, this.botsList.length > 0 ? 0 : null, files[0], (progress) => {})
+        if(files.length && files[0].type === "application/zip") {
+          this.botFile = files[0]
+          this.currentView = 'botUpload'
+        } else {
+          // Alert.show('only upload zip file', 'error')
+          console.log('only upload zip file')
+        }
+        // api.update_bot(this.user.user_id, this.botsList.length > 0 ? 0 : null, files[0], (progress) => {
+        // })
       },
     }
   }
