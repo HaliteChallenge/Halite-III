@@ -8,8 +8,11 @@
         </h4>
         <div class="player-current-halite">
           {{currentHalite[index]}}
-          <span class="current-percent" :class="(totalHalite > 0 && currentHalite[index]/totalHalite > 0.5)? 'green':'red'">
-            {{totalHalite > 0 ? ((currentHalite[index]/totalHalite) * 100).toFixed(2)  + '%' : ''}}
+          <span
+            class="current-percent"
+            :class="currentEfficiency(index) >= 0.5 ? 'green':'red'"
+            title="Efficiency (current halite / halite collected so far)">
+            {{(currentEfficiency(index) * 100).toFixed(2)}}%
           </span>
         </div>
         <img class="stats-cube" :src="`/assets/images/visualizer/cube1.png`" alt="cube">
@@ -63,16 +66,6 @@ export default {
       }
       return d3.max(this.chartData.map(player => d3.max(player, (d) => d.y)), (y) => y);
     },
-    totalHalite() {
-      let result = 0
-      if(this.frame > 0) {
-        let energy = this.replay.full_frames[this.frame - 1].energy
-        for(let item in energy) {
-          result += energy[item]
-        }
-      }
-      return result
-    },
     currentHalite() {
       let result = {
       }
@@ -80,9 +73,13 @@ export default {
         result[index] = this.frame > 0? this.replay.full_frames[this.frame - 1].energy[index]: this.replay.GAME_CONSTANTS.INITIAL_ENERGY
       }
       return result
-    }
+    },
   },
   methods: {
+    currentEfficiency(index) {
+      const deposited = this.replay.GAME_CONSTANTS.INITIAL_ENERGY + this.stats.frames[this.frame].players[index].depositedHalite
+      return this.currentHalite[index] / deposited
+    },
     numberSep: function (number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
@@ -106,7 +103,7 @@ export default {
     border-bottom: 1.2px solid rgba(8,27,83,.1);
   }
   .card-player-left{
-    min-width: 125px;
+    min-width: 175px;
   }
   .card-player-name{
     font-size: 14px;
@@ -132,10 +129,6 @@ export default {
     position: relative;
     .current-percent{
       font-size: 16px;
-      display: block;
-      position: absolute;
-      right: -10px;
-      margin-top: -10px;
       &.red {
         color: red;
       }
