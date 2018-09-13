@@ -30,7 +30,7 @@ export class InterpretedBot extends Bot {
 
     async makePath() {
         if (this.language === InterpretedBot.languages.Python) {
-            return `"${assets.pythonPath()}" "${this.path}"`;
+            return assets.setCwd(path.dirname(this.path), `"${assets.pythonPath()}" "${this.path}"`);
         }
 
         throw new Error("Unrecognized bot interpreter ${this.language}");

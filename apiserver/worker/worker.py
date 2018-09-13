@@ -214,7 +214,8 @@ def setupParticipant(user_index, user, temp_dir):
 
         if not didCompile:
             # Abort and upload an error log
-            raise OndemandCompileError(language, errors)
+            rm_as_user("bot_compilation", compile_dir)
+            raise OndemandCompileError(language, '\n'.join(errors))
 
         # Move back to original directory
         try:

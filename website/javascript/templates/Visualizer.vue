@@ -291,10 +291,7 @@ import * as utils from '../utils'
 import moment from 'vue-moment'
 import vueSlider from 'vue-slider-component'
 import VisualizerPanel from './VisualizerPanel.vue'
-// import PlayerStatsPane from './PlayerStatsPane.vue'
 import PlayerDetail from './PlayerDetail.vue'
-// import PlayerDetailPane from './PlayerDetailPane.vue'
-// import PlayerLineChart from './PlayerLineChart.vue'
 import SelectedPlanet from './SelectedPlanet.vue'
 import SelectedShip from './SelectedShip.vue'
 import SelectedPoint from './SelectedPoint.vue'
@@ -412,8 +409,6 @@ export default {
   components: {
     // PlayerLineChart,
     vueSlider,
-    // PlayerStatsPane,
-    // PlayerDetailPane,
     PlayerDetail,
     VisualizerPanel,
     SelectedPlanet,

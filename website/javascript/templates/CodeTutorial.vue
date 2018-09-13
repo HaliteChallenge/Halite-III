@@ -118,7 +118,7 @@ logging.info("Ship {} has {} halite.".format(ship.id, ship.halite_amount))</code
       </p>
 
       <p>
-        Now your bot will tell you how much halite each ship currently holds. You might want to experiment with different conditions for when to collect halite. An efficient collection strategy will build your reserves of halite quickly, and logging is there
+        Now your bot will tell you how much halite each ship currently holds. Ships can hold a maxiumum of 1,000 halite. You might want to experiment with different conditions for when to collect halite. An efficient collection strategy will build your reserves of halite quickly, and logging is there
         to help you debug your code.
       </p>
 
@@ -129,7 +129,7 @@ logging.info("Ship {} has {} halite.".format(ship.id, ship.halite_amount))</code
     </Step>
     <Step title="Depositing Halite" name="dropoffs">
       <p>
-        You can see now that your ships are filling up with halite. You won't receive credit for the halite until it is brought back to port, so let’s add another condition: if a ship is full, send it back to the shipyard.
+        You can see now that your ships are filling up with halite. You won't receive credit for the halite until it is brought back to port, so let’s add another condition: if a ship has a decent cargo of halite, send it back to the shipyard.
       </p>
 
       <p>
@@ -167,7 +167,7 @@ elif ship.halite_amount >= constants.MAX_HALITE / 4:
 
       <p>
         This code creates two new missions for ships, and provides instructions to ships depending on which mission they are assigned to. We are using some methods that are useful in moving ships around the map: <code>ship.move(direction)</code> and <code>game_map.naive_navigate(ship,
-                destination)</code>. We’ll talk in-depth about movement in the Movement Improvement tutorial.
+                destination)</code>. We’ll talk in-depth about movement in the Next Steps tutorials.
       </p>
 
       <button class="run-game" v-on:click="runGame">
@@ -181,7 +181,7 @@ elif ship.halite_amount >= constants.MAX_HALITE / 4:
       </p>
 
       <p>
-        You can build dropoff points anywhere on the map; all you need is a ship in the desired location, and 2,000 halite available in your stored halite. You’ll convert a ship to a dropoff point, so be aware that this action consumes a ship.
+        You can build dropoff points anywhere on the map; all you need is a ship in the desired location, and 4,000 halite available in your stored halite. You’ll convert a ship to a dropoff point, so be aware that this action consumes a ship.
       </p>
 
       <p>

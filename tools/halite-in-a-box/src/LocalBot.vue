@@ -50,6 +50,7 @@
     import JSZip from 'jszip';
 
     import assets from './assets';
+    import { setCwd } from './assets';
     import * as bot from './bot';
     import * as games from './games';
     import { pythonPath } from './assets';
@@ -83,14 +84,13 @@
             },
             localBotPath() {
                 if (this.localBot) {
+                    // Assume bot is executable
+                    let botCommand = `"${this.localBot}"`;
                     if (path.extname(this.localBot).toLowerCase() === '.py') {
-                        return `"${pythonPath()}" "${this.localBot}"`;
+                        botCommand = `"${pythonPath()}" "${this.localBot}"`;
                     }
-                    // Assume bot is executable; chdir to its directory first
-                    else if (process.platform === 'win32') {
-                        return `cmd.exe /C "cd /d "${path.dirname(this.localBot)}"; "${this.localBot}""`;
-                    }
-                    return `sh -c 'cd "${path.dirname(this.localBot)}"; "${this.localBot}"'`;
+                    // chdir to its directory first
+                    return setCwd(path.dirname(this.localBot), botCommand);
                 }
                 return null;
             },
@@ -126,7 +126,7 @@
             },
 
             goToStarterKit() {
-                util.openBrowserTab(`${util.WEBSITE_URL}/learn-programming-challenge/downloads-and-starter-kits/`);
+                util.openBrowserTab(`${util.WEBSITE_URL}/learn-programming-challenge/downloads/`);
             },
 
             async remoteBenchmark() {

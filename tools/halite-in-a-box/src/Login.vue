@@ -33,7 +33,7 @@
 
         methods: {
             openProfile() {
-                util.openBrowserTab('http://35.241.33.112/user/settings');
+                util.openBrowserTab(`${util.WEBSITE_URL}/user/settings`);
             },
         },
         watch: {
