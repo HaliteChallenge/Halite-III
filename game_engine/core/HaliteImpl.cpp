@@ -163,6 +163,12 @@ void HaliteImpl::run_game() {
     }
     game.game_statistics.number_turns = game.turn_number;
 
+    // Add state of entities at end of game.
+    game.replay.full_frames.emplace_back();
+    update_inspiration();
+    game.replay.full_frames.back().add_entities(game.store);
+    update_player_stats();
+
     rank_players();
     Logging::log("Game has ended");
     Logging::set_turn_number(Logging::ended);
@@ -513,6 +519,7 @@ void HaliteImpl::update_player_stats() {
             }
         } else {
             player_stats.turn_productions.push_back(0);
+            player_stats.turn_deposited.push_back(0);
         }
     }
 }
