@@ -25,18 +25,17 @@ System requirements are detailed here.
 <div class="table-container">
     <table class="table">
         <thead>
-            <!-- <tr>
+            <tr>
                 <td></td>
                 <td></td>
                 <th colspan="{{ site.data.downloads.platforms | size }}" class="text-center">Operating System</th>
-            </tr> -->
+            </tr>
             <tr>
                 <th>Language</th>
                 <td>Version</td>
                 {% for platform in site.data.downloads.platforms %}
                 <td>{{ platform }}</td>
                 {% endfor %}
-                <th colspan="{{ site.data.downloads.platforms | size }}" class="text-center">Operating System</th>
             </tr>
         </thead>
         <tbody>
