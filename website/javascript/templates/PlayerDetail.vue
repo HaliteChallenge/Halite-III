@@ -69,7 +69,7 @@ export default {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
     extraPlayerStats(index) {
-      const playerStats = replay.game_statistics.player_statistics[index];
+      const playerStats = this.replay.game_statistics.player_statistics[index];
       return `Efficiency ${(playerStats.mining_efficiency * 100).toFixed(1)}%; total halite collected ${playerStats.total_mined}, inspiration bonus halite ${playerStats.total_bonus}, captured ships collected ${playerStats.total_mined_from_captured} halite`;
     },
   }
