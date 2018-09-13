@@ -8,7 +8,7 @@ export default {
   },
   mapSize: 32,
   opponent: 'self',
-  BOT_OPTIONS: {'self': 'Self'},
+  BOT_OPTIONS: {'self': 'Self', 'live': 'Currently_Uploaded_Bot'},
   save () {
     const saved = Object.assign({}, this)
     delete saved.BOT_OPTIONS

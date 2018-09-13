@@ -29,6 +29,26 @@ def ondemand_task():
                     "requires_compilation": True,
                     "version_number": 1,
                 })
+            elif opponent["bot_id"] == "live":
+                with model.read_conn() as conn:
+                    query = model.bots.select((model.bots.c.user_id == task.key.id) &
+                                              (model.bots.c.id == 0))
+                    bot = conn.execute(query).first()
+                    if not bot:
+                        ondemand.update_task(task_user_id, None, {
+                            "compile_error": "You don't have a currently uploaded bot to play against.",
+                        })
+                        return util.response_success({
+                            "type": "notask",
+                        })
+
+                users.append({
+                    "user_id": task.key.id,
+                    "bot_id": 0,
+                    "username": opponent["name"],
+                    "requires_compilation": False,
+                    "version_number": bot["version_number"],
+                })
             else:
                 users.append({
                     "user_id": "gym",
