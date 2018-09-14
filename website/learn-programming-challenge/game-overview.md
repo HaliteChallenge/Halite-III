@@ -13,7 +13,7 @@ sort_key: 1
 
 Halite III is a resource management game in which players build and command ships that explore the ocean and collect halite. Ships use halite as an energy source, and the player with the most stored halite at the end of the game is the winner.
 
-Players begin play with a shipyard, and can use collected halite to build new ships. To efficiently collect halite, players must devise a strategy based on building ships and dropoff points. Ships can explore the ocean, collect halite, and store it in the shipyard or in dropoff points. Players interact by seeking inspiring competition, capturing ships with precise formations, and crashing ships to send both to the bottom of the sea.
+Players begin play with a shipyard, and can use collected halite to build new ships. To efficiently collect halite, players must devise a strategy based on building ships and dropoff points. Ships can explore the ocean, collect halite, and store it in the shipyard or in dropoff points. Players interact by seeking inspiring competition, or by crashing ships to send both to the bottom of the sea.
 <br/><br/>
 <span style="display:block;text-align:center">![a centered gif showing wrapping map grid edges and collision](/assets/images/map_inspiration.gif)</span>
 </div>
@@ -26,19 +26,19 @@ Players each start the game with 5,000 stored halite, a shipyard, and knowledge 
 
 Ships are the main actors in a game of Halite III. Ships explore the board, collect precious halite, and can interact with opposing players. Ships are powered by the energy they collect and store, and any move costs halite. Ships can make one action per turn: they can move one unit in any cardinal direction, collect halite, or convert into dropoffs.
 
-Ships interact directly in two ways. If multiple ships occupy the same location, they will **collide** and sink, dropping all their halite into the sea. If there are two or more ships belonging to any opponent within a four-cell radius of your ship, your ship is **inspired** by the competition. An inspired ship collects halite at three times the normal halite collection rate.
+Ships interact directly in two ways. If multiple ships occupy the same location, they will **collide** and sink, dropping all their halite into the sea. If there are two or more ships belonging to any opponent within a four-cell radius of your ship, your ship is **inspired** by the competition. An inspired ship collects halite from the sea at the normal rate, but receives an additional 200% bonus.
 
 Each turn, the game engine sends the players the positions of all ships and dropoffs, along with a new game map with updated values that changed on the previous turn. Players have up to two seconds to issue their commands for the turn. The game engine will parse and execute the commands, calculating each player’s resulting halite score and resolving all movement.
 
-Players spend halite to **build a ship**,  **move a ship**, and to **construct a dropoff**. Players gain halite by **collecting halite** from the sea in their current position.
+Players spend halite to **build a ship**,  **move a ship**, and to **convert a ship to a dropoff**. Players gain halite by **collecting halite** from the sea in their current position.
 <br/><br/>
 
 Command|Halite Cost or Gain
 :---: | :---: | :---:
 Spawn | Spend: 1000 halite
-Construct a drop-off  | Spend: 4000 halite
+Convert into a drop-off  | Spend: 4000 halite deducted from player's stored halite. <br/> The converted ship's halite cargo is destroyed, and the halite in the sea under the new dropoff is set to 0.
 Move (n, s, e w) | Spend: 10% of halite available at turn origin cell is deducted from ship’s current halite
-Move (o) | Collect: 25% of halite available in cell. Ships can carry up to 1000 halite.
+Move (o) | Collect: 25% of halite available in cell. <br/> If this evaluates to 0 halite, you collect the remaining halite in the cell. Ships can carry up to 1000 halite.
 
 <br/><br/>
 

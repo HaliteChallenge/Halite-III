@@ -82,7 +82,7 @@ Players have an `id`, a `shipyard`, a `halite_amount`, and dictionaries of ships
 
 <br/>
 #### SHIP
-Ships carry up to 1,000 halite as cargo and can be issued one command per turn via the command queue. Ships automatically deposit their cargo when positioned over the shipyard or dropoff points. If two ships collide, both are destroyed; their cargo falls back into the sea at the collision site.
+Ships carry up to 1,000 halite as cargo and can be issued one command per turn via the command queue. Ships automatically deposit their cargo when over the shipyard or dropoff points. If two ships collide, both are destroyed; their cargo falls back into the sea at the collision site.
 
 Ships have an `owner`, an `id`, a `position`, and a `halite_amount`.
 
@@ -94,14 +94,14 @@ Ships have an `owner`, an `id`, a `position`, and a `halite_amount`.
 <br/>
 * **Convert to Dropoff**
 
-   Ships can be converted into dropoff sites at their present location to facilitate halite collection. The conversion costs 4,000 halite, debited from total current stored halite.
+   Ships can be converted into dropoff sites at their present location to facilitate halite collection. The conversion costs 4,000 halite, deducted from total current stored halite. The converted ship's halite cargo is destroyed, and the halite amount in the sea under the new dropoff is set to 0.
 
    `ship.make_dropoff()` returns an engine command to convert this ship into a dropoff.
 
 <br/>
 * **Collect Halite at Origin**
 
-   Ships can collect 25% of the halite from the sea at their present location.
+   Ships can collect 25% of the halite from the sea at their present location. If this evaluates to 0 halite, the ship collects the remaining halite in the cell.
 
    `ship.stay_still()` returns an engine command to keep this ship where it is and collect halite.
 
@@ -110,7 +110,7 @@ Ships have an `owner`, an `id`, a `position`, and a `halite_amount`.
 
    Ships can move one square in a cardinal direction per turn. Each move costs 10% of the halite available in the sea at the ship’s starting location, debited from the ships’ cargo. The direction of the move is communicated via the command queue.
 
-   `ship.move(self, direction)` returns an engine command to move this ship in a direction without checking for collisions.
+   `ship.move(direction)` returns an engine command to move this ship in a direction without checking for collisions.
 
 <br/>
 #### SHIPYARD
