@@ -7,6 +7,28 @@ namespace hlt {
 static constexpr auto MAX_COMMANDS_PER_ENTITY = 1;
 
 /**
+ * Check that a command operates on an entity owned by the player.
+ * @param player The player.
+ * @param entity The entity.
+ * @param command The command.
+ */
+bool CommandTransaction::check_ownership(const Player &player, Entity::id_type entity, const MoveCommand &command) {
+    if (player.id != store.get_entity(entity).owner) {
+        move_ownership_faulty[player.id].emplace_back(command);
+        return false;
+    }
+    return true;
+}
+bool CommandTransaction::check_ownership(const Player &player, Entity::id_type entity, const ConstructCommand &command) {
+    if (player.id != store.get_entity(entity).owner) {
+        construct_ownership_faulty[player.id].emplace_back(command);
+        return false;
+    }
+    return true;
+}
+
+
+/**
  * Add a command occurrence for an entity.
  * @param entity The entity.
  * @param command The command.
@@ -47,9 +69,11 @@ void CommandTransaction::add_expense(const Player &player, const Command &comman
  * @param command The command.
  */
 void CommandTransaction::add_command(Player &player, const ConstructCommand &command) {
-    add_occurrence(command.entity, command);
-    add_expense(player, command, Constants::get().DROPOFF_COST);
-    construct_transaction.add_command(player, command);
+    if (check_ownership(player, command.entity, command)) {
+        add_occurrence(command.entity, command);
+        add_expense(player, command, Constants::get().DROPOFF_COST);
+        construct_transaction.add_command(player, command);
+    }
 }
 
 /**
@@ -58,8 +82,10 @@ void CommandTransaction::add_command(Player &player, const ConstructCommand &com
  * @param command The command.
  */
 void CommandTransaction::add_command(Player &player, const MoveCommand &command) {
-    add_occurrence(command.entity, command);
-    move_transaction.add_command(player, command);
+    if (check_ownership(player, command.entity, command)) {
+        add_occurrence(command.entity, command);
+        move_transaction.add_command(player, command);
+    }
 }
 
 /**
@@ -78,6 +104,20 @@ void CommandTransaction::add_command(Player &player, const SpawnCommand &command
  */
 bool CommandTransaction::check() {
     bool success = true;
+    // Check that player didn't try to command enemy ships
+    for (const auto &[player_id, misowned] : move_ownership_faulty) {
+        for (const auto &faulty : misowned) {
+            error_generated<EntityNotFoundError<MoveCommand>>(player_id, faulty);
+        }
+        success = false;
+    }
+    for (const auto &[player_id, misowned] : construct_ownership_faulty) {
+        for (const auto &faulty : misowned) {
+            error_generated<EntityNotFoundError<ConstructCommand>>(player_id, faulty);
+        }
+        success = false;
+    }
+
     // Check that expenses are not too high
     for (auto &[player_id, faulty] : expenses_first_faulty) {
         const auto &player = store.get_player(player_id);
