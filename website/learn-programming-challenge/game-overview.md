@@ -26,7 +26,7 @@ Players each start the game with 5,000 stored halite, a shipyard, and knowledge 
 
 Ships are the main actors in a game of Halite III. Ships explore the board, collect precious halite, and can interact with opposing players. Ships are powered by the energy they collect and store, and any move costs halite. Ships can make one action per turn: they can move one unit in any cardinal direction, collect halite, or convert into dropoffs.
 
-Ships interact in a number of ways. If multiple ships occupy the same location, they will sink, dropping all their halite into the sea. An outnumbered ship can be inspired by the competition, and can get an efficiency bonus to collecting halite when in the inspired state. A ship can be captured and change owners if it is flanked by an opposing player’s ships.
+Ships interact directly in two ways. If multiple ships occupy the same location, they will **collide** and sink, dropping all their halite into the sea. If there are two or more ships belonging to any opponent within a four-cell radius of your ship, your ship is **inspired** by the competition. An inspired ship collects halite at three times the normal halite collection rate.
 
 Each turn, the game engine sends the players the positions of all ships and dropoffs, along with a new game map with updated values that changed on the previous turn. Players have up to two seconds to issue their commands for the turn. The game engine will parse and execute the commands, calculating each player’s resulting halite score and resolving all movement.
 
@@ -41,14 +41,6 @@ Move (n, s, e w) | Spend: 10% of halite available at turn origin cell is deducte
 Move (o) | Collect: 25% of halite available in cell. Ships can carry up to 1000 halite.
 
 <br/><br/>
-##### Interacting with Other Ships
-If multiple ships occupy the same location, they will **collide**. All ships will be destroyed and will deposit their halite cargo onto the collision square.
-
-
-If your ship is outnumbered by three or more ships belonging to a single opponent within a three-cell radius, your ship is **captured**, and changes owners to the flanking player.
-
-
-If there are two or more ships belonging to any opponent within a four-cell radius of your ship, your ship is **inspired**, and collects halite with an efficiency bonus. An inspired ship collects halite at three times the normal halite collection rate.
 
 ##### Win Conditions
 The game continues for 300 to 500 turns, depending on the game map size. The winning player has the most stored halite at the end of the game. If a player does not have a ship or enough energy to construct a ship, they are considered “dead” and lose the game. In the case of a tie, players are ranked by their stored halite on the last turn, then by their stored halite on the penultimate turn, and so on.
