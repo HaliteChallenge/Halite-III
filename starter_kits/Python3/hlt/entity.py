@@ -67,7 +67,7 @@ class Ship(Entity):
         checking for collisions.
         """
         raw_direction = direction
-        if not isinstance(direction, str) or direction not in "nsew":
+        if not isinstance(direction, str) or direction not in "nsewo":
             raw_direction = Direction.convert(direction)
         return "{} {} {}".format(commands.MOVE, self.id, raw_direction)
 

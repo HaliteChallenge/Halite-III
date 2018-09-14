@@ -185,7 +185,7 @@ export function update_source_file (user_id, file_name, file_contents, progress_
 
   const form_data = new FormData()
   form_data.append('name', 'sourceFile')
-  form_data.append('sourceFile', new File([new Blob([file_contents])], 'sourceFile'))
+  form_data.append('sourceFile', new Blob([file_contents]), 'sourceFile')
 
   xhr.send(form_data)
 
