@@ -181,7 +181,7 @@ elif ship.halite_amount >= constants.MAX_HALITE / 4:
       </p>
 
       <p>
-        You can build dropoff points anywhere on the map; all you need is a ship in the desired location, and 4,000 halite available in your stored halite. You’ll convert a ship to a dropoff point, so be aware that this action consumes a ship.
+        You can build dropoff points anywhere on the map; all you need is a ship in the desired location, and 4,000 halite available in your stored halite. You’ll convert a ship to a dropoff point, so be aware that this action consumes a ship, any halite cargo on that ship, and sets the dissolved halite in the sea beneath the dropoff to zero.  A dropoff is a permanent feature of the game map, so no one can build a dropoff on top of yours.
       </p>
 
       <p>
