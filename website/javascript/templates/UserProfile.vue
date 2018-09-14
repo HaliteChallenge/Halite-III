@@ -1,9 +1,9 @@
 <template>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="user-profile">
+                <div class="bg-img"></div>
                 <div class="user-profile-avatar">
-                    <i class="xline xline-top"></i>
                     <img class="img-responsive" :src="'https://github.com/' + user.username + '.png'" :alt="user.username" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Placeholder_no_text.svg/2000px-Placeholder_no_text.svg.png'">
                 </div>
                 <div class="user-profile-detail">
@@ -54,29 +54,50 @@
                     </div>
                 </div>
                 <div class="user-profile-rank">
-                    <i class="xline xline-top"></i>
-                    <h2><span :class="tierClass(user.tier || 'Bronze')"></span> {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier</h2>
+                    <div class="ranking-type">
+                        <div class="individual">
+                            <div class="lvl-icon" :class="tierClass(user.tier || 'Bronze')"></div>
+                            <div>
+                                <div class="type-title">Individual</div>
+                                <div class="lvl">
+                                    {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier
+                                </div>
+                            </div>
+                        </div>
+                        <!-- organization - TODO -->
+                        <div class="organization">
+                            <div class="lvl-icon" :class="tierClass(user.tier || 'Bronze')"></div>
+                            <div>
+                                <div class="type-title">Organization</div>
+                                <div class="lvl">
+                                    {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <h2><span :class="tierClass(user.tier || 'Bronze')"></span> {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier</h2> -->
                     <div class="user-profile-rank-stats">
                         <div class="stats-item">
-                            <h3>Rating</h3>
+                            <div class="title">Rating</div>
                             <p>{{ Math.round(user.score * 100) / 100 }}</p>
                         </div>
                         <div class="stats-item">
-                            <h3>Bots</h3>
+                            <div class="title">Bots</div>
                             <p>{{ user.num_submissions }}</p>
                         </div>
                         <div class="stats-item">
-                            <h3>Games</h3>
+                            <div class="title">Games</div>
                             <p>{{ user.num_games }}</p>
                         </div>
                     </div>
-                    <h2 class="highest-rank" v-if="highestRank" title="This is either your current (top rank) or highest rank any of your bots had achieved when retired"> Highest Rank Achieved: {{highestRank}}</h2>
+                    <i class="xline xline-bottom"></i>
+                    <!-- <h2 class="highest-rank" v-if="highestRank" title="This is either your current (top rank) or highest rank any of your bots had achieved when retired"> Highest Rank Achieved: {{highestRank}}</h2> -->
 
                 </div>
-                <div class="stats-1-section">
+                <!-- <div class="stats-1-section">
                     <i class="xline xline-top"></i>
-                    <h2 v-if="season1stats && season1stats.num_submissions > 0">Halite 1 Stats</h2>
-                    <div v-if="season1stats && season1stats.num_submissions > 0" class="user-profile-rank-stats">
+                    <h2>Halite 1 Stats</h2>
+                    <div class="user-profile-rank-stats">
                         <div class="stats-item">
                             <h3>Rank</h3>
                             <p>{{ season1stats.rank }}</p>
@@ -93,6 +114,25 @@
                     <p class="text-center">
                         <a v-if="season1stats && season1stats.num_submissions > 0" class="user-name" target="_blank" :href="'https://2016.halite.io/user.php?userID=' + season1stats.userID">View Halite 1 Profile</a>
                     </p>
+                </div> -->
+                <div class="user-efficiency">
+                    <div class="title">Average Halite Efficiency</div>
+                    <div class="chart-container">
+                        <div class="data-distribution">
+                            <div class="data-line" ref="dataLine"></div>
+                            <div class="scale min-line">0%</div>
+                            <div class="scale max-line">100%</div>
+                            <!-- Use test data -->
+                            <div class="scale tire-line" :style="getLeftLen(0.4)">40%</div>
+                            <div class="scale user-line" :style="getLeftLen(0.5)">50%</div>
+                            <div class="scale all-play-line" :style="getLeftLen(0.8)">80%</div>
+                        </div>
+                        <div class="data-name">
+                            <div class="tire">Tier</div>
+                            <div class="user-name">{{user.username}}</div>
+                            <div class="all-play">All Players</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,16 +141,12 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active">
                         <a href="#games" @click="refreshStickyTable" aria-controls="games" role="tab" data-toggle="tab">
-                        <i class="xline xline-top"></i>
                         <span>Games & Logs</span>
-                        <i class="xline xline-bottom"></i>
                         </a>
                     </li>
                     <li role="presentation">
                         <a href="#analysis" @click="refreshStickyTable" aria-controls="analysis" role="tab" data-toggle="tab">
-                        <i class="xline xline-top"></i>
                         <span>Analysis</span>
-                        <i class="xline xline-bottom"></i>
                         </a>
                     </li>
                 </ul>
@@ -122,9 +158,8 @@
                                 <h2>BETA ALERT:</br>This page is under construction.</h2>
                                 <br>
                                 <h2>
-                                    <i class="xline xline-bottom"></i>
                                     Game Videos Feed
-                                    <span title="Games played by your bot, replay files are kept forever, but games data might be deleted every 2 weeks" class="info-icon icon-info pull-right"></span>
+                                    <!-- <span title="Games played by your bot, replay files are kept forever, but games data might be deleted every 2 weeks" class="info-icon icon-info pull-right"></span> -->
                                 </h2>
 
                                 <!-- <div v-if="!games.length" class="section-empty">
@@ -136,22 +171,23 @@
                                     <table class="table table-leader">
                                         <thead>
                                             <tr>
-                                                <th>Watch</th>
-                                                <th style="padding-left: 40px;">Result</th>
+                                                <th class="little-pd">Watch</th>
+                                                <th class="large-pd">Result</th>
                                                 <th class="text-center hidden-xs" >Map Size</th>
                                                 <th class="text-center hidden-xs">Turns</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="game in games">
-                                                <td v-bind:class="game.versions_back ? (game.versions_back % 2 ? 'old-bot-odd' : 'old-bot-even') : ''">
+                                                <td class="little-pd watch" v-bind:class="game.versions_back ? (game.versions_back % 2 ? 'old-bot-odd' : 'old-bot-even') : ''">
+                                                    <span class="video-icon"></span>
                                                     <a :href="'/play?game_id=' + game.game_id">
                                                         {{getFormattedDateForGames(game.time_played)}}
                                                     </a>
                                                 </td>
-                                                <td v-bind:class="{ 'challenge': game.challenge_id }">
+                                                <td class="large-pd td-title" v-bind:class="{ 'challenge': game.challenge_id }">
                                                     <div class="info-icon-trophy" v-if="(game.players[user.user_id] || game.players[team.leader_id]).rank === 1">
-                                                        <span class="icon-trophy"></span>
+                                                        <span class="tropy-icon"></span>
                                                     </div>
                                                     <a v-for="player in game.playerSorted"
                                                     :href="'/user?user_id=' + player.id"
@@ -183,16 +219,16 @@
                                             v-on:click="next_page"><span>Next</span></button>
                                     </div>
                                 </div>
+                                <i class="xline xline-bottom"></i>
 
                             </section>
                             <section v-if="is_my_page" class="profile-section profile-section-error">
                                 <h2>
-                                    <i class="xline xline-bottom"></i>
                                     Your Errors
-                                    <span title="Download the replay files and error logs (last 30) for games where your bot errored or timed out." class="info-icon icon-info pull-right"></span>
+                                    <!-- <span title="Download the replay files and error logs (last 30) for games where your bot errored or timed out." class="info-icon icon-info pull-right"></span> -->
                                 </h2>
                                  <div v-if="!error_games.length" class="section-empty">
-                                    <img :src="`${baseUrl}/assets/images/leaderboard-zero-icon.png`" class="icon-"></img>
+                                    <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
                                     <h2>No errors yet</h2>
                                 </div>
                                 <div>
@@ -235,6 +271,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <i class="xline xline-bottom"></i>
                             </section>
                         </div>
                     </div>
@@ -242,9 +279,8 @@
                         <div id="map_stats_pane">
                             <section class="profile-section">
                                 <h2>
-                                    <i class="xline xline-bottom"></i>
                                     Rating Analysis
-                                    <span title="Rating is calculated as mu - 3 * sigma;" class="info-icon icon-info pull-right"></span>
+                                    <!-- <span title="Rating is calculated as mu - 3 * sigma;" class="info-icon icon-info pull-right"></span> -->
                                 </h2>
                                 <!-- <div v-if="!user.mu" class="section-empty">
                                     <img :src="`${baseUrl}/assets/images/leaderboard-zero-icon.png`" class="icon-"></img>
@@ -254,26 +290,26 @@
                                 <div v-if="user.mu" class="user-profile-rank-stats">
                                     <div class="stats-item">
                                         <h3>Rating</h3>
-                                        <p>{{ Math.round(user.score * 100) / 100 }}</p>
+                                        <p>{{ Math.round(user.score * 100) }}</p>
                                     </div>
                                     <div class="stats-item">
                                         <h3>&mu;</h3>
-                                        <p>{{ Math.round(user.mu * 100) / 100 }}</p>
+                                        <p>{{ Math.round(user.mu * 100) }}</p>
                                     </div>
                                     <div class="stats-item">
                                         <h3>&sigma;</h3>
-                                        <p>{{ Math.round(user.sigma * 100) / 100 }}</p>
+                                        <p>{{ Math.round(user.sigma * 100) }}%</p>
                                     </div>
                                 </div>
+                                <i class="xline xline-bottom"></i>
                             </section>
                             <section class="profile-section">
                                 <h2>
-                                    <i class="xline xline-bottom"></i>
                                     Challenges
-                                    <span title="A challenge will run for 30 games. Challenge games will not affect your score and will never make up more than 10% of total games running while the competition is live. You can initiate up to three challenges per day." class="info-icon icon-info pull-right"></span>
+                                    <!-- <span title="A challenge will run for 30 games. Challenge games will not affect your score and will never make up more than 10% of total games running while the competition is live. You can initiate up to three challenges per day." class="info-icon icon-info pull-right"></span> -->
                                 </h2>
                                 <div v-if="!challengeGames.length" class="section-empty">
-                                    <img :src="`${baseUrl}/assets/images/leaderboard-zero-icon.png`" class="icon-"></img>
+                                    <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
                                     <h2>No Challenge yet</h2>
                                 </div>
                                 <div v-if="challengeGames.length > 0">
@@ -303,7 +339,7 @@
                                                         <tr v-for="challenge in challengeGames">
                                                             <td>
                                                               <div class="info-icon-trophy" v-if="challenge.players[0].rank == 0 && challenge.status == 'Completed'">
-                                                                <span class="icon-trophy"></span>
+                                                                <span class="tropy-icon"></span>
                                                               </div>
                                                               <a v-for="(player, index) in challenge.players" :href="`/user?user_id=${player.user_id}`" class="game-participant">
                                                                 <img :src="`https://github.com/${player.username}.png`" :alt="player.username">
@@ -328,12 +364,12 @@
                                         </div>
                                     </div>
                                 </div>
+                                <i class="xline xline-bottom"></i>
                             </section>
                             <section class="profile-section">
                                 <h2>
-                                    <i class="xline xline-bottom"></i>
                                     Nemesis
-                                    <span title="Players you most often lose/win (minimum 10 games played) against, based on analysis of the last 200 games." class="info-icon icon-info pull-right"></span>
+                                    <!-- <span title="Players you most often lose/win (minimum 10 games played) against, based on analysis of the last 200 games." class="info-icon icon-info pull-right"></span> -->
                                 </h2>
                                 <!-- <div v-if="!nemesisList.length" class="section-empty">
                                     <img :src="`${baseUrl}/assets/images/leaderboard-zero-icon.png`" class="icon-"></img>
@@ -343,10 +379,10 @@
                                 <div v-if="nemesisList.length > 0">
                                     <div class="table-sticky-container">
                                         <div class="table-wrapper">
-                                            <table class="table table-leader table-sticky">
+                                            <table class="table table-leader table-sticky high-index">
                                                 <thead>
                                                     <tr>
-                                                        <th>Nemesis</th>
+                                                        <th class="little-pd">Nemesis</th>
                                                         <th class="text-center hidden-xs">Games</th>
                                                         <th class="text-center">Win %</th>
                                                         <th class="text-center">Loss %</th>
@@ -357,7 +393,7 @@
                                                 <table class="table table-leader">
                                                     <thead>
                                                         <tr>
-                                                            <th>Nemesis</th>
+                                                            <th class="little-pd">Nemesis</th>
                                                             <th class="text-center hidden-xs">Games</th>
                                                             <th class="text-center">Win %</th>
                                                             <th class="text-center">Loss %</th>
@@ -365,7 +401,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="nemesis in nemesisList">
-                                                            <td>
+                                                            <td class="little-pd td-title">
                                                                 <a :href="'/user?user_id=' + nemesis.id"
                                                                 class="game-participant">
                                                                     <img :src="profile_images[nemesis.id]" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Placeholder_no_text.svg/2000px-Placeholder_no_text.svg.png'" />
@@ -390,12 +426,12 @@
                                         </div>
                                     </div>
                                 </div>
+                                <i class="xline xline-bottom"></i>
                             </section>
                             <section class="profile-section">
                                 <h2>
-                                    <i class="xline xline-bottom"></i>
                                     History
-                                    <span title="Rank/Rating history of your bots, the rank/rating is the last rating or rank achieved before the bot was retired." class="info-icon icon-info pull-right"></span>
+                                    <!-- <span title="Rank/Rating history of your bots, the rank/rating is the last rating or rank achieved before the bot was retired." class="info-icon icon-info pull-right"></span> -->
                                 </h2>
                                 <button
                                     type="button"
@@ -414,14 +450,14 @@
                                 <div v-if="userHistory.length > 0">
                                     <div class="table-sticky-container">
                                         <div class="table-wrapper">
-                                            <table class="table table-leader table-sticky">
+                                            <table class="table table-leader table-sticky high-index">
                                                 <thead>
                                                     <tr>
-                                                        <th>Bot Version</th>
+                                                        <th class="little-pd">Bot Version</th>
                                                         <th class="text-center">Rating</th>
                                                         <th class="text-center">Rank</th>
                                                         <th class="text-center hidden-xs">Games</th>
-                                                        <th class="hidden-xs">Retired On</th>
+                                                        <th class="hidden-xs little-pd">Retired On</th>
                                                     </tr>
                                                 </thead>
                                             </table>
@@ -429,16 +465,16 @@
                                                 <table class="table table-leader">
                                                     <thead>
                                                         <tr>
-                                                            <th>Bot Version</th>
+                                                            <th class="little-pd">Bot Version</th>
                                                             <th class="text-center">Rating</th>
                                                             <th class="text-center">Rank</th>
                                                             <th class="text-center hidden-xs">Games</th>
-                                                            <th class="hidden-xs">Retired On</th>
+                                                            <th class="hidden-xs little-pd">Retired On</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="historyItem in userHistory">
-                                                            <td>
+                                                            <td class="little-pd">
                                                                 {{historyItem.bot_version}}
                                                             </td>
                                                             <td class="text-center">
@@ -450,7 +486,7 @@
                                                             <td class="text-center hidden-xs">
                                                                 {{historyItem.last_games_played}}
                                                             </td>
-                                                            <td class="hidden-xs">
+                                                            <td class="hidden-xs little-pd">
                                                                 {{getFormattedDateForGames(historyItem.when_retired, "Still Playing")}}
                                                             </td>
                                                         </tr>
@@ -595,7 +631,7 @@
             }
           }
           return lang
-        }
+        },
       },
       methods: {
         setupStickyTable: function () {
@@ -979,6 +1015,13 @@
         },
         closeChallengeModal: function(e) {
             this.isChallengeModalOpen = false;
+        },
+        // Get the location of the data by percentage --- issue #397
+        getLeftLen(data) {
+            const dataLine = this.$refs.dataLine;
+            if(!dataLine) return
+            const left = dataLine.offsetWidth * data;
+            return { left: left + 'px' }
         }
       }
     }
