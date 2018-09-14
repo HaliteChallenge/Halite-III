@@ -64,7 +64,7 @@
       </p>
 
       <p>
-        The <code>ship.move(ship, direction)</code> function accepts the single letter strings <code>“n”, “s”, “e”, “w”</code>, which correspond to the cardinal directions, as its second argument. It costs halite to move. You might see some warnings about this in the log. If your ship does not have enough halite to move on a turn, it will stay still and collect halite. You can tell the ship to do this manually with the <code>”o”</code> move command.
+        The <code>ship.move(direction)</code> function accepts the single letter strings <code>“n”, “s”, “e”, “w”</code>, which correspond to the cardinal directions, as its argument. It costs halite to move. You might see some warnings about this in the log. If your ship does not have enough halite to move on a turn, it will stay still and collect halite. You can tell the ship to do this manually with the <code>”o”</code> move command.
       </p>
 
       <p>
@@ -118,7 +118,7 @@ logging.info("Ship {} has {} halite.".format(ship.id, ship.halite_amount))</code
       </p>
 
       <p>
-        Now your bot will tell you how much halite each ship currently holds. Ships can hold a maxiumum of 1,000 halite. You might want to experiment with different conditions for when to collect halite. An efficient collection strategy will build your reserves of halite quickly, and logging is there
+        Now your bot will tell you how much halite each ship currently holds. Ships can hold a maxiumum of 1,000 halite. When your ship collects halite on its turn, it will collect 25% of halite available in its location. If this evaluates to 0 halite, you collect the remaining halite from the location. You might want to experiment with different conditions for when to collect halite. An efficient collection strategy will build your reserves of halite quickly, and logging is there
         to help you debug your code.
       </p>
 

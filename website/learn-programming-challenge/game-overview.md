@@ -38,7 +38,7 @@ Command|Halite Cost or Gain
 Spawn | Spend: 1000 halite
 Convert into a drop-off  | Spend: 4000 halite deducted from player's stored halite. The converted ship's halite cargo is destroyed, and the halite in the sea under the new dropoff is set to 0.
 Move (n, s, e w) | Spend: 10% of halite available at turn origin cell is deducted from ship’s current halite
-Move (o) | Collect: 25% of halite available in cell. Ships can carry up to 1000 halite.
+Move (o) | Collect: 25% of halite available in cell. If this evaluates to 0 halite, you collect the remaining halite in the cell. Ships can carry up to 1000 halite.
 
 <br/><br/>
 
