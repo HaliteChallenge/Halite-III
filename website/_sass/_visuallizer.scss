@@ -1,5 +1,5 @@
 .visuallizer-container{
-  padding-top: 80px;
+  padding-top: 120px;
 }
 .post-game-dashboard{
   margin-top: 40px;
@@ -20,6 +20,13 @@
 
     .visualizer-stats-column {
         flex: 1;
+        .game-heading-date {
+          margin-bottom: 28px;
+          color: #B4E6FF;	
+          font-size: 24px;	
+          font-weight: 500;	
+          line-height: 29px; 
+        }
     }
 }
 
@@ -30,8 +37,6 @@
 
 .game-heading{
   text-align: center;
-  padding-top: 15px;
-  padding-bottom: 15px;
   position: relative;
   .xline{
     background-color: #474951;
@@ -80,6 +85,12 @@
       [class*="icon"]{
         font-size: 1.2em;
         vertical-align: middle;
+      }
+      .circle {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
       }
     }
   }
@@ -143,8 +154,8 @@
 }
 
 .game-replay{
-  padding: 15px 0;
   position: relative;
+  margin-top: 17px;
   >.xline{
     top: 50%;
     transform: translateY(-50%);
@@ -155,7 +166,7 @@
   }
   .game-replay-viewer {
     text-align: center;
-    padding: 20px 30px;
+    padding: 22px 30px 20px;
     cursor: pointer;
   }
   .game-replay-container{

@@ -6,11 +6,14 @@
         <h4 :class="'card-player-name player-'+ (parseInt(index)+1) ">
           {{replay.players[index].name}}
         </h4>
-        <div class="player-current-halite" :title="extraPlayerStats(index)">
-          {{frame > 0 ? replay.full_frames[frame - 1].energy[index] : replay.GAME_CONSTANTS.INITIAL_ENERGY}}
-          <!-- <span>
-            / {{stats && stats.frames[stats.frames.length -1].players[index].depositedHalite}}
-          </span> -->
+        <div class="player-current-halite">
+          {{currentHalite[index]}}
+          <span
+            class="current-percent"
+            :class="currentEfficiency(index) >= 0.5 ? 'green':'red'"
+            title="Efficiency (current halite / halite collected so far)">
+            {{(currentEfficiency(index) * 100).toFixed(2)}}%
+          </span>
         </div>
         <img class="stats-cube" :src="`/assets/images/visualizer/cube1.png`" alt="cube">
       </div>
@@ -63,13 +66,25 @@ export default {
       }
       return d3.max(this.chartData.map(player => d3.max(player, (d) => d.y)), (y) => y);
     },
+    currentHalite() {
+      let result = {
+      }
+      for(let index in this.statistics) {
+        result[index] = this.frame > 0? this.replay.full_frames[this.frame - 1].energy[index]: this.replay.GAME_CONSTANTS.INITIAL_ENERGY
+      }
+      return result
+    },
   },
   methods: {
+    currentEfficiency(index) {
+      const deposited = this.replay.GAME_CONSTANTS.INITIAL_ENERGY + this.stats.frames[this.frame].players[index].depositedHalite
+      return this.currentHalite[index] / deposited
+    },
     numberSep: function (number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
     extraPlayerStats(index) {
-      const playerStats = replay.game_statistics.player_statistics[index];
+      const playerStats = this.replay.game_statistics.player_statistics[index];
       return `Efficiency ${(playerStats.mining_efficiency * 100).toFixed(1)}%; total halite collected ${playerStats.total_mined}, inspiration bonus halite ${playerStats.total_bonus}, captured ships collected ${playerStats.total_mined_from_captured} halite`;
     },
   }
@@ -88,7 +103,7 @@ export default {
     border-bottom: 1.2px solid rgba(8,27,83,.1);
   }
   .card-player-left{
-    min-width: 125px;
+    min-width: 175px;
   }
   .card-player-name{
     font-size: 14px;
@@ -111,6 +126,16 @@ export default {
   .player-current-halite{
     font-size: 28px;
     line-height: 34px;
+    position: relative;
+    .current-percent{
+      font-size: 16px;
+      &.red {
+        color: red;
+      }
+      &.green{
+        color: green;
+      }
+    }
   }
   .stats-cube{
     width: 60px;

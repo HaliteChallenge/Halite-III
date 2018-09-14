@@ -294,14 +294,21 @@ void SpawnTransaction::commit() {
                 entity_updated(entity.id);
                 event_generated<SpawnEvent>(player.factory, 0, player.id, entity.id);
             } else {
-                error_generated<SelfCollisionError<SpawnCommand>>(player_id, spawn, ErrorContext(), player.factory,
-                                                                  std::vector<Entity::id_type>{cell.entity},
-                                                                  !Constants::get().STRICT_ERRORS);
-                event_generated<CollisionEvent>(player.factory, std::vector<Entity::id_type>{cell.entity});
                 // There is a collision, destroy the existing.
                 auto &entity = store.get_entity(cell.entity);
                 auto &player = store.get_player(entity.owner);
-                player.energy += entity.energy;
+                auto &owner = store.get_player(cell.owner);
+
+                if (entity.owner == cell.owner) {
+                    error_generated<SelfCollisionError<SpawnCommand>>(player_id, spawn, ErrorContext(), player.factory,
+                                                                      std::vector<Entity::id_type>{cell.entity},
+                                                                      !Constants::get().STRICT_ERRORS);
+                    event_generated<CollisionEvent>(player.factory, std::vector<Entity::id_type>{cell.entity});
+                }
+
+                // Use dump_energy in case the collision was from a
+                // different player.
+                dump_energy(store, entity, owner.factory, cell, entity.energy);
                 player.remove_entity(cell.entity);
                 store.delete_entity(cell.entity);
                 cell.entity = Entity::None;

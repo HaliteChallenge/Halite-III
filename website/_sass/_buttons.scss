@@ -1,21 +1,24 @@
-.btn, a.btn{
+.btn,
+a.btn {
   border-radius: 4px;
   padding: 18px 25px;
   line-height: 1em;
-  font-weight: bold;
+  font-weight: 500;
   font-size: 24px;
   text-align: center;
   text-transform: uppercase;
   border: 0;
 }
 
-.btn-sm, a.btn-sm{
-  font-size: 16px;
+.btn-sm,
+a.btn-sm {
   padding: 10px 15px 9px 15px;
+  font-size: 16px;
 }
 
-.btn-primary, a.btn-primary{
+.btn-primary,
+a.btn-primary {
   color: #fff;
-  background-image: linear-gradient(-180deg, #97DDFF 0%, #003A99 100%);
+  background-image: linear-gradient(-180deg, #fad961 0%, #f76b1c 100%);
   border: 0;
 }

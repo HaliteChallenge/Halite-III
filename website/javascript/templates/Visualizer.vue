@@ -3,10 +3,10 @@
   <div class="visualizer-row">
     <div class="visualizer-column">
       <div class="game-heading">
-        <p class="game-heading-date" v-if="game">{{game.time_played | moment("MMM Do, YY - HH:mm:ss")}}</p>
         <div class="game-heading-players">
           <div class="short">
             <span :class="`player color-${sortedPlayers[0].index + 1}`" v-if="sortedPlayers.length >= 1">
+                <span :class="`circle bg-player-${sortedPlayers[0].index + 1}`"></span>
                 <TierPopover :tier="tierClass(sortedPlayers[0].tier)"/>
                 <a v-if="sortedPlayers[0].user_id" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].user_id}`">{{sortedPlayers[0].name}}</a>
                 <span v-if="!sortedPlayers[0].user_id" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
@@ -15,6 +15,7 @@
             </span>
             <span class="action">defeats</span>
             <span :class="`player color-${sortedPlayers[1].index + 1}`" v-if="sortedPlayers.length >= 2">
+                <span :class="`circle bg-player-${sortedPlayers[1].index + 1}`"></span>
                 <TierPopover :tier="tierClass(sortedPlayers[1].tier)"/>
                 <a class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[1].user_id}`">{{sortedPlayers[1].name}}</a>
               </span>
@@ -22,12 +23,14 @@
           </div>
           <div class="long">
             <span :class="`player color-${sortedPlayers[0].index + 1}`" v-if="sortedPlayers.length >= 1">
+                <span :class="`circle bg-player-${sortedPlayers[0].index + 1}`"></span>
                 <TierPopover :tier="tierClass(sortedPlayers[0].tier)"/>
                 <a v-if="sortedPlayers[0].user_id" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].user_id}`">{{sortedPlayers[0].name}}</a>
                 <span v-if="!sortedPlayers[0].user_id" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
             </span>
             <span class="action">defeats</span>
             <span :class="`player color-${player.index + 1}`" v-for="(player, index) in sortedPlayers" v-if="index > 0" :key="index">
+                <span :class="`circle bg-player-${player.index + 1}`"></span>
                 <TierPopover :tier="tierClass(player.tier)"/>
                 <a v-if="player.user_id" class="player-name-anchor" :href="`/user/?user_id=${player.user_id}`">{{player.name}}</a>
                 <span v-if="!player.user_id" class="player-name-anchor" :href="`/user/?user_id=${player.user_id}`">{{player.name}}</span>
@@ -124,6 +127,7 @@
 
     </div>
     <div class="visualizer-stats-column">
+      <p class="game-heading-date" v-if="game">{{game.time_played | moment("MMM Do, YY - HH:mm:ss")}}</p>
       <div class="statistics stats-panel">
         <label class="panel-name">GAME/MAP STATS</label>
         <ul class="panel-body list-hori">
@@ -877,13 +881,14 @@ export default {
     font-weight: normal;
   }
   .panel-name{
+    margin-bottom: 0;
     color: #ECFFFB;
     font-size: 16px;
     letter-spacing: 0.6px;
     line-height: 19px;
   }
   .panel-body{
-    margin: 15px 0;
+    margin: 16px 0;
     background: #fff;
     border-radius: 4px;
     box-shadow: inset 0 1px 3px 0 rgba(0,0,0,0.5), inset 0 1px 14px 0 rgba(151,182,255,0.45);
