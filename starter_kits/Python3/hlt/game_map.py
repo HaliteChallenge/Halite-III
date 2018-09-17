@@ -165,6 +165,8 @@ class GameMap:
         :param target: The target to where calculate
         :return: The distance between these items
         """
+        source = self.normalize(source)
+        target = self.normalize(target)
         resulting_position = abs(source - target)
         return min(resulting_position.x, self.width - resulting_position.x) + \
             min(resulting_position.y, self.height - resulting_position.y)
@@ -201,6 +203,8 @@ class GameMap:
         :param destination: The destination towards which you wish to move your object.
         :return: A list of valid (closest) Directions towards your target.
         """
+        source = self.normalize(source)
+        destination = self.normalize(destination)
         possible_moves = []
         distance = abs(destination - source)
         y_cardinality, x_cardinality = self._get_target_direction(source, destination)
@@ -221,6 +225,8 @@ class GameMap:
         :param destination: Ending position
         :return: A direction.
         """
+        # No need to normalize destination, since get_unsafe_moves
+        # does that
         for direction in self.get_unsafe_moves(ship.position, destination):
             target_pos = ship.position.directional_offset(direction)
             if not self[target_pos].is_occupied:
