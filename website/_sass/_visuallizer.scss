@@ -30,6 +30,14 @@
     }
 }
 
+@media (min-width: $screen-md-min) and (max-width: $screen-lg-min){
+  .visualizer-row {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
 .visuallizer-loading-message {
   text-align: center;
   padding: 20px 0px;
