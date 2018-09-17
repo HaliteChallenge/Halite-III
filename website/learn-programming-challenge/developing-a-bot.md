@@ -48,7 +48,7 @@ Your bot will be killed if it exceeds the following time limits during game exec
 
 To prevent your bot from timing out, you should optimize your code wherever possible. You might implement a timer to ensure that your bot returns commands in time to prevent losing the match.
 
-When debugging timeout issues, it can be helpful to disable game engine timeouts. To do so, append the -t flag when running a game:
+When debugging timeout issues, it can be helpful to disable game engine timeouts. To do so, append the --no-timeouts flag when running a game:
 `TODO CLI example`
 
 <br/>
@@ -59,7 +59,7 @@ Your bot could be crashing because of errors during game execution.
 
 <br/>
 ##### Reproducing Maps
-You can replay games with the exact same map to debug or tweak bot behavior. To do so, specify a map seed with the -s flag when running a game:
+You can replay games with the exact same map to debug or tweak bot behavior. To do so, specify a map seed with the -s or --seed flag follwed by an integer when running a game:
 TODO
 
 <br/>
