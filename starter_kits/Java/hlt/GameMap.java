@@ -27,8 +27,11 @@ public class GameMap {
     }
 
     public int calculateDistance(final Position source, final Position target) {
-        final int dx = Math.abs(source.x - target.x);
-        final int dy = Math.abs(source.y - target.y);
+        final Position normalizedSource = normalize(source);
+        final Position normalizedTarget = normalize(target);
+
+        final int dx = Math.abs(normalizedSource.x - normalizedTarget.x);
+        final int dy = Math.abs(normalizedSource.y - normalizedTarget.y);
 
         final int toroidal_dx = Math.min(dx, width - dx);
         final int toroidal_dy = Math.min(dy, height - dy);
@@ -45,20 +48,23 @@ public class GameMap {
     public ArrayList<Direction> getUnsafeMoves(final Position source, final Position destination) {
         final ArrayList<Direction> possibleMoves = new ArrayList<>();
 
-        final int dx = Math.abs(source.x - destination.x);
-        final int dy = Math.abs(source.y - destination.y);
+        final Position normalizedSource = normalize(source);
+        final Position normalizedDestination = normalize(destination);
+
+        final int dx = Math.abs(normalizedSource.x - normalizedDestination.x);
+        final int dy = Math.abs(normalizedSource.y - normalizedDestination.y);
         final int wrapped_dx = width - dx;
         final int wrapped_dy = height - dy;
 
-        if (source.x < destination.x) {
+        if (normalizedSource.x < normalizedDestination.x) {
             possibleMoves.add(dx > wrapped_dx ? Direction.WEST : Direction.EAST);
-        } else if (source.x > destination.x) {
+        } else if (normalizedSource.x > normalizedDestination.x) {
             possibleMoves.add(dx < wrapped_dx ? Direction.WEST : Direction.EAST);
         }
 
-        if (source.y < destination.y) {
+        if (normalizedSource.y < normalizedDestination.y) {
             possibleMoves.add(dy > wrapped_dy ? Direction.NORTH : Direction.SOUTH);
-        } else if (source.y > destination.y) {
+        } else if (normalizedSource.y > normalizedDestination.y) {
             possibleMoves.add(dy < wrapped_dy ? Direction.NORTH : Direction.SOUTH);
         }
 
@@ -66,6 +72,7 @@ public class GameMap {
     }
 
     public Direction naiveNavigate(final Ship ship, final Position destination) {
+        // getUnsafeMoves normalizes for us
         for (final Direction direction : getUnsafeMoves(ship.position, destination)) {
             final Position targetPos = ship.position.directionalOffset(direction);
             if (!at(targetPos).isOccupied()) {
