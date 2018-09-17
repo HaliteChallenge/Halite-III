@@ -34,9 +34,9 @@ body{
   color: $foreground;
   font-size: 1.6rem;
 
-  > .body {
-    margin-top: 30px;
-  }
+  // > .body {
+  //   margin-top: 30px;
+  // }
 
   &.noscroll{
     overflow: hidden;

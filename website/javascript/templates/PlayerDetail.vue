@@ -103,7 +103,7 @@ export default {
     border-bottom: 1.2px solid rgba(8,27,83,.1);
   }
   .card-player-left{
-    min-width: 175px;
+    min-width: 140px;
   }
   .card-player-name{
     font-size: 14px;
@@ -124,10 +124,13 @@ export default {
     }
   }
   .player-current-halite{
+    display: flex;
+    align-items: baseline;
     font-size: 28px;
     line-height: 34px;
     position: relative;
     .current-percent{
+      margin-left: 5px;
       font-size: 16px;
       &.red {
         color: red;
@@ -149,6 +152,8 @@ export default {
     margin: 0;
     padding-left: 10px;
     li{
+      display: flex;
+      justify-content: space-between;
       line-height: 33px;
       padding-top: 10px;
       border-bottom: 1.2px solid rgba(8,27,83,.1);
@@ -159,8 +164,22 @@ export default {
         border: none;
       }
       span{
-        float: right;
         color: #003587;
+      }
+    }
+  }
+
+  @media (min-width:1200px) and (max-width: 1400px) {
+    .chat-box {
+      margin-left: -15px;
+    }
+    .player-stats-list {
+      li {
+        padding-right: 20px;
+        width: auto;
+        > span {
+          margin-left: 15px;
+        }
       }
     }
   }
