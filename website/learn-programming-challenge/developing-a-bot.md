@@ -22,7 +22,7 @@ When your bot times out or errors on the game servers, we save and display a log
 <br/>
 ##### Test new vs. old before upload
 Before submitting a new bot, we recommend running some games against the previous version of your bot. You can play your bot against older versions using the CLI, or on our website here.
-<br/><br/> 
+<br/><br/>
 
 </div>
 <div class="doc-section" markdown="1">
@@ -36,7 +36,7 @@ You will get an email notifying you if your bot fails to compile on the game ser
 * **Infrastructure issues:** You can reach out to the Halite Team to add first class support for your bot. To read more about customizing a bot, check out our guide here.
 * **Incorrect bot archive structure:** Your file structure should adhere to the following format:
   * You should have a `MyBot.{extension for language}` in the root folder of your zip archive.
-  * If you are building on top of a starter kit provided by us, make sure to include the hlt folder.
+  * If you are building on top of a starter kit provided by us, make sure to include the /hlt folder.
 
 <br/>
 ##### Timeout Failures
@@ -49,7 +49,7 @@ Your bot will be killed if it exceeds the following time limits during game exec
 To prevent your bot from timing out, you should optimize your code wherever possible. You might implement a timer to ensure that your bot returns commands in time to prevent losing the match.
 
 When debugging timeout issues, it can be helpful to disable game engine timeouts. To do so, append the --no-timeouts flag when running a game:
-`TODO CLI example`
+`./halite -vvv --width 32 --height 32 --no-timeouts "python MyBot.py" "python MyBetterBot.py"`
 
 <br/>
 ##### In Game Failures
@@ -59,8 +59,8 @@ Your bot could be crashing because of errors during game execution.
 
 <br/>
 ##### Reproducing Maps
-You can replay games with the exact same map to debug or tweak bot behavior. To do so, specify a map seed with the -s or --seed flag follwed by an integer when running a game:
-TODO
+You can replay games with the exact same map to debug or tweak bot behavior. To do so, specify a map seed with the -s or --seed flag followed by an integer when running a game:
+`./halite -vvv --width 32 --height 32 --seed 4 "python MyBot.py" "python MyBetterBot.py"`
 
 <br/>
 ##### Debugging with an IDE
