@@ -11,13 +11,13 @@
       <p>
         You might find a couple API methods helpful:
       <ul>
-        <li><code>game_map[position].directional_offset(test_direction)</code> will return a location one square in the test_direction from your ship.</li>
-        <li><code>game_map[position].get_surrounding_cardinals()</code> will return a list of the positions of each cardinal direction from the given position.</li>
+        <li><code>ship.position.directional_offset(test_direction)</code> will return a location one square in the test_direction from your ship.</li>
+        <li><code>position.get_surrounding_cardinals()</code> will return a list of the positions of each cardinal direction from the given position.</li>
         <li><code>game_map[position].halite_amount</code> will return the halite at a given map location.</li>
       </ul>
       </p>
       <p>
-        Moving across heavy concentrations of halite costs more. This is because the movement cost is 10% of the halite in the cell your ship started the turn in, which is deducted from your ship’s halite cargo. Travelling on lower halite cells might be another efficient movement strategy to consider.
+        Moving across heavy concentrations of halite costs more. This is because the movement cost is 10% of the halite in the cell your ship started the turn in, which is deducted from your ship’s halite cargo. Traveling on lower halite cells might be another efficient movement strategy to consider.
 
       </p>
 
