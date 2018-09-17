@@ -94,6 +94,7 @@ export default{
         }
       },
       async validateBot() {
+        this.showMessage('error', null)
         const user_id = this.user.user_id
         let my_bot_present = false
 
@@ -110,9 +111,42 @@ export default{
         }
 
         const language_project_file_identifiers = ['cargo.toml', 'project.clj', 'package.swift', 'halite2.sln', 'mix.lock', 'build.gradle', 'build.sbt', 'stack.yaml']
+        // Identify a common root folder, to allow players to zip up a folder.
+
+        const roots = new Set();
+        let fileInRoot = false
         zip.forEach((relativePath, zipEntry) => {
-          if (zipEntry.name.startsWith('MyBot.') ||
-              language_project_file_identifiers.includes(zipEntry.name.toLowerCase())) {
+          const parts = zipEntry.name.split('/')
+          if (parts.length > 1) {
+            // Root directory or child of a directory (filepath has at least one '/')
+            roots.add(parts[0])
+          }
+          else {
+            // File directly placed in root
+            fileInRoot = true
+          }
+        })
+
+        const rootsList = []
+        for (const root of roots.values()) {
+          if (root !== '__MACOSX' && root !== '.DS_Store') {
+            rootsList.push(root)
+          }
+        }
+
+        const root = (!fileInRoot && rootsList.length === 1) ? rootsList[0] : '';
+        console.log(zip, root)
+
+        zip.forEach((relativePath, zipEntry) => {
+          // Remove common root directory from filepath
+          let { name } = zipEntry
+          if (name.startsWith(root)) {
+            name = name.slice(root.length + 1)
+          }
+          console.log(name)
+
+          if (name.startsWith('MyBot.') ||
+              language_project_file_identifiers.includes(name.toLowerCase())) {
             my_bot_present = true
           }
         })

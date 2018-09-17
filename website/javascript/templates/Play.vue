@@ -150,12 +150,10 @@
       $('body').on('drop dragdrop', (e) => {
         // verify if the dropzone is not the bot uploader zone
         const files = e.originalEvent.dataTransfer.files
-        console.log(files)
         if (files.length > 0) {
           e.preventDefault()
 
           const [f] = files;
-          console.log(f)
           if (f) { // f.type === "application/zip"
             Vue.set(ins, 'botFile', f)
             Vue.set(ins, 'currentView', 'botUpload')
@@ -184,7 +182,12 @@
   },
     methods: {
       showMessage: function (type = 'success', content) {
-        Alert.show(content, type)
+        if (content === null) {
+          Alert.hide()
+        }
+        else {
+          Alert.show(content, type)
+        }
       },
       play_replay: function (files) {
         this.gaData('play', 'select-replay-file-another', 'replay-flow')
