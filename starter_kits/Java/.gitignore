@@ -1,5 +1,4 @@
-MyBot
-Makefile
 *.hlt
 *.log
 *~
+*.class
