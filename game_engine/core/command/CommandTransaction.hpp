@@ -15,6 +15,20 @@ class CommandTransaction final : public BaseTransaction {
     id_map<Player, std::pair<energy_type, ErrorContext>> expenses;
     /** First command which broke expense requirement. */
     id_map<Player, std::reference_wrapper<const Command>> expenses_first_faulty;
+    /** Commands which break ownership requirement. */
+    id_map<Player, std::vector<std::reference_wrapper<const MoveCommand>>> move_ownership_faulty;
+    /** Commands which break ownership requirement. */
+    id_map<Player, std::vector<std::reference_wrapper<const ConstructCommand>>> construct_ownership_faulty;
+
+    /**
+     * Check that a command operates on an entity owned by the player.
+     * @param player The player.
+     * @param entity The entity.
+     * @param command The command.
+     */
+    // this is a terrible way to do it, I apologize
+    bool check_ownership(const Player &player, Entity::id_type entity, const MoveCommand &command);
+    bool check_ownership(const Player &player, Entity::id_type entity, const ConstructCommand &command);
 
     /**
      * Add a command occurrence for an entity.

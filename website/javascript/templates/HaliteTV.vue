@@ -96,11 +96,9 @@ const showGame = (game) => {
     .then((libhaliteviz) => {
       // just for electron
       if (window && window.process && window.process.type) {
-        libhaliteviz.setAssetRoot('assets/js/')
-      } else {
-        libhaliteviz.setAssetRoot('')
+        return libhaliteviz.setAssetRoot('assets/js/').then(() => libhaliteviz)
       }
-      return libhaliteviz;
+      return libhaliteviz.setAssetRoot('').then(() => libhaliteviz)
     }).then((libhaliteviz) => {
       return libhaliteviz.parseReplay(buffer).then((replay) => {
         let outerContainer = document.getElementById('halitetv-visualizer')
@@ -264,5 +262,3 @@ const showGame = (game) => {
     right: -15px;
   }
 </style>
-
-
