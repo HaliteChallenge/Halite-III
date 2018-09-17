@@ -269,6 +269,10 @@ def delete_user_bot(intended_user, bot_id, *, user_id):
 @util.cross_origin(methods=["GET"])
 @api_util.requires_login(accept_key=True)
 def get_user_bot_compile_log(intended_user, bot_id, *, user_id):
+    if inteded_user != user_id:
+        raise api_util.user_mismatch_error(
+            message="Cannot get bot compile log for another user.")
+
     with model.read_conn() as conn:
         bot = conn.execute(sqlalchemy.sql.select([
             model.bots.c.id,
