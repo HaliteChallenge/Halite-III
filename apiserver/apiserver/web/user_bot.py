@@ -288,6 +288,9 @@ def get_user_bot_compile_log(intended_user, bot_id, *, user_id):
         log_file = "compilation_{}_{}.log".format(intended_user, bot_id)
         try:
             blob = bucket.get_blob(log_file)
+            if not blob:
+                raise util.APIError(404, message="Bot error log not found.")
+
             buffer = io.BytesIO()
             blob.download_to_file(buffer)
             buffer.seek(0)
