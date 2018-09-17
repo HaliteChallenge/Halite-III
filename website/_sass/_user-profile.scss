@@ -556,6 +556,9 @@
         }
       }
       .section-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         text-align: center;
         h2 {
           margin: 15px 0 0;
@@ -720,5 +723,44 @@
         }
       }
     }
+  }
+}
+
+.btn.challenge-btn {
+  display: flex;
+  align-items: center;
+  margin-top: 24px;
+  padding: 13px;
+  height: 44px;
+  width: 220px;
+  border-radius: 4px;
+  background: linear-gradient(
+    179.96deg,
+    #6ed6ff 0%,
+    #20aef5 41.51%,
+    #0f8de8 76.79%,
+    #0070dc 100%
+  );
+  &.right-btn {
+    position: absolute;
+    top: -11px;
+    right: 0;
+    margin-top: 0;
+  }
+  > span {
+    font-size: 20px;
+    font-weight: 500;
+    color: #ffffff;
+    text-shadow: 0 1px 8px #00abff;
+  }
+  &:after {
+    content: "";
+    display: inline-block;
+    margin: -4px 0 0 10px;
+    width: 12px;
+    height: 18px;
+    background: url("/assets/images/icons/pixelate-arrow.png") center center
+      no-repeat;
+    background-size: cover;
   }
 }

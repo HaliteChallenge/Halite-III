@@ -308,9 +308,18 @@
                                     Challenges
                                     <!-- <span title="A challenge will run for 30 games. Challenge games will not affect your score and will never make up more than 10% of total games running while the competition is live. You can initiate up to three challenges per day." class="info-icon icon-info pull-right"></span> -->
                                 </h2>
+                                <div class="challenge-modal" v-if="!is_my_page">
+                                    <button class="btn challenge-btn" v-if="challengeGames.length" :class="{ 'right-btn': challengeGames.length }" @click="openChallengeModal">
+                                        <span>Challenge John</span>
+                                    </button>
+                                    <ChallengeModal :baseUrl="baseUrl" :isOn="isChallengeModalOpen" :close="closeChallengeModal" :username="user.username"></ChallengeModal>
+                                </div>
                                 <div v-if="!challengeGames.length" class="section-empty">
                                     <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
                                     <h2>No Challenge yet</h2>
+                                    <button class="btn challenge-btn" @click="openChallengeModal">
+                                        <span>Challenge John</span>
+                                    </button>
                                 </div>
                                 <div v-if="challengeGames.length > 0">
                                     <div class="table-sticky-container">
