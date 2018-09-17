@@ -888,6 +888,7 @@ export default {
     line-height: 19px;
   }
   .panel-body{
+    display: flex;
     margin: 16px 0;
     background: #fff;
     border-radius: 4px;
@@ -910,6 +911,9 @@ export default {
       font-size: 14px;
       line-height: 17px;
       color: #1B1B1B;
+      &:last-child {
+      border-right: none;
+      }
       span{
         color: #003285;
         font-size: 18px;
