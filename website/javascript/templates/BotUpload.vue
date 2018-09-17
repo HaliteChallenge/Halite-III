@@ -61,8 +61,10 @@ export default{
       }
   },
     mounted: function () {
-      let user_id
-  },
+      if (this.bot) {
+        this.validateBot()
+      }
+    },
     computed: {
       hasBots: function () {
         return this.botsList.length > 0
@@ -91,33 +93,46 @@ export default{
           this.view = this.viewList[view]
         }
       },
-      upload: function () {
+      async validateBot() {
         const user_id = this.user.user_id
         let my_bot_present = false
-        this.gaData('play', 'click-confirm-bot', 'play-submit-flow')
-        JSZip.loadAsync(this.botFile, () => {
-        }).then((zip) => {
-          zip.forEach(function (relativePath, zipEntry) {
-            const language_project_file_identifiers = ['cargo.toml', 'project.clj', 'package.swift', 'halite2.sln', 'mix.lock', 'build.gradle', 'build.sbt', 'stack.yaml']
-            if (zipEntry.name.startsWith('MyBot.') ||
-                language_project_file_identifiers.includes(zipEntry.name.toLowerCase())) {
-              my_bot_present = true
-            }
-          })
 
-          return my_bot_present
-        }, () => {
-          // Could not extract zip
+        let zip;
+        try {
+          zip = await JSZip.loadAsync(this.botFile)
+        }
+        catch (e) {
+          console.warn("Could not load bot file", e)
           const error_message = 'Not a valid zip archive. Your bot must be contained in a zip file.'
           this.showMessage('error', error_message)
           this.errorMessage = error_message
-          return Promise.reject();
-        }).then((my_bot_present) => {
+          return false
+        }
+
+        const language_project_file_identifiers = ['cargo.toml', 'project.clj', 'package.swift', 'halite2.sln', 'mix.lock', 'build.gradle', 'build.sbt', 'stack.yaml']
+        zip.forEach((relativePath, zipEntry) => {
+          if (zipEntry.name.startsWith('MyBot.') ||
+              language_project_file_identifiers.includes(zipEntry.name.toLowerCase())) {
+            my_bot_present = true
+          }
+        })
+
+        if (!my_bot_present) {
+          this.gaData('play', 'submit-error-zip', 'play-submit-flow')
+          const error_message = 'The zip archive does not contain a root MyBot.{ext} file. MyBot.{ext} is required to be present in the root of the zip file. This is case-sensitive!'
+          this.showMessage('error', error_message)
+          this.errorMessage = error_message
+          return false
+        }
+
+        return true
+      },
+      upload: function () {
+        const user_id = this.user.user_id
+        this.gaData('play', 'click-confirm-bot', 'play-submit-flow')
+
+        this.validateBot().then((my_bot_present) => {
           if (!my_bot_present) {
-            this.gaData('play', 'submit-error-zip', 'play-submit-flow')
-            const error_message = 'The zip archive does not contain a root MyBot.{ext} file. MyBot.{ext} is required to be present in the root of the zip file. This is case-sensitive!'
-            this.showMessage('error', error_message)
-            this.errorMessage = error_message
             return
           }
 
@@ -161,7 +176,15 @@ export default{
       gaData: function (category, action, label) {
         utils.gaEvent(category, action, label)
       }
-    }
+    },
+    watch: {
+      selectedBot() {
+        this.validateBot()
+      },
+      botsList() {
+        this.validateBot()
+      },
+    },
   }
 </script>
 <style>

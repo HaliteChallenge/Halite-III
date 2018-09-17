@@ -21,7 +21,7 @@
           <h4 class="mt3">LOCAL DEVELOPMENT</h4>
     <!--  <p class="sub-title">Submit your bot here</p> -->
           <p>Or, <a href="/learn-programming-challenge/downloads">download</a> the game environment and starter kit bundle for your platform and language of choice.</p>
-          <p>To submit your local Halite bot in the competition, upload a .zip file here. The root folder of your zip should contain a MyBot.{extension} file and the /hlt folder from the starter kit.</p>
+          <p>To submit your local Halite bot in the competition, upload a .zip file here. The root of your zip should contain a MyBot.{extension} file and the /hlt folder from the starter kit.</p>
           <halite-upload-zone
             description="Select File or Drop File to <br> Upload your Bot"
             buttonText = "Select File"
@@ -35,7 +35,7 @@
       </div>
     </div>
     <div id="halite-uploaded-bot" v-if="currentView=='botUpload'">
-      <bot-upload :user="user" :bot-file="botFile" :bots-list="botsList"  v-if="currentView='botUpload'"
+      <bot-upload ref="botUploadComponent" :user="user" :bot-file="botFile" :bots-list="botsList"  v-if="currentView='botUpload'"
       :showMessage="showMessage"></bot-upload>
     </div>
 
@@ -148,24 +148,23 @@
       // handle whole page drag and drop
       const ins = this
       $('body').on('drop dragdrop', (e) => {
-        // get the bot uploader container
-        const container = document.getElementById('bot-upload-container')
-
         // verify if the dropzone is not the bot uploader zone
         const files = e.originalEvent.dataTransfer.files
-        if ((!container || !container.contains(e.target)) && files.length > 0) {
+        console.log(files)
+        if (files.length > 0) {
           e.preventDefault()
 
           const [f] = files;
+          console.log(f)
           if (f) { // f.type === "application/zip"
             Vue.set(ins, 'botFile', f)
             Vue.set(ins, 'currentView', 'botUpload')
+            Vue.nextTick(() => {
+              if (ins.$refs.botUploadComponent) {
+                ins.$refs.botUploadComponent.validateBot()
+              }
+            })
           }
-          // else {
-          //   /* let outerContainer = document.getElementById('halitetv-visualizer') */
-          //   /* outerContainer.innerHTML = '' */
-          //   ins.play_replay(files)
-          // }
         }
       })
       $('body').on('dragenter', (e) => {
@@ -215,15 +214,13 @@
         utils.gaEvent(category, action, label)
       },
       upload_bot(files) {
-        if(files.length && files[0].type === "application/zip") {
+        window.scrollTo(0, 0)
+        if (files.length && files[0].type === "application/zip") {
           this.botFile = files[0]
           this.currentView = 'botUpload'
         } else {
-          // Alert.show('only upload zip file', 'error')
-          console.log('only upload zip file')
+          Alert.show('You may only upload a zip file.', 'error')
         }
-        // api.update_bot(this.user.user_id, this.botsList.length > 0 ? 0 : null, files[0], (progress) => {
-        // })
       },
     }
   }
