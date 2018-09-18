@@ -171,6 +171,8 @@ class GameMap {
      * @returns The distance between these items
     */
     calculateDistance(source, target) {
+        source = this.normalize(source);
+        target = this.normalize(target);
         const delta = source.sub(target).abs();
         return Math.min(delta.x, this.width - delta.x) +
             Math.min(delta.y, this.height - delta.y);
@@ -227,6 +229,9 @@ class GameMap {
             throw new Error("source and destination must be of type Position");
         }
 
+        source = this.normalize(source);
+        destination = this.normalize(destination);
+
         const possibleMoves = [];
         const distance = destination.sub(source).abs();
         const [ yDir, xDir ] = GameMap._getTargetDirection(source, destination);
@@ -248,6 +253,8 @@ class GameMap {
      * @return {Direction}
      */
     naiveNavigate(ship, destination) {
+        // No need to normalize destination since getUnsafeMoves does
+        // that
         for (const direction of this.getUnsafeMoves(ship.position, destination)) {
             const targetPos = ship.position.directionalOffset(direction);
 

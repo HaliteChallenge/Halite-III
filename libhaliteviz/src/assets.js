@@ -42,7 +42,7 @@ export let HALO_SPRITE = null;
 
 function loadSpritesheet(meta, textureImage) {
     return new Promise((resolve) => {
-        const texture = PIXI.BaseTexture.fromImage(textureImage);
+        const texture = PIXI.BaseTexture.fromImage(textureImage, 'use-credentials');
         const sheet = new PIXI.Spritesheet(texture, meta);
         texture.on('loaded', () => {
             sheet.parse(() => {
