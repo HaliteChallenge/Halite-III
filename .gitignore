@@ -26,9 +26,9 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
-airesources/CSharp/bin/*
-airesources/CSharp/obj/*
-airesources/CSharp/*.txt
+starter_kits/CSharp/bin/*
+starter_kits/CSharp/obj/*
+starter_kits/CSharp/*.txt
 
 # Visual Studo 2015 cache/options directory
 .vs/
@@ -299,7 +299,7 @@ target/
 #############
 pom.xml
 *jar
-airesources/Clojure/lib
+starter_kits/Clojure/lib
 native
 .lein-failures
 checkouts
@@ -416,7 +416,7 @@ website/_data/*
 *.swp
 *.gch
 *.exe
-environment/halite
+game_engine/halite
 worker/halite
 git_pull.php
 
@@ -428,20 +428,20 @@ git_pull.php
 # VS Code
 .vscode
 
-airesources/C++/MyBot
-airesources/C++/BasicBot
-airesources/*/halite
+starter_kits/C++/MyBot
+starter_kits/C++/BasicBot
+starter_kits/*/halite
 
 leaderboard.png
 
 worker/[0-9]*
 
-environment/visualizer
-environment/shaders
-environment/fonts
+game_engine/visualizer
+game_engine/shaders
+game_engine/fonts
 
-HaliteEnvironment-Mac
-HaliteEnvironment-Debian
+HaliteGame_Engine-Mac
+HaliteGame_Engine-Debian
 
 downloads/
 keys/
@@ -466,8 +466,8 @@ node_modules
 
 extensions/website-drip/_site/*
 musicgenerator/haliteamp/*
-airesources/startenv/*
-airesources/starterkits/docfx/*
+starter_kits/startenv/*
+starter_kits/starterkits/docfx/*
 /musicgenerator/*.wav
 haliteII/*
 website/_site
@@ -476,7 +476,7 @@ website/.jekyll-metadata
 website/.bundle
 website/assets/js/*.png
 apiserver/venv/
-compiled_environments/
+compiled_game_engines/
 *.bc
 *.dylib
 
@@ -485,16 +485,16 @@ CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 cmake-build-*/
-environment/Makefile
-airesources/C++/Makefile
+game_engine/Makefile
+starter_kits/C++/Makefile
 
 
 admin/adminenv/*
 promo-website/_site/*
 yarn.lock
-environment/cmake_install.cmake
-environment/CMakeCache.txt
-environment/Makefile
+game_engine/cmake_install.cmake
+game_engine/CMakeCache.txt
+game_engine/Makefile
 tools/standalone_visualizer/release-builds/*
 
 gcloud_config.json
