@@ -33,6 +33,39 @@
             </halite-upload-zone>
         </div>
       </div>
+      <div class="doc-section doc-section-play" style="text-align:left">
+        <h4 class="mt3" style="text-align: center">COMPETITION RULES</h4>
+        <p>
+        <p style="text-align: center"><b>Start date:</b> October 16, 2018</p>
+        <p style="text-align: center"><b>Submissions end:</b> January 22, 2018 at 11:59pm EST (GMT-05:00)</p>
+        <p style="text-align: center"><b>Winners announced:</b> January 29th</p>
+
+        <br/>
+        <h4 class="mt3">Eligibility</h4>
+        <p>The competition is open to the public, free to enter, and encourages professionals and students from all over the world to join in. Create an account using Github and submit a bot during the dates of the competition to appear on the leaderboard.
+        </p>
+        <br/>
+        <h4 class="mt3">Teams</h4>
+        <p>Players may form teams and create bots together this year. To form a new team and become a team leader, go to your profile page, edit your profile, and choose your team name. Your account will be converted to a team account and you will get a shareable invite link to invite your team members.
+        </p>
+        <p>To join a team, insert your invite code on your profile.
+        </p>
+        <p>Once on a team, players cannot submit bots individual bots. Only the team leader can submit bots from a team account.
+        </p>
+        <br/>
+        <h4 class="mt3">Ranking</h4>
+        <p>Rankings are based on the outcome of organized games where bots play against each other. Your bot moves up the leaderboard as you submit improved versions. When you submit a new version, your ranking is reset to a degree. After some games played, your bot should reach its new accurate ranking.
+        </p>
+        <p>Tiers are based on the percentile rank. The top 1/512 players are considered Diamond; the next 1/256 are considered Platinum, then the next 1/128 are Gold, 1/64 are Silver, and the rest are Bronze.
+        </p>
+        <br/>
+        <h4 class="mt3">Winning</h4>
+        <p>Last submissions are due at midnight EST (GMT-05:00) on January 22nd, and bots will run through the following week to compute ratings. The winners are the highest ranked players on the leaderboard at the end of this “Finals” period. We will freeze the scores and leaderboard and announce the winners on January 29th.
+        </p>
+        <p>The top players will receive Halite apparel and awesome Halite trophies.
+        </p>
+        <br/>
+      </div>
     </div>
     <div id="halite-uploaded-bot" v-if="currentView=='botUpload'">
       <bot-upload ref="botUploadComponent" :user="user" :bot-file="botFile" :bots-list="botsList"  v-if="currentView='botUpload'"
