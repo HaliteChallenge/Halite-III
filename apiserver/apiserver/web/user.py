@@ -422,6 +422,57 @@ def get_user_season1(intended_user, *, user_id):
         return flask.jsonify(season_1_user)
 
 
+def get_user_season2(intended_user):
+    with model.read_conn() as conn:
+        query = model.users.select(model.users.c.id == intended_user)
+
+        row = conn.execute(query).first()
+        if not row:
+            raise util.APIError(404, message="No user found.")
+
+        ranked_users = sqlalchemy.sql.select([
+            model.halite_2_users.c.id,
+            model.halite_2_users.c.oauth_id,
+            model.halite_2_users.c.username,
+            model.halite_2_users.c.player_level,
+            model.halite_2_users.c.organization_name,
+            model.halite_2_users.c.language,
+            model.halite_2_users.c.mu,
+            model.halite_2_users.c.sigma,
+            model.halite_2_users.c.score,
+            model.halite_2_users.c.version_number,
+            model.halite_2_users.c.games_played,
+            sqlalchemy.sql.func.rank().over(
+                order_by=(model.halite_2_users.c.score.desc(),
+                          model.halite_2_users.c.mu.desc(),
+                          model.halite_2_users.c.username.asc())
+            ).label("rank"),
+        ]).select_from(model.halite_2_users).alias('ranked_users')
+        season_2_query = ranked_users.select(
+            ranked_users.c.oauth_id == row["oauth_id"])
+
+        season_2_row = conn.execute(season_2_query).first()
+
+        if not season_2_row:
+            raise util.APIError(404, message="No user found for Halite Season 2.")
+
+        season_2_user = {
+            "user_id": season_2_row["id"],
+            "username": season_2_row["username"],
+            "player_level": season_2_row["player_level"],
+            "organization": season_2_row["organization_name"],
+            "language": season_2_row["language"],
+            "mu": season_2_row["mu"],
+            "sigma": season_2_row["sigma"],
+            "score": season_2_row["score"],
+            "num_submissions": int(season_2_row["version_number"]) if season_2_row["version_number"] is not None else 0,
+            "num_games": int(season_2_row["games_played"]) if season_2_row["games_played"] is not None else 0,
+            "rank": int(season_2_row["rank"]) if season_2_row["score"] is not None else None,
+        }
+
+        return flask.jsonify(season_2_user)
+
+
 @web_api.route("/user/<int:user_id>/verify", methods=["POST"])
 @util.cross_origin(methods=["POST"])
 def verify_user_email(user_id):
