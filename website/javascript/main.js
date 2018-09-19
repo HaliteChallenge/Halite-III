@@ -37,6 +37,8 @@ import _ from '../vendor_assets/bootstrap-sass-3.3.7/assets/javascripts/bootstra
 import * as api from './api'
 import * as utils from './utils'
 
+window.api = api
+
 Vue.use(require('vue-moment'))
 Vue.use(require('vue-cookie'))
 Vue.use(require('element-ui'))
