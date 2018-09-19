@@ -8,7 +8,8 @@ import Vue from 'vue'
 import * as d3 from 'd3'
 // in prod mode, Selection#transition is undefined unless we import
 // for the side effect
-import 'd3-transition'
+import * as d3transition from 'd3-transition'
+  console.log(d3transition)
 export default {
   name: 'PlayerHaliteChart',
   props: {
