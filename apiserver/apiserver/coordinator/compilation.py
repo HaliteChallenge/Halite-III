@@ -203,6 +203,8 @@ def update_compilation_status():
                     "version_number": bot["version_number"],
                     "detected_language": language,
                     "errors": errors,
+                    "log_link": "{}/user/{}/bot/{}/error_log".format(
+                        config.API_URL, user_id, bot_id),
                 },
                 config.GAME_ERROR_MESSAGES,
                 config.C_COMPILATION_ERROR
