@@ -57,7 +57,7 @@ export default class Ship {
         };
 
         // Set up sprite size & anchors
-        const width = assets.CELL_SIZE * this.visualizer.camera.scale;
+        const width = 1.1 * assets.CELL_SIZE * this.visualizer.camera.scale;
         setupSprite(this.sprite, width * 4);
         setupSprite(this.inspiredSprite, width * 4);
         this.inspiredSprite.visible = false;
