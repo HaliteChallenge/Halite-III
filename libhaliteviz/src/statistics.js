@@ -66,7 +66,10 @@ export class Statistics {
                     playerStats.currentShips = Object.keys(curFrame.entities[playerId] || {}).length;
                 }
 
-                if (replay.game_statistics.player_statistics[playerId].turn_deposited) {
+                if (replay.full_frames[frameIdx].deposited) {
+                    playerStats.depositedHalite = replay.full_frames[frameIdx].deposited[playerId];
+                }
+                else if (replay.game_statistics.player_statistics[playerId].turn_deposited) {
                     playerStats.depositedHalite = replay.game_statistics.player_statistics[playerId].turn_deposited[frameIdx];
                 }
 
