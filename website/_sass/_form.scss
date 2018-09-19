@@ -130,18 +130,26 @@ select.form-control::-ms-expand {
   }
 
   .dropdown-menu{
-    background-color: #000 !important;
+    background-color: #001C4C !important;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     li > a{
-      color: #fff;
       display: block;
+      padding: 0 0 0 15px;
+      height: 45px;
+      line-height: 45px;
+      font-size: 14px;
+      color: rgba(151, 221, 255, 0.6);
       text-overflow: ellipsis;
+      text-shadow: 0 1px 13px #00ABFF;
+      border-left: 3px solid transparent;
       overflow: hidden;
     }
-    .highlight > a{
-      background-color: rgba(255, 190, 0, 0.3);
-    }
-    li >a:hover{
-      background-color: rgba(255, 190, 0, 0.3);
+    .highlight > a, li >a:hover{
+      color: #97DDFF;
+      border-left: 3px solid #91DBFF;
+      background-color: transparent;
     }
   }
 }

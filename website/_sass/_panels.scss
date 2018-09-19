@@ -2,19 +2,23 @@
   background-color: transparent;
 }
 .panel.panel-stats{
+  margin-bottom: 25px;
   background-color: transparent;
   border-radius: 0;
   border: 0;
   box-shadow: none;
   .panel-heading{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 0;
     font-family: $font-heading;
     text-transform: uppercase;
     a{
       position: relative;
       display: block;
-      padding: 10px 0;
-      color: #DDD;
+      color: #97DDFF;
+      text-shadow: 0 1px 16px #0098E3;
       &:hover, &:focus{
         text-decoration: none;
       }
@@ -65,9 +69,6 @@
       top: 50%;
       transform: translateY(-50%);
     }
-  }
-  .panel-collapse{
-    padding: 15px 0;
   }
 }
 .panel.panel-stats+.panel.panel-stats{
