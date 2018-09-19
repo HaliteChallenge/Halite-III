@@ -19,7 +19,7 @@ BOX_DIR_HELP = "Directory containing precompiled Halite-in-a-Box builds, each na
 VERSION_HELP = "The version string to embed in the downloads page."
 IGNORED_EXTENSIONS = [".exe", ".class", ".pyc", ".obj"]
 INCLUDED_EXTENSIONS = [".py", ".java", ".cpp", ".hpp", ".cs", ".csproj", ".scala", ".js", ".sh", ".bat", ".toml", ".rs",".go",".txt",".rb", ".kt", ".clj",".jl", ".ml", ".hs", ".exs", ".ex", ".lock",".php", ".sln",".dart",".sbt",".properties",".swift",".pyx",".pxd",".fs",".fsproj"]
-INCLUDED_FILES = ["Makefile", "README", "REQUIRE","LANGUAGE","build.gradle", ".gitignore"]
+INCLUDED_FILES = ["Makefile", "README", "REQUIRE","LANGUAGE","build.gradle"]
 STARTER_KIT_DIR = "../starter_kits"
 DOWNLOAD_DATA = "_data/downloads.json"
 PLATFORM_AGNOSTIC = "None"
@@ -72,6 +72,7 @@ def scan_directory(full_path):
                 included_files.append(os.path.join(containing_dir, filename))
 
     included_files.append(os.path.join(STARTER_KIT_DIR, "README.MD"))
+    included_files.append(os.path.join(STARTER_KIT_DIR, ".gitignore"))
     return included_files
 
 

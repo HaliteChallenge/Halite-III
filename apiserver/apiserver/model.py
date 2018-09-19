@@ -52,6 +52,7 @@ organization_email_domains = \
     sqlalchemy.Table("organization_email_domain", metadata, autoload=True)
 users = sqlalchemy.Table("user", metadata, autoload=True)
 halite_1_users = sqlalchemy.Table("halite_1_user", metadata, autoload=True)
+halite_2_users = sqlalchemy.Table("halite_2_user", metadata, autoload=True)
 leagues = sqlalchemy.Table("leagues", metadata, autoload=True)
 user_notifications = sqlalchemy.Table("user_notification", metadata, autoload=True)
 bots = sqlalchemy.Table("bot", metadata, autoload=True)
