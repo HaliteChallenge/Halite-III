@@ -9,7 +9,7 @@
             <div class="icon"></div>
             <div class="statistic-data">
               <div class="num">5832</div>
-              <div class="data-title">Player</div>
+              <div class="data-title">Players</div>
             </div>
           </div>
           <div class="box-item organizations">
