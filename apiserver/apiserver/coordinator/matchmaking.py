@@ -11,10 +11,8 @@ from .. import config, model, util
 def rand_map_size():
     # Pick map size. Duplicate entries are used to weight the
     # probability of a particular size
-    map_sizes = [32, 48, 64, 80]
+    map_sizes = [32, 40, 48, 56, 64]
     base_size = random.choice(map_sizes)
-    # TODO: make visualizer work with non-square ratios so we can
-    # assign them
     map_width = map_height = base_size
 
     # Width, height

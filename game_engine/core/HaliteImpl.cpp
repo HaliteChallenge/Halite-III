@@ -281,7 +281,8 @@ void HaliteImpl::process_turn() {
             const auto ratio = entity.is_inspired ?
                 Constants::get().INSPIRED_EXTRACT_RATIO :
                 Constants::get().EXTRACT_RATIO;
-            energy_type extracted = cell.energy / ratio;
+            energy_type extracted = static_cast<energy_type>(
+                std::ceil(static_cast<double>(cell.energy) / ratio));
             energy_type gained = extracted;
 
             // If energy is small, give it all to the entity.
