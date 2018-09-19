@@ -62,10 +62,6 @@ Your bot could be crashing because of errors during game execution.
 You can replay games with the exact same map to debug or tweak bot behavior. To do so, specify a map seed with the -s or --seed flag followed by an integer when running a game:
 `./halite -vvv --width 32 --height 32 --seed 4 "python MyBot.py" "python MyBetterBot.py"`
 
-<br/>
-##### Debugging with an IDE
-TODO
-
 
 </div>
 
