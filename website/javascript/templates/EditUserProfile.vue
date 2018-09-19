@@ -94,27 +94,22 @@
                   <i class="xline xline-top"></i>
                   <div class="no-team">
                     <h2 class="form-heading">TEAM AFFILIATION</h2>
-                    <div class="tips">You are not affiliated with a team. Start a new team or join an existing one</div>
+                    <div class="tips">You are not affiliated with a team. Start a new team or join an existing one.</div>
                     <h3>Create Team</h3>
                     <div class="input-tips">New Team Name</div>
-                    <input type="text" class="form-control" placeholder="whatelsie">
-                    <button class="btn btn-primary btn-sm">CREATE REAM</button>
+                    <input type="text" class="form-control" placeholder="Team name">
+                    <button class="btn btn-primary btn-sm">CREATE TEAM</button>
                     <h3>Join a Team</h3>
                     <div class="input-tips">Enter join code here</div>
-                    <v-select
-                            label="name"
-                            v-model="selected_origanization"
-                            :options="organization_list">
-                    </v-select>
-                    <button class="btn btn-primary btn-sm">JOIN REAM</button>
+                    <input type="text" class="form-control" placeholder="Join code">
+                    <button class="btn btn-primary btn-sm">JOIN TEAM</button>
                   </div>
                   <div class="in-team">
                     <h2 class="form-heading">Team affiliation</h2>
-                    <div class="tips">You are on the &lt; Team &gt;</div>
+                    <div class="tips">You are on Team &lt; name &gt;</div>
                     <h3>Invite Friends to Your Team</h3>
                     <div class="input-tips">Share code</div>
-                    <input type="text" class="form-control" placeholder="whatelsie">
-                    <button class="btn btn-primary btn-sm">CREATE REAM</button>
+                    <input type="text" class="form-control" placeholder="5@aioseu38952">
                   </div>
                 </div>
             </div>
