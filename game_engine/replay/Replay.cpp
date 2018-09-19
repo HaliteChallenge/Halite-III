@@ -42,6 +42,7 @@ void to_json(nlohmann::json &json, const Turn &turn) {
             TURN_FIELD_TO_JSON(cells)};
     nlohmann::json moves_json = nlohmann::json::object();
     nlohmann::json energy_json = nlohmann::json::object();
+    nlohmann::json deposited_json = nlohmann::json::object();
     nlohmann::json entities_json = nlohmann::json::object();
 
     for (auto &[player_id, commands] : turn.moves) {
@@ -49,6 +50,10 @@ void to_json(nlohmann::json &json, const Turn &turn) {
     }
     for (auto &[player_id, energy] : turn.energy) {
         energy_json[to_string(player_id)] = energy;
+    }
+
+    for (auto &[player_id, deposited] : turn.deposited) {
+        deposited_json[to_string(player_id)] = deposited;
     }
 
     for (auto &[player_id, entities_map] : turn.entities) {
@@ -60,6 +65,7 @@ void to_json(nlohmann::json &json, const Turn &turn) {
     }
     json["moves"] = moves_json;
     json["energy"] = energy_json;
+    json["deposited"] = deposited_json;
     json["entities"] = entities_json;
 }
 
@@ -88,6 +94,17 @@ void Turn::add_cells(Map &map, std::unordered_set<Location> changed_cells){
     for (const auto location : changed_cells) {
         const auto cell = map.at(location);
         this->cells.emplace_back(location, cell);
+    }
+}
+
+/**
+ * Given the game store, add all state from end of turn in replay
+ * param store The game store at the end of the turn
+ */
+void Turn::add_end_state(Store &store) {
+    for (const auto &[player_id, player] : store.players) {
+        energy.insert({player_id, player.energy});
+        deposited.insert({player_id, player.total_energy_deposited});
     }
 }
 

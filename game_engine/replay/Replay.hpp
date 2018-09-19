@@ -56,6 +56,7 @@ struct Turn {
     /** Mapping from player id to the commands they issued this turn */
     ordered_id_map<Player, std::vector<std::unique_ptr<Command>>> moves;
     id_map<Player, energy_type> energy;  /**< Mapping from player id to the energy they ended the turn with */
+    id_map<Player, energy_type> deposited; /**< Mapping from player id to the total energy they deposited by the end of turn */
     std::vector<GameEvent> events;       /**< Events occurring this turn (spawns, deaths, etc) for replay */
     std::vector<CellInfo> cells;         /**< Cells that changed on this turn */
     id_map<Player, Entities> entities{}; /**< Current entities and their information. */
@@ -79,6 +80,12 @@ struct Turn {
      * @param cells The locations of changed cells
      */
     void add_cells(Map &map, std::unordered_set<Location> changed_cells);
+
+    /**
+     * Given the game store, add all state from end of turn in replay
+     * param store The game store at the end of the turn
+     */
+    void add_end_state(Store &store);
 
     /**
      * Move constructor
