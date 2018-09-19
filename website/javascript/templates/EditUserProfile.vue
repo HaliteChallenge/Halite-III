@@ -88,6 +88,35 @@
                     <a class="cancel-href base" href="/user/?me" target="_self">Cancel</a>
                     <button type="submit" class="btn btn-primary btn-sm">Update Profile</button>
                 </form>
+                
+                <!-- issue #408 Add ability for player to create or join a team -->
+                <div class="team-panel">
+                  <i class="xline xline-top"></i>
+                  <div class="no-team">
+                    <h2 class="form-heading">TEAM AFFILIATION</h2>
+                    <div class="tips">You are not affiliated with a team. Start a new team or join an existing one</div>
+                    <h3>Create Team</h3>
+                    <div class="input-tips">New Team Name</div>
+                    <input type="text" class="form-control" placeholder="whatelsie">
+                    <button class="btn btn-primary btn-sm">CREATE REAM</button>
+                    <h3>Join a Team</h3>
+                    <div class="input-tips">Enter join code here</div>
+                    <v-select
+                            label="name"
+                            v-model="selected_origanization"
+                            :options="organization_list">
+                    </v-select>
+                    <button class="btn btn-primary btn-sm">JOIN REAM</button>
+                  </div>
+                  <div class="in-team">
+                    <h2 class="form-heading">Team affiliation</h2>
+                    <div class="tips">You are on the &lt; Team &gt;</div>
+                    <h3>Invite Friends to Your Team</h3>
+                    <div class="input-tips">Share code</div>
+                    <input type="text" class="form-control" placeholder="whatelsie">
+                    <button class="btn btn-primary btn-sm">CREATE REAM</button>
+                  </div>
+                </div>
             </div>
         </div>
     </div>
@@ -121,7 +150,9 @@ export default {
           user: null,
           hackathon_code: null,
           edit_email: false,
-          hackathon_error_message: ''
+          hackathon_error_message: '',
+          organization_list: [], // List of all organizations issue #408
+          selected_origanization: null,
         }
   },
     mounted: function () {
@@ -185,6 +216,8 @@ export default {
 
       api.list_organizations().then((orgs)=>
       {
+
+          this.organization_list = orgs;  // issue #408  TODO
           let schools = []
           if(orgs && orgs instanceof Array)
           {

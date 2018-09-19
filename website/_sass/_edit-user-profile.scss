@@ -10,6 +10,11 @@
   //     text-align: center;
   //   }
   // }
+
+  .xline {
+    background-color: #F0F8FF;
+    opacity: 0.2;
+  }
   a{
     color: #FFFFFF;
     text-decoration: none;
@@ -95,5 +100,39 @@
     width: 100%;
     margin-top: 30px;
     padding-bottom: 30px;
+  }
+
+  .team-panel {
+    position: relative;
+    margin-top: 20px;
+    .no-team, .in-team {
+      padding-top: 20px;
+      .tips {
+        margin-top: 15px;
+      }
+      .form-heading {
+        margin: 0;
+      }
+      .form-control {
+        margin-top: 10px;
+        width: 360px;
+      }
+      .input-tips {
+        color: #FFFFFF;
+        opacity: 0.5;
+        line-height: 1;
+      }
+      .btn {
+        margin-top: 20px;
+      }
+    }
+    .no-team {
+      padding-top: 20px;
+      .dropdown {
+        margin-top: 10px;
+        padding-top: 0;
+      }
+    }
+    
   }
 }
