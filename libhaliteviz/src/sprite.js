@@ -184,6 +184,12 @@ export default class Ship {
                         }
                     }
                 }
+                else if (this.energy < this.visualizer.findCurrentProduction(this.visualizer.frame, entity_record.x, entity_record.y) / this.visualizer.replay.GAME_CONSTANTS.MOVE_COST_RATIO) {
+                    // Don't interpolate positions if sprite not
+                    // actually able to move when it would have died
+                    // next turn
+                    x_move = y_move = 0;
+                }
             }  else if (command.type === "d") {
                 // TODO
             } else if (command.type === "m") {
