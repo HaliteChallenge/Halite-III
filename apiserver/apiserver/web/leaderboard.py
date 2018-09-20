@@ -2,6 +2,7 @@
 Leaderboard API endpoints - get/sort/filter the leaderboard
 """
 import collections
+import datetime
 import operator
 
 import flask
@@ -197,5 +198,75 @@ def leagues():
             }
 
             result.append(league)
+
+    return flask.jsonify(result)
+
+
+@web_api.route("/leaderboard/organization")
+@util.cross_origin(methods=["GET"])
+def organization_leaderboard():
+    result = []
+
+    organization_wins = sqlalchemy.sql.select([
+        model.organizations.c.id.label("organization_id"),
+        model.organizations.c.organization_name,
+        sqlalchemy.sql.func.count().label("weekly_games_won"),
+    ]).select_from(model.games.join(
+        model.game_participants,
+        (model.games.c.id == model.game_participants.c.game_id) &
+        (model.game_participants.c.rank == 1) &
+        (model.games.c.time_played >= sqlalchemy.sql.func.current_timestamp() - sqlalchemy.sql.text("interval '7' day"))
+    ).join(
+        model.users,
+        model.game_participants.c.user_id == model.users.c.id
+    ).join(
+        model.organizations,
+        model.users.c.organization_id == model.organizations.c.id
+    )).group_by(
+        model.organizations.c.id,
+        model.organizations.c.organization_name,
+    ).alias("organization_wins")
+
+    organization_ranks = sqlalchemy.sql.select([
+        organization_wins.c.organization_id,
+        organization_wins.c.organization_name,
+        organization_wins.c.weekly_games_won,
+        sqlalchemy.sql.func.rank().over(
+            order_by=organization_wins.c.weekly_games_won.desc()
+        ).label("organization_rank"),
+    ]).select_from(organization_wins).alias("organization_ranks")
+
+    offset, limit = api_util.get_offset_limit(default_limit=250,
+                                              max_limit=10000)
+
+    where_clause, order_clause, manual_sort = api_util.get_sort_filter({
+        "organization_id": organization_ranks.c.organization_id,
+        "organization_name": organization_ranks.c.organization_name,
+        "organization_rank": organization_ranks.c.organization_rank,
+    }, ["tier"])
+
+    if not order_clause:
+        order_clause = [organization_ranks.c.organization_rank]
+
+    with model.read_conn() as conn:
+        total_orgs = api_util.get_value(conn.execute(sqlalchemy.sql.select([
+            sqlalchemy.sql.func.count()
+        ]).select_from(organization_wins)))
+
+        query = conn.execute(organization_ranks.select()
+                             .where(where_clause)
+                             .order_by(*order_clause)
+                             .offset(offset).limit(limit)).fetchall()
+
+        for row in query:
+            org = {
+                "organization_id": row["organization_id"],
+                "organization_name": row["organization_name"],
+                "organization_rank": row["organization_rank"],
+                "weekly_games_won": row["weekly_games_won"],
+            }
+            if total_orgs and org["organization_rank"]:
+                org["tier"] = util.tier(org["organization_rank"], total_orgs)
+            result.append(org)
 
     return flask.jsonify(result)
