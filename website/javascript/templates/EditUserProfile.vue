@@ -92,19 +92,19 @@
                 <!-- issue #408 Add ability for player to create or join a team -->
                 <div class="team-panel">
                   <i class="xline xline-top"></i>
-                  <div class="no-team">
+                  <div class="no-team" v-if="!team_list.length">
                     <h2 class="form-heading">TEAM AFFILIATION</h2>
                     <div class="tips">You are not affiliated with a team. Start a new team or join an existing one.</div>
                     <h3>Create Team</h3>
                     <div class="input-tips">New Team Name</div>
-                    <input type="text" class="form-control" placeholder="Team name">
-                    <button class="btn btn-primary btn-sm">CREATE TEAM</button>
+                    <input type="text" class="form-control" placeholder="Team name" v-model="new_team_name">
+                    <button class="btn btn-primary btn-sm" @click="createTeam">CREATE TEAM</button>
                     <h3>Join a Team</h3>
                     <div class="input-tips">Enter join code here</div>
-                    <input type="text" class="form-control" placeholder="Join code">
-                    <button class="btn btn-primary btn-sm">JOIN TEAM</button>
+                    <input type="text" class="form-control" placeholder="Join code" v-model="join_team_name">
+                    <button class="btn btn-primary btn-sm" @click="joinTeam">JOIN TEAM</button>
                   </div>
-                  <div class="in-team">
+                  <div class="in-team" v-else>
                     <h2 class="form-heading">Team affiliation</h2>
                     <div class="tips">You are on Team &lt; name &gt;</div>
                     <h3>Invite Friends to Your Team</h3>
@@ -146,6 +146,9 @@ export default {
           hackathon_code: null,
           edit_email: false,
           hackathon_error_message: '',
+          team_list: [],  // My team information
+          new_team_name: "", // Team name required to create the team
+          join_team_name: "", // Team name required to join the team
         }
   },
     mounted: function () {
@@ -225,6 +228,8 @@ export default {
             return item.id == this.user.organization_id
           })
       })
+      // Get the current account team list
+      this.fetchTeamsList();
     },
     computed: {
       regions: function () {
@@ -379,6 +384,33 @@ export default {
 
           Alert.show(message, "error");
         });
+      },
+      // Get the current account team list
+      fetchTeamsList: function() {
+        api.list_teams().then((team)=>{
+          this.team_list = team;
+          console.warn(this.team_list)
+        })
+      },
+      // Create Team
+      createTeam: function() {
+        const team_name = this.new_team_name;
+        if(team_name) {
+          api.create_team(team_name).then((res)=>{
+            // TODO --- I am already in the team,  so I can't create a team. I don't know how to test the return data.
+            console.warn(res)
+          })
+        }
+      },
+      // Join a Team
+      joinTeam: function () { 
+        const [ team_id, verification_code ] = this.join_team_name.split('@');
+        if(team_id && verification_code) {
+          api.join_team(team_id, verification_code).then((res)=>{
+            // TODO --- I am already in the team, and I did not get the team's "verification_code".
+            console.warn(res)
+          })
+        }
       },
     }
   }
