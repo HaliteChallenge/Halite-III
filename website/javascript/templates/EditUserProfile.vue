@@ -146,8 +146,6 @@ export default {
           hackathon_code: null,
           edit_email: false,
           hackathon_error_message: '',
-          organization_list: [], // List of all organizations issue #408
-          selected_origanization: null,
         }
   },
     mounted: function () {
@@ -211,8 +209,6 @@ export default {
 
       api.list_organizations().then((orgs)=>
       {
-
-          this.organization_list = orgs;  // issue #408  TODO
           let schools = []
           if(orgs && orgs instanceof Array)
           {
