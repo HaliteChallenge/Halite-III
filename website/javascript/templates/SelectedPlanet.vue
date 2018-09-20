@@ -6,16 +6,15 @@
   <div class="map-props-list">
     <table>
       <tr>
-        <td>Location:</td>
-        <td>{{info.location}}</td>
+        <th>Selected {{info.type}}</th>
       </tr>
       <tr>
         <td>Owner:</td>
         <td :class="`color-${selectedPlanet.owner + 1}`">{{info.owner}}</td>
       </tr>
       <tr>
-        <td>Type:</td>
-        <td>{{info.type}}</td>
+        <td>Location:</td>
+        <td>{{info.location}}</td>
       </tr>
       <tr>
         <td>Halite:</td>
@@ -44,3 +43,9 @@ export default {
     }
   }
 </script>
+
+<style scoped>
+  th {
+    padding: 5px 0;
+  }
+</style>
