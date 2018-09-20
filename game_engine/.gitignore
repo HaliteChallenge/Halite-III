@@ -7,3 +7,4 @@ coverage.base
 coverage.info
 coverage/
 deps-download
+shell.nix

@@ -6,9 +6,6 @@
 <script>
 import Vue from 'vue'
 import * as d3 from 'd3'
-// in prod mode, Selection#transition is undefined unless we import
-// for the side effect
-import 'd3-transition'
 export default {
   name: 'PlayerHaliteChart',
   props: {
@@ -76,7 +73,6 @@ export default {
         .x(function (d) { return x(d.x) })
         .y(function (d) { return y(d.y) })
       let dataSet = chartData
-      // x.domain(d3.extent(getDataPeriod(dataSet, this.maxLength, this.index), function (d) { return d.x }))
       x.domain(d3.extent(dataSet, function (d) { return d.x }))
 
       let _dataSet = [].concat(dataSet)

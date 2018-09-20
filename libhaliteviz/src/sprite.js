@@ -57,7 +57,7 @@ export default class Ship {
         };
 
         // Set up sprite size & anchors
-        const width = assets.CELL_SIZE * this.visualizer.camera.scale;
+        const width = 1.1 * assets.CELL_SIZE * this.visualizer.camera.scale;
         setupSprite(this.sprite, width * 4);
         setupSprite(this.inspiredSprite, width * 4);
         this.inspiredSprite.visible = false;
@@ -183,6 +183,12 @@ export default class Ship {
                             y_move = 1;
                         }
                     }
+                }
+                else if (this.energy < this.visualizer.findCurrentProduction(this.visualizer.frame, entity_record.x, entity_record.y) / this.visualizer.replay.GAME_CONSTANTS.MOVE_COST_RATIO) {
+                    // Don't interpolate positions if sprite not
+                    // actually able to move when it would have died
+                    // next turn
+                    x_move = y_move = 0;
                 }
             }  else if (command.type === "d") {
                 // TODO

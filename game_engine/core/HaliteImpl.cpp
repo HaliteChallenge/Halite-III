@@ -93,10 +93,8 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
         game.logs.add(player_id);
     }
     game.replay.full_frames.back().add_cells(game.map, changed_cells);
-    for (const auto &[player_id, player] : game.store.players) {
-        game.replay.full_frames.back().energy.insert({{player_id, player.energy}});
-    }
     update_player_stats();
+    game.replay.full_frames.back().add_end_state(game.store);
 }
 
 /** Run the game. */
@@ -157,6 +155,9 @@ void HaliteImpl::run_game() {
 
         process_turn();
 
+        // Add end of frame state.
+        game.replay.full_frames.back().add_end_state(game.store);
+
         if (game_ended()) {
             break;
         }
@@ -168,6 +169,7 @@ void HaliteImpl::run_game() {
     update_inspiration();
     game.replay.full_frames.back().add_entities(game.store);
     update_player_stats();
+    game.replay.full_frames.back().add_end_state(game.store);
 
     rank_players();
     Logging::log("Game has ended");
@@ -279,7 +281,8 @@ void HaliteImpl::process_turn() {
             const auto ratio = entity.is_inspired ?
                 Constants::get().INSPIRED_EXTRACT_RATIO :
                 Constants::get().EXTRACT_RATIO;
-            energy_type extracted = cell.energy / ratio;
+            energy_type extracted = static_cast<energy_type>(
+                std::ceil(static_cast<double>(cell.energy) / ratio));
             energy_type gained = extracted;
 
             // If energy is small, give it all to the entity.
@@ -382,9 +385,6 @@ void HaliteImpl::process_turn() {
 
 
     game.replay.full_frames.back().add_cells(game.map, game.store.changed_cells);
-    for (const auto &[player_id, player] : game.store.players) {
-        game.replay.full_frames.back().energy.insert({{player_id, player.energy}});
-    }
     update_player_stats();
 }
 

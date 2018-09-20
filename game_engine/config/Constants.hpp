@@ -39,10 +39,10 @@ struct Constants {
     double FACTOR_EXP_1 = 2; // Determines initial spikiness of map. Higher values weight towards 0.
     double FACTOR_EXP_2 = 2; // Determines final spikiness of map. Higher values weight towards 0.
 
-    unsigned long MIN_TURNS = 300;
+    unsigned long MIN_TURNS = 400;
     unsigned long MIN_TURN_THRESHOLD = 32;
     unsigned long MAX_TURNS = 500;
-    unsigned long MAX_TURN_THRESHOLD = 80;
+    unsigned long MAX_TURN_THRESHOLD = 64;
 
     /** Capture */
     bool CAPTURE_ENABLED = false; /**< whether to use capture */

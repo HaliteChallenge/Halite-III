@@ -1,21 +1,49 @@
 <template>
   <div class="leaderboard-container">
     <div class="panel panel-stats">
-      <div class="panel-heading" role="tab" id="heading_player_details" style="display: none">
-        <a data-toggle="collapse" id="toggle_filter" href="#panel_filter" @click="toggleFilter" aria-expanded="true" aria-controls="panel_filter">
-          <h4>Filters</h4>
-          <span class="toggle-icon expand"></span>
-        </a>
+      <div class="panel-statistic">
+        <i class="xline xline-top"></i>
+        <h4 class="title-h4">LEADERBOARD STATISTICS</h4>
+        <div class="statistic-box">
+          <div class="box-item player">
+            <div class="icon"></div>
+            <div class="statistic-data">
+              <div class="num">5832</div>
+              <div class="data-title">Players</div>
+            </div>
+          </div>
+          <div class="box-item organizations">
+            <div class="icon"></div>
+            <div class="statistic-data">
+              <div class="num">973</div>
+              <div class="data-title">Organizations</div>
+            </div>
+          </div>
+          <div class="box-item countries">
+            <div class="icon"></div>
+            <div class="statistic-data">
+              <div class="num">5832</div>
+              <div class="data-title">Countries</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="panel-collapse collapse in" role="tabpanel" id="panel_filter" aria-labelledby="panel_filter" style="display: none">
+      <div class="panel-heading" role="tab" id="heading_player_details">
+        <i class="xline xline-top"></i>
+        <a data-toggle="collapse" id="toggle_filter" aria-controls="panel_filter">
+          <h4 class="title-h4">Filters</h4>
+          <!-- <span class="toggle-icon expand"></span> -->
+        </a>
+        <div class="filter-handler" v-if="filter_handle_view==='normal'">
+          <a href="#" class="handler-item" @click="clearFilter">
+            <span class="handler-item-img icon-remove"></span>
+            <span class="handler-item-text">Clear all</span>
+          </a>
+        </div>
+      </div>
+      <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="panel_filter">
         <form class="leaderboard-filter-form" v-on:submit="on_update_filter">
           <div class="form-header">
-            <div class="filter-handler" v-if="filter_handle_view==='normal'">
-              <a href="#" class="handler-item" @click="clearFilter">
-                <span class="handler-item-img icon-remove"></span>
-                <span class="handler-item-text">Clear all</span>
-              </a>
-            </div>
           </div>
           <div class="filter-group">
             <div class="input-group">
@@ -268,7 +296,7 @@ export default {
       this.calculate_filters()
 
       // determine if the filter should be collapsed or not
-      this.setupCollapseFilter()
+      // this.setupCollapseFilter()  // issue #409
       $(window).on('popstate', () => {
         this.build_params_count = -1
         this.calculate_filters()
@@ -518,12 +546,14 @@ export default {
         return filters.length ? filters : null
       },
 
-      toggleFilter: function () {
-        setTimeout(() => {
-          const collapsed = !$('#panel_filter').hasClass('in')
-          this.$cookie.set('leaderboard_filter_collapsed', collapsed ? 1 : 0)
-        }, 500)
-      },
+
+      // issue #409
+      // toggleFilter: function () {
+      //   setTimeout(() => {
+      //     const collapsed = !$('#panel_filter').hasClass('in')
+      //     this.$cookie.set('leaderboard_filter_collapsed', collapsed ? 1 : 0)
+      //   }, 500)
+      // },
 
       build_params: function () {
         const params = this.params
@@ -546,13 +576,14 @@ export default {
         this.build_params_count = 1
       },
 
-      setupCollapseFilter: function () {
-        const collapse = this.$cookie.get('leaderboard_filter_collapsed')
-        if (collapse == 1 || window.mobileAndTabletcheck()) {
-          $('#panel_filter').removeClass('in')
-          $('#toggle_filter').attr('aria-expanded', 'false')
-        }
-      },
+      // issue #409
+      // setupCollapseFilter: function () {
+      //   const collapse = this.$cookie.get('leaderboard_filter_collapsed')
+      //   if (collapse == 1 || window.mobileAndTabletcheck()) {
+      //     $('#panel_filter').removeClass('in')
+      //     $('#toggle_filter').attr('aria-expanded', 'false')
+      //   }
+      // },
 
       on_update_filter: function (e) {
         if (e && e.preventDefault) e.preventDefault()

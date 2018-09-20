@@ -507,3 +507,60 @@ export function getLeaguesList(){
     }
   });
 }
+
+/**
+ * @returns {Promise} A Promise that resolves to a list of team
+ * objects, each of which has an 'id', 'created', and 'name' field.
+ */
+export function list_teams() {
+  return window.fetch(`${API_SERVER_URL}/team`, {
+    method: 'GET',
+  }).then(r => r.json())
+}
+
+/**
+ * Create a new team.
+ *
+ * @param name - The team name. NOTE THAT THE SERVER WILL ADD 'Team'
+ * TO THE TEAM NAME FOR YOU. So if you want to be 'Team Rocket', the
+ * user should just provide 'Rocket'.
+ *
+ * @returns {Promise} A Promise that will resolve to an object with
+ * two fields: the `team_id` and a `verification_code` that other
+ * players will use to join this team. The user must have both the
+ * team ID and verification code - to make it easier on the user, you
+ * can join the two together with an @ and parse it on the client. (So
+ * for example, tell the user their code is 5@aioseu38952, and when
+ * they join, split the code on the '@' and call join_team below.)
+ *
+ * If the team is invalid, then the object will instead contain a
+ * status and message field.
+ */
+export function create_team(name) {
+  return window.fetch(`${API_SERVER_URL}/team`, {
+    method: 'POST',
+    headers: {
+      "Content-Type": 'application/json'
+    },
+    body: JSON.stringify({ name }),
+    credentials: 'include'
+  }).then(r => r.json())
+}
+
+/**
+ * Join a team.
+ *
+ * @param team_id
+ * @param verification_code
+ *
+ * @returns {Promise}
+ */
+export function join_team(team_id, verification_code) {
+  const formData = new FormData()
+  formData.append('verification_code', verification_code)
+  return window.fetch(`${API_SERVER_URL}/team/${team_id}/user`, {
+    method: 'POST',
+    body: formData,
+    credentials: 'include'
+  }).then(r => r.json())
+}

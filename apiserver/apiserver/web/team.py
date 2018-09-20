@@ -1,20 +1,23 @@
 """
 Team API endpoints - list, create, update teams
 """
-
+import re
 import secrets
 
 import flask
 import sqlalchemy
 
 from profanity import profanity
-from wordfilter import Wordfilter
+import wordfilter
 
 from .. import model, util
 
 from . import util as web_util
 from .blueprint import web_api
 
+
+TEAM_NAME_REGEX = re.compile(r'^[a-zA-Z][a-zA-Z0-9_\-]*$')
+TEAM_NAME_LENGTH = 32
 
 def make_team_record(team, members, show_verification_code=False):
     result = {
@@ -136,18 +139,23 @@ def create_team(*, user_id):
     if "name" not in flask.request.json:
         raise util.APIError(400, message="Please provide a team name.")
 
-    if profanity.contains_profanity(flask.request.json["name"]) or \
-       Wordfilter.blacklisted(flask.request.json["name"]):
-        raise util.APIError(400, message="Invalid team name.")
+    # Validate team name
+    name = flask.request.json["name"]
+    if len(name) > TEAM_NAME_LENGTH or \
+       profanity.contains_profanity(name) or \
+       wordfilter.blacklisted(name) or \
+       not TEAM_NAME_REGEX.match(name):
+        raise util.APIError(400, message="Invalid team name. Team name must begin with an upper or lower case ASCII letter and may only contain up to {} alphanumeric characters plus dashes and underscores.".format(TEAM_NAME_LENGTH))
 
-    team_name = "Team " + flask.request.json["name"]
-
-    # TODO: validate team name
-
+    team_name = "Team " + name
     verification_code = secrets.token_hex(16)
 
     # Check if user is already on a team
     with model.engine.begin() as conn:
+        if conn.execute(model.teams.select(model.teams.c.name == team_name)).first():
+            raise util.APIError(
+                400, message="That team name is taken, sorry.")
+
         query = model.users.select((model.users.c.id == user_id) &
                                    (model.users.c.team_id != None))
         if conn.execute(query).first():
