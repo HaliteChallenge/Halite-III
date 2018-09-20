@@ -8,21 +8,21 @@
           <div class="box-item player">
             <div class="icon"></div>
             <div class="statistic-data">
-              <div class="num">5832</div>
+              <div class="num">{{ metric.players }}</div>
               <div class="data-title">Players</div>
             </div>
           </div>
           <div class="box-item organizations">
             <div class="icon"></div>
             <div class="statistic-data">
-              <div class="num">973</div>
+              <div class="num">{{ metric.organizations }}</div>
               <div class="data-title">Organizations</div>
             </div>
           </div>
           <div class="box-item countries">
             <div class="icon"></div>
             <div class="statistic-data">
-              <div class="num">5832</div>
+              <div class="num">{{ metric.countries }}</div>
               <div class="data-title">Countries</div>
             </div>
           </div>
@@ -199,7 +199,7 @@ const DEFAULT_LIMIT = 25
 
 export default {
     name: 'leaderboard',
-    props: ['baseUrl', 'hackathonId', 'lbFromContainer'],
+    props: ['baseUrl', 'hackathonId', 'lbFromContainer', 'metric'],
     components: {
       HalitePagination,
       vSelect,

@@ -70,7 +70,7 @@
         </div>
       </div>
     </div>
-    <Leaderboard v-if="leaderboard" :lbFromContainer="leaderboard" :hackathonId="hackathonId" :baseUrl="baseUrl"></Leaderboard>
+    <Leaderboard v-if="leaderboard" :lbFromContainer="leaderboard" :hackathonId="hackathonId" :baseUrl="baseUrl" :metric="metric"></Leaderboard>
   </div>
 </template>
 <script>
