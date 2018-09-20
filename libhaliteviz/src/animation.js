@@ -25,12 +25,11 @@ export class SpawnAnimation extends FrameAnimation {
         else {
             container.filters = container.filters.concat([filter]);
         }
-        console.log(container.filters);
 
         super(frame, duration, () => {
         }, (camera, frameTime) => {
             const t = (duration - frameTime) / duration;
-            filter.time = reverse ? t : 1 - t;
+            filter.time = 1 - t;
             const [ x, y ] = camera.worldToCamera(event.location.x + 0.5, event.location.y + 0.5);
             filter.center = [ x * cellSize * camera.scale,
                               y * cellSize * camera.scale ];
@@ -84,39 +83,6 @@ export class SpritesheetFrameAnimation extends FrameAnimation {
             sprite.alpha = frameTime / duration;
         }, () => {
             container.removeChild(sprite);
-        });
-    }
-}
-
-export class PlanetExplosionFrameAnimation extends SpritesheetFrameAnimation {
-    constructor(event, start, duration, cellSize, container) {
-        super({
-            sheet: assets.PLANET_EXPLOSION_SHEET,
-            sizeFactor: 8,
-            x: event.location.x,
-            y: event.location.y,
-            tintColor: assets.PLAYER_COLORS[event.owner_id],
-            start,
-            duration,
-            cellSize,
-            container,
-            opacity: 0.1,
-        });
-    }
-}
-
-export class ShipExplosionFrameAnimation extends SpritesheetFrameAnimation {
-    constructor(location, color, start, duration, cellSize, container) {
-        super({
-            sheet: assets.SHIP_EXPLOSION_SHEET,
-            sizeFactor: 4,
-            x: location.x,
-            y: location.y,
-            tintColor: color,
-            start,
-            duration,
-            cellSize,
-            container,
         });
     }
 }
