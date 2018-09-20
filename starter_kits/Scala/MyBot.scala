@@ -1,11 +1,11 @@
 import hlt._
 import java.util.Random
 
-object MyBotScala {
+object MyScala {
   def main(args: Array[String]) = {
     val rngSeed = if (args.length > 1) args(1).toInt else System.nanoTime
     val rng = new Random(rngSeed)
-    val game = new Game("MyScalaBot")
+    val game = new Game("MyBot")
     Log.log(s"Successfully created bot! My Player ID is $game.myId. Bot rng seed is $rngSeed.")
     while (true) {
       game.updateFrame()
