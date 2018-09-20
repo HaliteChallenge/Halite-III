@@ -389,7 +389,6 @@ export default {
       fetchTeamsList: function() {
         api.list_teams().then((team)=>{
           this.team_list = team;
-          console.warn(this.team_list)
         })
       },
       // Create Team
