@@ -550,13 +550,14 @@ export class HaliteVisualizer {
                         color = assets.PLAYER_COLORS[parseInt(involvedPlayers[0], 10)];
                     }
                     this.animationQueue.push(
-                        new animation.ShipExplosionFrameAnimation(
-                            event.location,
-                            color,
-                            this.frame + 0.5,
-                            1,
+                        new animation.SpawnAnimation({
+                            event,
+                            frame: this.frame,
+                            duration: 40,
                             cellSize,
-                            this.entityContainer));
+                            container: this.container,
+                            reverse: true,
+                        }));
 
                     // Don't actually remove entities - allow
                     // remove_invalid_entities to clean it up next
@@ -628,10 +629,13 @@ export class HaliteVisualizer {
                         return;
                     }
 
-                    // temporarily use old animation
-                    this.animationQueue.push(
-                        new animation.PlanetExplosionFrameAnimation(
-                            event, this.frame, 5, cellSize, this.factoryContainer));
+                    this.animationQueue.push(new animation.SpawnAnimation({
+                        event,
+                        frame: this.frame,
+                        duration: 5,
+                        cellSize,
+                        container: this.container,
+                    }));
 
                     // Don't add factory twice (if scrubbing)
                     let create = true;
