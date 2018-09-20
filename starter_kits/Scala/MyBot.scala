@@ -2,7 +2,7 @@ import java.util.Random
 
 import hlt._
 
-object MyScala {
+object MyBot {
   def main(args: Array[String]) = {
     val rngSeed = if (args.length > 1) args(1).toInt else System.nanoTime
     val rng = new Random(rngSeed)
