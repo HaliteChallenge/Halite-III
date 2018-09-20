@@ -7,14 +7,13 @@ class Game(name: String) {
   Constants.populateConstants(Input.readLine)
   val input: Input = Input.readInput
   val numPlayers: Int = input.getInt
-  var myId = new PlayerId(input.getInt)
+  val me: Player = players(myId.id)
 
   // Load players and game map
   Log.open(myId.id)
+  var myId = new PlayerId(input.getInt)
   var players: List[Player] = List.tabulate(numPlayers)(_ => Player.initialize)
   var gameMap: GameMap = GameMap._generate
-
-  val me: Player = players(myId.id)
   var turnNumber = 0
 
   def updateFrame() = {

@@ -13,6 +13,7 @@ object Direction {
   object WEST extends Direction('w')
 
   object STILL extends Direction('o')
+
 }
 
 case class Direction(charValue: Char) {
