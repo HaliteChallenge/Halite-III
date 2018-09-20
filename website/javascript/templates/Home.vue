@@ -1,5 +1,39 @@
 <template>
     <div class="home-container">
+        <div class="personal-msg" v-if="me_in">
+            <div class="left-container">
+                <div class="top-bg"></div>
+                <div class="title">Hi {{ user.username }}! </div>
+                <div class="text-tips">
+                    Let’s build a bot and get on the leaderboard!<br/>
+                    Check out our documentation and interactive tutorials.
+                </div>
+                <a class="btn btn-primary btn-sm" href="/learn-programming-challenge/">Play now</a>
+            </div>
+            <div class="right-container">
+                <div class="data-item">
+                    <div class="item-icon"></div>
+                    <div class="item-info">
+                        <div class="item-title">Bot Version</div>
+                        <div class="item-data">{{ user.num_submissions || "N/A" }}</div>
+                    </div>
+                </div>
+                <div class="data-item">
+                    <div class="item-icon"></div>
+                    <div class="item-info">
+                        <div class="item-title">Organization</div>
+                        <div class="item-data">#3 over 30 days</div>
+                    </div>
+                </div>
+                <div class="data-item">
+                    <div class="item-icon"></div>
+                    <div class="item-info">
+                        <div class="item-title">Global Rank</div>
+                        <div class="item-data">{{ user.rank || "N/A" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row section-overview">
             <div class="col-md-6">
                 <h1>Welcome to Halite III!</h1>
@@ -178,6 +212,7 @@
             return {
                 me_in: true,
                 modalOpen: false,
+                user: {},
             }
         }
         return {
@@ -187,7 +222,9 @@
         }
     },
      mounted: function () {
-       this.createRedditWidget()
+        this.createRedditWidget()
+        // Get user information
+        this.fetchUserInfo();
      },
      methods: {
        invite: function () {
@@ -229,8 +266,20 @@
        },
        closeChallengeModal: function(){
         this.modalOpen = false;
-       }
-     }
+       },
+       // Get user information
+        fetchUserInfo: function() {
+            if (this.me_in) {
+                api.me().then((user) => {
+                    this.user = user;
+                })
+                // Test Code
+                // api.get_user(1).then(res => {
+                //     this.user = res;
+                // });
+            }
+        },
+    }
    }
 </script>
 
