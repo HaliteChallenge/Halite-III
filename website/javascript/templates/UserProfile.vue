@@ -154,7 +154,7 @@
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="games">
                         <div id="games_pane">
-                            <section class="profile-section">                
+                            <section class="profile-section">
                                 <h2>BETA ALERT:</br>This page is under construction.</h2>
                                 <br>
                                 <h2>
@@ -290,15 +290,15 @@
                                 <div v-if="user.mu" class="user-profile-rank-stats">
                                     <div class="stats-item">
                                         <h3>Rating</h3>
-                                        <p>{{ Math.round(user.score * 100) }}</p>
+                                        <p>{{ user.score.toFixed(2) }}</p>
                                     </div>
                                     <div class="stats-item">
                                         <h3>&mu;</h3>
-                                        <p>{{ Math.round(user.mu * 100) }}</p>
+                                        <p>{{ user.mu.toFixed(2) }}</p>
                                     </div>
                                     <div class="stats-item">
                                         <h3>&sigma;</h3>
-                                        <p>{{ Math.round(user.sigma * 100) }}%</p>
+                                        <p>{{ user.sigma.toFixed(2) }}</p>
                                     </div>
                                 </div>
                                 <i class="xline xline-bottom"></i>
@@ -310,15 +310,15 @@
                                 </h2>
                                 <div class="challenge-modal" v-if="!is_my_page">
                                     <button class="btn challenge-btn" v-if="challengeGames.length" :class="{ 'right-btn': challengeGames.length }" @click="openChallengeModal">
-                                        <span>Challenge John</span>
+                                        <span>Challenge {{user.username}}</span>
                                     </button>
                                     <ChallengeModal :baseUrl="baseUrl" :isOn="isChallengeModalOpen" :close="closeChallengeModal" :username="user.username"></ChallengeModal>
                                 </div>
                                 <div v-if="!challengeGames.length" class="section-empty">
                                     <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
                                     <h2>No Challenge yet</h2>
-                                    <button class="btn challenge-btn" @click="openChallengeModal">
-                                        <span>Challenge John</span>
+                                    <button v-if="!is_my_page" class="btn challenge-btn" @click="openChallengeModal">
+                                        <span>Challenge {{user.username}}</span>
                                     </button>
                                 </div>
                                 <div v-if="challengeGames.length > 0">
