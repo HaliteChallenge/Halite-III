@@ -602,7 +602,24 @@
           api.list_bots(user.user_id).then((bots) => {
             this.bots = bots
           })
-          this.fetch()
+          this.fetch().then((games) => {
+            const efficiencies = []
+            for (const game of games) {
+              let index = -1
+              for (const player of Object.values(game.players)) {
+                if (parseInt(player.id, 10) === user.user_id) {
+                  index = player.player_index
+                  console.log(player.id, index, game.stats.player_statistics[index])
+                  break
+                }
+              }
+
+              if (index >= 0) {
+                efficiencies.push(game.stats.player_statistics[index].mining_efficiency)
+              }
+            }
+            console.log(efficiencies)
+          })
           this.fetchHackathon()
           this.fetchErrorGames()
           this.fetchnemesis()
@@ -651,8 +668,8 @@
         refreshStickyTable: function () {
             window.refreshStickyTable();
         },
-        fetch: function () {
-          let query = `order_by=desc,time_played&offset=${this.offset}&limit=${this.limit}`
+        fetch: function (options={}) {
+          let query = `order_by=desc,time_played&offset=${this.offset}&limit=${options.limit || this.limit}`
           if (this.only_timed_out) {
             query += `&filter=timed_out,=,${this.user.user_id}`
           }
