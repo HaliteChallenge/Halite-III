@@ -1,5 +1,4 @@
-const PIXI = require("pixi.js");
-
+import * as PIXI from "pixi.js";
 import Ship from "./sprite";
 import {Dropoff, Factory} from "./factory";
 import {Map} from "./map";
@@ -11,6 +10,7 @@ import * as assets from "./assets";
 import colorTheme from "./colors";
 
 import * as animation from "./animation";
+
 
 
 class Signal {
@@ -149,6 +149,10 @@ export class HaliteVisualizer {
             factory.attach(this.factoryContainer);
         }
 
+        this.container.filterArea = new PIXI.Rectangle(
+            0, 0,
+            this.application.renderer.width,
+            this.application.renderer.height);
         this.container.addChild(this.mapContainer);
         this.container.addChild(this.factoryContainer);
         this.container.addChild(this.entityContainer);
@@ -581,9 +585,13 @@ export class HaliteVisualizer {
                         this.entity_dict[event.id] = new_entity;
                         new_entity.attach(this.entityContainer);
                         // TODO: use new Halite 3 spawn animation
-                        this.animationQueue.push(
-                            new animation.PlanetExplosionFrameAnimation(
-                                event, this.frame, 2, cellSize, this.entityContainer));
+                        this.animationQueue.push(new animation.SpawnAnimation({
+                            event,
+                            frame: this.frame,
+                            duration: 40,
+                            cellSize,
+                            container: this.container,
+                        }));
                     }
 
                     // Store spawn as command so that entity knows not to mine this turn

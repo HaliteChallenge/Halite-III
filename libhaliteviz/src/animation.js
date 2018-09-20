@@ -1,5 +1,6 @@
 import * as assets from "./assets";
 import * as PIXI from "pixi.js";
+import {ShockwaveFilter} from "@pixi/filter-shockwave";
 
 export class FrameAnimation {
     constructor(start, duration, update, draw, finish) {
@@ -8,6 +9,34 @@ export class FrameAnimation {
         this.update = update;
         this.draw = draw;
         this.finish = finish;
+    }
+}
+
+export class SpawnAnimation extends FrameAnimation {
+    constructor({ event, frame, duration, cellSize, container, reverse=false }) {
+        const filter = new ShockwaveFilter();
+        filter.radius = 30;
+        filter.amplitude = 20;
+        filter.wavelength = 10;
+        filter.brightness = 1.5;
+        if (!container.filters) {
+            container.filters = [filter];
+        }
+        else {
+            container.filters = container.filters.concat([filter]);
+        }
+        console.log(container.filters);
+
+        super(frame, duration, () => {
+        }, (camera, frameTime) => {
+            const t = (duration - frameTime) / duration;
+            filter.time = reverse ? t : 1 - t;
+            const [ x, y ] = camera.worldToCamera(event.location.x + 0.5, event.location.y + 0.5);
+            filter.center = [ x * cellSize * camera.scale,
+                              y * cellSize * camera.scale ];
+        }, () => {
+            container.filters = container.filters.filter(x => x !== filter);
+        });
     }
 }
 
