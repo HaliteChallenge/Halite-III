@@ -116,21 +116,21 @@
                     </p>
                 </div> -->
                 <div class="user-efficiency">
-                    <div class="title">Average Halite Efficiency</div>
+                    <div class="title">Your Halite Efficiency (Most Recent 10 Games)</div>
                     <div class="chart-container">
                         <div class="data-distribution">
                             <div class="data-line" ref="dataLine"></div>
                             <div class="scale min-line">0%</div>
                             <div class="scale max-line">100%</div>
                             <!-- Use test data -->
-                            <div class="scale tire-line" :style="getLeftLen(0.4)">40%</div>
-                            <div class="scale user-line" :style="getLeftLen(0.5)">50%</div>
-                            <div class="scale all-play-line" :style="getLeftLen(0.8)">80%</div>
+                            <div class="scale tire-line" :style="getLeftLen(efficiency.min)">{{efficiency.min.toFixed(0)}}</div>
+                            <div class="scale user-line" :style="getLeftLen(efficiency.mean)">{{efficiency.mean.toFixed(0)}}</div>
+                            <div class="scale all-play-line" :style="getLeftLen(efficiency.max)">{{efficiency.max.toFixed(0)}}</div>
                         </div>
                         <div class="data-name">
-                            <div class="tire">Tier</div>
-                            <div class="user-name">{{user.username}}</div>
-                            <div class="all-play">All Players</div>
+                            <div class="tire">Min</div>
+                            <div class="user-name">Average</div>
+                            <div class="all-play">Max</div>
                         </div>
                     </div>
                 </div>
@@ -566,6 +566,13 @@
           participants: {},
           isLastPage: false,
           isChallengeModalOpen: false,
+          efficiency: {
+            min: 0,
+            percentile25: 0,
+            mean: 0,
+            percentile75: 0,
+            max: 1,
+          },
         }
       },
       mounted: function () {
@@ -603,13 +610,13 @@
             this.bots = bots
           })
           this.fetch().then((games) => {
+            if (games.length === 0) return
             const efficiencies = []
             for (const game of games) {
               let index = -1
               for (const player of Object.values(game.players)) {
                 if (parseInt(player.id, 10) === user.user_id) {
                   index = player.player_index
-                  console.log(player.id, index, game.stats.player_statistics[index])
                   break
                 }
               }
@@ -618,7 +625,10 @@
                 efficiencies.push(game.stats.player_statistics[index].mining_efficiency)
               }
             }
-            console.log(efficiencies)
+            efficiencies.sort()
+            this.efficiency.min = efficiencies[0]
+            this.efficiency.max = efficiencies[efficiencies.length - 1]
+            this.efficiency.mean = efficiencies.reduce((a, b) => a + b, 0) / efficiencies.length
           })
           this.fetchHackathon()
           this.fetchErrorGames()
