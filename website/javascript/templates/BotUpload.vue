@@ -140,7 +140,7 @@ export default{
         zip.forEach((relativePath, zipEntry) => {
           // Remove common root directory from filepath
           let { name } = zipEntry
-          if (name.startsWith(root)) {
+          if (root.length > 0 && name.startsWith(root)) {
             name = name.slice(root.length + 1)
           }
           console.log(name)
