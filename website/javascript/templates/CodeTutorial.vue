@@ -44,7 +44,7 @@
       </p>
 
       <p>
-        We repeat this loop every turn until the game is over. A small map has 300 turns in a game, but turns increase with map size up to 500. You can always find out which turn you are on by using the
+        We repeat this loop every turn until the game is over. A small map has 400 turns in a game, but turns increase with map size up to 500. You can always find out which turn you are on by using the
         <code>game.turn_number</code> variable.
       </p>
 
