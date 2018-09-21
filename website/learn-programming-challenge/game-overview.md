@@ -22,7 +22,7 @@ Players begin play with a shipyard, and can use collected halite to build new sh
 
 #### Gameplay Overview
 
-Players each start the game with 5,000 stored halite, a shipyard, and knowledge of the game map. The map is a 2d grid (32x32, 48x48, 64x64, or 80x80) with a unique symmetric pattern of halite. Each player's shipyard position is fixed on the map, and the shipyard is the only place a player can spawn new ships.
+Players each start the game with 5,000 stored halite, a shipyard, and knowledge of the game map. The map is a 2d grid (32x32, 40x40, 48x48, 56x56, or 64x64) with a unique symmetric pattern of halite. Each player's shipyard position is fixed on the map, and the shipyard is the only place a player can spawn new ships.
 
 Ships are the main actors in a game of Halite III. Ships explore the board, collect precious halite, and can interact with opposing players. Ships are powered by the energy they collect and store, and any move costs halite. Ships can make one action per turn: they can move one unit in any cardinal direction, collect halite, or convert into dropoffs.
 
@@ -43,7 +43,7 @@ Move (o) | Collect: 25% of halite available in cell. <br/> If this evaluates to 
 <br/><br/>
 
 ##### Win Conditions
-The game continues for 300 to 500 turns, depending on the game map size. The winning player has the most stored halite at the end of the game. If a player does not have a ship or enough energy to construct a ship, they are considered “dead” and lose the game. In the case of a tie, players are ranked by their stored halite on the last turn, then by their stored halite on the penultimate turn, and so on.
+The game continues for 400 to 500 turns, depending on the game map size. The winning player has the most stored halite at the end of the game. If a player does not have a ship or enough energy to construct a ship, they are considered “dead” and lose the game. In the case of a tie, players are ranked by their stored halite on the last turn, then by their stored halite on the penultimate turn, and so on.
 <br/><br/>
 
 ##### Note on Game Rules Changes
