@@ -1,6 +1,6 @@
 <template>
     <div class="home-container">
-        <div class="personal-msg" v-if="me_in">
+        <div class="personal-msg" v-if="user">
             <div class="left-container">
                 <div class="top-bg"></div>
                 <div class="title">Hi {{ user.username }}! </div>
@@ -212,7 +212,7 @@
             return {
                 me_in: true,
                 modalOpen: false,
-                user: {},
+                user: null,
             }
         }
         return {
@@ -269,15 +269,13 @@
        },
        // Get user information
         fetchUserInfo: function() {
-            if (this.me_in) {
-                api.me().then((user) => {
-                    this.user = user;
-                })
-                // Test Code
-                // api.get_user(1).then(res => {
-                //     this.user = res;
-                // });
-            }
+            api.me().then((user) => {
+                user && (this.user = user);
+            })
+            // Test Code --- Because my own account has no data.
+            // api.get_user(1).then(res => {
+            //     this.user = res;
+            // });
         },
     }
    }
