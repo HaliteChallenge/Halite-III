@@ -1,5 +1,4 @@
-const PIXI = require("pixi.js");
-
+import * as PIXI from "pixi.js";
 import Ship from "./sprite";
 import {Dropoff, Factory} from "./factory";
 import {Map} from "./map";
@@ -11,6 +10,7 @@ import * as assets from "./assets";
 import colorTheme from "./colors";
 
 import * as animation from "./animation";
+
 
 
 class Signal {
@@ -149,6 +149,10 @@ export class HaliteVisualizer {
             factory.attach(this.factoryContainer);
         }
 
+        this.container.filterArea = new PIXI.Rectangle(
+            0, 0,
+            this.application.renderer.width,
+            this.application.renderer.height);
         this.container.addChild(this.mapContainer);
         this.container.addChild(this.factoryContainer);
         this.container.addChild(this.entityContainer);
@@ -546,13 +550,13 @@ export class HaliteVisualizer {
                         color = assets.PLAYER_COLORS[parseInt(involvedPlayers[0], 10)];
                     }
                     this.animationQueue.push(
-                        new animation.ShipExplosionFrameAnimation(
-                            event.location,
-                            color,
-                            this.frame + 0.5,
-                            1,
+                        new animation.SpawnAnimation({
+                            event,
+                            frame: this.frame,
+                            duration: 40,
                             cellSize,
-                            this.entityContainer));
+                            container: this.container,
+                        }));
 
                     // Don't actually remove entities - allow
                     // remove_invalid_entities to clean it up next
@@ -581,9 +585,13 @@ export class HaliteVisualizer {
                         this.entity_dict[event.id] = new_entity;
                         new_entity.attach(this.entityContainer);
                         // TODO: use new Halite 3 spawn animation
-                        this.animationQueue.push(
-                            new animation.PlanetExplosionFrameAnimation(
-                                event, this.frame, 2, cellSize, this.entityContainer));
+                        this.animationQueue.push(new animation.SpawnAnimation({
+                            event,
+                            frame: this.frame,
+                            duration: 40,
+                            cellSize,
+                            container: this.container,
+                        }));
                     }
 
                     // Store spawn as command so that entity knows not to mine this turn
@@ -593,11 +601,13 @@ export class HaliteVisualizer {
                     this.current_commands[event.owner_id][event.id] = {"type" : "g"};
                 }
                 else if (event.type === "capture") {
-                    // TODO: use new Halite 3 spawn animation
-                    this.animationQueue.push(
-                        new animation.ShipExplosionFrameAnimation(
-                            event.location, 0xFFFFFF,
-                            this.frame, 2, cellSize, this.entityContainer));
+                    this.animationQueue.push(new animation.SpawnAnimation({
+                            event,
+                            frame: this.frame,
+                            duration: 40,
+                            cellSize,
+                            container: this.container,
+                        }));
                 }
                 else if (event.type === "construct") {
                     /// TODO: create new sprite class for dropoffs, construct one, add to list (dict?) of dropoffs
@@ -620,10 +630,13 @@ export class HaliteVisualizer {
                         return;
                     }
 
-                    // temporarily use old animation
-                    this.animationQueue.push(
-                        new animation.PlanetExplosionFrameAnimation(
-                            event, this.frame, 5, cellSize, this.factoryContainer));
+                    this.animationQueue.push(new animation.SpawnAnimation({
+                        event,
+                        frame: this.frame,
+                        duration: 5,
+                        cellSize,
+                        container: this.container,
+                    }));
 
                     // Don't add factory twice (if scrubbing)
                     let create = true;

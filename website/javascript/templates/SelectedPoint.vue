@@ -5,6 +5,9 @@
         </div>  -->
         <div class="map-props-list">
             <table>
+              <tr>
+                <th>Selected Point</th>
+              </tr>
                 <tr>
                     <td>Location:</td>
                     <td>{{info.location}}</td>
@@ -34,3 +37,10 @@ export default {
    }
  }
 </script>
+
+
+<style scoped>
+  th {
+    padding: 5px 0;
+  }
+</style>

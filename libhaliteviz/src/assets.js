@@ -64,11 +64,11 @@ export function prepareAll(renderer, prepare) {
 
     if (!renderer.bindTexture) return;
 
-    Object.keys(SHIP_EXPLOSION_SHEET.data.frames)
-        .forEach((frame) => renderer.bindTexture(PIXI.Texture.from(frame).baseTexture));
+    // Object.keys(SHIP_EXPLOSION_SHEET.data.frames)
+    //     .forEach((frame) => renderer.bindTexture(PIXI.Texture.from(frame).baseTexture));
 
-    Object.keys(PLANET_EXPLOSION_SHEET.data.frames)
-        .forEach((frame) => renderer.bindTexture(PIXI.Texture.from(frame).baseTexture));
+    // Object.keys(PLANET_EXPLOSION_SHEET.data.frames)
+    //     .forEach((frame) => renderer.bindTexture(PIXI.Texture.from(frame).baseTexture));
 }
 
 export function setAssetRoot(path) {
@@ -109,18 +109,18 @@ export function setAssetRoot(path) {
                     resolve();
                 });
         }),
-        loadSpritesheet(
-            require("../assets/planet-explosion.json"),
-            ASSET_ROOT + require("../assets/planet-explosion.png"),
-        ).then((sheet) => {
-            PLANET_EXPLOSION_SHEET = sheet;
-        }),
-        loadSpritesheet(
-            require("../assets/ship-explosion.json"),
-            ASSET_ROOT + require("../assets/ship-explosion.png"),
-        ).then((sheet) => {
-            SHIP_EXPLOSION_SHEET = sheet;
-        }),
+        // loadSpritesheet(
+        //     require("../assets/planet-explosion.json"),
+        //     ASSET_ROOT + require("../assets/planet-explosion.png"),
+        // ).then((sheet) => {
+        //     PLANET_EXPLOSION_SHEET = sheet;
+        // }),
+        // loadSpritesheet(
+        //     require("../assets/ship-explosion.json"),
+        //     ASSET_ROOT + require("../assets/ship-explosion.png"),
+        // ).then((sheet) => {
+        //     SHIP_EXPLOSION_SHEET = sheet;
+        // }),
         loadSpritesheet(
             require("../assets/turtle.json"),
             ASSET_ROOT + require("../assets/turtle.png"),

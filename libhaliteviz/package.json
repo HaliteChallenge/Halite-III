@@ -13,6 +13,7 @@
     "@pixi/filter-advanced-bloom": "^2.6.0",
     "@pixi/filter-bloom": "^2.5.0",
     "@pixi/filter-motion-blur": "^2.6.1",
+    "@pixi/filter-shockwave": "^2.6.1",
     "d3-scale-chromatic": "^1.3.0",
     "html2canvas": "^1.0.0-alpha.12",
     "pixi.js": "^4.5.3",

@@ -699,6 +699,17 @@ export default {
             }
           }
         }
+
+        for (const dropoff of this.getVisualizer().dropoffs) {
+          if (dropoff.factoryBase.x === x &&
+              dropoff.factoryBase.y === y) {
+            return {
+              x, y,
+              owner: dropoff.owner,
+              type: "Dropoff",
+            }
+          }
+        }
       }
     },
     selectedShip: function () {
@@ -896,6 +907,16 @@ export default {
     &.not-padding {
       padding: 0;
       overflow: hidden;
+    }
+
+    >div {
+      flex: 1;
+      max-width: calc(49% - 1em);
+      margin-right: 1em;
+
+      &:last-child {
+        margin-right: 0;
+      }
     }
   }
   .list-hori{

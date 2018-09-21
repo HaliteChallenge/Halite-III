@@ -6,8 +6,7 @@
   <div class="map-props-list">
     <table>
       <tr>
-        <td>Location:</td>
-        <td>{{info.location}}</td>
+        <th>Selected Ship</th>
       </tr>
       <tr>
         <td>Owner:</td>
@@ -49,3 +48,9 @@ export default {
     }
   }
 </script>
+
+<style scoped>
+  th {
+    padding: 5px 0;
+  }
+</style>

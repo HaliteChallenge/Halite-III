@@ -225,7 +225,6 @@
         }
         .dropdown {
           margin-right: 24px;
-          padding-top: 0;
           min-height: 40px;
           border-radius: 4px;
           border: 1px solid #475F92;
@@ -254,6 +253,7 @@
               border-top: 4px solid #FFFFFF;
               border-left: 4px solid transparent;
               border-right: 4px solid transparent;
+              visibility: visible;
             }
             .vs__selected-options {
               .selected-tag {

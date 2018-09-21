@@ -1,5 +1,6 @@
 import * as assets from "./assets";
 import * as PIXI from "pixi.js";
+import {ShockwaveFilter} from "@pixi/filter-shockwave";
 
 export class FrameAnimation {
     constructor(start, duration, update, draw, finish) {
@@ -8,6 +9,33 @@ export class FrameAnimation {
         this.update = update;
         this.draw = draw;
         this.finish = finish;
+    }
+}
+
+export class SpawnAnimation extends FrameAnimation {
+    constructor({ event, frame, duration, cellSize, container, reverse=false }) {
+        const filter = new ShockwaveFilter();
+        filter.radius = 30;
+        filter.amplitude = 20;
+        filter.wavelength = 10;
+        filter.brightness = 1.5;
+        if (!container.filters) {
+            container.filters = [filter];
+        }
+        else {
+            container.filters = container.filters.concat([filter]);
+        }
+
+        super(frame, duration, () => {
+        }, (camera, frameTime) => {
+            const t = (duration - frameTime) / duration;
+            filter.time = 1 - t;
+            const [ x, y ] = camera.worldToCamera(event.location.x + 0.5, event.location.y + 0.5);
+            filter.center = [ x * cellSize * camera.scale,
+                              y * cellSize * camera.scale ];
+        }, () => {
+            container.filters = container.filters.filter(x => x !== filter);
+        });
     }
 }
 
@@ -55,39 +83,6 @@ export class SpritesheetFrameAnimation extends FrameAnimation {
             sprite.alpha = frameTime / duration;
         }, () => {
             container.removeChild(sprite);
-        });
-    }
-}
-
-export class PlanetExplosionFrameAnimation extends SpritesheetFrameAnimation {
-    constructor(event, start, duration, cellSize, container) {
-        super({
-            sheet: assets.PLANET_EXPLOSION_SHEET,
-            sizeFactor: 8,
-            x: event.location.x,
-            y: event.location.y,
-            tintColor: assets.PLAYER_COLORS[event.owner_id],
-            start,
-            duration,
-            cellSize,
-            container,
-            opacity: 0.1,
-        });
-    }
-}
-
-export class ShipExplosionFrameAnimation extends SpritesheetFrameAnimation {
-    constructor(location, color, start, duration, cellSize, container) {
-        super({
-            sheet: assets.SHIP_EXPLOSION_SHEET,
-            sizeFactor: 4,
-            x: location.x,
-            y: location.y,
-            tintColor: color,
-            start,
-            duration,
-            cellSize,
-            container,
         });
     }
 }
