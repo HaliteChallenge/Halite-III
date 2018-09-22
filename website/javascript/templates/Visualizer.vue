@@ -575,7 +575,7 @@ export default {
         this.gaData('visualizer', 'click-back', 'gameplay')
       }
       this.nextFrame = () => {
-        if (visualizer && this.frame < this.replay.game_statistics.number_turns - 1) {
+        if (visualizer && this.frame < this.replay.full_frames.length - 1) {
           visualizer.scrub(this.frame + 1, 0)
         }
 
