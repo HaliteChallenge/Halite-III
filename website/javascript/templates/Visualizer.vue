@@ -157,13 +157,13 @@
       <div class="stats-panel map-object">
         <label class="panel-name">MAP OBJECT PROPERTIES</label>
         <div class="panel-body">
-          <div v-if="selectedPlanet">
+          <div v-if="selectedPlanet" class="map-object">
             <SelectedPlanet :selected-planet="selectedPlanet" :players="players"></SelectedPlanet>
           </div>
-          <div v-if="selectedPoint && !selectedPlanet">
+          <div v-if="selectedPoint && !selectedPlanet" class="map-object">
             <SelectedPoint :selected-point="selectedPoint" :players="players"></SelectedPoint>
           </div>
-          <div v-if="selectedShip">
+          <div v-if="selectedShip" class="map-object">
             <SelectedShip :selected-ship="selectedShip" :players="players"></SelectedShip>
           </div>
           <div class="message-box" v-if="!selectedPoint && !selectedShip">
@@ -911,11 +911,14 @@ export default {
 
     >div {
       flex: 1;
-      max-width: calc(49% - 1em);
-      margin-right: 1em;
 
       &:last-child {
         margin-right: 0;
+      }
+
+      &.map-object {
+        max-width: calc(49% - 1em);
+        margin-right: 1em;
       }
     }
   }
