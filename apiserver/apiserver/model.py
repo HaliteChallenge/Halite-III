@@ -87,6 +87,10 @@ def ranked_bots_query(alias="ranked_bots"):
         sqlalchemy.sql.func.rank().over(
             order_by=bots.c.score.desc()
         ).label("bot_rank"),
+        sqlalchemy.sql.func.rank().over(
+            partition_by=users.c.organization_id,
+            order_by=bots.c.score.desc()
+        ).label("bot_organization_rank"),
     ]).select_from(
         bots.join(users, bots.c.user_id == users.c.id)
     ).where(
@@ -188,6 +192,10 @@ all_users = sqlalchemy.sql.select([
         _func.min(leader_bots.c.bot_rank),
         _func.min(ranked_bots.c.bot_rank),
     ).label("rank"),
+    _func.coalesce(
+        _func.min(leader_bots.c.bot_organization_rank),
+        _func.min(ranked_bots.c.bot_organization_rank),
+    ).label("organization_rank"),
 ]).select_from(
     users.join(
         ranked_bots,
@@ -245,6 +253,7 @@ ranked_bots_users = sqlalchemy.sql.select([
     ranked_bots.c.language,
     ranked_bots.c.update_time,
     ranked_bots.c.bot_rank.label("rank"),
+    ranked_bots.c.bot_organization_rank.label("organization_rank"),
     ranked_bots.c.compile_status,
 ]).select_from(
     ranked_bots.join(
