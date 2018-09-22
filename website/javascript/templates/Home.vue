@@ -18,11 +18,18 @@
                         <div class="item-data">{{ user.num_submissions || "N/A" }}</div>
                     </div>
                 </div>
-                <div class="data-item">
+                <div class="data-item" v-if="organization_rank">
                     <div class="item-icon"></div>
                     <div class="item-info">
                         <div class="item-title">Organization</div>
-                        <div class="item-data">#3 over 30 days</div>
+                        <div class="item-data">#{{organization_rank.organization_rank}} over past week</div>
+                    </div>
+                </div>
+                <div class="data-item" v-else>
+                    <div class="item-icon"></div>
+                    <div class="item-info">
+                        <div class="item-title">Organization</div>
+                        <div class="item-data">Not Affiliated</div>
                     </div>
                 </div>
                 <div class="data-item">
@@ -155,7 +162,7 @@
             </div>
         </div> -->
 
-            <!-- 
+            <!--
             <div class="row">
                 <div class="col-md-12">
                 <p class="t1 c-wht font-headline">HALITE III ALPHA</p>
@@ -190,7 +197,7 @@
                 </div>
            </div>
             <div class="col-md-12 ha-line">
-            </div> 
+            </div>
         </div>-->
     </div>
 </template>
@@ -213,12 +220,14 @@
                 me_in: true,
                 modalOpen: false,
                 user: null,
+                organization_rank: null
             }
         }
         return {
             me_in,
             loginServerUrl: `${api.LOGIN_SERVER_URL}/github`,
             modalOpen: false,
+            organization_rank: null
         }
     },
      mounted: function () {
@@ -268,16 +277,28 @@
         this.modalOpen = false;
        },
        // Get user information
-        fetchUserInfo: function() {
-            api.me().then((user) => {
-                user && (this.user = user);
-            })
-            // Test Code --- Because my own account has no data.
-            // api.get_user(1).then(res => {
-            //     this.user = res;
-            // });
-        },
-    }
+       fetchUserInfo: function() {
+         api.me().then((user) => {
+           if (user) {
+             this.user = user
+
+             if (user.organization_id === null) {
+               this.organization_rank = null
+               return
+             }
+             const filter = [`organization_id,=,${user.organization_id}`]
+             api.organizationLeaderboard(filter).then((org) => {
+               if (org && org.length > 0)
+                 this.organization_rank = org[0]
+             })
+           }
+         })
+         // Test Code --- Because my own account has no data.
+         // api.get_user(1).then(res => {
+         //     this.user = res;
+         // });
+       },
+     }
    }
 </script>
 

@@ -413,6 +413,22 @@ export function leaderboard (filters, hackathon = null, offset = null, limit = n
   })
 }
 
+export function organizationLeaderboard(filters, offset=null, limit=null) {
+  let url = `${API_SERVER_URL}/leaderboard/organization`
+  const querystring = []
+  if (offset !== null && limit !== null) {
+    querystring.push(`offset=${offset}&limit=${limit}`)
+  }
+  if (filters && filters.length > 0) {
+    filters = filters.map(window.encodeURIComponent);
+    querystring.push(`filter=${filters.join('&filter=')}`)
+  }
+  if (querystring.length > 0) {
+    url += `?${querystring.join('&')}`
+  }
+  return window.fetch(url).then(r => r.json())
+}
+
 export function reset_api_key () {
   return $.post({
     url: `${API_SERVER_URL}/api_key`,
