@@ -200,7 +200,7 @@
     }
     .chart-container {
       margin-top: 15px;
-      padding: 24px 30px;
+      padding: 24px 36px;
       .data-distribution {
         position: relative;
         padding: 0 0 20px;
@@ -213,8 +213,14 @@
           top: -22px;
           font-size: 12px;
           color: #8c8c8c;
+          &.min-line, &.max-line {
+              top: -4px;
+          }
+          &.min-line {
+              left: -20px;
+          }
           &.max-line {
-            right: 0;
+              right: -32px;
           }
           &.tire-line,
           &.user-line,
@@ -238,8 +244,10 @@
           }
           &.user-line {
             color: #e37222;
+            top: 12px;
             &::after {
               background-color: #e37222;
+              top: -15px;
             }
           }
           &.all-play-line {

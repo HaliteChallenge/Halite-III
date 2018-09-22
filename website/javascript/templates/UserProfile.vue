@@ -116,16 +116,16 @@
                     </p>
                 </div> -->
                 <div class="user-efficiency">
-                    <div class="title">Your Halite Efficiency (Most Recent 10 Games)</div>
+                    <div class="title">Halite Efficiency (Last 10 Games)</div>
                     <div class="chart-container">
                         <div class="data-distribution">
                             <div class="data-line" ref="dataLine"></div>
                             <div class="scale min-line">0%</div>
                             <div class="scale max-line">100%</div>
                             <!-- Use test data -->
-                            <div class="scale tire-line" :style="getLeftLen(efficiency.min)">{{efficiency.min.toFixed(0)}}</div>
-                            <div class="scale user-line" :style="getLeftLen(efficiency.mean)">{{efficiency.mean.toFixed(0)}}</div>
-                            <div class="scale all-play-line" :style="getLeftLen(efficiency.max)">{{efficiency.max.toFixed(0)}}</div>
+                            <div class="scale tire-line" :style="getLeftLen(efficiency.min)">{{(efficiency.min * 100).toFixed(0)}}%</div>
+                            <div class="scale user-line" :style="getLeftLen(efficiency.mean)">{{(efficiency.mean * 100).toFixed(1)}}%</div>
+                            <div class="scale all-play-line" :style="getLeftLen(efficiency.max)">{{(efficiency.max * 100).toFixed(0)}}%</div>
                         </div>
                         <div class="data-name">
                             <div class="tire">Min</div>
@@ -1054,10 +1054,8 @@
         },
         // Get the location of the data by percentage --- issue #397
         getLeftLen(data) {
-            const dataLine = this.$refs.dataLine;
-            if(!dataLine) return
-            const left = dataLine.offsetWidth * data;
-            return { left: left + 'px' }
+            data = Math.max(0, Math.min(1, data))
+            return { left: `calc(${data * 100}% - 12px)` }
         }
       }
     }
