@@ -30,6 +30,10 @@
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/@pixi/filter-motion-blur/-/filter-motion-blur-2.6.1.tgz#047c9999afb5838a7fa4f923f9237f9eeda284e8"
 
+"@pixi/filter-shockwave@^2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@pixi/filter-shockwave/-/filter-shockwave-2.6.1.tgz#1894d0c3b0188fb2a846ef995b3c2f5b043cfaab"
+
 "@vue/component-compiler-utils@^2.0.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@vue/component-compiler-utils/-/component-compiler-utils-2.1.0.tgz#8331eadc8acdbc35aace5a61d2153e6f6434bfe2"
@@ -3701,6 +3705,7 @@ levn@^0.3.0, levn@~0.3.0:
     "@pixi/filter-advanced-bloom" "^2.6.0"
     "@pixi/filter-bloom" "^2.5.0"
     "@pixi/filter-motion-blur" "^2.6.1"
+    "@pixi/filter-shockwave" "^2.6.1"
     d3-scale-chromatic "^1.3.0"
     html2canvas "^1.0.0-alpha.12"
     pixi.js "^4.5.3"
@@ -6132,9 +6137,9 @@ vue-moment@^2.1.0:
   dependencies:
     moment "^2.11.1"
 
-vue-select@^2.3.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/vue-select/-/vue-select-2.4.0.tgz#ef06547fe857f3259841ab2f3d29c5d8a1e52630"
+vue-select@2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/vue-select/-/vue-select-2.5.1.tgz#9886e7123150a52dc8dbfe3202d0387268835aaa"
 
 vue-slider-component@^2.4.3:
   version "2.7.2"

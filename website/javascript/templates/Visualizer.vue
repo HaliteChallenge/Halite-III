@@ -90,7 +90,7 @@
             </button>
             <div>
               <label for="theme">Theme (changes require reloading page):</label>
-              <v-select :options="themes" @input="changeTheme" :value="selectedTheme" style="display: inline-block;" id="theme">
+              <v-select :options="themes" @input="changeTheme" :value="selectedTheme" style="display: inline-block;" inputId="theme" :searchable="false" :filterable="false" :clearable="false">
               </v-select>
             </div>
             <template v-if="showHoliday">
