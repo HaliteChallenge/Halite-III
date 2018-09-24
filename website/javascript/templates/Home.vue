@@ -1,11 +1,19 @@
 <template>
     <div class="home-container">
         <div class="personal-msg" v-if="user">
-            <div class="left-container">
+            <div class="left-container" v-if="user.rank">
                 <div class="top-bg"></div>
-                <div class="title">Hi {{ user.username }}! </div>
+                <div class="title">Hi, {{ user.username }}! </div>
                 <div class="text-tips">
-                    Let’s build a bot and get on the leaderboard!<br/>
+                    Keep up the good work. Your bot is ranked #{{ user.rank }}.<br/>
+                </div>
+                <a class="btn btn-primary btn-sm" href="/play-programming-challenge/">Keep playing</a>
+            </div>
+            <div class="left-container" v-else>
+                <div class="top-bg"></div>
+                <div class="title">Hi, {{ user.username }}! </div>
+                <div class="text-tips">
+                    Build a bot and get on the leaderboard.<br/>
                     Check out our documentation and interactive tutorials.
                 </div>
                 <a class="btn btn-primary btn-sm" href="/learn-programming-challenge/">Play now</a>
@@ -14,15 +22,22 @@
                 <div class="data-item">
                     <div class="item-icon"></div>
                     <div class="item-info">
-                        <div class="item-title">Bot Version</div>
+                        <div class="item-title">Your Bot Version</div>
                         <div class="item-data">{{ user.num_submissions || "N/A" }}</div>
+                    </div>
+                </div>
+                <div class="data-item">
+                    <div class="item-icon"></div>
+                    <div class="item-info">
+                        <div class="item-title">Your Global Rank</div>
+                        <div class="item-data">#{{ user.rank || "N/A" }}</div>
                     </div>
                 </div>
                 <div class="data-item" v-if="organization_rank">
                     <div class="item-icon"></div>
                     <div class="item-info">
-                        <div class="item-title">Organization</div>
-                        <div class="item-data">#{{organization_rank.organization_rank}} over past week</div>
+                        <div class="item-title">{{ user.organization }}'s Global Rank</div>
+                        <div class="item-data">#{{organization_rank.organization_rank}}</div>
                     </div>
                 </div>
                 <div class="data-item" v-else>
@@ -30,13 +45,6 @@
                     <div class="item-info">
                         <div class="item-title">Organization</div>
                         <div class="item-data">Not Affiliated</div>
-                    </div>
-                </div>
-                <div class="data-item">
-                    <div class="item-icon"></div>
-                    <div class="item-info">
-                        <div class="item-title">Global Rank</div>
-                        <div class="item-data">{{ user.rank || "N/A" }}</div>
                     </div>
                 </div>
             </div>
