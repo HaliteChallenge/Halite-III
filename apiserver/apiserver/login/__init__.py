@@ -164,7 +164,7 @@ def google_login_callback():
     return generic_login_callback(email, 2, google_user_id)
 
 
-def generic_login_callback(username, email, oauth_provider, oauth_id):
+def generic_login_callback(email, oauth_provider, oauth_id):
     with model.engine.connect() as conn:
         user = conn.execute(sqlalchemy.sql.select([
             model.users.c.id,
