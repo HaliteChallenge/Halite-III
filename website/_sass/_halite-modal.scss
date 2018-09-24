@@ -24,11 +24,11 @@
   .modal-container{
     position: relative;
     max-width: 660px;
-    background-color: #1c1a27;
+    background-color: #fff;
     border-radius: 5px;
     text-align: center;
     font-size: 16px;
-    color: #C2D1D0;
+    color: #52678D;
     letter-spacing: 0.5px;
     line-height: 24px;
     padding: 50px;
@@ -46,13 +46,14 @@
       font-size: 24px;
       font-weight: 500;
       margin-top: 30px;
-      color: #ECFFFB;
+      color: #033C89;
       letter-spacing: 2px;
     }
   }
 
   .dropdown-toggle{
     background-image: url("/assets/images/icon-search.svg") !important;
+    color: blue;
   }
 
   .modal-container{

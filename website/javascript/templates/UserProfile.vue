@@ -155,8 +155,6 @@
                     <div role="tabpanel" class="tab-pane active" id="games">
                         <div id="games_pane">
                             <section class="profile-section">
-                                <h2>BETA ALERT:</br>This page is under construction.</h2>
-                                <br>
                                 <h2>
                                     Game Videos Feed
                                     <!-- <span title="Games played by your bot, replay files are kept forever, but games data might be deleted every 2 weeks" class="info-icon icon-info pull-right"></span> -->
@@ -316,7 +314,7 @@
                                 </div>
                                 <div v-if="!challengeGames.length" class="section-empty">
                                     <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
-                                    <h2>No Challenge yet</h2>
+                                    <h2>No Challenges yet</h2>
                                     <button v-if="!is_my_page" class="btn challenge-btn" @click="openChallengeModal">
                                         <span>Challenge {{user.username}}</span>
                                     </button>
@@ -442,13 +440,6 @@
                                     History
                                     <!-- <span title="Rank/Rating history of your bots, the rank/rating is the last rating or rank achieved before the bot was retired." class="info-icon icon-info pull-right"></span> -->
                                 </h2>
-                                <button
-                                    type="button"
-                                    class="btn"
-                                    v-if="is_my_page"
-                                    v-on:click="download_bot">
-                                    <span>Download Current Bot</span>
-                                </button>
                                 <span>{{messages.bot_download}}</span>
 
                                 <!-- <div v-if="!userHistory.length" class="section-empty">
@@ -505,6 +496,14 @@
                                         </div>
                                     </div>
                                 </div>
+                                <br>
+                                <button
+                                    type="button"
+                                    class="btn"
+                                    v-if="is_my_page"
+                                    v-on:click="download_bot">
+                                    <span>Download Current Bot</span>
+                                </button>
                             </section>
                         </div>
                     </div>

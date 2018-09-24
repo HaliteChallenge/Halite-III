@@ -5,9 +5,8 @@
       <a @click="close" class="close modal-close"><span class="icon-remove"></span></a>
       <div class="send-challenge-form" v-if="!showResult">
         <img class="ico" :src="`${baseUrl}/assets/images/icon-group.svg`">
-        <!-- <p data-v-48c46ce0="">The 2017-2018 season of Halite has ended. You can no longer challenge a player through our website. But you can always play Halite locally - read <a href="/learn-programming-challenge/halite-cli-and-tools/">our documentation</a> to learn more.</p> -->
         <h2 class="heading">CHALLENGE OTHER PLAYERS</h2>
-        <p>You can choose one or three players from the leaderboard to challenge. You’ll be able to see how you stack up and we’ll let you know once the challenge is over.</p>
+        <p>Play one or three players from the leaderboard in a challenge match. We’ll let you know once the challenge is over and the results are in.</p>
         <div v-if="me">
           <div class="user-search">
             <div class="challenge-list">

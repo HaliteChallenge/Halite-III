@@ -10,6 +10,7 @@
           @click="pickLanguage(language)"
           class="btn"
           data-dismiss="modal"
+          style="margin-right:2px;margin-left:2px;background:#e1ecf8"
         ><span>{{language}}</span></button>
       </div>
       <div class="halite-modal-footer">
