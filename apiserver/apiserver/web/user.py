@@ -256,6 +256,15 @@ def create_user(*, user_id):
         "player_level": level,
     }
 
+    if len(username) > USERNAME_LENGTH or \
+       not username or \
+       profanity.contains_profanity(username) or \
+       wordfilter.blacklisted(username) or \
+       not USERNAME_REGEX.match(username):
+        raise util.APIError(400, message="Invalid username.")
+
+    values["username"] = username
+
     # Perform validation on given values
     if "level" in body and not web_util.validate_user_level(body["level"]):
         raise util.APIError(400, message="Invalid user level.")
