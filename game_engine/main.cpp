@@ -229,7 +229,10 @@ int main(int argc, char *argv[]) {
             results["final_snapshot"] = game.to_snapshot(map_parameters);
             results["stats"] = nlohmann::json::object();
             for (const auto &stats : replay.game_statistics.player_statistics) {
-                results["stats"][to_string(stats.player_id)] = {{"rank", stats.rank}};
+                results["stats"][to_string(stats.player_id)] = {
+                    {"rank", stats.rank},
+                    {"score", stats.turn_productions.back()}
+                };
             }
             std::cout << results.dump(JSON_INDENT_LEVEL) << std::endl;
         }
