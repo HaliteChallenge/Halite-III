@@ -6,16 +6,6 @@ toc: false
 description: Get an introduction to the rules of the game to win the Halite AI Programming Challenge.
 sort_key: 2
 ---
-<!--
-<div class="doc-section" markdown="1">
-
-## Introduction
-
-Learn more about the game rules,
-build your first bot, engage with advanced strategies, and more.
-
-</div> -->
-
 
 <div class="doc-section" markdown="1">
 
@@ -30,8 +20,11 @@ build your first bot, engage with advanced strategies, and more.
 This tutorial guides you through creating your first Halite III bot. You'll write code that tells your bot to build ships, navigate the map, and collect halite.
 
   </div>
-  <div class="col" markdown="1">
+  <div class="col" markdown="1"></div>
+</div>
 
+<div class="column-container">
+  <div class="col" markdown="1">
 <br>
 ## Next Steps
 <br>
@@ -40,6 +33,7 @@ This tutorial guides you through creating your first Halite III bot. You'll writ
 Improve your movement and player interaction strategies in this tutorial.
 
   </div>
+  <div class="col" markdown="1"></div>
 </div>
 
 <!--
@@ -64,10 +58,17 @@ Add a new strategy to your bot and learn a new technique. Climb up the leaderboa
 <br>
 ## Advanced
 <br>
+<div class="column-container">
+  <div class="col" markdown="1">
 ### [Genetic Algorithm Bot](/learn-programming-challenge/tutorials/ml-ga)
 
 Learn about using a genetic algorithm to tune a bot.
-
+  </div>
+  <div class="col" markdown="1">
 ### [Supervised Learning Bot](/learn-programming-challenge/tutorials/ml-svm)
 
 Learn about using supervised learning to train a bot with a Support Vector Machine (SVM).
+  </div>
+</div>
+
+</div>
