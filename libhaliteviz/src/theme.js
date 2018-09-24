@@ -5,6 +5,7 @@ export const THEMES = {
         scale: {
             ship: 1,
         },
+        colorTheme: "TheSea",
     },
     "Halite II": {
         tintFactory: true,
@@ -12,10 +13,11 @@ export const THEMES = {
         scale: {
             ship: 0.75,
         },
+        colorTheme: "GraySpace",
     },
 };
 
-export let selectedTheme = "Halite II";
+export let selectedTheme = "Turtles!";
 
 {
     let savedTheme = window.localStorage.getItem('visualizer-theme');

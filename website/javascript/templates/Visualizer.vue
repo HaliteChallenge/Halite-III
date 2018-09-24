@@ -94,12 +94,6 @@
                 <option v-for="theme in themes" :value="theme">{{theme}}</option>
               </select>
             </div>
-            <div>
-              <label for="map-theme">Map Theme:</label>
-              <select id="map-theme">
-                <option>TheSea (Default)</option>
-              </select>
-            </div>
             <template v-if="showHoliday">
               <label for="holiday">Holiday Theme:</label>
               <input type="checkbox" class="pull-left" style="margin-top: -5px;" id="holiday" v-bind:checked="isHoliday" v-on:click="toggleHoliday(this)">
