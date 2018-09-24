@@ -2,6 +2,7 @@
 User API endpoints - create/update/delete/list users and user data
 """
 
+import re
 import uuid
 
 import flask
@@ -13,6 +14,8 @@ from .. import config, model, notify, util
 from . import util as web_util
 from .blueprint import web_api
 
+from profanity import profanity
+import wordfilter
 
 tld.update_tld_names()
 
@@ -208,6 +211,9 @@ def list_users():
     return flask.jsonify(result)
 
 
+USERNAME_REGEX = re.compile(r'^[a-zA-Z][a-zA-Z0-9_\-]*$')
+USERNAME_LENGTH = 40
+
 @web_api.route("/user", methods=["POST"])
 @util.cross_origin(methods=["GET", "POST"])
 @web_util.requires_login(accept_key=False)
@@ -237,6 +243,7 @@ def create_user(*, user_id):
         if user_data["is_email_good"]:
             raise util.APIError(400, message="You have already successfully confirmed your membership with this organization.")
 
+    username = body.get("username")
     org_id = body.get("organization_id")
     email = body.get("email")
     level = body.get("level", user_data["player_level"])
