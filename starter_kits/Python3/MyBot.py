@@ -14,8 +14,7 @@ from hlt.positionals import Direction
 import random
 
 # Logging allows you to save messages for yourself. This is required because the regular STDOUT
-#   (print statements) are reserved for the engine-bot communication. Log files are saved in a subdirectory
-#   of wherever you run your bot.
+#   (print statements) are reserved for the engine-bot communication.
 import logging
 
 """ <<<Game Begin>>> """
