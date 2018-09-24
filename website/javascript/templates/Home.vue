@@ -1,5 +1,54 @@
 <template>
     <div class="home-container">
+        <div class="personal-msg" v-if="user">
+            <div class="left-container" v-if="user.rank">
+                <div class="top-bg"></div>
+                <div class="title">Hi, {{ user.username }}! </div>
+                <div class="text-tips">
+                    Keep up the good work. Your bot is ranked #{{ user.rank }}.<br/>
+                </div>
+                <a class="btn btn-primary btn-sm" href="/play-programming-challenge/">Keep playing</a>
+            </div>
+            <div class="left-container" v-else>
+                <div class="top-bg"></div>
+                <div class="title">Hi, {{ user.username }}! </div>
+                <div class="text-tips">
+                    Build a bot and get on the leaderboard.<br/>
+                    Check out our documentation and interactive tutorials.
+                </div>
+                <a class="btn btn-primary btn-sm" href="/learn-programming-challenge/">Play now</a>
+            </div>
+            <div class="right-container">
+                <div class="data-item">
+                    <div class="item-icon"></div>
+                    <div class="item-info">
+                        <div class="item-title">Your Bot Version</div>
+                        <div class="item-data">{{ user.num_submissions || "N/A" }}</div>
+                    </div>
+                </div>
+                <div class="data-item">
+                    <div class="item-icon"></div>
+                    <div class="item-info">
+                        <div class="item-title">Your Global Rank</div>
+                        <div class="item-data">#{{ user.rank || "N/A" }}</div>
+                    </div>
+                </div>
+                <div class="data-item" v-if="organization_rank">
+                    <div class="item-icon"></div>
+                    <div class="item-info">
+                        <div class="item-title">{{ user.organization }}'s Global Rank</div>
+                        <div class="item-data">#{{organization_rank.organization_rank}}</div>
+                    </div>
+                </div>
+                <div class="data-item" v-else>
+                    <div class="item-icon"></div>
+                    <div class="item-info">
+                        <div class="item-title">Organization</div>
+                        <div class="item-data">Not Affiliated</div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row section-overview">
             <div class="col-md-6">
                 <h1>Welcome to Halite III!</h1>
@@ -121,7 +170,7 @@
             </div>
         </div> -->
 
-            <!-- 
+            <!--
             <div class="row">
                 <div class="col-md-12">
                 <p class="t1 c-wht font-headline">HALITE III ALPHA</p>
@@ -156,7 +205,7 @@
                 </div>
            </div>
             <div class="col-md-12 ha-line">
-            </div> 
+            </div>
         </div>-->
     </div>
 </template>
@@ -178,16 +227,21 @@
             return {
                 me_in: true,
                 modalOpen: false,
+                user: null,
+                organization_rank: null
             }
         }
         return {
             me_in,
             loginServerUrl: `${api.LOGIN_SERVER_URL}/github`,
             modalOpen: false,
+            organization_rank: null
         }
     },
      mounted: function () {
-       this.createRedditWidget()
+        this.createRedditWidget()
+        // Get user information
+        this.fetchUserInfo();
      },
      methods: {
        invite: function () {
@@ -229,7 +283,29 @@
        },
        closeChallengeModal: function(){
         this.modalOpen = false;
-       }
+       },
+       // Get user information
+       fetchUserInfo: function() {
+         api.me().then((user) => {
+           if (user) {
+             this.user = user
+
+             if (user.organization_id === null) {
+               this.organization_rank = null
+               return
+             }
+             const filter = [`organization_id,=,${user.organization_id}`]
+             api.organizationLeaderboard(filter).then((org) => {
+               if (org && org.length > 0)
+                 this.organization_rank = org[0]
+             })
+           }
+         })
+         // Test Code --- Because my own account has no data.
+         // api.get_user(1).then(res => {
+         //     this.user = res;
+         // });
+       },
      }
    }
 </script>

@@ -3,11 +3,84 @@
   $w-color: #FFFFFF;
   $g-color: #d0cccc;
 
+  display: flex;
+  flex-direction: column;
   padding-top: 20px;
   margin-bottom: 20px;
   color: rgba(255,255,255,0.8);
   font-size: 20px;
   line-height: 1.5em;
+
+  .personal-msg {
+    display: flex;
+    margin: auto;
+    .left-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: baseline;
+      position: relative;
+      padding: 40px 45px 30px 50px;
+      border: 1px solid rgba(255,255,255,0.13);
+      border-right: none;
+      border-radius: 8px 0 0 8px;
+      background: linear-gradient(0deg, #3CABE6 0%, rgba(24,109,194,0.41) 100%);
+      .top-bg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 40px;
+        background: url("/assets/images/doc-bg.png") center center no-repeat;
+        background-size: cover;
+      }
+      .title {
+        font-size: 24px;
+        color: #B4E6FF;
+        text-shadow: 0 1px 8px #00ABFF;
+      }
+      .text-tips {
+        font-size: 20px;
+        color: #FBFDFF;
+      }
+    }
+    .right-container {
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 0 8px 8px 0; 
+      background: linear-gradient(0deg, #0073DB 0%, #0044A4 100%);
+      box-shadow: 0 -6px 33px rgba(0,0,0,0.11);
+      .data-item {
+        display: flex;
+        align-items: center;
+        padding: 0 35px 0 23px;
+        height: 80px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        &:last-child {
+          border-bottom: none;
+        }
+        .item-icon {
+          width: 27px;
+          height: 27px;
+          background: url("/assets/images/home-rank.png") center center no-repeat;
+        }
+        .item-info {
+          margin-left: 15px;
+          color: #FFFFFF;
+          .item-title {
+            line-height: 1;
+            font-size: 14px;
+            opacity: 0.6;
+          }
+          .item-data {
+            margin-top: 8px;
+            line-height: 1;
+            font-size: 18px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
 
   .section-overview{
     padding: 50px 0;
