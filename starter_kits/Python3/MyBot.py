@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Python 3.6
 
 # Import the Halite SDK, which will let you interact with the game.
 import hlt
