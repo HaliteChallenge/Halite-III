@@ -16,9 +16,9 @@ export class SpawnAnimation extends FrameAnimation {
     constructor({ event, frame, duration, cellSize, container, reverse=false }) {
         const filter = new ShockwaveFilter();
         filter.radius = 30;
-        filter.amplitude = 20;
-        filter.wavelength = 10;
-        filter.brightness = 1.5;
+        filter.amplitude = 5;
+        filter.wavelength = 7.5;
+        filter.brightness = 1.25;
         if (!container.filters) {
             container.filters = [filter];
         }
@@ -28,8 +28,10 @@ export class SpawnAnimation extends FrameAnimation {
 
         super(frame, duration, () => {
         }, (camera, frameTime) => {
-            const t = (duration - frameTime) / duration;
-            filter.time = 1 - t;
+            // Cubic ease in out
+            let t = 1 - ((duration - frameTime) / duration);
+            t = - t * (t - 2);
+            filter.time = t;
             const [ x, y ] = camera.worldToCamera(event.location.x + 0.5, event.location.y + 0.5);
             filter.center = [ x * cellSize * camera.scale,
                               y * cellSize * camera.scale ];

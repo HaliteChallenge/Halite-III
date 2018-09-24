@@ -613,7 +613,7 @@ export class HaliteVisualizer {
                         this.animationQueue.push(new animation.SpawnAnimation({
                             event,
                             frame: this.frame,
-                            duration: 40,
+                            duration: 60,
                             cellSize,
                             container: this.container,
                         }));
@@ -658,7 +658,7 @@ export class HaliteVisualizer {
                     this.animationQueue.push(new animation.SpawnAnimation({
                         event,
                         frame: this.frame,
-                        duration: 5,
+                        duration: 60,
                         cellSize,
                         container: this.container,
                     }));
