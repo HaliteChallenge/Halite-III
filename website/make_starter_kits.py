@@ -74,8 +74,10 @@ def scan_directory(full_path):
             if ext.lower() in INCLUDED_EXTENSIONS or filename in INCLUDED_FILES:
                 included_files.append(os.path.join(containing_dir, filename))
 
-    included_files.append(os.path.join(STARTER_KIT_DIR, "README.md"))
-    included_files.append(os.path.join(STARTER_KIT_DIR, ".gitignore"))
+    included_files.append(("README.md", open(os.path.join(STARTER_KIT_DIR, "README.md")).read()))
+    included_files.append((".gitignore", open(os.path.join(STARTER_KIT_DIR, ".gitignore")).read()))
+    included_files.append(("./docs/api-docs.md", open("./learn-programming-challenge/api-docs.md").read()))
+    included_files.append(("./docs/game-overview.md", open("./learn-programming-challenge/game-overview.md").read()))
     return included_files
 
 
@@ -235,7 +237,7 @@ def main():
 
         included_files = scan_directory(full_path)
         for file in included_files:
-            print("\tIncluding:", file)
+            print("\tIncluding:", file[0] if isinstance(file, tuple) else file)
 
         print()
 
