@@ -161,7 +161,7 @@ export default {
           success_message: '',
           username: '',
           username_error: {
-            valid: true,
+            valid: false,
             reason: '',
           },
           checkUsername: _.debounce(() => {
@@ -209,6 +209,7 @@ export default {
       },
       methods: {
         submit: function () {
+          this.error = ''
           let request = {
             'level': this.level,
             'organization_id': this.organization === 'NONE' ? null : this.organization
@@ -235,6 +236,11 @@ export default {
           // verify email
           if (request['organization_id'] && (this.email === '')) {
             this.error = 'Email is required'
+            return false
+          }
+
+          if (!this.username_error.valid) {
+            this.error = 'Valid username is required'
             return false
           }
 
