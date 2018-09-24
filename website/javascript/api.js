@@ -47,6 +47,17 @@ export function me () {
   })
 }
 
+export function check_username(username) {
+  return window.fetch(`${API_SERVER_URL}/user/check_username`, {
+    method: 'POST',
+    headers: {
+      "Content-Type": 'application/json'
+    },
+    body: JSON.stringify({ username }),
+    credentials: 'include'
+  }).then(r => r.json())
+}
+
 export function get_user (user_id) {
   return $.get({
     url: `${API_SERVER_URL}/user/${user_id}`,
