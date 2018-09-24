@@ -158,9 +158,7 @@ def google_login_callback():
 
     user_data = google.get("userinfo").data
 
-    # TODO: better way of doing this?
-    # TODO: username collisions between services...
-    username = user_data["email"].split("@")[0]
+    username = "generic_google_user"
     google_user_id = user_data["id"]
     email = user_data["email"]
     # TODO: factor this out into constant
