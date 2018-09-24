@@ -400,7 +400,8 @@ def get_user_season1(intended_user, *, user_id):
             raise util.APIError(404, message="No user found.")
 
         season_1_query = model.halite_1_users.select(
-            model.halite_1_users.c.username == row["username"])
+            (model.halite_1_users.c.oauthID == row["oauth_id"]) &
+            (model.halite_1_users.c.oauthProvider == row["oauth_provider"]))
 
         season_1_row = conn.execute(season_1_query).first()
 
@@ -449,7 +450,8 @@ def get_user_season2(intended_user):
             ).label("rank"),
         ]).select_from(model.halite_2_users).alias('ranked_users')
         season_2_query = ranked_users.select(
-            ranked_users.c.oauth_id == row["oauth_id"])
+            (ranked_users.c.oauth_id == row["oauth_id"]) &
+            (ranked_users.c.oauth_provider == row["oauth_provider"]))
 
         season_2_row = conn.execute(season_2_query).first()
 
