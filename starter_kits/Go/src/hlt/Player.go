@@ -41,8 +41,3 @@ func (p *Player) Update(numShips int, numDropoffs int, halite int) {
 		p.Dropoffs[nextDropoff.E.id] = nextDropoff
 	}
 }
-
-/*
-def _update(numShips: Int, numDropoffs: Int, halite: Int) = {
-}
-*/

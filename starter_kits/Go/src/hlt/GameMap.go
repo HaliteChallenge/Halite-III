@@ -52,7 +52,9 @@ func GenerateGameMap() *GameMap {
 
 // Normalize -
 func (gm *GameMap) Normalize(position Position) *Position {
-	return &Position{position.x % gm.width, position.y % gm.height}
+	return &Position{
+		((position.x % gm.width) + gm.width) % gm.width,
+		((position.y % gm.height) + gm.height) % gm.height}
 }
 
 func abs(x int) int {

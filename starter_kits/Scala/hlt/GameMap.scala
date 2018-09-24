@@ -30,7 +30,10 @@ class GameMap(val width: Int, val height: Int) {
     toroidal_dx + toroidal_dy
   }
 
-  def normalize(position: Position) = new Position(position.x % width, position.y % height)
+  def normalize(position: Position) = {
+    new Position(
+      ((position.x % width) + width) % width, ((position.y % height) + height) % height)
+  }
 
   def naiveNavigate(ship: Ship, destination: Position): Direction = {
     for (direction <- getUnsafeMoves(ship.position, destination)) {
