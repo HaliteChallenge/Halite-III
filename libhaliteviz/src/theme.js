@@ -1,10 +1,38 @@
-const theme = {
-    name: "shipyard",
-    tintFactory: false,
+export const THEMES = {
+    "Turtles!": {
+        tintFactory: false,
+        tintShip: false,
+        scale: {
+            ship: 1,
+        },
+    },
+    "Halite II": {
+        tintFactory: true,
+        tintShip: true,
+        scale: {
+            ship: 0.75,
+        },
+    },
 };
 
-// const theme = {
-//     name: "halite2",
-//     tintFactory: true,
-// };
-export default theme;
+export let selectedTheme = "Halite II";
+
+{
+    let savedTheme = window.localStorage.getItem('visualizer-theme');
+    if (THEMES[savedTheme]) {
+        selectedTheme = savedTheme;
+    }
+}
+
+export default function theme() {
+    return THEMES[selectedTheme];
+}
+
+export function setTheme(value) {
+    if (!THEMES[value]) {
+        console.error(`Theme ${value} does not exist.`);
+        return;
+    }
+
+    window.localStorage.setItem('visualizer-theme', value);
+}

@@ -55,7 +55,7 @@ export class Dropoff {
         this.core = new PIXI.Sprite(assets.BASE_SPRITES[this.owner]);
         this.highlight = new PIXI.Sprite(factoryTexture);
 
-        if (theme.tintFactory) {
+        if (theme().tintFactory) {
             this.core.tint = assets.PLAYER_COLORS[this.owner];
         }
     }

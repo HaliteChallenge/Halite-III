@@ -3,6 +3,9 @@ import {MotionBlurFilter} from '@pixi/filter-motion-blur';
 
 import * as assets from "./assets";
 import {CELL_SIZE, PLAYER_COLORS} from "./assets";
+import theme from "./theme";
+
+const themeParams = theme();
 
 /**
  * Manages a ship on screen.
@@ -58,11 +61,15 @@ export default class Ship {
 
         // Set up sprite size & anchors
         const width = 1.1 * assets.CELL_SIZE * this.visualizer.camera.scale;
-        setupSprite(this.sprite, width * 4);
-        setupSprite(this.inspiredSprite, width * 4);
+        setupSprite(this.sprite, width * 4 * themeParams.scale.ship);
+        setupSprite(this.inspiredSprite, width * 4 * themeParams.scale.ship);
         this.inspiredSprite.visible = false;
         setupSprite(this.highlight, width * 1.25);
         setupSprite(this.halo, width * 1.25);
+
+        if (themeParams.tintShip) {
+            this.sprite.tint = PLAYER_COLORS[this.owner];
+        }
 
         // add to board in correct position
         const pixelX = this.visualizer.camera.scale * CELL_SIZE * this.x + this.visualizer.camera.scale * CELL_SIZE / 2;
@@ -228,10 +235,10 @@ export default class Ship {
         const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
         this.sprite.position.x = pixelX;
         this.sprite.position.y = pixelY;
-        this.sprite.width = this.sprite.height = size * 1.5;
+        this.sprite.width = this.sprite.height = size * 1.5 * themeParams.scale.ship;
         this.inspiredSprite.position.x = pixelX;
         this.inspiredSprite.position.y = pixelY;
-        this.inspiredSprite.width = this.inspiredSprite.height = size * 1.25;
+        this.inspiredSprite.width = this.inspiredSprite.height = size * 1.25 * themeParams.scale.ship;
         this.highlight.position.x = pixelX;
         this.highlight.position.y = pixelY;
         this.highlight.width = this.highlight.height = 0.9 * size;

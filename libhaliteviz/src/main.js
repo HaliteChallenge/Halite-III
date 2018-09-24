@@ -1,6 +1,8 @@
 import * as visualizer from "./visualizer";
 import * as assets from "./assets";
 import * as parse from "./parse";
+import * as theme from "./theme";
+export {theme};
 export {default as EmbeddedVisualizer} from "./embeddedControls";
 
 export const setAssetRoot = assets.setAssetRoot;

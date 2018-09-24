@@ -89,9 +89,15 @@
               Replay File Unavailable
             </button>
             <div>
-              <label for="theme">Theme:</label>
-              <select id="theme">
-                <option>Turtles! (Default)</option>
+              <label for="theme">Theme (changes require reloading page):</label>
+              <select id="theme" @change="changeTheme" :value="selectedTheme">
+                <option v-for="theme in themes" :value="theme">{{theme}}</option>
+              </select>
+            </div>
+            <div>
+              <label for="map-theme">Map Theme:</label>
+              <select id="map-theme">
+                <option>TheSea (Default)</option>
               </select>
             </div>
             <template v-if="showHoliday">
@@ -328,6 +334,8 @@ export default {
   },
   data: function () {
     return {
+      themes: [],
+      selectedTheme: null,
       baseUrl: '',
       frame: 0,
       time: 0,
@@ -433,6 +441,8 @@ export default {
 
     import ( /* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
     .then((libhaliteviz) => {
+      this.themes = Object.keys(libhaliteviz.theme.THEMES);
+      this.selectedTheme = libhaliteviz.theme.selectedTheme;
       const visualizer = new libhaliteviz.HaliteVisualizer(this.replay, this.width, this.height)
       this.getVisualizer = function () {
         return visualizer
@@ -725,6 +735,13 @@ export default {
     },
   },
   methods: {
+    changeTheme(e) {
+      import ( /* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
+        .then((libhaliteviz) => {
+          libhaliteviz.theme.setTheme(e.target.value);
+          window.location.reload();
+        });
+    },
     userlink: function (user_id) {
       if (user_id) {
         return `/user/?user_id=${user_id}`
