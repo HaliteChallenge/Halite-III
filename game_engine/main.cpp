@@ -168,11 +168,13 @@ int main(int argc, char *argv[]) {
         filename_buf << "-" << map.width;
         filename_buf << "-" << map.height << ".hlt";
         auto filename = filename_buf.str();
-        std::string output_filename = replay_directory + "Replays/" + filename;
+        std::string output_filename = replay_directory + filename;
         bool enable_compression = !no_compression_switch.getValue();
         try {
             replay.output(output_filename, enable_compression);
         } catch (std::runtime_error &e) {
+            Logging::log("Error: could not write replay to directory " + replay_directory + ", falling back on current directory.", Logging::Level::Error);
+            replay_directory = "./";
             output_filename = replay_directory + filename;
             replay.output(output_filename, enable_compression);
         }
@@ -197,7 +199,7 @@ int main(int argc, char *argv[]) {
                             << "-" << player_id
                             << ".log";
                 const auto log_filename = logname_buf.str();
-                auto log_filepath = replay_directory + "Replays/" + log_filename;
+                auto log_filepath = replay_directory + log_filename;
 
                 std::ofstream log_file;
                 log_file.open(log_filepath, std::ios_base::out);
