@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     SwitchArg timeout_switch("", "no-timeout", "Causes game environment to ignore bot timeouts.", cmd, false);
     SwitchArg no_replay_switch("", "no-replay", "Turns off the replay generation.", cmd, false);
     SwitchArg print_constants_switch("", "print-constants", "Print out the default constants and exit.", cmd, false);
-    SwitchArg no_compression_switch("", "no-compression", "Disables compression for output files.", cmd, false);
+    SwitchArg no_compression_switch("", "no-compression", "Disables compression for output files. (They will just be plain JSON.)", cmd, false);
     SwitchArg json_results_switch("", "results-as-json", "Prints game results as JSON at end.", cmd, false);
     SwitchArg strict_switch("", "strict", "Enables strict error reporting mode.", cmd, false);
     ValueArg<unsigned long> players_arg("n", "players", "Create a map that will accommodate n players.", false, 1,
