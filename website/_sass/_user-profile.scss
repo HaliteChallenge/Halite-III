@@ -225,15 +225,18 @@
           &.tire-line,
           &.user-line,
           &.all-play-line {
+              transition: left ease-out 0.3s;
+              transition-delay: 1s;
             &::after {
               content: "";
               display: inline-block;
               position: absolute;
-              left: 10%;
+              left: 50%;
               top: 19px;
               width: 12px;
               height: 12px;
               border-radius: 6px;
+              transform: translateX(-50%);
             }
           }
           &.tire-line {
