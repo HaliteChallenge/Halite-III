@@ -48,15 +48,15 @@
         <h4 class="mt3">Teams</h4>
         <p>Players may form teams and create bots together this year. To form a new team and become a team leader, go to your profile page, edit your profile, and choose your team name. Your account will be converted to a team account and you will get a shareable invite link to invite your team members.
         </p>
-        <p>To join a team, insert your invite code on your profile.
+        <p>To join a team, insert your invite code on your profile. Joining a team is a permanent choice for your account.
         </p>
-        <p>Once on a team, players cannot submit bots individual bots. Only the team leader can submit bots from a team account.
+        <p>Once on a team, any team member can submit a bot to replace the team's current bot.
         </p>
         <br/>
         <h4 class="mt3">Ranking</h4>
         <p>Rankings are based on the outcome of organized games where bots play against each other. Your bot moves up the leaderboard as you submit improved versions. When you submit a new version, your ranking is reset to a degree. After some games played, your bot should reach its new accurate ranking.
         </p>
-        <p>Tiers are based on the percentile rank. The top 1/512 players are considered Diamond; the next 1/256 are considered Platinum, then the next 1/128 are Gold, 1/64 are Silver, and the rest are Bronze.
+        <p>Tiers are based on the percentile rank. The top 1% of players are considered Diamond; the next 5% are considered Platinum, then the next 10% are Gold, 25% are Silver, and the rest are Bronze.
         </p>
         <br/>
         <h4 class="mt3">Winning</h4>
