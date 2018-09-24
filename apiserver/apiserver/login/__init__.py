@@ -1,6 +1,7 @@
 import logging
 import traceback
 import urllib.parse
+import uuid
 
 import flask
 import sqlalchemy
@@ -116,7 +117,6 @@ def github_login_callback():
 
     user_data = github.get("user").data
 
-    username = user_data["login"]
     github_user_id = user_data["id"]
     emails = github.get("user/emails").data
 
@@ -126,7 +126,7 @@ def github_login_callback():
             email = record["email"]
             break
 
-    return generic_login_callback(username, email, 1, github_user_id)
+    return generic_login_callback(email, 1, github_user_id)
 
 
 @oauth_login.route("/response/google")
@@ -158,11 +158,10 @@ def google_login_callback():
 
     user_data = google.get("userinfo").data
 
-    username = "generic_google_user"
     google_user_id = user_data["id"]
     email = user_data["email"]
     # TODO: factor this out into constant
-    return generic_login_callback(username, email, 2, google_user_id)
+    return generic_login_callback(email, 2, google_user_id)
 
 
 def generic_login_callback(username, email, oauth_provider, oauth_id):
@@ -178,7 +177,7 @@ def generic_login_callback(username, email, oauth_provider, oauth_id):
         if not user:
             # New user
             new_user_id = conn.execute(model.users.insert().values(
-                username=username,
+                username="user{}".format(uuid.uuid4().hex),
                 # TODO: rename github_email to oauth_email
                 github_email=email,
                 oauth_id=oauth_id,
