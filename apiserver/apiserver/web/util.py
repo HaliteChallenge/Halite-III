@@ -10,6 +10,16 @@ import pycountry
 from .. import config, model, util
 
 
+def no_cache(response):
+    """Add headers to inhibit caching on a response."""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    response.headers["Cache-Control"] = "public, max-age=0"
+
+    return response
+
+
 def validate_country(country_code, subdivision_code):
     try:
         country = pycountry.countries.get(alpha_3=country_code)

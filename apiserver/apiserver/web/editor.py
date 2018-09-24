@@ -68,11 +68,11 @@ def get_user_file(intended_user, file_id, *, user_id):
         pass
 
     buffer.seek(0)
-    response = flask.make_response(flask.send_file(
+    response = api_util.no_cache(flask.make_response(flask.send_file(
         buffer,
         mimetype="application/x-halite-2-file",
         as_attachment=True,
-        attachment_filename=file_id))
+        attachment_filename=file_id)))
 
     response.headers["Content-Length"] = str(buffer.getbuffer().nbytes)
 
@@ -98,7 +98,10 @@ def create_user_filespace(intended_user, language, *, user_id):
             starter_bucket.copy_blob(sub_blob,
                     editor_bucket,
                     '%s/%s' % (str(intended_user), '/'.join(sub_blob.name.split('/')[1:])))
-        return flask.jsonify(['/'.join(sub_blob.name.split('/')[1:]) for sub_blob in sub_blobs])
+        return flask.jsonify({
+            "files": ['/'.join(sub_blob.name.split('/')[1:]) for sub_blob in sub_blobs],
+            "language": language,
+        })
     raise util.APIError(400, message='User workspace already created')
 
 @web_api.route("/editor/<int:intended_user>/file/<path:file_id>", methods=["POST"])

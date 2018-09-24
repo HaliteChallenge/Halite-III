@@ -146,18 +146,13 @@ def get_ondemand_replay(intended_user, *, user_id):
         raise util.APIError(404, message="Replay not found.")
 
     buffer.seek(0)
-    response = flask.make_response(flask.send_file(
+    response = web_util.no_cache(flask.make_response(flask.send_file(
         buffer,
         mimetype="application/x-halite-3-replay",
         as_attachment=True,
-        attachment_filename="{}.hlt".format(user_id)))
+        attachment_filename="{}.hlt".format(user_id))))
 
     response.headers["Content-Length"] = str(buffer.getbuffer().nbytes)
-    # Don't cache this
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    response.headers["Cache-Control"] = "public, max-age=0"
 
     return response
 
@@ -180,18 +175,13 @@ def get_ondemand_log(intended_user, *, user_id):
         raise util.APIError(404, message="Error log not found.")
 
     buffer.seek(0)
-    response = flask.make_response(flask.send_file(
+    response = web_util.no_cache(flask.make_response(flask.send_file(
         buffer,
         mimetype="text/plain",
         as_attachment=True,
-        attachment_filename="{}.log".format(user_id)))
+        attachment_filename="{}.log".format(user_id))))
 
     response.headers["Content-Length"] = str(buffer.getbuffer().nbytes)
-    # Don't cache this
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    response.headers["Cache-Control"] = "public, max-age=0"
 
     return response
 
@@ -214,17 +204,12 @@ def get_ondemand_bot_log(intended_user, *, user_id):
         raise util.APIError(404, message="Error log not found.")
 
     buffer.seek(0)
-    response = flask.make_response(flask.send_file(
+    response = web_util.no_cache(flask.make_response(flask.send_file(
         buffer,
         mimetype="text/plain",
         as_attachment=True,
-        attachment_filename="{}.log".format(user_id)))
+        attachment_filename="{}.log".format(user_id))))
 
     response.headers["Content-Length"] = str(buffer.getbuffer().nbytes)
-    # Don't cache this
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    response.headers["Cache-Control"] = "public, max-age=0"
 
     return response

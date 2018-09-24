@@ -106,15 +106,11 @@ def get_user_bot(intended_user, bot_id, *, user_id):
                 buffer = io.BytesIO()
                 blob.download_to_file(buffer)
                 buffer.seek(0)
-                response = flask.make_response(flask.send_file(
+                response = api_util.no_cache(flask.make_response(flask.send_file(
                     buffer,
                     mimetype="application/zip",
                     as_attachment=True,
-                    attachment_filename=botname + ".zip"))
-                response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-                response.headers["Pragma"] = "no-cache"
-                response.headers["Expires"] = "0"
-                response.headers["Cache-Control"] = "public, max-age=0"
+                    attachment_filename=botname + ".zip")))
                 return response
             except gcloud_exceptions.NotFound:
                 raise util.APIError(404, message="Bot not found.")
@@ -294,15 +290,11 @@ def get_user_bot_compile_log(intended_user, bot_id, *, user_id):
             buffer = io.BytesIO()
             blob.download_to_file(buffer)
             buffer.seek(0)
-            response = flask.make_response(flask.send_file(
+            response = api_util.no_cache(flask.make_response(flask.send_file(
                 buffer,
                 mimetype="text/plain",
                 as_attachment=True,
-                attachment_filename=log_file))
-            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-            response.headers["Pragma"] = "no-cache"
-            response.headers["Expires"] = "0"
-            response.headers["Cache-Control"] = "public, max-age=0"
+                attachment_filename=log_file)))
             return response
         except gcloud_exceptions.NotFound:
             raise util.APIError(404, message="Bot error log not found.")

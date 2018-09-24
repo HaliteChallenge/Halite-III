@@ -77,6 +77,7 @@ def get_match_replay(intended_user, match_id):
             as_attachment=True,
             attachment_filename=str(match_id)+".hlt"))
 
+
         response.headers["Content-Length"] = str(buffer.getbuffer().nbytes)
 
         return response
