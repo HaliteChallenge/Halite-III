@@ -8,22 +8,21 @@
                 <div class="page-header">
                     <a id="section_personal_info"></a>
                     <h1>Edit your profile</h1>
-                    <i class="xline xline-bottom"></i>
                 </div>
 
                 <h2 v-if="!user.is_email_good" class="form-heading">Resend Verification Mail</h2>
                 <p v-if="!user.is_email_good">If you cant find our account verification mail, resend a verification mail to your mail now.</p>
-                </br>
-                <button v-if="!user.is_email_good" class="btn-ha" v-on:click="resend_verification_email">Resend Verfication</button>
+                <br/>
+                <button v-if="!user.is_email_good" class="btn btn-primary" v-on:click="resend_verification_email">Resend Verfication</button>
 
                 <h2 class="form-heading">personal info</h2>
                 <form v-on:submit.prevent="submit" class="create-account-form">
                     <p v-if="user && user.organization_id">You are currently affiliated with {{ user.organization }}.</p>
                     <p v-else>You are not currently affiliated with an organization.</p>
-                    </br>
+                    <br/>
                     <button
                         type="button"
-                        class="btn-ha"
+                        class="btn btn-primary"
                         v-if="!edit_email"
                         v-on:click="edit_email = true">Edit Affiliation</button>
                     <template v-if="edit_email">
@@ -83,24 +82,11 @@
                             :options="regions">
                         </v-select>
                     </div>
-
-
-                    <div class="line-container"><i class="xline xline-top"></i></div>
-
-
-
-                    <h2 id="section_hackathons" class="form-heading">Hackathons</h2>
-                    <div class="form-group">
-                        <label for="hackathon">Join a Hackathon</label>
-                        <input type="text" class="form-control" placeholder="Enter hackathon code" v-model="hackathon_code">
-                         <p style="margin-top: 20px;color: red;">{{hackathon_error_message}}</p>
-                    </div>
-
                     <div class="form-group has-error" v-if="error">
                         <span id="error-help" class="help-block">{{ error }}</span>
                     </div>
                     <a class="cancel-href base" href="/user/?me" target="_self">Cancel</a>
-                    <button type="submit" class="btn-ha">Update Profile</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Update Profile</button>
                 </form>
             </div>
         </div>
@@ -155,7 +141,9 @@ export default {
         } else {
           return 1
         }
-      })
+      });
+
+      // Alert.show("test", 'success', false);
 
       const codes = {}
       Object.entries(iso3166.codes).forEach((item) => {
@@ -181,6 +169,7 @@ export default {
       // get current user
       api.me().then((me) => {
         // initialize the data
+        console.log(me);
         this.user = me
         this.level = me.level
         this.username = me.username
@@ -322,7 +311,7 @@ export default {
           this.gaData('account', 'edit-profile-error', 'edit-profile-flow')
         }).then(() => {
           if (this.hackathon_code) {
-            api.registerHackathon(this.hackathon_code).then((response) => {
+            api.register_hackathon(this.hackathon_code).then((response) => {
               let message = "You've signed up for the hackathon, Check your user profile to see your Hackathons"
               if (response.responseJSON && response.responseJSON.message) {
                 message = response.responseJSON.message

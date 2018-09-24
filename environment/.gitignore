@@ -1,9 +1,0 @@
-external/
-halite_test
-*.cmake
-Testing/
-!CMakeModules/*
-coverage.base
-coverage.info
-coverage/
-deps-download

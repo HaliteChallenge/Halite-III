@@ -1,0 +1,27 @@
+directories:
+  output: electron-dist
+files:
+  - index.html
+  - visualizer.html
+  - index.js
+  - dist/
+  - src/
+
+extraResources:
+  - extra/hlt_client
+
+linux:
+  target:
+    - tar.gz
+    - AppImage
+# Include embedded Python
+mac:
+  target:
+    - dmg
+  extraResources:
+    - extra/python-macos
+win:
+  target:
+    - portable
+  extraResources:
+    - extra/python-windows

@@ -3,14 +3,16 @@
 
 $gray-bg: #25242f;
 $dark-gray: #30242F;
-$foreground: #ECFFFB;
+// $foreground: #000;
+$foreground: #97DDFF;
 $foreground-2: #b9b8b8;
-$foreground-light: rgba(236,255, 251,0.5);
-$yellow: #FFBE00;
+$foreground-2: #52678D;
+$foreground-light: #000; // rgba(236,255, 251,0.5);
+$yellow: #52678D;
 $border: #474951;
-$font-heading: "Teko";
-$font-body: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-$font-headline: "Teko";
+$font-body: "Proxima", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+$font-heading: $font-body;
+$font-headline: $font-body;
 $screen-llg-min: 1400px;
 $error: #FF2D55;
 $yellow-hover: #F1A703;
@@ -19,10 +21,10 @@ $blue-hover: #44A3E2;
 
 
 
-$player-1: #BD00DB;
-$player-2: #63CECA;
-$player-3: #FFBE00;
-$player-4: #C5EC98;
+$player-1: #1BB15A;
+$player-2: #966AFB;
+$player-3: #F54356;
+$player-4: #FABB2C;
 
 @import "bootstrap-sass-3.3.7/assets/stylesheets/bootstrap";
 
@@ -55,5 +57,6 @@ $player-4: #C5EC98;
 @import "_leagues.scss";
 @import "_leaguesportal.scss";
 @import "_onboarding.scss";
-@import "_challenge-modal.scss";
+@import "_halite-modal.scss";
 @import "_video.scss";
+@import "_countdown.scss";

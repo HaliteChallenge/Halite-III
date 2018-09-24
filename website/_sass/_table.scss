@@ -1,3 +1,39 @@
+
+.table-container{
+  width: auto;
+}
+
+.table, .doc-section table{
+  @media screen and (min-width: $screen-md-min) {
+    width: 100%;
+  }
+  > thead{
+    > tr{
+      background: #f1f3f7;
+      > th, >td{
+        padding: 12px 7px;
+        font-size: 12px;
+        color: #343434;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+    }
+  }
+  > tbody{
+    > tr{
+      > td{
+        border-bottom: 1px solid #DBDDDF;
+        padding: 12px 7px;
+        font-size: 14px;
+        a{
+          font-weight: 600;
+          color: #033C89;
+        }
+      }
+    }
+  }
+}
+
 .table-leader{
   width: 100%;
   > thead > tr > th,
@@ -19,13 +55,12 @@
     border-left: 1px solid #363347;
   }
   > thead > tr > th{
-    background-color: #100f17;
-    color: $foreground;
+    background-color: #FFF;
     font-size: 14px;
     font-weight: 400;
   }
   > tbody > tr > td{
-    background-color: #1c1a27;
+    background-color: #FFF;
   }
 
   > tbody > tr > td{
@@ -34,7 +69,7 @@
       font-size: 24px;
     }
   }
-  
+
   a:hover{
     color: $yellow;
   }
@@ -63,7 +98,7 @@
         display: block;
         white-space: nowrap;
         text-overflow: ellipsis;
-        overflow: hidden;  
+        overflow: hidden;
         width: 200px;
       }
     }

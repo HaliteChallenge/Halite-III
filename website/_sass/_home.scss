@@ -5,516 +5,211 @@
 
   padding-top: 20px;
   margin-bottom: 20px;
-  text-align: center;
+  color: rgba(255,255,255,0.8);
+  font-size: 20px;
+  line-height: 1.5em;
 
-  .banner {
-    font-family: Helvetica;
-  }
-  .c-org{
-    color: $o-color;
-  }
-  .c-wht{
-    color: $w-color;
-  }
-  .c-gry{
-    color: $g-color;
-  }
-  .c-yel{
-    color: $yellow;
-  }
+  .section-overview{
+    padding: 50px 0;
+    p{
+      letter-spacing: 0.25px;
+    }
+    h1{
+      @include heading(36px);
+      line-height: 1.4em;
+    }
+    img{
+      max-width: 100%;
+    }
 
-  .d1{
-    font-size: 2.3rem;
-    letter-spacing: 1px;
-    margin: 20px 0px;
-  }
-  .t1{
-    font-size: 10rem;
-    letter-spacing: 6px;
-    margin-bottom: 0;
-    line-height: 0.7em;
-  }
-  .t2{
-    font-size: 3.5rem;
-    letter-spacing: 4px;
-  }
-  .t3{
-    font-size: 3rem;
-    letter-spacing: 2px;
-  }
-  .t4{
-    font-size: 1.5rem;
-    letter-spacing: 1px;
-  }
-  .t5{
-    font-size: 1.4rem;
-    letter-spacing: 1px;
-  }
-  .mgt-10{
-    margin-top: 10px;
-  }
-  .pdl30{
-    padding-left: 30px;
-  }
-  .pdr30{
-    padding-right: 30px;
-  }
-  .no-padding-xs{
-    @media (max-width: $screen-xs-max){
-      padding:0 !important;
-    }
-  }
-  .margin-15-xs{
-    @media (max-width: $screen-xs-max){
-      margin-left:-15px !important;
-      margin-right:-15px !important;
-    }
-  }
-  a{
-    color: $yellow;
-    text-decoration: none;
-    cursor: pointer;
-    &:hover{
-      color: $yellow-hover;
-      text-decoration: underline;
-    }
-  }
-  .ha-button-container{
-    margin-top: 10px;
-    > div a{
-      padding-top: 0;
-    }
-  }
-  .notification{
-    background-color: $yellow;
-    margin-bottom: 30px;
-    font-size: 1.7rem;
-    height: 60px;
-    text-align: center;
-    line-height: 60px;
-    letter-spacing: 2px;
-    color: $gray-bg;
-    font-family: Helvetica !important;
-    a{
-      color: $blue;
-      text-decoration: none;
-      cursor: pointer;
-      &:hover{
-        color: $blue-hover;
-        text-decoration: underline;
-      }
-    }
-    @media (max-width: $screen-sm-max){
-      display: none;
-    }
-  }
-  .row>[class*="col"]{
-    margin: 20px 0;
-    >[class*="array"]{
-      height: 100px;
-    }
-    >div>[class*="col"]:not(:first-child){
-      @media (max-width: $screen-sm-max){
-        margin: 30px 0;
-      }
-    }
-  }
-  .table-display{
-    @media (min-width: $screen-md-min){
-      display: table;
-      >div{
-        display: table-cell;
-        float: none !important;
-      }
-    }
-  }
-  .me-in{
-    width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-    >br{
-      display: none;
-    }
-    .ha-button-container{
-      margin-top: 0;
-      &:not(.no-bg-button){
-        margin-left: 20px;
-      }
-    }
-    @media (max-width: $screen-xs-max){
-      width: auto;
-      display: block;
-      >br{
-        display: block;
-      }
-      .ha-button-container:not(.no-bg-button){
-        margin-top: 20px;
-        margin-left: 0;
-      }
-    }
-  }
-  .ha-line{
-    background-color: #889295;
-    height: 1px;
-  }
-  .btn-bottom{
-    @media (min-width: $screen-md-min) {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 0;
-      &-width {
-        transform: none;
-        margin-left: -140px !important;
-      }
-    }
-  }
-  .des{
-    text-align: left;
-    @media (min-width: $screen-md-min){
-      display: table;
-      >div{
-        display: table-cell;
-        float: none !important;
-        vertical-align: middle;
-        padding-left: 9%;
-        padding-right: 9%;
-      }
-    }
     @media (max-width: $screen-sm-max){
       text-align: center;
+      p{
+        font-size: 18px;
+      }
+      h1{
+        font-size: 28px;
+      }
+      img{
+        margin-top: 30px;
+      }
     }
-    .bot-1{
-      display: none;
-      @media (max-width: $screen-sm-max){
+    @media (min-width: $screen-md-min){
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .feed-block{
+    background-color: #f1f9ff;
+    border-radius: 4px;
+    @media (max-width: $screen-sm-max){
+      margin-top: 30px;
+    }
+    .feed-header{
+      background-image: url("/assets/images/bg-pixel.png");
+      background-position: top center;
+      background-repeat: repeat-x;
+      background-size: contain;
+      padding: 20px 15px;
+      border-bottom: 1px solid #d5dadf;
+      display: flex;
+      align-items: center;
+      // &:after{
+      //   content: "";
+      //   display: block;
+      //   clear: both;
+      // }
+      .feed-icon{
+        // float: left;
+        width: 55px;
         display: block;
       }
-    }
-    .bot-2{
-      display: block;
-      @media (min-width: $screen-md-min){
-        display: table-cell;
-      }
-      @media (max-width: $screen-sm-max){
-        display: none;
-      }
-    }
-    img{
-      width: 100%;
-      @media (max-width: $screen-sm-max){
-        margin-top: 20px;
-        margin-bottom: 20px;
-        width: 80%;
+      h3{
+        font-size: 24px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #033C89;
+        line-height: 28px;
+        margin-left: 10px;
+        margin-top: 0;
+        margin-bottom: 0;
       }
     }
-    .words{
-      .ha-button-container{
-        margin-left: 0;
+
+    .feed-body{
+      color: #52678D;
+      padding: 0 15px;
+    }
+  }
+
+  .parnter-block{
+    h3{
+      @include heading(24px);
+      @media screen and (max-width: $screen-sm-max) {
         text-align: center;
-        transform: translateX(-1px);
-        &.wider{
-          transform: translateX(-15px);
-          div{
-            width:210px;
-          }
-        }
-        @media (max-width: $screen-xs-max){
-          margin-left: auto;
-          transform: translateX(0);
-        }
-      }
-      .line-container {
-        width: 35%;
-        margin-left: 0;
-        @media (max-width: $screen-sm-max){
-          margin-left: auto;
-        }
       }
     }
-  }
-  .line-container{
-    width:25%;
-    position: relative;
-    margin-top: 20px;
-    padding-bottom: 20px;
-  }
-  .big-menu{
-    .reddit-widget{
-      text-align: left;
-      height: 500px;
-      .reddit-title{
-        img{
-          width: auto;
-        }
-      }
-    }
-    .play-bot{
-      @media (max-width: $screen-sm-max){
-        margin-bottom: 20px;
-        padding-left: 30px;
-        padding-right: 30px;
-      }
-    }
-    img{
-      width: 100%;
-    }
-    .img-list{
-      padding:30px;
-      &>div{
-        @media (max-width: $screen-sm-max){
-          margin-bottom: 10px;
-        }
-      }
-    }
-    .line-container{
-      width:10%;
-      @media (max-width: $screen-sm-max){
-        width:35%;
-      }
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .screen-shot{
-      @media (max-width: $screen-xs-max){
-        margin-bottom: 20px;
-      }
-    }
-  }
-  .watch-section{
-    @media (max-width: $screen-sm-max){
-      display: none;
-      &-arrow{
-        display: none;
-      }
-    }
-  }
-  .img-des{
-    border: 1px solid #757577;
-    text-align: center;
-    padding: 10px;
-    position: relative;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    >img{
-      max-width:25px;
-      margin-right: 5px;
-    }
-    .i-label{
-      display: inline-block;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-    .i-des{
-      margin: 15px 0 10px;
-    }
-    .right-btn{
-      float: right;
-      max-width:17px;
-      cursor: pointer;
-    }
-  }
-  .clear{
-    clear: both;
-  }
-  .img-container{
-    position: relative;
-    .img-btn{
-      cursor: pointer;
-      width: 16%;
-      max-width: 52px;
-      min-width: 30px;
-      transform: translate(-50%, -50%);
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      &:hover{
-        width: 17%;
-      }
-    }
-  }
-  .menu-header{
-    margin-top: 10px;
-    .line-container{
-      display: inline-block;
-      width: 25%;
-      transform: translateY(15px);
-      margin-left: 8%;
-      margin-right: 8%;
-      &.line-1{
-        @media (max-width: $screen-xs-max){
-          margin-left: 0;
-          margin-right: 0;
-          width: 36%;
-          left: 2px;
-          position: absolute;
-        }
-      }
-      &.line-2{
-        @media (max-width: $screen-xs-max){
-          position: absolute;
-          right: 2px;
-          width: 36%;
-          margin-right: 0;
-        }
-      }
-    }
-    img{
-      max-width: 60px;
-      width: 14%;
-    }
-  }
-  .menu-body{
-    .content{
-      width: 90%;
-      margin-left: auto;
-      margin-right: auto;
-      margin-top:20px;
-    }
-    >.xline{
-      top: 70px;
-      bottom: 0;
-      height: auto;
-    }
-    .xline-left,.xline-right{
-      @media (max-width: $screen-xs-max){
-        display: none;
-      }
-    }
-    .line-container{
-      width: 160px;
-      @media (max-width: $screen-lg-min){
-        width: 150px;
-      }
-      float: left;
-      transform: translate(-60px, 45px) rotate(90deg);
-      display: inline-block;
-      &.line-2{
-        float: right;
-        transform: translate(42px, 45px) rotate(90deg);
-      }
-      @media (max-width: $screen-xs-max){
-        display: none;
-      }
-    }
-  }
-  .section-des{
-    @media (min-width: $screen-md-min){
-      padding: 0 30px;
-    }
-  }
-  .ha-input-container{
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 20px;
-    .input-field{
+    .partner-main{
+      padding: 30px 15px;
       display: flex;
-      max-width: 320px;
-      margin-left: auto;
-      margin-right: auto;
-      background-color: #000;
-      padding-left: 10px;
-      @media (max-width: 355px){
-        margin-right: 10px;
+      align-items: center;
+      position: relative;
+      &:after{
+        content: "";
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-image: linear-gradient(90deg, rgba(19, 151,216, 0) 0%, #19B7E7 50%, rgba(19, 151,216, 0) 100%);
       }
-      input{
-        color: #fff;
-        border: 0;
-        padding: 0px;
-        margin-right: 10px;
-        background-color: transparent;
+      .logo{
         flex: 1;
-        &:-moz-placeholder {
-          color: #fff;
-          opacity:0.5;
-        }
-        &::-moz-placeholder {
-          color: #fff;
-          opacity:0.5;
-        }
-        &:-ms-input-placeholder{
-          color: #fff;
-          opacity:0.5;
-        }
-        &::-webkit-input-placeholder{
-          color: #fff;
-          opacity:0.5;
-        }
+        width: 50%;
+        float: left;
+        text-align: center;
       }
-      button{
-        letter-spacing: 1px;
-        margin-right: -10px;
+      .name{
+        flex: 1;
+        width: 50%;
+        float: left;
+        font-size: 35px;
+        color: #ACDEF6;
+      }
+    }
+    .partners{
+      display: flex;
+    }
+    .partner{
+      flex: 1;
+      padding: 30px 15px;
+      position: relative;
+      &:after{
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 1px;
+        background-image: linear-gradient(180deg, #19B7E7 0%, rgba(19, 151,216, 0) 100%);
+      }
+      &:last-child:after{
+        display: none;
+      }
+      .logo, .name{
+        text-align: center;
+      }
+      .logo{
+        height: 77px;
+      }
+      .name{
+        font-size: 20px;
+        font-weight: 600;
+        color: #ACDEF6;
       }
     }
   }
+}
 
-  @keyframes arrow
-  {
-    0% {opacity:0}
-    40% {opacity:1}
-    80% {opacity:0}
-    100% {opacity:0}
+.feed-item{
+  padding: 15px 0;
+  border-bottom: 1px solid #d5dadf;
+  h3{
+    font-size: 20px;
+    font-weight: 600;
+    color: #1A1A1A;
+    line-height: 27px;
+    margin: 0 0 10px 0;
   }
-  .sponsor-section{
-    margin-bottom: 40px !important;
-    .left{
-      text-align: right;
-      margin-top: 10px;
-      padding-right: 50px;
-      @media (max-width: $screen-xs-max){
-        padding-right: 15px;
-      }
+  p{
+    font-size: 18px;
+    color: #52678D;
+    letter-spacing: 0.22px;
+    line-height: 27px;
+  }
+  &-bottom{
+    display: flex;
+    justify-content: space-between;
+    .date{
+      font-size: 14px;
+      color: #A6B0C1;
+      text-transform: uppercase;
     }
-    .logo{
-      max-width: 100%;
-      @media (min-width: $screen-sm-min){
-        max-width: 250px;
-      }
+    .read-more{
+      font-family: ProximaNovaSoft-Medium;
+      font-size: 18px;
+      color: #F7862D;
+      text-transform: uppercase;
     }
-    .right{
-      text-align: left;
-      margin-top: 10px;
-      padding-left: 120px;
-      @media (max-width: $screen-xs-max){
-        padding-left: 15px;;
-      }
+    .icon-date{
+      margin-right: 5px;
+      transform: translateY(2px);
     }
-    >div{
-      @media (max-width: $screen-xs-max){
-        text-align: center !important;
-        margin-top: 30px !important;
-      }
+    .icon-readmore{
+      margin-left: 5px;
     }
   }
-  .arrows-icon{
-    $animation-delay: 0.5s;
-    $arrow-size: 12px;
+}
 
-    .scroll-arrow {
-      margin-left: auto;
-      margin-right: auto;
-      width: $arrow-size;
-      height: $arrow-size;
-      transform: rotate(45deg);
-      border-right: 2px solid white;
-      border-bottom: 2px solid white;
-      animation: arrow 2s infinite;;
-      // animation-direction: alternate;
-      // &:nth-child(1){
-      //   animation-delay: -1s;
-      // }
-      // &:nth-child(2){
-      //   animation-delay: -0.5s;
-      // }
-      // &:nth-child(3){
-      //   animation-delay: 0s;
-      // }
-      @for $i from 1 through 3 {
-        &:nth-child(#{$i}) {
-          animation-delay: -$animation-delay*(3-$i);
-        }
-      }
-    }
-  }
+.icon-date{
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  background-image: url("/assets/images/icon-calendar.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.icon-readmore{
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  background-image: url("/assets/images/icon-orange-arrow.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }

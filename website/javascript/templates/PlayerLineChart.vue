@@ -1,6 +1,6 @@
 <template>
-  <div class="player-line-chart row">
-    <svg width='100%' height='300' ref="mainSvg"></svg>
+  <div class="player-line-chart">
+    <svg width='100%' height='200' ref="mainSvg"></svg>
   </div>
 </template>
 <script>
@@ -77,15 +77,17 @@ function getDataPeriod (_data, _length, _index) {
         selectedPlayers = (selectedPlayers !== undefined ? selectedPlayers : this.selectedPlayers)
         if (!selectedPlayers || !Object.entries(selectedPlayers).length) return
 
-        var svg = d3.select(this.$refs.mainSvg).attr('class', 'main-svg'),
-          svgPosition = svg.node().getBoundingClientRect(),
-          margin = {top: 20, right: 20, bottom: 30, left: 50},
-          width = +svgPosition.width - margin.left - margin.right,
-          height = +svgPosition.height - margin.top - margin.bottom,
-          // g1 = svg.append('foreignObject').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')').append('svg'),
-          g1 = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')'),
-          g2 = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')').attr('class', 'group-2'),
-          innerSvg = g1.append('foreignObject').attr('height', height).attr('width', width).append('svg')
+        const svg = d3.select(this.$refs.mainSvg).attr('class', 'main-svg')
+        const svgPosition = svg.node().getBoundingClientRect()
+        const margin = {top: 20, right: 20, bottom: 30, left: 50}
+        const width = +svgPosition.width - margin.left - margin.right
+        const height = +svgPosition.height - margin.top - margin.bottom
+
+        if (width < 0) return
+
+        const g1 = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+        const g2 = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')').attr('class', 'group-2')
+        const innerSvg = g1.append('foreignObject').attr('height', height).attr('width', width).append('svg')
 
         this.path1List = []
         this.path2List = []
@@ -119,7 +121,7 @@ function getDataPeriod (_data, _length, _index) {
         //     .range([d3.rgb("red"), d3.rgb('#f5bc13')])
 
         let dataSet = chartData
-  
+
         let color = (index) => ['#BD00DB', '#63CECA', '#FFBE00', '#C5EC98', '#E37222', '#ECFFFB'][index % 6]
 
         x.domain(d3.extent(getDataPeriod(dataSet[0], this.maxLength, this.index), function (d) { return d.x }))
@@ -134,8 +136,8 @@ function getDataPeriod (_data, _length, _index) {
         let yAxis = g1.append('g')
           .call(d3.axisLeft(y).ticks(5, 's'))
         yAxis.selectAll('.domain').attr('stroke', 'white')
-        yAxis.selectAll('line').attr('stroke', '#a7b5b5').attr('x2', width).attr('opacity', 0.2)
-        yAxis.selectAll('.tick text').attr('fill', '#a7b5b5').attr('font-size', '1.5rem')
+        yAxis.selectAll('line').attr('stroke', '#000').attr('x2', width).attr('opacity', 0.2)
+        yAxis.selectAll('.tick text').attr('fill', '#000').attr('font-size', '1.5rem')
         yAxis.selectAll('.domain')
         yAxis.select('.domain')
           .remove()
@@ -182,7 +184,7 @@ function getDataPeriod (_data, _length, _index) {
         let dragLine = g1.append('path')
           .attr('class', 'drag-line')
           .attr('d', `M${this.initDragPositon},${y(0)}L${this.initDragPositon},0`)
-          .attr('stroke', '#a7b5b5')
+          .attr('stroke', '#000')
           .attr('stroke-width', 3)
 
         this.dragLine = dragLine
@@ -207,7 +209,7 @@ function getDataPeriod (_data, _length, _index) {
           let _base = 0
           let _width = width
           let _offset = _x < _base ? _base : _x > _width ? _width : _x
-  
+
           self.$emit('updateIndex', Math.round(x.invert(_offset)))
         })
       },

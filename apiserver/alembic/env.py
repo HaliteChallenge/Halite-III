@@ -1,11 +1,12 @@
 import sys
+import sqlalchemy
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
 
 try:
     sys.path.append(".")
-    from apiserver.config import DATABASE_URL
+    from apiserver.config import DATABASE_URL, DATABASES
 except ModuleNotFoundError:
     print("Could not load actual database url config.")
     DATABASE_URL = None
@@ -14,7 +15,7 @@ except ModuleNotFoundError:
 # access to the values within the .ini file in use.
 config = context.config
 if DATABASE_URL:
-    config.set_main_option("sqlalchemy.url", DATABASE_URL)
+    config.set_main_option("sqlalchemy.url", DATABASE_URL.format(port=DATABASES[0][2]))
 else:
     print("Actual database connection url not found, using generic mysql.")
 
@@ -26,7 +27,7 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = sqlalchemy.MetaData()
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

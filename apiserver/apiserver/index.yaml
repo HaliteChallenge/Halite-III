@@ -1,0 +1,8 @@
+# Indices for Google Cloud Datastore
+
+indexes:
+  - kind: ondemand
+    properties:
+      - name: status
+      - name: last_updated
+        direction: desc

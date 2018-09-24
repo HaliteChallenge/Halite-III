@@ -18,16 +18,16 @@ email: halite@halite.io
 description: > # this means to ignore newlines until "baseurl:"
   Halite is an artificial intelligence programming challenge.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://halite.io/" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://beta.halite.io/" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: haliteAI
 github_username:  haliteadmin
 markdown: kramdown
 
 permalink: /blog/:year/:month/:day/:title.html
 
-api_server_url: "http://35.190.92.101/v1/api"
-login_server_url: "http://35.190.92.101/v1/login"
-logout_server_url: "http://35.190.92.101/v1/logout/"
+api_server_url: "https://api.2018.halite.io/v1/api"
+login_server_url: "https://api.2018.halite.io/v1/login"
+logout_server_url: "https://api.2018.halite.io/v1/logout/"
 
 breadcrumbs:
   root:
@@ -41,6 +41,7 @@ gems:
   - jekyll-toc
   - jekyll-seo-tag
 sass:
+  style: compressed
   load_paths:
     - _sass
     - vendor_assets
@@ -51,3 +52,4 @@ exclude:
   - vendor_assets/
   - javascript/
   - node_modules/
+  - countdown/

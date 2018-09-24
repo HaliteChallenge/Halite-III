@@ -1,19 +1,27 @@
 .form-group{
   margin-bottom: 20px;
   label{
-    font-size: 18px;
-    color: #ECFFFB;
-    letter-spacing: 0.5px;
+    font-weight: 600;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
   }
 }
 
 .form-control{
-  background-color: #000;
-  color: #fff;
-  border-radius: 0;
-  border: 0;
   padding: 5px;
-  height: 45px;
+  height: 40px;
+  font-size: 14px;
+  background: #FFFFFF;
+  border-radius: 4px;
+  border: 0;
+  color: rgba(0, 19, 51, 0.6);
+  &:focus{
+    color: #001333;
+  }
+}
+
+.form-control[disabled]{
+  background-color: #fff;
 }
 
 select.form-control{
@@ -37,7 +45,7 @@ select.form-control::-ms-expand {
 }
 
 .form-inline-button{
-  background-color: #000;
+  background-color: #fff;
   display: flex;
   padding: 5px;
   input{
@@ -81,8 +89,8 @@ select.form-control::-ms-expand {
 }
 
 .v-select.dropdown{
-  background-color: #000;
-  color: #fff;
+  background-color: #fff;
+  color: rgba(0,19,51, 0.6);
   flex: 1;
   min-width: 0;
   min-height: 45px;
@@ -102,8 +110,8 @@ select.form-control::-ms-expand {
     /** select tag **/
     .selected-tag{
       border: 0;
-      background-color: $yellow;
-      color: #30242F;
+      background-color: #6dc3f5;
+      color: #fff;
     }
     
     background-image: url("/assets/images/chevron-down.svg");
@@ -122,18 +130,26 @@ select.form-control::-ms-expand {
   }
 
   .dropdown-menu{
-    background-color: #000 !important;
+    background-color: #001C4C !important;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     li > a{
-      color: #fff;
       display: block;
+      padding: 0 0 0 15px;
+      height: 45px;
+      line-height: 45px;
+      font-size: 14px;
+      color: rgba(151, 221, 255, 0.6);
       text-overflow: ellipsis;
+      text-shadow: 0 1px 13px #00ABFF;
+      border-left: 3px solid transparent;
       overflow: hidden;
     }
-    .highlight > a{
-      background-color: rgba(255, 190, 0, 0.3);
-    }
-    li >a:hover{
-      background-color: rgba(255, 190, 0, 0.3);
+    .highlight > a, li >a:hover{
+      color: #97DDFF;
+      border-left: 3px solid #91DBFF;
+      background-color: transparent;
     }
   }
 }

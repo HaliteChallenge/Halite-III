@@ -27,7 +27,7 @@ def discourse_sso():
     if user:
         user_id = user["user_id"]
     else:
-        return flask.redirect("https://api.halite.io/v1/login/github")
+        return flask.redirect("{}/v1/login/github".format(config.API_URL))
 
     sso_payload = flask.request.args.get("sso")
     sso_signature = flask.request.args.get("sig")
@@ -77,7 +77,7 @@ def discourse_sso():
 @web_api.route("/finals", methods=["GET"])
 @util.cross_origin(methods=["GET"])
 def status():
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         last_game_id = conn.execute(sqlalchemy.sql.select([
                     sqlalchemy.sql.func.max(model.games.c.id)
                 ]).select_from(model.games)).first()[0]

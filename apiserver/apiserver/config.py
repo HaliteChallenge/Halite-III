@@ -57,6 +57,10 @@ GCLOUD_REPLAY_BUCKETS = {
     # 1 is the bucket for gold and above players
     1: 'todo',
 }
+GCLOUD_ONDEMAND_REPLAY_BUCKET = "TODO"
+# Bucket for pre-assembled bots that players fight in the
+# tutorial/online editor
+GCLOUD_GYM_BUCKET = ""
 GCLOUD_ERROR_LOG_BUCKET = 'TODO'
 GCLOUD_DEPLOYED_ARTIFACTS_BUCKET = 'TODO'
 GCLOUD_EDITOR_BUCKET = 'editor-bucket'
@@ -65,9 +69,13 @@ GCLOUD_EDITOR_BUCKET = 'editor-bucket'
 WORKER_ARTIFACT_KEY = ""
 
 DATABASE_PROJECT_ID = ""
-DATABASE_REGION = ""
-DATABASE_INSTANCE_NAME = ""
-DATABASE_URL = ""
+DATABASE_URL = "postgresql+psycopg2://user:pass@localhost:{port}/dbname"
+DATABASES = [
+    # Read-write master
+    ("zone", "instance-name", 3307),
+    # Read replica
+    ("zone", "instance-name", 3308),
+]
 
 # OAuth
 OAUTH_GITHUB_CONSUMER_KEY = ""

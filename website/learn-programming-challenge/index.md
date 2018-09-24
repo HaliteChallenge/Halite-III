@@ -1,66 +1,79 @@
 ---
 layout: doc_page
-title: Learn How to Get Started with Halite
+title: Get Started
 breadcrumb: Learn
 toc: false
 menu: learn
-description: Welcome to the Halite II competition! Learn how to quickly get started downloading, building, and submitting an AI bot.
+description: Welcome to the Halite III competition! Learn how to quickly get started downloading, building, and submitting an AI bot.
 mount_view: Onboarding
-additional_js: ["FileSaver.min", "jszip.min", "jszip-utils.min", "editorBuild/code_edit/built-codeEdit.min"]
-additional_css: ["built-codeEdit", "dark-codeEdit"]
+additional_js: ["FileSaver.min"]
+additional_css: []
 ---
+
+<div class="doc-section" markdown="1">
+
+#### Welcome to the Halite III Beta
+
+We look forward to seeing you on the leaderboard!
+
+Please send all feedback, starter kit inquiries, and new feature proposals to [**halite@halite.io**](mailto:halite@halite.io).
+
+<br/>
+
+#### Get to know the Game
+Start with the [**game rules**](/learn-programming-challenge/game-overview).
+
+Then, learn more about how to play the game in a [**tutorial**](/learn-programming-challenge/tutorials/).
+
+<br/>
+
+#### Build a Bot
+
+[**Download**](/learn-programming-challenge/downloads) a starter kit and game environment to build a bot locally on your computer. Submit your bot on the [**play**](/play-programming-challenge) page.
+###### OR
+Build and submit your bot via the [**online editor**](/editor), which includes built-in logging and game visualization.
+
+
+<br/>
+
+#### Reference
+Check out the [**API documentation**](/learn-programming-challenge/api-docs).
+
+Get tips on improving your bot in our [**next step tutorial**](/learn-programming-challenge/tutorials/next-tutorial).
+
+Stuck? Get help with best practices and [**debugging your bot**](/learn-programming-challenge/developing-a-bot).
+
+[comment]: Check out the blog post feed (todo).
+
+
+<br/>
+
+[comment]: #### Join the Community
+[comment]: Meet the community on the official [**forums**](https://forums.halite.io/).
+
+[comment]: Join us on Discord (todo)!
+
+[comment]: Check us out on Github (todo), and make a contribution to Halite III (todo).
+
+[comment]: <br/>
+</div>
+
+
 <script>
   var site_downloads = {{ site.data.downloads | jsonify }};
 </script>
 
-<div id="onboarding-container"></div>
-
-### NOTE: The 2017-2018 season of Halite II has ended and submissions have closed. You can still create an account to be alerted when we launch the next season, and you can always play offline.
-
-Welcome to the Halite II competition!  If you’re here, that means you’re excited to make your first bot and get on the Halite II beta leaderboard. Let's get you set up!
-
-### 1) SIGN UP
-
-First, you need to [sign up via Github][login] and create a user profile.
-
-### 2) WATCH A FEW GAMES
-
-Next, get a feel for how to play the game. Here's one of our favorite videos:
-
-<div class="static-container text-center">
-  <img style="width: 80%;height: auto;" src="/assets/images/gifs/Oct-16-2017%2015-23-13%20intro.gif" alt="First Halite game video">
-</div>
-<br/>
-<br/>
-
-[Watch the whole game here.][david game]
-
-To find more games, check out some user profiles, where you'll find recently played games.
-
-You might also want to [browse the game rules][game rules], but it helps to watch some videos first.  
-
-### 3) DOWNLOAD A BOT
-
-Now it's time to [download the game environment and starter kit][downloads] for your platform and language of choice.
-
-The game environment and starter kit are bundled together, so you should be all set.
-
-### 4) SUBMIT THE STARTER BOT
-
-A great way to get going with the game is to just go ahead and [submit][play] the starter bot you downloaded and then going to your [user profile][profile] to see how you've done.
-
-We've created a lot of other documents for you to learn how to play Halite. If you've made it through all these steps, a great next resource is our guide to [improving the basic bot][improve bot].
-
-### May the best bot win!
-
-
 [login]: {{ site.login_server_url }}/github
 [downloads]: {{ site.baseurl }}/learn-programming-challenge/downloads-and-starter-kits
+[editor]: {{ site.baseurl }}/editor
 [contact]: {{ site.baseurl }}/about/contact-us
 [play]: {{ site.baseurl }}/play-programming-challenge
+[watch]: {{ site.baseurl }}/watch-games
 [submit]: {{ site.baseurl }}/learn-programming-challenge/downloads-and-starter-kits/submit
 [leaderboard]: {{ site.baseurl }}/programming-competition-leaderboard
 [game rules]: {{ site.baseurl }}/learn-programming-challenge/basic-game-rules
 [profile]: /user/?me
 [improve bot]: /learn-programming-challenge/downloads-and-starter-kits/improve-basic-bot
+[example game 1]: {{ site.baseurl }}/play/?game_id=3996012&replay_class=1&replay_name=replay-20180730-134819%2B0000-1532958122-96-96
+[example game 2]: {{ site.baseurl }}/play/?game_id=3995999&replay_class=1&replay_name=replay-20180730-133054%2B0000-1532957367-48-48
 [david game]: /play/?game_id=1658857&replay_class=0&replay_name=replay-20171016-183304%2B0000--998929535-240-160-1508178764

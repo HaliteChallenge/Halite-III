@@ -1,23 +1,49 @@
 <template>
   <div class="leaderboard-container">
     <div class="panel panel-stats">
-      <div class="panel-heading" role="tab" id="heading_player_details">
-        <a data-toggle="collapse" id="toggle_filter" href="#panel_filter" @click="toggleFilter" aria-expanded="true" aria-controls="panel_filter">
-          <i class="xline xline-top"></i>
-          <h4>Filters</h4>
-          <span class="toggle-icon expand"></span>
-          <i class="xline xline-bottom"></i>
-        </a>
+      <div class="panel-statistic">
+        <i class="xline xline-top"></i>
+        <h4 class="title-h4">LEADERBOARD STATISTICS</h4>
+        <div class="statistic-box">
+          <div class="box-item player">
+            <div class="icon"></div>
+            <div class="statistic-data">
+              <div class="num">{{ metric.players }}</div>
+              <div class="data-title">Players</div>
+            </div>
+          </div>
+          <div class="box-item organizations">
+            <div class="icon"></div>
+            <div class="statistic-data">
+              <div class="num">{{ metric.organizations }}</div>
+              <div class="data-title">Organizations</div>
+            </div>
+          </div>
+          <div class="box-item countries">
+            <div class="icon"></div>
+            <div class="statistic-data">
+              <div class="num">{{ metric.countries }}</div>
+              <div class="data-title">Countries</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="panel-collapse collapse in" role="tabpanel" id="panel_filter" aria-labelledby="panel_filter">
+      <div class="panel-heading" role="tab" id="heading_player_details">
+        <i class="xline xline-top"></i>
+        <a data-toggle="collapse" id="toggle_filter" aria-controls="panel_filter">
+          <h4 class="title-h4">Filters</h4>
+          <!-- <span class="toggle-icon expand"></span> -->
+        </a>
+        <div class="filter-handler" v-if="filter_handle_view==='normal'">
+          <a href="#" class="handler-item" @click="clearFilter">
+            <span class="handler-item-img icon-remove"></span>
+            <span class="handler-item-text">Clear all</span>
+          </a>
+        </div>
+      </div>
+      <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="panel_filter">
         <form class="leaderboard-filter-form" v-on:submit="on_update_filter">
           <div class="form-header">
-            <div class="filter-handler" v-if="filter_handle_view==='normal'">
-              <a href="#" class="handler-item" @click="clearFilter">
-                <span class="handler-item-img icon-remove"></span>
-                <span class="handler-item-text">Clear all</span>
-              </a>
-            </div>
           </div>
           <div class="filter-group">
             <div class="input-group">
@@ -67,7 +93,7 @@
     </div>
     <div v-if="leaderboard.length > 0">
       <div class="table-container">
-        <table class="table table-leader leaderboard-table">
+        <table class="table">
           <thead>
           <tr>
             <th class="text-center">Rank</th>
@@ -86,9 +112,19 @@
           <tr :id="`user-row-${player.user_id}`" :key="player.user_id" v-for="player in leaderboard">
             <td class="text-center">{{ player.rank || player.local_rank }}</td>
             <td class="nowrap">
-              <a :href="'/user?user_id=' + player.user_id" class="leaderboard-name">
-                <img width="30" height="30" :src="`https://github.com/${player.username}.png`" alt="">
-                {{ player.username }}
+              <a :href="'/user?user_id=' + player.user_id" class="leaderboard-name" v-bind:title="player_link_title(player)">
+                <template v-if="player.user_id === player.team_leader_id && player.team_members.length > 0">
+                  <img v-for="team_member in player.team_members" width="30" height="30" :src="`https://github.com/${team_member.username}.png`" v-bind:alt="player.username">
+                  {{ player.team_name }}
+                </template>
+                <template v-else-if="player.team_members.length > 0">
+                  <img width="30" height="30" :src="`https://github.com/${player.username}.png`" v-bind:alt="player.username">
+                  {{ player.username }} ({{player.team_name}})
+                </template>
+                <template v-else>
+                  <img width="30" height="30" :src="`https://github.com/${player.username}.png`" v-bind:alt="player.username">
+                  {{ player.username }}
+                </template>
               </a>
             </td>
             <td :title="`${player.rating_components}`">{{ Math.round(100 * player.score) / 100 }}</td>
@@ -100,13 +136,31 @@
             </td>
             <td>{{ player.level }}</td>
             <td class="text-center">
-              <div>
+              <div v-if="player.user_id === player.team_leader_id && player.team_members.length > 0">
+                <img
+                  v-for="team_member in player.team_members"
+                  v-if="getCountry(team_member.country)"
+                  :title="`${getCountryName(team_member.country)}`"
+                  :src="`${getCountry(team_member.country)}`"
+                  class="country-img">
+              </div>
+              <div v-else>
                 <img v-if="getCountry(player.country)" :title="`${getCountryName(player.country)}`" :src="`${getCountry(player.country)}`" class="country-img">
               </div>
             </td>
-            <td>{{ player.organization }}</td>
+            <td>
+              <template v-if="player.user_id === player.team_leader_id && player.team_members.length > 0">
+                {{ player.team_members.filter(tm => tm.organization).map(tm => tm.organization).join(", ") }}
+              </template>
+              <template v-else>
+                {{ player.organization }}
+              </template>
+            </td>
             <td>{{ player.language }}</td>
-            <td :title="`${player.num_games} games`">{{ getFormattedDate(player.update_time)  }} {{ player.compile_status == "Successful" ? "v"+player.version_number : player.compile_status }}</td>
+            <td :title="`${player.num_games} games`">
+              {{ getFormattedDate(player.update_time)  }}
+              {{ player.compile_status == "Successful" ? "v"+player.version_number : player.compile_status }}
+            </td>
           </tr>
           </tbody>
         </table>
@@ -145,7 +199,7 @@ const DEFAULT_LIMIT = 25
 
 export default {
     name: 'leaderboard',
-    props: ['baseUrl', 'hackathonId', 'lbFromContainer'],
+    props: ['baseUrl', 'hackathonId', 'lbFromContainer', 'metric'],
     components: {
       HalitePagination,
       vSelect,
@@ -242,7 +296,7 @@ export default {
       this.calculate_filters()
 
       // determine if the filter should be collapsed or not
-      this.setupCollapseFilter()
+      // this.setupCollapseFilter()  // issue #409
       $(window).on('popstate', () => {
         this.build_params_count = -1
         this.calculate_filters()
@@ -492,12 +546,14 @@ export default {
         return filters.length ? filters : null
       },
 
-      toggleFilter: function () {
-        setTimeout(() => {
-          const collapsed = !$('#panel_filter').hasClass('in')
-          this.$cookie.set('leaderboard_filter_collapsed', collapsed ? 1 : 0)
-        }, 500)
-      },
+
+      // issue #409
+      // toggleFilter: function () {
+      //   setTimeout(() => {
+      //     const collapsed = !$('#panel_filter').hasClass('in')
+      //     this.$cookie.set('leaderboard_filter_collapsed', collapsed ? 1 : 0)
+      //   }, 500)
+      // },
 
       build_params: function () {
         const params = this.params
@@ -520,13 +576,14 @@ export default {
         this.build_params_count = 1
       },
 
-      setupCollapseFilter: function () {
-        const collapse = this.$cookie.get('leaderboard_filter_collapsed')
-        if (collapse == 1 || window.mobileAndTabletcheck()) {
-          $('#panel_filter').removeClass('in')
-          $('#toggle_filter').attr('aria-expanded', 'false')
-        }
-      },
+      // issue #409
+      // setupCollapseFilter: function () {
+      //   const collapse = this.$cookie.get('leaderboard_filter_collapsed')
+      //   if (collapse == 1 || window.mobileAndTabletcheck()) {
+      //     $('#panel_filter').removeClass('in')
+      //     $('#toggle_filter').attr('aria-expanded', 'false')
+      //   }
+      // },
 
       on_update_filter: function (e) {
         if (e && e.preventDefault) e.preventDefault()
@@ -628,6 +685,15 @@ export default {
         }
       },
 
+      player_link_title(player) {
+        if (player.team_members.length > 0) {
+          return `${player.team_name}: ${player.team_members.map(tm => tm.username).join(", ")}`;
+        }
+        else {
+          return player.username;
+        }
+      },
+
       changePage: function (page) {
         this.page = page
         this.update_filter()
@@ -669,6 +735,39 @@ export default {
     img{
       width: 15px;
       height: 15px;
+    }
+  }
+  .table-container{
+    border-radius: 4px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #EDF6FF 0%, #FFFFFF 100%);
+    table{
+      margin: 0;
+      thead{
+        tr{
+          background: rgba(2,30,82, .05);
+          th{
+            border-right: 1.2px solid rgba(8,27,83, .1);
+            border-bottom: none;
+            padding: 25px 20px;
+            font-size: 14px;
+          }
+        }
+      }
+      tbody{
+        tr td{
+          border: 1.2px solid rgba(8,27,83, .1);
+          padding: 25px 20px;
+          color: #0c0c0c;
+          font-size: 18px;
+          .leaderboard-name > img {
+            margin-right: 10px;
+          }
+        }
+        tr:first-child td {
+          border-top: none;
+        }
+      }
     }
   }
 </style>

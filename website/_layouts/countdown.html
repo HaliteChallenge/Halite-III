@@ -1,0 +1,97 @@
+---
+layout: base_new
+no_navbar: true
+---
+
+<script>
+    function handleOutboundLinkClicks(category, action) {
+        ga('send', 'event', {
+            eventCategory: category,
+            eventAction: action,
+            eventLabel: 'pre-launch'
+        });
+    }
+
+
+    function check() {
+        handleOutboundLinkClicks('subscribe','click-to-subscribe')
+        const status = document.getElementById("status");
+        status.classList.add("visible");
+        if(!document.getElementById("tmpid").checkValidity()) {
+            status.style.color = "red"
+            status.textContent = "Invalid email..."
+            handleOutboundLinkClicks('subscribe','subscribe-failure')
+        }
+        else {
+            let content = document.getElementById("tmpid").value
+            const xhr = new XMLHttpRequest()
+            var url = "https://api.halite.io/v1/api/user/addsubscriber/" + content
+            xhr.open("POST", url, true)
+            xhr.send()
+            status.style.color = "green"
+            status.textContent = "You are subscribed to Halite III updates!"
+            handleOutboundLinkClicks('subscribe','subscribe-succcess')
+        }
+    }
+</script>
+
+<div class="countdown-container">
+    <div class="row header">
+        <div class="col-md-6">
+            <br>
+            <br>
+            <h1>HALITE III</h1>
+            <p id="countdown">October 16, 2018: <span id="countdown-timer"></span> </p>
+            <!--  <p id="wishes">May the best bot win</p> -->
+
+            <p>
+                Subscribe to receive pre-launch updates:
+            </p>
+
+            <div id="subscribe">
+                <div>
+                    <input id="tmpid" type="email" type="text" required="required" placeholder="Email address" />
+                    <button class="btn" type="submit" id="subscribe-submit" onClick="javascript:check();">Subscribe</button>
+                </div>
+                <p id="status">
+                </p>
+            </div>
+
+            <p>
+                And follow us...
+            </p>
+
+            <p id="social-media">
+                <a href="https://discord.gg/ekHksvN" target="_blank" onclick="javascript:handleOutboundLinkClicks('follow', 'follow-discord'); return true;"><img src="https://discordapp.com/assets/28174a34e77bb5e5310ced9f95cb480b.png" alt="Join us on Discord" /></a>
+                <a href="https://twitter.com/intent/follow?screen_name=haliteai" target="_blank" onclick="javascript:handleOutboundLinkClicks('follow','follow-twitter'); return true;"><i class="fa fa-twitter t2 c-gry"></i></a>
+            </p>
+            <br>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row section-overview">
+        <div class="col-md-4 col-md-offset-1">
+            <h1>What is Halite?</h1>
+            <p style="color:#FFF">Halite is an open source artificial intelligence programming challenge created by <a href="https://www.twosigma.com">Two Sigma</a>, in which players build game-playing bots using the coding language of their choice.</p>
+            <p style="color:#FFF">Nearly 6,000 players participated in <a href="https://2017.halite.io">Halite II</a>. Learn more about Halite <a href="/about">here</a>.</p>
+        </div>
+        <div class="col-md-6">
+            <img src="/assets/images/home-map.png" alt="Map" style="width: 80%;margin: 0 auto;display: block;">
+        </div>
+    </div>
+</div>
+
+<script>
+    var countDownDate = new Date("October 16, 2018 12:00:00").getTime();
+    var x = setInterval(function()
+        {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            document.getElementById("countdown-timer").textContent = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+        }, 1000);
+</script>

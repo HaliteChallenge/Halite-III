@@ -69,7 +69,15 @@ def me():
             "user_id": flask.session["user_id"],
         })
     else:
-        return flask.jsonify(None)
+        user = util.validate_api_key(
+            flask.request.headers.get(config.API_KEY_HEADER))
+
+        if user:
+            return flask.jsonify({
+                "user_id": user["user_id"],
+            })
+
+    return flask.jsonify(None)
 
 
 @oauth_logout.route("/", methods=["POST"])
@@ -163,6 +171,7 @@ def generic_login_callback(username, email, oauth_provider, oauth_id):
     with model.engine.connect() as conn:
         user = conn.execute(sqlalchemy.sql.select([
             model.users.c.id,
+            model.users.c.is_active,
         ]).select_from(model.users).where(
             (model.users.c.oauth_provider == oauth_provider) &
             (model.users.c.oauth_id == oauth_id)
@@ -179,6 +188,8 @@ def generic_login_callback(username, email, oauth_provider, oauth_id):
             )).inserted_primary_key
             flask.session["user_id"] = new_user_id[0]
             return flask.redirect(urllib.parse.urljoin(config.SITE_URL, "/create-account"))
+        elif not user["is_active"]:
+            raise util.APIError(403, message="User is disabled.")
         else:
             flask.session["user_id"] = user["id"]
             return flask.redirect(urllib.parse.urljoin(config.SITE_URL, "/user/?me"))

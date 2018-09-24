@@ -1,71 +1,70 @@
+language: cpp
+services: docker
 sudo: true
 dist: trusty
-language: cpp
-
-# https://docs.travis-ci.com/user/languages/cpp/
+osx_image: xcode9.4
+node_js: '10'
+os:
+- linux
+- osx
+env:
+- COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
+- COMPILER="clang-5.0" CCOMPILE=clang-5.0 CXXCOMPILE=clang++-5.0
+- COMPILER="clang-6.0" CCOMPILE=clang-6.0 CXXCOMPILE=clang++-6.0
 matrix:
+  exclude:
+  - os: osx
+    env: COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
+  - os: osx
+    env: COMPILER="clang-5.0" CCOMPILE=clang-5.0 CXXCOMPILE=clang++-5.0
+deploy:
+  provider: gcs
+  access_key_id:
+    secure: BEf3RUItmgweEfiyBQHeEs9WgTtjq5Uomb5NwXJg/H6x+ZtpYFVb6fehio7G+3wrqxUmqepogm5Rcqam/Zm+JPLbroo6ZnTSxXiug5PZpvtJOpwsKwCR6Kq5YCCrbTtf6iT1BwmZtbIG9Jo8p3N2lVPo8oDIngP4MJEJ443Di2eAIfLj8Ap7wPRLG73t/7irw85WgF4StONDPxR1Q1SRVdmw85ao3upIN2HEx7WtAgu7FK0qhWwHYho4DOe2dTuwE4rTf0xcBaZOaJXr2+aen8oOByHfMRkLfzYXZD5EeBgA33p4ji7G0vEzJO0x5S0uZgZ8DtXDM2oRP1xD6bYb0aucL3o0MCo1nzl2Vf+ICD5Z8i08ncyj1r7soKOPfB3y0fnJI3bir5GXn6dcIzZsleJqPNeJmZrAOOyX8jTac0EkCt1nomqrckZI+9JSte245BBTPTaaeGWD+Wh06vrxcpUq/aEKBFcZTWiQ8f/5cSuStUxMWv3TEhbj6LvcZQQAMyOq3DK9SJT3mkYtjttq7p1dRq7uKizgsqJHwlc62hP9tE/z/+gWqY65UZnBmLchSSfyfZgCyPjHo9MlJP2XYUqKUQclIBOk12pAn9i/LakgpexrGQJKGt7RGwpVyJB9w3xshURYSrtK7k9EbbDfDthQfNCBe66vfA6Z3Qi+Ijw=
+  secret_access_key:
+    secure: fwhaYpN741kgFD/YDt3eAX4noryRHtvR91iJanFeMOf0OMhx9FOIslkoua1ts8hH3H9ay1nKRiKe5El2Jzbo8ht7IV33THQd39iIaCjLwdQaNwTmOhfG2P9XAR5J6DPP2Wp703N8KEoINbSeL+27s7EJeuCCNkUPdLEkUKjiawYzvFEy7lSwWIYee0AQCsWG6tduockTmwXN2FU7LeI0pBwJdo/zcQRzSPb1mH5fj3oj6PLTFehXKl/Hqs6F0vPBLZhbdFPxvR31GDZfrOalBaQQg4CaSVwxWuWItSfZb/356NVXwrH/kc8uaJtH2rHrO7PMUlhMdyIoVP5kH+4MWT/VeVzVy76Q3TVARoUlutQ+5nwaHv8ymJ05DIJyulxKxH0ADqmWLCRevGPbtCSXXFFpAQeMzo9gZQCQXvWSfyyd3vkKMYOjdqsIrh+4tWMaQJgNlIE0Hd/3KrraNERYQN0Kn1jiPBZ9Nuy4NYUBA3fX2O40HXt4oUx440B1KP9yizdCkQGoCM+5A+uPMQIQPJmJ5KmYvFwGCbrVaS4yCl/0hpYOAZEqfDgT1S+pgyfp20WcrMvQBktX/geLGPStRTQktNpULqP12cCDEci87NBVUrbcyhCHXAGxto5jZL3pH1cb6dRfC6O/ZeRXyJBlAT1ExQbS0oznl2wrqtXv36A=
+  bucket: ts2018-halite-3-ci-artifacts
+  skip_cleanup: true
+  local-dir: artifacts
+  tags: true
+  on:
+    condition: "$TRAVIS_OS_NAME == 'osx' || $COMPILER = *gcc* "
+before_install: "./.travis.before_install.sh"
+script: "./.travis.script.sh"
+jobs:
   include:
-    # works on Precise and Trusty
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-            - lcov
-            - cmake
-      env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-
-before_install:
-    - eval "${MATRIX_EVAL}"
-
-script:
-
-# build game environment
-  - cd environment/
-  - cmake .
-  - make -j2
-
-# build C++ bot
-  - cd ../airesources/C++
-  - make MyBot
-
-# build Rust bot
-  - cd ../Rust
-  - curl -sSf https://static.rust-lang.org/rustup.sh | sh
-  - cargo rustc --release -q -- -Awarnings
-
-# build Java bot
-  - cd ../Java
-  - javac MyBot.java
-  
-# compile Python script
-  - cd ../Python3
-  - python -m py_compile MyBot.py
-
-# compile mlstarterbot script
-  - cd ../ML-StarterBot-Python
-  - python -m py_compile MyBot.py
-
-# build website
-  - cd ../../website
-  - npm config set package-lock false
-  - gem install bundler
-  - bundle install --path=vendor/bundle
-  - npm install
-  - cd ../libhaliteviz
-  - npm install
-  - cd ../website
-  - npm run build
-  - bundle exec jekyll build
-
-# build standalone visualizer
-  - cd ../tools/standalone_visualizer
-  - npm install
-  - cd ../../website
-  - bundle exec jekyll build
-  - cd ../tools/standalone_visualizer
-  - npm run build
-  - npm run package-linux
+  - stage: test starter kits
+    name: Java starter kit
+    env: []
+    script:
+    - cd ./starter_kits/Java
+    - javac MyBot.java
+    deploy:
+  - name: Python starter kit
+    env: []
+    script:
+    - cd ./starter_kits/Python3
+    - python3 -m py_compile MyBot.py
+    deploy:
+  - name: C++ starter kit
+    env: COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
+    script:
+    - docker exec build /bin/bash -c "which $CCOMPILE"
+    - docker exec build /bin/bash -c "which $CXXCOMPILE"
+    - docker exec build /bin/bash -c "$CXXCOMPILE --version"
+    - docker exec build /bin/bash -c "cd /project/starter_kits/C++; CC=$CCOMPILE CXX=$CXXCOMPILE cmake ."
+    - docker exec build /bin/bash -c "cd /project/starter_kits/C++; CC=$CCOMPILE CXX=$CXXCOMPILE make -j2"
+    deploy:
+  - stage: build website
+    env: []
+    script:
+    - cd ./website
+    - npm config set package-lock false
+    - gem install bundler
+    - bundle install --path=vendor/bundle
+    - npm install
+    - cd ../libhaliteviz
+    - npm install
+    - cd ../website
+    - npm run build
+    - bundle exec jekyll build

@@ -1,16 +1,16 @@
 <template>
-  <div class="home-container view404-container">
+  <div class="home-container view404-container" style="text-align: center;">
       <div>
-          <p class="d1 c-org font-headline" style="font-size: 30px;"> Are you looking for Halite Season 1?</p>
-          <div class="ha-button-container no-bg-button">
-            <div>
-                <a class="ha-button" href="https://2016.halite.io/" target="_blank"><span>Halite Season 1</span></a>
-            </div>
-          </div>
-          <div class="text-center" style="margin-top:15px;">
-               <img :src="`/assets/images/temp/bot_1.png`" style="height:auto;width: 20%;"/>
-          </div>
-          <p class="d1 c-org font-headline" style="padding-top:15px;"> No? Nothing to see here ... move along... move along.</p>
+        <div>
+          <p class="d1 c-org font-headline" style="font-size: 30px;"> Are you lost at sea?</p>
+        </div>
+        <div>
+          <br>
+          <img src="/assets/images/home-map.png" alt="Map">
+        </div>
+        <div> 
+          <p class="d1 c-org font-headline"> Return <a href="/" target="_blank">home</a> or navigate to <a href="https://2017.halite.io/" target="_blank">Halite II</a>.</p>
+        </div>
       </div>
   </div>
 </template>
@@ -24,10 +24,10 @@ export default {
         }
       },
       mounted: function () {
-       
+
       },
       methods: {
-      
+
       }
     }
 </script>

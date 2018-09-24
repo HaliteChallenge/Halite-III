@@ -1,0 +1,6 @@
+MyBot
+Makefile
+*.hlt
+*.log
+*~
+*.nix

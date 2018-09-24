@@ -1,21 +1,20 @@
 <template>
     <div class="map-props">
-        <div class="map-props-icon">
+ <!--   <div class="map-props-icon">
             <span class="icon-planet"></span>
-        </div>
+        </div>  -->
         <div class="map-props-list">
             <table>
+              <tr>
+                <th>Selected Point</th>
+              </tr>
                 <tr>
                     <td>Location:</td>
                     <td>{{info.location}}</td>
                 </tr>
                 <tr>
-                    <td>Cell Production:</td>
-                    <td>{{info.production}}</td>
-                </tr>
-                <tr>
-                    <td>Cell Owner:</td>
-                    <td>{{info.owner}}</td>
+                    <td>Halite:</td>
+                    <td>{{info.energy}}</td>
                 </tr>
             </table>
         </div>
@@ -30,8 +29,7 @@ export default {
      info: function () {
        const info = {
          location: `${this.selectedPoint.x}, ${this.selectedPoint.y}`,
-         production: this.selectedPoint.production,
-         owner: this.selectedPoint.owner
+         energy: this.selectedPoint.energy,
        }
 
        return info
@@ -39,3 +37,10 @@ export default {
    }
  }
 </script>
+
+
+<style scoped>
+  th {
+    padding: 5px 0;
+  }
+</style>

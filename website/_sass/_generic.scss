@@ -1,21 +1,42 @@
 html{
-  background-image: url("/assets/images/site_bg.jpg");
   background-attachment: fixed;
   background-size: cover;
+  background-color: #091B53;
+  background-size: 100% auto;
+  background-repeat: repeat-y;
+  background-image: linear-gradient(0deg, rgba(0,45,119,0.00) 4%, #003A99 100%), url(/assets/images/bg-pattern.png);
   @media (max-width: $screen-sm-min){
     background-size: auto;
   }
+
+  // background
+  // &:before{
+  //   position: absolute;
+  //   content: "";
+  //   display: block;
+  //   width: 100%;
+  //   height: 100%;
+  //   background: #091B53;
+  // }
+  // &:after{
+  //   position: absolute;
+  //   content: "";
+  //   display: block;
+  //   width: 100%;
+  //   height: 100%;
+  //   opacity: 0.3;
+  // }
 }
 
 body{
   font-family: $font-body;
   background-color: transparent;
-  color: #ECFFFB;
+  color: $foreground;
   font-size: 1.6rem;
 
-  > .body {
-    margin-top: 61px;
-  }
+  // > .body {
+  //   margin-top: 30px;
+  // }
 
   &.noscroll{
     overflow: hidden;
@@ -29,7 +50,7 @@ a{
   }
 }
 .hl{
-  color: #FFBE00; 
+  color: #FFBE00;
 }
 
 h1, h2, h3{
@@ -53,6 +74,19 @@ h1, h2, h3{
   }
 }
 
+
+.only-mobile{
+  @media screen and (min-width: $screen-md-min){
+    display: none;
+  }
+}
+
+.only-desktop{
+  @media screen and (max-width: $screen-sm-max){
+    display: none;
+  }
+}
+
 .noselect{
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
@@ -67,16 +101,18 @@ h1, h2, h3{
   border-bottom: 0;
   position: relative;
   h1, .h1{
-    font-family: "Teko";
     font-size: 3.6rem;
     letter-spacing: 2px;
+    font-weight: 400;
     text-align: center;
     text-transform: uppercase;
+    color: #B4E6FF;
+    text-shadow: 0 1px 8px #00ABFF;
   }
   .xline{
-    max-width: 150px;
-    left: 50%;
-    transform: translateX(-50%);
+    max-width: 0px;
+  //  left: 50%;
+  //  transform: translateX(-50%);
   }
 }
 
@@ -87,12 +123,6 @@ h1, h2, h3{
   width: 25%;
   &-sm{
     width: 10%;
-  }
-}
-
-.learnpage-content{
-  @media (min-width: $screen-md-min) {
-    margin-left: 30px;
   }
 }
 
@@ -110,7 +140,7 @@ h1, h2, h3{
 }
 
 body #message-placeholder .ha-alert{
-  position: fixed;
+  position: absolute;
   z-index: 999;
   top: 61px;
   left: 0;
@@ -133,16 +163,16 @@ input:focus{
 }
 
 .bt{
-  border-top: 1px solid #889295;
+  border-top: 1px solid #474951;
 }
 .bb{
-  border-bottom: 1px solid #889295;
+  border-bottom: 1px solid #474951;
 }
 .bl{
-  border-left: 1px solid #889295;
+  border-left: 1px solid #474951;
 }
 .br{
-  border-right: 1px solid #889295;
+  border-right: 1px solid #474951;
 }
 
 .dot-tl{
@@ -236,6 +266,7 @@ input:focus{
   text-align: center;
   p{
     margin-bottom: 0;
+    color: #000;
   }
   p+p{
     margin-bottom: 10px
@@ -253,7 +284,8 @@ input:focus{
   margin-right: 0;
 }
 .font-headline{
-  font-family: Teko !important;
+  // font-family: Teko !important;
+    font-weight: 300;
 }
 
 /** form **/
@@ -311,69 +343,9 @@ input:focus{
   }
 }
 
-.hex-li{
-  display: flex;
-  align-items: center;
-  .hex-li-content{
-    
-  }
-  .hex-bullet{
-    display: inline-block;
-    flex: 0 0 71px;
-    width: 71px;
-    height: 84px;
-    line-height: 83px;
-    text-align: center;
-    font-family: $font-heading;
-    font-size: 36px;
-    color: $yellow;
-    text-shadow: 0 2px 30px rgba(0,0,0,0.20);
-    background-image: url("/assets/images/hexagon.svg");
-    background-repeat: no-repeat;
-    background-size: contain;
-    margin-right: 10px;
-  }
-}
 
-.ha-button-container{
-  margin-left: auto;
-  margin-right: auto;
-  font-family: "Teko";
-  font-size: 2rem;
-  background-image: url("/assets/images/register_bg.png");
-  background-size: 100% 40px;
-  background-position: center;
-  background-repeat: no-repeat;
-  padding: 5px 20px;
-  cursor: pointer;
-  display: inline-block;
-  height: auto;
-  >div{
-    position: relative;
-    display: block;
-    height: 30px;
-    line-height: 30px;
-    a{
-      padding: 15px 3px;
-    }
-  }
-}
-.ha-button{
-  span{
-    transform: translateY(2px);
-    color: $dark-gray;
-    line-height: 20px;
-    padding: 3px;
-    display: inline-block;
-    letter-spacing: 1px;
-  }
-}
 
 .no-bg-button{
-  background-image: url("/assets/images/button-clear.png");
-  span{
-    color: $yellow;
-  }
 }
 
 .intrinsic-container {
@@ -381,17 +353,17 @@ input:focus{
   height: 0;
   overflow: hidden;
 }
- 
+
 /* 16x9 Aspect Ratio */
 .intrinsic-container-16x9 {
   padding-bottom: 56.25%;
 }
- 
+
 /* 4x3 Aspect Ratio */
 .intrinsic-container-4x3 {
   padding-bottom: 75%;
 }
- 
+
 .intrinsic-container iframe {
   position: absolute;
   top:0;

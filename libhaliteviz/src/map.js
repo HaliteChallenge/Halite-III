@@ -1,7 +1,12 @@
 import * as PIXI from "pixi.js";
+import * as d3ScaleChromatic from "d3-scale-chromatic";
+import {AdvancedBloomFilter} from '@pixi/filter-advanced-bloom';
 
 import * as assets from "./assets";
 import {PLAYER_COLORS} from "./assets";
+import colorTheme from "./colors";
+
+const [ _, COLOR_SCALE ] = colorTheme();
 
 /**
  * Manages a Map on screen.
@@ -21,6 +26,7 @@ export class Map {
         this.prev_time = 0;
         this.renderer = renderer;
 
+        this.hovered = null;
 
         // Background image, based on initial production values
         // draw a map, with color intensity dependent on production value
@@ -34,9 +40,13 @@ export class Map {
             this.productions[row] = new Array(this.cols);
             for (let col = 0; col < this.cols; col++) {
                 let cell = replay.production_map.grid[row][col];
-                this.productions[row][col] = cell["type"] === "n" ? cell.production : 0;
+                this.productions[row][col] = cell.energy;
             }
         }
+
+        // Cache old production values so we can scrub backwards in
+        // time when needed
+        this.productionPatches = {};
 
         this.tintMap = new PIXI.particles.ParticleContainer(this.rows * this.cols, {
             vertices: true,
@@ -44,46 +54,44 @@ export class Map {
             tint: true,
         });
 
-        this.tintMap.interactive = true;
-        this.tintMap.hitArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
-        this.tintMap.on("pointerdown", (e) => {
-            const localCoords = e.data.global;
-            // Adjust coordinates to account for canvas scaling
-            const zoom = parseFloat($('.game-replay-viewer').find('>canvas').css('zoom'));
-            const [ cellX, cellY ] = this.camera.screenToWorld(
-                localCoords.x / zoom, localCoords.y / zoom);
-            const production = this.productions[cellY][cellX];
-            const owner = this.owners !== null ? this.owners[cellX][cellY].owner : -1;
-            onSelect("point", { x: cellX, y: cellY, production: production,
-                owner: owner});
-        });
-
         // Generate the texture for a single map cell (16x16 white
         // square with a 2 pixel 70% black border blended on top)
         // Could probably be replaced with a real texture
-        const g = new PIXI.Graphics();
-        const borderWidth = 1;
+        const borderWidth = 0;
         const textureWidth = 16;
+        let g = new PIXI.Graphics();
         g.beginFill(0xFFFFFF, 1.0);
         g.drawRect(0, 0, textureWidth, textureWidth);
-        g.beginFill(0x000000, 0.7);
         // Be careful not to overlap when drawing the border, or else
         // some parts will be darker than others
+        g.beginFill(0x000000, 0.5);
         g.drawRect(0, 0, textureWidth, borderWidth);
         g.drawRect(0, borderWidth, borderWidth, textureWidth - borderWidth);
         g.drawRect(textureWidth - borderWidth, borderWidth, borderWidth, textureWidth - borderWidth);
         g.drawRect(borderWidth, textureWidth - borderWidth, textureWidth - 2*borderWidth, borderWidth);
-        const tex = renderer.generateTexture(g);
+        // END TWEAK: square cells
+        const normalTex = renderer.generateTexture(g);
 
         this.cells = [];
 
+        // Cell placed underneath other cells to highlight mouse
+        // position
+        this.pointer = PIXI.Sprite.from(normalTex);
+        // Cell placed underneath other cells to highlight selection
+        this.highlight = PIXI.Sprite.from(normalTex);
+
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
-                const cell = PIXI.Sprite.from(tex);
+                const cell = PIXI.Sprite.from(normalTex);
+                cell.alpha = 0.9;
                 cell.width = this.scale;
                 cell.height = this.scale;
-                cell.position.x = col * this.scale;
-                cell.position.y = row * this.scale;
+                cell.anchor.x = 0.5;
+                cell.anchor.y = 0.5;
+                cell.position.x = (col + 0.5) * this.scale;
+                cell.position.y = (row + 0.5) * this.scale;
+                const [ base, baseOpacity ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
+                cell.tint = alphaBlend(base, this.renderer.backgroundColor, baseOpacity);
                 this.cells.push(cell);
                 this.tintMap.addChild(cell);
             }
@@ -103,19 +111,10 @@ export class Map {
      */
     productionToColor(productions, row, col, MAX_PRODUCTION) {
         const production = productions[row][col];
-        if (production === 0) {
-            return [assets.FACTORY_BASE_COLOR, 1];
-        }
         let production_fraction = production / MAX_PRODUCTION;
-        if (production_fraction <= 0.3333) {
-            return [alphaBlend(0x282828, assets.MAP_COLOR_LIGHT, 1-3*production_fraction), .75];
-        }
-        else if (production_fraction <= 0.6666) {
-            return [alphaBlend(assets.MAP_COLOR_LIGHT, assets.MAP_COLOR_MEDIUM, 2-3*production_fraction), .75];
-        }
-        else {
-            return [alphaBlend(assets.MAP_COLOR_MEDIUM, assets.MAP_COLOR_DARK, 3-3*production_fraction), .75];
-        }
+        const index = Math.floor(Math.max(0, Math.min(1, production_fraction)) * (COLOR_SCALE.length - 1));
+        const result = COLOR_SCALE[index];
+        return [ result, 1 ];
     }
 
     /**
@@ -124,7 +123,12 @@ export class Map {
      * sprites.
      */
     attach(container) {
+        container.addChild(this.pointer);
         container.addChild(this.tintMap);
+        container.addChild(this.highlight);
+        container.filters = [new AdvancedBloomFilter({threshold: 0, brightness: 1.0})];
+        container.filterArea = new PIXI.Rectangle(0, 0, this.renderer.width, this.renderer.height);
+
         this.container = container;
     }
 
@@ -133,11 +137,9 @@ export class Map {
      */
     destroy() {
         this.container.removeChild(this.tintMap);
-    }
-
-    get id() {
-        // TODO: do maps get IDs?
-        return 0;
+        this.container.removeChild(this.pointer);
+        this.container.removeChild(this.highlight);
+        this.container = null;
     }
 
     /**
@@ -159,22 +161,83 @@ export class Map {
      * Update the fish display based on the current frame and time.
      * @param owner_grid: grid of owners of clls
      */
-    update(owner_grid) {
-        this.owners = owner_grid;
-        // Use the given grid to texture the map
+    update(frame, updated_cells, delta) {
+        // update cell productions
+        if (delta > 0) {
+            if (!this.productionPatches[frame]) {
+                this.productionPatches[frame] = {};
+            }
+
+            for (let cell_index = 0; cell_index < updated_cells.length; cell_index++) {
+                const cell_info = updated_cells[cell_index];
+                if (!this.productionPatches[frame][cell_info.y]) {
+                    this.productionPatches[frame][cell_info.y] = {};
+                }
+                this.productionPatches[frame][cell_info.y][cell_info.x] =
+                    this.productions[cell_info.y][cell_info.x];
+                this.productions[cell_info.y][cell_info.x] = cell_info.production;
+            }
+        }
+        else if (delta < 0) {
+            for (const [ys, row] of Object.entries(this.productionPatches[frame + 1] || {})) {
+                const y = parseInt(ys, 10);
+                for (const [xs, energy] of Object.entries(row)) {
+                    const x = parseInt(xs, 10);
+                    this.productions[y][x] = energy;
+                }
+            }
+        }
+
+        // Redraw map cells, both for new production colors and possible resizing due to zooming
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
+                const production = this.productions[row][col];
+                const production_fraction = Math.min(1.25, production / this.constants.MAX_CELL_PRODUCTION);
                 const [ base, baseOpacity ] = this.productionToColor(this.productions, row, col, this.constants.MAX_CELL_PRODUCTION);
-                const [ color, opacity ] = this.ownerToColor(owner_grid, row, col, this.constants.MAX_CELL_PRODUCTION);
                 const cell = this.cells[row * this.cols + col];
-                const tintedBase = alphaBlend(base, this.renderer.backgroundColor, baseOpacity);
-                cell.tint = alphaBlend(color, tintedBase, opacity);
-                cell.width = this.scale;
-                cell.height = this.scale;
+                const bg = this.renderer.backgroundColor;
+                cell.tint = alphaBlend(base, bg, baseOpacity);
+                // TWEAK: uncomment to make size vary with amount of halite
+                if (production_fraction <= 0.2) {
+                    cell.width = Math.sqrt(production_fraction) * this.scale;
+                    cell.height = Math.sqrt(production_fraction) * this.scale;
+                }
+                else {
+                    cell.width = (0.3 + 0.7 * production_fraction) * this.scale;
+                    cell.height = (0.3 + 0.7 * production_fraction) * this.scale;
+                }
                 const [ cellX, cellY ] = this.camera.worldToCamera(col, row);
-                cell.position.x = cellX * this.scale;
-                cell.position.y = cellY * this.scale;
+                cell.position.x = (cellX + 0.5) * this.scale;
+                cell.position.y = (cellY + 0.5) * this.scale;
             }
+        }
+    }
+
+    draw() {
+        if (this.hovered) {
+            const [ cellX, cellY ] = this.camera.worldToCamera(this.hovered.x, this.hovered.y);
+            this.pointer.position.x = cellX * this.scale;
+            this.pointer.position.y = cellY * this.scale;
+            this.pointer.width = this.scale;
+            this.pointer.height = this.scale;
+            this.pointer.visible = true;
+        }
+        else {
+            this.pointer.visible = false;
+        }
+
+        const camera = this.camera;
+        if (camera.selected && camera.selected.type === "point") {
+            const [ cellX, cellY ] = this.camera.worldToCamera(camera.selected.x, camera.selected.y);
+            this.highlight.position.x = cellX * this.scale;
+            this.highlight.position.y = cellY * this.scale;
+            this.highlight.width = this.scale;
+            this.highlight.height = this.scale;
+            this.highlight.visible = true;
+            this.highlight.alpha = 0.4;
+        }
+        else {
+            this.highlight.visible = false;
         }
     }
 }

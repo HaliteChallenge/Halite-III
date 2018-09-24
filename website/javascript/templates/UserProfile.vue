@@ -1,13 +1,38 @@
 <template>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="user-profile">
+                <div class="bg-img"></div>
                 <div class="user-profile-avatar">
-                    <i class="xline xline-top"></i>
                     <img class="img-responsive" :src="'https://github.com/' + user.username + '.png'" :alt="user.username" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Placeholder_no_text.svg/2000px-Placeholder_no_text.svg.png'">
                 </div>
                 <div class="user-profile-detail">
                     <a class="user-name" target="_blank" :href="'https://github.com/' + user.username">{{ user.username }}</a>
+                    <div v-if="user.team_id" class="user-team-detail">
+                        <p class="user-team">
+                            <template v-if="user.team_leader_id == user.user_id">
+                                Leader of
+                            </template>
+                            <template v-else>
+                                Member of
+                            </template>
+                            <a target="_blank"
+                               :href="`/user/?user_id=${user.team_id}`"
+                            >{{ user.team_name }}</a>
+                        </p>
+
+                        <template v-if="team" v-for="member in team.members">
+                            <a :href="`/user/?user_id=${member.user_id}`">
+                                <img
+                                  height="20px"
+                                  :alt="member.username"
+                                  :src="`https://github.com/${member.username}.png`"
+                                />
+                                {{member.username}}
+                            </a>
+                        </template>
+                        <i class="xline xline-bottom"></i>
+                    </div>
                     <p>{{ user.level }} <span v-if="user.organization">at <a  :href="`/programming-competition-leaderboard?organization=${user.organization_id}`">{{ user.organization }}</a></span></p>
                     <p v-if="user.location">
                       From <a :href="`/programming-competition-leaderboard?country=${user.country_code}`">{{user.location}}</a>
@@ -29,75 +54,50 @@
                     </div>
                 </div>
                 <div class="user-profile-rank">
-                    <i class="xline xline-top"></i>
-                    <h2><span :class="tierClass(user.tier || 'Bronze')"></span> {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier</h2>
+                    <div class="ranking-type">
+                        <div class="individual">
+                            <div class="lvl-icon" :class="tierClass(user.tier || 'Bronze')"></div>
+                            <div>
+                                <div class="type-title">Individual</div>
+                                <div class="lvl">
+                                    {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier
+                                </div>
+                            </div>
+                        </div>
+                        <!-- organization - TODO -->
+                        <div class="organization">
+                            <div class="lvl-icon" :class="tierClass(user.tier || 'Bronze')"></div>
+                            <div>
+                                <div class="type-title">Organization</div>
+                                <div class="lvl">
+                                    {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <h2><span :class="tierClass(user.tier || 'Bronze')"></span> {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier</h2> -->
                     <div class="user-profile-rank-stats">
                         <div class="stats-item">
-                            <h3>Rating</h3>
+                            <div class="title">Rating</div>
                             <p>{{ Math.round(user.score * 100) / 100 }}</p>
                         </div>
                         <div class="stats-item">
-                            <h3>Bots</h3>
+                            <div class="title">Bots</div>
                             <p>{{ user.num_submissions }}</p>
                         </div>
                         <div class="stats-item">
-                            <h3>Games</h3>
+                            <div class="title">Games</div>
                             <p>{{ user.num_games }}</p>
                         </div>
                     </div>
-                    <h2 class="highest-rank" v-if="highestRank" title="This is either your current (top rank) or highest rank any of your bots had achieved when retired"> Highest Rank Achieved: {{highestRank}}</h2>
+                    <i class="xline xline-bottom"></i>
+                    <!-- <h2 class="highest-rank" v-if="highestRank" title="This is either your current (top rank) or highest rank any of your bots had achieved when retired"> Highest Rank Achieved: {{highestRank}}</h2> -->
 
                 </div>
-                <div class="game-replay-share text-center">
-                    <div class="popup-overlay" v-show="sharePopup" @click="toggleShare"></div>
-                    <div class="popup-container" v-show="sharePopup">
-                        <div class="popup-share">
-                            <label>Share as a link</label>
-                            <div class="form-inline-button">
-                                <input ref="shareInput" type="text" :value="shareLink">
-                                <button class="btn" @click="copyToClipboard">
-                                    <span>Copy</span>
-                                </button>
-                            </div>
-                            <div class="share-socials">
-                                <a :href="shareSocial('facebook')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;"><i class="fa fa-facebook-official"></i></a>
-                                <a :href="shareSocial('twitter')"><i class="fa fa-twitter"></i></a>
-                                <a :href="shareSocial('linkedin')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank"><i class="fa fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div v-if="!is_my_page">
-                          <button class="btn" @click="openChallengeModal">
-                              <span>CHALLENGE</span>
-                          </button>
-                          <ChallengeModal :baseUrl="baseUrl" :isOn="isChallengeModalOpen" :close="closeChallengeModal" :username="user.username"></ChallengeModal>
-                        </div>
-                        <button v-else class="btn" @click="toggleShare">
-                            <span>SHARE</span>
-                        </button>
-                        <!-- <div class="user-profile-badge">
-                            <i class="xline xline-top"></i>
-                            <h2>Badges</h2>
-                            <div class="user-profile-badge-page"><img v-on:click.stop.prevent="prev_badge" :src="`${baseUrl}/assets/images/page-prev.svg`"><img v-on:click.stop.prevent="next_badge" :src="`${baseUrl}/assets/images/page-next.svg`"></div>
-                            <div class="user-profile-badge-content">
-                                <ul class="user-profile-badge-list">
-                                    <li><img :src="`${baseUrl}/assets/images/temp/badge_1.png`"></li>
-                                    <li><img :src="`${baseUrl}/assets/images/temp/badge_2.png`"></li>
-                                    <li><img :src="`${baseUrl}/assets/images/temp/badge_3.png`"></li>
-                                    <li><img :src="`${baseUrl}/assets/images/temp/badge_4.png`"></li>
-                                    <li><img :src="`${baseUrl}/assets/images/temp/badge_5.png`"></li>
-                                </ul>
-                            </div>
-                            <a v-if="is_my_page" class="user-profile-badge-button"><img :src="`${baseUrl}/assets/images/temp/add_profile.png`"></a>
-                        </div> -->
-                        <p v-if="userHistory.length" style="margin-top: 20px;"><a :href="`/programming-competition-leaderboard?show_user=${user.user_id}`">View on leaderboard</a></p>
-                    </div>
-                </div>
-                <div class="stats-1-section">
+                <!-- <div class="stats-1-section">
                     <i class="xline xline-top"></i>
-                    <h2 v-if="season1stats && season1stats.num_submissions > 0">Halite 1 Stats</h2>
-                    <div v-if="season1stats && season1stats.num_submissions > 0" class="user-profile-rank-stats">
+                    <h2>Halite 1 Stats</h2>
+                    <div class="user-profile-rank-stats">
                         <div class="stats-item">
                             <h3>Rank</h3>
                             <p>{{ season1stats.rank }}</p>
@@ -114,6 +114,25 @@
                     <p class="text-center">
                         <a v-if="season1stats && season1stats.num_submissions > 0" class="user-name" target="_blank" :href="'https://2016.halite.io/user.php?userID=' + season1stats.userID">View Halite 1 Profile</a>
                     </p>
+                </div> -->
+                <div class="user-efficiency">
+                    <div class="title">Halite Efficiency (Last 10 Games)</div>
+                    <div class="chart-container">
+                        <div class="data-distribution">
+                            <div class="data-line" ref="dataLine"></div>
+                            <div class="scale min-line">0%</div>
+                            <div class="scale max-line">100%</div>
+                            <!-- Use test data -->
+                            <div class="scale tire-line" :style="getLeftLen(efficiency.min)">{{(efficiency.min * 100).toFixed(0)}}%</div>
+                            <div class="scale user-line" :style="getLeftLen(efficiency.mean)">{{(efficiency.mean * 100).toFixed(1)}}%</div>
+                            <div class="scale all-play-line" :style="getLeftLen(efficiency.max)">{{(efficiency.max * 100).toFixed(0)}}%</div>
+                        </div>
+                        <div class="data-name">
+                            <div class="tire">Min</div>
+                            <div class="user-name">Average</div>
+                            <div class="all-play">Max</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -122,23 +141,12 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active">
                         <a href="#games" @click="refreshStickyTable" aria-controls="games" role="tab" data-toggle="tab">
-                        <i class="xline xline-top"></i>
                         <span>Games & Logs</span>
-                        <i class="xline xline-bottom"></i>
                         </a>
                     </li>
                     <li role="presentation">
                         <a href="#analysis" @click="refreshStickyTable" aria-controls="analysis" role="tab" data-toggle="tab">
-                        <i class="xline xline-top"></i>
                         <span>Analysis</span>
-                        <i class="xline xline-bottom"></i>
-                        </a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#hackathons" @click="refreshStickyTable" aria-controls="hackathons" role="tab" data-toggle="tab">
-                        <i class="xline xline-top"></i>
-                        <span>Hackathons</span>
-                        <i class="xline xline-bottom"></i>
                         </a>
                     </li>
                 </ul>
@@ -148,9 +156,8 @@
                         <div id="games_pane">
                             <section class="profile-section">
                                 <h2>
-                                    <i class="xline xline-bottom"></i>
                                     Game Videos Feed
-                                    <span title="Games played by your bot, replay files are kept forever, but games data might be deleted every 2 weeks" class="info-icon icon-info pull-right"></span>
+                                    <!-- <span title="Games played by your bot, replay files are kept forever, but games data might be deleted every 2 weeks" class="info-icon icon-info pull-right"></span> -->
                                 </h2>
 
                                 <!-- <div v-if="!games.length" class="section-empty">
@@ -162,22 +169,23 @@
                                     <table class="table table-leader">
                                         <thead>
                                             <tr>
-                                                <th>Watch</th>
-                                                <th style="padding-left: 40px;">Result</th>
+                                                <th class="little-pd">Watch</th>
+                                                <th class="large-pd">Result</th>
                                                 <th class="text-center hidden-xs" >Map Size</th>
                                                 <th class="text-center hidden-xs">Turns</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="game in games">
-                                                <td v-bind:class="game.versions_back ? (game.versions_back % 2 ? 'old-bot-odd' : 'old-bot-even') : ''">
+                                                <td class="little-pd watch" v-bind:class="game.versions_back ? (game.versions_back % 2 ? 'old-bot-odd' : 'old-bot-even') : ''">
+                                                    <span class="video-icon"></span>
                                                     <a :href="'/play?game_id=' + game.game_id">
                                                         {{getFormattedDateForGames(game.time_played)}}
                                                     </a>
                                                 </td>
-                                                <td v-bind:class="{ 'challenge': game.challenge_id }">
-                                                    <div class="info-icon-trophy" v-if="game.players[user.user_id].rank === 1">
-                                                        <span class="icon-trophy"></span>
+                                                <td class="large-pd td-title" v-bind:class="{ 'challenge': game.challenge_id }">
+                                                    <div class="info-icon-trophy" v-if="(game.players[user.user_id] || game.players[team.leader_id]).rank === 1">
+                                                        <span class="tropy-icon"></span>
                                                     </div>
                                                     <a v-for="player in game.playerSorted"
                                                     :href="'/user?user_id=' + player.id"
@@ -209,16 +217,16 @@
                                             v-on:click="next_page"><span>Next</span></button>
                                     </div>
                                 </div>
+                                <i class="xline xline-bottom"></i>
 
                             </section>
                             <section v-if="is_my_page" class="profile-section profile-section-error">
                                 <h2>
-                                    <i class="xline xline-bottom"></i>
                                     Your Errors
-                                    <span title="Download the replay files and error logs (last 30) for games where your bot errored or timed out." class="info-icon icon-info pull-right"></span>
+                                    <!-- <span title="Download the replay files and error logs (last 30) for games where your bot errored or timed out." class="info-icon icon-info pull-right"></span> -->
                                 </h2>
                                  <div v-if="!error_games.length" class="section-empty">
-                                    <img :src="`${baseUrl}/assets/images/leaderboard-zero-icon.png`" class="icon-"></img>
+                                    <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
                                     <h2>No errors yet</h2>
                                 </div>
                                 <div>
@@ -227,10 +235,10 @@
                                             <table class="table table-leader table-sticky">
                                                 <thead>
                                                     <tr>
-                                                        <th>Id</th>
-                                                        <th class="hidden-xs">Date</th>
-                                                        <th>Log File</th>
-                                                        <th>Game</th>
+                                                        <th class="little-pd">Id</th>
+                                                        <th class="hidden-xs little-pd">Date</th>
+                                                        <th class="little-pd">Log File</th>
+                                                        <th class="little-pd">Game</th>
                                                     </tr>
                                                 </thead>
                                             </table>
@@ -238,22 +246,22 @@
                                                 <table class="table table-leader">
                                                     <thead>
                                                         <tr>
-                                                            <th>Id</th>
-                                                            <th class="hidden-xs">Date</th>
-                                                            <th>Log File</th>
-                                                            <th>Game</th>
+                                                            <th class="little-pd">Id</th>
+                                                            <th class="hidden-xs little-pd">Date</th>
+                                                            <th class="little-pd">Log File</th>
+                                                            <th class="little-pd">Game</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="game in error_games">
-                                                            <td>{{game.game_id}}</td>
-                                                            <td class="hidden-xs"><time :datetime="game.time_played"
+                                                            <td class="little-pd">{{game.game_id}}</td>
+                                                            <td class="little-pd hidden-xs"><time :datetime="game.time_played"
                                                                     :title="game.time_played">
                                                                     {{ getFormattedDateForGames(game.time_played)}}
                                                                 </time>
                                                             </td>
-                                                            <td><a :href="error_log_link(game.game_id)" target="_blank">Download Log</a></td>
-                                                            <td><a :href="replay_link(game.game_id)" target="_blank">View</a> / <a :href="replay_download_link(game.game_id)" target="_blank">Download</a></td>
+                                                            <td class="little-pd"><a :href="error_log_link(game.game_id)" target="_blank">Download Log</a></td>
+                                                            <td class="little-pd"><a :href="replay_link(game.game_id)" target="_blank">View</a> / <a :href="replay_download_link(game.game_id)" target="_blank">Download</a></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -261,6 +269,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <i class="xline xline-bottom"></i>
                             </section>
                         </div>
                     </div>
@@ -268,9 +277,8 @@
                         <div id="map_stats_pane">
                             <section class="profile-section">
                                 <h2>
-                                    <i class="xline xline-bottom"></i>
                                     Rating Analysis
-                                    <span title="Rating is calculated as mu - 3 * sigma;" class="info-icon icon-info pull-right"></span>
+                                    <!-- <span title="Rating is calculated as mu - 3 * sigma;" class="info-icon icon-info pull-right"></span> -->
                                 </h2>
                                 <!-- <div v-if="!user.mu" class="section-empty">
                                     <img :src="`${baseUrl}/assets/images/leaderboard-zero-icon.png`" class="icon-"></img>
@@ -280,27 +288,36 @@
                                 <div v-if="user.mu" class="user-profile-rank-stats">
                                     <div class="stats-item">
                                         <h3>Rating</h3>
-                                        <p>{{ Math.round(user.score * 100) / 100 }}</p>
+                                        <p>{{ user.score.toFixed(2) }}</p>
                                     </div>
                                     <div class="stats-item">
                                         <h3>&mu;</h3>
-                                        <p>{{ Math.round(user.mu * 100) / 100 }}</p>
+                                        <p>{{ user.mu.toFixed(2) }}</p>
                                     </div>
                                     <div class="stats-item">
                                         <h3>&sigma;</h3>
-                                        <p>{{ Math.round(user.sigma * 100) / 100 }}</p>
+                                        <p>{{ user.sigma.toFixed(2) }}</p>
                                     </div>
                                 </div>
+                                <i class="xline xline-bottom"></i>
                             </section>
                             <section class="profile-section">
                                 <h2>
-                                    <i class="xline xline-bottom"></i>
                                     Challenges
-                                    <span title="A challenge will run for 30 games. Challenge games will not affect your score and will never make up more than 10% of total games running while the competition is live. You can initiate up to three challenges per day." class="info-icon icon-info pull-right"></span>
+                                    <!-- <span title="A challenge will run for 30 games. Challenge games will not affect your score and will never make up more than 10% of total games running while the competition is live. You can initiate up to three challenges per day." class="info-icon icon-info pull-right"></span> -->
                                 </h2>
+                                <div class="challenge-modal" v-if="!is_my_page">
+                                    <button class="btn challenge-btn" v-if="challengeGames.length" :class="{ 'right-btn': challengeGames.length }" @click="openChallengeModal">
+                                        <span>Challenge {{user.username}}</span>
+                                    </button>
+                                    <ChallengeModal :baseUrl="baseUrl" :isOn="isChallengeModalOpen" :close="closeChallengeModal" :username="user.username"></ChallengeModal>
+                                </div>
                                 <div v-if="!challengeGames.length" class="section-empty">
-                                    <img :src="`${baseUrl}/assets/images/leaderboard-zero-icon.png`" class="icon-"></img>
-                                    <h2>No Challenge yet</h2>
+                                    <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
+                                    <h2>No Challenges yet</h2>
+                                    <button v-if="!is_my_page" class="btn challenge-btn" @click="openChallengeModal">
+                                        <span>Challenge {{user.username}}</span>
+                                    </button>
                                 </div>
                                 <div v-if="challengeGames.length > 0">
                                     <div class="table-sticky-container">
@@ -308,7 +325,7 @@
                                             <table class="table table-leader table-sticky">
                                                 <thead>
                                                     <tr>
-                                                        <th>Challengers</th>
+                                                        <th class="little-pd">Challengers</th>
                                                         <th class="text-center hidden-xs">Games</th>
                                                         <th class="text-center">Date Initiated</th>
                                                         <th class="text-center">Status</th>
@@ -319,7 +336,7 @@
                                                 <table class="table table-leader">
                                                     <thead>
                                                         <tr>
-                                                            <th>Challengers</th>
+                                                            <th class="little-pd">Challengers</th>
                                                             <th class="text-center hidden-xs">Games</th>
                                                             <th class="text-center">Date Initiated</th>
                                                             <th class="text-center">Status</th>
@@ -327,9 +344,9 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="challenge in challengeGames">
-                                                            <td>
+                                                            <td class="little-pd">
                                                               <div class="info-icon-trophy" v-if="challenge.players[0].rank == 0 && challenge.status == 'Completed'">
-                                                                <span class="icon-trophy"></span>
+                                                                <span class="tropy-icon"></span>
                                                               </div>
                                                               <a v-for="(player, index) in challenge.players" :href="`/user?user_id=${player.user_id}`" class="game-participant">
                                                                 <img :src="`https://github.com/${player.username}.png`" :alt="player.username">
@@ -354,12 +371,12 @@
                                         </div>
                                     </div>
                                 </div>
+                                <i class="xline xline-bottom"></i>
                             </section>
                             <section class="profile-section">
                                 <h2>
-                                    <i class="xline xline-bottom"></i>
                                     Nemesis
-                                    <span title="Players you most often lose/win (minimum 10 games played) against, based on analysis of the last 200 games." class="info-icon icon-info pull-right"></span>
+                                    <!-- <span title="Players you most often lose/win (minimum 10 games played) against, based on analysis of the last 200 games." class="info-icon icon-info pull-right"></span> -->
                                 </h2>
                                 <!-- <div v-if="!nemesisList.length" class="section-empty">
                                     <img :src="`${baseUrl}/assets/images/leaderboard-zero-icon.png`" class="icon-"></img>
@@ -369,10 +386,10 @@
                                 <div v-if="nemesisList.length > 0">
                                     <div class="table-sticky-container">
                                         <div class="table-wrapper">
-                                            <table class="table table-leader table-sticky">
+                                            <table class="table table-leader table-sticky high-index">
                                                 <thead>
                                                     <tr>
-                                                        <th>Nemesis</th>
+                                                        <th class="little-pd">Nemesis</th>
                                                         <th class="text-center hidden-xs">Games</th>
                                                         <th class="text-center">Win %</th>
                                                         <th class="text-center">Loss %</th>
@@ -383,7 +400,7 @@
                                                 <table class="table table-leader">
                                                     <thead>
                                                         <tr>
-                                                            <th>Nemesis</th>
+                                                            <th class="little-pd">Nemesis</th>
                                                             <th class="text-center hidden-xs">Games</th>
                                                             <th class="text-center">Win %</th>
                                                             <th class="text-center">Loss %</th>
@@ -391,7 +408,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="nemesis in nemesisList">
-                                                            <td>
+                                                            <td class="little-pd td-title">
                                                                 <a :href="'/user?user_id=' + nemesis.id"
                                                                 class="game-participant">
                                                                     <img :src="profile_images[nemesis.id]" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Placeholder_no_text.svg/2000px-Placeholder_no_text.svg.png'" />
@@ -416,13 +433,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                <i class="xline xline-bottom"></i>
                             </section>
                             <section class="profile-section">
                                 <h2>
-                                    <i class="xline xline-bottom"></i>
                                     History
-                                    <span title="Rank/Rating history of your bots, the rank/rating is the last rating or rank achieved before the bot was retired." class="info-icon icon-info pull-right"></span>
+                                    <!-- <span title="Rank/Rating history of your bots, the rank/rating is the last rating or rank achieved before the bot was retired." class="info-icon icon-info pull-right"></span> -->
                                 </h2>
+                                <span>{{messages.bot_download}}</span>
+
                                 <!-- <div v-if="!userHistory.length" class="section-empty">
                                     <img :src="`${baseUrl}/assets/images/leaderboard-zero-icon.png`" class="icon-"></img>
                                     <h2>No history</h2>
@@ -431,14 +450,14 @@
                                 <div v-if="userHistory.length > 0">
                                     <div class="table-sticky-container">
                                         <div class="table-wrapper">
-                                            <table class="table table-leader table-sticky">
+                                            <table class="table table-leader table-sticky high-index">
                                                 <thead>
                                                     <tr>
-                                                        <th>Bot Version</th>
+                                                        <th class="little-pd">Bot Version</th>
                                                         <th class="text-center">Rating</th>
                                                         <th class="text-center">Rank</th>
                                                         <th class="text-center hidden-xs">Games</th>
-                                                        <th class="hidden-xs">Retired On</th>
+                                                        <th class="hidden-xs little-pd">Retired On</th>
                                                     </tr>
                                                 </thead>
                                             </table>
@@ -446,16 +465,16 @@
                                                 <table class="table table-leader">
                                                     <thead>
                                                         <tr>
-                                                            <th>Bot Version</th>
+                                                            <th class="little-pd">Bot Version</th>
                                                             <th class="text-center">Rating</th>
                                                             <th class="text-center">Rank</th>
                                                             <th class="text-center hidden-xs">Games</th>
-                                                            <th class="hidden-xs">Retired On</th>
+                                                            <th class="hidden-xs little-pd">Retired On</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="historyItem in userHistory">
-                                                            <td>
+                                                            <td class="little-pd">
                                                                 {{historyItem.bot_version}}
                                                             </td>
                                                             <td class="text-center">
@@ -467,7 +486,7 @@
                                                             <td class="text-center hidden-xs">
                                                                 {{historyItem.last_games_played}}
                                                             </td>
-                                                            <td class="hidden-xs">
+                                                            <td class="hidden-xs little-pd">
                                                                 {{getFormattedDateForGames(historyItem.when_retired, "Still Playing")}}
                                                             </td>
                                                         </tr>
@@ -477,61 +496,14 @@
                                         </div>
                                     </div>
                                 </div>
-                            </section>
-                        </div>
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="hackathons">
-                        <div id="map_stats_pane">
-                            <section class="profile-section profile-section-hackathon">
-                                <h2>
-                                    <i class="xline xline-bottom"></i>
-                                    Hackathons
-                                    <span title="All the hackathons in which you are as participant" class="info-icon icon-info pull-right"></span>
-                                </h2>
-
-                                <div v-if="!hackathons.length" class="section-empty">
-                                    <img :src="`${baseUrl}/assets/images/temp/event.png`" class="icon-"></img>
-                                    <h2>Not part of any Hackathons yet</h2>
-                                    <p v-if="is_my_page">If you have a Hackthon code, add it to your <br/>your profile</p>
-                                    <div v-if="is_my_page" class="ha-button-container">
-                                        <div>
-                                            <a :href="`${baseUrl}/user/edit-user`" class="ha-button"><span>Add your Hackathon code</span></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div v-if="hackathons.length > 0">
-                                    <div class="table-sticky-container">
-                                        <div class="table-wrapper">
-                                            <table class="table table-leader table-sticky">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Hackathon</th>
-                                                        <th>Location</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                            <div class="table-scrollable-content">
-                                                <table class="table table-leader">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Hackathon</th>
-                                                            <th>Location</th>
-                                                            <th>Status</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="hackathon in hackathons">
-                                                            <td><a :href="'/hackathon-individual?hackathon_id=' + hackathon.hackathon_id">{{hackathon.title}}</a></td>
-                                                            <td>{{hackathon.location}}</td>
-                                                            <td>{{hackathon.status.charAt(0).toUpperCase() + hackathon.status.slice(1)}}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <br>
+                                <button
+                                    type="button"
+                                    class="btn"
+                                    v-if="is_my_page"
+                                    v-on:click="download_bot">
+                                    <span>Download Current Bot</span>
+                                </button>
                             </section>
                         </div>
                     </div>
@@ -565,12 +537,12 @@
             'num_games': '',
             'user_id': ''
           },
+          team: null,
           games: [],
           challengeGames: [],
           nemesisList: [],
           bots: [],
           error_games: [],
-          hackathons: [],
           userHistory: [],
           profile_images: {},
           usernames: {},
@@ -586,11 +558,18 @@
           sharePopup: false,
           season1stats: null,
           messages: {
-            hackathon: ''
+            bot_download: ''
           },
           participants: {},
           isLastPage: false,
           isChallengeModalOpen: false,
+          efficiency: {
+            min: 0,
+            percentile25: 0,
+            mean: 0,
+            percentile75: 0,
+            max: 1,
+          },
         }
       },
       mounted: function () {
@@ -617,11 +596,38 @@
               {}, '',
               `${window.location.origin}${window.location.pathname}?user_id=${user.user_id}`)
           }
+
+          if (user.team_id) {
+            api.get_team(user.team_id).then((team) => {
+              this.team = team
+            })
+          }
+
           api.list_bots(user.user_id).then((bots) => {
             this.bots = bots
           })
-          this.fetch()
-          this.fetchHackathon()
+          this.fetch().then((games) => {
+            if (games.length === 0) return
+            const efficiencies = []
+            for (const game of games) {
+              let index = -1
+              for (const player of Object.values(game.players)) {
+                if (parseInt(player.id, 10) === user.user_id) {
+                  index = player.player_index
+                  break
+                }
+              }
+
+              if (index >= 0) {
+                efficiencies.push(game.stats.player_statistics[index].mining_efficiency)
+              }
+            }
+            efficiencies.sort()
+            this.efficiency.min = efficiencies[0]
+            this.efficiency.max = efficiencies[efficiencies.length - 1]
+            this.efficiency.mean = efficiencies.reduce((a, b) => a + b, 0) / efficiencies.length
+          })
+
           this.fetchErrorGames()
           this.fetchnemesis()
           this.fetchhistory()
@@ -659,9 +665,6 @@
           }
           return lang
         },
-        shareLink: function () {
-          return window.location.href
-        }
       },
       methods: {
         setupStickyTable: function () {
@@ -672,8 +675,8 @@
         refreshStickyTable: function () {
             window.refreshStickyTable();
         },
-        fetch: function () {
-          let query = `order_by=desc,time_played&offset=${this.offset}&limit=${this.limit}`
+        fetch: function (options={}) {
+          let query = `order_by=desc,time_played&offset=${this.offset}&limit=${options.limit || this.limit}`
           if (this.only_timed_out) {
             query += `&filter=timed_out,=,${this.user.user_id}`
           }
@@ -844,13 +847,18 @@
           return $.get(url).then((data) => {
             var nemesisMap = new Map()
             for (let game of data) {
+              let user_id = this.user.user_id
               let user_player = game.players[this.user.user_id]
+              if (!user_player) {
+                user_id = this.team.leader_id
+                user_player = game.players[this.team.leader_id]
+              }
               for (let participant of Object.keys(game.players)) {
-                if (participant == this.user.user_id) {
+                if (parseInt(participant, 10) === user_id) {
                   continue
                 }
 
-                let username = game.players[participant].username
+                let username = game.players[participant].team_name || game.players[participant].username
                 this.profile_images[participant] = api.make_profile_image_url(username)
                 this.usernames[participant] = username
 
@@ -892,17 +900,8 @@
             this.season1stats = userDetails;
           })
         },
-        fetchHackathon: function () {
-          api.getUserHackathons(this.user.user_id).then(hackathons => {
-            if (hackathons && hackathons instanceof Array) {
-              this.hackathons = hackathons.filter((h) => {
-                return h.participant == true
-              })
-            }
-          })
-        },
         fetchhistory: function () {
-          api.getUserHistory(this.user.user_id).then(history => {
+          api.get_user_history(this.user.user_id).then(history => {
             if (history && history instanceof Array) {
               history.sort(function (a, b) { return parseInt(b.bot_version) - parseInt(a.bot_version) })
               this.userHistory = history
@@ -958,6 +957,27 @@
         replay_link: function (game_id) {
           return `/play/?game_id=${game_id}`
         },
+        download_bot() {
+          api.get_bot_zip(this.user.user_id, 0).then((blob) => {
+            console.log(blob)
+            if (blob.type === "application/zip") {
+              const url = URL.createObjectURL(blob)
+              const anchor = document.createElement("a")
+              anchor.href = url
+              anchor.setAttribute("download", `${this.user.user_id}.zip`)
+              anchor.style.display = "none"
+              document.body.appendChild(anchor)
+              window.setTimeout(() => {
+                anchor.click()
+                document.body.removeChild(anchor)
+                window.setTimeout(() => URL.revokeObjectURL(url), 500)
+              }, 1000)
+            }
+            else {
+              this.messages.bot_download = "No bot uploaded, cannot download bot."
+            }
+          })
+        },
         prev_badge: () => {
           let content = $('.user-profile-badge-content')
           let list = $('.user-profile-badge-list')
@@ -1002,24 +1022,6 @@
         gaData: function (category, action, label) {
           utils.gaEvent(category, action, label)
         },
-        toggleShare: function () {
-          this.sharePopup = !this.sharePopup
-        },
-        shareSocial: function (social) {
-          let text = 'Halite II Player - ' + this.user.username + ' Rank: ' + this.user.rank + ' Tier: ' + this.user.tier + ' '
-          let tags = 'haliteplayerstats'
-          switch (social) {
-            case 'facebook':
-              return 'https://www.facebook.com/sharer.php?u=' + encodeURIComponent(window.location.href)
-              break
-            case 'twitter':
-              return 'https://twitter.com/intent/tweet?text=' + text + '&url=' + encodeURIComponent(window.location.href) + '&hashtags=' + tags + '&via=haliteAI'
-              break
-            case 'linkedin':
-              return `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}`
-              break
-          }
-        },
         sortChallenge: function(players) {
           return _.sortBy(players, (player) => -player.points)
         },
@@ -1037,6 +1039,11 @@
         },
         closeChallengeModal: function(e) {
             this.isChallengeModalOpen = false;
+        },
+        // Get the location of the data by percentage --- issue #397
+        getLeftLen(data) {
+            data = Math.max(0, Math.min(1, data))
+            return { left: `calc(${data * 100}% - 12px)` }
         }
       }
     }

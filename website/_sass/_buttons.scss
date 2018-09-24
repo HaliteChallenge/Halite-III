@@ -1,92 +1,26 @@
-.btn{
-  border: 0;
-  color: #30242F !important;
-  font-weight: bold;
-  border-radius: 0;
-  text-transform: uppercase;
-  padding: 0 10px;
-  position: relative;
-  background-color: transparent;
-  font-size: 2rem;
-  font-family: $font-headline;
-  &:active{
-    outline: none;
-    box-shadow: none;
-  }
-  >span{
-    background-color: $yellow;
-    display: block;
-    height: 36px;
-    line-height: 36px;
-    padding: 0 10px;
-  }
-  &:before, &:after{
-    content: "";
-    display: block;
-    position: absolute;
-    width: 10px;
-    height: 100%;
-    top: 0;
-    border-top: 18px solid transparent;
-    border-bottom: 18px solid transparent;
-  }
-  &:before{
-    left:0;
-    border-right: 10px solid $yellow;
-    border-left: 0 solid $yellow;
-  }
-  &:after{
-    right:0;
-    border-left: 10px solid $yellow;
-    border-right: 0 solid $yellow;
-  }
-}
-
-.btn-sm{
-  span{
-    height: 34px;
-  }
-  &:before, &:after{
-    border-top-width: 17px;
-    border-bottom-width: 17px;
-  }
-}
-
-.btn-ha{
-  background-image: url("/assets/images/button.png");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  border: 0;
-  height: 38px;
-  width: 200px;
-  line-height: 38px;
-  display: inline-block;
+.btn,
+a.btn {
+  border-radius: 4px;
+  padding: 18px 25px;
+  line-height: 1em;
+  font-weight: 500;
+  font-size: 24px;
   text-align: center;
-  font-family: 'Teko';
-  color: #30242F !important;
-  letter-spacing: 1px;
-  font-size: 18px;
   text-transform: uppercase;
-  background-color: transparent;
-  font-weight: 600;
-  border: none;
-  &:hover, &:focus{
-    color: #30242F !important;
-    text-decoration: none !important;
-    box-shadow: none;
-  }
-  &-lg{
-    height: 55px;
-    line-height: 55px;
-    width: 234px;
-    font-size: 24px;
-  }
-  &-clear{
-    background-image: url("/assets/images/button-clear.png");
-    color: $yellow;
-    &:hover{
-      color: $yellow;
-    }
-  }
+  background-color: #fff;
+  color: #033C89;
+  border: 0;
+}
+
+.btn-sm,
+a.btn-sm {
+  padding: 10px 15px 9px 15px;
+  font-size: 16px;
+}
+
+.btn-primary,
+a.btn-primary {
+  color: #fff;
+  background-image: linear-gradient(-180deg, #fad961 0%, #f76b1c 100%);
+  border: 0;
 }

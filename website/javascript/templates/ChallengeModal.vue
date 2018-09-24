@@ -1,13 +1,12 @@
 <template>
-  <div class="challenger-modal" :class="{'on': isOn}">
+  <div class="halite-modal" :class="{'on': isOn}">
     <div class="modal-overlay" @click="close"></div>
     <div class="modal-container">
       <a @click="close" class="close modal-close"><span class="icon-remove"></span></a>
       <div class="send-challenge-form" v-if="!showResult">
         <img class="ico" :src="`${baseUrl}/assets/images/icon-group.svg`">
-        <p data-v-48c46ce0="">The 2017-2018 season of Halite has ended. You can no longer challenge a player through our website. But you can always play Halite locally - read <a href="/learn-programming-challenge/halite-cli-and-tools/">our documentation</a> to learn more.</p>
-        <!-- <h2 class="heading">CHALLENGE OTHER PLAYERS</h2>
-        <p>You can choose one or three players from the leaderboard to challenge. You’ll be able to see how you stack up and we’ll let you know once the challenge is over.</p>
+        <h2 class="heading">CHALLENGE OTHER PLAYERS</h2>
+        <p>Play one or three players from the leaderboard in a challenge match. We’ll let you know once the challenge is over and the results are in.</p>
         <div v-if="me">
           <div class="user-search">
             <div class="challenge-list">
@@ -21,9 +20,15 @@
                     </v-select>
                   </div>
                 </div>
-                <div v-else-if="members[friends[index]]">
+                <div v-else>
                   <div class="selected-friend">
-                    <a :href="'/user?user_id=' + members[friends[index]].user_id"><img width="36" height="36" :src="`https://github.com/${friends[index]}.png`" alt=""> {{friends[index]}}</a>
+                    <a :href="'/user?user_id=' + members[friends[index]][0].user_id">
+                      <img
+                        v-for="opponent in members[friends[index]]"
+                        width="36" height="36"
+                        :src="`https://github.com/${opponent.username}.png`" alt="">
+                      {{friends[index]}}
+                    </a>
                     <a class="close" @click="removeFriend(index)"><span class="icon-remove"></span></a>
                   </div>
                 </div>
@@ -53,7 +58,7 @@
               <a class="ha-button" href="https://api.halite.io/v1/login/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;"><span>SIGN INTO HALITE</span></a>
             </div>
           </div>
-        </div> -->
+        </div>
       </div>
       <div class="send-challenge-result" v-else>
         <img class="ico" :src="`${baseUrl}/assets/images/icon-success.svg`">
@@ -83,6 +88,7 @@ export default{
       options: [],
       friends: [],
       members: {},
+      teamMap: {},
       me: false,
       errorMessage: "",
       emptyFields: [],
@@ -92,51 +98,66 @@ export default{
   },
   mounted: function(){
     api.me().then((me) => {
-      if (me){
+      if (me) {
         this.me = me
 
         api.leaderboard(null, null, 0, 99999).then((members) => {
-          this.options = members.map((member) => member.username )
-            .filter((username) => username !== me.username)
+          this.options = members
+            .filter((member) => {
+              if (member.team_name) {
+                this.teamMap[member.username] = member.team_name
+              }
+              return member.username !== me.username &&
+                     (!member.team_leader_id ||
+                      (member.team_leader_id === member.user_id))
+            })
+            .map((member) => (member.team_name || member.username))
 
           let arr = {};
           members.forEach((item) => {
-            arr[item.username] = item
+            const key = item.team_name || item.username
+            if (!arr[key]) {
+              arr[key] = []
+            }
+            arr[key].push(item)
           });
-          this.members = arr;
+          this.members = arr
+
+          if (this.username) {
+            this.friends.push(this.username)
+          } else {
+            this.friends.push("")
+          }
         })
       }
     });
 
-    let options = []
-    let members = {}
-
-    if (this.username){
-      this.friends.push(this.username)
-    } else {
-      this.friends.push("")
-    }
-
   },
   watch: {
     username: function(newUsername){
-      if (newUsername){
-        this.friends[0] = newUsername
+      if (newUsername) {
+        if (this.teamMap[newUsername]) {
+          newUsername = this.teamMap[newUsername]
+        }
+        this.friends = [newUsername]
       } else {
-        this.friends[0] = ""
+        this.friends = []
       }
     },
     friends: function(newFriends) {
       let options = this.options;
       newFriends.forEach((username) => {
+        if (this.teamMap[username]) {
+          username = this.teamMap[username]
+        }
         options = options.filter((searchedUsername) => searchedUsername != username)
       })
       this.options = options
       this.validated = false
     },
-    isOn: function(value){
+    isOn: function(value) {
       if (value){
-        this.friends = this.username ? [this.username] : [""]
+        this.friends = this.username ? [this.teamMap[this.username] || this.username] : [""]
         this.errorMessage = ""
         this.emptyFields = []
         this.validated = false
@@ -187,12 +208,14 @@ export default{
 
         if (emptyCount == 0 || this.friends.length - emptyCount == 1){
           let opponents = this.friends.filter((username) => username != "").map((username) => {
-            return this.members[username].user_id
+            return this.members[username][0].user_id
           })
           api.challenge(this.me.user_id, opponents).then((data) => {
             this.showResult = true;
           }, (error) => {
             this.showResult = false;
+            this.validated = true;
+            this.errorMessage = error.responseJSON.message;
             throw error.responseJSON.message;
           })
         } else {
@@ -209,7 +232,7 @@ export default{
 }
 </script>
 <style lang="scss" scoped>
-  .challenger-modal{
+  .halite-modal{
     .modal-container{
       position: relative;
     }

@@ -15,7 +15,15 @@ from .blueprint import web_api
 @util.cross_origin(methods=["GET", "POST"])
 def get_user_hackathons(intended_user):
     record = []
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
+        participant_clause = model.hackathon_participants.c.user_id == intended_user
+        team = conn.execute(model.team_leader_query(intended_user)).first()
+        if team:
+            participant_clause = model.hackathon_participants.c.user_id.in_([
+                intended_user,
+                team["leader_id"],
+            ])
+
         hackathons = conn.execute(sqlalchemy.sql.select([
             model.hackathons.c.id,
             model.hackathons.c.title,
@@ -31,7 +39,7 @@ def get_user_hackathons(intended_user):
                 model.hackathons.c.id == model.hackathon_participants.c.hackathon_id
             )
         ).where(
-            model.hackathon_participants.c.user_id == intended_user
+            participant_clause
         )).fetchall()
 
         for hackathon in hackathons:
@@ -60,7 +68,7 @@ def get_user_hackathons(intended_user):
             model.hackathons.c.description,
             model.hackathons.c.is_open,
         ]).where(
-            model.hackathons.c.is_open == 1
+            model.hackathons.c.is_open == sqlalchemy.true()
         )).fetchall()
 
         for hackathon in open_hackathons:
@@ -88,6 +96,8 @@ def get_user_hackathons(intended_user):
 @api_util.requires_login(accept_key=False)
 @api_util.requires_competition_open
 def associate_user_hackathon(intended_user, *, user_id):
+    # Do NOT update user_id based on team membership - only the team
+    # leader can join a hackathon
     if user_id != intended_user:
         raise api_util.user_mismatch_error()
 
@@ -99,6 +109,14 @@ def associate_user_hackathon(intended_user, *, user_id):
         )
 
     with model.engine.connect() as conn:
+        team = conn.execute(model.team_leader_query(intended_user)).first()
+        if team and team["leader_id"] != intended_user:
+            raise util.APIError(
+                403,
+                message="Only team leader may enter the team into hackathons."
+            )
+
+
         hackathon = conn.execute(model.hackathons.select(
             model.hackathons.c.verification_code == verification_code)).first()
 

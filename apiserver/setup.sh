@@ -11,20 +11,26 @@ pip install -r requirements.txt
 wget -O cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64
 chmod +x ./cloud_sql_proxy
 
-# Get the spec for the DB instance to pass to Cloud SQL Proxy
+# Get the spec for the DB instances to pass to Cloud SQL Proxy
 DB_INSTANCE="$(python -m apiserver.scripts.print_db_proxy_instance)"
 
-screen -S sqlproxy -d -m /bin/bash -c \
-    "./cloud_sql_proxy -instances=${DB_INSTANCE}=tcp:3307"
+while read -r instance_config; do
+    instance_config=($instance_config)
+
+    echo "Starting sqlproxy"
+    echo "./cloud_sql_proxy -instances=${instance_config[1]}=tcp:${instance_config[0]}"
+
+    screen -S "sqlproxy-${instance_config[0]}" -d -m /bin/bash -c \
+           "./cloud_sql_proxy -instances=${instance_config[1]}=tcp:${instance_config[0]}"
+
+done <<< "$DB_INSTANCE"
+
 
 screen -S api -d -m /bin/bash -c \
-    "PYTHONPATH=$(pwd) FLASK_APP=apiserver.server flask run --with-threads -h 0.0.0.0 -p 5000"
+    "NEW_RELIC_CONFIG_FILE=newrelic.ini PYTHONPATH=$(pwd) FLASK_APP=apiserver.server newrelic-admin run-program flask run --with-threads -h 0.0.0.0 -p 5000"
 
 screen -S coordinator_internal -d -m /bin/bash -c \
-    "PYTHONPATH=$(pwd) FLASK_APP=apiserver.coordinator_server flask run --with-threads -h 0.0.0.0 -p 5001"
-
-screen -S badge_daemon -d -m /bin/bash -c \
-    "PYTHONPATH=$(pwd) python3 -m apiserver.scripts.badge_daemon.py"
+    "NEW_RELIC_CONFIG_FILE=newrelic.ini PYTHONPATH=$(pwd) FLASK_APP=apiserver.coordinator_server newrelic-admin run-program flask run --with-threads -h 0.0.0.0 -p 5001"
 
 # Run game deletion job at 8 AM UTC = midnight PST (DOES NOT account
 # for DST)

@@ -5,7 +5,10 @@ permalink: /about/terms-and-conditions
 description: Read about Halite's terms and conditions and contact us if you have any questions.
 ---
 
-Your use of the game, Halite (also known as Halite I or Halite II), and the website on which these terms reside (collectively, the “Site”), and the features at this Site are subject to these Terms of Use, which we may update from time to time. Please read these Terms of Use carefully before using this Site. By accessing Halite, this website and any materials presented herein, or by downloading any products or materials from the Site, you acknowledge that you have read, understood, and agree to be legally bound by these Terms of Use and our Privacy Policy, which is hereby incorporated by reference (collectively, these “Terms”).  
+
+<div class="doc-section" markdown="1">
+
+Your use of the game, Halite (also known as Halite I, Halite II, or Halite III), and the website on which these terms reside (collectively, the “Site”), and the features at this Site are subject to these Terms of Use, which we may update from time to time. Please read these Terms of Use carefully before using this Site. By accessing Halite, this website and any materials presented herein, or by downloading any products or materials from the Site, you acknowledge that you have read, understood, and agree to be legally bound by these Terms of Use and our Privacy Policy, which is hereby incorporated by reference (collectively, these “Terms”).  
 
 The Site is owned or controlled by Two Sigma Open Source, LLC ( “Two Sigma”).
 
@@ -20,7 +23,7 @@ Each use of the Site constitutes your agreement to be bound by and comply with t
 ## 1. Two Sigma Content; Limited License to Use the Site
 Two Sigma owns the Site and maintains it in conjunction with its partners. All information and content contained on the Site is intended solely for the use of those persons who have been granted permission to use the Site and who have agreed to these Terms.
  
-Content on the Site that is provided by Two Sigma or its licensors, including the Halite game, graphics, images, text, software, code, screen shots, text, digitally downloadable files, trademarks, logos, service marks, product and program names, slogans, and the compilation of the foregoing, including, without limitation, the name or logo of Halite (including versions such as Halite I and Halite II), Two Sigma, any of its affiliates, and/or any other entity described on the Site (“Two Sigma Content”) is the property of Two Sigma and its licensors, and is protected in the U.S. and internationally under trademark, copyright, and other intellectual property laws. Except as specifically permitted below, nothing contained in these Terms or the Site either grants, or will be construed to grant to you or any third party, by implication, estoppel or otherwise, any title or interest in, or any license or right to use or reproduce Two Sigma Content contained in the Site. No act of downloading or otherwise copying Two Sigma Content from the Site will transfer title to any software or material to any user hereof. Two Sigma reserves, and may enforce to the fullest extent possible, all rights that it may have with respect to all material contained in the Site.
+Content on the Site that is provided by Two Sigma or its licensors, including the Halite game, graphics, images, text, software, code, screen shots, text, digitally downloadable files, trademarks, logos, service marks, product and program names, slogans, and the compilation of the foregoing, including, without limitation, the name or logo of Halite (including versions such as Halite I, Halite II, and Halite III), Two Sigma, any of its affiliates, and/or any other entity described on the Site (“Two Sigma Content”) is the property of Two Sigma and its licensors, and is protected in the U.S. and internationally under trademark, copyright, and other intellectual property laws. Except as specifically permitted below, nothing contained in these Terms or the Site either grants, or will be construed to grant to you or any third party, by implication, estoppel or otherwise, any title or interest in, or any license or right to use or reproduce Two Sigma Content contained in the Site. No act of downloading or otherwise copying Two Sigma Content from the Site will transfer title to any software or material to any user hereof. Two Sigma reserves, and may enforce to the fullest extent possible, all rights that it may have with respect to all material contained in the Site.
  
 Two Sigma grants you a limited, non-exclusive license to display and otherwise use portions of the Two Sigma Content and this Site solely for your own private, non-commercial, informational purposes, and to print pages from the Site only in connection with that use.
 
@@ -129,8 +132,10 @@ This Site is not an offer to, or solicitation of, any potential clients or inves
 ## 15. Privacy Policy
 Two Sigma’s Privacy Policy posted on this website applies to use of this Site, and its terms are made a part of these Terms by this reference. Please read our [Privacy Policy][Privacy Policy] for more information about our information collection and use practices. By using the Site, you hereby acknowledge that you have read our Privacy Policy and [Cookie Policy][cookie policy] and consent to the practices set forth therein. 
 
-Last Updated October 23, 2017
-© 2017 Two Sigma Open Source, LLC. ALL RIGHTS RESERVED.
+Last Updated September 10, 2018<br>
+© 2018 Two Sigma Open Source, LLC. ALL RIGHTS RESERVED.
+
+</div>
  
 [Privacy Policy]: {{ site.baseurl }}/about/privacy
 [cookie policy]: {{ site.baseurl }}/about/cookie-policy

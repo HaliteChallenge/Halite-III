@@ -1,28 +1,11 @@
 <template>
   <div class="game-feed">
-    <div class="btn-group text-center">
-      <button
-          type="button"
-          class="btn"
-          v-on:click="pause_toggle">
-        <span v-if="this.display_paused">Resume</span>
-        <span v-else>Pause</span>
-      </button>
-      <button
-          type="button"
-          class="btn"
-          v-bind:class="{ 'hide-btn': !this.is_behind }"
-          v-on:click="skip_forward">
-        <span>Skip to Current</span>
-      </button>
-    </div>
     <div v-if="display_games.length > 0" class="table-container">
       <table class="table table-leader">
         <thead>
           <tr>
             <th class="watch">Watch</th>
             <th class="result">Result</th>
-            <th class="destroyed text-center hidden-xs">Destroyed Ships</th>
             <th class="map-size text-center hidden-xs" >Map Size</th>
             <th class="turns text-center hidden-xs">Turns</th>
           </tr>
@@ -60,14 +43,6 @@
             </td>
             <td class="text-center hidden-xs">
               <div class="td-wrapper"><div class="text-center">
-                {{ game.ships_destroyed }} of {{ game.total_ships }}
-                <span v-if="game.planets_destroyed">
-                  ({{ game.planets_destroyed }}p)
-                </span>
-              </div></div>
-            </td>
-            <td class="text-center hidden-xs">
-              <div class="td-wrapper"><div class="text-center">
                 {{ game.map_width }}x{{ game.map_height }}
               </div></div>
             </td>
@@ -79,6 +54,23 @@
           </tr>
         </transition-group>
       </table>
+      <br>
+      <div class="btn-group text-center">
+        <button
+            type="button"
+            class="btn btn-primary"
+            v-on:click="pause_toggle">
+          <span v-if="this.display_paused">Resume</span>
+          <span v-else>Pause</span>
+        </button>
+        <button
+            type="button"
+            class="btn btn-primary"
+            v-bind:class="{ 'hide-btn': !this.is_behind }"
+            v-on:click="skip_forward">
+          <span>Skip to Current</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -159,7 +151,7 @@ export default {
                 while (data.length > 1 && moment(data[0].time_played) > split_time) {
                   this.incoming_games.push(data.shift())
                 }
-                this.display_games = data.slice(0, 50)
+                this.display_games = data.slice(0, 15)
                 this.last_display = moment()
               }
 
@@ -197,7 +189,7 @@ export default {
       if (this.display_paused) return
       if (this.incoming_games.length) {
         this.display_games.unshift(this.incoming_games.pop())
-        if (this.display_games.length > 50) this.display_games.pop()
+        if (this.display_games.length > 15) this.display_games.pop()
         this.last_display = moment()
       }
       let cur_time = moment(this.display_games[0].time_played)
@@ -242,7 +234,7 @@ export default {
         cut_ix += 1
       }
       let skipped_games = this.incoming_games.slice(cut_ix)
-      this.display_games = skipped_games.concat(this.display_games).slice(0, 50)
+      this.display_games = skipped_games.concat(this.display_games).slice(0, 15)
       this.incoming_games = this.incoming_games.slice(0, cut_ix)
       if (this.incoming_games.length == 0 && this.fetch_tries == 0) {
         this.fetch_tries += 1

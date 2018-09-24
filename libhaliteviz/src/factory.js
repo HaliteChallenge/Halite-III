@@ -1,11 +1,9 @@
 import * as PIXI from "pixi.js";
 
 import * as assets from "./assets";
+import theme from "./theme";
 
-/**
- * Manages a factory on screen.
- */
-export class Factory {
+export class Dropoff {
     /**
      *
      * @param factoryBase The "base" factory record in the replay (contains a location)
@@ -17,7 +15,6 @@ export class Factory {
     constructor(visualizer, factoryBase, constants, scale, onSelect, renderer) {
         this.visualizer = visualizer;
         this.container = null;
-        //this.overlay = null;
         this.factoryBase = factoryBase;
         this.scale = scale;
         this.constants = constants;
@@ -26,37 +23,41 @@ export class Factory {
         const pixelsPerUnit = assets.CELL_SIZE * scale;
 
         // TODO: Switch factory from square to image
-        const factoryShape = new PIXI.Graphics();
-        factoryShape.beginFill(assets.FACTORY_BASE_COLOR, assets.FACTORY_BASE_ALPHA);
-        factoryShape.drawRect(0, 0, pixelsPerUnit, pixelsPerUnit);
-        factoryShape.endFill();
-        let factoryTexture = renderer.generateTexture(factoryShape);
-        this.core = new PIXI.Sprite(factoryTexture);
+        this.makeCore(renderer, pixelsPerUnit);
 
         // Rotate factories, make twice the size of a cell
         this.core.width = this.core.height = 2 * pixelsPerUnit;
+        this.highlight.width = this.highlight.height = 2.25 * pixelsPerUnit;
         // anchor factory in center for rotation
         this.core.anchor.x = 0.5;
         this.core.anchor.y = 0.5;
-        this.core.alpha = 0.9;
+        this.core.alpha = 0.7;
+        this.highlight.anchor.x = 0.5;
+        this.highlight.anchor.y = 0.5;
+        this.highlight.visible = false;
 
         // Place factories in center of cells
         this.core.position.x = pixelsPerUnit * factoryBase.x + pixelsPerUnit / 2;
         this.core.position.y = pixelsPerUnit * factoryBase.y + pixelsPerUnit / 2;
+        this.highlight.position.copy(this.core.position);
 
         // Rotate the factory a bit just to mix it up
-        this.core.rotation = Math.random() * 2 * Math.PI;
-        this.core.interactive = true;
-        this.core.buttonMode = true;
-        this.core.on("pointerdown", (e) => {
-            // When clicked, notify the visualizer
-            // TODO: switch to factory (unified naming change with vue code)
-            onSelect("planet", {
-                id: this.owner,
-            });
-        });
+        // this.core.rotation = Math.random() * 2 * Math.PI;
+        // this.core.tint = assets.PLAYER_COLORS[this.owner];
+    }
 
-        this.core.tint = assets.PLAYER_COLORS[this.owner];
+    makeCore(renderer, pixelsPerUnit) {
+        const factoryShape = new PIXI.Graphics();
+        factoryShape.beginFill(assets.FACTORY_BASE_COLOR, assets.FACTORY_BASE_ALPHA);
+        factoryShape.drawCircle(0, 0, 64);
+        factoryShape.endFill();
+        let factoryTexture = renderer.generateTexture(factoryShape);
+        this.core = new PIXI.Sprite(assets.BASE_SPRITES[this.owner]);
+        this.highlight = new PIXI.Sprite(factoryTexture);
+
+        if (theme.tintFactory) {
+            this.core.tint = assets.PLAYER_COLORS[this.owner];
+        }
     }
 
     /**
@@ -64,21 +65,28 @@ export class Factory {
      * @param container {PIXI.Container} The parent container of the factory sprites.
      */
     attach(container) {
+        container.addChild(this.highlight);
         container.addChild(this.core);
         this.container = container;
-    }
-
-    get id() {
-        return this.owner;
     }
 
     /**
      * Update the factory display based on the current frame and time.
      */
     //TODO: update to make factories change color when player dies
-    update() {
+    update(delta=1) {
+    }
+
+    destroy() {
+        this.container.removeChild(this.core);
+        this.container.removeChild(this.highlight);
+        this.container = null;
+    }
+
+    draw() {
         const pixelsPerUnit = assets.CELL_SIZE * this.visualizer.camera.scale;
-        this.core.width = this.core.height = 2 * pixelsPerUnit;
+        this.core.width = this.core.height = 1.5 * pixelsPerUnit;
+        // this.core.rotation = (((this.visualizer.frame + this.visualizer.time) % 20) / 20) * 2 * Math.PI;
 
         // Account for camera panning
         const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(
@@ -88,5 +96,35 @@ export class Factory {
 
         this.core.position.x = pixelsPerUnit * cellX + pixelsPerUnit / 2;
         this.core.position.y = pixelsPerUnit * cellY + pixelsPerUnit / 2;
+
+        this.highlight.position.copy(this.core.position);
+        this.highlight.width = this.highlight.height = 1.5 * pixelsPerUnit;
+
+        const camera = this.visualizer.camera;
+        if (camera.selected && camera.selected.type === "point" &&
+            camera.selected.x === this.factoryBase.x &&
+            camera.selected.y === this.factoryBase.y) {
+            this.highlight.visible = true;
+            // this.highlight.rotation = this.core.rotation;
+        }
+        else {
+            this.highlight.visible = false;
+        }
+    }
+}
+
+/**
+ * Manages a factory on screen.
+ */
+export class Factory extends Dropoff {
+    constructor(...args) {
+        super(...args);
+        this.core.alpha = 0.9;
+    }
+
+    draw() {
+        super.draw();
+        const pixelsPerUnit = assets.CELL_SIZE * this.visualizer.camera.scale;
+        this.core.width = this.core.height = 2 * pixelsPerUnit;
     }
 }

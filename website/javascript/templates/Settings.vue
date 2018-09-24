@@ -6,49 +6,43 @@
         <div class="row">
             <div class="col-md-6 col-xm-10 col-md-offset-3 col-xm-offset-1">
                 <div class="page-header">
-                    <a id="section_personal_info"></a>
-                    <h1>Settings</h1>
-                    <i class="xline xline-bottom"></i>
+                  <a id="section_personal_info"></a>
+                  <h1>Settings</h1>
                 </div>
 
                 <h2 class="form-heading">API Key</h2>
                 <p>
-                     Your API key is used in Halite Client tools for authentication.
+                  Your API key is used in Halite Client tools for authentication.
                 </p>
                 <br/>
                 <p>
-                     Note: Once you close this page, you will not be able to retrieve that key again. You will need to generate a new one.
+                  Note: Once you close this page, you will not be able to retrieve that key again. You will need to generate a new one.
                 </p>
                 <form>
-                    <input v-if="api_key" style="color: black; max-width: 400px" type="text" class="form-control" readonly :value="api_key"/>
-                    <button class="btn-ha btn-ha-md" style="margin-top:20px;" v-on:click="fetchApiKey">Generate API Key</button>
+                  <input v-if="api_key" style="color: black; max-width: 400px" type="text" class="form-control" readonly :value="api_key"/>
+                  <button class="btn btn-primary btn-sm" style="margin-top:20px;" v-on:click="fetchApiKey">Generate API Key</button>
                 </form>
-
-                 <div class="line-container"><i class="xline xline-top"></i></div>
 
                 <h2 class="form-heading">Bot Settings</h2>
                 <form v-on:submit.prevent="submit" class="create-account-form">
+                  <div class="form-group">
+                    <label for="gpusettings">Enable GPUs for your current bot</label>
+                      <v-select
+                        label="label"
+                        v-model="selected_gpu_state"
+                        :options="gpu_states">
+                      </v-select>
+                  </div>
+
+                  <h2 class="form-heading">Email Settings</h2>
+                  <form v-on:submit.prevent="submit" class="create-account-form">
                     <div class="form-group">
-                      <label for="gpusettings">Enable GPUs for your current bot</label>
-                       <v-select
-                            label="label"
-                            v-model="selected_gpu_state"
-                            :options="gpu_states">
-                        </v-select>
+                      To manage your email preferences, click the relevant link at the bottom of any Halite email.
                     </div>
+                  </form>
 
-
-                    <div class="line-container"><i class="xline xline-top"></i></div>
-
-                    <h2 class="form-heading">Email Settings</h2>
-                    <form v-on:submit.prevent="submit" class="create-account-form">
-                        <div class="form-group">
-                                To manage your email preferences, click the relevant link at the bottom of any Halite email.
-                        </div>
-                    </form>
-
-                    <a class="cancel-href base" href="/user/?me" target="_self">Cancel</a>
-                    <button type="submit" class="btn-ha">Save Settings</button>
+                  <a class="cancel-href base" href="/user/?me" target="_self">Cancel</a>
+                  <button type="submit" class="btn btn-primary btn-sm">Save Settings</button>
                 </form>
             </div>
         </div>
@@ -76,6 +70,11 @@ export default {
         }
   },
       mounted: function () {
+        api.me().then((user) => {
+          if (!user) {
+            window.location.replace(`${api.LOGIN_SERVER_URL}/github`)
+          }
+        })
 
         this.gpu_states.push( {label: "Yes",value: 1});
         this.gpu_states.push( {label: "No",value: 0});

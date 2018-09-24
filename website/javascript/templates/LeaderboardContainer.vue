@@ -1,12 +1,10 @@
 <template>
   <div>
-    <div class="panel panel-stats">
+    <div class="panel panel-stats" style="display: none">
       <div class="panel-heading" role="tab" id="heading_player_details">
         <a data-toggle="collapse" id="toggle_metric" href="#panel_metric" @click="toggleStats" aria-expanded="true" aria-controls="panel_metric">
-          <i class="xline xline-top"></i>
           <h4>LEADERBOARD STATISTICS</h4>
           <span class="toggle-icon expand"></span>
-          <i class="xline xline-bottom"></i>
         </a>
       </div>
       <div class="panel-collapse collapse in" role="tabpanel" id="panel_metric" aria-labelledby="panel_metric">
@@ -72,7 +70,7 @@
         </div>
       </div>
     </div>
-    <Leaderboard v-if="leaderboard" :lbFromContainer="leaderboard" :hackathonId="hackathonId" :baseUrl="baseUrl"></Leaderboard>
+    <Leaderboard v-if="leaderboard" :lbFromContainer="leaderboard" :hackathonId="hackathonId" :baseUrl="baseUrl" :metric="metric"></Leaderboard>
   </div>
 </template>
 <script>
@@ -90,7 +88,7 @@ export default {
 
       // determine whether the collapseable summary panel should be collapsed
       this.setupCollapseStats()
-    }, 
+    },
     data: function () {
       return {
         hackathonId: null,
@@ -132,7 +130,7 @@ export default {
       },
       fetchHackathon: function () {
         api.me().then((me) => {
-          api.getUserHackathons(me.user_id).then((hackathons) => {
+          api.get_user_hackathons(me.user_id).then((hackathons) => {
             const hackathonId = hackathons[0].hackathon_id
             this.hackathonId = hackathonId
             this.isGlobalActive = false

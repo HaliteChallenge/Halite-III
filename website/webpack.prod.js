@@ -1,7 +1,7 @@
 const merge = require('webpack-merge');
 const commonConfig = require('./webpack.common.js');
-const BabiliPlugin = require('babili-webpack-plugin');
 const webpack = require("webpack");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = merge(commonConfig, {
     plugins: [
@@ -14,6 +14,10 @@ module.exports = merge(commonConfig, {
                 'NODE_ENV': JSON.stringify('production'),
                 'BABEL_ENV': 'production',
             }
+        }),
+        new BundleAnalyzerPlugin({
+            analyzerMode: "static",
+            openAnalyzer: false,
         }),
     ]
 });

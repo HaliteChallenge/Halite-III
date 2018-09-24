@@ -5,6 +5,8 @@ permalink: /about/cookie-policy
 description: Halite and Two Sigma take your privacy seriously. Read our cookie policy to learn how we treat your passive personal data.
 ---
 
+<div class="doc-section" markdown="1">
+
 ### Effective Date: October 15, 2017
 
 ### THIS COOKIE POLICY APPLIES TO OUR SITE.
@@ -34,4 +36,4 @@ We may also work with third-party service providers who may set cookies on our S
 ## How to control cookies? 
 You can control and/or delete cookies as you wish, for details see [https://aboutcookies.org](https://aboutcookies.org){:target="_blank"}. You can delete all cookies that are already on your computer and you can set most browsers to prevent them from being placed. If you do this however, you may have to manually adjust some preferences every time you visit our Site and functionalities may not work.
 
-
+</div>

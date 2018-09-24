@@ -1,10 +1,40 @@
 .visuallizer-container{
-  padding-top: 20px;
+  padding-top: 120px;
 }
 .post-game-dashboard{
   margin-top: 40px;
   @media (max-width: $screen-sm-max){
     display: none;
+  }
+}
+
+.visualizer-row {
+    display: flex;
+    flex-wrap: wrap;
+
+    .visualizer-column {
+        flex: 0 0;
+        margin: 0 1em;
+        width: 700px;
+    }
+
+    .visualizer-stats-column {
+        flex: 1;
+        .game-heading-date {
+          margin-bottom: 28px;
+          color: #B4E6FF;	
+          font-size: 24px;	
+          font-weight: 500;	
+          line-height: 29px; 
+        }
+    }
+}
+
+@media (min-width: $screen-md-min) and (max-width: $screen-lg-min){
+  .visualizer-row {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 }
 
@@ -15,8 +45,6 @@
 
 .game-heading{
   text-align: center;
-  padding-top: 15px;
-  padding-bottom: 15px;
   position: relative;
   .xline{
     background-color: #474951;
@@ -65,6 +93,12 @@
       [class*="icon"]{
         font-size: 1.2em;
         vertical-align: middle;
+      }
+      .circle {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
       }
     }
   }
@@ -128,8 +162,8 @@
 }
 
 .game-replay{
-  padding: 15px 0;
   position: relative;
+  margin-top: 17px;
   >.xline{
     top: 50%;
     transform: translateY(-50%);
@@ -140,14 +174,14 @@
   }
   .game-replay-viewer {
     text-align: center;
-    padding: 20px 30px;
+    padding: 22px 30px 20px;
     cursor: pointer;
   }
   .game-replay-container{
     padding: 20px 30px;
     position: relative;
     .game-replay-viewer{
-      padding: 0;  
+      padding: 0;
     }
     .game-replay-expand{
       position: absolute;
@@ -367,7 +401,12 @@
   position: relative;
   padding: 20px 0;
 }
-.dashboard-graph{
+.dashboard-graphs {
+  display: flex;
+  flex-wrap: wrap;
+}
+.dashboard-graph {
+  flex: 1 0 200px;
   &-heading{
     font-family: $font-heading;
     text-transform: uppercase;
@@ -407,7 +446,7 @@
   }
 
   tbody > tr > th{
-    color: #b0bebe;
+    font-weight: normal;
     padding-right: 10px;
     @media (min-width: $screen-sm-min){
       padding-right: 30px;

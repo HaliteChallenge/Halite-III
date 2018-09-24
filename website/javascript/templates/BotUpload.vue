@@ -61,8 +61,10 @@ export default{
       }
   },
     mounted: function () {
-      let user_id
-  },
+      if (this.bot) {
+        this.validateBot()
+      }
+    },
     computed: {
       hasBots: function () {
         return this.botsList.length > 0
@@ -74,9 +76,9 @@ export default{
           } else if (this.hasBots) {
             return this.botsList[0]
           } else {
-  
+
           }
-  
+
           return null
         }
       }
@@ -91,32 +93,80 @@ export default{
           this.view = this.viewList[view]
         }
       },
-      upload: function () {
+      async validateBot() {
+        this.showMessage('error', null)
         const user_id = this.user.user_id
         let my_bot_present = false
-        this.gaData('play', 'click-confirm-bot', 'play-submit-flow')
-        JSZip.loadAsync(this.botFile, () => {
-        }).then((zip) => {
-          zip.forEach(function (relativePath, zipEntry) {
-            const language_project_file_identifiers = ['cargo.toml', 'project.clj', 'package.swift', 'halite2.sln', 'mix.lock', 'build.gradle', 'build.sbt', 'stack.yaml']
-            if (zipEntry.name.toLowerCase().startsWith('mybot.') || language_project_file_identifiers.includes(zipEntry.name.toLowerCase())) {
-              my_bot_present = true
-            }
-          })
 
-          return my_bot_present
-        }, () => {
-          // Could not extract zip
+        let zip;
+        try {
+          zip = await JSZip.loadAsync(this.botFile)
+        }
+        catch (e) {
+          console.warn("Could not load bot file", e)
           const error_message = 'Not a valid zip archive. Your bot must be contained in a zip file.'
           this.showMessage('error', error_message)
           this.errorMessage = error_message
-          return Promise.reject();
-        }).then((my_bot_present) => {
+          return false
+        }
+
+        const language_project_file_identifiers = ['cargo.toml', 'project.clj', 'package.swift', 'halite2.sln', 'mix.lock', 'build.gradle', 'build.sbt', 'stack.yaml']
+        // Identify a common root folder, to allow players to zip up a folder.
+
+        const roots = new Set();
+        let fileInRoot = false
+        zip.forEach((relativePath, zipEntry) => {
+          const parts = zipEntry.name.split('/')
+          if (parts.length > 1) {
+            // Root directory or child of a directory (filepath has at least one '/')
+            roots.add(parts[0])
+          }
+          else {
+            // File directly placed in root
+            fileInRoot = true
+          }
+        })
+
+        const rootsList = []
+        for (const root of roots.values()) {
+          if (root !== '__MACOSX' && root !== '.DS_Store') {
+            rootsList.push(root)
+          }
+        }
+
+        const root = (!fileInRoot && rootsList.length === 1) ? rootsList[0] : '';
+        console.log(zip, root)
+
+        zip.forEach((relativePath, zipEntry) => {
+          // Remove common root directory from filepath
+          let { name } = zipEntry
+          if (root.length > 0 && name.startsWith(root)) {
+            name = name.slice(root.length + 1)
+          }
+          console.log(name)
+
+          if (name.startsWith('MyBot.') ||
+              language_project_file_identifiers.includes(name.toLowerCase())) {
+            my_bot_present = true
+          }
+        })
+
+        if (!my_bot_present) {
+          this.gaData('play', 'submit-error-zip', 'play-submit-flow')
+          const error_message = 'The zip archive does not contain a root MyBot.{ext} file. MyBot.{ext} is required to be present in the root of the zip file. This is case-sensitive!'
+          this.showMessage('error', error_message)
+          this.errorMessage = error_message
+          return false
+        }
+
+        return true
+      },
+      upload: function () {
+        const user_id = this.user.user_id
+        this.gaData('play', 'click-confirm-bot', 'play-submit-flow')
+
+        this.validateBot().then((my_bot_present) => {
           if (!my_bot_present) {
-            this.gaData('play', 'submit-error-zip', 'play-submit-flow')
-            const error_message = 'The zip archive does not contain a root mybot.{ext} file. mybot.{ext} is required to be present in the root of the zip file.'
-            this.showMessage('error', error_message)
-            this.errorMessage = error_message
             return
           }
 
@@ -160,7 +210,15 @@ export default{
       gaData: function (category, action, label) {
         utils.gaEvent(category, action, label)
       }
-    }
+    },
+    watch: {
+      selectedBot() {
+        this.validateBot()
+      },
+      botsList() {
+        this.validateBot()
+      },
+    },
   }
 </script>
 <style>

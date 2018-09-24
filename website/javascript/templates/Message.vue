@@ -46,10 +46,10 @@
     }
 
     &-success{
-      background-color: #2ecc71;
-      color: #262430;
+      background-color: #6dc3f5;
+      color: #fff;
       .close{
-        color: #262430;
+        color: #fff;
       }
     }
     &-error{
@@ -67,6 +67,7 @@
       }
     }
     button.close{
+      margin: 4px;
       opacity: 0.8;
       &:hover{
         opacity: 1;

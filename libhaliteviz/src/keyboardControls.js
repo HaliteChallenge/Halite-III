@@ -13,6 +13,9 @@ export class KeyboardControls {
         if (!el) el = document.body;
         this.el = el;
 
+        // Make element focusable
+        el.querySelector("canvas").setAttribute("tabindex", 0);
+
         this._onKeyUp = (e) => {
             if (document.activeElement.tagName == "INPUT") return;
             if (typeof this.keyBindings[e.code] !== "undefined") {

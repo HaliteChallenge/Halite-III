@@ -623,8 +623,8 @@ languages = (
         [],
         [(["*.rb"], ChmodCompiler("Ruby"))]
     ),
-    Language("Rust", "target/release/"+BOT, "Cargo.toml",
-        "target/release/MyBot",
+    Language("Rust", "target/release/my_bot", "Cargo.toml",
+        "target/release/my_bot",
         [],
         [([""], ErrorFilterCompiler(comp_args["Rust"][0], filter_stderr="warning:"))]
     ),

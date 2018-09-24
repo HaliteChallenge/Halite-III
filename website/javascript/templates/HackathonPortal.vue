@@ -171,7 +171,7 @@ export default {
       }
     })
 
-    api.getHackathons().then(hackathons => {
+    api.get_hackathons().then(hackathons => {
       this.populateHackathons(hackathons)
     })
   },

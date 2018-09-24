@@ -1,4 +1,3 @@
-const pako = require("pako");
 const libzstd = require("./libzstd");
 
 const libzstdInstance = libzstd();
@@ -41,17 +40,6 @@ function malloc(size) {
 addEventListener("message", (e) => {
     const buffer = e.data;
     try {
-        const inflated = pako.inflate(buffer);
-        console.log("Replay was gzipped");
-        self.postMessage(inflated.buffer, [inflated.buffer]);
-        return;
-    }
-    catch (e) {
-        console.debug("miniz failed, trying zSTD");
-        // Not compressed with miniz, let's try zstd
-    }
-
-    try {
         // Copy the data to the Emscripten heap
         // http://kapadia.github.io/emscripten/2013/09/13/emscripten-pointers-and-pointers.html
         const byteView = new Uint8Array(buffer);
@@ -64,6 +52,8 @@ addEventListener("message", (e) => {
         if (result === 0) {
             // TODO: get error
             console.error("Could not decompress replay.");
+            // Maybe it was plain data?
+            self.postMessage(buffer, [buffer]);
             return;
         }
         let size = 0;
@@ -75,8 +65,6 @@ addEventListener("message", (e) => {
     catch (e) {
         console.debug("zSTD failed: ", e);
         // Not compressed with zSTD, plain data?
+        self.postMessage(buffer, [buffer]);
     }
-
-    // TODO:
-    self.postMessage(buffer, [buffer]);
 });

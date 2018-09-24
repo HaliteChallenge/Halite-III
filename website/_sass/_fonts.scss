@@ -1,21 +1,31 @@
 @font-face {
-  font-family: 'Equinox';
-  src: url('/assets/fonts/EquinoxRegular.eot');
-  src: url('/assets/fonts/EquinoxRegular.eot') format('embedded-opentype'),
-       url('/assets/fonts/EquinoxRegular.woff2') format('woff2'),
-       url('/assets/fonts/EquinoxRegular.woff') format('woff'),
-       url('/assets/fonts/EquinoxRegular.ttf') format('truetype'),
-       url('/assets/fonts/EquinoxRegular.svg#EquinoxRegular') format('svg');
+  font-family: 'Proxima';
+  font-weight: 400;
+  src: url('/assets/fonts/ProximaNovaSoft-Regular.ttf') format('truetype');
+  // src: url('/assets/fonts/EquinoxRegular.eot');
+  // src: url('/assets/fonts/EquinoxRegular.eot') format('embedded-opentype'),
+  //      url('/assets/fonts/EquinoxRegular.woff2') format('woff2'),
+  //      url('/assets/fonts/EquinoxRegular.woff') format('woff'),
+  //      url('/assets/fonts/EquinoxRegular.ttf') format('truetype'),
+  //      url('/assets/fonts/EquinoxRegular.svg#EquinoxRegular') format('svg');
 }
 
 @font-face {
-  font-family: 'Equinox';
-  src: url('/assets/fonts/EquinoxBold.eot');
-  src: url('/assets/fonts/EquinoxBold.eot') format('embedded-opentype'),
-       url('/assets/fonts/EquinoxBold.woff2') format('woff2'),
-       url('/assets/fonts/EquinoxBold.woff') format('woff'),
-       url('/assets/fonts/EquinoxBold.ttf') format('truetype'),
-       url('/assets/fonts/EquinoxBold.svg#EquinoxBold') format('svg');
+  font-family: 'Proxima';
+  font-weight: 600;
+  src: url('/assets/fonts/ProximaNovaSoft-Medium.ttf') format('truetype');
+  // src: url('/assets/fonts/EquinoxBold.eot');
+  // src: url('/assets/fonts/EquinoxBold.eot') format('embedded-opentype'),
+  //      url('/assets/fonts/EquinoxBold.woff2') format('woff2'),
+  //      url('/assets/fonts/EquinoxBold.woff') format('woff'),
+  //      url('/assets/fonts/EquinoxBold.ttf') format('truetype'),
+  //      url('/assets/fonts/EquinoxBold.svg#EquinoxBold') format('svg');
+}
+
+@font-face {
+  font-family: 'Proxima';
+  font-weight: 700;
+  src: url('/assets/fonts/ProximaNovaSoft-Semibold.ttf') format('truetype');
 }
 
 // @font-face {
@@ -28,7 +38,7 @@
 //          url('/assets/fonts/HelveticaNeue.svg#HelveticaNeue') format('svg');
 // }
 
-@font-face {
-  font-family: 'Teko';
-  src: url('/assets/fonts/Teko-Regular.ttf');
-}
+// @font-face {
+//   font-family: 'Teko';
+//   src: url('/assets/fonts/Teko-Regular.ttf');
+// }

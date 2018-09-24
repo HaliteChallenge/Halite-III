@@ -43,6 +43,7 @@ def get_match_helper(match_id):
             model.games.c.map_height,
             model.games.c.time_played,
             model.games.c.challenge_id,
+            model.games.c.stats,
         ]).where(
             model.games.c.id == match_id
         )).first()
@@ -57,6 +58,7 @@ def get_match_helper(match_id):
             "replay_class": match["replay_bucket"],
             "time_played": match["time_played"],
             "challenge_id": match["challenge_id"],
+            "stats": match["stats"],
             "players": {}
         }
         for row in query.fetchall():
@@ -98,7 +100,7 @@ def list_matches_helper(offset, limit, participant_clause,
     """
     result = []
 
-    with model.engine.connect() as conn:
+    with model.read_conn() as conn:
         query = sqlalchemy.sql.select([
             model.games.c.id,
             model.games.c.replay_name,
@@ -107,14 +109,8 @@ def list_matches_helper(offset, limit, participant_clause,
             model.games.c.map_height,
             model.games.c.time_played,
             model.games.c.challenge_id,
-            model.game_stats.c.turns_total,
-            model.game_stats.c.planets_destroyed,
-            model.game_stats.c.ships_produced,
-            model.game_stats.c.ships_destroyed,
-        ]).select_from(model.games.outerjoin(
-            model.game_stats,
-            (model.games.c.id == model.game_stats.c.game_id)
-        )).where(
+            model.games.c.stats,
+        ]).select_from(model.games).where(
             where_clause &
             sqlalchemy.sql.exists(
                 model.game_participants.select(
@@ -144,11 +140,9 @@ def list_matches_helper(offset, limit, participant_clause,
                 "replay": match["replay_name"],
                 "replay_class": match["replay_bucket"],
                 "time_played": match["time_played"],
-                "turns_total": match["turns_total"],
-                "planets_destroyed": match["planets_destroyed"],
-                "ships_produced": match["ships_produced"],
-                "ships_destroyed": match["ships_destroyed"],
+                "turns_total": match["stats"]["number_turns"] if match["stats"] else None,
                 "challenge_id": match["challenge_id"],
+                "stats": match["stats"],
                 "players": {},
             }
 
@@ -178,10 +172,6 @@ def list_matches():
         "game_id": model.games.c.id,
         "time_played": model.games.c.time_played,
         "views_total": model.game_view_stats.c.views_total,
-        "turns_total": model.game_stats.c.turns_total,
-        "planets_destroyed": model.game_stats.c.planets_destroyed,
-        "ships_produced": model.game_stats.c.ships_produced,
-        "ships_destroyed": model.game_stats.c.ships_destroyed,
         "challenge_id": model.games.c.challenge_id,
     }, ["timed_out"])
 

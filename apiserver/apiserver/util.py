@@ -1,7 +1,13 @@
+import contextlib
+import cProfile
 import math
+import os
+import threading
+import time
 import urllib.parse
 
 import flask
+import sqlalchemy
 from flask_cors import cross_origin as flask_cross_origin
 
 from . import config
@@ -32,10 +38,11 @@ def cross_origin(*args, **kwargs):
     kwargs["origins"] = config.CORS_ORIGINS
     kwargs["supports_credentials"] = True
     kwargs["allow_headers"] = ["Origin", "Accept", "Content-Type"]
+    kwargs["methods"] = ["GET", "POST", "PUT", "OPTIONS", "DELETE"]
     return flask_cross_origin(*args, **kwargs)
 
 
-@cross_origin(methods=["GET", "POST", "PUT", "OPTIONS"])
+@cross_origin(methods=["GET", "POST", "PUT", "OPTIONS", "DELETE"])
 def handle_api_error(error):
     """
     The Flask error handler for APIErrors. Use with @app.errorhandler.
@@ -90,6 +97,41 @@ def response_success(more=None, status_code=200):
     return flask.jsonify(response), status_code
 
 
+def validate_api_key(api_key):
+    """
+    Validate the given API key and retrieve the corresponding user record.
+
+    :raises: APIError if the key is invalid
+    """
+    if not api_key:
+        return None
+
+    if ":" not in api_key:
+        raise APIError(403, message="API key is in invalid format.")
+
+    # Lazy import to avoid circularity
+    from . import model
+
+    user_id, api_key = api_key.split(":", 1)
+    user_id = int(user_id)
+    with model.read_conn() as conn:
+        user = conn.execute(sqlalchemy.sql.select([
+            model.users.c.id.label("user_id"),
+            model.users.c.is_admin,
+            model.users.c.api_key_hash,
+            model.users.c.is_email_good,
+            model.users.c.is_active,
+        ]).where(model.users.c.id == user_id)).first()
+
+        if not user:
+            return None
+
+        if config.api_key_context.verify(api_key, user["api_key_hash"]):
+            return user
+
+    return None
+
+
 def build_site_url(page, params, base_url=config.SITE_URL):
     """
 
@@ -102,3 +144,24 @@ def build_site_url(page, params, base_url=config.SITE_URL):
     return "{}?{}".format(
         urllib.parse.urljoin(base_url, page),
         urllib.parse.urlencode(params))
+
+
+@contextlib.contextmanager
+def profiling(name):
+    profiler = cProfile.Profile()
+    profiler.enable()
+    try:
+        yield
+    finally:
+        profiler.disable()
+        profiler.dump_stats(name)
+
+
+def profiled(view):
+    def _view(*args, **kwargs):
+        with profiling("{}-{}-{}-{}.prof".format(view.__name__,
+                                                 time.time(),
+                                                 os.getpid(),
+                                                 threading.get_ident())):
+            return view(*args, **kwargs)
+    return _view

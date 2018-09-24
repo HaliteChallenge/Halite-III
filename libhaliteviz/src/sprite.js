@@ -1,12 +1,13 @@
 import * as PIXI from "pixi.js";
+import {MotionBlurFilter} from '@pixi/filter-motion-blur';
 
 import * as assets from "./assets";
 import {CELL_SIZE, PLAYER_COLORS} from "./assets";
 
 /**
- * Manages a Sprite on screen.
+ * Manages a ship on screen.
  */
- export class playerSprite {
+export default class Ship {
     /**
      *
      * @param visualizer The visualizer object
@@ -17,13 +18,24 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         const spriteShape = new PIXI.Graphics();
         spriteShape.beginFill(assets.SPRITE_COLOR, 1);
         // draw circle - x coord, y coord, radius
-        spriteShape.drawCircle(0, 0, assets.CELL_SIZE * visualizer.camera.scale);
+        spriteShape.drawCircle(0, 0, assets.CELL_SIZE * 64);
         spriteShape.endFill();
 
         let spriteTexture = visualizer.application.renderer.generateTexture(spriteShape);
 
-        this.sprite = new PIXI.Sprite(spriteTexture);
-        this.sprite.zOrder= -1;
+        this.sprite = new PIXI.extras.AnimatedSprite(assets.TURTLE_SPRITES[record.owner]);
+        this.inspiredSprite = new PIXI.Sprite(spriteTexture);
+        this.inspiredSprite.tint = assets.PLAYER_COLORS[record.owner];
+        this.highlight = new PIXI.Sprite(spriteTexture);
+        this.highlight.visible = false;
+        this.highlight.alpha = 0.7;
+        this.motionblur = new MotionBlurFilter([0, 0], 9, 0);
+        this.sprite.filters = [this.motionblur];
+        this.inspiredSprite.filters = [this.motionblur];
+
+        this.halo = new PIXI.Sprite(assets.HALO_SPRITE);
+        this.halo.filters = [this.motionblur];
+        this.halo.visible = false;
 
         this.container = null;
         this.visualizer = visualizer;
@@ -31,10 +43,10 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         // Store map size to make movement easier
         this.map_width = this.visualizer.replay.production_map.width;
         this.map_height = this.visualizer.replay.production_map.height;
-        this.energy_loss = this.visualizer.replay.GAME_CONSTANTS.BASE_TURN_ENERGY_LOSS;
 
         this.owner = record.owner;
         this.energy = record.energy;
+        this.id = record.id;
         this.x = record.x;
         this.y = record.y;
 
@@ -45,10 +57,12 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         };
 
         // Set up sprite size & anchors
-        const width = assets.CELL_SIZE * this.visualizer.camera.scale;
-        setupSprite(this.sprite, width);
-
-        this.sprite.tint = PLAYER_COLORS[this.owner];
+        const width = 1.1 * assets.CELL_SIZE * this.visualizer.camera.scale;
+        setupSprite(this.sprite, width * 4);
+        setupSprite(this.inspiredSprite, width * 4);
+        this.inspiredSprite.visible = false;
+        setupSprite(this.highlight, width * 1.25);
+        setupSprite(this.halo, width * 1.25);
 
         // add to board in correct position
         const pixelX = this.visualizer.camera.scale * CELL_SIZE * this.x + this.visualizer.camera.scale * CELL_SIZE / 2;
@@ -57,11 +71,14 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         this.sprite.position.y = pixelY;
     }
 
-     /**
+    /**
      * Add the sprite to the visualizer.
      * @param container {PIXI.Container} to use for the sprite
      */
     attach(container) {
+        container.addChild(this.highlight);
+        container.addChild(this.inspiredSprite);
+        container.addChild(this.halo);
         container.addChild(this.sprite);
         this.container = container;
     }
@@ -70,9 +87,12 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
      * Remove this sprite from the visualizer(as in, when it runs out of health)
      */
     destroy() {
+        this.container.removeChild(this.inspiredSprite);
         this.container.removeChild(this.sprite);
+        this.container.removeChild(this.halo);
+        this.container.removeChild(this.highlight);
+        delete this.container;
     }
-
 
     /**
      * TODO: update with selection of sprites
@@ -84,67 +104,180 @@ import {CELL_SIZE, PLAYER_COLORS} from "./assets";
         });
     }
 
-
     /**
      * Update this sprite's display with the latest state from the replay.
-     * @param record
+     * @param command
      */
-
-    update() {
+    update(command) {
         let direction = 0;
         let x_move = 0;
         let y_move = 0;
         // Move the sprite according to move commands and redraw in new location
         if (this.visualizer.frame < this.visualizer.replay.full_frames.length) {
-            let moves = this.visualizer.replay.full_frames[this.visualizer.frame].moves || {};
-            let player_moves = moves[this.owner] || [];
-            for (let move_idx = 0; move_idx < player_moves.length; move_idx++) {
-                let move = player_moves[move_idx];
-                if (move && move.type === "move" && move.entity_x === this.x && move.entity_y === this.y) {
-                    if (move.direction === "n") {
-                        direction = Math.PI;
-                        x_move = 0;
-                        y_move = -1;
-                    }
-                    if (move.direction === "e") {
-                        direction = Math.PI / 2;
-                        x_move = 1;
-                        y_move = 0;
-                    }
-                    if (move.direction === "s") {
-                        direction = 0;
-                        x_move = 0;
-                        y_move = 1;
-                    }
-                    if (move.direction === "w") {
-                        direction = -Math.PI / 2;
-                        x_move = -1;
-                        y_move = 0;
-                    }
-                    this.sprite.rotation = direction;
-
-                    // Use wrap around map in determining movement
-                    this.x = (this.x + x_move + this.map_width) % this.map_width;
-                    this.y = (this.y + y_move + this.map_height) % this.map_height;
-
-                    this.updatePosition();
-
-                    // Sprite can only move once, so after reaching move pertaining to this sprite, exit
-                    return;
-                }
+            // Sprite spawned this turn, does not exist in entities struct at start of turn
+            if (command.type === "g") {
+                return;
             }
+            const ownerEntities = this.visualizer.replay
+                  .full_frames[this.visualizer.frame]
+                  .entities[this.owner];
+            if (!ownerEntities) return;
+            const entity_record = ownerEntities[this.id];
+            if (!entity_record) {
+                return;
+            }
+
+            this.energy = entity_record.energy;
+
+            if (command.type === "m") {
+                if (command.direction === "n") {
+                    direction = 0;
+                    x_move = 0;
+                    y_move = -1;
+                }
+                else if (command.direction === "e") {
+                    direction = Math.PI / 2;
+                    x_move = 1;
+                    y_move = 0;
+                }
+                else if (command.direction === "s") {
+                    direction = Math.PI;
+                    x_move = 0;
+                    y_move = 1;
+                }
+                else if (command.direction === "w") {
+                    direction = -Math.PI / 2;
+                    x_move = -1;
+                    y_move = 0;
+                }
+                else {
+                    // If still, preserve rotation
+                    direction = this.sprite.rotation;
+                }
+                this.sprite.rotation = direction;
+
+                // To prevent "glitching" when a move is recorded that
+                // isn't processed (because there wasn't enough
+                // energy, for instance), we interpolate with the next
+                // frame's position where available.
+                if (this.visualizer.frame < this.visualizer.replay.full_frames.length - 1) {
+                    const next_frame = this.visualizer.replay
+                          .full_frames[this.visualizer.frame + 1];
+                    if (next_frame.entities[this.owner] &&
+                        next_frame.entities[this.owner][this.id]) {
+                        const next_record = next_frame.entities[this.owner][this.id];
+                        x_move = next_record.x - entity_record.x;
+                        y_move = next_record.y - entity_record.y;
+
+                        // Wraparound
+                        if (x_move > 1) {
+                            x_move = -1;
+                        }
+                        else if (x_move < -1) {
+                            x_move = 1;
+                        }
+                        if (y_move > 1) {
+                            y_move = -1;
+                        }
+                        else if (y_move < -1) {
+                            y_move = 1;
+                        }
+                    }
+                }
+                else if (this.energy < this.visualizer.findCurrentProduction(this.visualizer.frame, entity_record.x, entity_record.y) / this.visualizer.replay.GAME_CONSTANTS.MOVE_COST_RATIO) {
+                    // Don't interpolate positions if sprite not
+                    // actually able to move when it would have died
+                    // next turn
+                    x_move = y_move = 0;
+                }
+            }  else if (command.type === "d") {
+                // TODO
+            } else if (command.type === "m") {
+                // TODO
+            } else if (command.type === "c") {
+                // TODO
+            }
+
+            // Use wrap around map in determining movement,
+            // interpolate between moves with visualizer time
+            // Use a bit of easing on the time to make it look
+            // nicer (cubic in/out easing)
+            let t = this.visualizer.time;
+            this.motionblur.velocity.set(x_move * -20 * t * (t - 1),
+                                         y_move * -20 * t * (t - 1));
+            t /= 0.5;
+            if (t < 1) {
+                t = t*t*t/2;
+            }
+            else {
+                t -= 2;
+                t = (t*t*t + 2)/2;
+            }
+
+            this.x = (entity_record.x + x_move * t + this.map_width) % this.map_width;
+            this.y = (entity_record.y + y_move * t + this.map_height) % this.map_height;
         }
     }
 
-     updatePosition() {
-         // Determine pixel location from grid location, then move sprite
-         const size = this.visualizer.camera.scale * CELL_SIZE;
-         // Account for camera panning
-         const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(this.x, this.y);
-         const pixelX = size * cellX + this.visualizer.camera.scale * CELL_SIZE / 2;
-         const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
-         this.sprite.position.x = pixelX;
-         this.sprite.position.y = pixelY;
-         this.sprite.width = this.sprite.height = size;
-     }
+    draw() {
+        // Determine pixel location from grid location, then move sprite
+        const size = this.visualizer.camera.scale * CELL_SIZE;
+        // Account for camera panning
+        const [ cellX, cellY ] = this.visualizer.camera.worldToCamera(this.x, this.y);
+        const pixelX = size * cellX + this.visualizer.camera.scale * CELL_SIZE / 2;
+        const pixelY = size * cellY + this.visualizer.camera.scale * CELL_SIZE / 2;
+        this.sprite.position.x = pixelX;
+        this.sprite.position.y = pixelY;
+        this.sprite.width = this.sprite.height = size * 1.5;
+        this.inspiredSprite.position.x = pixelX;
+        this.inspiredSprite.position.y = pixelY;
+        this.inspiredSprite.width = this.inspiredSprite.height = size * 1.25;
+        this.highlight.position.x = pixelX;
+        this.highlight.position.y = pixelY;
+        this.highlight.width = this.highlight.height = 0.9 * size;
+        this.halo.position.x = pixelX;
+        this.halo.position.y = pixelY;
+        this.halo.width = this.halo.height = (1 + 0.25 * Math.sin(this.visualizer.time * Math.PI)) * size;
+
+        const camera = this.visualizer.camera;
+        this.highlight.visible =
+            camera.selected &&
+            camera.selected.type === "ship" &&
+            camera.selected.id === this.id &&
+            camera.selected.owner === this.owner;
+
+        if (!this.visualizer.currentFrame || !this.visualizer.currentFrame.entities) {
+            return;
+        }
+        if (!this.visualizer.currentFrame.entities[this.owner]) {
+            return;
+        }
+        if (!this.visualizer.currentFrame.entities[this.owner][this.id]) {
+            return;
+        }
+
+        const spriteRecord = this.visualizer.currentFrame.entities[this.owner][this.id];
+        const maxEnergy = this.visualizer.replay.GAME_CONSTANTS.MAX_ENERGY;
+        const energyPercent = spriteRecord.energy / maxEnergy;
+
+        if (energyPercent < 0.25) {
+            this.sprite.gotoAndStop(0);
+        }
+        else if (energyPercent < 0.75) {
+            this.sprite.gotoAndStop(1);
+        }
+        else {
+            this.sprite.gotoAndStop(2);
+        }
+
+        this.halo.visible = spriteRecord.is_inspired;
+        // if (spriteRecord.is_inspired) {
+        //     this.inspiredSprite.visible = true;
+        //     this.sprite.visible = false;
+        // }
+        // else {
+        //     this.inspiredSprite.visible = false;
+        //     this.sprite.visible = true;
+        // }
+    }
 }

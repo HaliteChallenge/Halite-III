@@ -4,16 +4,16 @@
 # written to the profile, so make sure those variables actually get loaded.
 source ~/.profile
 
-cd ../../environment
+cd ../../game_engine
 
 cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
-cmake --build build -- -j2
+cmake --build build -- -j4
 
 cp build/halite .
 
 cd ../apiserver/worker
 
-cp ../../environment/halite .
+cp ../../game_engine/halite .
 
 # Grab configuration values
 python3 grab_config.py
@@ -24,4 +24,4 @@ if [ -f /home/worker/fix_cgroups.sh ]; then
 fi
 
 # Start the worker
-screen -S worker -d -m /bin/bash -c "python3 worker.py"
+screen -S worker -d -m /bin/bash -c "python3 worker.py $1"

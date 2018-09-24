@@ -11,12 +11,9 @@ from .. import config, model, util
 def rand_map_size():
     # Pick map size. Duplicate entries are used to weight the
     # probability of a particular size
-    map_sizes = [80, 80, 88, 88, 96, 96, 96, 104, 104, 104, 104,
-                 112, 112, 112, 120, 120, 128, 128]
+    map_sizes = [32, 40, 48, 56, 64]
     base_size = random.choice(map_sizes)
-    # Always generate 3:2 aspect ratio
-    map_width = 3 * base_size
-    map_height = 2 * base_size
+    map_width = map_height = base_size
 
     # Width, height
     return max(map_width, map_height), min(map_width, map_height)
@@ -30,7 +27,9 @@ def serve_game_task(conn, has_gpu=False):
             return result
 
     # Only allow 2 or 4 player games
-    player_count = 2 if random.random() > 0.5 else 4
+    player_count = 2
+    if random.random() > 0.5:
+        player_count = 4
 
     # If there is a GPU, only take bots from players who qualify for the GPU.
     # Else, do not run games for players who qualify for one.
@@ -100,6 +99,7 @@ def serve_game_task(conn, has_gpu=False):
         ranked_users.c.rank.label("player_rank"),
         model.ranked_bots_users.c.num_submissions.label("version_number"),
         model.ranked_bots_users.c.mu,
+        model.teams.c.name.label("team_name"),
     ]).select_from(
         model.ranked_bots_users.join(
             model.bots,
@@ -108,6 +108,10 @@ def serve_game_task(conn, has_gpu=False):
         ).join(
             ranked_users,
             (ranked_users.c.user_id == model.ranked_bots_users.c.user_id)
+        ).join(
+            model.teams,
+            model.teams.c.id == model.ranked_bots_users.c.team_id,
+            isouter=True
         )
     ).where(
         (model.bots.c.compile_status == model.CompileStatus.SUCCESSFUL.value) &
@@ -119,7 +123,7 @@ def serve_game_task(conn, has_gpu=False):
     ).limit(mu_rank_limit).alias("muranktable")
 
     # Select more bots than needed, discard ones from same player
-    query = close_players.select().order_by(sqlfunc.rand()) \
+    query = close_players.select().order_by(sqlfunc.random()) \
         .limit(player_count * 2)
     potential_players = conn.execute(query).fetchall()
     players = [seed_player]
@@ -138,7 +142,7 @@ def serve_game_task(conn, has_gpu=False):
     players = [{
         "user_id": player["user_id"],
         "bot_id": player["bot_id"],
-        "username": player["username"],
+        "username": player["team_name"] if player["team_name"] else player["username"],
         "version_number": player["version_number"],
         "rank": player["rank"],
         "tier": util.tier(player["rank"], total_players),
@@ -167,6 +171,19 @@ def reset_challenges(conn):
         status=model.ChallengeStatus.CREATED.value,
     )
     conn.execute(reset_stuck_challenges)
+
+    # Find challenges involving disabled users, and finish them right now
+    finish_disabled_challenges = model.challenges.update().values(
+        status='finished',
+        finished=sqlalchemy.sql.func.current_timestamp(),
+    ).where(
+        (model.challenges.c.id == model.challenge_participants.c.challenge_id) &
+        (model.challenge_participants.c.user_id == model.users.c.id) &
+        (model.users.c.is_active == False) &
+        (model.challenges.c.status != 'finished')
+    )
+    conn.execute(finish_disabled_challenges)
+
 
 
 def find_challenge(conn, has_gpu=False):
@@ -294,18 +311,18 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
     user_id = model.game_participants.c.user_id
     bot_id = model.game_participants.c.bot_id
 
-    gamers_last_play = sqlalchemy.sql.select([
+    columns = [
         max_time,
         ranked_users.c.user_id,
+        ranked_users.c.team_id,
         model.ranked_bots_users.c.bot_id,
         ranked_users.c.username,
         ranked_users.c.rank.label("player_rank"),
         model.ranked_bots_users.c.num_submissions.label("version_number"),
         model.ranked_bots_users.c.mu,
-        # The database isn't smart enough to know that there is only one rank
-        # value for a given (user_id, bot_id).
-        sqlfunc.any_value(model.ranked_bots_users.c.rank).label('rank'),
-    ]).select_from(
+        model.ranked_bots_users.c.rank.label('rank'),
+    ]
+    gamers_last_play = sqlalchemy.sql.select(columns).select_from(
         ranked_users.join(
             model.ranked_bots_users,
             (model.ranked_bots_users.c.user_id
@@ -314,14 +331,27 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
         ).join(
             model.game_participants.join(
                 model.games,
-                model.games.c.id == model.game_participants.c.game_id
+                (model.games.c.id == model.game_participants.c.game_id) &
+                # Only consider games in the past day. This speeds up
+                # performance drastically (1.2s -> 0.2s) and should
+                # not materially affect matchmaking: if a user hasn't
+                # received any games in the past day, they still
+                # really need one!
+                (model.games.c.time_played >
+                 sqlfunc.current_date() - sqlalchemy.sql.text("INTERVAL '1' DAY"))
             ),
             (ranked_users.c.user_id == model.game_participants.c.user_id)
             & (model.ranked_bots_users.c.bot_id
                == model.game_participants.c.bot_id),
             isouter=True
         )
-    ).group_by(ranked_users.c.user_id, model.ranked_bots_users.c.bot_id
+    ).group_by(ranked_users.c.user_id,
+               ranked_users.c.team_id,
+               model.ranked_bots_users.c.bot_id,
+               ranked_users.c.username, ranked_users.c.rank,
+               model.ranked_bots_users.c.num_submissions,
+               model.ranked_bots_users.c.mu,
+               model.ranked_bots_users.c.rank,
     ).reduce_columns().alias("temptable")
 
     # Of those users, select ones with under 400 games, preferring
@@ -340,18 +370,24 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
         gamers_last_play.c.mu,
         gamers_last_play.c.rank,
         gamers_last_play.c.player_rank,
+        model.teams.c.name.label("team_name"),
     ]).select_from(
         gamers_last_play.join(
             outer_bots,
             (outer_bots.c.user_id == gamers_last_play.c.user_id) &
-            (outer_bots.c.id == gamers_last_play.c.bot_id))) \
+            (outer_bots.c.id == gamers_last_play.c.bot_id)) \
+        .join(
+            model.teams,
+            gamers_last_play.c.team_id == model.teams.c.id,
+            isouter=True
+        )) \
         .where(bot_restrictions) \
         .order_by(gamers_last_play.c.max_time.asc()) \
         .limit(15).alias("orderedtable")
 
     if restrictions:
         # Then sort them randomly and take one
-        query = potential_players.select().order_by(sqlfunc.rand()).limit(1)
+        query = potential_players.select().order_by(sqlfunc.random()).limit(1)
     else:
         query = potential_players.select().limit(1)
 
@@ -368,12 +404,12 @@ def find_newbie_seed_player(conn, ranked_users, seed_filter):
     sqlfunc = sqlalchemy.sql.func
     game_curve = 1 / (model.bots.c.games_played + 1)
     # weight the curve between half and full weight
-    rand_factor = 0.5 + (sqlfunc.rand() * 0.5)
+    rand_factor = 0.5 + (sqlfunc.random() * 0.5)
     # Since the curve is cut in half every doubling of games, this means a bot
     # will always be chosen ahead of any bots that have more than twice the
     # number of games
     ordering = rand_factor * -game_curve
-    query = sqlalchemy.sql.select([
+    columns = [
         ranked_users.c.user_id,
         model.bots.c.id.label("bot_id"),
         ranked_users.c.username,
@@ -381,7 +417,9 @@ def find_newbie_seed_player(conn, ranked_users, seed_filter):
         ranked_users.c.rank.label("player_rank"),
         model.bots.c.version_number,
         model.bots.c.mu,
-    ]).select_from(
+        model.teams.c.name.label("team_name"),
+    ]
+    query = sqlalchemy.sql.select(columns).select_from(
         model.ranked_bots_users.join(
             model.bots,
             (model.ranked_bots_users.c.user_id == model.bots.c.user_id) &
@@ -389,12 +427,15 @@ def find_newbie_seed_player(conn, ranked_users, seed_filter):
         ).join(
             ranked_users,
             model.ranked_bots_users.c.user_id == ranked_users.c.user_id
+        ).join(
+            model.teams,
+            model.teams.c.id == model.ranked_bots_users.c.team_id,
+            isouter=True
         )
     ).where(
         (model.bots.c.compile_status == model.CompileStatus.SUCCESSFUL.value) &
         seed_filter
-    ).order_by(ordering).limit(20).reduce_columns().alias("seed_query").select(
-    ).order_by(sqlfunc.rand())
+    ).order_by(ordering).limit(20).reduce_columns().alias("seed_query").select().order_by(sqlfunc.random())
 
     return conn.execute(query).first()
 
@@ -446,6 +487,7 @@ def find_seed_player(conn, ranked_users, seed_filter):
             ranked_users.c.rank.label("player_rank"),
             model.ranked_bots_users.c.mu,
             model.ranked_bots_users.c.num_submissions.label("version_number"),
+            model.teams.c.name.label("team_name"),
         ]).select_from(
             model.ranked_bots_users.join(
                 # This join should have no effect on the result but it makes
@@ -457,6 +499,10 @@ def find_seed_player(conn, ranked_users, seed_filter):
                 ranked_users,
                 (model.ranked_bots_users.c.user_id == ranked_users.c.user_id) &
                 seed_filter
+            ).join(
+                model.teams,
+                model.teams.c.id == model.ranked_bots_users.c.team_id,
+                isouter=True
             )
         ).where(
             model.bots.c.compile_status == model.CompileStatus.SUCCESSFUL.value

@@ -5,7 +5,7 @@ version: "{build}"
 skip_non_tags: true
 
 # Build worker image (VM template)
-image: Windows Server 2012 R2
+image: Visual Studio 2017
 
 # clone directory
 clone_folder: C:\Halite
@@ -15,15 +15,65 @@ branches:
   only:
     - master
 
-#before_build:
-#  - dir \s
+# CMake doesn't work well when installed to a path with spaces, so
+# install our own CMake.
+install:
+  - ps: Invoke-WebRequest https://cmake.org/files/v3.12/cmake-3.12.1-win64-x64.zip -OutFile C:\cmake.zip
+  - ps: Expand-Archive c:\cmake.zip -DestinationPath c:\cmake
+  - ps: dir c:\cmake
+  - set path=C:\cmake\cmake-3.12.1-win64-x64\bin;%path%
+  - where cmake
 
 # scripts that run after cloning repository
 build_script:
-  - cd C:\Halite\environment
-  - call "%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-  - .\make.bat
+  - cd C:\Halite
+  - call .appveyor.bat
+
+  # Now build the offline tools.
+  # First, bundle up the dependencies into the Python embeddable distribution.
+  # Activate the proper compiler and install deps via pip
+  - cd C:\Halite\tools\hlt_client
+  - setlocal
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - C:\Python37-x64\python.exe -m pip install -r requirements.txt -t C:\deps-amd64
+  - endlocal
+  - setlocal
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
+  - C:\Python37\python.exe -m pip install -r requirements.txt -t C:\deps-x86
+  - endlocal
+
+  - ps: Invoke-WebRequest http://www.python.org/ftp/python/3.7.0/python-3.7.0-embed-amd64.zip -OutFile python37.zip
+  - ps: Expand-Archive python37.zip -DestinationPath C:\python-windows
+  - ps: Copy-Item C:\deps-amd64\zstd*.pyd C:\python-windows\zstd.pyd
+  # This just adds our deps into the root of the stdlib ZIP file.
+  - 7z a C:\python-windows\python37.zip C:\deps-amd64\*
+  - 7z a C:\Halite\python-windows-amd64.zip C:\python-windows
+
+  - ps: Remove-Item C:\python-windows -Force -Recurse
+
+  - ps: Invoke-WebRequest http://www.python.org/ftp/python/3.7.0/python-3.7.0-embed-win32.zip -OutFile python37-x86.zip
+  - ps: Expand-Archive python37-x86.zip -DestinationPath C:\python-windows
+  - ps: Copy-Item C:\deps-x86\zstd*.pyd C:\python-windows\zstd.pyd
+  - 7z a C:\python-windows\python37.zip C:\deps-x86\*
+  - 7z a C:\Halite\python-windows-x86.zip C:\python-windows
+
+  # Now build Halite-in-a-Box
+  - 7z e C:\Halite\python-windows-amd64.zip C:\Halite\tools\halite-in-a-box\extra\python-windows
+  # Add hlt_client into bundled libraries
+  - cd C:\Halite\tools\hlt_client
+  - 7z a C:\Halite\tools\halite-in-a-box\extra\python-windows\python37.zip hlt_client
+  - cd C:\Halite\libhaliteviz
+  - yarn install
+  - cd C:\Halite\tools\halite-in-a-box
+  - yarn install
+  - yarn electron-builder -w
 
 artifacts:
-  - path: environment\halite.exe
-    name: halite.exe
+  - path: game_engine\build\Release\halite.exe
+    name: halite-amd64.exe
+  - path: game_engine\build32\Release\halite.exe
+    name: halite-x86.exe
+  - path: 'tools\halite-in-a-box\electron-dist\halite-in-a-box 1.0.0.exe'
+    name: halite-in-a-box.exe
+  - path: python-windows-amd64.zip
+  - path: python-windows-x86.zip
