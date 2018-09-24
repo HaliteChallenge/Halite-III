@@ -14,6 +14,7 @@ from . import util as api_util
 from .blueprint import web_api
 
 _COUNT_KEY = 'count'
+_RELRANK_KEY = 'relrank'
 _LEADERBOARD_ALIAS = 'full_leaderboard'
 
 
@@ -36,7 +37,7 @@ def leaderboard():
     offset, limit = api_util.get_offset_limit(default_limit=250,
                                               max_limit=10000)
 
-    where_clause, order_clause, manual_sort = api_util.get_sort_filter({
+    where_clause, general_clause, order_clause, manual_sort = api_util.get_sort_filter({
         "user_id": model.ranked_bots_users.c.user_id,
         "username": model.ranked_bots_users.c.username,
         "level": model.ranked_bots_users.c.player_level,
@@ -52,7 +53,7 @@ def leaderboard():
         "team_name": model.ranked_bots_users.c.team_name,
         "team_id": model.ranked_bots_users.c.team_id,
         "team_leader_id": model.ranked_bots_users.c.team_leader_id,
-    }, ["tier"])
+    }, ["tier"], ["user_id", "username", "rank", "organization_rank", "team_name", "team_id", "team_leader_id"])
 
     if not order_clause:
         order_clause = [model.ranked_bots_users.c.rank]
@@ -120,8 +121,42 @@ def leaderboard():
         #     (model.ranked_bots_users.c.team_id == None) |
         #     (model.ranked_bots_users.c.team_id == model.ranked_bots_users.c.user_id))
 
-        query = conn.execute(
-            model.ranked_bots_users.select()
+        if _RELRANK_KEY in flask.request.args:
+            query = conn.execute(
+                sqlalchemy.sql.select([
+                    model.ranked_bots_users.c.user_id,
+                    model.ranked_bots_users.c.username,
+                    model.ranked_bots_users.c.player_level,
+                    model.ranked_bots_users.c.organization_id,
+                    model.ranked_bots_users.c.organization_name,
+                    model.ranked_bots_users.c.country_code,
+                    model.ranked_bots_users.c.country_subdivision_code,
+                    model.ranked_bots_users.c.email,
+                    model.ranked_bots_users.c.is_gpu_enabled,
+                    model.ranked_bots_users.c.team_id,
+                    model.ranked_bots_users.c.team_name,
+                    model.ranked_bots_users.c.team_leader_id,
+                    model.ranked_bots_users.c.bot_id,
+                    model.ranked_bots_users.c.num_games,
+                    model.ranked_bots_users.c.num_submissions,
+                    model.ranked_bots_users.c.mu,
+                    model.ranked_bots_users.c.sigma,
+                    model.ranked_bots_users.c.score,
+                    model.ranked_bots_users.c.language,
+                    model.ranked_bots_users.c.update_time,
+                    model.ranked_bots_users.c.rank,
+                    model.ranked_bots_users.c.organization_rank,
+                    model.ranked_bots_users.c.compile_status,
+                    sqlalchemy.sql.func.rank().over(
+                        partition_by=general_clause,
+                        order_by=model.ranked_bots_users.c.score.desc()
+                    ).label("relative_rank"),
+                ]).select_from(model.ranked_bots_users)
+                .where(where_clause).order_by(*order_clause)
+                .offset(offset).limit(limit).reduce_columns())
+        else:
+            query = conn.execute(
+                model.ranked_bots_users.select()
                 .where(where_clause).order_by(*order_clause)
                 .offset(offset).limit(limit).reduce_columns())
 
@@ -148,6 +183,9 @@ def leaderboard():
                 "team_name": row["team_name"],
                 "team_leader_id": row["team_leader_id"],
             }
+
+            if "relative_rank" in row:
+                user["relative_rank"] = row["relative_rank"]
 
             if row["team_id"] is not None:
                 team_ids.append(row["team_id"])

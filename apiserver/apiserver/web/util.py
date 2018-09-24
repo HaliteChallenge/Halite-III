@@ -186,7 +186,7 @@ def int_or_none(x):
     return int(x)
 
 
-def get_sort_filter(fields, false_fields=()):
+def get_sort_filter(fields, false_fields=(), drilldown_fields=()):
     """
     Parse flask.request to create clauses for SQLAlchemy's order_by and where.
 
@@ -195,10 +195,13 @@ def get_sort_filter(fields, false_fields=()):
     :param false_fields: A list of fields that can be sorted/ordered on, but
     that the caller will manually handle. (Non-recognized fields generate
     an API error.)
+    :param drilldown_fields: If given, also return a where_clause
+    without these fields.
     :return: A 2-tuple of (where_clause, order_clause). order_clause is an
     ordered list of columns.
     """
     where_clause = sqlalchemy.true()
+    drilldown_clause = sqlalchemy.true()
     order_clause = []
     manual_fields = []
 
@@ -243,8 +246,10 @@ def get_sort_filter(fields, false_fields=()):
         else:
             filter_clauses[field] = clause
 
-    for clause in filter_clauses.values():
+    for field, clause in filter_clauses.items():
         where_clause &= clause
+        if field not in drilldown_fields:
+            drilldown_clause &= clause
 
     for order_param in flask.request.args.getlist("order_by"):
         direction = "asc"
@@ -268,6 +273,8 @@ def get_sort_filter(fields, false_fields=()):
 
         order_clause.append(column)
 
+    if drilldown_fields:
+        return where_clause, drilldown_clause, order_clause, manual_fields
     return where_clause, order_clause, manual_fields
 
 
