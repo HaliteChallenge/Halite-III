@@ -253,6 +253,26 @@
       }
     }
 
+    .game-replay-btn-list {
+        display: flex;
+        flex-direction: column;
+
+        .btn {
+            font-size: 18px;
+            padding: 0.25em 0.5em;
+            margin: 0.25em;
+            width: 50%;
+        }
+
+        >div {
+            margin: 0.25em;
+
+            select {
+                color: #033C89;
+            }
+        }
+    }
+
     .game-replay-progress {
       flex: 1;
       padding-left: 20px;

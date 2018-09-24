@@ -58,21 +58,6 @@
               <span class="replay-btn">
                   <a href="javascript:;" @click="nextFrame"><span class="icon-next"></span></a>
               </span>
-              <span class="replay-btn reset-btn" style="text-align: center">
-                  <a href="javascript:;" @click="resetView" title="Reset zoom/pan"><span class="fa fa-refresh"></span></a>
-              </span>
-              <span class="replay-btn" style="text-align: center">
-                     <a href="javascript:;" @click="recordView" title="Record video of game"><span class="fa fa-video-camera"></span></a>
-              </span>
-              <span class="replay-btn">
-                  <a style="text-align: center; margin-bottom: 4px;" v-if="game && game.game_id" :href="replay_download_link(game.game_id)">
-                    <span class="icon-download"></span>
-              </a>
-              </span>
-              <!-- <span class="replay-btn">
-                  <span class="icon-volumn"></span>
-                </span> -->
-              <!-- <i class="xline xline-right" style="right: 0; top: 0; height: 100%"></i> -->
             </div>
             <div class="game-replay-progress">
               <div class="game-replay-progress-inner">
@@ -83,44 +68,36 @@
                 <div>{{sliderOptions.max}}</div>
               </div>
             </div>
-            <!-- issues #361: Remove Share button & Share capabilities -->
-            <!-- <div class="game-replay-share">
-                <div class="popup-overlay" v-show="sharePopup" @click="toggleShare"></div>
-                <div class="popup-container" v-show="sharePopup">
-                  <div class="popup-share">
-                    <label>Share as a link</label>
-                    <div class="form-inline-button">
-                      <input ref="shareInput" type="text" :value="shareLink">
-                      <button class="btn" @click="copyToClipboard">
-                        <span>Copy</span>
-                      </button>
-                    </div>
-                    <div class="share-socials">
-                      <a :href="shareSocial('facebook')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank">
-                        <i class="fa fa-facebook-official"></i>
-                      </a>
-                      <a :href="shareSocial('twitter')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank">
-                        <i class="fa fa-twitter"></i>
-                      </a>
-                      <a :href="shareSocial('linkedin')" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank">
-                        <i class="fa fa-linkedin"></i>
-                      </a>
-                    </div>
-                    <div class="hr"></div>
-                    <label>Share as a video</label>
-                    <a href="#" class="btn btn-block"><span>Create Video</span></a>
-                  </div>
-                </div>
-                <button class="btn" @click="toggleShare">
-                  <span>SHARE</span>
-                </button>
-              </div> -->
           </div>
         </div>
-        <div class="game-replay-controller" v-if="showHoliday">
-          <div class="game-replay-btn-table" style="width: 200px;">
-            <label for="holiday">Holiday Theme:</label>
-            <input type="checkbox" class="pull-left" style="margin-top: -5px;" id="holiday" v-bind:checked="isHoliday" v-on:click="toggleHoliday(this)">
+        <div class="game-replay-controller">
+          <div class="game-replay-btn-list">
+            <button class="btn" @click="resetView">
+              <span class="fa fa-refresh"></span>
+              Reset Map Zoom/Pan
+            </button>
+            <button class="btn" @click="recordView">
+              <span class="fa fa-video-camera"></span>
+              Record Game As Video
+            </button>
+            <a class="btn" v-if="game && game.game_id" :href="replay_download_link(game.game_id)">
+              <span class="icon-download"></span>
+              Download Replay File
+            </a>
+            <button class="btn" v-else="game && game.game_id" disabled>
+              <span class="icon-download"></span>
+              Replay File Unavailable
+            </button>
+            <div>
+              <label for="theme">Theme:</label>
+              <select id="theme">
+                <option>Turtles! (Default)</option>
+              </select>
+            </div>
+            <template v-if="showHoliday">
+              <label for="holiday">Holiday Theme:</label>
+              <input type="checkbox" class="pull-left" style="margin-top: -5px;" id="holiday" v-bind:checked="isHoliday" v-on:click="toggleHoliday(this)">
+            </template>
           </div>
         </div>
       </div>
