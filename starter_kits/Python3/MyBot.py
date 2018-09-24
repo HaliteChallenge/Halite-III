@@ -44,8 +44,8 @@ while True:
     command_queue = []
 
     for ship in me.get_ships():
-        # For each of your ships, check if there's a reasonable amount of halite at the ship's location. If not,
-        #   move randomly. Otherwise, collect halite.
+        # For each of your ships, move randomly if the ship is on a low halite location or the ship is full.
+        #   Else, collect halite.
         if game_map[ship.position].halite_amount < constants.MAX_HALITE / 10 or ship.is_full:
             command_queue.append(
                 ship.move(
