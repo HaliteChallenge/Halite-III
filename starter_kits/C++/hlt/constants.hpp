@@ -35,11 +35,5 @@ namespace hlt {
         extern double INSPIRED_BONUS_MULTIPLIER;
         /** An inspired ship instead spends 1/X% halite to move. */
         extern int INSPIRED_MOVE_COST_RATIO;
-        /** Whether capture is enabled. */
-        extern bool CAPTURE_ENABLED;
-        /** A ship is captured if an opponent has CAPTURE_SHIP_ADVANTAGE more ships than you within this distance. */
-        extern int CAPTURE_RADIUS;
-        /** A ship is captured if an opponent has this many more ships than you within CAPTURE_RADIUS distance. */
-        extern int CAPTURE_SHIP_ADVANTAGE;
     }
 }

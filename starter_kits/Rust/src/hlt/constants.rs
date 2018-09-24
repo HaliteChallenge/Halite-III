@@ -15,9 +15,6 @@ pub struct Constants {
     pub inspired_extract_ratio: i32,
     pub inspired_bonus_multiplier: f64,
     pub inspired_move_cost_ratio: i32,
-    pub capture_enabled: bool,
-    pub capture_radius: i32,
-    pub capture_ship_advantage: i32,
 }
 
 impl Constants {
@@ -49,9 +46,6 @@ impl Constants {
             inspired_extract_ratio: Constants::get_value(log, &map, "INSPIRED_EXTRACT_RATIO"),
             inspired_bonus_multiplier: Constants::get_value(log, &map, "INSPIRED_BONUS_MULTIPLIER"),
             inspired_move_cost_ratio: Constants::get_value(log, &map, "INSPIRED_MOVE_COST_RATIO"),
-            capture_enabled: Constants::get_value(log, &map, "CAPTURE_ENABLED"),
-            capture_radius: Constants::get_value(log, &map, "CAPTURE_RADIUS"),
-            capture_ship_advantage: Constants::get_value(log, &map, "SHIPS_ABOVE_FOR_CAPTURE"),
         }
     }
 

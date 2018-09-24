@@ -29,12 +29,6 @@ public class Constants {
     public static double INSPIRED_BONUS_MULTIPLIER;
     /** An inspired ship instead spends 1/X% halite to move. */
     public static int INSPIRED_MOVE_COST_RATIO;
-    /** Whether capture is enabled. */
-    public static boolean CAPTURE_ENABLED;
-    /** A ship is captured if an opponent has CAPTURE_SHIP_ADVANTAGE more ships than you within this distance. */
-    public static int CAPTURE_RADIUS;
-    /** A ship is captured if an opponent has this many more ships than you within CAPTURE_RADIUS distance. */
-    public static int CAPTURE_SHIP_ADVANTAGE;
 
     public static void populateConstants(final String stringFromEngine) {
         final String[] rawTokens = stringFromEngine.split("[{}, :\"]+");
@@ -68,9 +62,6 @@ public class Constants {
         INSPIRED_EXTRACT_RATIO = getInt(constantsMap, "INSPIRED_EXTRACT_RATIO");
         INSPIRED_BONUS_MULTIPLIER = getDouble(constantsMap, "INSPIRED_BONUS_MULTIPLIER");
         INSPIRED_MOVE_COST_RATIO = getInt(constantsMap, "INSPIRED_MOVE_COST_RATIO");
-        CAPTURE_ENABLED = getBoolean(constantsMap, "CAPTURE_ENABLED");
-        CAPTURE_RADIUS = getInt(constantsMap, "CAPTURE_RADIUS");
-        CAPTURE_SHIP_ADVANTAGE = getInt(constantsMap, "SHIPS_ABOVE_FOR_CAPTURE");
     }
 
     private static int getInt(final Map<String, String> map, final String key) {

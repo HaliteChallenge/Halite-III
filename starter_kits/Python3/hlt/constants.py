@@ -13,7 +13,6 @@ def load_constants(constants):
     global EXTRACT_RATIO, MOVE_COST_RATIO
     global INSPIRATION_ENABLED, INSPIRATION_RADIUS, INSPIRATION_SHIP_COUNT
     global INSPIRED_EXTRACT_RATIO, INSPIRED_BONUS_MULTIPLIER, INSPIRED_MOVE_COST_RATIO
-    global CAPTURE_ENABLED, CAPTURE_RADIUS, CAPTURE_SHIP_ADVANTAGE
 
     """The cost to build a single ship."""
     SHIP_COST = constants['NEW_ENTITY_ENERGY_COST']
@@ -59,18 +58,3 @@ def load_constants(constants):
 
     """An inspired ship instead spends 1/X% halite to move."""
     INSPIRED_MOVE_COST_RATIO = constants['INSPIRED_MOVE_COST_RATIO']
-
-    """Whether capture is enabled."""
-    CAPTURE_ENABLED = constants['CAPTURE_ENABLED']
-
-    """
-    A ship is captured if an opponent has this many more ships than
-    you within CAPTURE_RADIUS distance.
-    """
-    CAPTURE_RADIUS = constants['CAPTURE_RADIUS']
-
-    """
-    A ship is captured if an opponent has CAPTURE_SHIP_ADVANTAGE more
-    ships than you within this distance.
-    """
-    CAPTURE_SHIP_ADVANTAGE = constants['SHIPS_ABOVE_FOR_CAPTURE']

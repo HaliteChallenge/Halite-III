@@ -25,12 +25,6 @@ object Constants {
   var INSPIRED_BONUS_MULTIPLIER = .0
   /** An inspired ship instead spends 1/X% halite to move. */
   var INSPIRED_MOVE_COST_RATIO = 0
-  /** Whether capture is enabled. */
-  var CAPTURE_ENABLED = false
-  /** A ship is captured if an opponent has CAPTURE_SHIP_ADVANTAGE more ships than you within this distance. */
-  var CAPTURE_RADIUS = 0
-  /** A ship is captured if an opponent has this many more ships than you within CAPTURE_RADIUS distance. */
-  var CAPTURE_SHIP_ADVANTAGE = 0
 
   def populateConstants(stringFromEngine: String) = {
     val rawTokens = stringFromEngine.split("[{}, :\"]+")
@@ -103,8 +97,5 @@ object Constants {
     INSPIRED_EXTRACT_RATIO = getInt("INSPIRED_EXTRACT_RATIO")
     INSPIRED_BONUS_MULTIPLIER = getDouble("INSPIRED_BONUS_MULTIPLIER")
     INSPIRED_MOVE_COST_RATIO = getInt("INSPIRED_MOVE_COST_RATIO")
-    CAPTURE_ENABLED = getBoolean("CAPTURE_ENABLED")
-    CAPTURE_RADIUS = getInt("CAPTURE_RADIUS")
-    CAPTURE_SHIP_ADVANTAGE = getInt("SHIPS_ABOVE_FOR_CAPTURE")
   }
 }

@@ -56,21 +56,5 @@ module.exports = {
 
         /** An inspired ship instead spends 1/X% halite to move. */
         this.INSPIRED_MOVE_COST_RATIO = constants['INSPIRED_MOVE_COST_RATIO'];
-
-        /** Whether capture is enabled. */
-        this.CAPTURE_ENABLED = constants['CAPTURE_ENABLED'];
-
-        /**
-         * A ship is captured if an opponent has this many more ships
-         * than you within CAPTURE_RADIUS distance.
-        */
-        this.CAPTURE_RADIUS = constants['CAPTURE_RADIUS'];
-
-        /**
-         * A ship is captured if an opponent has
-         * CAPTURE_SHIP_ADVANTAGE more ships than you within this
-         * distance.
-        */
-        this.CAPTURE_SHIP_ADVANTAGE = constants['SHIPS_ABOVE_FOR_CAPTURE'];
     },
 };

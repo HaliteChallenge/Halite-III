@@ -23,10 +23,6 @@ const (
 	InspiredExtractRatio     string = "INSPIRED_EXTRACT_RATIO"    /** An inspired ship mines 1/X halite from a cell per turn instead. */
 	InspiredBonusMultiplayer string = "INSPIRED_BONUS_MULTIPLIER" /** An inspired ship that removes Y halite from a cell collects X*Y additional halite. */
 	InspiredMoveCostRatio    string = "INSPIRED_MOVE_COST_RATIO"  /** An inspired ship instead spends 1/X% halite to move. */
-	CaptureEnabled           string = "CAPTURE_ENABLED"           /** Whether capture is enabled. */
-	CaptureRadius            string = "CAPTURE_RADIUS"            /** A ship is captured if an opponent has CAPTURE_SHIP_ADVANTAGE more ships than you within this distance. */
-	CaptureShipAdvantage     string = "SHIPS_ABOVE_FOR_CAPTURE"   /** A ship is captured if an opponent has this many more ships than you within CAPTURE_RADIUS distance. */
-
 )
 
 // Constants - Holds all of the game constants
