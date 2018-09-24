@@ -90,9 +90,8 @@
             </button>
             <div>
               <label for="theme">Theme (changes require reloading page):</label>
-              <select id="theme" @change="changeTheme" :value="selectedTheme">
-                <option v-for="theme in themes" :value="theme">{{theme}}</option>
-              </select>
+              <v-select :options="themes" @input="changeTheme" :value="selectedTheme" style="display: inline-block;" id="theme">
+              </v-select>
             </div>
             <template v-if="showHoliday">
               <label for="holiday">Holiday Theme:</label>
@@ -263,6 +262,7 @@
 <script>
 import { saveAs } from 'file-saver/FileSaver';
 import Vue from 'vue'
+import vSelect from 'vue-select'
 import * as api from '../api'
 import * as utils from '../utils'
 import moment from 'vue-moment'
@@ -386,7 +386,7 @@ export default {
     }
   },
   components: {
-    // PlayerLineChart,
+    vSelect,
     vueSlider,
     PlayerDetail,
     VisualizerPanel,
@@ -730,9 +730,12 @@ export default {
   },
   methods: {
     changeTheme(e) {
+      if (e === this.selectedTheme) {
+        return;
+      }
       import ( /* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
         .then((libhaliteviz) => {
-          libhaliteviz.theme.setTheme(e.target.value);
+          libhaliteviz.theme.setTheme(e);
           window.location.reload();
         });
     },
