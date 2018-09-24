@@ -39,6 +39,9 @@ BENCHMARK_FILE = "assets/downloads/Halite3Benchmark.zip"
 BENCHMARK_MANIFEST = "assets/downloads/Halite3Benchmark.json"
 TOOLS_FILE = "assets/downloads/Halite3Tools.zip"
 
+REPLAY_README = """Replays and error logs will appear here if you use the run_game.sh or run_game.bat scripts.
+"""
+
 versions =  {"Python3" : "1.0", "C++" : "1.0", "Java" : "1.0", "CSharp" : "1.0" ,"JavaScript": "1.0",
 "ML-StarterBot-Python":"1.0", "Rust" : "1.0", "Scala" : "1.0", "Go" : "1.0", "Ruby" : "1.0-beta" , "Kotlin" : "0.9.0-beta", "Clojure" : "0.9.0-beta", "Julia" : "0.9.0-beta", "OCaml" : "0.9.0-beta", "Haskell" : "0.9.0-beta", "Elixir" : "0.9.0-beta", "PHP": "0.9.0-beta","Dart": "0.9.0-beta", "Swift": "0.9.0-beta",  "Cython3": "0.9.0-beta","FSharp": "0.9.0-beta",}
 
@@ -71,7 +74,7 @@ def scan_directory(full_path):
             if ext.lower() in INCLUDED_EXTENSIONS or filename in INCLUDED_FILES:
                 included_files.append(os.path.join(containing_dir, filename))
 
-    included_files.append(os.path.join(STARTER_KIT_DIR, "README.MD"))
+    included_files.append(os.path.join(STARTER_KIT_DIR, "README.md"))
     included_files.append(os.path.join(STARTER_KIT_DIR, ".gitignore"))
     return included_files
 
@@ -91,8 +94,11 @@ def make_archive(output, environment, base_path, included_files):
                 archive.writestr(zinfo, source_file.read())
 
         for file in included_files:
-            target_path = os.path.relpath(file, base_path)
-            archive.write(file, target_path)
+            if isinstance(file, tuple):
+                archive.writestr(file[0], file[1])
+            else:
+                target_path = os.path.relpath(file, base_path)
+                archive.write(file, target_path)
 
 
 def make_source_download():
@@ -240,7 +246,7 @@ def main():
                 language=language, platform=platform)
             print("\tMaking:", output)
             make_archive(output, (platform, source, target),
-                         full_path, included_files)
+                         full_path, included_files + [("replays/README.md", REPLAY_README)])
 
     panlanguage_kits = []
     for (platform, source, target) in environments:
