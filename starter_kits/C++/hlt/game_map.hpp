@@ -29,11 +29,11 @@ namespace hlt {
         }
 
         int calculate_distance(const Position& source, const Position& target) {
-            const auto& normalizedSource = normalize(source);
-            const auto& normalizedTarget = normalize(target);
+            const auto& normalized_source = normalize(source);
+            const auto& normalized_target = normalize(target);
 
-            const int dx = std::abs(normalizedSource.x - normalizedTarget.x);
-            const int dy = std::abs(normalizedSource.y - normalizedTarget.y);
+            const int dx = std::abs(normalized_source.x - normalized_target.x);
+            const int dy = std::abs(normalized_source.y - normalized_target.y);
 
             const int toroidal_dx = std::min(dx, width - dx);
             const int toroidal_dy = std::min(dy, height - dy);
@@ -48,24 +48,25 @@ namespace hlt {
         }
 
         std::vector<Direction> get_unsafe_moves(const Position& source, const Position& destination) {
-            const auto& normalizedSource = normalize(source);
-            const auto& normalizedDestination = normalize(destination);
-            std::vector<Direction> possible_moves;
+            const auto& normalized_source = normalize(source);
+            const auto& normalized_destination = normalize(destination);
 
-            const int dx = std::abs(normalizedSource.x - normalizedDestination.x);
-            const int dy = std::abs(normalizedSource.y - normalizedDestination.y);
+            const int dx = std::abs(normalized_source.x - normalized_destination.x);
+            const int dy = std::abs(normalized_source.y - normalized_destination.y);
             const int wrapped_dx = width - dx;
             const int wrapped_dy = height - dy;
 
-            if (normalizedSource.x < normalizedDestination.x) {
+            std::vector<Direction> possible_moves;
+
+            if (normalized_source.x < normalized_destination.x) {
                 possible_moves.push_back(dx > wrapped_dx ? Direction::WEST : Direction::EAST);
-            } else if (normalizedSource.x > normalizedDestination.x) {
+            } else if (normalized_source.x > normalized_destination.x) {
                 possible_moves.push_back(dx < wrapped_dx ? Direction::WEST : Direction::EAST);
             }
 
-            if (normalizedSource.y < normalizedDestination.y) {
+            if (normalized_source.y < normalized_destination.y) {
                 possible_moves.push_back(dy > wrapped_dy ? Direction::NORTH : Direction::SOUTH);
-            } else if (normalizedSource.y > normalizedDestination.y) {
+            } else if (normalized_source.y > normalized_destination.y) {
                 possible_moves.push_back(dy < wrapped_dy ? Direction::NORTH : Direction::SOUTH);
             }
 
