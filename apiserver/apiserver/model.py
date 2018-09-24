@@ -142,6 +142,7 @@ ranked_bots = ranked_bots_query()
 _func = sqlalchemy.sql.func
 leader_bots = ranked_bots_query("leader_bot")
 teams_bots = teams.join(leader_bots, teams.c.leader_id == leader_bots.c.user_id)
+duplicate_teams = teams.alias("teams2")
 # Summary of all users, regardless of whether they have bots
 all_users = sqlalchemy.sql.select([
     users.c.id.label("user_id"),
@@ -155,9 +156,9 @@ all_users = sqlalchemy.sql.select([
     users.c.email.label("personal_email"),
     users.c.is_email_good,
     users.c.is_gpu_enabled,
-    teams.c.id.label("team_id"),
-    teams.c.name.label("team_name"),
-    teams.c.leader_id.label("team_leader_id"),
+    duplicate_teams.c.id.label("team_id"),
+    duplicate_teams.c.name.label("team_name"),
+    duplicate_teams.c.leader_id.label("team_leader_id"),
     _func.count(ranked_bots.c.user_id).label("num_bots"),
     _func.coalesce(
         _func.sum(leader_bots.c.games_played),
@@ -201,6 +202,10 @@ all_users = sqlalchemy.sql.select([
         teams_bots,
         users.c.team_id == teams_bots.c.team_id,
         isouter=True
+    ).join(
+        duplicate_teams,
+        users.c.team_id == duplicate_teams.c.id,
+        isouter=True
     )
 ).where(
     users.c.is_active == True
@@ -216,9 +221,9 @@ all_users = sqlalchemy.sql.select([
     users.c.email,
     users.c.is_email_good,
     users.c.is_gpu_enabled,
-    teams.c.id,
-    teams.c.name,
-    teams.c.leader_id,
+    duplicate_teams.c.id,
+    duplicate_teams.c.name,
+    duplicate_teams.c.leader_id,
 ).alias("all_users")
 
 
