@@ -272,7 +272,7 @@ def main():
                 "files": [TOOLS_FILE, None, None, None],
             },
             {
-                "name": "Halite in a Box",
+                "name": "Halite Visualizer & Gym",
                 "files": make_box_halite_download(args.box_dir),
             },
         ],
