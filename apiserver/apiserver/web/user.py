@@ -20,6 +20,18 @@ import wordfilter
 tld.update_tld_names()
 
 
+USERNAME_REGEX = re.compile(r'^[a-zA-Z][a-zA-Z0-9_\-]*$')
+USERNAME_LENGTH = 40
+
+
+def is_valid_username(username):
+    return len(username) <= USERNAME_LENGTH and \
+        username and \
+        not profanity.contains_profanity(username) and \
+        not wordfilter.blacklisted(username) and \
+        USERNAME_REGEX.match(username)
+
+
 def make_user_record(row, *, logged_in, total_users=None):
     """Given a database result row, create the JSON user object."""
     user = {
@@ -211,9 +223,6 @@ def list_users():
     return flask.jsonify(result)
 
 
-USERNAME_REGEX = re.compile(r'^[a-zA-Z][a-zA-Z0-9_\-]*$')
-USERNAME_LENGTH = 40
-
 @web_api.route("/user", methods=["POST"])
 @util.cross_origin(methods=["GET", "POST"])
 @web_util.requires_login(accept_key=False)
@@ -256,11 +265,7 @@ def create_user(*, user_id):
         "player_level": level,
     }
 
-    if len(username) > USERNAME_LENGTH or \
-       not username or \
-       profanity.contains_profanity(username) or \
-       wordfilter.blacklisted(username) or \
-       not USERNAME_REGEX.match(username):
+    if not is_valid_username(username):
         raise util.APIError(400, message="Invalid username.")
 
     values["username"] = username
@@ -367,6 +372,8 @@ def create_user(*, user_id):
         if org_id:
             message.append("You've been added to the organization!")
 
+    # Use serializable transaction to make sure duplicate usernames
+    # can't be inserted
     with model.engine.connect() as conn:
         conn.execute(model.users.update().where(
             model.users.c.id == user_id
@@ -401,6 +408,27 @@ def get_user(intended_user, *, user_id):
                                 total_users=total_users)
 
         return flask.jsonify(user)
+
+
+@web_api.route("/user/check_username", methods=["POST"])
+@util.cross_origin(methods=["POST"])
+@web_util.requires_login()
+def check_username(*, user_id):
+    username = flask.request.json["username"]
+    if not is_valid_username(username):
+        return util.response_success({
+            "valid": False,
+            "reason": "Username not acceptable."
+        })
+    with model.read_conn() as conn:
+        query = model.all_users.select(model.users.c.username == username)
+
+        row = conn.execute(query).first()
+        return util.response_success({
+            "valid": not row,
+            "reason": "Username taken." if row else "Username valid!"
+        })
+
 
 # An endpoint for season 1 details, in the future at season 3 we need to make this more generic.
 @web_api.route("/user/<int:intended_user>/season1", methods=["GET"])
