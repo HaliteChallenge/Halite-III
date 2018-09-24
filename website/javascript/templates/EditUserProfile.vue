@@ -88,6 +88,33 @@
                     <a class="cancel-href base" href="/user/?me" target="_self">Cancel</a>
                     <button type="submit" class="btn btn-primary btn-sm">Update Profile</button>
                 </form>
+
+                <!-- issue #408 Add ability for player to create or join a team -->
+                <div class="team-panel">
+                  <i class="xline xline-top"></i>
+                  <div class="no-team" v-if="!team">
+                    <h2 class="form-heading">TEAM AFFILIATION</h2>
+                    <div class="tips">You are not affiliated with a team. Start a new team or join an existing one.</div>
+                    <h3>Create Team</h3>
+                    <div class="input-tips">New Team Name</div>
+                    <input type="text" class="form-control" placeholder="Team name" v-model="new_team_name">
+                    <button class="btn btn-primary btn-sm" @click="createTeam">CREATE TEAM</button>
+                    <h3>Join a Team</h3>
+                    <div class="input-tips">Enter join code here</div>
+                    <input type="text" class="form-control" placeholder="Join code" v-model="join_team_name">
+                    <button class="btn btn-primary btn-sm" @click="joinTeam">JOIN TEAM</button>
+                    <p class="error" v-if="teamJoinError">{{teamJoinError}}</p>
+                  </div>
+                  <div class="in-team" v-else>
+                    <h2 class="form-heading">Team affiliation</h2>
+                    <div class="tips">You are on <strong>{{team.name}}</strong>.</div>
+                    <template v-if="team.verification_code">
+                      <h3>Invite Friends to Your Team</h3>
+                      <div class="input-tips">Share code</div>
+                      <input type="text" class="form-control" :value="`${team.team_id}@${team.verification_code}`">
+                    </template>
+                  </div>
+                </div>
             </div>
         </div>
     </div>
@@ -121,7 +148,11 @@ export default {
           user: null,
           hackathon_code: null,
           edit_email: false,
-          hackathon_error_message: ''
+          hackathon_error_message: '',
+          team: null,  // My team information
+          teamJoinError: null,
+          new_team_name: "", // Team name required to create the team
+          join_team_name: "", // Team name required to join the team
         }
   },
     mounted: function () {
@@ -181,6 +212,11 @@ export default {
         this.selected_region = this.regions.find((item) => {
           return item.value == me.country_subdivision_code
         })
+
+        // Get the current account team list
+        if (me.team_id !== null) {
+          this.fetchTeamsList(me.team_id);
+        }
       })
 
       api.list_organizations().then((orgs)=>
@@ -299,7 +335,7 @@ export default {
         this.hackathon_error_message = ''
         api.update_me(this.user.user_id, request).then((response) => {
           let message = 'You have updated your profile successfully.';
-          if (response.message) 
+          if (response.message)
             message += ' ' + response.message;
           Alert.show(message, 'success', true)
           this.gaData('account', 'edit-profile-success', 'edit-profile-flow')
@@ -355,6 +391,43 @@ export default {
 
           Alert.show(message, "error");
         });
+      },
+      // Get the current account team list
+      fetchTeamsList: function(team_id) {
+        api.get_team(team_id).then((team)=>{
+          this.team = team;
+        })
+      },
+      // Create Team
+      createTeam: function() {
+        const team_name = this.new_team_name;
+        if(team_name) {
+          api.create_team(team_name).then((res)=>{
+            // TODO --- I am already in the team,  so I can't create a team. I don't know how to test the return data.
+            console.warn(res)
+          })
+        }
+      },
+      // Join a Team
+      joinTeam: function () {
+        const [ team_id, verification_code ] = this.join_team_name.split('@');
+        this.teamJoinError = null
+        if (team_id && verification_code) {
+          api.join_team(team_id, verification_code).then((res)=>{
+            if (res.status === 'success') {
+              window.location.reload()
+            }
+            else {
+              this.teamJoinError = res.message
+            }
+          }, (res) => {
+            console.warn(res)
+            this.teamJoinError = "Could not join team."
+          })
+        }
+        else {
+          this.teamJoinError = "Invalid verification code."
+        }
       },
     }
   }
