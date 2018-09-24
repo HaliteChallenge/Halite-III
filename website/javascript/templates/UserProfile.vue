@@ -325,7 +325,7 @@
                                             <table class="table table-leader table-sticky">
                                                 <thead>
                                                     <tr>
-                                                        <th>Challengers</th>
+                                                        <th class="little-pd">Challengers</th>
                                                         <th class="text-center hidden-xs">Games</th>
                                                         <th class="text-center">Date Initiated</th>
                                                         <th class="text-center">Status</th>
@@ -336,7 +336,7 @@
                                                 <table class="table table-leader">
                                                     <thead>
                                                         <tr>
-                                                            <th>Challengers</th>
+                                                            <th class="little-pd">Challengers</th>
                                                             <th class="text-center hidden-xs">Games</th>
                                                             <th class="text-center">Date Initiated</th>
                                                             <th class="text-center">Status</th>
@@ -344,7 +344,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="challenge in challengeGames">
-                                                            <td>
+                                                            <td class="little-pd">
                                                               <div class="info-icon-trophy" v-if="challenge.players[0].rank == 0 && challenge.status == 'Completed'">
                                                                 <span class="tropy-icon"></span>
                                                               </div>
