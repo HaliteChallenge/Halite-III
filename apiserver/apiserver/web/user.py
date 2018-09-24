@@ -268,8 +268,6 @@ def create_user(*, user_id):
     if not is_valid_username(username):
         raise util.APIError(400, message="Invalid username.")
 
-    values["username"] = username
-
     # Perform validation on given values
     if "level" in body and not web_util.validate_user_level(body["level"]):
         raise util.APIError(400, message="Invalid user level.")
@@ -372,9 +370,16 @@ def create_user(*, user_id):
         if org_id:
             message.append("You've been added to the organization!")
 
-    # Use serializable transaction to make sure duplicate usernames
-    # can't be inserted
     with model.engine.connect() as conn:
+        # If username is a duplicate, catch exception and return error
+        try:
+            conn.execute(
+                model.users.update()
+                .where(model.users.c.id == user_id)
+                .values(username=username))
+        except sqlalchemy.exc.IntegrityError:
+            raise util.APIError(400, message="Duplicate username.")
+
         conn.execute(model.users.update().where(
             model.users.c.id == user_id
         ).values(**values))
