@@ -235,10 +235,10 @@
                                             <table class="table table-leader table-sticky">
                                                 <thead>
                                                     <tr>
-                                                        <th>Id</th>
-                                                        <th class="hidden-xs">Date</th>
-                                                        <th>Log File</th>
-                                                        <th>Game</th>
+                                                        <th class="little-pd">Id</th>
+                                                        <th class="hidden-xs little-pd">Date</th>
+                                                        <th class="little-pd">Log File</th>
+                                                        <th class="little-pd">Game</th>
                                                     </tr>
                                                 </thead>
                                             </table>
@@ -246,22 +246,22 @@
                                                 <table class="table table-leader">
                                                     <thead>
                                                         <tr>
-                                                            <th>Id</th>
-                                                            <th class="hidden-xs">Date</th>
-                                                            <th>Log File</th>
-                                                            <th>Game</th>
+                                                            <th class="little-pd">Id</th>
+                                                            <th class="hidden-xs little-pd">Date</th>
+                                                            <th class="little-pd">Log File</th>
+                                                            <th class="little-pd">Game</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="game in error_games">
-                                                            <td>{{game.game_id}}</td>
-                                                            <td class="hidden-xs"><time :datetime="game.time_played"
+                                                            <td class="little-pd">{{game.game_id}}</td>
+                                                            <td class="little-pd hidden-xs"><time :datetime="game.time_played"
                                                                     :title="game.time_played">
                                                                     {{ getFormattedDateForGames(game.time_played)}}
                                                                 </time>
                                                             </td>
-                                                            <td><a :href="error_log_link(game.game_id)" target="_blank">Download Log</a></td>
-                                                            <td><a :href="replay_link(game.game_id)" target="_blank">View</a> / <a :href="replay_download_link(game.game_id)" target="_blank">Download</a></td>
+                                                            <td class="little-pd"><a :href="error_log_link(game.game_id)" target="_blank">Download Log</a></td>
+                                                            <td class="little-pd"><a :href="replay_link(game.game_id)" target="_blank">View</a> / <a :href="replay_download_link(game.game_id)" target="_blank">Download</a></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -543,7 +543,6 @@
           nemesisList: [],
           bots: [],
           error_games: [],
-          hackathons: [],
           userHistory: [],
           profile_images: {},
           usernames: {},
@@ -559,7 +558,6 @@
           sharePopup: false,
           season1stats: null,
           messages: {
-            hackathon: '',
             bot_download: ''
           },
           participants: {},
@@ -629,7 +627,7 @@
             this.efficiency.max = efficiencies[efficiencies.length - 1]
             this.efficiency.mean = efficiencies.reduce((a, b) => a + b, 0) / efficiencies.length
           })
-          this.fetchHackathon()
+
           this.fetchErrorGames()
           this.fetchnemesis()
           this.fetchhistory()
@@ -900,15 +898,6 @@
         fetchHalite1Stats: function () {
           api.get_season1_stats(this.user.user_id).then(userDetails => {
             this.season1stats = userDetails;
-          })
-        },
-        fetchHackathon: function () {
-          api.get_user_hackathons(this.user.user_id).then(hackathons => {
-            if (hackathons && hackathons instanceof Array) {
-              this.hackathons = hackathons.filter((h) => {
-                return h.participant == true
-              })
-            }
           })
         },
         fetchhistory: function () {
