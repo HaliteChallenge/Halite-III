@@ -27,7 +27,7 @@ def discourse_sso():
     if user:
         user_id = user["user_id"]
     else:
-        return flask.redirect("{}/v1/login/github".format(config.API_URL))
+        return flask.redirect("{}/login".format(config.SITE_URL))
 
     sso_payload = flask.request.args.get("sso")
     sso_signature = flask.request.args.get("sig")
