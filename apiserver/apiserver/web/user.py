@@ -2,6 +2,7 @@
 User API endpoints - create/update/delete/list users and user data
 """
 
+import re
 import uuid
 
 import flask
@@ -13,8 +14,22 @@ from .. import config, model, notify, util
 from . import util as web_util
 from .blueprint import web_api
 
+from profanity import profanity
+import wordfilter
 
 tld.update_tld_names()
+
+
+USERNAME_REGEX = re.compile(r'^[a-zA-Z][a-zA-Z0-9_\-]*$')
+USERNAME_LENGTH = 40
+
+
+def is_valid_username(username):
+    return len(username) <= USERNAME_LENGTH and \
+        username and \
+        not profanity.contains_profanity(username) and \
+        not wordfilter.blacklisted(username) and \
+        USERNAME_REGEX.match(username)
 
 
 def make_user_record(row, *, logged_in, total_users=None):
@@ -237,6 +252,7 @@ def create_user(*, user_id):
         if user_data["is_email_good"]:
             raise util.APIError(400, message="You have already successfully confirmed your membership with this organization.")
 
+    username = body.get("username")
     org_id = body.get("organization_id")
     email = body.get("email")
     level = body.get("level", user_data["player_level"])
@@ -248,6 +264,9 @@ def create_user(*, user_id):
     values = {
         "player_level": level,
     }
+
+    if not is_valid_username(username):
+        raise util.APIError(400, message="Invalid username.")
 
     # Perform validation on given values
     if "level" in body and not web_util.validate_user_level(body["level"]):
@@ -352,6 +371,15 @@ def create_user(*, user_id):
             message.append("You've been added to the organization!")
 
     with model.engine.connect() as conn:
+        # If username is a duplicate, catch exception and return error
+        try:
+            conn.execute(
+                model.users.update()
+                .where(model.users.c.id == user_id)
+                .values(username=username))
+        except sqlalchemy.exc.IntegrityError:
+            raise util.APIError(400, message="Duplicate username.")
+
         conn.execute(model.users.update().where(
             model.users.c.id == user_id
         ).values(**values))
@@ -386,6 +414,27 @@ def get_user(intended_user, *, user_id):
 
         return flask.jsonify(user)
 
+
+@web_api.route("/user/check_username", methods=["POST"])
+@util.cross_origin(methods=["POST"])
+@web_util.requires_login()
+def check_username(*, user_id):
+    username = flask.request.json["username"]
+    if not is_valid_username(username):
+        return util.response_success({
+            "valid": False,
+            "reason": "Username not acceptable."
+        })
+    with model.read_conn() as conn:
+        query = model.all_users.select(model.users.c.username == username)
+
+        row = conn.execute(query).first()
+        return util.response_success({
+            "valid": not row,
+            "reason": "Username taken." if row else "Username valid!"
+        })
+
+
 # An endpoint for season 1 details, in the future at season 3 we need to make this more generic.
 @web_api.route("/user/<int:intended_user>/season1", methods=["GET"])
 @util.cross_origin(methods=["GET"])
@@ -400,7 +449,8 @@ def get_user_season1(intended_user, *, user_id):
             raise util.APIError(404, message="No user found.")
 
         season_1_query = model.halite_1_users.select(
-            model.halite_1_users.c.username == row["username"])
+            (model.halite_1_users.c.oauthID == row["oauth_id"]) &
+            (model.halite_1_users.c.oauthProvider == row["oauth_provider"]))
 
         season_1_row = conn.execute(season_1_query).first()
 
@@ -449,7 +499,8 @@ def get_user_season2(intended_user):
             ).label("rank"),
         ]).select_from(model.halite_2_users).alias('ranked_users')
         season_2_query = ranked_users.select(
-            ranked_users.c.oauth_id == row["oauth_id"])
+            (ranked_users.c.oauth_id == row["oauth_id"]) &
+            (ranked_users.c.oauth_provider == row["oauth_provider"]))
 
         season_2_row = conn.execute(season_2_query).first()
 

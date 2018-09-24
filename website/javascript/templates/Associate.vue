@@ -10,6 +10,17 @@
                 </div>
                 <h2 class="form-heading">personal info</h2>
                 <form v-on:submit.prevent="submit" class="create-account-form">
+                    <div class="form-group">
+                        <label for="username">Choose a username:<span class="text-danger">*</span></label>
+                        <input id="username" type="text" v-model="username" />
+                    </div>
+                    <div
+                      :class="{'has-error': !username_error.valid}"
+                      class="form-group"
+                      v-if="username_error.reason">
+                        <span id="error-help" class="help-block">{{ username_error.reason }}</span>
+                    </div>
+
                     <!-- profession -->
                     <div class="form-group">
                         <label for="country">Which of the following describes you best?<span class="text-danger">*</span></label>
@@ -76,11 +87,6 @@
                         </v-select>
                     </div>
 
-                    <!-- <h2 id="section_hackathons" class="form-heading">Hackathons</h2>
-                    <div class="form-group">
-                        <label for="organization">If you are playing as part of a Hackathon, please enter your code here</label>
-                        <input type="text" class="form-control" v-model="hackathon_code" placeholder="Enter Hackathon password or code...">
-                    </div> -->
                     <div class="form-group has-error" v-if="error">
                         <span id="error-help" class="help-block">{{ error }}</span>
                     </div>
@@ -93,10 +99,11 @@
 </template>
 
 <script>
-    import * as api from '../api'
-import vSelect from 'vue-select'
-import {Alert, countries_data} from '../utils'
-import * as utils from '../utils'
+  import _ from 'lodash'
+  import * as api from '../api'
+  import vSelect from 'vue-select'
+  import {Alert, countries_data} from '../utils'
+  import * as utils from '../utils'
 
 export default {
       name: 'associate',
@@ -151,12 +158,20 @@ export default {
           highSchools: [],
           selected_highSchool: null,
           error: null,
-          hackathon_code: '',
           success_message: '',
-          error_string: '',
-          hackathon_error_message: ''
+          username: '',
+          username_error: {
+            valid: false,
+            reason: '',
+          },
+          checkUsername: _.debounce(() => {
+            api.check_username(this.username).then((resp) => {
+              this.username_error.valid = resp.valid
+              this.username_error.reason = resp.reason
+            })
+          }, 750),
         }
-  },
+      },
       computed: {
         regions: function () {
           const regions = Object.entries(iso3166.data[this.country_code.code].sub)
@@ -194,6 +209,7 @@ export default {
       },
       methods: {
         submit: function () {
+          this.error = ''
           let request = {
             'level': this.level,
             'organization_id': this.organization === 'NONE' ? null : this.organization
@@ -223,11 +239,15 @@ export default {
             return false
           }
 
+          if (!this.username_error.valid) {
+            this.error = 'Valid username is required'
+            return false
+          }
+
           if(this.level === 'High School' && this.selected_highSchool){
           request['organization_id'] = this.selected_highSchool.id
           }
 
-          //this.hackathon_error_message = ''
           api.register_me(request).then((response) => {
             let message = 'You have updated your profile successfully. You will be redirected automatically in a few seconds.';
             if (response.message)
@@ -272,6 +292,12 @@ export default {
               this.highSchools.push({label: schools[i].name, id: schools[i].organization_id})
             }
       })
+    },
+    watch: {
+      username(newValue) {
+        this.username_error.reason = ''
+        this.checkUsername()
+      },
     },
   }
 </script>

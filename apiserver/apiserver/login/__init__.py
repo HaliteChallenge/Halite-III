@@ -1,6 +1,7 @@
 import logging
 import traceback
 import urllib.parse
+import uuid
 
 import flask
 import sqlalchemy
@@ -28,6 +29,17 @@ github = oauth.remote_app(
     access_token_url="https://github.com/login/oauth/access_token",
     authorize_url="https://github.com/login/oauth/authorize",
 )
+google = oauth.remote_app(
+    "google",
+    consumer_key=config.OAUTH_GOOGLE_CONSUMER_KEY,
+    consumer_secret=config.OAUTH_GOOGLE_CONSUMER_SECRET,
+    request_token_params={'scope': 'email'},
+    base_url='https://www.googleapis.com/oauth2/v1/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+)
 
 
 @oauth_login.route("/github")
@@ -38,6 +50,16 @@ def github_login_init():
         base_url,
         flask.url_for(".github_login_callback"))
     return github.authorize(callback=full_url)
+
+
+@oauth_login.route("/google")
+def google_login_init():
+    url = urllib.parse.urlparse(config.API_URL)
+    base_url = url.scheme + "://" + url.netloc
+    full_url = urllib.parse.urljoin(
+        base_url,
+        flask.url_for(".google_login_callback"))
+    return google.authorize(callback=full_url)
 
 
 @oauth_login.route("/me")
@@ -95,7 +117,6 @@ def github_login_callback():
 
     user_data = github.get("user").data
 
-    username = user_data["login"]
     github_user_id = user_data["id"]
     emails = github.get("user/emails").data
 
@@ -104,22 +125,63 @@ def github_login_callback():
         if record["primary"]:
             email = record["email"]
             break
+
+    return generic_login_callback(email, 1, github_user_id)
+
+
+@oauth_login.route("/response/google")
+def google_login_callback():
+    try:
+        response = google.authorized_response()
+    except OAuthException:
+        login_log.error(traceback.format_exc())
+        raise
+
+    if response is None or not response.get("access_token"):
+        if response and "error" in response:
+            login_log.error("Got OAuth error: {}".format(response))
+
+            raise util.APIError(
+                403,
+                message="Access denied. Reason: {error}. Error: {error_description}".format(**response)
+            )
+
+        raise util.APIError(
+            403,
+            message="Access denied. Reason: {}. Error: {}.".format(
+                flask.request.args["error"],
+                flask.request.args["error_description"],
+            )
+        )
+
+    flask.session["google_token"] = (response["access_token"], "")
+
+    user_data = google.get("userinfo").data
+
+    google_user_id = user_data["id"]
+    email = user_data["email"]
+    # TODO: factor this out into constant
+    return generic_login_callback(email, 2, google_user_id)
+
+
+def generic_login_callback(username, email, oauth_provider, oauth_id):
     with model.engine.connect() as conn:
         user = conn.execute(sqlalchemy.sql.select([
             model.users.c.id,
             model.users.c.is_active,
         ]).select_from(model.users).where(
-            (model.users.c.oauth_provider == 1) &
-            (model.users.c.oauth_id == github_user_id)
+            (model.users.c.oauth_provider == oauth_provider) &
+            (model.users.c.oauth_id == oauth_id)
         )).first()
 
         if not user:
             # New user
             new_user_id = conn.execute(model.users.insert().values(
-                username=username,
+                username="user{}".format(uuid.uuid4().hex),
+                # TODO: rename github_email to oauth_email
                 github_email=email,
-                oauth_id=github_user_id,
-                oauth_provider=1,
+                oauth_id=oauth_id,
+                oauth_provider=oauth_provider,
             )).inserted_primary_key
             flask.session["user_id"] = new_user_id[0]
             return flask.redirect(urllib.parse.urljoin(config.SITE_URL, "/create-account"))
@@ -134,6 +196,12 @@ def github_login_callback():
 
     return util.response_success()
 
+
 @github.tokengetter
 def github_tokengetter():
     return flask.session.get("github_token")
+
+
+@google.tokengetter
+def google_tokengetter():
+    return flask.session.get("google_token")
