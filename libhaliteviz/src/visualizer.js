@@ -75,8 +75,33 @@ export class HaliteVisualizer {
         });
 
         // XXX FORCE WEBGL ON SOFTWARE RENDERER
-        // TODO: BETTER OVERRIDE
-        PIXI.utils.isWebGLSupported = () => true;
+        // Copy of actual implementation, minus failIfMajorPerformanceCaveat
+        PIXI.utils.isWebGLSupported = () => {
+            const contextOptions = { stencil: true };
+            try
+            {
+                if (!window.WebGLRenderingContext)
+                {
+                    return false;
+                }
+                const canvas = document.createElement('canvas');
+                let gl = canvas.getContext('webgl', contextOptions) || canvas.getContext('experimental-webgl', contextOptions);
+                const success = !!(gl && gl.getContextAttributes().stencil);
+                if (gl)
+                {
+                    const loseContext = gl.getExtension('WEBGL_lose_context');
+                    if (loseContext)
+                    {
+                        loseContext.loseContext();
+                    }
+                }
+                gl = null;
+                return success;
+            }
+            catch (e) {
+                return false;
+            }
+        };
         this.application = new PIXI.Application(
             this.width, this.height,
             {
