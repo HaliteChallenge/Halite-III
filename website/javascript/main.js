@@ -220,7 +220,6 @@ window.refreshStickyTable = function () {
   }
   setTimeout(() => {
     calcCol();
-    console.log('cal col');
   }, 500)
 },
 

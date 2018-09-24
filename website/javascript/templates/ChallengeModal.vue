@@ -208,7 +208,7 @@ export default{
 
         if (emptyCount == 0 || this.friends.length - emptyCount == 1){
           let opponents = this.friends.filter((username) => username != "").map((username) => {
-            return this.members[username].user_id
+            return this.members[username][0].user_id
           })
           api.challenge(this.me.user_id, opponents).then((data) => {
             this.showResult = true;
