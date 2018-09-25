@@ -471,6 +471,8 @@ def get_user_season1(intended_user, *, user_id):
         return flask.jsonify(season_1_user)
 
 
+@web_api.route("/user/<int:intended_user>/season2", methods=["GET"])
+@util.cross_origin(methods=["GET"])
 def get_user_season2(intended_user):
     with model.read_conn() as conn:
         query = model.users.select(model.users.c.id == intended_user)
@@ -499,7 +501,7 @@ def get_user_season2(intended_user):
         ]).select_from(model.halite_2_users).alias('ranked_users')
         season_2_query = ranked_users.select(
             (sqlalchemy.sql.func.cast(ranked_users.c.oauth_id, sqlalchemy.String()) == row["oauth_id"]) &
-            (ranked_users.c.oauth_provider == row["oauth_provider"]))
+            (1 == row["oauth_provider"]))
 
         season_2_row = conn.execute(season_2_query).first()
 
