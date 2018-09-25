@@ -178,15 +178,18 @@ def generic_login_callback(email, oauth_provider, oauth_id):
 
         if not user:
             # New user
-            new_user_id = conn.execute(model.users.insert().values(
-                username="user{}".format(uuid.uuid4().hex),
-                # TODO: rename github_email to oauth_email
-                github_email=email,
-                oauth_id=str(oauth_id),
-                oauth_provider=oauth_provider,
-            )).inserted_primary_key
-            flask.session["user_id"] = new_user_id[0]
-            return flask.redirect(urllib.parse.urljoin(config.SITE_URL, "/create-account"))
+            try:
+                new_user_id = conn.execute(model.users.insert().values(
+                    username="user{}".format(uuid.uuid4().hex),
+                    # TODO: rename github_email to oauth_email
+                    github_email=email,
+                    oauth_id=str(oauth_id),
+                    oauth_provider=oauth_provider,
+                )).inserted_primary_key
+                flask.session["user_id"] = new_user_id[0]
+                return flask.redirect(urllib.parse.urljoin(config.SITE_URL, "/create-account"))
+            except sqlalchemy.exc.IntegrityError:
+                raise util.APIError(400, message="User already exists with this email.")
         elif not user["is_active"]:
             raise util.APIError(403, message="User is disabled.")
         else:
