@@ -45,6 +45,14 @@ Vue.use(require('element-ui'))
 Vue.component('walkthrough-substeps', WalkthroughSubsteps)
 Vue.component('walkthrough-substep', WalkthroughSubstep)
 
+Vue.mixin({
+  data() {
+    return {
+      fallbackAvatar: api.fallbackAvatar,
+    }
+  }
+})
+
 window.views = {
   Associate: function () {
     new Vue({

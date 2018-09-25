@@ -1,4 +1,6 @@
 /* jshint esversion: 6 */
+import Identicon from 'identicon.js'
+import md5 from 'md5'
 
 export const API_SERVER_URL = api_server_url
 export const LOGIN_SERVER_URL = login_server_url
@@ -590,4 +592,9 @@ export function join_team(team_id, verification_code) {
     body: formData,
     credentials: 'include'
   }).then(r => r.json())
+}
+
+export function fallbackAvatar(username) {
+  const identicon = new Identicon(md5(username))
+  return `data:image/png;base64,${identicon.toString()}`
 }

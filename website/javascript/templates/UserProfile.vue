@@ -4,7 +4,7 @@
             <div class="user-profile">
                 <div class="bg-img"></div>
                 <div class="user-profile-avatar">
-                    <img class="img-responsive" :src="'https://github.com/' + user.username + '.png'" :alt="user.username" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Placeholder_no_text.svg/2000px-Placeholder_no_text.svg.png'">
+                    <img class="img-responsive" :src="'https://github.com/' + user.username + '.png'" :alt="user.username" @error="$event.target.src = fallbackAvatar(user.username)">
                 </div>
                 <div class="user-profile-detail">
                     <a class="user-name" target="_blank" :href="'https://github.com/' + user.username">{{ user.username }}</a>
