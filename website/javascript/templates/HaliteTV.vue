@@ -111,14 +111,6 @@ const showGame = (game) => {
             props: {
               replay: Object.freeze(replay),
               game: game.game,
-              makeUserLink: function (user_id) {
-                return `/user?user_id=${user_id}`
-              },
-              getUserProfileImage: function (user_id) {
-                return api.get_user(user_id).then((user) => {
-                  return api.make_profile_image_url(user.username)
-                })
-              }
             }
           }),
           mounted: function () {
