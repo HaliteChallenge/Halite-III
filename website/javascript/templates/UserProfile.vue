@@ -189,7 +189,7 @@
                                                     :href="'/user?user_id=' + player.id"
                                                     class="game-participant"
                                                     :title="player.name_rank + (player.timed_out ? ' timed out or errored in this game. See the log for details.' : '')">
-                                                        <img :alt="player" :src="profile_images[player.id]" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Placeholder_no_text.svg/2000px-Placeholder_no_text.svg.png'" v-bind:class="{ 'timed-out': player.timed_out }"/>
+                                                      <profile-image :username="player.username" v-bind:className="{ 'timed-out': player.timed_out }" />
                                                         <span class="rank">
                                                             {{ player.rank }}
                                                         </span>
@@ -347,7 +347,7 @@
                                                                 <span class="tropy-icon"></span>
                                                               </div>
                                                               <a v-for="(player, index) in challenge.players" :href="`/user?user_id=${player.user_id}`" class="game-participant">
-                                                                <img :src="`https://github.com/${player.username}.png`" :alt="player.username">
+                                                                <profile-image :username="player.username" />
                                                                 <span class="rank">{{player.rank + 1}}</span>
                                                               </a>
                                                             </td>
@@ -409,7 +409,7 @@
                                                             <td class="little-pd td-title">
                                                                 <a :href="'/user?user_id=' + nemesis.id"
                                                                 class="game-participant">
-                                                                    <img :src="profile_images[nemesis.id]" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Placeholder_no_text.svg/2000px-Placeholder_no_text.svg.png'" />
+                                                                  <profile-image :username="nemesis.username" />
                                                                     <span class="rank">
                                                                         {{usernames[nemesis.id]}}
                                                                     </span>
@@ -542,7 +542,6 @@
           bots: [],
           error_games: [],
           userHistory: [],
-          profile_images: {},
           usernames: {},
           page: 0,
           limit: 10,
@@ -583,7 +582,7 @@
 
         source.then((user) => {
           if (user === null) {
-            window.location.replace(`${api.LOGIN_SERVER_URL}/github`)
+            window.location.replace(`/login`)
             return
           }
           this.user = user
@@ -697,7 +696,6 @@
                         player.id = player_id
                         player.name_rank = `(${player.leaderboard_rank}) ${username} [${rating}=${mu}μ${sigma}σ]`
 
-                        this.profile_images[player_id] = api.make_profile_image_url(username)
                         this.usernames[player_id] = username
 
                         if (player_id == this.user.user_id) {
@@ -857,12 +855,11 @@
                 }
 
                 let username = game.players[participant].team_name || game.players[participant].username
-                this.profile_images[participant] = api.make_profile_image_url(username)
                 this.usernames[participant] = username
 
                 let playerData = nemesisMap.get(participant)
                 if (typeof playerData === 'undefined') {
-                  playerData = {wins: 0, losses: 0}
+                  playerData = {wins: 0, losses: 0, username: username }
                   nemesisMap.set(participant, playerData)
                 }
 
@@ -880,6 +877,7 @@
               if (totalGames >= this.nemesisGameThreshold) {
                 var obj = {
                   id: key,
+                  username: value.username,
                   wins: Math.round(winRatio * 100),
                   losses: Math.round(lossRatio * 100),
                   total: totalGames

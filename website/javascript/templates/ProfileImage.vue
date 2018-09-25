@@ -1,8 +1,8 @@
 <template functional>
   <img
     :src="`https://github.com/${props.username}.png`"
-    :alt="`User ${props.username}`"
-    :title="props.username"
+    :alt="`${props.username}'s profile image`"
+    :title="props.title || props.username"
     @error="$event.target.src = fallbackAvatar(props.username)"
     :class="props.className || ''"
     :id="props.htmlId || ''"

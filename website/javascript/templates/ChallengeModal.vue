@@ -23,10 +23,11 @@
                 <div v-else>
                   <div class="selected-friend">
                     <a :href="'/user?user_id=' + members[friends[index]][0].user_id">
-                      <img
+                      <profile-image
                         v-for="opponent in members[friends[index]]"
+                        :key="opponent.username"
                         width="36" height="36"
-                        :src="`https://github.com/${opponent.username}.png`" alt="">
+                        :username="opponent.username" />
                       {{friends[index]}}
                     </a>
                     <a class="close" @click="removeFriend(index)"><span class="icon-remove"></span></a>
@@ -55,7 +56,7 @@
           <div class="no-login">You must sign in to challenge a player</div>
           <div class="ha-button-container">
             <div>
-              <a class="ha-button" href="https://api.halite.io/v1/login/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;"><span>SIGN INTO HALITE</span></a>
+              <a class="ha-button" href="/login" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;"><span>SIGN INTO HALITE</span></a>
             </div>
           </div>
         </div>

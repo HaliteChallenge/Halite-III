@@ -72,7 +72,7 @@ export default {
       mounted: function () {
         api.me().then((user) => {
           if (!user) {
-            window.location.replace(`${api.LOGIN_SERVER_URL}/github`)
+            window.location.replace(`/login`)
           }
         })
 

@@ -148,114 +148,8 @@
           </div>
         </div>
       </div>
-      <!-- <div class="panel-group" aria-multiselectable="true">
-        <VisualizerPanel name="map-stats" title="game/map stats">
-          <table class="map-stats-props">
-            <tbody>
-              <tr>
-                <th>Map Size:</th>
-                <td>{{`${replay.production_map.width}x${replay.production_map.height}`}}</td>
-              </tr>
-              <tr>
-                <th>Map Seed:</th>
-                <td>{{replay.map_generator_seed}}</td>
-              </tr>
-              <tr>
-                <th>Engine Version:</th>
-                <td>{{replay.ENGINE_VERSION}}</td>
-              </tr>
-              <tr>
-                <th>Replay Version:</th>
-                <td>{{replay.REPLAY_FILE_VERSION}}</td>
-              </tr>
-              <tr>
-                <th>Zoom Level:</th>
-                <td>{{Math.round(zoom*100)}}%</td>
-              </tr>
-              <tr>
-                <th>Camera Position:</th>
-                <td>{{pan.x}}, {{pan.y}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </VisualizerPanel>
-        <VisualizerPanel name="charts" title="charts">
-          <template slot-scope="panelOpen">
-            <section class="dashboard-graphs">
-              <section class="dashboard-graph">
-                <h4 class="dashboard-graph-heading">
-                  <span class="icon-ship"></span> Ships
-                </h4>
-                <PlayerLineChart ref="chart2" :selected-players="selectedPlayers" :maxLength="50" :chart-data="chartData.fleet" :index="frame" :showChart="panelOpen.panelOpen" @updateIndex="index => {frame = index}" />
-              </section>
-              <section class="dashboard-graph">
-                <h4 class="dashboard-graph-heading">
-                  <span class="icon-ship"></span> Current Halite
-                </h4>
-                <PlayerLineChart :selected-players="selectedPlayers" :maxLength="50" :chart-data="chartData.energy" :index="frame" :showChart="panelOpen.panelOpen" @updateIndex="index => {frame = index}" />
-              </section>
-            </section>
-          </template>
-        </VisualizerPanel>
-        <VisualizerPanel name="player-detail" title="player details" @click="gaData('visualizer','click-player-details','gameplay')">
-          <PlayerDetailPane :replay="replay" :statistics="statistics" :stats="stats" :frame="frame"></PlayerDetailPane>
-        </VisualizerPanel>
-        <VisualizerPanel ref="objectPanel" name="map-object-properties" title="map object properties" @click="gaData('visualizer','click-object-properties','gameplay')">
-          <div v-if="selectedPlanet">
-            <SelectedPlanet :selected-planet="selectedPlanet" :players="players"></SelectedPlanet>
-          </div>
-          <div v-if="selectedPoint && !selectedPlanet">
-            <SelectedPoint :selected-point="selectedPoint" :players="players"></SelectedPoint>
-          </div>
-          <div v-if="selectedShip">
-            <SelectedShip :selected-ship="selectedShip" :players="players"></SelectedShip>
-          </div>
-          <div class="message-box" v-if="!selectedPoint && !selectedShip">
-            <p><span class="icon-info"></span></p>
-            <p>Click on a ship, planet, or other map location to see properties</p>
-          </div>
-        </VisualizerPanel>
-      </div> -->
     </div>
   </div>
-
-  <!-- issues #361: Remove Post-Game dashboard -->
-  <!-- <div class="post-game-dashboard hidden-xs hidden-sm" v-if="!isMobile && dashboard">
-      <div class="panel-group" aria-multiselectable="true">
-          <div class="panel panel-stats">
-            <div class="panel-heading" role="tab" id="heading_player_details">
-              <a data-toggle="collapse" v-on:click="gaData('visualizer','click-postgame-dashboard','gameplay')"  @click.stop="toggleChartPanel" data-parent="#accordion" :aria-expanded="showChartPanel.toString()" aria-controls="widget_player_details">
-                <h4>post game dashboard</h4>
-                <span class="toggle-icon expand"></span>
-              </a>
-            </div>
-            <div class="panel-collapse collapse" :class="{'in': showChartPanel}" role="tabpanel" :aria-expanded="showChartPanel.toString()" id="panel_post_game" aria-labelledby="panel_post_game">
-              <div class="card-dashboard-list row">
-                <div class="col-md-3" v-for="(_player, _pIndex) in (players) || []">
-                  <div :class="{'card-dashboard': true, 'active': selectedPlayers[_pIndex]}" @click="toggleSelectedPlayer(_pIndex)">
-                    <div class="card-dashboard-thumb">
-                      <img :src="`https://github.com/${_player.name}.png`">
-                    </div>
-                    <div class="card-dashboard-info">
-                      <span style="display: block;" :class="`player`">
-                        <TierPopover :tier="tierClass(_player.tier)"/>
-                        RANK {{_player.userRank}}
-                      </span>
-                      <p class="card-dashboard-name">
-                        <a v-if="_player.id" :class="`player-name-anchor color-${_pIndex + 1}`" :href="`/user/?user_id=${_player.id}`">{{_player.name}}</a>
-                        <span v-if="!_player.id" :class="`player-name-anchor color-${_pIndex + 1}`">{{_player.name}}</span>
-                      </p>
-                      <p v-if="_player.version" class="card-dashboard-version-heading">Bot version:</p>
-                      <p v-else class="card-dashboard-version-heading">Local bot</p>
-                    </div>
-                    <div v-if="_player.version" class="card-dashboard-version">V{{_player.version}}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-    </div> -->
 </div>
 </template>
 
@@ -303,8 +197,6 @@ export default {
   props: {
     game: Object,
     replay: Object,
-    makeUserLink: Function,
-    getUserProfileImage: Function,
     width: {
       default: 600,
       required: false,

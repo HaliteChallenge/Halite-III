@@ -89,10 +89,6 @@ export function logout () {
   })
 }
 
-export function make_profile_image_url (username) {
-  return `https://github.com/${username}.png`
-}
-
 export function list_bots (user_id) {
   return $.get({
     url: `${API_SERVER_URL}/user/${user_id}/bot`
