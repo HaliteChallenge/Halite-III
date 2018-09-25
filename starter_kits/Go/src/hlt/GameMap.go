@@ -101,7 +101,7 @@ func (gm *GameMap) NaiveNavigate(ship *Ship, destination *Position) *Direction {
 	return Still()
 }
 
-// GetUnsafeMoves - Returns the list of moves that result in collisions
+// GetUnsafeMoves - Returns the list of moves that might result in collisions
 func (gm *GameMap) GetUnsafeMoves(source *Position, destination *Position) []*Direction {
 	return gm.unsafeMoves(gm.Normalize(source), gm.Normalize(destination))
 }
