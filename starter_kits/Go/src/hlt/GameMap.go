@@ -51,7 +51,7 @@ func GenerateGameMap() *GameMap {
 }
 
 // Normalize -
-func (gm *GameMap) Normalize(position Position) *Position {
+func (gm *GameMap) Normalize(position *Position) *Position {
 	return &Position{
 		((position.x % gm.width) + gm.width) % gm.width,
 		((position.y % gm.height) + gm.height) % gm.height}
@@ -71,8 +71,12 @@ func min(a int, b int) int {
 	return b
 }
 
-// CalculateDistance -
-func (gm *GameMap) CalculateDistance(source Position, target Position) int {
+// CalculateDistance - Normalizes the data points and then returns the calculated distance between them
+func (gm *GameMap) CalculateDistance(source *Position, target *Position) int {
+	return gm.calculateDistance(gm.Normalize(source), gm.Normalize(target))
+}
+
+func (gm *GameMap) calculateDistance(source *Position, target *Position) int {
 	var dx = abs(source.x - target.x)
 	var dy = abs(source.y - target.y)
 	var toroidalDx = min(dx, gm.width-dx)
@@ -97,8 +101,12 @@ func (gm *GameMap) NaiveNavigate(ship *Ship, destination *Position) *Direction {
 	return Still()
 }
 
-// GetUnsafeMoves - Returns the list of moves
+// GetUnsafeMoves - Returns the list of moves that might result in collisions
 func (gm *GameMap) GetUnsafeMoves(source *Position, destination *Position) []*Direction {
+	return gm.unsafeMoves(gm.Normalize(source), gm.Normalize(destination))
+}
+
+func (gm *GameMap) unsafeMoves(source *Position, destination *Position) []*Direction {
 	var dx = abs(source.x - destination.x)
 	var dy = abs(source.y - destination.y)
 	var wrappedDx = gm.width - dx
