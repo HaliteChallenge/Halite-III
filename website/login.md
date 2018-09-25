@@ -14,8 +14,18 @@ content: website
 Sign-in/register with GitHub
 </a>
 <a href="https://api.2018.halite.io/v1/login/google" class="login-choice">
-Sign-in/register with Google
+<i class="fa fa-google"></i> Sign-in/register with Google
 </a>
 </div>
 
 </div>
+
+<script>
+  window.addEventListener("DOMContentLoaded", function() {
+    window.api.me().then(function(me) {
+      if (me) {
+        window.location = '/user?me';
+      }
+    })
+  })
+</script>
