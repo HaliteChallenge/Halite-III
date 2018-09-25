@@ -441,15 +441,14 @@ def check_username(*, user_id):
 @web_util.requires_login(optional=True, accept_key=True)
 def get_user_season1(intended_user, *, user_id):
     with model.read_conn() as conn:
-        query = model.all_users.select(
-            model.all_users.c.user_id == intended_user)
+        query = model.users.select(model.users.c.id == intended_user)
 
         row = conn.execute(query).first()
         if not row:
             raise util.APIError(404, message="No user found.")
 
         season_1_query = model.halite_1_users.select(
-            (model.halite_1_users.c.oauthID == row["oauth_id"]) &
+            (sqlalchemy.sql.func.cast(model.halite_1_users.c.oauthID, sqlalchemy.String()) == row["oauth_id"]) &
             (model.halite_1_users.c.oauthProvider == row["oauth_provider"]))
 
         season_1_row = conn.execute(season_1_query).first()
@@ -499,7 +498,7 @@ def get_user_season2(intended_user):
             ).label("rank"),
         ]).select_from(model.halite_2_users).alias('ranked_users')
         season_2_query = ranked_users.select(
-            (ranked_users.c.oauth_id == row["oauth_id"]) &
+            (sqlalchemy.sql.func.cast(ranked_users.c.oauth_id, sqlalchemy.String()) == row["oauth_id"]) &
             (ranked_users.c.oauth_provider == row["oauth_provider"]))
 
         season_2_row = conn.execute(season_2_query).first()

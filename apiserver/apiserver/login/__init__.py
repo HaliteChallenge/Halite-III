@@ -17,6 +17,9 @@ login_log = logging.getLogger("login")
 oauth_login = flask.Blueprint("github_login", __name__)
 oauth_logout = flask.Blueprint("oauth_logout", __name__)
 
+GITHUB_PROVIDER = 1
+GOOGLE_PROVIDER = 2
+
 oauth = OAuth(app)
 github = oauth.remote_app(
     "github",
@@ -126,7 +129,7 @@ def github_login_callback():
             email = record["email"]
             break
 
-    return generic_login_callback(email, 1, github_user_id)
+    return generic_login_callback(email, GITHUB_PROVIDER, github_user_id)
 
 
 @oauth_login.route("/response/google")
@@ -160,8 +163,7 @@ def google_login_callback():
 
     google_user_id = user_data["id"]
     email = user_data["email"]
-    # TODO: factor this out into constant
-    return generic_login_callback(email, 2, google_user_id)
+    return generic_login_callback(email, GOOGLE_PROVIDER, google_user_id)
 
 
 def generic_login_callback(email, oauth_provider, oauth_id):
@@ -171,7 +173,7 @@ def generic_login_callback(email, oauth_provider, oauth_id):
             model.users.c.is_active,
         ]).select_from(model.users).where(
             (model.users.c.oauth_provider == oauth_provider) &
-            (model.users.c.oauth_id == oauth_id)
+            (model.users.c.oauth_id == str(oauth_id))
         )).first()
 
         if not user:
@@ -180,7 +182,7 @@ def generic_login_callback(email, oauth_provider, oauth_id):
                 username="user{}".format(uuid.uuid4().hex),
                 # TODO: rename github_email to oauth_email
                 github_email=email,
-                oauth_id=oauth_id,
+                oauth_id=str(oauth_id),
                 oauth_provider=oauth_provider,
             )).inserted_primary_key
             flask.session["user_id"] = new_user_id[0]
