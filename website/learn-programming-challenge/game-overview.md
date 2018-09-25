@@ -22,9 +22,9 @@ Players begin play with a shipyard, and can use collected halite to build new sh
 
 #### Gameplay Overview
 
-Players each start the game with 5,000 stored halite, a shipyard, and knowledge of the game map. The game is played with two or four bots. The map is a 2d grid (32x32, 40x40, 48x48, 56x56, or 64x64) with a unique symmetric pattern of halite.
+Players each start the game with 5,000 stored halite, a shipyard, and knowledge of the game map. Players play in groups of two or four on a 2d map (32x32, 40x40, 48x48, 56x56, or 64x64) with a unique symmetric pattern of halite.
 
-Ships can make one action per turn: they can move one unit in any cardinal direction, collect halite, or convert into dropoffs.
+Ships can make one action per turn: they can move one unit in any cardinal direction, collect halite, or convert into dropoffs. When a ship is over a friendly shipyard or dropoff, it automatically deposits its halite cargo, adding to the player's total halite.
 
 Ships interact directly in two ways. If multiple ships occupy the same location, they will **collide** and sink, dropping all their halite into the sea. If there are two or more ships belonging to any opponent within a four-cell radius of your ship, your ship is **inspired** by the competition. An inspired ship collects halite from the sea at the normal rate, but receives an additional 200% bonus.
 
@@ -37,7 +37,7 @@ Command|Halite Cost or Gain
 :---: | :---: | :---:
 Spawn | Cost: 1000 halite
 Convert into a drop-off  | Cost: 4000 halite deducted from player's stored halite. <br/> The converted ship's halite cargo is destroyed, and the halite in the sea under the new dropoff is set to 0.
-Move (n, s, e w) | Cost: 10% of halite available at turn origin cell is deducted from ship’s current halite
+Move (n, s, e w) | Cost: 10% of halite available at turn origin cell is deducted from ship’s current halite. <br/>When a ship moves over a friendly shipyard or dropoff, it deposits its halite cargo.
 Move (o) | Collect: 25% of halite available in cell, rounded up to the nearest whole number. <br/>Ships can carry up to 1000 halite.
 
 <br/><br/>
