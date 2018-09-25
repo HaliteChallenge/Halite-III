@@ -4,7 +4,7 @@
             <div class="user-profile">
                 <div class="bg-img"></div>
                 <div class="user-profile-avatar">
-                    <img class="img-responsive" :src="'https://github.com/' + user.username + '.png'" :alt="user.username" @error="$event.target.src = fallbackAvatar(user.username)">
+                  <profile-image className="img-responsive" :username="user.username" />
                 </div>
                 <div class="user-profile-detail">
                     <a class="user-name" target="_blank" :href="'https://github.com/' + user.username">{{ user.username }}</a>
@@ -23,11 +23,9 @@
 
                         <template v-if="team" v-for="member in team.members">
                             <a :href="`/user/?user_id=${member.user_id}`">
-                                <img
-                                  height="20px"
-                                  :alt="member.username"
-                                  :src="`https://github.com/${member.username}.png`"
-                                />
+                              <profile-image
+                                height="20px"
+                                :username="member.username" />
                                 {{member.username}}
                             </a>
                         </template>

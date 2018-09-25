@@ -30,6 +30,7 @@ import CodeTutorial from './templates/CodeTutorial.vue'
 import NextTutorial from './templates/NextTutorial.vue'
 import WalkthroughSubsteps from './templates/WalkthroughSubsteps.vue'
 import WalkthroughSubstep from './templates/WalkthroughSubstep.vue'
+import ProfileImage from './templates/ProfileImage.vue'
 
 // Include bootstrap.js - do not remove
 import _ from '../vendor_assets/bootstrap-sass-3.3.7/assets/javascripts/bootstrap'
@@ -44,6 +45,7 @@ Vue.use(require('vue-cookie'))
 Vue.use(require('element-ui'))
 Vue.component('walkthrough-substeps', WalkthroughSubsteps)
 Vue.component('walkthrough-substep', WalkthroughSubstep)
+Vue.component('profile-image', ProfileImage)
 
 Vue.mixin({
   data() {
