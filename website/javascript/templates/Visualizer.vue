@@ -3,10 +3,10 @@
   <div class="visualizer-row">
     <div class="visualizer-column">
       <div class="game-heading">
+        <p class="game-heading-date" v-if="game">{{game.time_played | moment("MMM Do, YY - HH:mm:ss")}}</p>
         <div class="game-heading-players">
           <div class="short">
             <span :class="`player color-${sortedPlayers[0].index + 1}`" v-if="sortedPlayers.length >= 1">
-                <span :class="`circle bg-player-${sortedPlayers[0].index + 1}`"></span>
                 <TierPopover :tier="tierClass(sortedPlayers[0].tier)"/>
                 <a v-if="sortedPlayers[0].user_id" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].user_id}`">{{sortedPlayers[0].name}}</a>
                 <span v-if="!sortedPlayers[0].user_id" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
@@ -15,7 +15,6 @@
             </span>
             <span class="action">defeats</span>
             <span :class="`player color-${sortedPlayers[1].index + 1}`" v-if="sortedPlayers.length >= 2">
-                <span :class="`circle bg-player-${sortedPlayers[1].index + 1}`"></span>
                 <TierPopover :tier="tierClass(sortedPlayers[1].tier)"/>
                 <a class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[1].user_id}`">{{sortedPlayers[1].name}}</a>
               </span>
@@ -23,14 +22,12 @@
           </div>
           <div class="long">
             <span :class="`player color-${sortedPlayers[0].index + 1}`" v-if="sortedPlayers.length >= 1">
-                <span :class="`circle bg-player-${sortedPlayers[0].index + 1}`"></span>
                 <TierPopover :tier="tierClass(sortedPlayers[0].tier)"/>
                 <a v-if="sortedPlayers[0].user_id" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].user_id}`">{{sortedPlayers[0].name}}</a>
                 <span v-if="!sortedPlayers[0].user_id" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
             </span>
             <span class="action">defeats</span>
             <span :class="`player color-${player.index + 1}`" v-for="(player, index) in sortedPlayers" v-if="index > 0" :key="index">
-                <span :class="`circle bg-player-${player.index + 1}`"></span>
                 <TierPopover :tier="tierClass(player.tier)"/>
                 <a v-if="player.user_id" class="player-name-anchor" :href="`/user/?user_id=${player.user_id}`">{{player.name}}</a>
                 <span v-if="!player.user_id" class="player-name-anchor" :href="`/user/?user_id=${player.user_id}`">{{player.name}}</span>
@@ -58,6 +55,17 @@
               <span class="replay-btn">
                   <a href="javascript:;" @click="nextFrame"><span class="icon-next"></span></a>
               </span>
+              <span class="replay-btn reset-btn" style="text-align: center">
+                  <a href="javascript:;" @click="resetView" title="Reset zoom/pan"><span class="fa fa-refresh"></span></a>
+              </span>
+              <span class="replay-btn" style="text-align: center">
+                     <a href="javascript:;" @click="recordView" title="Record video of game"><span class="fa fa-video-camera"></span></a>
+              </span>
+              <span class="replay-btn">
+                  <a style="text-align: center; margin-bottom: 4px;" v-if="game && game.game_id" :href="replay_download_link(game.game_id)">
+                    <span class="icon-download"></span>
+              </a>
+              </span>
             </div>
             <div class="game-replay-progress">
               <div class="game-replay-progress-inner">
@@ -70,40 +78,34 @@
             </div>
           </div>
         </div>
-        <div class="game-replay-controller">
+ <!--   <div class="game-replay-controller">
           <div class="game-replay-btn-list">
             <button class="btn" @click="resetView">
               <span class="fa fa-refresh"></span>
-              Reset Map Zoom/Pan
-            </button>
-            <button class="btn" @click="recordView">
-              <span class="fa fa-video-camera"></span>
-              Record Game As Video
+              &nbsp;Reset Map Zoom/Pan
             </button>
             <a class="btn" v-if="game && game.game_id" :href="replay_download_link(game.game_id)">
               <span class="icon-download"></span>
-              Download Replay File
+              &nbsp;Download Replay File
             </a>
             <button class="btn" v-else="game && game.game_id" disabled>
               <span class="icon-download"></span>
-              Replay File Unavailable
+              &nbsp;Replay File Unavailable
             </button>
-            <div>
-              <label for="theme">Theme (changes require reloading page):</label>
-              <v-select :options="themes" @input="changeTheme" :value="selectedTheme" style="display: inline-block;" inputId="theme" :searchable="false" :filterable="false" :clearable="false">
-              </v-select>
-            </div>
+            <button class="btn" @click="recordView">
+              <span class="fa fa-video-camera"></span>
+              &nbsp;Record Game As Video
+            </button>
             <template v-if="showHoliday">
               <label for="holiday">Holiday Theme:</label>
               <input type="checkbox" class="pull-left" style="margin-top: -5px;" id="holiday" v-bind:checked="isHoliday" v-on:click="toggleHoliday(this)">
             </template>
           </div>
-        </div>
+        </div> -->
       </div>
 
     </div>
     <div class="visualizer-stats-column">
-      <p class="game-heading-date" v-if="game">{{game.time_played | moment("MMM Do, YY - HH:mm:ss")}}</p>
       <div class="statistics stats-panel">
         <label class="panel-name">GAME/MAP STATS</label>
         <ul class="panel-body list-hori">
@@ -148,6 +150,81 @@
           </div>
         </div>
       </div>
+      <div class="stats-panel">
+        <label class="panel-name">THEME</label>
+        <div>
+          <v-select :options="themes" @input="changeTheme" :value="selectedTheme" style="display: inline-block;" id="theme">
+          </v-select>
+        </div>
+      </div>
+      <!-- <div class="panel-group" aria-multiselectable="true">
+        <VisualizerPanel name="map-stats" title="game/map stats">
+          <table class="map-stats-props">
+            <tbody>
+              <tr>
+                <th>Map Size:</th>
+                <td>{{`${replay.production_map.width}x${replay.production_map.height}`}}</td>
+              </tr>
+              <tr>
+                <th>Map Seed:</th>
+                <td>{{replay.map_generator_seed}}</td>
+              </tr>
+              <tr>
+                <th>Engine Version:</th>
+                <td>{{replay.ENGINE_VERSION}}</td>
+              </tr>
+              <tr>
+                <th>Replay Version:</th>
+                <td>{{replay.REPLAY_FILE_VERSION}}</td>
+              </tr>
+              <tr>
+                <th>Zoom Level:</th>
+                <td>{{Math.round(zoom*100)}}%</td>
+              </tr>
+              <tr>
+                <th>Camera Position:</th>
+                <td>{{pan.x}}, {{pan.y}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </VisualizerPanel>
+        <VisualizerPanel name="charts" title="charts">
+          <template slot-scope="panelOpen">
+            <section class="dashboard-graphs">
+              <section class="dashboard-graph">
+                <h4 class="dashboard-graph-heading">
+                  <span class="icon-ship"></span> Ships
+                </h4>
+                <PlayerLineChart ref="chart2" :selected-players="selectedPlayers" :maxLength="50" :chart-data="chartData.fleet" :index="frame" :showChart="panelOpen.panelOpen" @updateIndex="index => {frame = index}" />
+              </section>
+              <section class="dashboard-graph">
+                <h4 class="dashboard-graph-heading">
+                  <span class="icon-ship"></span> Current Halite
+                </h4>
+                <PlayerLineChart :selected-players="selectedPlayers" :maxLength="50" :chart-data="chartData.energy" :index="frame" :showChart="panelOpen.panelOpen" @updateIndex="index => {frame = index}" />
+              </section>
+            </section>
+          </template>
+        </VisualizerPanel>
+        <VisualizerPanel name="player-detail" title="player details" @click="gaData('visualizer','click-player-details','gameplay')">
+          <PlayerDetailPane :replay="replay" :statistics="statistics" :stats="stats" :frame="frame"></PlayerDetailPane>
+        </VisualizerPanel>
+        <VisualizerPanel ref="objectPanel" name="map-object-properties" title="map object properties" @click="gaData('visualizer','click-object-properties','gameplay')">
+          <div v-if="selectedPlanet">
+            <SelectedPlanet :selected-planet="selectedPlanet" :players="players"></SelectedPlanet>
+          </div>
+          <div v-if="selectedPoint && !selectedPlanet">
+            <SelectedPoint :selected-point="selectedPoint" :players="players"></SelectedPoint>
+          </div>
+          <div v-if="selectedShip">
+            <SelectedShip :selected-ship="selectedShip" :players="players"></SelectedShip>
+          </div>
+          <div class="message-box" v-if="!selectedPoint && !selectedShip">
+            <p><span class="icon-info"></span></p>
+            <p>Click on a ship, planet, or other map location to see properties</p>
+          </div>
+        </VisualizerPanel>
+      </div> -->
     </div>
   </div>
 </div>
@@ -770,6 +847,7 @@ export default {
     color: rgba(151, 221, 255, 1);
   }
 }
+
 .stats-panel{
   label{
     font-weight: normal;
