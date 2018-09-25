@@ -46,7 +46,6 @@
   import Vue from 'vue'
   import HaliteBreadcrumb from './Breadcrumb.vue'
   import VisualizerContainer from './VisualizerContainer.vue'
-  import Upload from './Upload.vue'
   import BotUpload from './BotUpload.vue'
   import Message from './Message.vue'
   import {Alert} from '../utils.js'

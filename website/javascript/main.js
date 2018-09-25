@@ -10,7 +10,6 @@ import FinalsStatus from './templates/FinalsStatus.vue'
 import GameFeed from './templates/GameFeed.vue'
 import HackathonLeaderboard from './templates/HackathonLeaderboard.vue'
 import LeaderboardContainer from './templates/LeaderboardContainer.vue'
-import Upload from './templates/Upload.vue'
 import UserProfile from './templates/UserProfile.vue'
 // import UserProfileBar from './templates/UserProfileBar.vue'
 import EditUserProfile from './templates/EditUserProfile.vue'
@@ -89,12 +88,6 @@ window.views = {
     new Vue({
       el: '#leaderboard-container',
       render: (h) => h(LeaderboardContainer, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-  Upload: function () {
-    new Vue({
-      el: '#upload-container',
-      render: (h) => h(Upload)
     })
   },
   UserProfile: function () {
