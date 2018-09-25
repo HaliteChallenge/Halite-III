@@ -49,15 +49,18 @@
     methods: {
       download_bot: function () {
         this.$refs.editor_pane.download_bot();
+        handleOutboundLinkClicks('play', 'editor-flow','download');
       },
       run_ondemand_game: function() {
         this.$refs.editor_pane.run_ondemand_game();
+        handleOutboundLinkClicks('play', 'editor-flow','save');
       },
       save_current_file: function() {
         this.$refs.editor_pane.save_current_file();
       },
       submit_bot: function () {
         this.$refs.editor_pane.submit_bot();
+        handleOutboundLinkClicks('play', 'editor-flow','submit');
       },
       on_save(value) {
         this.allSaved = value
