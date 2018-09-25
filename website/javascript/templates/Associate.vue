@@ -243,6 +243,7 @@ export default {
             this.error = 'Valid username is required'
             return false
           }
+          request['username'] = this.username
 
           if(this.level === 'High School' && this.selected_highSchool){
           request['organization_id'] = this.selected_highSchool.id
