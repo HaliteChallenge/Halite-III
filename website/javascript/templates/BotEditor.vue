@@ -918,6 +918,7 @@ export default {
 
     button {
       flex: 1;
+      background: #21212B;
     }
 }
 

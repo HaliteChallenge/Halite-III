@@ -21,7 +21,7 @@
         <input type="checkbox" name="expandTab" @change="on_change" v-model="state.editor.expandTab" checked />
       </div>
 
-      <button class="btn-sm btn-primary" @click="$emit('deleteAll')">Delete All Files & Restart Bot</button>
+      <button class="btn-sm btn-primary" @click="$emit('deleteAll')">Delete Bot and Reset Language</button>
 
       <h3>Games</h3>
 
