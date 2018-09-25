@@ -385,7 +385,7 @@ def create_user(*, user_id):
         ).values(**values))
 
     send_confirmation_email(
-        notify.Recipient(user_id, user_data["username"], user_data["github_email"],
+        notify.Recipient(user_id, username, user_data["github_email"],
                          organization_name, level,
                          user_data["creation_time"]))
 
