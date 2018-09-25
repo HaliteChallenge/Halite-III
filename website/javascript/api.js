@@ -147,6 +147,14 @@ export function get_season1_stats (userId) {
     }
   })
 }
+export function get_season2_stats (userId) {
+  return $.get({
+    url: `${API_SERVER_URL}/user/${userId}/season2`,
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
 
 export function get_editor_file_list (userId) {
   const url = `${API_SERVER_URL}/editor/${userId}`

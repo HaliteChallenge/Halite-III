@@ -164,13 +164,14 @@
     }
   }
 
-  &-rank-stats {
+  &-rank-stats, .past-year-stats {
     display: flex;
     justify-content: space-around;
     text-align: center;
     height: 95px;
     border-radius: 6px;
     .stats-item {
+        margin-top: 18px;
       .title {
         font-size: 14px;
         color: #343434;
@@ -183,6 +184,11 @@
       }
     }
   }
+
+  .past-year-stats {
+      position: relative;
+  }
+
   &-about {
     position: relative;
     padding: 20px 0;
@@ -313,6 +319,13 @@
 }
 
 .user-profile-detail {
+    .title {
+        text-align: center;
+        color: #0c0c0c;
+        font-size: 28px;
+        font-family: $font-heading;
+    }
+
   .user-name {
     font-size: 28px;
     color: #0c0c0c;
