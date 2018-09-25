@@ -23,11 +23,14 @@ class GameMap(val width: Int, val height: Int) {
   def at(entity: Entity): MapCell = at(entity.position)
 
   def calculateDistance(source: Position, target: Position): Int = {
-    val dx = Math.abs(source.x - target.x)
-    val dy = Math.abs(source.y - target.y)
-    val toroidal_dx = Math.min(dx, width - dx)
-    val toroidal_dy = Math.min(dy, height - dy)
-    toroidal_dx + toroidal_dy
+    def calculate(normalizedSource: Position, normalizedTarget: Position): Int = {
+      val dx = Math.abs(normalizedSource.x - normalizedTarget.x)
+      val dy = Math.abs(normalizedSource.y - normalizedTarget.y)
+      val toroidal_dx = Math.min(dx, width - dx)
+      val toroidal_dy = Math.min(dy, height - dy)
+      toroidal_dx + toroidal_dy
+    }
+    calculate(normalize(source), normalize(target))
   }
 
   def normalize(position: Position) = {
@@ -35,15 +38,18 @@ class GameMap(val width: Int, val height: Int) {
       ((position.x % width) + width) % width, ((position.y % height) + height) % height)
   }
 
-  def naiveNavigate(ship: Ship, destination: Position): Direction = {
-    for (direction <- getUnsafeMoves(ship.position, destination)) {
-      val targetPos = ship.position.directionalOffset(direction)
-      if (!at(targetPos).isOccupied) {
-        at(targetPos).markUnsafe(ship)
-        return direction
+  def naiveNavigate(ship: Ship, destination: Position): Direction =  {
+    def navigate(normalizedDestination: Position): Direction = {
+      for (direction <- getUnsafeMoves(ship.position, normalizedDestination)) {
+        val targetPos = ship.position.directionalOffset(direction)
+        if (!at(targetPos).isOccupied) {
+          at(targetPos).markUnsafe(ship)
+          return direction
+        }
       }
+      Direction.STILL
     }
-    Direction.STILL
+    navigate(normalize(destination))
   }
 
   def at(position: Position): MapCell = cells(position.y)(position.x)
