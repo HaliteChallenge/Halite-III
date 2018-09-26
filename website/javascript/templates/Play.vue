@@ -4,8 +4,8 @@
       <h1 class="page-heading">Play Halite III</h1>
       <div class="doc-section doc-section-play text-center">
         <p><img src="/assets/images/icon-flag.svg" width="30" alt="flag"></p>
-        <h4 class="mt3">COMPETITION INFORMATION</h4>
-        <p class="sub-title">October 16, 2018 - January 22, 2019</p>
+        <h4 class="mt3">SUBMIT A BOT</h4>
+     <!--   <p class="sub-title">Global launch: October 16, 2018</p> -->
         <p>Halite III bots can be developed locally or in a web-based editor. Submit your bot via one of the below options to participate in Halite III.</p>
       </div>
       <div class="col-sm-6">
@@ -23,7 +23,7 @@
           <p>Or, <a href="/learn-programming-challenge/downloads">download</a> the game environment and starter kit bundle for your platform and language of choice.</p>
           <p>To submit your local Halite bot in the competition, upload a .zip file here. The root of your zip should contain a MyBot.{extension} file and the /hlt folder from the starter kit.</p>
           <halite-upload-zone
-            description="Select File or Drop File to <br> Upload your Bot"
+            description="<br>Select or drop .zip file <br> to upload your bot"
             buttonText = "Select File"
             :icon="`/assets/images/icon-upload.svg`"
             v-on:change="upload_bot"
@@ -33,7 +33,7 @@
             </halite-upload-zone>
         </div>
       </div>
-      <div class="doc-section doc-section-play" style="text-align:left">
+      <div class="doc-section doc-section-play" style="text-align:left" id="competition-rules">
         <h4 class="mt3" style="text-align: center">COMPETITION RULES</h4>
         <p>
         <p style="text-align: center"><b>Start date:</b> October 16, 2018</p>
@@ -42,7 +42,7 @@
 
         <br/>
         <h4 class="mt3">Eligibility</h4>
-        <p>The competition is open to the public, free to enter, and encourages professionals and students from all over the world to join in. Create an account using Github and submit a bot during the dates of the competition to appear on the leaderboard.
+        <p>The competition is open to the public, free to enter, and encourages professionals and students from all over the world to join in. Create an account and submit a bot during the dates of the competition to appear on the leaderboard.
         </p>
         <br/>
         <h4 class="mt3">Teams</h4>
