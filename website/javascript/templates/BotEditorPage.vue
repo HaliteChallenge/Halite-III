@@ -53,7 +53,7 @@
       },
       run_ondemand_game: function() {
         this.$refs.editor_pane.run_ondemand_game();
-        handleOutboundLinkClicks('play', 'editor-flow','save');
+        handleOutboundLinkClicks('play', 'editor-flow','run');
       },
       save_current_file: function() {
         this.$refs.editor_pane.save_current_file();
