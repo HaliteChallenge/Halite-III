@@ -102,8 +102,7 @@
     </Step>
     <Step title="Halite Collection" name="dropoffs">
       <p>
-        Now that we’ve got more ships, let’s get some information on their most important job: collecting halite. Right now, a ship moves randomly each turn, and collects halite when it is close to empty. You can see the command to do this in the highlighted
-        code.
+        Now that we’ve got more ships, let’s get some information on their most important job: collecting halite. Right now, a ship moves randomly each turn, and collects halite when it is close to empty.
       </p>
 
       <p>
@@ -192,7 +191,7 @@ elif ship.halite_amount >= constants.MAX_HALITE / 4:
         Add this functionality to your code, and try to get your bots using these dropoffs when they are on a “returning” mission. You might find these methods from “hlt.py” helpful:
       </p>
       <p>
-        <code>me.dropoffs()</code> returns a list of all your dropoffs.
+        <code>me.get_dropoffs()</code> returns a list of all your dropoffs.
       </p>
       <p>
         <code>game_map.calculate_distance(ship.position,
