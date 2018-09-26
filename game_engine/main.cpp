@@ -183,9 +183,9 @@ int main(int argc, char *argv[]) {
         for (const auto &stats : replay.game_statistics.player_statistics) {
             std::stringstream message;
             message << "Player "
-                    << std::to_string(stats.player_id.value)
-                    << ", "
-                    << replay.players.at(stats.player_id).name
+                    // << std::to_string(stats.player_id.value)
+                    // << ", "
+                    // << replay.players.at(stats.player_id).name
                     << ", was rank "
                     << std::to_string(stats.rank)
                     << " with "
