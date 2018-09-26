@@ -51,14 +51,27 @@
         </div>
         <div class="row section-overview">
             <div class="col-md-6">
-                <h1>Welcome to Halite III!</h1>
+                <h1>Welcome to Halite</h1>
                 <p>Halite is an open source artificial intelligence challenge, created by Two Sigma.</p>
                 <p>Halite III is a resource management game. Your goal is to build a bot that efficiently navigates the seas removing halite, a luminous energy resource.</p>
                 <br>
                 <a class="btn btn-primary" href="/learn-programming-challenge/">Play now</a>
             </div>
             <div class="col-md-6">
-                <img src="/assets/images/home-map.png" alt="Map">
+                <img src="/assets/images/home-map.png" alt="Cubes">
+            </div>
+        </div>
+        <div class="row section-overview">
+            <div class="col-md-6">
+                <h2>Build a bot</h2>
+                <p>This year's Halite challenge launches October 16 at <a href="https://halite.io">halite.io</a>. Last year, over 6,000 participants from over 100 countries built bots in 20+ programming languages.</p>
+                <p>Build a bot to play other bots created around the world.</p>
+            </div>
+            <div class="col-md-6">
+                <h2>Share your feedback</h2>
+                <p>Do you have an idea for a new feature? Are you interested in contributing to or writing about Halite?</p>
+                <p>We'd like to hear from you! Write us at <a href="mailto:halite@halite.io">halite@halite.io</a>.</p>
+                <br>
             </div>
         </div>
 <!--        <div class="row section-feed">
@@ -170,43 +183,6 @@
             </div>
         </div> -->
 
-            <!--
-            <div class="row">
-                <div class="col-md-12">
-                <p class="t1 c-wht font-headline">HALITE III ALPHA</p>
-                <p class="d1 c-org font-headline">MAY THE BEST BOT WIN</p> -->
-           <!-- <div v-if="!me_in" class="not-me ha-button-container">
-                    <div class="hidden-xs hidden-sm">
-                        <a class="ha-button" href="/learn-programming-challenge"><span>Get Started</span></a>
-                    </div>
-                    <div class="visible-xs visible-sm">
-                        <a class="ha-button" href="" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;"><span>SIGN UP</span></a>
-                    </div>
-                </div> -->
-            <!-- </div>
-            <div class="col-md-12 des">
-                <div class="col-md-offset-2 col-md-4 bot-1">
-                    <img :src="`${baseUrl}/assets/images/temp/bot_2.png`"/>
-                </div>
-                <div class="words col-md-offset-1 col-md-4">
-                    <p class="t3 c-wht font-headline">SAIL THE HIGH SEAS</p>
-                    <div class="line-container"><i class="xline xline-top"></i></div>
-                    <p class="t4 c-gry">Halite III is an exploratory resource management game, in which players build bots that trawl the seas for halite, a sparkling energy resource.</p>
-                    <p class="t4 c-gry">In this crucial alpha stage, we are looking for feedback on game usability, mechanics, and strategic depth. Help us test Halite III in advance of our global competition launch in October!</p>
-                    <div class="line-container"><i class="xline xline-top"></i></div>
-                    <div class="ha-button-container no-bg-button">
-                        <div>
-                            <a class="ha-button" href="/learn-programming-challenge"><span>GET STARTED</span></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-offset-2 col-md-4 bot-2">
-                    <img :src="`${baseUrl}/assets/images/temp/bot_1.png`"/>
-                </div>
-           </div>
-            <div class="col-md-12 ha-line">
-            </div>
-        </div>-->
     </div>
 </template>
 
