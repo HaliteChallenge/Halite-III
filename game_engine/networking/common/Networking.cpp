@@ -94,6 +94,7 @@ void Networking::initialize_player(Player &player) {
         Logging::log("Failed to initialize", Logging::Level::Error, player.id);
         game.logs.log(player.id, e.what(), PlayerLog::Level::Error);
         handle_player_error(player.id);
+        player.name = "(failed to initialize)";
         throw;
     }
 }
