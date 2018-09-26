@@ -193,7 +193,7 @@ A map cell is an object representation of a cell on the game map. Map cell has `
 <br/>
 * **Navigational Marking**
 
-   `map_cell.mark_unsafe(ship)` is used to mark the cell under this ship as unsafe (occupied) for collision avoidance.
+   `map_cell.mark_unsafe(ship)` is used to mark the cell under this ship as unsafe (occupied) for collision avoidance. This marking resets every turn and is used by `naive_navigate` to avoid collisions.
 
 <br/>
 ##### POSITION
