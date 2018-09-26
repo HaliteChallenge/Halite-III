@@ -22,6 +22,14 @@ When your bot times out or errors on the game servers, we save and display a log
 <br/>
 ##### Test new vs. old before upload
 Before submitting a new bot, we recommend running some games against the previous version of your bot. You can play your bot against older versions using the CLI, or on our website here.
+
+<br/>
+##### Using the CLI
+Your Halite Starter Kit comes with an executable that allows you to use a command line interface (CLI) to run games locally. You might find the CLI useful for specifying parameters and conditions for a game of Halite III.
+
+To see all available flags, run:
+`$ ./halite --help`
+
 <br/><br/>
 
 </div>
@@ -49,18 +57,19 @@ Your bot will be killed if it exceeds the following time limits during game exec
 To prevent your bot from timing out, you should optimize your code wherever possible. You might implement a timer to ensure that your bot returns commands in time to prevent losing the match.
 
 When debugging timeout issues, it can be helpful to disable game engine timeouts. To do so, append the --no-timeouts flag when running a game:
-`./halite -vvv --width 32 --height 32 --no-timeouts "python MyBot.py" "python MyBetterBot.py"`
+`$ ./halite -vvv --width 32 --height 32 --no-timeouts "python MyBot.py" "python MyBetterBot.py"`
 
 <br/>
 ##### In Game Failures
 Your bot could be crashing because of errors during game execution.
 * **Incorrect commands:** The most common reason for incorrect commands is using the inbuilt functions incorrectly, or writing new functions that emit commands that the game engine cannot parse. Check your formatting, and make sure that your raw command strings are valid engine commands.
-* **Out of memory:** Bots have a specific memory limit. If your code exceeds this limit, your bot is killed. See our more detailed page on the game environment.
+* **Illegal commands:** If your bot sends commands that are disallowed by the engine, the engine will kill your bot, resulting in a game loss. Some examples of these errors are attempting to send the same ship multiple commands, spending more halite in a turn than you have, or building a dropoff at an already-owned location.
+* **Out of memory:** Bots have a specific memory limit. If your code exceeds this limit, your bot is killed.
 
 <br/>
 ##### Reproducing Maps
 You can replay games with the exact same map to debug or tweak bot behavior. To do so, specify a map seed with the -s or --seed flag followed by an integer when running a game:
-`./halite -vvv --width 32 --height 32 --seed 4 "python MyBot.py" "python MyBetterBot.py"`
+`$ ./halite -vvv --width 32 --height 32 --seed 4 "python MyBot.py" "python MyBetterBot.py"`
 
 
 </div>
