@@ -28,7 +28,7 @@
               <h2>REPLAY A FILE</h2>
               <p>When you run the Halite executable locally, it will add a .hlt file to your directory. Upload that file here to watch your game.</p>
               <halite-upload-zone
-                caption="Drop a replay file here to upload"
+                description="<br>Select or drop .hlt file <br> to replay a game"
                 buttonText = "Select File"
                 :icon="`${baseUrl}/assets/images/icon-replay.svg`"
                 v-on:change="play_replay"
