@@ -2,6 +2,7 @@
 
 #include "Command.hpp"
 #include "Halite.hpp"
+#include "Replay.hpp"
 #include "Logging.hpp"
 #include "BotError.hpp"
 
@@ -66,6 +67,7 @@ void Networking::initialize_player(Player &player) {
     Logging::log("Sending init message", Logging::Level::Debug, player.id);
     // Send the game constants
     nlohmann::json constants = Constants::get();
+    constants["game_seed"] = game.replay.map_generator_seed;
     message_stream << constants.dump() << std::endl;
 
     // Send the number of players and player ID
