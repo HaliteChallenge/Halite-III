@@ -26,7 +26,7 @@
       </p>
 
       <p>
-        As you improve your bot, you might want to compute some things that will be useful during the game. Run that code before you send your bot name. Once the engine receives your name, it considers you ready, and the Game Loop begins.
+        As you improve your bot, you might want to compute some things that will be useful during the game. Run that code before you send your bot name. Once the engine receives your name, it considers you ready, and the game loop begins.
       </p>
     </Step>
     <Step title="The Game Loop" name="game-loop">
@@ -86,7 +86,8 @@
       </p>
 
       <p>
-        Right now, your code creates just one ship on your first turn. Let’s change the highlighted line to allow ships to be built on other turns. The test
+
+      <p>The test
         <code>me.halite_amount >= SHIP_COST</code> ensures that you have enough halite to build a ship. The test
         <code>game_map[me.shipyard].is_occupied</code> makes sure that the shipyard is empty before you build a ship there - two ships in one square results in maritime disaster!
       </p>
@@ -106,14 +107,14 @@
       </p>
 
       <p>
-        Let’s send a message to ourselves at this part of the code so that we can see how much halite there is in the ship’s cargo. Add this code above the movement if/else block.
+        Let’s send a message to ourselves at this part of the code so that we can see how much halite there is in the ship’s cargo. Add this code inside the <code>for ships</code> loop but above the movement if/else block.
       </p>
 
       <code>
 logging.info("Ship {} has {} halite.".format(ship.id, ship.halite_amount))</code>
 
       <p>
-        Logging is how your bot communicates with you. We use this logging method because the bot reserves the regular STDOUT (print statements) to communicate with the game engine. You can read logs under any error messages in the panel under the visualizer.
+        Logging is how your bot communicates with you. We use this logging method because the bot reserves the regular STDOUT (print statements) to communicate with the game engine. You can read logs under any error messages in the panel under the visualizer - scroll all the way down to see your logging statements.
       </p>
 
       <p>
@@ -210,7 +211,7 @@ elif ship.halite_amount >= constants.MAX_HALITE / 4:
     <Step title="Start Playing!" name="collision-avoidance">
       <p>
         Your bot works! At this point, your bot explores the map, collects halite, and brings it back to port. It should also build new ships and dropoffs according to your criteria. Let’s submit your bot so that it can start playing against other bots. If you’re
-        stuck, we’ve put together a guide to help you debug your bot, or check out our community pages to get help from other players.
+        stuck, we’ve put together a guide to help you <b><a href="/learn-programming-challenge/developing-a-bot#debugging" target="_blank"> debug your bot</a></b>, or check out our <b><a href="https://forums.halite.io/" target="_blank">forums</a></b> to get help from other players.
       </p>
       <p v-if="uploadMessage">
         <strong>{{uploadMessage}}</strong>
@@ -218,34 +219,31 @@ elif ship.halite_amount >= constants.MAX_HALITE / 4:
       <button v-on:click="upload" v-else>
                     Upload
                 </button>
-
+      <br/><br/>
       <p>
         You’ll get an email when your bot starts playing. Check out your profile to watch your games!
       </p>
 
       <p>
-        What’s next?
+        <h2>What’s next?</h2>
       </p>
       <p>
         There’s lots to do next.
       </p>
       <p>
-        If you want more guidance in improving your bot, there are more tutorial steps available.
+        If you want more guidance in improving your bot, there are more tutorial steps available:
       </p>
       <p>
-      <a href="/learn-programming-challenge/tutorials/next-tutorial">Next Steps Tutorial</a>
+      <b><a href="/learn-programming-challenge/tutorials/next-tutorial">Next Steps Tutorial</a></b>
 </p>
       <p>
-        You can run games between your bot and other bots using the gym.
+        The code you've worked on in this tutorial will be available from our <b><a href="/editor">online editor</a></b>. You can always reset your bot on the editor's settings panel if you would prefer to start from scratch. </p>
+
+      <p>
+        You can also <b><a href="/learn-programming-challenge/downloads" target="_blank">download</a></b> the development tools if you would like to work on your bot locally or offline.
       </p>
       <p>
-        There are more stats available about your bot’s games, like the percentage of halite collected from the map, and the number of times ships collided. Check them out here.
-      </p>
-      <p>
-        Any game of Halite generates a hlt file which you can upload to use the visualizer to watch the game replay.
-      </p>
-      <p>
-        Halite III also has a great community, and we’re excited to see you there! Post on the forums, or join us on Discord.
+        Halite III also has a great community, and we’re excited to see you there! Join us on the official <b><a href="https://forums.halite.io/" target="_blank">Forums</a></b>.
       </p>
 
       <button class="run-game" v-on:click="runGame">
