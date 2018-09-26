@@ -8,6 +8,7 @@
             <li><a v-on:click="run_ondemand_game()"><span>Run</span></a></li>
             <li><a v-on:click="download_bot()"><span>Download</span></a></li>
             <li><a v-on:click="submit_bot()"><span>Submit</span></a></li>
+            <li><a href="/learn-programming-challenge/api-docs" target="_blank"><span>API Docs</span></a></li>
           </ul>
           <ul class="nav navbar-nav halite-nav-right">
             <li>
