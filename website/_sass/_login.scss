@@ -4,11 +4,12 @@
 
         .login-choice {
             flex: 1;
-            margin: 1em;
+            margin: 0.5em;
             padding: 1em;
             display: block;
             height: 5em;
             border: 1px solid #ccc;
+            border-radius: 4px;
             box-shadow: 0 1px 5px #ccc;
             color: inherit;
             line-height: 3em;
