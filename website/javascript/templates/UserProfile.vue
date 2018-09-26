@@ -58,12 +58,12 @@
                             <div>
                                 <div class="type-title">Individual</div>
                                 <div class="lvl">
-                                    {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier
+                                    {{ user.rank ? `#${user.rank}` : "No Rank" }}
                                 </div>
                             </div>
                         </div>
                         <!-- organization - TODO -->
-                        <div class="organization">
+                   <!-- <div class="organization">
                             <div class="lvl-icon" :class="tierClass(user.tier || 'Bronze')"></div>
                             <div>
                                 <div class="type-title">Organization</div>
@@ -71,7 +71,7 @@
                                     {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <!-- <h2><span :class="tierClass(user.tier || 'Bronze')"></span> {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier</h2> -->
                     <div class="user-profile-rank-stats">
