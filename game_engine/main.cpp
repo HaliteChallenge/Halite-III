@@ -192,6 +192,7 @@ int main(int argc, char *argv[]) {
                     << std::to_string(stats.turn_productions.back())
                     << " halite";
             Logging::log(message.str());
+            std::cout << message.str() << std::endl;
         }
 
         // JSON results info, used by backend
