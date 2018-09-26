@@ -1,4 +1,6 @@
 /* jshint esversion: 6 */
+import Identicon from 'identicon.js'
+import md5 from 'md5'
 
 export const API_SERVER_URL = api_server_url
 export const LOGIN_SERVER_URL = login_server_url
@@ -87,10 +89,6 @@ export function logout () {
   })
 }
 
-export function make_profile_image_url (username) {
-  return `https://github.com/${username}.png`
-}
-
 export function list_bots (user_id) {
   return $.get({
     url: `${API_SERVER_URL}/user/${user_id}/bot`
@@ -144,6 +142,14 @@ export function list_organizations (user_id) {
 export function get_season1_stats (userId) {
   return $.get({
     url: `${API_SERVER_URL}/user/${userId}/season1`,
+    xhrFields: {
+      withCredentials: true
+    }
+  })
+}
+export function get_season2_stats (userId) {
+  return $.get({
+    url: `${API_SERVER_URL}/user/${userId}/season2`,
     xhrFields: {
       withCredentials: true
     }
@@ -590,4 +596,9 @@ export function join_team(team_id, verification_code) {
     body: formData,
     credentials: 'include'
   }).then(r => r.json())
+}
+
+export function fallbackAvatar(username) {
+  const identicon = new Identicon(md5(username))
+  return `data:image/png;base64,${identicon.toString()}`
 }

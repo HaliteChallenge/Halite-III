@@ -46,7 +46,6 @@
   import Vue from 'vue'
   import HaliteBreadcrumb from './Breadcrumb.vue'
   import VisualizerContainer from './VisualizerContainer.vue'
-  import Upload from './Upload.vue'
   import BotUpload from './BotUpload.vue'
   import Message from './Message.vue'
   import {Alert} from '../utils.js'
@@ -83,14 +82,6 @@
             props: {
               replay: Object.freeze(replay),
               game: game.game,
-              makeUserLink: function (user_id) {
-                return `/user?user_id=${user_id}`
-              },
-              getUserProfileImage: function (user_id) {
-                return api.get_user(user_id).then((user) => {
-                  return api.make_profile_image_url(user.username)
-                })
-              }
             }
           }),
           mounted: function () {
@@ -106,7 +97,6 @@
     name: 'uploader',
     props: ['baseUrl'],
     components: {
-      'Upload': Upload,
       'bot-upload': BotUpload,
       'visualizer-container': VisualizerContainer,
       'halite-upload-zone': UploadZone,

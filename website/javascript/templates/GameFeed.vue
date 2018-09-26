@@ -25,7 +25,7 @@
                 :href="'/user?user_id=' + player.id"
                 class="game-participant"
                 :title="player.rating_info + (player.timed_out ? ' timed out or errored in this game. See the log for details.' : '')">
-                    <img :alt="player.username" :src="profile_images[player.id]" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Placeholder_no_text.svg/2000px-Placeholder_no_text.svg.png'" v-bind:class="{ 'timed-out': player.timed_out, 'seed-player': player.player_index == 0 }"/>
+                  <profile-image :username="player.username" v-bind:className="{ 'timed-out': player.timed_out, 'seed-player': player.player_index == 0 }" />
                     <span class="username">
                       <template v-if="player.leaderboard_rank">
                         ({{ player.leaderboard_rank }})
@@ -89,7 +89,6 @@ export default {
       most_recent: 0,
       display_games: [],
       incoming_games: [],
-      profile_images: {},
       fetch_tries: 0,
       display_timer: null,
       display_paused: false,
@@ -122,7 +121,6 @@ export default {
                 for (let participant of Object.keys(game.players)) {
                   let player = game.players[participant]
                   player.id = participant
-                  this.profile_images[participant] = api.make_profile_image_url(player.username)
                   if (player.mu) {
                     let mu = Math.round(player.mu * 100) / 100
                     let sigma = Math.round(player.sigma * 1000) / 1000

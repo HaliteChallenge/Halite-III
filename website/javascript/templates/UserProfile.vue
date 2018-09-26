@@ -4,7 +4,7 @@
             <div class="user-profile">
                 <div class="bg-img"></div>
                 <div class="user-profile-avatar">
-                    <img class="img-responsive" :src="'https://github.com/' + user.username + '.png'" :alt="user.username" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Placeholder_no_text.svg/2000px-Placeholder_no_text.svg.png'">
+                  <profile-image className="img-responsive" :username="user.username" />
                 </div>
                 <div class="user-profile-detail">
                     <a class="user-name" target="_blank" :href="'https://github.com/' + user.username">{{ user.username }}</a>
@@ -23,11 +23,9 @@
 
                         <template v-if="team" v-for="member in team.members">
                             <a :href="`/user/?user_id=${member.user_id}`">
-                                <img
-                                  height="20px"
-                                  :alt="member.username"
-                                  :src="`https://github.com/${member.username}.png`"
-                                />
+                              <profile-image
+                                height="20px"
+                                :username="member.username" />
                                 {{member.username}}
                             </a>
                         </template>
@@ -135,7 +133,106 @@
                     </div>
                 </div>
             </div>
+
+            <div class="user-profile" v-if="season1stats">
+              <div class="user-profile-detail">
+                <div class="title">Halite I Stats</div>
+
+                <p>{{ season1stats.level }} <span v-if="season1stats.organization">at <a  :href="`/programming-competition-leaderboard?organization=${user.organization_id}`">{{ season1stats.organization }}</a></span></p>
+                <p v-if="season1stats.language">Bots in {{season1stats.language}}</p>
+                <p v-else>No Bot Submitted</p>
+
+                <div class="past-year-stats">
+                  <i class="xline xline-top"></i>
+                  <div class="stats-item">
+                    <div class="title">Rating</div>
+                    <p>{{ (season1stats.mu - 3*season1stats.sigma).toFixed(2) }}</p>
+                  </div>
+                  <div class="stats-item">
+                    <div class="title">Bots</div>
+                    <p>{{season1stats.num_submissions}}</p>
+                  </div>
+                  <div class="stats-item">
+                    <div class="title">Games</div>
+                    <p>{{season1stats.num_games}}</p>
+                  </div>
+                  <i class="xline xline-bottom"></i>
+                </div>
+
+                <div class="user-profile-rank">
+                  <div class="ranking-type">
+                    <div style="width: 100%">
+                      <div>
+                        <div class="type-title">Individual</div>
+                        <div class="lvl">
+                          rank {{season1stats.rank}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <p>
+                  <a target="_blank"
+                     :href="`https://2016.halite.io/user.php?userID=${season1stats.userID}`">
+                    View Halite 1 Profile
+                  </a>
+                </p>
+
+                <i class="xline xline-bottom"></i>
+              </div>
+            </div>
+
+            <div class="user-profile" v-if="season2stats">
+              <div class="user-profile-detail">
+                <div class="title">Halite II Stats</div>
+
+                <p>{{ season2stats.player_level }} <span v-if="season2stats.organization">at <a  :href="`/programming-competition-leaderboard?organization=${user.organization_id}`">{{ season1stats.organization }}</a></span></p>
+                <p v-if="season2stats.language">Bots in {{season2stats.language}}</p>
+                <p v-else>No Bot Submitted</p>
+
+                <div class="past-year-stats">
+                  <i class="xline xline-top"></i>
+                  <div class="stats-item">
+                    <div class="title">Rating</div>
+                    <p>{{season2stats.score.toFixed(2)}}</p>
+                  </div>
+                  <div class="stats-item">
+                    <div class="title">Bots</div>
+                    <p>{{season2stats.num_submissions}}</p>
+                  </div>
+                  <div class="stats-item">
+                    <div class="title">Games</div>
+                    <p>{{season2stats.num_games}}</p>
+                  </div>
+                  <i class="xline xline-bottom"></i>
+                </div>
+
+                <div class="user-profile-rank">
+                  <div class="ranking-type">
+                    <div style="width: 100%">
+                      <div>
+                        <div class="type-title">Individual</div>
+                        <div class="lvl">
+                          rank {{season2stats.rank}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <p>
+                  <a target="_blank"
+                     :href="`https://2017.halite.io/user/?user_id=${season2stats.user_id} `">
+                    View Halite II Profile
+                  </a>
+                </p>
+
+                <i class="xline xline-bottom"></i>
+              </div>
+            </div>
         </div>
+
         <div class="col-md-7">
             <div class="user-widget tab-container">
                 <ul class="nav nav-tabs" role="tablist">
@@ -191,7 +288,7 @@
                                                     :href="'/user?user_id=' + player.id"
                                                     class="game-participant"
                                                     :title="player.name_rank + (player.timed_out ? ' timed out or errored in this game. See the log for details.' : '')">
-                                                        <img :alt="player" :src="profile_images[player.id]" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Placeholder_no_text.svg/2000px-Placeholder_no_text.svg.png'" v-bind:class="{ 'timed-out': player.timed_out }"/>
+                                                      <profile-image :username="player.username" v-bind:className="{ 'timed-out': player.timed_out }" />
                                                         <span class="rank">
                                                             {{ player.rank }}
                                                         </span>
@@ -349,7 +446,7 @@
                                                                 <span class="tropy-icon"></span>
                                                               </div>
                                                               <a v-for="(player, index) in challenge.players" :href="`/user?user_id=${player.user_id}`" class="game-participant">
-                                                                <img :src="`https://github.com/${player.username}.png`" :alt="player.username">
+                                                                <profile-image :username="player.username" />
                                                                 <span class="rank">{{player.rank + 1}}</span>
                                                               </a>
                                                             </td>
@@ -411,7 +508,7 @@
                                                             <td class="little-pd td-title">
                                                                 <a :href="'/user?user_id=' + nemesis.id"
                                                                 class="game-participant">
-                                                                    <img :src="profile_images[nemesis.id]" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Placeholder_no_text.svg/2000px-Placeholder_no_text.svg.png'" />
+                                                                  <profile-image :username="nemesis.username" />
                                                                     <span class="rank">
                                                                         {{usernames[nemesis.id]}}
                                                                     </span>
@@ -544,7 +641,6 @@
           bots: [],
           error_games: [],
           userHistory: [],
-          profile_images: {},
           usernames: {},
           page: 0,
           limit: 10,
@@ -557,6 +653,7 @@
           highestRank: null,
           sharePopup: false,
           season1stats: null,
+          season2stats: null,
           messages: {
             bot_download: ''
           },
@@ -585,7 +682,7 @@
 
         source.then((user) => {
           if (user === null) {
-            window.location.replace(`${api.LOGIN_SERVER_URL}/github`)
+            window.location.replace(`/login`)
             return
           }
           this.user = user
@@ -699,7 +796,6 @@
                         player.id = player_id
                         player.name_rank = `(${player.leaderboard_rank}) ${username} [${rating}=${mu}μ${sigma}σ]`
 
-                        this.profile_images[player_id] = api.make_profile_image_url(username)
                         this.usernames[player_id] = username
 
                         if (player_id == this.user.user_id) {
@@ -859,12 +955,11 @@
                 }
 
                 let username = game.players[participant].team_name || game.players[participant].username
-                this.profile_images[participant] = api.make_profile_image_url(username)
                 this.usernames[participant] = username
 
                 let playerData = nemesisMap.get(participant)
                 if (typeof playerData === 'undefined') {
-                  playerData = {wins: 0, losses: 0}
+                  playerData = {wins: 0, losses: 0, username: username }
                   nemesisMap.set(participant, playerData)
                 }
 
@@ -882,6 +977,7 @@
               if (totalGames >= this.nemesisGameThreshold) {
                 var obj = {
                   id: key,
+                  username: value.username,
                   wins: Math.round(winRatio * 100),
                   losses: Math.round(lossRatio * 100),
                   total: totalGames
@@ -898,6 +994,9 @@
         fetchHalite1Stats: function () {
           api.get_season1_stats(this.user.user_id).then(userDetails => {
             this.season1stats = userDetails;
+          })
+          api.get_season2_stats(this.user.user_id).then(userDetails => {
+            this.season2stats = userDetails;
           })
         },
         fetchhistory: function () {

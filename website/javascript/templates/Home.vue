@@ -180,7 +180,7 @@
                         <a class="ha-button" href="/learn-programming-challenge"><span>Get Started</span></a>
                     </div>
                     <div class="visible-xs visible-sm">
-                        <a class="ha-button" href="https://api.halite.io/v1/login/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;"><span>SIGN UP</span></a>
+                        <a class="ha-button" href="" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;"><span>SIGN UP</span></a>
                     </div>
                 </div> -->
             <!-- </div>
@@ -233,7 +233,6 @@
         }
         return {
             me_in,
-            loginServerUrl: `${api.LOGIN_SERVER_URL}/github`,
             modalOpen: false,
             organization_rank: null
         }

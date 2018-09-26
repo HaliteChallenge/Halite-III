@@ -243,7 +243,7 @@ export default {
   },
   computed: {
     login_url() {
-      return `${api.LOGIN_SERVER_URL}/github`
+      return `/login`
     },
   },
   methods: {

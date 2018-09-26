@@ -114,15 +114,23 @@
             <td class="nowrap">
               <a :href="'/user?user_id=' + player.user_id" class="leaderboard-name" v-bind:title="player_link_title(player)">
                 <template v-if="player.user_id === player.team_leader_id && player.team_members.length > 0">
-                  <img v-for="team_member in player.team_members" width="30" height="30" :src="`https://github.com/${team_member.username}.png`" v-bind:alt="player.username">
+                  <profile-image
+                    v-for="team_member in player.team_members"
+                    :key="team_member.username"
+                    width="30" height="30"
+                    :username="team_member.username" />
                   {{ player.team_name }}
                 </template>
                 <template v-else-if="player.team_members.length > 0">
-                  <img width="30" height="30" :src="`https://github.com/${player.username}.png`" v-bind:alt="player.username">
+                  <profile-image
+                    width="30" height="30"
+                    :username="player.username" />
                   {{ player.username }} ({{player.team_name}})
                 </template>
                 <template v-else>
-                  <img width="30" height="30" :src="`https://github.com/${player.username}.png`" v-bind:alt="player.username">
+                  <profile-image
+                    width="30" height="30"
+                    :username="player.username" />
                   {{ player.username }}
                 </template>
               </a>

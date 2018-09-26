@@ -130,12 +130,6 @@ window.cookieconsent.initialise({
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <!-- <a class="btn btn-sm navbar-signin" href="{{ site.login_server_url }}/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;">
-                    <span>
-                        <i class="fa fa-github"></i>
-                        Sign in
-                    </span>
-                </a> -->
                 <a class="navbar-brand" href="{{ site.baseurl }}/">
                     <img alt="Halite" src="{{ site.baseurl }}/assets/images/full_logo.svg">
                 </a>
@@ -163,8 +157,7 @@ window.cookieconsent.initialise({
                 </ul>
                 {% endif %}
                 <ul class="nav navbar-nav navbar-right not-logged-in container-empty">
-                    <li class="nav-login"><a href="{{ site.login_server_url }}/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;"><i class="fa fa-github"></i>&nbsp;&nbsp;Sign Up/Log in</a></li>
-                    <!-- <li><a href="{{ site.login_server_url }}/github" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;">Sign In</a></li> -->
+                    <li class="nav-login"><a href="/login" onclick="javascript:handleOutboundLinkClicks('account', 'click-to-sign-up','navigation');return true;"><i class="fa fa-github"></i><i class="fa fa-google"></i>&nbsp;&nbsp;Sign Up/Log in</a></li>
 
                     <li class="nav-footer">
                         <p> &copy; Halite by <a class="base-link" href="https://www.twosigma.com" onclick="javascript:handleOutboundLinkClicks('click-external', 'click-ts','footer');return true;" target="_blank">Two Sigma</a>, 2018. All rights reserved.</p>

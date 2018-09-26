@@ -10,7 +10,6 @@ import FinalsStatus from './templates/FinalsStatus.vue'
 import GameFeed from './templates/GameFeed.vue'
 import HackathonLeaderboard from './templates/HackathonLeaderboard.vue'
 import LeaderboardContainer from './templates/LeaderboardContainer.vue'
-import Upload from './templates/Upload.vue'
 import UserProfile from './templates/UserProfile.vue'
 // import UserProfileBar from './templates/UserProfileBar.vue'
 import EditUserProfile from './templates/EditUserProfile.vue'
@@ -30,6 +29,7 @@ import CodeTutorial from './templates/CodeTutorial.vue'
 import NextTutorial from './templates/NextTutorial.vue'
 import WalkthroughSubsteps from './templates/WalkthroughSubsteps.vue'
 import WalkthroughSubstep from './templates/WalkthroughSubstep.vue'
+import ProfileImage from './templates/ProfileImage.vue'
 
 // Include bootstrap.js - do not remove
 import _ from '../vendor_assets/bootstrap-sass-3.3.7/assets/javascripts/bootstrap'
@@ -44,6 +44,15 @@ Vue.use(require('vue-cookie'))
 Vue.use(require('element-ui'))
 Vue.component('walkthrough-substeps', WalkthroughSubsteps)
 Vue.component('walkthrough-substep', WalkthroughSubstep)
+Vue.component('profile-image', ProfileImage)
+
+Vue.mixin({
+  data() {
+    return {
+      fallbackAvatar: api.fallbackAvatar,
+    }
+  }
+})
 
 window.views = {
   Associate: function () {
@@ -80,12 +89,6 @@ window.views = {
     new Vue({
       el: '#leaderboard-container',
       render: (h) => h(LeaderboardContainer, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-  Upload: function () {
-    new Vue({
-      el: '#upload-container',
-      render: (h) => h(Upload)
     })
   },
   UserProfile: function () {

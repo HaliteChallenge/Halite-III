@@ -7,7 +7,11 @@
         </ul> -->
         <div id="profile" class="profile-container">
             <a v-on:click.stop="slide_profile">
-                <img :src="profile_image + '?size=40'" :title="username + '\'s Profile'" :alt="username + '\'s profile image'" />
+              <profile-image
+                height="40"
+                :username="username"
+                :title="username + '\'s Profile'"
+                :alt="username + '\'s profile image'" />
                 <span class="user-name">{{username}}</span>
                 <i class="fa fa-sort-down"></i>
                 <ul class="nav profile-nav" v-if="!isCreateAccount">
@@ -37,7 +41,6 @@ export default {
         if (me) {
           return {
             username: me.username,
-            profile_image: api.make_profile_image_url(me.username),
             isMobile: isMobile,
             isCreateAccount: window.location.pathname == '/create-account'
           }
@@ -52,7 +55,6 @@ export default {
       mounted: function () {
         api.me().then((user) => {
           this.username = user.username
-          this.profile_image = api.make_profile_image_url(this.username)
           $('profile').addClass('container-loaded')
           $('submitbutton').addClass('container-loaded')
         })
