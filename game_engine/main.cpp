@@ -184,17 +184,14 @@ int main(int argc, char *argv[]) {
             std::stringstream message;
             message << "Player "
                     << std::to_string(stats.player_id.value)
-                    << ", "
-                    // << replay.players.at(stats.player_id).name
-                    << ", was rank "
+                    << ", ";
+            message << replay.players.at(stats.player_id).name;
+            message << ", was rank "
                     << std::to_string(stats.rank)
                     << " with "
                     << std::to_string(stats.turn_productions.back())
                     << " halite";
             Logging::log(message.str());
-            std::cout << replay.players.at(stats.player_id).name.size() << std::endl;
-            std::cout << replay.players.at(stats.player_id).name << std::endl;
-            Logging::log(replay.players.at(stats.player_id).name);
         }
 
         // JSON results info, used by backend
