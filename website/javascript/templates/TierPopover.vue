@@ -28,7 +28,7 @@
   import Vue from 'vue'
   import {Popover} from 'element-ui'
   const badges = ['Diamond', 'Platinum', 'Gold', 'Silver', 'Bronze']
-  const percentages = ['0.2', '0.4', '0.8', '1.5', '97']
+  const percentages = ['1', '5', '10', '25', '59']
 
   export default {
     name: 'TierPopover',
