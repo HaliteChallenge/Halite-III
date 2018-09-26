@@ -141,46 +141,43 @@
                 <p>{{ season1stats.level }} <span v-if="season1stats.organization">at <a  :href="`/programming-competition-leaderboard?organization=${user.organization_id}`">{{ season1stats.organization }}</a></span></p>
                 <p v-if="season1stats.language">Bots in {{season1stats.language}}</p>
                 <p v-else>No Bot Submitted</p>
+              </div>
 
-                <div class="past-year-stats">
-                  <i class="xline xline-top"></i>
-                  <div class="stats-item">
-                    <div class="title">Rating</div>
-                    <p>{{ (season1stats.mu - 3*season1stats.sigma).toFixed(2) }}</p>
-                  </div>
-                  <div class="stats-item">
-                    <div class="title">Bots</div>
-                    <p>{{season1stats.num_submissions}}</p>
-                  </div>
-                  <div class="stats-item">
-                    <div class="title">Games</div>
-                    <p>{{season1stats.num_games}}</p>
-                  </div>
-                  <i class="xline xline-bottom"></i>
+              <div class="past-year-stats">
+                <i class="xline xline-top"></i>
+                <div class="stats-item">
+                  <div class="title">Rating</div>
+                  <p>{{ (season1stats.mu - 3*season1stats.sigma).toFixed(2) }}</p>
                 </div>
+                <div class="stats-item">
+                  <div class="title">Bots</div>
+                  <p>{{season1stats.num_submissions}}</p>
+                </div>
+                <div class="stats-item">
+                  <div class="title">Games</div>
+                  <p>{{season1stats.num_games}}</p>
+                </div>
+              </div>
 
-                <div class="user-profile-rank">
-                  <div class="ranking-type">
-                    <div style="width: 100%">
-                      <div>
-                        <div class="type-title">Individual</div>
-                        <div class="lvl">
-                          rank {{season1stats.rank}}
-                        </div>
+              <div class="user-profile-rank">
+                <div class="ranking-type">
+                  <div style="width: 100%; text-align: center;">
+                    <div>
+                      <div class="type-title">Individual</div>
+                      <div class="lvl">
+                        #{{season1stats.rank}}
                       </div>
                     </div>
                   </div>
                 </div>
-
-                <p>
-                  <a target="_blank"
-                     :href="`https://2016.halite.io/user.php?userID=${season1stats.userID}`">
-                    View Halite 1 Profile
-                  </a>
-                </p>
-
-                <i class="xline xline-bottom"></i>
               </div>
+
+              <p style="text-align: center; padding: 15px 0;">
+                <a target="_blank"
+                   :href="`https://2016.halite.io/user.php?userID=${season1stats.userID}`">
+                  View Halite I Profile
+                </a>
+              </p>
             </div>
 
             <div class="user-profile" v-if="season2stats">
@@ -190,46 +187,43 @@
                 <p>{{ season2stats.player_level }} <span v-if="season2stats.organization">at <a  :href="`/programming-competition-leaderboard?organization=${user.organization_id}`">{{ season1stats.organization }}</a></span></p>
                 <p v-if="season2stats.language">Bots in {{season2stats.language}}</p>
                 <p v-else>No Bot Submitted</p>
+              </div>
 
-                <div class="past-year-stats">
-                  <i class="xline xline-top"></i>
-                  <div class="stats-item">
-                    <div class="title">Rating</div>
-                    <p>{{season2stats.score.toFixed(2)}}</p>
-                  </div>
-                  <div class="stats-item">
-                    <div class="title">Bots</div>
-                    <p>{{season2stats.num_submissions}}</p>
-                  </div>
-                  <div class="stats-item">
-                    <div class="title">Games</div>
-                    <p>{{season2stats.num_games}}</p>
-                  </div>
-                  <i class="xline xline-bottom"></i>
+              <div class="past-year-stats">
+                <i class="xline xline-top"></i>
+                <div class="stats-item">
+                  <div class="title">Rating</div>
+                  <p>{{season2stats.score.toFixed(2)}}</p>
                 </div>
+                <div class="stats-item">
+                  <div class="title">Bots</div>
+                  <p>{{season2stats.num_submissions}}</p>
+                </div>
+                <div class="stats-item">
+                  <div class="title">Games</div>
+                  <p>{{season2stats.num_games}}</p>
+                </div>
+              </div>
 
-                <div class="user-profile-rank">
-                  <div class="ranking-type">
-                    <div style="width: 100%">
-                      <div>
-                        <div class="type-title">Individual</div>
-                        <div class="lvl">
-                          rank {{season2stats.rank}}
-                        </div>
+              <div class="user-profile-rank">
+                <div class="ranking-type">
+                  <div style="width: 100%; text-align: center;">
+                    <div>
+                      <div class="type-title">Individual</div>
+                      <div class="lvl">
+                        #{{season2stats.rank}}
                       </div>
                     </div>
                   </div>
                 </div>
-
-                <p>
-                  <a target="_blank"
-                     :href="`https://2017.halite.io/user/?user_id=${season2stats.user_id} `">
-                    View Halite II Profile
-                  </a>
-                </p>
-
-                <i class="xline xline-bottom"></i>
               </div>
+
+              <p style="text-align: center; padding: 15px 0;">
+                <a target="_blank"
+                   :href="`https://2017.halite.io/user/?user_id=${season2stats.user_id} `">
+                  View Halite II Profile
+                </a>
+              </p>
             </div>
         </div>
 
