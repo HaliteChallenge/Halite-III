@@ -5,14 +5,13 @@
                 <div class="page-header">
                     <a id="section_personal_info"></a>
                     <h1>Create New Account</h1>
-                    <p class="text-center">Additional information is required to complete your account.</p>
-                    <i class="xline xline-bottom"></i>
+                    <p class="text-center">Fill in the below to finish creating your account.</p>
                 </div>
-                <h2 class="form-heading">personal info</h2>
+                <h2 class="form-heading">Personal info</h2>
                 <form v-on:submit.prevent="submit" class="create-account-form">
                     <div class="form-group">
-                        <label for="username">Choose a username:<span class="text-danger">*</span></label>
-                        <input id="username" type="text" v-model="username" />
+                        <label for="username">Username<span class="text-danger">*</span></label><br>
+                        <input id="username" style="width:360px;padding:5px;height:40px;font-size: 14px;background: #FFFFFF;border-radius: 4px;border: 0;color: rgba(0, 19, 51, 0.6);" type="text" v-model="username" />
                     </div>
                     <div
                       :class="{'has-error': !username_error.valid}"
@@ -38,17 +37,17 @@
 
                     <div v-if="level === 'Professional'">
                         <div class="form-group">
-                            <label for="work-email">Please share your work email</label>
+                            <label for="work-email">Add your work email</label>
                             <input type="email" class="form-control" id="work-email" placeholder="Work Email (Optional)" aria-describedby="work-email-help" v-model="email" />
-                            <p style="margin-top: 10px;">We’ll use your email domain to affiliate you with your school or company, but we won’t share your email publicly.</p>
+                            <p style="margin-top: 10px;">We’ll use your email domain to affiliate you with your company, but we won’t share your email publicly.</p>
                         </div>
                     </div>
 
                     <div v-if="level === 'University'">
                         <div class="form-group">
-                            <label for="school-email">Please share your school email</label>
+                            <label for="school-email">Add your school email</label>
                             <input type="email" class="form-control" id="school-email" placeholder="School Email (Optional)" aria-describedby="school-email-help" v-model="email" />
-                            <p style="margin-top: 10px;">We’ll use your email domain to affiliate you with your school or company, but we won’t share your email publicly.</p>
+                            <p style="margin-top: 10px;">We’ll use your email domain to affiliate you with your school, but we won’t share your email publicly.</p>
                         </div>
                     </div>
 
@@ -63,7 +62,6 @@
                             <p style="margin-top: 10px;">If your school is not listed, please email us at <a href="mailto:halite@halite.io">halite@halite.io</a>.</p>
                         </div>
                     </div>
-
                     <h2 id="section_account_info" class="form-heading">Account info</h2>
 
                     <!-- country -->
@@ -90,7 +88,7 @@
                     <div class="form-group has-error" v-if="error">
                         <span id="error-help" class="help-block">{{ error }}</span>
                     </div>
-                    <button type="submit" class="btn-ha btn-ha-md">Submit</button>
+                    <button type="submit" class="btn">Submit</button>
                 </form>
             </div>
         </div>
