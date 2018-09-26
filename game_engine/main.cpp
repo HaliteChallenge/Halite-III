@@ -184,8 +184,8 @@ int main(int argc, char *argv[]) {
             std::stringstream message;
             message << "Player "
                     // << std::to_string(stats.player_id.value)
-                    // << ", "
-                    // << replay.players.at(stats.player_id).name
+                    << ", "
+                    << replay.players.at(stats.player_id).name
                     << ", was rank "
                     << std::to_string(stats.rank)
                     << " with "
