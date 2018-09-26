@@ -44,6 +44,10 @@ void to_json(nlohmann::json &json, const Constants &constants) {
             FIELD_TO_JSON(MAX_TURNS),
             FIELD_TO_JSON(MAX_TURN_THRESHOLD),
 
+            FIELD_TO_JSON(CAPTURE_ENABLED),
+            FIELD_TO_JSON(CAPTURE_RADIUS),
+            FIELD_TO_JSON(SHIPS_ABOVE_FOR_CAPTURE),
+
             FIELD_TO_JSON(INSPIRATION_ENABLED),
             FIELD_TO_JSON(INSPIRED_EXTRACT_RATIO),
             FIELD_TO_JSON(INSPIRED_BONUS_MULTIPLIER),
@@ -86,6 +90,10 @@ void from_json(const nlohmann::json &json, Constants &constants) {
                  FIELD_FROM_JSON(MIN_TURN_THRESHOLD),
                  FIELD_FROM_JSON(MAX_TURNS),
                  FIELD_FROM_JSON(MAX_TURN_THRESHOLD),
+
+                 FIELD_FROM_JSON(CAPTURE_ENABLED),
+                 FIELD_FROM_JSON(CAPTURE_RADIUS),
+                 FIELD_FROM_JSON(SHIPS_ABOVE_FOR_CAPTURE),
 
                  FIELD_FROM_JSON(INSPIRATION_ENABLED),
                  FIELD_FROM_JSON(INSPIRED_EXTRACT_RATIO),
