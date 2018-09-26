@@ -118,7 +118,7 @@ logging.info("Ship {} has {} halite.".format(ship.id, ship.halite_amount))</code
       </p>
 
       <p>
-        Now your bot will tell you how much halite each ship currently holds. Ships can hold a maxiumum of 1,000 halite. When your ship collects halite on its turn, it will collect 25% of halite available in its location. If this evaluates to 0 halite, you collect the remaining halite from the location. You might want to experiment with different conditions for when to collect halite. An efficient collection strategy will build your reserves of halite quickly, and logging is there
+        Now your bot will tell you how much halite each ship currently holds. Ships can hold a maxiumum of 1,000 halite. When your ship collects halite on its turn, it will collect 25% of halite available in its location, rounded up. You might want to experiment with different conditions for when to collect halite. An efficient collection strategy will build your reserves of halite quickly, and logging is there
         to help you debug your code.
       </p>
 
