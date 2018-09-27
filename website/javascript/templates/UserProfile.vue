@@ -42,7 +42,7 @@
                     </p>
                     <div v-if="is_my_page && bots && bots[0] && bots[0].compilation_status==='Disabled'" class="text-center" style="margin-top: 10px;">
                         <p class="warning">
-                            Your bot is disabled   <span title="Due to excessive timeouts or errors, you bot has been disabled, look at the game logs to debug the issue or try submitting it again." class="info-icon icon-info"></span>
+                            Your bot is disabled <span title="When you join a team, any bots you personally uploaded before are disabled. They retain their rank, but can no longer play games or be updated." class="info-icon icon-info"></span>
                         </p>
                     </div>
                      <div v-if="is_my_page && bots && bots[0] && bots[0].compilation_status==='Failed'" class="text-center" style="margin-top: 10px;">
