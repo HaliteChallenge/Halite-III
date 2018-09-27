@@ -45,7 +45,7 @@
                             Your bot is disabled <span title="When you join a team, any bots you personally uploaded before are disabled. They retain their rank, but can no longer play games or be updated." class="info-icon icon-info"></span>
                         </p>
                     </div>
-                     <div v-if="is_my_page && bots && bots[0] && bots[0].compilation_status==='Failed'" class="text-center" style="margin-top: 10px;">
+                     <div v-if="(is_my_page || is_team_page) && bots && bots[0] && bots[0].compilation_status==='Failed'" class="text-center" style="margin-top: 10px;">
                         <p class="warning">
                             Your bot failed to compile   <span title="Look at the compilation failure mail to debug the issue or try submitting it again." class="info-icon icon-info"></span>
                         </p>
@@ -193,7 +193,7 @@
                 <i class="xline xline-top"></i>
                 <div class="stats-item">
                   <div class="title">Rating</div>
-                  <p>{{season2stats.score.toFixed(2)}}</p>
+                  <p>{{season2stats.score === null ? '0' : season2stats.score.toFixed(2)}}</p>
                 </div>
                 <div class="stats-item">
                   <div class="title">Bots</div>
@@ -644,6 +644,7 @@
           nemesisGameThreshold: 10,
           only_timed_out: false,
           is_my_page: false,
+          is_team_page: false,
           highestRank: null,
           sharePopup: false,
           season1stats: null,
@@ -691,6 +692,12 @@
           if (user.team_id) {
             api.get_team(user.team_id).then((team) => {
               this.team = team
+
+              api.me().then((me) => {
+                if (team.members[me.user_id]) {
+                  this.is_team_page = true
+                }
+              })
             })
           }
 
