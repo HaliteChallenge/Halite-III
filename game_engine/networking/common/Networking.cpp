@@ -1,4 +1,5 @@
 #include <sstream>
+#include <algorithm>
 
 #include "Command.hpp"
 #include "Halite.hpp"
@@ -87,7 +88,10 @@ void Networking::initialize_player(Player &player) {
         Logging::log("Init message sent", Logging::Level::Debug, player.id);
         // Receive a name from the player.
         static constexpr auto INIT_TIMEOUT = std::chrono::seconds(30);
-        player.name = connections.get(player.id)->get_string(INIT_TIMEOUT).substr(0, NAME_MAX_LENGTH);
+        auto name = connections.get(player.id)->get_string(INIT_TIMEOUT).substr(0, NAME_MAX_LENGTH);
+        // On Windows, we get the \r character in names.
+        name.erase(std::remove(name.begin(), name.end(), '\r'), name.end());
+        player.name = name;
         Logging::log("Init message received, name: " + player.name,
                      Logging::Level::Debug, player.id);
     } catch (const BotError &e) {
