@@ -494,8 +494,8 @@ def get_user_season2(intended_user):
             model.halite_2_users.c.version_number,
             model.halite_2_users.c.games_played,
             sqlalchemy.sql.func.rank().over(
-                order_by=(model.halite_2_users.c.score.desc(),
-                          model.halite_2_users.c.mu.desc(),
+                order_by=(model.halite_2_users.c.score.desc().nullslast(),
+                          model.halite_2_users.c.mu.desc().nullslast(),
                           model.halite_2_users.c.username.asc())
             ).label("rank"),
         ]).select_from(model.halite_2_users).alias('ranked_users')
