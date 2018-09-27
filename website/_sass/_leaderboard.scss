@@ -77,6 +77,11 @@
 
   .table-container {
     overflow-x: auto !important;
+    table tr {
+      .org-pg {
+        padding-left: 20px !important;
+      }
+    }
   }
 
   .zero-state-pane{
@@ -322,6 +327,12 @@
 
     &:last-of-type{
       margin-right: 0px;
+    }
+  }
+
+  .organizations {
+    .v-select.dropdown .dropdown-toggle .selected-tag {
+      max-width: none;
     }
   }
 
