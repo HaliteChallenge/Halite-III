@@ -158,7 +158,7 @@
     }
   }
 
-  .user-profile-rank-stats {
+  .user-profile-rank-stats, .past-year-stats {
     .stats-item {
       margin-top: 18px;
     }
@@ -171,7 +171,6 @@
     height: 95px;
     border-radius: 6px;
     .stats-item {
-        margin-top: 18px;
       .title {
         font-size: 14px;
         color: #343434;
