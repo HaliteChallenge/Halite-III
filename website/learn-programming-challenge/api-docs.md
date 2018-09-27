@@ -101,7 +101,7 @@ Ships have an `owner`, an `id`, a `position`, and a `halite_amount`.
 <br/>
 * **Collect Halite at Origin**
 
-   Ships can collect 25% of the halite from the sea at their present location. If this evaluates to 0 halite, the ship collects the remaining halite in the cell.
+   Ships can collect 25% of the halite from the sea at their present location, rounded up to the nearest integer.
 
    `ship.stay_still()` returns an engine command to keep this ship where it is and collect halite.
 
@@ -193,7 +193,7 @@ A map cell is an object representation of a cell on the game map. Map cell has `
 <br/>
 * **Navigational Marking**
 
-   `map_cell.mark_unsafe(ship)` is used to mark the cell under this ship as unsafe (occupied) for collision avoidance.
+   `map_cell.mark_unsafe(ship)` is used to mark the cell under this ship as unsafe (occupied) for collision avoidance. This marking resets every turn and is used by `naive_navigate` to avoid collisions.
 
 <br/>
 ##### POSITION

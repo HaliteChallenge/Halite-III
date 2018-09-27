@@ -102,8 +102,7 @@
     </Step>
     <Step title="Halite Collection" name="dropoffs">
       <p>
-        Now that we’ve got more ships, let’s get some information on their most important job: collecting halite. Right now, a ship moves randomly each turn, and collects halite when it is close to empty. You can see the command to do this in the highlighted
-        code.
+        Now that we’ve got more ships, let’s get some information on their most important job: collecting halite. Right now, a ship moves randomly each turn, and collects halite when it is close to empty.
       </p>
 
       <p>
@@ -118,7 +117,7 @@ logging.info("Ship {} has {} halite.".format(ship.id, ship.halite_amount))</code
       </p>
 
       <p>
-        Now your bot will tell you how much halite each ship currently holds. Ships can hold a maxiumum of 1,000 halite. When your ship collects halite on its turn, it will collect 25% of halite available in its location. If this evaluates to 0 halite, you collect the remaining halite from the location. You might want to experiment with different conditions for when to collect halite. An efficient collection strategy will build your reserves of halite quickly, and logging is there
+        Now your bot will tell you how much halite each ship currently holds. Ships can hold a maxiumum of 1,000 halite. When your ship collects halite on its turn, it will collect 25% of halite available in its location, rounded up. You might want to experiment with different conditions for when to collect halite. An efficient collection strategy will build your reserves of halite quickly, and logging is there
         to help you debug your code.
       </p>
 
@@ -192,7 +191,7 @@ elif ship.halite_amount >= constants.MAX_HALITE / 4:
         Add this functionality to your code, and try to get your bots using these dropoffs when they are on a “returning” mission. You might find these methods from “hlt.py” helpful:
       </p>
       <p>
-        <code>me.dropoffs()</code> returns a list of all your dropoffs.
+        <code>me.get_dropoffs()</code> returns a list of all your dropoffs.
       </p>
       <p>
         <code>game_map.calculate_distance(ship.position,

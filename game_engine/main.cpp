@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <fstream>
+#include <sstream>
 #include <iostream>
 
 #include "Constants.hpp"
@@ -180,7 +181,21 @@ int main(int argc, char *argv[]) {
         }
         Logging::log("Opening a file at " + output_filename);
         for (const auto &stats : replay.game_statistics.player_statistics) {
-            Logging::log("Player " + to_string(stats.player_id) + ", " + replay.players.at(stats.player_id).name + ", was rank " + std::to_string(stats.rank) + " with " + std::to_string(stats.turn_productions.back()) + " halite");
+            std::stringstream message;
+            message << "Player "
+                    << to_string(stats.player_id)
+                    << ", '"
+                    << replay.players.at(stats.player_id).name
+                    << "', was rank"
+                    << std::to_string(stats.rank)
+                    << " with "
+                    << std::to_string(stats.turn_productions.back())
+                    << " halite";
+            Logging::log(message.str());
+            for (const auto c : message.str()) {
+                std::cout << static_cast<int>(c) << ' ';
+            }
+            std::cout << std::endl;
         }
 
         // JSON results info, used by backend

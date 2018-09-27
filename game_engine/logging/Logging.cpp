@@ -50,6 +50,10 @@ void Logging::_log(const std::string &message, Level level, class_id<hlt::Player
               << level_names[level_num]
               << ansi::reset
               << "] ";
+#else
+    std::cerr << "["
+              << level_names[level_num]
+              << "] ";
 #endif
     if (turn_number >= 0) {
         std::cerr << "[" << turn_number << "] ";

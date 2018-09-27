@@ -7,6 +7,21 @@
       max-width: 360px;
     }
   }
+  .xline-bottom {
+    position: relative;
+    margin-top: 30px;
+    background-color: #f0f8ff;
+    opacity: 0.2;
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+
+  .page-header > h1, .form-heading {
+    color: #B4E6FF;
+    text-shadow: 0 1px 8px #00ABFF;
+  }
 
   h2{
     font-family: $font-heading;

@@ -32,41 +32,41 @@ build_script:
   # Now build the offline tools.
   # First, bundle up the dependencies into the Python embeddable distribution.
   # Activate the proper compiler and install deps via pip
-  - cd C:\Halite\tools\hlt_client
-  - setlocal
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
-  - C:\Python37-x64\python.exe -m pip install -r requirements.txt -t C:\deps-amd64
-  - endlocal
-  - setlocal
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
-  - C:\Python37\python.exe -m pip install -r requirements.txt -t C:\deps-x86
-  - endlocal
+  # - cd C:\Halite\tools\hlt_client
+  # - setlocal
+  # - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+  # - C:\Python37-x64\python.exe -m pip install -r requirements.txt -t C:\deps-amd64
+  # - endlocal
+  # - setlocal
+  # - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
+  # - C:\Python37\python.exe -m pip install -r requirements.txt -t C:\deps-x86
+  # - endlocal
 
-  - ps: Invoke-WebRequest http://www.python.org/ftp/python/3.7.0/python-3.7.0-embed-amd64.zip -OutFile python37.zip
-  - ps: Expand-Archive python37.zip -DestinationPath C:\python-windows
-  - ps: Copy-Item C:\deps-amd64\zstd*.pyd C:\python-windows\zstd.pyd
-  # This just adds our deps into the root of the stdlib ZIP file.
-  - 7z a C:\python-windows\python37.zip C:\deps-amd64\*
-  - 7z a C:\Halite\python-windows-amd64.zip C:\python-windows
+  # - ps: Invoke-WebRequest http://www.python.org/ftp/python/3.7.0/python-3.7.0-embed-amd64.zip -OutFile python37.zip
+  # - ps: Expand-Archive python37.zip -DestinationPath C:\python-windows
+  # - ps: Copy-Item C:\deps-amd64\zstd*.pyd C:\python-windows\zstd.pyd
+  # # This just adds our deps into the root of the stdlib ZIP file.
+  # - 7z a C:\python-windows\python37.zip C:\deps-amd64\*
+  # - 7z a C:\Halite\python-windows-amd64.zip C:\python-windows
 
-  - ps: Remove-Item C:\python-windows -Force -Recurse
+  # - ps: Remove-Item C:\python-windows -Force -Recurse
 
-  - ps: Invoke-WebRequest http://www.python.org/ftp/python/3.7.0/python-3.7.0-embed-win32.zip -OutFile python37-x86.zip
-  - ps: Expand-Archive python37-x86.zip -DestinationPath C:\python-windows
-  - ps: Copy-Item C:\deps-x86\zstd*.pyd C:\python-windows\zstd.pyd
-  - 7z a C:\python-windows\python37.zip C:\deps-x86\*
-  - 7z a C:\Halite\python-windows-x86.zip C:\python-windows
+  # - ps: Invoke-WebRequest http://www.python.org/ftp/python/3.7.0/python-3.7.0-embed-win32.zip -OutFile python37-x86.zip
+  # - ps: Expand-Archive python37-x86.zip -DestinationPath C:\python-windows
+  # - ps: Copy-Item C:\deps-x86\zstd*.pyd C:\python-windows\zstd.pyd
+  # - 7z a C:\python-windows\python37.zip C:\deps-x86\*
+  # - 7z a C:\Halite\python-windows-x86.zip C:\python-windows
 
-  # Now build Halite-in-a-Box
-  - 7z e C:\Halite\python-windows-amd64.zip C:\Halite\tools\halite-in-a-box\extra\python-windows
-  # Add hlt_client into bundled libraries
-  - cd C:\Halite\tools\hlt_client
-  - 7z a C:\Halite\tools\halite-in-a-box\extra\python-windows\python37.zip hlt_client
-  - cd C:\Halite\libhaliteviz
-  - yarn install
-  - cd C:\Halite\tools\halite-in-a-box
-  - yarn install
-  - yarn electron-builder -w
+  # # Now build Halite-in-a-Box
+  # - 7z e C:\Halite\python-windows-amd64.zip C:\Halite\tools\halite-in-a-box\extra\python-windows
+  # # Add hlt_client into bundled libraries
+  # - cd C:\Halite\tools\hlt_client
+  # - 7z a C:\Halite\tools\halite-in-a-box\extra\python-windows\python37.zip hlt_client
+  # - cd C:\Halite\libhaliteviz
+  # - yarn install
+  # - cd C:\Halite\tools\halite-in-a-box
+  # - yarn install
+  # - yarn electron-builder -w
 
 artifacts:
   - path: game_engine\build\Release\halite.exe
