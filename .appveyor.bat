@@ -9,9 +9,9 @@ cmake -H. -Bbuild
 cmake --build build --config Release
 endlocal
 
-rem setlocal
-rem echo "Building game engine for x86."
-rem call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
-rem cmake -H. -Bbuild32
-rem cmake --build build32 --config Release
-rem endlocal
+setlocal
+echo "Building game engine for x86."
+call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
+cmake -H. -Bbuild32
+cmake --build build32 --config Release
+endlocal
