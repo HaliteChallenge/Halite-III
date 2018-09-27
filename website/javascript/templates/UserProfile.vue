@@ -17,7 +17,7 @@
                                 Member of
                             </template>
                             <a target="_blank"
-                               :href="`/user/?user_id=${user.team_id}`"
+                               :href="`/user/?user_id=${team.leader_id}`"
                             >{{ user.team_name }}</a>
                         </p>
 
