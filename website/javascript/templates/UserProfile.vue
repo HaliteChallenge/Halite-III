@@ -47,7 +47,7 @@
                     </div>
                      <div v-if="(is_my_page || is_team_page) && bots && bots[0] && bots[0].compilation_status==='Failed'" class="text-center" style="margin-top: 10px;">
                         <p class="warning">
-                            Your bot failed to compile   <span title="Look at the compilation failure mail to debug the issue or try submitting it again." class="info-icon icon-info"></span>
+                          <a :href="compile_log" target="_blank"> Your bot failed to compile   <span title="Look at the compilation failure mail to debug the issue or try submitting it again." class="info-icon icon-info"></span></a>
                         </p>
                     </div>
                 </div>
@@ -752,6 +752,9 @@
         this.setupStickyTable()
       },
       computed: {
+        compile_log() {
+          return `${api.API_SERVER_URL}/user/${this.user.user_id}/bot/${this.bots[0].bot_id}/error_log`
+        },
         botLang: function () {
           let lang = []
           if (this.bots.length > 0) {

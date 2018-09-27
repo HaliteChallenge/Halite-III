@@ -295,6 +295,23 @@ export function get_bot_zip(userId, botId) {
   }).then(r => r.blob())
 }
 
+export function get_bot_error_log(userId, botId) {
+  return window.fetch(`${API_SERVER_URL}/user/${userId}/bot/${botId}/error_log`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/zip'
+    }
+  }).then((r) => {
+    if (r.status === 200) {
+      return r.json()
+    }
+    else {
+      return null
+    }
+  })
+}
+
 export function register_me (data) {
   return $.post({
     url: `${API_SERVER_URL}/user`,
