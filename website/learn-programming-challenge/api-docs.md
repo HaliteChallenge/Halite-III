@@ -142,7 +142,7 @@ Gameplay takes place on a wrapping rectangular grid 32x32, 48x48, 64x64, or 80x8
 <br/>
 * **Normalize position**
 
-   A method that normalizes a position within the bounds of the toroidal map. Useful for handling the wraparound math on x and y.
+   A method that normalizes a position within the bounds of the toroidal map. Useful for handling the wraparound modulus arithmetic on x and y. For example, if a ship at (x = 32, y = 4) moves to the east on a 32x32 map, the normalized position would be (x = 0, y = 4), rather than the off-the-map position of (x = 33, y = 4).
 
    `gamemap.normalize(position)` returns a normalized position.
 
