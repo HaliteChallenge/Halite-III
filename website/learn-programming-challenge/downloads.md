@@ -44,7 +44,7 @@ System requirements are detailed here.
                 <td>{{ language.language }}</td>
                 <td>{{ language.version }}</td>
                 {% for file in language.files %}
-                <td><a href="{{ site.baseurl }}/{{ file }}">Download</a></td>
+                <td><a href="{{ site.baseurl }}/{{ file }}" onclick="javascript:handleOutboundLinkClicks('play', 'download','starter-kit');return true;">Download</a></td>
                 {% endfor %}
             </tr>
             {% endfor %}
@@ -53,7 +53,7 @@ System requirements are detailed here.
                 <td>{{ site.data.downloads.version }}</td>
                 <td>NA</td>
                 {% for file in site.data.downloads.environments %}
-                <td><a href="{{ site.baseurl }}/{{ file }}">Download</a></td>
+                <td><a href="{{ site.baseurl }}/{{ file }}" onclick="javascript:handleOutboundLinkClicks('play', 'download','starter-kit');return true;">Download</a></td>
                 {% endfor %}
             </tr>
         </tbody>
@@ -78,7 +78,7 @@ System requirements are detailed here.
             <tr>
                 <td>Source</td>
                 <td>{{ site.data.downloads.version }}</td>
-                <td><a href="{{ site.baseurl }}/{{ site.data.downloads.source }}">Download</a></td>
+                <td><a href="{{ site.baseurl }}/{{ site.data.downloads.source }}"  onclick="javascript:handleOutboundLinkClicks('play', 'download','tool');return true;">Download</a></td>
                 <td>NA</td>
                 <td>NA</td>
                 <td>NA</td>
