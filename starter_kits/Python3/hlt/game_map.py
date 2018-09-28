@@ -27,7 +27,7 @@ class Player:
         """
         :return: Returns all ship objects in a list
         """
-        return self._ships.values()
+        return list(self._ships.values())
 
     def get_dropoff(self, dropoff_id):
         """
@@ -41,7 +41,7 @@ class Player:
         """
         :return: Returns all dropoff objects in a list
         """
-        return self._dropoffs.values()
+        return list(self._dropoffs.values())
 
     def has_ship(self, ship_id):
         """
