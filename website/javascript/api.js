@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-import Identicon from 'identicon.js'
+import jdenticon from 'jdenticon'
 import md5 from 'md5'
 
 export const API_SERVER_URL = api_server_url
@@ -616,6 +616,20 @@ export function join_team(team_id, verification_code) {
 }
 
 export function fallbackAvatar(username) {
-  const identicon = new Identicon(md5(username))
-  return `data:image/png;base64,${identicon.toString()}`
+  // Custom identicon style
+  // https://jdenticon.com/icon-designer.html?config=ffffffff01416400154b194b
+  jdenticon.config = {
+    lightness: {
+      color: [0.21, 0.75],
+      grayscale: [0.26, 0.75],
+    },
+    saturation: {
+      color: 1.00,
+      grayscale: 0.00,
+    },
+    backColor: "#ffffffff",
+  }
+
+  const identicon = jdenticon.toSvg(md5(username), 100);
+  return `data:image/svg+xml;utf8,${identicon}`
 }
