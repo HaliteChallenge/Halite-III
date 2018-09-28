@@ -62,16 +62,20 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- organization - TODO -->
-                   <!-- <div class="organization">
-                            <div class="lvl-icon" :class="tierClass(user.tier || 'Bronze')"></div>
-                            <div>
-                                <div class="type-title">Organization</div>
-                                <div class="lvl">
-                                    {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier
-                                </div>
+                        <div class="organization" v-if="organizationRank">
+                          <div class="lvl-icon" :class="tierClass(organizationRank.tier || 'Bronze')"></div>
+                          <div>
+                            <div class="type-title">Organization</div>
+                            <div class="lvl">
+                              {{ organizationRank.organization_rank ? `#${organizationRank.organization_rank}` : "No Rank" }}
                             </div>
-                        </div> -->
+                          </div>
+                        </div>
+                        <div class="organization" v-else>
+                          <div>
+                            <div class="type-title">No Organization Rank</div>
+                          </div>
+                        </div>
                     </div>
                     <!-- <h2><span :class="tierClass(user.tier || 'Bronze')"></span> {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier</h2> -->
                     <div class="user-profile-rank-stats">
@@ -620,6 +624,7 @@
       data: function () {
         return {
           tierClass: tierClass,
+          organizationRank: null,
           user: {
             'level': '',
             'username': '',
@@ -698,6 +703,12 @@
                   this.is_team_page = true
                 }
               })
+            })
+          }
+
+          if (user.organization_id) {
+            api.organizationLeaderboard([`organization_id,=,${user.organization_id}`]).then((org) => {
+              this.organizationRank = org[0]
             })
           }
 
