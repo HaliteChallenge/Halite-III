@@ -53,7 +53,8 @@ def make_user_record(row, *, logged_in, total_users=None):
         "sigma": float(row["sigma"]),
         "rank": int(row["rank"]) if row["rank"] is not None else None,
         "is_email_good":row["is_email_good"],
-        "is_gpu_enabled": row["is_gpu_enabled"]
+        "is_gpu_enabled": row["is_gpu_enabled"],
+        "oauth_provider": "github" if "oauth_provider" in row and row["oauth_provider"] == 1 else "unknown",
     }
 
     if total_users and row["rank"] is not None:
@@ -426,12 +427,13 @@ def check_username(*, user_id):
             "reason": "Username not acceptable."
         })
     with model.read_conn() as conn:
-        query = model.all_users.select(model.users.c.username == username)
+        query = model.all_users.select(model.all_users.c.username == username)
 
         row = conn.execute(query).first()
+        valid = not row or row["user_id"] == user_id
         return util.response_success({
-            "valid": not row,
-            "reason": "Username taken." if row else "Username valid!"
+            "valid": valid,
+            "reason": "Username taken." if not valid else "Username valid!"
         })
 
 

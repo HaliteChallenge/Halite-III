@@ -160,6 +160,7 @@ all_users = sqlalchemy.sql.select([
     users.c.email.label("personal_email"),
     users.c.is_email_good,
     users.c.is_gpu_enabled,
+    users.c.oauth_provider,
     duplicate_teams.c.id.label("team_id"),
     duplicate_teams.c.name.label("team_name"),
     duplicate_teams.c.leader_id.label("team_leader_id"),
