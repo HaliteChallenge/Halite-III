@@ -427,7 +427,8 @@ def check_username(*, user_id):
             "reason": "Username not acceptable."
         })
     with model.read_conn() as conn:
-        query = model.all_users.select(model.all_users.c.username == username)
+        query = model.all_users.select(
+            sqlalchemy.sql.func.lower(model.all_users.c.username) == username.lower())
 
         row = conn.execute(query).first()
         valid = not row or row["user_id"] == user_id
