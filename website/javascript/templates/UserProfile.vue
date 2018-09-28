@@ -7,7 +7,7 @@
                   <profile-image className="img-responsive" :username="user.username" />
                 </div>
                 <div class="user-profile-detail">
-                    <a class="user-name" target="_blank" :href="'https://github.com/' + user.username">{{ user.username }}</a>
+                  <span class="user-name">{{ user.username }}</span>
                     <div v-if="user.team_id" class="user-team-detail">
                         <p class="user-team">
                             <template v-if="user.team_leader_id == user.user_id">
