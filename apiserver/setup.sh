@@ -26,11 +26,19 @@ while read -r instance_config; do
 done <<< "$DB_INSTANCE"
 
 
+# Try and start the server in a loop because NewRelic sometimes fails
+# to start up initially
+while ! screen -list | grep -q api; do
 screen -S api -d -m /bin/bash -c \
     "NEW_RELIC_CONFIG_FILE=newrelic.ini PYTHONPATH=$(pwd) FLASK_APP=apiserver.server newrelic-admin run-program flask run --with-threads -h 0.0.0.0 -p 5000"
+sleep 5
+done
 
+while ! screen -list | grep -q coordinator_internal; do
 screen -S coordinator_internal -d -m /bin/bash -c \
     "NEW_RELIC_CONFIG_FILE=newrelic.ini PYTHONPATH=$(pwd) FLASK_APP=apiserver.coordinator_server newrelic-admin run-program flask run --with-threads -h 0.0.0.0 -p 5001"
+sleep 5
+done
 
 # Run game deletion job at 8 AM UTC = midnight PST (DOES NOT account
 # for DST)
