@@ -7,7 +7,7 @@
                   <profile-image className="img-responsive" :username="user.username" />
                 </div>
                 <div class="user-profile-detail">
-                    <a class="user-name" target="_blank" :href="'https://github.com/' + user.username">{{ user.username }}</a>
+                  <span class="user-name">{{ user.username }}</span>
                     <div v-if="user.team_id" class="user-team-detail">
                         <p class="user-team">
                             <template v-if="user.team_leader_id == user.user_id">
@@ -17,7 +17,7 @@
                                 Member of
                             </template>
                             <a target="_blank"
-                               :href="`/user/?user_id=${user.team_id}`"
+                               :href="`/user/?user_id=${team.leader_id}`"
                             >{{ user.team_name }}</a>
                         </p>
 
@@ -42,12 +42,12 @@
                     </p>
                     <div v-if="is_my_page && bots && bots[0] && bots[0].compilation_status==='Disabled'" class="text-center" style="margin-top: 10px;">
                         <p class="warning">
-                            Your bot is disabled   <span title="Due to excessive timeouts or errors, you bot has been disabled, look at the game logs to debug the issue or try submitting it again." class="info-icon icon-info"></span>
+                            Your bot is disabled <span title="When you join a team, any bots you personally uploaded before are disabled. They retain their rank, but can no longer play games or be updated." class="info-icon icon-info"></span>
                         </p>
                     </div>
-                     <div v-if="is_my_page && bots && bots[0] && bots[0].compilation_status==='Failed'" class="text-center" style="margin-top: 10px;">
+                     <div v-if="(is_my_page || is_team_page) && bots && bots[0] && bots[0].compilation_status==='Failed'" class="text-center" style="margin-top: 10px;">
                         <p class="warning">
-                            Your bot failed to compile   <span title="Look at the compilation failure mail to debug the issue or try submitting it again." class="info-icon icon-info"></span>
+                          <a :href="compile_log" target="_blank"> Your bot failed to compile   <span title="Look at the compilation failure mail to debug the issue or try submitting it again." class="info-icon icon-info"></span></a>
                         </p>
                     </div>
                 </div>
@@ -62,16 +62,20 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- organization - TODO -->
-                   <!-- <div class="organization">
-                            <div class="lvl-icon" :class="tierClass(user.tier || 'Bronze')"></div>
-                            <div>
-                                <div class="type-title">Organization</div>
-                                <div class="lvl">
-                                    {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier
-                                </div>
+                        <div class="organization" v-if="organizationRank">
+                          <div class="lvl-icon" :class="tierClass(organizationRank.tier || 'Bronze')"></div>
+                          <div>
+                            <div class="type-title">Organization</div>
+                            <div class="lvl">
+                              {{ organizationRank.organization_rank ? `#${organizationRank.organization_rank}` : "No Rank" }}
                             </div>
-                        </div> -->
+                          </div>
+                        </div>
+                        <div class="organization" v-else>
+                          <div>
+                            <div class="type-title">No Organization Rank</div>
+                          </div>
+                        </div>
                     </div>
                     <!-- <h2><span :class="tierClass(user.tier || 'Bronze')"></span> {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier</h2> -->
                     <div class="user-profile-rank-stats">
@@ -138,7 +142,7 @@
               <div class="user-profile-detail">
                 <div class="title">Halite I Stats</div>
 
-                <p>{{ season1stats.level }} <span v-if="season1stats.organization">at <a  :href="`/programming-competition-leaderboard?organization=${user.organization_id}`">{{ season1stats.organization }}</a></span></p>
+                <p>{{ season1stats.level }} <span v-if="season1stats.organization">at <a :href="`https://2016.halite.io/leaderboard.php?field=organization&value=${season1stats.organization}&heading=${season1stats.organization}`">{{ season1stats.organization }}</a></span></p>
                 <p v-if="season1stats.language">Bots in {{season1stats.language}}</p>
                 <p v-else>No Bot Submitted</p>
               </div>
@@ -184,7 +188,7 @@
               <div class="user-profile-detail">
                 <div class="title">Halite II Stats</div>
 
-                <p>{{ season2stats.player_level }} <span v-if="season2stats.organization">at <a  :href="`/programming-competition-leaderboard?organization=${user.organization_id}`">{{ season1stats.organization }}</a></span></p>
+                <p>{{ season2stats.player_level }} <span v-if="season2stats.organization">at {{ season2stats.organization }}</span></p>
                 <p v-if="season2stats.language">Bots in {{season2stats.language}}</p>
                 <p v-else>No Bot Submitted</p>
               </div>
@@ -193,7 +197,7 @@
                 <i class="xline xline-top"></i>
                 <div class="stats-item">
                   <div class="title">Rating</div>
-                  <p>{{season2stats.score.toFixed(2)}}</p>
+                  <p>{{season2stats.score === null ? '0' : season2stats.score.toFixed(2)}}</p>
                 </div>
                 <div class="stats-item">
                   <div class="title">Bots</div>
@@ -620,6 +624,7 @@
       data: function () {
         return {
           tierClass: tierClass,
+          organizationRank: null,
           user: {
             'level': '',
             'username': '',
@@ -644,6 +649,7 @@
           nemesisGameThreshold: 10,
           only_timed_out: false,
           is_my_page: false,
+          is_team_page: false,
           highestRank: null,
           sharePopup: false,
           season1stats: null,
@@ -691,6 +697,18 @@
           if (user.team_id) {
             api.get_team(user.team_id).then((team) => {
               this.team = team
+
+              api.me().then((me) => {
+                if (team.members[me.user_id]) {
+                  this.is_team_page = true
+                }
+              })
+            })
+          }
+
+          if (user.organization_id) {
+            api.organizationLeaderboard([`organization_id,=,${user.organization_id}`]).then((org) => {
+              this.organizationRank = org[0]
             })
           }
 
@@ -745,6 +763,9 @@
         this.setupStickyTable()
       },
       computed: {
+        compile_log() {
+          return `${api.API_SERVER_URL}/user/${this.user.user_id}/bot/${this.bots[0].bot_id}/error_log`
+        },
         botLang: function () {
           let lang = []
           if (this.bots.length > 0) {

@@ -17,9 +17,13 @@ class Player {
         return this._ships.get(shipId);
     }
 
-    /** Get an iterator over all of the player's ships. */
+    /** Get a list of the player's ships. */
     getShips() {
-        return this._ships.values();
+        const result = [];
+        for (const ship of this._ships.values()) {
+            result.push(ship);
+        }
+        return result;
     }
 
     /** Get a single dropoff by its ID. */
@@ -27,9 +31,13 @@ class Player {
         return this._dropoffs.get(dropoffId);
     }
 
-    /** Get an iterator over all of the player's dropoffs. */
+    /** Get a list of the player's dropoffs. */
     getDropoffs() {
-        return this._dropoffs.values();
+        const result = [];
+        for (const dropoff of this._dropoffs.values()) {
+            result.push(dropoff);
+        }
+        return result;
     }
 
     /** Check whether a ship with a given ID exists. */

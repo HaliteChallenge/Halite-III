@@ -273,6 +273,10 @@ export default {
           if (me && !me.is_new_user) {
             window.location.replace('/user?me')
           } else {
+            // Pre-fill username if Github
+            if (me.oauth_provider === "github") {
+              this.username = me.username
+            }
             this.gaData('account', 'click-submit-new-account', 'account-flow')
           }
         })

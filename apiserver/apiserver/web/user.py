@@ -53,7 +53,8 @@ def make_user_record(row, *, logged_in, total_users=None):
         "sigma": float(row["sigma"]),
         "rank": int(row["rank"]) if row["rank"] is not None else None,
         "is_email_good":row["is_email_good"],
-        "is_gpu_enabled": row["is_gpu_enabled"]
+        "is_gpu_enabled": row["is_gpu_enabled"],
+        "oauth_provider": "github" if "oauth_provider" in row and row["oauth_provider"] == 1 else "unknown",
     }
 
     if total_users and row["rank"] is not None:
@@ -350,7 +351,7 @@ def create_user(*, user_id):
                 send_verification_email(
                     notify.Recipient(user_id, user_data["username"], email,
                                      organization_name, level,
-                                     user_data["creation_time"]),
+                                     user_data["creation_time"].isoformat()),
                     verification_code)
         else:
             # Do not send verification email if we don't recognize it
@@ -387,7 +388,7 @@ def create_user(*, user_id):
     send_confirmation_email(
         notify.Recipient(user_id, username, user_data["github_email"],
                          organization_name, level,
-                         user_data["creation_time"]))
+                         user_data["creation_time"].isoformat()))
 
     return util.response_success({
         "message": "\n".join(message),
@@ -426,12 +427,14 @@ def check_username(*, user_id):
             "reason": "Username not acceptable."
         })
     with model.read_conn() as conn:
-        query = model.all_users.select(model.users.c.username == username)
+        query = model.all_users.select(
+            sqlalchemy.sql.func.lower(model.all_users.c.username) == username.lower())
 
         row = conn.execute(query).first()
+        valid = not row or row["user_id"] == user_id
         return util.response_success({
-            "valid": not row,
-            "reason": "Username taken." if row else "Username valid!"
+            "valid": valid,
+            "reason": "Username taken." if not valid else "Username valid!"
         })
 
 
@@ -494,8 +497,8 @@ def get_user_season2(intended_user):
             model.halite_2_users.c.version_number,
             model.halite_2_users.c.games_played,
             sqlalchemy.sql.func.rank().over(
-                order_by=(model.halite_2_users.c.score.desc(),
-                          model.halite_2_users.c.mu.desc(),
+                order_by=(model.halite_2_users.c.score.desc().nullslast(),
+                          model.halite_2_users.c.mu.desc().nullslast(),
                           model.halite_2_users.c.username.asc())
             ).label("rank"),
         ]).select_from(model.halite_2_users).alias('ranked_users')
@@ -585,7 +588,7 @@ def resend_user_verification_email(user_id):
         send_verification_email(
             notify.Recipient(user_id, row["username"], row["email"],
                              None, row["player_level"],
-                             row["creation_time"]),
+                             row["creation_time"].isoformat()),
             row["verification_code"])
 
         return util.response_success({
@@ -711,7 +714,7 @@ def update_user(intended_user_id, *, user_id, is_admin):
                                  user_data["email"],
                                  user_data["organization_name"],
                                  user_data["player_level"],
-                                 user_data["creation_time"]),
+                                 user_data["creation_time"].isoformat()),
                 update["verification_code"])
         elif "email" in update:
             send_verification_email(
@@ -719,7 +722,7 @@ def update_user(intended_user_id, *, user_id, is_admin):
                                  user_data["email"],
                                  "unknown",
                                  user_data["player_level"],
-                                 user_data["creation_time"]),
+                                 user_data["creation_time"].isoformat()),
                 update["verification_code"])
 
     if message:

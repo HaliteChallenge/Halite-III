@@ -122,6 +122,7 @@ def github_login_callback():
 
     github_user_id = user_data["id"]
     emails = github.get("user/emails").data
+    default_username = user_data["login"]
 
     email = emails[0]["email"]
     for record in emails:
@@ -129,7 +130,8 @@ def github_login_callback():
             email = record["email"]
             break
 
-    return generic_login_callback(email, GITHUB_PROVIDER, github_user_id)
+    return generic_login_callback(email, GITHUB_PROVIDER, github_user_id,
+                                  default_username=default_username)
 
 
 @oauth_login.route("/response/google")
@@ -166,7 +168,7 @@ def google_login_callback():
     return generic_login_callback(email, GOOGLE_PROVIDER, google_user_id)
 
 
-def generic_login_callback(email, oauth_provider, oauth_id):
+def generic_login_callback(email, oauth_provider, oauth_id, default_username=None):
     with model.engine.connect() as conn:
         user = conn.execute(sqlalchemy.sql.select([
             model.users.c.id,
@@ -187,11 +189,24 @@ def generic_login_callback(email, oauth_provider, oauth_id):
                     oauth_provider=oauth_provider,
                 )).inserted_primary_key
                 flask.session["user_id"] = new_user_id[0]
-                return flask.redirect(urllib.parse.urljoin(config.SITE_URL, "/create-account"))
             except sqlalchemy.exc.IntegrityError:
                 raise util.APIError(400, message="User already exists with this email.")
+
+            if default_username:
+                # Try to use default username, but give up if taken.
+                try:
+                    conn.execute(model.users.update().values(
+                        username=default_username,
+                    ).where(model.users.c.id == new_user_id[0]))
+                except sqlalchemy.exc.IntegrityError:
+                    pass
+
+            return flask.redirect(urllib.parse.urljoin(config.SITE_URL, "/create-account"))
         elif not user["is_active"]:
             raise util.APIError(403, message="User is disabled.")
+        elif "redirectURL" in flask.request.args:
+            flask.session["user_id"] = user["id"]
+            return flask.redirect(flask.request.args["redirectURL"])
         else:
             flask.session["user_id"] = user["id"]
             return flask.redirect(urllib.parse.urljoin(config.SITE_URL, "/user/?me"))

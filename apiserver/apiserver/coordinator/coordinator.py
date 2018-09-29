@@ -472,7 +472,7 @@ def update_user_timeout(conn, game_id, user):
                                  user["email"],
                                  user["organization_name"],
                                  user["player_level"],
-                                 user["creation_time"])
+                                 user["creation_time"].isoformat())
     if timed_out_count == 1 and not timeout_sent:
         notify.send_templated_notification(
             recipient,
