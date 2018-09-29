@@ -365,6 +365,13 @@ export default {
     TierPopover
   },
   mounted: function () {
+    const width = document.body.offsetWidth;
+    if(width < 768) {
+      const canvasWidth = width - 30;
+      this.width = canvasWidth;
+      this.height = canvasWidth;
+    }
+
     // Grab a bit more vertical space
     document.querySelector('.navbar-fixed-top').style.position = 'absolute'
     this.getSortedPlayers()
@@ -906,6 +913,18 @@ export default {
         letter-spacing: 0.68px;
         line-height: 22px;
         margin-top: 5px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .visualizer-column {
+    margin: 0 auto !important;
+    .game-replay .game-replay-viewer {
+      padding: 10px 0;
+      canvas {
+        margin: 0;
       }
     }
   }

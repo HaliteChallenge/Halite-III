@@ -445,3 +445,19 @@
     }
   }
 }
+
+@media (max-width: 991px){
+  .page-header {
+    padding-top: 60px;
+  }
+  .statistic-box {
+    flex-direction: column;
+    .box-item {
+      margin: 20px 0 0 !important;
+      width: 90%;
+    }
+  }
+  .dropdown {
+      margin: 0 auto 10px !important;
+  }
+}

@@ -72,7 +72,7 @@ header.unloaded{
   .navbar-collapse.collapse {
     display: none !important;
     padding-bottom: 0;
-    overflow: auto !important;
+    // overflow: auto !important;
     &.in{
       display: block !important;
     }
@@ -224,8 +224,33 @@ header.unloaded{
   }
 }
 
-.halite-nav-right {
-  float: right !important;
+.navbar-collapse {
+  .halite-nav-right {
+    float: right !important;
+  }
+  @media (max-width: $mobile-breakpoint) {
+    overflow-y: visible !important;
+    .halite-nav-right {
+      position: relative;
+      left: -15px;
+      margin: 0 !important;
+      width: 100%;
+      .logged-in {
+        .profile-container {
+          padding: 0 !important;
+          border-left: none !important;
+          background: transparent !important;
+          >a {
+            margin: auto; 
+            .profile-nav {
+              left: 50%;
+              transform: translateX(-100px);
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 header.navbar{
