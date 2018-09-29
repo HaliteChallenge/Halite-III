@@ -175,7 +175,7 @@ def update_compilation_status():
             notify.send_templated_notification(
                 notify.Recipient(user["id"], user["username"], user["email"],
                                  user["organization_name"], user["player_level"],
-                                 user["creation_time"]),
+                                 user["creation_time"].isoformat()),
                 config.COMPILATION_SUCCESS_TEMPLATE,
                 {
                     "version_number": bot["version_number"],
@@ -197,7 +197,7 @@ def update_compilation_status():
             notify.send_templated_notification(
                 notify.Recipient(user["id"], user["username"], user["email"],
                                  user["organization_name"], user["player_level"],
-                                 user["creation_time"]),
+                                 user["creation_time"].isoformat()),
                 config.COMPILATION_FAILURE_TEMPLATE,
                 {
                     "version_number": bot["version_number"],

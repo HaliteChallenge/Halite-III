@@ -351,7 +351,7 @@ def create_user(*, user_id):
                 send_verification_email(
                     notify.Recipient(user_id, user_data["username"], email,
                                      organization_name, level,
-                                     user_data["creation_time"]),
+                                     user_data["creation_time"].isoformat()),
                     verification_code)
         else:
             # Do not send verification email if we don't recognize it
@@ -388,7 +388,7 @@ def create_user(*, user_id):
     send_confirmation_email(
         notify.Recipient(user_id, username, user_data["github_email"],
                          organization_name, level,
-                         user_data["creation_time"]))
+                         user_data["creation_time"].isoformat()))
 
     return util.response_success({
         "message": "\n".join(message),
@@ -588,7 +588,7 @@ def resend_user_verification_email(user_id):
         send_verification_email(
             notify.Recipient(user_id, row["username"], row["email"],
                              None, row["player_level"],
-                             row["creation_time"]),
+                             row["creation_time"].isoformat()),
             row["verification_code"])
 
         return util.response_success({
@@ -714,7 +714,7 @@ def update_user(intended_user_id, *, user_id, is_admin):
                                  user_data["email"],
                                  user_data["organization_name"],
                                  user_data["player_level"],
-                                 user_data["creation_time"]),
+                                 user_data["creation_time"].isoformat()),
                 update["verification_code"])
         elif "email" in update:
             send_verification_email(
@@ -722,7 +722,7 @@ def update_user(intended_user_id, *, user_id, is_admin):
                                  user_data["email"],
                                  "unknown",
                                  user_data["player_level"],
-                                 user_data["creation_time"]),
+                                 user_data["creation_time"].isoformat()),
                 update["verification_code"])
 
     if message:
