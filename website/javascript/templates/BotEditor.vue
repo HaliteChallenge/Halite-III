@@ -58,6 +58,7 @@
 <script>
   import moment from "moment";
   import JSZip from "jszip";
+  import { saveAs } from 'file-saver/FileSaver';
   import * as api from '../api'
   import editorState from '../editorState'
   import * as utils from '../utils'
