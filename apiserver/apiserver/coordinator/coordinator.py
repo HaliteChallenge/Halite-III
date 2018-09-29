@@ -468,21 +468,21 @@ def update_user_timeout(conn, game_id, user):
         timed_out_count / total_count > config.MAX_ERROR_PERCENTAGE
     )
 
-    recipient = notify.Recipient(user["user_id"], user["username"],
+    recipient = notify.Recipient(str(user["user_id"]), user["username"],
                                  user["email"],
                                  user["organization_name"],
                                  user["player_level"],
-                                 user["creation_time"])
+                                 user["creation_time"].isoformat())
     if timed_out_count == 1 and not timeout_sent:
         notify.send_templated_notification(
             recipient,
             config.FIRST_TIMEOUT_TEMPLATE,
             {
-                "limit": config.MAX_ERRORS_PER_BOT,
-                "percent": int(config.MAX_ERROR_PERCENTAGE * 100),
-                "game_id": game_id,
-                "user_id": user["user_id"],
-                "bot_id": user["bot_id"],
+                "limit": str(config.MAX_ERRORS_PER_BOT),
+                "percent": str(int(config.MAX_ERROR_PERCENTAGE * 100)),
+                "game_id": str(game_id),
+                "user_id": str(user["user_id"]),
+                "bot_id": str(user["bot_id"]),
                 "replay_link": util.build_site_url("/play", {
                     "game_id": game_id
                 }),
@@ -511,11 +511,11 @@ def update_user_timeout(conn, game_id, user):
             recipient,
             config.BOT_DISABLED_TEMPLATE,
             {
-                "limit": config.MAX_ERRORS_PER_BOT,
-                "percent": int(config.MAX_ERROR_PERCENTAGE * 100),
-                "game_id": game_id,
-                "user_id": user["user_id"],
-                "bot_id": user["bot_id"],
+                "limit": str(config.MAX_ERRORS_PER_BOT),
+                "percent": str(int(config.MAX_ERROR_PERCENTAGE * 100)),
+                "game_id": str(game_id),
+                "user_id": str(user["user_id"]),
+                "bot_id": str(user["bot_id"]),
                 "replay_link": util.build_site_url("/play", {
                     "game_id": game_id
                 }),

@@ -250,6 +250,7 @@ def organization_leaderboard():
     organization_wins = sqlalchemy.sql.select([
         model.organizations.c.id.label("organization_id"),
         model.organizations.c.organization_name,
+        model.organizations.c.kind.label("organization_kind"),
         sqlalchemy.sql.func.count().label("weekly_games_won"),
     ]).select_from(model.games.join(
         model.game_participants,
@@ -265,16 +266,55 @@ def organization_leaderboard():
     )).group_by(
         model.organizations.c.id,
         model.organizations.c.organization_name,
+        model.organizations.c.kind,
     ).alias("organization_wins")
+
+    organization_games_inner = sqlalchemy.sql.select([
+        model.organizations.c.id.label("organization_id"),
+        model.games.c.id,
+    ], distinct=True).select_from(model.games.join(
+        model.game_participants,
+        (model.games.c.id == model.game_participants.c.game_id) &
+        (model.games.c.time_played >= sqlalchemy.sql.func.current_timestamp() - sqlalchemy.sql.text("interval '7' day"))
+    ).join(
+        model.users,
+        model.game_participants.c.user_id == model.users.c.id
+    ).join(
+        model.organizations,
+        model.users.c.organization_id == model.organizations.c.id
+    )).alias("organization_games_inner")
+
+    organization_games = sqlalchemy.sql.select([
+        organization_games_inner.c.organization_id,
+        sqlalchemy.sql.func.count().label("weekly_games_played"),
+    ]).select_from(organization_games_inner).group_by(
+        organization_games_inner.c.organization_id,
+    ).alias("organization_games")
+
+    organization_players = sqlalchemy.sql.select([
+        model.users.c.organization_id,
+        sqlalchemy.sql.func.count().label("num_players"),
+    ]).select_from(model.users).group_by(
+        model.users.c.organization_id
+    ).alias("organization_players")
 
     organization_ranks = sqlalchemy.sql.select([
         organization_wins.c.organization_id,
         organization_wins.c.organization_name,
+        organization_wins.c.organization_kind,
         organization_wins.c.weekly_games_won,
+        organization_games.c.weekly_games_played,
+        organization_players.c.num_players,
         sqlalchemy.sql.func.rank().over(
             order_by=organization_wins.c.weekly_games_won.desc()
         ).label("organization_rank"),
-    ]).select_from(organization_wins).alias("organization_ranks")
+    ]).select_from(organization_wins.join(
+        organization_games,
+        organization_wins.c.organization_id == organization_games.c.organization_id
+    ).join(
+        organization_players,
+        organization_wins.c.organization_id == organization_players.c.organization_id
+    )).reduce_columns().alias("organization_ranks")
 
     offset, limit = api_util.get_offset_limit(default_limit=250,
                                               max_limit=10000)
@@ -283,6 +323,8 @@ def organization_leaderboard():
         "organization_id": organization_ranks.c.organization_id,
         "organization_name": organization_ranks.c.organization_name,
         "organization_rank": organization_ranks.c.organization_rank,
+        "organization_kind": organization_ranks.c.organization_kind,
+        "num_players": organization_ranks.c.num_players,
     }, ["tier"])
 
     if not order_clause:
@@ -303,7 +345,10 @@ def organization_leaderboard():
                 "organization_id": row["organization_id"],
                 "organization_name": row["organization_name"],
                 "organization_rank": row["organization_rank"],
+                "organization_kind": row["organization_kind"],
                 "weekly_games_won": row["weekly_games_won"],
+                "weekly_games_played": row["weekly_games_played"],
+                "num_players": row["num_players"],
             }
             if total_orgs and org["organization_rank"]:
                 org["tier"] = util.tier(org["organization_rank"], total_orgs)

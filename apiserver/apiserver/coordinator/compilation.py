@@ -173,12 +173,12 @@ def update_compilation_status():
             )).first()
 
             notify.send_templated_notification(
-                notify.Recipient(user["id"], user["username"], user["email"],
+                notify.Recipient(str(user["id"]), user["username"], user["email"],
                                  user["organization_name"], user["player_level"],
-                                 user["creation_time"]),
+                                 user["creation_time"].isoformat()),
                 config.COMPILATION_SUCCESS_TEMPLATE,
                 {
-                    "version_number": bot["version_number"],
+                    "version_number": str(bot["version_number"]),
                     "detected_language": language,
                 },
                 config.GOODNEWS_ACCOMPLISHMENTS,
@@ -195,12 +195,12 @@ def update_compilation_status():
             blob.upload_from_string(errors)
 
             notify.send_templated_notification(
-                notify.Recipient(user["id"], user["username"], user["email"],
+                notify.Recipient(str(user["id"]), user["username"], user["email"],
                                  user["organization_name"], user["player_level"],
-                                 user["creation_time"]),
+                                 user["creation_time"].isoformat()),
                 config.COMPILATION_FAILURE_TEMPLATE,
                 {
-                    "version_number": bot["version_number"],
+                    "version_number": str(bot["version_number"]),
                     "detected_language": language,
                     "errors": errors,
                     "log_link": "{}/user/{}/bot/{}/error_log".format(

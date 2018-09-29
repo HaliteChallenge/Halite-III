@@ -265,15 +265,21 @@ def delete_user_bot(intended_user, bot_id, *, user_id):
 @util.cross_origin(methods=["GET"])
 @api_util.requires_login(accept_key=True)
 def get_user_bot_compile_log(intended_user, bot_id, *, user_id):
-    if inteded_user != user_id:
-        raise api_util.user_mismatch_error(
-            message="Cannot get bot compile log for another user.")
-
     with model.read_conn() as conn:
+        # If user in team, allow creation as team leader bot
+        team = conn.execute(model.team_leader_query(user_id)).first()
+        target_user_id = user_id
+        if team:
+            target_user_id = team["leader_id"]
+
+        if target_user_id != intended_user:
+            raise api_util.user_mismatch_error(
+                message="Cannot get bot compile log for another user.")
+
         bot = conn.execute(sqlalchemy.sql.select([
             model.bots.c.id,
         ]).select_from(model.bots).where(
-            (model.bots.c.user_id == intended_user) &
+            (model.bots.c.user_id == target_user_id) &
             (model.bots.c.id == bot_id)
         )).first()
 
@@ -281,7 +287,7 @@ def get_user_bot_compile_log(intended_user, bot_id, *, user_id):
             raise util.APIError(404, message="Bot not found.")
 
         bucket = model.get_error_log_bucket()
-        log_file = "compilation_{}_{}.log".format(intended_user, bot_id)
+        log_file = "compilation_{}_{}.log".format(target_user_id, bot_id)
         try:
             blob = bucket.get_blob(log_file)
             if not blob:
