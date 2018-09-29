@@ -5,7 +5,7 @@ import sendgrid
 import sendgrid.helpers
 import sendgrid.helpers.mail
 
-from python_http_client.exceptions import UnauthorizedError
+from python_http_client.exceptions import HTTPError
 
 from . import app, config
 
@@ -41,8 +41,9 @@ def send_notification(recipient_email, recipient_name, subject, body,
 
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
-    except UnauthorizedError as e:
+    except HTTPError as e:
         app.logger.error("Could not send email", exc_info=e)
+        app.logger.error("Response: {}".format(e.body))
 
 
 def send_templated_notification(recipient, template_id, substitutions, group_id, category):
@@ -79,9 +80,9 @@ def send_templated_notification(recipient, template_id, substitutions, group_id,
 
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
-        print(response.status_code)
-    except UnauthorizedError as e:
+    except HTTPError as e:
         app.logger.error("Could not send email", exc_info=e)
+        app.logger.error("Response: {}".format(e.body))
 
 def send_templated_notification_simple(email, template_id, group_id, category):
     """

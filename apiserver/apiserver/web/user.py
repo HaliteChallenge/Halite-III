@@ -139,7 +139,7 @@ def send_verification_email(recipient, verification_code):
         {
             "verification_url": util.build_site_url("/verify-email", {
                 "verification_code": verification_code,
-                "user_id": recipient.user_id,
+                "user_id": str(recipient.user_id),
             }),
         },
         config.GOODNEWS_ACCOMPLISHMENTS,
@@ -349,7 +349,7 @@ def create_user(*, user_id):
                 })
             else:
                 send_verification_email(
-                    notify.Recipient(user_id, user_data["username"], email,
+                    notify.Recipient(str(user_id), user_data["username"], email,
                                      organization_name, level,
                                      user_data["creation_time"].isoformat()),
                     verification_code)
@@ -386,7 +386,7 @@ def create_user(*, user_id):
         ).values(**values))
 
     send_confirmation_email(
-        notify.Recipient(user_id, username, user_data["github_email"],
+        notify.Recipient(str(user_id), username, user_data["github_email"],
                          organization_name, level,
                          user_data["creation_time"].isoformat()))
 
@@ -586,7 +586,7 @@ def resend_user_verification_email(user_id):
                 message="Please finish setting up your account first.")
 
         send_verification_email(
-            notify.Recipient(user_id, row["username"], row["email"],
+            notify.Recipient(str(user_id), row["username"], row["email"],
                              None, row["player_level"],
                              row["creation_time"].isoformat()),
             row["verification_code"])
@@ -710,7 +710,7 @@ def update_user(intended_user_id, *, user_id, is_admin):
 
         if "email" in update and update.get("organization_id"):
             send_verification_email(
-                notify.Recipient(intended_user_id, user_data["username"],
+                notify.Recipient(str(intended_user_id), user_data["username"],
                                  user_data["email"],
                                  user_data["organization_name"],
                                  user_data["player_level"],
@@ -718,7 +718,7 @@ def update_user(intended_user_id, *, user_id, is_admin):
                 update["verification_code"])
         elif "email" in update:
             send_verification_email(
-                notify.Recipient(intended_user_id, user_data["username"],
+                notify.Recipient(str(intended_user_id), user_data["username"],
                                  user_data["email"],
                                  "unknown",
                                  user_data["player_level"],
