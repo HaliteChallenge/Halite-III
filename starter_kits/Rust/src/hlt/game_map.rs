@@ -64,15 +64,15 @@ impl GameMap {
         let mut possible_moves: Vec<Direction> = Vec::new();
 
         if normalized_source.x < normalized_destination.x {
-            possible_moves.push(if dx > wrapped_dx { Direction::WEST } else { Direction::EAST });
+            possible_moves.push(if dx > wrapped_dx { Direction::West } else { Direction::East });
         } else if normalized_source.x > normalized_destination.x {
-            possible_moves.push(if dx < wrapped_dx { Direction::WEST } else { Direction::EAST });
+            possible_moves.push(if dx < wrapped_dx { Direction::West } else { Direction::East });
         }
 
         if normalized_source.y < normalized_destination.y {
-            possible_moves.push(if dy > wrapped_dy { Direction::NORTH } else { Direction::SOUTH });
+            possible_moves.push(if dy > wrapped_dy { Direction::North } else { Direction::South });
         } else if normalized_source.y > normalized_destination.y {
-            possible_moves.push(if dy < wrapped_dy { Direction::NORTH } else { Direction::SOUTH });
+            possible_moves.push(if dy < wrapped_dy { Direction::North } else { Direction::South });
         }
 
         possible_moves
@@ -92,7 +92,7 @@ impl GameMap {
             }
         }
 
-        Direction::STILL
+        Direction::Still
     }
 
     pub fn update(&mut self, input: &mut Input) {

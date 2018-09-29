@@ -28,7 +28,7 @@ impl Ship {
     }
 
     pub fn stay_still(&self) -> Command {
-        Command::move_ship(self.id, Direction::STILL)
+        Command::move_ship(self.id, Direction::Still)
     }
 
     pub fn generate(input: &mut Input, player_id: PlayerId, max_halite: i32) -> Ship {
