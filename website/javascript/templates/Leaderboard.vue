@@ -459,8 +459,11 @@ export default {
         name_options = [],
         level_options = [];
       this.organizations.forEach(org => {
-        name_options.push(org.organization_name);
-        level_options.push(org.tier);
+        const { organization_name, organization_kind} = org;
+        name_options.push(organization_name);
+        if(!level_options.includes(organization_kind)) {
+          level_options.push(organization_kind);
+        }
       });
       filters.name_options = name_options;
       filters.level_options = level_options;
@@ -525,8 +528,8 @@ export default {
         this.org_name_filter = organization_name;
       }
       // get organization level value
-      if (params.org_tier && params.org_tier.length > 0) {
-        this.org_level_filter = params.org_tier;
+      if (params.org_kind && params.org_kind.length > 0) {
+        this.org_level_filter = params.org_kind;
       }
 
       // get username value
@@ -613,10 +616,10 @@ export default {
 
       // adding the organization level filter
       if (this.org_level_filter.length > 0) {
-        params["org_tier"] = [];
+        params["org_kind"] = [];
         this.org_level_filter.forEach(function(item) {
-          org_filters.push("tier,=," + item);
-          params["org_tier"].push(item);
+          org_filters.push("organization_kind,=," + item);
+          params["org_kind"].push(item);
         });
       }
 
