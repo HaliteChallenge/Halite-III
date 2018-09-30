@@ -39,8 +39,7 @@ fn main() {
 
         let mut command_queue: Vec<Command> = Vec::new();
 
-        for ship in &me.ships {
-            let ship = ship.1;
+        for (_, ship) in &me.ships {
             let cell = game_map.at_entity(&**ship);
 
             let command = if cell.borrow().halite < game.constants.max_halite / 10 || ship.is_full() {

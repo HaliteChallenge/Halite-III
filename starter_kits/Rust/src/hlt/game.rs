@@ -71,8 +71,7 @@ impl Game {
         self.game_map.borrow_mut().update(input);
 
         for player in &self.players {
-            for ship in &player.borrow().ships {
-                let ship = ship.1;
+            for (_, ship) in &player.borrow().ships {
                 let cell = self.game_map.borrow_mut().at_entity(&**ship);
                 cell.borrow_mut().mark_unsafe(ship);
             }
@@ -81,8 +80,7 @@ impl Game {
             let cell = self.game_map.borrow_mut().at_entity(&**shipyard);
             cell.borrow_mut().structure = Some(shipyard.clone());
 
-            for dropoff in &player.borrow().dropoffs {
-                let dropoff = dropoff.1;
+            for (_, dropoff) in &player.borrow().dropoffs {
                 let cell = self.game_map.borrow_mut().at_entity(&**dropoff);
                 cell.borrow_mut().structure = Some(dropoff.clone());
             }
