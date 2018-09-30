@@ -35,17 +35,11 @@ logging.info("{}".format(hlt.constants.SHIP_COST))
 state = {}
 
 def should_dropoff(game_map, me, ship):
-    if ship.halite_amount > 400:
-        return False
-
-    if game_map[ship.position].halite_amount > 700:
-        return False
-
-    if me.halite_amount < 6000:
+    if me.halite_amount + ship.halite_amount + game_map[ship.position].halite_amount < 4000:
         return False
 
     for dropoff in itertools.chain([me.shipyard], me.get_dropoffs()):
-        if game_map.calculate_distance(dropoff.position, ship.position) < 10:
+        if game_map.calculate_distance(dropoff.position, ship.position) < 5:
             return False
 
     return True
@@ -99,7 +93,7 @@ while True:
                     destination = dest
             safe_direction = game_map.naive_navigate(ship, destination)
             command_queue.append(ship.move(safe_direction))
-        elif game.turn_number < 200 and not built_dropoff and should_dropoff(game_map, me, ship):
+        elif not built_dropoff and should_dropoff(game_map, me, ship):
             built_dropoff = True
             command_queue.append(ship.make_dropoff())
         elif game_map[ship.position].halite_amount < constants.MAX_HALITE / 10:
