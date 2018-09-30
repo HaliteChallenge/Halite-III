@@ -1,6 +1,6 @@
 use hlt::direction::Direction;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub struct Position {
     pub x: i32,
     pub y: i32,
