@@ -186,7 +186,7 @@ int main(int argc, char *argv[]) {
                     << to_string(stats.player_id)
                     << ", '"
                     << replay.players.at(stats.player_id).name
-                    << "', was rank"
+                    << "', was rank "
                     << std::to_string(stats.rank)
                     << " with "
                     << std::to_string(stats.turn_productions.back())
