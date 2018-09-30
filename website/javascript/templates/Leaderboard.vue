@@ -61,15 +61,15 @@
               </div>
               <div class="filter-group">
                 <div class="input-group">
-                  <v-select multiple placeholder="Usernames" v-model="username_filter" :options="filter_options.usernames_options">
+                  <v-select multiple placeholder="Player" v-model="username_filter" :options="filter_options.usernames_options">
                   </v-select>
                   <v-select multiple placeholder="Tier" v-model="tier_filter" :options="tiers">
                   </v-select>
                   <v-select multiple placeholder="Level" v-model="level_filter" :options="levels">
                   </v-select>
-                  <v-select multiple placeholder="Organization" v-model="organization_filter" :options="filter_options.org_options">
+                  <v-select multiple placeholder="Country" v-model="country_filter" :options="filter_options.country_options">
                   </v-select>
-                  <v-select multiple placeholder="Countries" v-model="country_filter" :options="filter_options.country_options">
+                  <v-select multiple placeholder="Organization" v-model="organization_filter" :options="filter_options.org_options">
                   </v-select>
                   <v-select multiple placeholder="Language" v-model="language_filter" :options="filter_options.language_options">
                   </v-select>
@@ -138,7 +138,7 @@
                         <img v-if="getCountry(player.country)" :title="`${getCountryName(player.country)}`" :src="`${getCountry(player.country)}`" class="country-img">
                         </div>
                   </td>
-                  <td>
+                  <td style="width:220px">
                     <template v-if="player.user_id === player.team_leader_id && player.team_members.length > 0">
                       {{ player.team_members.filter(tm => tm.organization).map(tm => tm.organization).join(", ") }}
                     </template>
@@ -994,7 +994,7 @@ export default {
         th {
           border-right: 1.2px solid rgba(8, 27, 83, 0.1);
           border-bottom: none;
-          padding: 25px 20px;
+          padding: 20px 15px;
           font-size: 14px;
         }
       }
@@ -1002,9 +1002,9 @@ export default {
     tbody {
       tr td {
         border: 1.2px solid rgba(8, 27, 83, 0.1);
-        padding: 25px 20px;
+        padding: 20px 15px;
         color: #0c0c0c;
-        font-size: 18px;
+        font-size: 16px;
         .leaderboard-name > img {
           margin-right: 10px;
         }
