@@ -216,7 +216,7 @@
                     </a>
                   </td>
                   <td>{{ org.weekly_games_won }}</td>
-                  <td>{{ org.tier }}</td>
+                  <td>{{ org.organization_kind }}</td>
                 </tr>
               </tbody>
             </table>
