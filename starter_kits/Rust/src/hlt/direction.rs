@@ -1,34 +1,34 @@
 #[derive(Copy, Clone)]
 pub enum Direction {
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST,
-    STILL,
+    North,
+    East,
+    South,
+    West,
+    Still,
 }
 
 impl Direction {
     pub fn invert_direction(&self) -> Direction {
         match self {
-            Direction::NORTH => Direction::SOUTH,
-            Direction::EAST => Direction::WEST,
-            Direction::SOUTH  => Direction::NORTH,
-            Direction::WEST => Direction::EAST,
-            Direction::STILL => Direction::STILL,
+            Direction::North => Direction::South,
+            Direction::East => Direction::West,
+            Direction::South => Direction::North,
+            Direction::West => Direction::East,
+            Direction::Still => Direction::Still,
         }
     }
 
     pub fn get_all_cardinals() -> Vec<Direction> {
-        vec![Direction::NORTH, Direction::SOUTH, Direction::EAST, Direction::WEST]
+        vec![Direction::North, Direction::South, Direction::East, Direction::West]
     }
 
     pub fn get_char_encoding(&self) -> char {
         match self {
-            Direction::NORTH => 'n',
-            Direction::EAST => 'e',
-            Direction::SOUTH  => 's',
-            Direction::WEST => 'w',
-            Direction::STILL => 'o',
+            Direction::North => 'n',
+            Direction::East => 'e',
+            Direction::South => 's',
+            Direction::West => 'w',
+            Direction::Still => 'o',
         }
     }
 }
