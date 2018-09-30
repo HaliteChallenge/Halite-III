@@ -446,7 +446,7 @@
   }
 }
 
-@media (max-width: 991px){
+@media (max-width: $mobile-breakpoint){
   .page-header {
     padding-top: 60px;
   }

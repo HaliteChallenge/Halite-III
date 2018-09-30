@@ -26,7 +26,7 @@
     }
   }
 }
-@media screen and (max-width: $screen-xs-max) {
+@media screen and (max-width: $mobile-breakpoint) {
   .doc-container{
     margin-top: 80px;
   }
