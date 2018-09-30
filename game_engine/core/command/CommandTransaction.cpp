@@ -71,7 +71,20 @@ void CommandTransaction::add_expense(const Player &player, const Command &comman
 void CommandTransaction::add_command(Player &player, const ConstructCommand &command) {
     if (check_ownership(player, command.entity, command)) {
         add_occurrence(command.entity, command);
-        add_expense(player, command, Constants::get().DROPOFF_COST);
+        auto cost = Constants::get().DROPOFF_COST;
+
+        // Cost factors in entity cargo and halite on target cell.
+        const auto location = player.get_entity_location(command.entity);
+        const auto &cell = map.at(location);
+        const auto &entity = store.get_entity(command.entity);
+        if (cell.energy + entity.energy >= cost) {
+            cost = 0;
+        }
+        else {
+            cost -= cell.energy + entity.energy;
+        }
+        add_expense(player, command, cost);
+
         construct_transaction.add_command(player, command);
     }
 }

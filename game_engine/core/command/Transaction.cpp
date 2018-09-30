@@ -97,13 +97,25 @@ bool ConstructTransaction::check() {
 
 /** If the transaction may be committed, commit the transaction. */
 void ConstructTransaction::commit() {
-    auto cost = Constants::get().DROPOFF_COST;
     for (auto &[player_id, constructs] : commands) {
         auto &player = store.get_player(player_id);
         for (const ConstructCommand &command : constructs) {
-            const auto entity = command.entity;
-            const auto location = player.get_entity_location(entity);
+            auto cost = Constants::get().DROPOFF_COST;
+            const auto entity_id = command.entity;
+            const auto &entity = store.get_entity(entity_id);
+            const auto location = player.get_entity_location(entity_id);
             auto &cell = map.at(location);
+
+            // Cost is reduced by cargo + halite on cell
+            if (cell.energy + entity.energy >= cost) {
+                // Give player extra halite
+                cost = 0;
+                player.energy += cell.energy + entity.energy - cost;
+            }
+            else {
+                cost -= cell.energy + entity.energy;
+            }
+
             // Mark as owned, clear contents of cell
             cell.owner = player_id;
             player.dropoffs.emplace_back(store.new_dropoff(location));
@@ -112,8 +124,8 @@ void ConstructTransaction::commit() {
             cell.entity = Entity::None;
             event_generated<ConstructionEvent>(location, player_id, command.entity);
             cell_updated(location);
-            player.remove_entity(entity);
-            store.delete_entity(entity);
+            player.remove_entity(entity_id);
+            store.delete_entity(entity_id);
             // Charge player
             player.energy -= cost;
         }
