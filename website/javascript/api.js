@@ -422,13 +422,9 @@ export function get_expired_replay (replay_class, replay_name) {
   })
 }
 
-export function leaderboard (filters, hackathon = null, offset = null, limit = null) {
+export function leaderboard (filters, offset = null, limit = null) {
   let url = `${API_SERVER_URL}/leaderboard`
   let fields = {}
-  if (hackathon) {
-    url = `${API_SERVER_URL}/hackathon/${hackathon}/leaderboard`
-    fields.withCredentials = true
-  }
 
   const querystring = []
   if (offset !== null && limit !== null) {
@@ -468,50 +464,6 @@ export function reset_api_key () {
     url: `${API_SERVER_URL}/api_key`,
     xhrFields: {
       withCredentials: true
-    }
-  })
-}
-
-export function register_hackathon (code) {
-  const me = me_cached()
-  if (!me) {
-    return Promise.reject({
-      message: 'You must be logged in to register for a hackathon.'
-    })
-  }
-  return $.post({
-    url: `${API_SERVER_URL}/user/${me.user_id}/hackathon`,
-    data: {
-      verification_code: code
-    },
-    xhrFields: {
-      withCredentials: true
-    }
-  })
-}
-
-export function get_hackathon (id) {
-  return $.get({
-    url: `${API_SERVER_URL}/hackathon/${id}`,
-    xhrFields: {
-      withCredentials: true
-    }
-  })
-}
-
-export function get_user_hackathons (userId) {
-  return $.get({
-    url: `${API_SERVER_URL}/user/${userId}/hackathon`,
-    xhrFields: {
-      withCredentials: true
-    }
-  })
-}
-
-export function get_hackathons () {
-  return $.get({
-    url: `${API_SERVER_URL}/hackathon`,
-    xhrFields: {
     }
   })
 }
