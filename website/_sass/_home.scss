@@ -1,3 +1,4 @@
+$mobile-breakpoint: 991px;
 .home-container{
   $o-color: #E37222;
   $w-color: #FFFFFF;
@@ -78,6 +79,16 @@
             font-weight: 500;
           }
         }
+      }
+    }
+    @media (max-width: $mobile-breakpoint){
+      padding-top: 60px;
+      flex-direction: column;
+      .left-container {
+        border-radius: 8px 8px 0 0;
+      }
+      .right-container {
+        border-radius: 0 0 8px 8px; 
       }
     }
   }
