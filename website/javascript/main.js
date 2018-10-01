@@ -16,8 +16,6 @@ import VerifyEmail from './templates/VerifyEmail.vue'
 import VisualizerContainer from './templates/VisualizerContainer.vue'
 import HaliteTV from './templates/HaliteTV.vue'
 import Home from './templates/Home.vue'
-import LeaguesPortal from './templates/LeaguesPortal.vue'
-import LeagueIndividual from './templates/LeagueIndividual.vue'
 import Onboarding from './templates/Onboarding.vue'
 import Play from './templates/Play.vue'
 import Settings from './templates/Settings.vue'
@@ -128,18 +126,6 @@ window.views = {
     new Vue({
       el: '#play-container',
       render: (h) => h(Play, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-  LeaguesPortal: function(){
-    new Vue({
-      el: '#leagues-portal-container',
-      render: (h) => h(LeaguesPortal, { props: {baseUrl: _global.baseUrl }})
-    })
-  },
-  LeagueIndividual: function(){
-    new Vue({
-      el: '#leagues-individual-container',
-      render: (h) => h(LeagueIndividual, { props: {baseUrl: _global.baseUrl }})
     })
   },
   Onboarding: function () {
