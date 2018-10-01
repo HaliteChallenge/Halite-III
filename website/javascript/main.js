@@ -8,7 +8,6 @@ import Associate from './templates/Associate.vue'
 import BotEditorPage from './templates/BotEditorPage.vue'
 import FinalsStatus from './templates/FinalsStatus.vue'
 import GameFeed from './templates/GameFeed.vue'
-import HackathonLeaderboard from './templates/HackathonLeaderboard.vue'
 import LeaderboardContainer from './templates/LeaderboardContainer.vue'
 import UserProfile from './templates/UserProfile.vue'
 // import UserProfileBar from './templates/UserProfileBar.vue'
@@ -17,8 +16,6 @@ import VerifyEmail from './templates/VerifyEmail.vue'
 import VisualizerContainer from './templates/VisualizerContainer.vue'
 import HaliteTV from './templates/HaliteTV.vue'
 import Home from './templates/Home.vue'
-import HackathonPortal from './templates/HackathonPortal.vue'
-import HackathonIndividual from './templates/HackathonIndividual.vue'
 import LeaguesPortal from './templates/LeaguesPortal.vue'
 import LeagueIndividual from './templates/LeagueIndividual.vue'
 import Onboarding from './templates/Onboarding.vue'
@@ -79,12 +76,6 @@ window.views = {
       render: (h) => h(GameFeed, { props: { baseUrl: _global.baseUrl } })
     })
   },
-  HackathonLeaderboard: function () {
-    new Vue({
-      el: '#hackathon-leaderboard-container',
-      render: (h) => h(HackathonLeaderboard)
-    })
-  },
   LeaderboardContainer: function () {
     new Vue({
       el: '#leaderboard-container',
@@ -131,18 +122,6 @@ window.views = {
     new Vue({
       el: '#home-container',
       render: (h) => h(Home, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-  HackathonPortal: function () {
-    new Vue({
-      el: '#hackathon-container',
-      render: (h) => h(HackathonPortal, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-  HackathonIndividual: function () {
-    new Vue({
-      el: '#hackathon-container',
-      render: (h) => h(HackathonIndividual, { props: { baseUrl: _global.baseUrl } })
     })
   },
   Play: function () {
