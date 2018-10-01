@@ -13,7 +13,7 @@ sort_key: 1
 
 Halite III is a resource management game in which players build and command ships that explore the ocean and collect halite. Ships use halite as an energy source, and the player with the most stored halite at the end of the game is the winner.
 
-Players begin play with a shipyard, and can use collected halite to build new ships. To efficiently collect halite, players must devise a strategy based on building ships and dropoff points. Ships can explore the ocean, collect halite, and store it in the shipyard or in dropoff points. Players interact by seeking inspiring competition, or by crashing ships to send both to the bottom of the sea.
+Players begin play with a shipyard, and can use collected halite to build new ships. To efficiently collect halite, players must devise a strategy based on building ships and dropoff points. Ships can explore the ocean, collect halite, and store it in the shipyard or in dropoff points. Players interact by seeking inspiring competition, or by colliding ships to send both to the bottom of the sea.
 <br/><br/>
 <span style="display:block;text-align:center">![a centered gif showing wrapping map grid edges and collision](/assets/images/map_inspiration.gif)</span>
 </div>
@@ -36,7 +36,7 @@ Players spend halite to **build a ship**,  **move a ship**, and to **convert a s
 Command|Halite Cost or Gain
 :---: | :---: | :---:
 Spawn | Cost: 1000 halite
-Convert into a drop-off  | Cost: 4000 halite deducted from player's stored halite. <br/> The converted ship's halite cargo is destroyed, and the halite in the sea under the new dropoff is set to 0.
+Convert into a drop-off  | Cost: 4000 halite deducted from player's stored halite. <br/> The converted ship's halite cargo and the halite in the sea under the new dropoff is credited to the player.
 Move (n, s, e w) | Cost: 10% of halite available at turn origin cell is deducted from ship’s current halite. <br/>When a ship moves over a friendly shipyard or dropoff, it deposits its halite cargo.
 Move (o) | Collect: 25% of halite available in cell, rounded up to the nearest whole number. <br/>Ships can carry up to 1000 halite.
 
