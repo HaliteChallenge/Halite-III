@@ -329,6 +329,7 @@ export default {
         if (this.level !== 'High School' && this.email) {
           request['email'] = this.email
         }
+      },
       gaData: function (category, action, label) {
         utils.gaEvent(category, action, label)
       },
