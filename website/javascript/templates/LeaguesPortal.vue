@@ -4,7 +4,7 @@
       <h1>HALITE LEAGUES</h1>
       <i class="xline xline-bottom"></i>
     </div>
-    <div class="hackathon-events-container">
+    <div>
       <div class="filter-form">
           <div class="form-header">
             <div class="filter-handler">
@@ -95,7 +95,7 @@
       }
     },
     mounted: function(){
-      // get params 
+      // get params
       const params = new URLSearchParams(window.location.search)
       if (params.has('category')){
         this.filter_cat.push(decodeURI(params.get('category')))
@@ -144,7 +144,7 @@
     methods: {
       getLink: function(league){
         let link = `/league-board?id=${league.id}&leaguename=${league.name}`
-        
+
         link += '&' + league.query;
         return encodeURI(link);
       },

@@ -1,7 +1,7 @@
 <template>
   <div class="league-individual-container">
     <!-- breakcrumb -->
-    <section class="hackathon-breadcrumb breadcrumb-top">
+    <section>
       <HaliteBreadcrumb :path="path" :baseUrl="baseUrl" />
     </section>
     <div class="page-header">

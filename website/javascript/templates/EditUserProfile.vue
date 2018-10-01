@@ -146,9 +146,7 @@ export default {
           error: null,
           primary: true,
           user: null,
-          hackathon_code: null,
           edit_email: false,
-          hackathon_error_message: '',
           team: null,  // My team information
           teamJoinError: null,
           new_team_name: "", // Team name required to create the team
@@ -331,42 +329,6 @@ export default {
         if (this.level !== 'High School' && this.email) {
           request['email'] = this.email
         }
-
-        this.hackathon_error_message = ''
-        api.update_me(this.user.user_id, request).then((response) => {
-          let message = 'You have updated your profile successfully.';
-          if (response.message)
-            message += ' ' + response.message;
-          Alert.show(message, 'success', true)
-          this.gaData('account', 'edit-profile-success', 'edit-profile-flow')
-        }, (error) => {
-          const errorMessage = error.responseJSON
-            ? error.responseJSON.message
-            : "Sorry, we couldn't update your profile. Please try again later."
-          Alert.show(errorMessage, 'error')
-          this.gaData('account', 'edit-profile-error', 'edit-profile-flow')
-        }).then(() => {
-          if (this.hackathon_code) {
-            api.register_hackathon(this.hackathon_code).then((response) => {
-              let message = "You've signed up for the hackathon, Check your user profile to see your Hackathons"
-              if (response.responseJSON && response.responseJSON.message) {
-                message = response.responseJSON.message
-              }
-              Alert.show(message, 'success', true)
-            }, (err) => {
-              this.hackathon_error_message = "Sorry, we couldn't sign you up for the hackathon. Please try again later."
-              if (err.message) {
-                this.hackathon_error_message = err.message
-              }
-              if (err.responseJSON) {
-                this.hackathon_error_message = err.responseJSON.message
-              }
-              Alert.show(this.hackathon_error_message, 'error')
-            })
-            this.hackathon_code = null
-          }
-        })
-      },
       gaData: function (category, action, label) {
         utils.gaEvent(category, action, label)
       },

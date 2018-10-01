@@ -207,7 +207,7 @@ const DEFAULT_LIMIT = 25
 
 export default {
     name: 'leaderboard',
-    props: ['baseUrl', 'hackathonId', 'lbFromContainer', 'metric'],
+    props: ['baseUrl', 'lbFromContainer', 'metric'],
     components: {
       HalitePagination,
       vSelect,
@@ -310,11 +310,6 @@ export default {
         this.calculate_filters()
       })
   },
-    watch: {
-      hackathonId: function () {
-        this.update_filter(true)
-      }
-    },
     computed: {
       saved_filters: function () {
         let saved_filters = JSON.parse(localStorage.saved_filters)
@@ -642,7 +637,7 @@ export default {
           leaderboard = this.lbFromContainer;
           handleLeaderboard(leaderboard);
         } else {
-          api.leaderboard([], this.hackathonId, 0, 99999).then(leaderboard => {
+          api.leaderboard([], 0, 99999).then(leaderboard => {
             handleLeaderboard(leaderboard);
           });
         }
@@ -655,7 +650,7 @@ export default {
           if(this.all_leaderboards && defaultFilter) {
             this.lastPage = Math.ceil(this.all_leaderboards.length / this.limit);
           } else {
-            api.leaderboard(filters, this.hackathonId, 0, 999999).then(leaderboard => {
+            api.leaderboard(filters, 0, 999999).then(leaderboard => {
               if(leaderboard && leaderboard instanceof Array) {
                 this.lastPage = Math.ceil(leaderboard.length / this.limit);
               }
@@ -687,7 +682,7 @@ export default {
         if(this.all_leaderboards && defaultFilter) {
           handleLeaderboard(this.all_leaderboards.slice((this.page - 1) * this.limit, this.page * this.limit));
         } else {
-          api.leaderboard(filters, this.hackathonId, (this.page - 1) * this.limit, this.limit).then((leaderboard) => {
+          api.leaderboard(filters, (this.page - 1) * this.limit, this.limit).then((leaderboard) => {
             handleLeaderboard(leaderboard);
           });
         }

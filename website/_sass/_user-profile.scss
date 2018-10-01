@@ -539,24 +539,6 @@
         }
       }
 
-      &-hackathon {
-        .form-inline-button {
-          background-color: transparent;
-          input {
-            flex: 1;
-            color: #fff;
-            background-color: #000;
-            border: 0;
-            padding: 0 10px;
-          }
-          .btn {
-            letter-spacing: 1px;
-          }
-          @media (max-width: $screen-sm-max) {
-            margin-bottom: 10px;
-          }
-        }
-      }
       &-right-form {
         @media (min-width: $screen-sm-min) {
           position: absolute;

@@ -70,7 +70,7 @@
         </div>
       </div>
     </div>
-    <Leaderboard v-if="leaderboard" :lbFromContainer="leaderboard" :hackathonId="hackathonId" :baseUrl="baseUrl" :metric="metric"></Leaderboard>
+    <Leaderboard v-if="leaderboard" :lbFromContainer="leaderboard" :baseUrl="baseUrl" :metric="metric"></Leaderboard>
   </div>
 </template>
 <script>
@@ -91,7 +91,6 @@ export default {
     },
     data: function () {
       return {
-        hackathonId: null,
         isGlobalActive: true,
         metric: {
           organizations: 20,
@@ -124,22 +123,12 @@ export default {
       },
 
       fetchGlobal: function () {
-        this.hackathonId = null
         this.isGlobalActive = true
         this.fetchData()
       },
-      fetchHackathon: function () {
-        api.me().then((me) => {
-          api.get_user_hackathons(me.user_id).then((hackathons) => {
-            const hackathonId = hackathons[0].hackathon_id
-            this.hackathonId = hackathonId
-            this.isGlobalActive = false
-            this.fetchData()
-          })
-        })
-      },
+
       fetchData: function () {
-        api.leaderboard([], this.hackathonId, 0, 999999).then(leaderboard => {
+        api.leaderboard([], 0, 999999).then(leaderboard => {
           this.leaderboard = leaderboard
           let classes = {
             professional: 0,
