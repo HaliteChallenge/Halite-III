@@ -92,22 +92,6 @@
       display: none;
     }
   }
-  .hackathon-name{
-    @media (max-width: $screen-sm-max){
-      span{
-        display: block;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        width: 200px;
-      }
-    }
-    @media (max-width: $screen-xs-max){
-      span{
-        width: 100px;
-      }
-    }
-  }
 
   .nowrap {
     white-space: nowrap;
