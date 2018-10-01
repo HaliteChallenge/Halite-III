@@ -94,7 +94,7 @@ Ships have an `owner`, an `id`, a `position`, and a `halite_amount`.
 <br/>
 * **Convert to Dropoff**
 
-   Ships can be converted into dropoff sites at their present location to facilitate halite collection. The conversion costs 4,000 halite, deducted from total current stored halite. The converted ship's halite cargo is destroyed, and the halite amount in the sea under the new dropoff is set to 0.
+   Ships can be converted into dropoff sites at their present location. The conversion costs 4,000 halite, deducted from total current stored halite. The converted ship's halite cargo and the halite in the sea under the new dropoff is credited to the player. These credits resolve first, and can be used toward the cost of the dropoff.
 
    `ship.make_dropoff()` returns an engine command to convert this ship into a dropoff.
 
