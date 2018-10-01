@@ -52,7 +52,8 @@
           this.$refs.editor
               .doReady((editor) => {
                 editor.clearHighlights();
-                editor.highlightContaining("commands.spawn", "tutorial-highlight");
+                editor.highlightContaining("game.turn_number", "tutorial-highlight");
+                editor.highlightContaining("shipyard.spawn", "tutorial-highlight-alt");
               });
         }
         else {

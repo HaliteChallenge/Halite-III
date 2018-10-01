@@ -694,39 +694,6 @@
     margin-left: 5px;
     margin-right: 5px;
   }
-  .nav-tabs {
-    border-top: 1px solid rgba(240, 248, 255, 0.2);
-    border-bottom: 1px solid rgba(240, 248, 255, 0.2);
-    > li {
-      > a {
-        span {
-          color: rgba(151, 221, 255, 0.5);
-          text-shadow: 0 1px 8px 0 #00abff;
-        }
-      }
-      &.active {
-        > a {
-          span {
-            color: #97ddff;
-            background-color: transparent;
-          }
-        }
-      }
-      &:first-child {
-        &::after {
-          content: "";
-          display: inline-block;
-          position: absolute;
-          right: 0;
-          top: 50%;
-          transform: translateY(-50%);
-          height: 50px;
-          width: 1px;
-          background-color: rgba(240, 248, 255, 0.2);
-        }
-      }
-    }
-  }
 }
 
 .btn.challenge-btn {

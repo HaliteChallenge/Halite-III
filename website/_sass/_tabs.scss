@@ -1,5 +1,7 @@
 .nav-tabs{
   display: flex;
+  border-top: 1px solid rgba(240, 248, 255, 0.2);
+  border-bottom: 1px solid rgba(240, 248, 255, 0.2);
   > li{
     flex: 1;
     display: flex;
@@ -24,6 +26,8 @@
         display: block;
         color: #999;
         padding: 5px 15px;
+        color: rgba(151, 221, 255, 0.5);
+        text-shadow: 0 1px 8px 0 #00abff;
       }
       &:hover, &:focus, &:active{
         background-color: transparent !important;
@@ -37,6 +41,8 @@
         border: none;
         span{
           @include highlight-bg();
+          color: #97ddff;
+          background-color: transparent;
         }
         .xline{
           background-color: #889295;
@@ -45,6 +51,19 @@
             background-color: #889295;
           }
         }
+      }
+    }
+    &:first-child {
+      &::after {
+        content: "";
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 50px;
+        width: 1px;
+        background-color: rgba(240, 248, 255, 0.2);
       }
     }
   }

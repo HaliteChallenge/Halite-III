@@ -251,4 +251,9 @@ const showGame = (game) => {
     left: -15px;
     right: -15px;
   }
+  @media screen and (max-width: 991px) {
+     .watch-container {
+       padding-top: 60px;
+     }
+   }
 </style>
