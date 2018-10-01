@@ -73,6 +73,12 @@ def upload_game():
         raise util.APIError(
             400, message="Replay file cannot be parsed.")
 
+    # add server information to game stats
+    stats["server"] = {
+        "id": flask.request.values.get("server_id", None),
+        "capability": flask.request.values.getlist("capability"),
+        }
+
     # Store the replay and any error logs
     replay_key, bucket_class = store_game_artifacts(replay_name, users)
 
