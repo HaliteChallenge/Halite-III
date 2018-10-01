@@ -1174,4 +1174,10 @@
             height: 20px;
         }
     }
+    .user-profile-rank-stats {
+        .stats-item {
+            margin-top: 0;
+            height: auto !important;
+        }
+    }
 </style>
