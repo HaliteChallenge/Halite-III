@@ -3,19 +3,19 @@
     <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active">
         <a href="#players" @click="refreshStickyTable" aria-controls="players" role="tab" data-toggle="tab">
-          <span>PLAYERS</span>
+          <span>PLAYERS ({{ metric.players }})</span>
         </a>
       </li>
       <li role="presentation">
         <a href="#organizations" @click="refreshStickyTable" aria-controls="organizations" role="tab" data-toggle="tab">
-          <span>ORGANIZATIONS</span>
+          <span>ORGANIZATIONS ({{ metric.organizations }})</span>
         </a>
       </li>
     </ul>
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="players">
         <div class="panel panel-stats">
-          <div class="panel-statistic">
+       <!--   <div class="panel-statistic">
             <i class="xline xline-top"></i>
             <h4 class="title-h4">LEADERBOARD STATISTICS</h4>
             <div class="statistic-box">
@@ -41,9 +41,9 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="panel-heading" role="tab" id="heading_player_details">
-            <i class="xline xline-top"></i>
+        <!--    <i class="xline xline-top"></i> -->
             <a data-toggle="collapse" id="toggle_filter" aria-controls="panel_filter">
               <h4 class="title-h4">Filters</h4>
               <!-- <span class="toggle-icon expand"></span> -->
@@ -169,7 +169,7 @@
       <div role="tabpanel" class="tab-pane organizations" id="organizations">
         <div class="panel panel-stats">
           <div class="panel-heading" role="tab">
-            <i class="xline xline-top"></i>
+     <!--   <i class="xline xline-top"></i> -->
             <a data-toggle="collapse" id="toggle_filter" aria-controls="panel_filter">
               <h4 class="title-h4">Filters</h4>
               <!-- <span class="toggle-icon expand"></span> -->
