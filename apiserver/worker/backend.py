@@ -19,6 +19,7 @@ with open("config.json") as configfile:
     MANAGER_URL = config["MANAGER_URL"]
     SECRET_FOLDER = config["SECRET_FOLDER"]
     CAPABILITIES = config.get("CAPABILITIES", [])
+    SERVER_ID = config.get("RANDOM_ID", "notset")
     provided_size = config.get("MAX_BOT_UPLOAD_SIZE", MAX_BOT_UPLOAD_SIZE)
     if provided_size:
         MAX_BOT_UPLOAD_SIZE = provided_size
@@ -137,6 +138,8 @@ def compileResult(user_id, bot_id, did_compile, language, errors=None):
         "did_compile": int(did_compile),
         "language": language,
         "errors": errors,
+        "server_id": SERVER_ID,
+        "capability": CAPABILITIES,
     })
     print("Posted compile result %s\n" % r.text)
 
@@ -166,6 +169,8 @@ def gameResult(users, game_output, extra_metadata, url_path="game"):
     data = {
         "users": json.dumps(users),
         "game_output": json.dumps(game_output),
+        "server_id": SERVER_ID,
+        "capability": CAPABILITIES,
     }
     for key, value in extra_metadata.items():
         data[key] = json.dumps(value)
