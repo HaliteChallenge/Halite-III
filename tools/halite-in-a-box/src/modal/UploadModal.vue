@@ -6,9 +6,9 @@
             <template v-if="props.params.status === 'previewing'">
                 <template v-if="props.params.files">
                     <p>Files to be uploaded:</p>
-                    <ul>
-                        <li v-for="file in props.params.files">{{file}}</li>
-                    </ul>
+                    <textarea>
+{{props.params.files.join("\n")}}
+                    </textarea>
                     <p>(A zip file will be created for you.)</p>
                 </template>
                 <p v-else>Uploading {{props.params.localBot}}</p>
@@ -32,3 +32,15 @@
         </template>
     </modal>
 </template>
+
+<style lang="scss" scoped>
+    p {
+        margin-bottom: 0;
+    }
+
+    textarea {
+        font-family: "Fira Mono", monospace;
+        font-size: 1rem;
+        height: 30vh;
+    }
+</style>
