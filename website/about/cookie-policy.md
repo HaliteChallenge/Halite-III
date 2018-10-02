@@ -13,7 +13,7 @@ description: Halite and Two Sigma take your privacy seriously. Read our cookie p
 
 ## Cookies
 
-This Policy describes how Two Sigma Open Source, LLC (“Two Sigma”, “we”, or “us”) uses cookies on our website (“Site”). To make our Site work properly, we sometimes place small data files (called cookies) on your device. 
+This Policy describes how Two Sigma Investments, LP and its affiliates (“Two Sigma”, “we”, or “us”) uses cookies on our websites and platforms (each a “Site”). To make our Site(s) work properly, we sometimes place small data files (called cookies) on your device. 
 
 ## What are cookies? 
 
