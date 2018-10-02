@@ -14,10 +14,10 @@ The Site is owned or controlled by Two Sigma Open Source, LLC (“Two Sigma”).
 
 This Site is intended for users age thirteen or older. If you are under 13 years of age you may not use this Site. If you are located or reside in the European Union and are under the age of 16, you may not use this site without your parent or guardian providing consent to Two Sigma.  If you reside outside the European Union and are under age 18 (or the age of majority under applicable law), Two Sigma may, depending on where you live, need your parent or guardian’s consent before your use of the Site is permitted.
 
-By using this Site, you certify that you either:
-    (a) Reside in the European Union and are at least 16 years old;
-    (b) Reside outside the European Union and are at least 18 years old or have attained the age of majority in the country or state in which you reside; or
-    (c) Have sent to Two Sigma the consent of your parent or guardian to use this Site.
+By using this Site, you certify that you either:<br>
+    (a) Reside in the European Union and are at least 16 years old;<br>
+    (b) Reside outside the European Union and are at least 18 years old or have attained the age of majority in the country or state in which you reside; or<br>
+    (c) Have sent to Two Sigma the consent of your parent or guardian to use this Site.<br>
  
 Two Sigma reserves the right to change these Terms without notice at any time. Your use of the Site after we post any changes to these Terms constitutes your agreement to those changes prospectively from the date of such changes. Any such change to these Terms shall be effective upon posting to the Site. Accordingly, you agree to periodically review these Terms when accessing or using the Site.
  
