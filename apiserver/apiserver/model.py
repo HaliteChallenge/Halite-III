@@ -1,5 +1,6 @@
 import enum
 import random
+import time
 
 import google.cloud.datastore as gcloud_datastore
 import google.cloud.storage as gcloud_storage
@@ -438,3 +439,15 @@ def get_deployed_artifacts_bucket():
     """Get the object storage bucket for deployed worker artifacts."""
     return get_storage_client().get_bucket(
         config.GCLOUD_DEPLOYED_ARTIFACTS_BUCKET)
+
+
+# Log slow queries
+@sqlalchemy.event.listens_for(sqlalchemy.engine.Engine, "before_cursor_execute")
+def before_cursor_execute(conn, cursor, statement, parameters, context, executemany):
+    conn.info.setdefault('query_start_time', []).append(time.time())
+
+@sqlalchemy.event.listens_for(sqlalchemy.engine.Engine, "after_cursor_execute")
+def after_cursor_execute(conn, cursor, statement, parameters, context, executemany):
+    total = time.time() - conn.info['query_start_time'].pop(-1)
+    if total > 1:
+        app.logger.warning("Slow query: %f %s %s", total, statement, parameters)
