@@ -3,7 +3,8 @@
         <div id="main-logged-in" class="h-screen">
             <tab-bar :tabs="['Local Bot', 'Local Match History', loggedIn ? 'Online Bot' : 'Log In', 'Help', 'Settings']">
                 <h1 slot="header" class="font-normal text-4xl ml-4">
-                    Halite III <span class="text-lg">in a box</span>
+                    <img :src="logo" alt="Halite III" class="align-bottom" />
+                    <span class="text-lg italic">in a box</span>
                 </h1>
                 <section slot="right" class="mr-4">
                     <button class="btn btn-blue" @click="chooseReplay">Watch Replay</button>
@@ -29,7 +30,7 @@
                     :userId="userId"
                 />
                 <!-- <LocalBotGym slot="tab-2" :localBot="localBot" /> -->
-                <!-- <Settings slot="tab-3" /> -->
+                <Settings slot="tab-4" />
             </tab-bar>
         </div>
         <component v-if="modal" :is="modal" :params="modalProps" :event="modalEvent">
@@ -51,6 +52,8 @@
     import LocalBotGym from './LocalBotGym.vue';
     import Settings from './SettingsPage.vue';
 
+    import logo from "../../../website/assets/images/full_logo.svg";
+
     export default {
         components: {
             Login,
@@ -62,6 +65,7 @@
         },
         data() {
             return {
+                logo,
                 loggedIn: false,
                 apiKey: '',
                 apiKeyError: '',

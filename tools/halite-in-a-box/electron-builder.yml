@@ -6,6 +6,7 @@ files:
   - index.js
   - dist/
   - src/
+  - build/*.png
 
 extraResources:
   - extra/hlt_client

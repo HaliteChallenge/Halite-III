@@ -57,7 +57,7 @@ p {
 }
 
 .card-l {
-    @apply flex-1 border-r border-grey;
+    @apply flex-1 border-r border-grey bg-gradient-cyan-light;
 }
 
 .card-r {
@@ -72,11 +72,17 @@ p {
 }
 
 .bg-gradient-cyan {
-    background: linear-gradient(180deg, rgba(117,182,219,0) 0%, #97DDFF 100%);
+    background: linear-gradient(180deg, rgba(117,182,219,0) 0%, rgba(151, 221, 255, 0.2) 100%);
+}
+
+.bg-gradient-cyan-light {
+    background: linear-gradient(0deg, #3CABE6 0%, rgba(24,109,194,0.41) 100%), url(../../../website/assets/images/doc-bg.png);
+    background-position: top;
+    background-repeat: no-repeat;
 }
 
 .hover-bg-gradient-cyan:hover {
-    background: linear-gradient(180deg, rgba(117,182,219,0) 0%, #97DDFF 100%);
+    background: linear-gradient(180deg, rgba(117,182,219,0) 0%, rgba(151, 221, 255, 0.2) 100%);
 }
 
 .bg-gradient {

@@ -14,7 +14,7 @@
                         <thead>
                             <tr>
                                 <th class="px-4 py-1 border-b border-grey">Rank</th>
-                                <th class="px-4 py-1 border-b border-grey" title="= μ - 3σ">Score</th>
+                                <th class="px-4 py-1 border-b border-grey" title="= μ - 3σ">Rating</th>
                                 <th class="px-4 py-1 border-b border-grey">μ</th>
                                 <th class="px-4 py-1 border-b border-grey">σ</th>
                             </tr>
@@ -29,7 +29,7 @@
                         </tbody>
                     </table>
                     <p class="mx-auto" style="max-width: 26em">
-                        Your rank is based on your score. The score of
+                        Your rank is based on your rating. The rating of
                         a bot is equal to μ - 3σ.
                     </p>
                 </section>
