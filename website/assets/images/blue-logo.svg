@@ -43,9 +43,9 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:zoom="4"
-     inkscape:cx="31.704226"
-     inkscape:cy="6.0833878"
+     inkscape:zoom="8"
+     inkscape:cx="10.339874"
+     inkscape:cy="12.509904"
      inkscape:window-x="139"
      inkscape:window-y="44"
      inkscape:window-maximized="0"
@@ -88,7 +88,7 @@
        x2="23.25"
        y2="29.750002"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.0806452,0,0,1.0806452,-29.167571,1.3600944)">
+       gradientTransform="matrix(1.0806452,0,0,1.0806452,-25.124998,1.3508061)">
       <stop
          id="stop1"
          offset="0%"
@@ -99,31 +99,25 @@
          stop-color="#003a99" />
     </linearGradient>
   </defs>
-  <g
-     id="g5226"
-     transform="translate(4.0425725,-0.00928829)">
-    <circle
-       r="16.75"
-       style="fill:url(#linearGradient1);stroke:#000000;stroke-width:0px"
-       cy="16.759289"
-       id="circle1"
-       cx="12.707428" />
-    <g
-       transform="translate(1.707428,0.25928879)"
-       style="fill:none;fill-rule:evenodd;stroke-width:1"
-       id="Group-14">
-      <polygon
-         style="fill:url(#linearGradient-3);fill-rule:nonzero"
-         points="0,22.010711 10.989289,11 22,22.010711 10.989289,33 "
-         id="Shape" />
-      <polygon
-         style="fill:#ffffff;fill-rule:nonzero"
-         points="11,10.803571 22,22 22,11.196429 11,0 "
-         id="polygon4653" />
-      <polygon
-         style="fill:#e5e5e5;fill-rule:nonzero"
-         points="11,10.803571 0,22 0,11.196429 11,0 "
-         id="polygon4655" />
-    </g>
-  </g>
+  <circle
+     cx="16.75"
+     id="circle1"
+     cy="16.75"
+     style="fill:url(#linearGradient1);stroke:#000000;stroke-width:0px"
+     r="16.75" />
+  <polygon
+     style="fill:url(#linearGradient-3);fill-rule:nonzero;stroke-width:1"
+     points="10.989289,11 22,22.010711 10.989289,33 0,22.010711 "
+     id="Shape"
+     transform="matrix(1,0,0,1.009233,5.7500005,-0.054687)" />
+  <polygon
+     style="fill:#ffffff;fill-rule:nonzero;stroke-width:1"
+     points="11,10.803571 22,22 22,11.196429 11,0 "
+     id="polygon4653"
+     transform="translate(5.7500005,0.2500005)" />
+  <polygon
+     style="fill:#e5e5e5;fill-rule:nonzero;stroke-width:1"
+     points="11,10.803571 0,22 0,11.196429 11,0 "
+     id="polygon4655"
+     transform="translate(5.7500005,0.2500005)" />
 </svg>
