@@ -47,7 +47,7 @@ $mobile-breakpoint: 991px;
     }
     .right-container {
       border: 1px solid rgba(255,255,255,0.13);
-      border-radius: 0 8px 8px 0; 
+      border-radius: 0 8px 8px 0;
       background: linear-gradient(0deg, #0073DB 0%, #0044A4 100%);
       box-shadow: 0 -6px 33px rgba(0,0,0,0.11);
       .data-item {
@@ -88,7 +88,7 @@ $mobile-breakpoint: 991px;
         border-radius: 8px 8px 0 0;
       }
       .right-container {
-        border-radius: 0 0 8px 8px; 
+        border-radius: 0 0 8px 8px;
       }
     }
   }
@@ -263,7 +263,6 @@ $mobile-breakpoint: 991px;
       text-transform: uppercase;
     }
     .read-more{
-      font-family: ProximaNovaSoft-Medium;
       font-size: 18px;
       color: #F7862D;
       text-transform: uppercase;

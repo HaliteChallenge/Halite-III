@@ -67,8 +67,8 @@
       border-top-color: rgb(36, 37, 44) !important;
       border-bottom-color: rgb(36, 37, 44) !important;
       &::after {
-        border-top-color: rgb(36, 37, 44) !important; 
-        border-bottom-color: rgb(36, 37, 44) !important; 
+        border-top-color: rgb(36, 37, 44) !important;
+        border-bottom-color: rgb(36, 37, 44) !important;
       }
     }
   }
@@ -95,7 +95,6 @@
       color: rgb(99, 205, 202);
       font-size: 24px;
       letter-spacing: 1px;
-      font-family: Teko !important;
     }
 
     .close-btn {

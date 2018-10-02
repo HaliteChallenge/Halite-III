@@ -64,7 +64,6 @@ select.form-control::-ms-expand {
     position: relative;
     background-color: transparent;
     font-size: 2rem;
-    font-family: "Teko";
   }
 }
 
@@ -115,7 +114,7 @@ select.form-control::-ms-expand {
       color: #fff;
       margin-left: 0.25em;
     }
-    
+
     background-image: url("/assets/images/chevron-down.svg");
     background-position: calc(100% - 10px) center;
     background-repeat: no-repeat;
