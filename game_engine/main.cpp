@@ -203,7 +203,7 @@ int main(int argc, char *argv[]) {
         for (const auto &[player_id, player] : replay.players) {
             std::string error_log = game.logs.str(player_id);
             if (!error_log.empty()) {
-                if (!no_logs_switch.getValue()) {
+                if (!no_logs_switch.getValue() || player.terminated) {
                     std::stringstream logname_buf;
                     logname_buf << "errorlog-" << std::string(time_string)
                                 << "-" << replay.map_generator_seed
