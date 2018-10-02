@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
     CmdLine cmd("Halite Game Environment", ' ', HALITE_VERSION);
     SwitchArg timeout_switch("", "no-timeout", "Causes game environment to ignore bot timeouts.", cmd, false);
     SwitchArg no_replay_switch("", "no-replay", "Turns off the replay generation.", cmd, false);
+    SwitchArg no_logs_switch("", "no-logs", "Turns off writing error logs.", cmd, false);
     SwitchArg print_constants_switch("", "print-constants", "Print out the default constants and exit.", cmd, false);
     SwitchArg no_compression_switch("", "no-compression", "Disables compression for output files. (They will just be plain JSON.)", cmd, false);
     SwitchArg json_results_switch("", "results-as-json", "Prints game results as JSON at end.", cmd, false);
@@ -202,30 +203,34 @@ int main(int argc, char *argv[]) {
         for (const auto &[player_id, player] : replay.players) {
             std::string error_log = game.logs.str(player_id);
             if (!error_log.empty()) {
-                std::stringstream logname_buf;
-                logname_buf << "errorlog-" << std::string(time_string)
-                            << "-" << replay.map_generator_seed
-                            << "-" << map_width
-                            << "-" << map_height
-                            << "-" << player_id
-                            << ".log";
-                const auto log_filename = logname_buf.str();
-                auto log_filepath = replay_directory + log_filename;
+                if (!no_logs_switch.getValue()) {
+                    std::stringstream logname_buf;
+                    logname_buf << "errorlog-" << std::string(time_string)
+                                << "-" << replay.map_generator_seed
+                                << "-" << map_width
+                                << "-" << map_height
+                                << "-" << player_id
+                                << ".log";
+                    const auto log_filename = logname_buf.str();
+                    auto log_filepath = replay_directory + log_filename;
 
-                std::ofstream log_file;
-                log_file.open(log_filepath, std::ios_base::out);
-                if (!log_file.is_open()) {
-                    log_filepath = replay_directory + log_filename;
+                    std::ofstream log_file;
                     log_file.open(log_filepath, std::ios_base::out);
+                    if (!log_file.is_open()) {
+                        log_filepath = replay_directory + log_filename;
+                        log_file.open(log_filepath, std::ios_base::out);
+                    }
+
+                    results["error_logs"][to_string(player_id)] = log_filepath;
+                    log_file.write(error_log.c_str(), error_log.size());
+                    Logging::log("Player has log output. Writing a log at " + log_filepath,
+                                 Logging::Level::Info, player.id);
                 }
-
-                results["error_logs"][to_string(player_id)] = log_filepath;
+                else {
+                    Logging::log("Player has log output, but log was suppressed.",
+                                 Logging::Level::Info, player.id);
+                }
                 results["terminated"][to_string(player_id)] = player.terminated;
-
-                log_file.write(error_log.c_str(), error_log.size());
-
-                Logging::log("Player has log output. Writing a log at " + log_filepath,
-                             Logging::Level::Info, player.id);
             }
         }
 
