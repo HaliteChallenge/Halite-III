@@ -27,7 +27,7 @@
         </section>
         <section v-for="(tab, index) in tabs"
                  :style="{ display: index === currentTab ? 'block' : 'none' }"
-                 class="flex-1 p-4">
+                 class="flex-1 p-4 overflow-hidden">
             <slot v-bind:name="`tab-${index}`"></slot>
         </section>
     </section>

@@ -1,7 +1,7 @@
 <template>
     <section class="tab-panel flex flex-col">
         <h2>Local Match History</h2>
-        <section>
+        <section class="overflow-auto">
             <table class="w-full text-left table-collapse">
                 <thead>
                     <tr>

@@ -1,7 +1,7 @@
 <template>
     <section id="local-bot" class="tab-panel">
-        <section class="card flex flex-row items-center p-0">
-            <section class="flex-1 border-r border-grey p-4 text-left">
+        <section class="card card-lr">
+            <section class="card-l p-4 text-left">
                 <h2 class="m-0">Choose Your Bot:</h2>
                 <template v-if="localBot">
                     <p class="text-sm my-2">Selected: {{localBot}}</p>
@@ -16,7 +16,7 @@
                 </p>
             </section>
 
-            <section class="flex-1 p-4">
+            <section class="card-r p-4">
                 <p>
                     Load the bot you're working on, then test it
                     against our benchmark bots or the bot you last
@@ -47,12 +47,12 @@
 
             <section
                 v-if="apiKey"
-                class="card flex flex-row items-center p-0"
+                class="card card-lr"
             >
-                <section class="flex-1 border-r border-grey p-0 text-left h-full">
+                <section class="card-l p-0 text-left h-full">
                     <button class="btn btn-blue w-full h-full p-4 rounded-r-none" @click="upload">Upload Bot</button>
                 </section>
-                <section class="flex-1">
+                <section class="card-r flex-1">
                     <p>
                         Submit your bot to halite.io and play against other players.
                     </p>

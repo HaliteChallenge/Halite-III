@@ -52,6 +52,18 @@ p {
     @apply bg-gradient rounded overflow-hidden shadow-md text-center p-4;
 }
 
+.card-lr {
+    @apply flex flex-row items-center p-0;
+}
+
+.card-l {
+    @apply flex-1 border-r border-grey;
+}
+
+.card-r {
+    @apply flex-1;
+}
+
 @tailwind components;
 @tailwind utilities;
 
