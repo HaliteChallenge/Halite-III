@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="33.5"
+   height="33.5"
+   viewBox="0 0 33.5 33.5"
+   version="1.1"
+   id="svg4668"
+   sodipodi:docname="blue-logo.svg"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata4672">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Group 4</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1130"
+     inkscape:window-height="717"
+     id="namedview4670"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="4"
+     inkscape:cx="31.704226"
+     inkscape:cy="6.0833878"
+     inkscape:window-x="139"
+     inkscape:window-y="44"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg4668" />
+  <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+  <title
+     id="title4632">Group 4</title>
+  <desc
+     id="desc4634">Created with Sketch.</desc>
+  <defs
+     id="defs4646">
+    <rect
+       id="path-1"
+       x="0"
+       y="0"
+       width="150"
+       height="37" />
+    <linearGradient
+       x1="10.994773"
+       y1="33"
+       x2="10.994773"
+       y2="11.005977"
+       id="linearGradient-3"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#FFFFFF"
+         stop-opacity="0"
+         offset="0%"
+         id="stop4638" />
+      <stop
+         stop-color="#FFFFFF"
+         stop-opacity="0.4"
+         offset="100%"
+         id="stop4640" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient1"
+       x1="23.25"
+       y1="-1.2500005"
+       x2="23.25"
+       y2="29.750002"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.0806452,0,0,1.0806452,-29.167571,1.3600944)">
+      <stop
+         id="stop1"
+         offset="0%"
+         stop-color="#002d77" />
+      <stop
+         id="stop2"
+         offset="100%"
+         stop-color="#003a99" />
+    </linearGradient>
+  </defs>
+  <g
+     id="g5226"
+     transform="translate(4.0425725,-0.00928829)">
+    <circle
+       r="16.75"
+       style="fill:url(#linearGradient1);stroke:#000000;stroke-width:0px"
+       cy="16.759289"
+       id="circle1"
+       cx="12.707428" />
+    <g
+       transform="translate(1.707428,0.25928879)"
+       style="fill:none;fill-rule:evenodd;stroke-width:1"
+       id="Group-14">
+      <polygon
+         style="fill:url(#linearGradient-3);fill-rule:nonzero"
+         points="0,22.010711 10.989289,11 22,22.010711 10.989289,33 "
+         id="Shape" />
+      <polygon
+         style="fill:#ffffff;fill-rule:nonzero"
+         points="11,10.803571 22,22 22,11.196429 11,0 "
+         id="polygon4653" />
+      <polygon
+         style="fill:#e5e5e5;fill-rule:nonzero"
+         points="11,10.803571 0,22 0,11.196429 11,0 "
+         id="polygon4655" />
+    </g>
+  </g>
+</svg>
