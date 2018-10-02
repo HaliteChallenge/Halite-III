@@ -1,36 +1,37 @@
 <template>
     <div class="h-screen">
-        <div id="main-container" v-if="!loggedIn">
-            <Login @login="checkLogin" />
+        <div id="main-logged-in" class="h-screen">
+            <tab-bar :tabs="['Local Bot', 'Local Match History', loggedIn ? 'Online Bot' : 'Log In', 'Help', 'Settings']">
+                <h1 slot="header" class="font-normal text-4xl ml-4">
+                    Halite III <span class="text-lg">in a box</span>
+                </h1>
+                <section slot="right" class="mr-4">
+                    <button class="btn btn-blue" @click="chooseReplay">Watch Replay</button>
+                </section>
+                <LocalBot
+                    slot="tab-0"
+                    :remoteBot="remoteBot"
+                    :apiKey="apiKey"
+                    :userId="userId"
+                    @change="localBot = $event"
+                />
+                <MatchHistory slot="tab-1" />
+                <Login
+                    v-if="!loggedIn"
+                    slot="tab-2"
+                    @login="checkLogin"
+                />
+                <RemoteBot
+                    v-else
+                    slot="tab-2"
+                    v-bind:remoteBot="remoteBot"
+                    :apiKey="apiKey"
+                    :userId="userId"
+                />
+                <!-- <LocalBotGym slot="tab-2" :localBot="localBot" /> -->
+                <!-- <Settings slot="tab-3" /> -->
+            </tab-bar>
         </div>
-        <template v-else>
-            <div id="main-logged-in" class="h-screen">
-                <tab-bar :tabs="['Local Bot', 'Online Bot', 'Local Match History', 'Help', 'Settings']">
-                    <h1 slot="header" class="font-normal text-4xl ml-4">
-                        Halite III <span class="text-lg">in a box</span>
-                    </h1>
-                    <section slot="right" class="mr-4">
-                        <button class="btn btn-blue" @click="chooseReplay">Watch Replay</button>
-                    </section>
-                    <LocalBot
-                        slot="tab-0"
-                        :remoteBot="remoteBot"
-                        :apiKey="apiKey"
-                        :userId="userId"
-                        @change="localBot = $event"
-                    />
-                    <RemoteBot
-                        slot="tab-1"
-                        v-bind:remoteBot="remoteBot"
-                        :apiKey="apiKey"
-                        :userId="userId"
-                    />
-                    <MatchHistory slot="tab-2" />
-                    <!-- <LocalBotGym slot="tab-2" :localBot="localBot" /> -->
-                    <!-- <Settings slot="tab-3" /> -->
-                </tab-bar>
-            </div>
-        </template>
         <component v-if="modal" :is="modal" :params="modalProps" :event="modalEvent">
         </component>
     </div>

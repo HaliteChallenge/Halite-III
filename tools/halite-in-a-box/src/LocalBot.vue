@@ -1,61 +1,70 @@
 <template>
     <section id="local-bot" class="tab-panel">
-            <section class="card flex flex-row items-center p-0">
-                <section class="flex-1 border-r border-grey p-4 text-left">
-                    <h2 class="m-0">Choose Your Bot:</h2>
-                    <template v-if="localBot">
-                        <p class="text-sm my-2">Selected: {{localBot}}</p>
-                        <button class="btn btn-blue" @click="chooseLocalBot">Select Different Bot</button>
-                    </template>
-                    <section v-else class="my-2">
-                        <button class="btn btn-blue" @click="chooseLocalBot">Select MyBot file</button>
-                        <button class="btn btn-blue" @click="goToStarterKit">Download Starter Kit</button>
-                    </section>
-                    <p v-if="!canRunGame && botExtension === '.zip'">
-                        Zip files can only be uploaded, not benchmarked or bench-pressed.
+        <section class="card flex flex-row items-center p-0">
+            <section class="flex-1 border-r border-grey p-4 text-left">
+                <h2 class="m-0">Choose Your Bot:</h2>
+                <template v-if="localBot">
+                    <p class="text-sm my-2">Selected: {{localBot}}</p>
+                    <button class="btn btn-blue" @click="chooseLocalBot">Select Different Bot</button>
+                </template>
+                <section v-else class="my-2">
+                    <button class="btn btn-blue" @click="chooseLocalBot">Select MyBot file</button>
+                    <button class="btn btn-blue" @click="goToStarterKit">Download Starter Kit</button>
+                </section>
+                <p v-if="!canRunGame && botExtension === '.zip'">
+                    Zip files can only be uploaded, not benchmarked or bench-pressed.
+                </p>
+            </section>
+
+            <section class="flex-1 p-4">
+                <p>
+                    Load the bot you're working on, then test it
+                    against our benchmark bots or the bot you last
+                    submitted online. When you're confident in its
+                    performance, submit it below.
+                </p>
+            </section>
+        </section>
+
+        <template v-if="localBot">
+            <section class="flex-1 flex flex-row">
+                <section class="card flex-1 mr-4 mt-4 mb-4">
+                    <button class="btn btn-blue" @click="remoteBenchmark" :disabled="!canRunGame">Play Against Uploaded Bot</button>
+                    <p>
+                        Play your bot against the bot you currently have
+                        on the server for 10 matches, to see which is
+                        better.
                     </p>
                 </section>
-
-                <section class="flex-1 p-4">
+                <section class="card flex-1 ml-4 mt-4 mb-4">
+                    <button class="btn btn-blue" @click="localBenchmark" :disabled="!canRunGame">Play Against Benchmark Bots</button>
                     <p>
-                        Load the bot you're working on, then test it
-                        against our benchmark bots or the bot you last
-                        submitted online. When you're confident in its
-                        performance, submit it below.
+                        Play your bot against various benchmark bots, to
+                        get an idea of where you stand.
                     </p>
                 </section>
             </section>
 
-            <template v-if="localBot">
-                <section class="flex-1 flex flex-row">
-                    <section class="card flex-1 mr-4 mt-4 mb-4">
-                        <button class="btn btn-blue" @click="remoteBenchmark" :disabled="!canRunGame">Play Against Uploaded Bot</button>
-                        <p>
-                            Play your bot against the bot you currently have
-                            on the server for 10 matches, to see which is
-                            better.
-                        </p>
-                    </section>
-                    <section class="card flex-1 ml-4 mt-4 mb-4">
-                        <button class="btn btn-blue" @click="localBenchmark" :disabled="!canRunGame">Play Against Benchmark Bots</button>
-                        <p>
-                            Play your bot against various benchmark bots, to
-                            get an idea of where you stand.
-                        </p>
-                    </section>
+            <section
+                v-if="apiKey"
+                class="card flex flex-row items-center p-0"
+            >
+                <section class="flex-1 border-r border-grey p-0 text-left h-full">
+                    <button class="btn btn-blue w-full h-full p-4 rounded-r-none" @click="upload">Upload Bot</button>
                 </section>
-
-                <section class="card flex flex-row items-center p-0">
-                    <section class="flex-1 border-r border-grey p-0 text-left h-full">
-                        <button class="btn btn-blue w-full h-full p-4 rounded-r-none" @click="upload">Upload Bot</button>
-                    </section>
-                    <section class="flex-1">
-                        <p>
-                            Submit your bot to halite.io and play against other players.
-                        </p>
-                    </section>
+                <section class="flex-1">
+                    <p>
+                        Submit your bot to halite.io and play against other players.
+                    </p>
                 </section>
-            </template>
+            </section>
+            <section
+                v-else
+                class="card"
+            >
+                <p>Log in at top to upload your bot.</p>
+            </section>
+        </template>
     </section>
 </template>
 

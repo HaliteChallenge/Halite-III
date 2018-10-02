@@ -1,23 +1,24 @@
 <template>
-    <div id="main">
-        <div>
-            <h1>Halite III <span>in a box</span></h1>
+    <section class="tab-panel">
+        <div class="card text-left">
+            <p>
+                Log in with your API key to upload bots and check the
+                status of your online bot.
+            </p>
 
-            <div>
-                <ol>
-                    <li><a href="#" @click="openProfile">Click here to open your settings page on the website.</a></li>
-                    <li>Click "Generate API key".</li>
-                    <li>Copy and paste the result below.</li>
-                </ol>
-            </div>
+            <ol>
+                <li><a href="#" @click="openProfile">Click here to open your settings page on the website.</a></li>
+                <li>Click "Generate API key".</li>
+                <li>Copy and paste the result below.</li>
+            </ol>
 
-            <form>
+            <form class="text-center mt-4">
                 <label for="api-key">Paste API key:</label>
-                <input type="text" id="api-key" v-model="apiKey" />
+                <input type="text" id="api-key" v-model="apiKey" class="font-mono" />
                 <p class="error" v-if="apiKeyError">{{apiKeyError}}</p>
             </form>
         </div>
-    </div>
+    </section>
 </template>
 
 <script>

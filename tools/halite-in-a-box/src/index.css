@@ -24,6 +24,10 @@ p {
     @apply my-2;
 }
 
+.error {
+    @apply p-2 text-red-dark bg-red-lightest border-red-dark border-2;
+}
+
 .tab-panel {
     @apply h-full flex flex-col;
 }
