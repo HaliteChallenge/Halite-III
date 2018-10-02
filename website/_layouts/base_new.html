@@ -16,6 +16,9 @@
     ga('send', 'pageview');
   </script>
 
+    <!-- Start of HubSpot Embed Code -->
+    <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/4655853.js"></script>
+    <!-- End of HubSpot Embed Code -->
 
     <!-- Hotjar Tracking Code for halite.io -->
     <script>
@@ -57,7 +60,7 @@
                 xhr.open("POST", url, true)
                 xhr.send()
                 document.getElementById("status").style.color = "green"
-                document.getElementById("status").textContent = "You are subscribed to Halite II updates"
+                document.getElementById("status").textContent = "You are subscribed to Halite III updates"
                 handleOutboundLinkClicks('subscribe-success','click-to-subscribe','footer')
             }
         }
@@ -68,6 +71,7 @@
 
     <script async src='https://www.google-analytics.com/analytics.js'></script>
     <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
     <!-- Bootstrap -->
     <link href="{{ site.baseurl }}/assets/css/main_new.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -108,14 +112,15 @@ window.cookieconsent.initialise({
 </head>
 
 <body>
-    <div id="fb-root"></div>
+   <!-- <div id="fb-root"></div>
     <script>(function(d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s); js.id = id;
         js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=492754127756731";
         fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
+    }(document, 'script', 'facebook-jssdk'));</script> -->
+
     <div id="message-placeholder"></div>
 
     {% if page.no_header or page.no_navbar %}
@@ -139,11 +144,6 @@ window.cookieconsent.initialise({
                 <ul class="nav navbar-nav">
                     <li class="{% if page.menu == 'learn' or page.dir contains '/learn-programming-challenge' %} active {% endif %}">
                         <a href="{{ site.baseurl }}/learn-programming-challenge"><span>Learn</span></a>
-                <!--   <ul class="nav nav-sub">
-                            <li><a href="#">Game Overview</a></li>
-                            <li><a href="#">Tutorials</a></li>
-                            <li><a href="#">Downloads</a></li>
-                        </ul> -->
                     </li>
                     <li class="{% if page.menu == 'play' %} active {% endif %}">
                         <a href="{{ site.baseurl }}/play-programming-challenge"><span>Play</span></a>
@@ -167,7 +167,7 @@ window.cookieconsent.initialise({
                     <div id="user-profile-bar-container"></div>
                 </ul>
             </div>
-            <!--/.nav-collapse -->
+
         </div>
     </header>
     {% endif %}
@@ -225,7 +225,7 @@ window.cookieconsent.initialise({
 
     <script src="{{ site.baseurl }}/assets/js/bundle.js"></script>
 
-    <!-- Twitter universal website tag code -->
+    <!-- Twitter universal website tag code
     <script>
         !function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
         },s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='//static.ads-twitter.com/uwt.js',
@@ -234,7 +234,7 @@ window.cookieconsent.initialise({
     twq('init','nyaxy');
     twq('track','PageView');
     </script>
-    <!-- End Twitter universal website tag code -->
+    End Twitter universal website tag code -->
 
     <script>
         var _global = {}

@@ -213,11 +213,6 @@
             organization_rank: null
         }
     },
-     mounted: function () {
-        this.createRedditWidget()
-        // Get user information
-        this.fetchUserInfo();
-     },
      methods: {
        invite: function () {
          this.gaData('invite', 'click-to-invite', 'home')
@@ -233,22 +228,6 @@
              this.gaData('invite-success', 'click-to-invite', 'home')
            })
          }
-       },
-       createRedditWidget: function () {
-         let s = document.createElement('script'),
-           content = ''
-
-         s.src = 'https://www.reddit.com/domain/halite.io/hot/.embed?limit=5&t=all'
-
-         document.write = function (s) {
-           content += s
-         }
-
-         s.onload = function () {
-           document.getElementById('redditWidget').innerHTML = content
-         }
-
-         document.getElementsByTagName('head')[0].appendChild(s)
        },
        gaData: function (category, action, label) {
          utils.gaEvent(category, action, label)
