@@ -213,6 +213,9 @@
             organization_rank: null
         }
     },
+    mounted() {
+      this.fetchUserInfo()
+    },
      methods: {
        invite: function () {
          this.gaData('invite', 'click-to-invite', 'home')
