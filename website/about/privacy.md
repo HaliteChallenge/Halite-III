@@ -8,27 +8,45 @@ description: Halite and Two Sigma take your privacy seriously. Read our privacy 
 
 <div class="doc-section" markdown="1">
 
-### Effective Date July 17, 2017 (LAST UPDATED MAY 25TH, 2018).
+### Effective and Last Modified Date May 25, 2018.
 
-## THIS PRIVACY POLICY APPLIES TO OUR WEBSITES AND PLATFORMS.
+## THIS PRIVACY POLICY APPLIES TO WWW.HALITE.IO.
 
-This Policy describes how Two Sigma Open Source, LLC (“Two Sigma”, “we”, or “us”) treats personal information collected on the websites and platforms where this policy is located (each a “Site”). This policy does not apply to personal information Two Sigma collects offline, through email, or through other sites. This policy also does not apply to websites or platforms where it is not posted and where a link to this privacy policy is not provided.
+This Policy describes how Two Sigma Open Source, LLC (“Two Sigma”, “we”, or “us”) treats personal information collected on [www.halite.io](https://www.halite.io) where this policy is located (the “Site”). This policy does not apply to personal information Two Sigma collects offline, through email, or through other sites. This policy also does not apply to websites or platforms where it is not posted and where a link to this privacy policy is not provided.
 
 ## WE COLLECT INFORMATION FROM AND ABOUT YOU.
 
-We collect contact personal information. For example, we might collect your personal information when you register on the Site to participate to the competition via your Github account, such as your Github email address (and potentially a secondary email address), username, country of domicile, [university/high school name, profession and academic status]. We may process your photograph if displayed on your Github account. We may also collect personal information you provide when you edit information on your profile, sign up for emails or download materials from the Site or for some participants to the competition, your postal address, names and phone numbers We collect information you submit or post. We collect the information you post in a public space on our Site. We also collect information when you contact us using the email address provided on the Site. This may contain personal information about you. We collect information from you passively. We use tracking tools like browser cookies and web beacons to provide and support our Site and each of the uses outlined in this Privacy Policy. We may also collect usage data on how you use our Site through the use of cookies or other commonly used technologies (e.g. web beacons). This may include information about your browser, device type, IP address, etc. and may contain personal information about you. We may also collect information about your use of our Site and how long you visited our Site.Learn more about these tools and how you can manage them by visiting our cookie policy here. We may collect personal information about you from third parties. For example, our business partners or vendors, for example, Github Inc., may give us personal information about you. We may combine this information with information that you give us via the Site.
+**We collect contact personal information.** For example, we might collect your personal information when you register on the Site to participate to the competition via your Github account, such as your Github email address (and potentially a secondary email address), username, country of domicile, [university/high school name, profession and academic status]. We may process your photograph if displayed on your Github account. We may also collect personal information you provide when you edit information on your profile, sign up for emails or download materials from the Site or for some participants to the competition, your postal address, names and phone numbers.
+
+**We collect information you submit or post.** We collect the information you post in a public space on our Site. We also collect information when you contact us using the email address provided on the Site. This may contain personal information about you. 
+
+**We collect information from you passively.** We use tracking tools like browser cookies and web beacons to provide and support our Site and each of the uses outlined in this Privacy Policy. We may also collect usage data on how you use our Site through the use of cookies or other commonly used technologies (e.g. web beacons). This may include information about your browser, device type, IP address, etc. and may contain personal information about you. We may also collect information about your use of our Site and how long you visited our Site.Learn more about these tools and how you can manage them by visiting our cookie policy [here]('/about/cookie-policy'). 
+
+**We may collect personal information about you from third parties.** For example, our business partners or vendors, for example, Github Inc., may give us personal information about you. We may combine this information with information that you give us via the Site.
 
 **We may collect personal information as otherwise described at the time of collection on the Site.**
 
 ## WE USE PERSONAL INFORMATION AS DISCLOSED AND DESCRIBED HERE.
 
-We will use your personal information where in our legitimate interests to carry out the following purposes: We use personal information to respond to your requests or questions. For example, we might use your personal information to confirm your registration or participation to the competition. We use personal information to improve our Site and services we provide. We might use your personal information to deliver the Site and/or customize your experience with us. For example, we may use your personal information to look at site trends, user interests, or whether you are logged in.
+We will use your personal information where in our legitimate interests to carry out the following purposes: 
 
-We use personal information about you for recruitment purposes. We might use your personal information to contact you for a position at one of the Two Sigma group entity. We use personal information for security purposes. We may use your personal information to enforce our rights, protect our company, affiliates, our customers, or our websites, or a third-party website or platform. We use personal information to communicate with you about your account or our relationship with you. We may contact you about your use of our Site. We may contact you about your account or feedback. We might also contact you about this Privacy Policy or the Site’s Terms of Use. We may use your personal information as otherwise described or permitted by law or as we may notify you.
+**We use personal information to respond to your requests or questions.** For example, we might use your personal information to confirm your registration or participation to the competition. 
+
+**We use personal information to improve our Site and services we provide.** We might use your personal information to deliver the Site and/or customize your experience with us. For example, we may use your personal information to look at site trends, user interests, or whether you are logged in.
+
+**We use personal information about you for recruitment purposes.** We might use your personal information to contact you for a position at one of the Two Sigma group entity. 
+
+**We use personal information for security purposes.** We may use your personal information to enforce our rights, protect our company, affiliates, our customers, or our websites, or a third-party website or platform. 
+
+**We use personal information to communicate with you about your account or our relationship with you.** We may contact you about your use of our Site. We may contact you about your account or feedback. We might also contact you about this Privacy Policy or the Site’s Terms of Use. 
+
+**We may use your personal information as otherwise described or permitted by law or as we may notify you.**
 
 ## WE MAY SHARE PERSONAL INFORMATION WITH THIRD PARTIES.
 
-**We may share your personal information within the Two Sigma family of companies.** This includes Two Sigma Investments, LP. We may use your personal information to respond to your requests or questions. For example, we might share your personal information with third parties in order to provide you with services requested by you or answer your questions.
+**We may share your personal information within the Two Sigma family of companies.** This includes Two Sigma Investments, LP. 
+
+**We may use your personal information to respond to your requests or questions.** For example, we might share your personal information with third parties in order to provide you with services requested by you or answer your questions.
 
 **We will share personal information with third parties who perform services on our behalf.** For example, we may share personal share information with our vendors, partners and consultants. We may also share personal information with companies that operate our Site.websites.  For example, we may make anonymous usage information publicly available on our Site. Google may use the data collected through Google Analytics to contextualize and personalize the ads of its own advertising network. For Google’s privacy policy seehttp://www.google.com/analytics/learn/privacy.html. 
 
@@ -47,13 +65,25 @@ We use personal information about you for recruitment purposes. We might use you
 
 **Our Do Not Track Policy.** Some websites have “do not track” features that allow you to tell a website not to track you. These features are not all uniform. We do not currently respond to those signals.  If you block cookies, certain features on our Sites may not work.  If you block or reject cookies, not all of the tracking described here will stop.
 
-## TWO SIGMA SITES AND CHILDREN.
+## THIS SITE AND CHILDREN.
 
-**This Site and children.** We do not knowingly collect personal information from children under the age of 13 without permission from a parent or guardian. If you are a parent or legal guardian and think your child under 13 has given us information, and have questions about our privacy practices you can email us at <halite@halite.io>. You can also write to us at the address listed at the end of this Policy. If you are in the US, please mark your inquiries “COPPA Information Request.” Parents, you can learn more about how to protect children’s privacy on-line [here](https://www.ftc.gov/news-events/media-resources/protecting-consumer-privacy/kids-privacy-coppa){:target="_blank"}.
+**This Site and children.** We do not knowingly collect personal information from children under the age of 13 without permission from a parent or guardian. If you are a parent or legal guardian and think your child under 13 has given us information, and have questions about our privacy practices you can email us at <halite@halite.io>. You can also write to us at the address listed at the end of this Policy. If you are in the US, please mark your inquiries “COPPA Information Request.”
+
+Parents, you can learn more about how to protect children’s privacy on-line [here](https://www.ftc.gov/news-events/media-resources/protecting-consumer-privacy/kids-privacy-coppa){:target="_blank"}.
 
 
 ##YOUR EUROPEAN UNION PRIVACY RIGHTS.
-Individuals who are located in or residents of the European Union have certain data subject rights that may be subject to limitations and/or restrictions. You have the right to access, rectify and, subject to our other legal obligations and business considerations, erase your personal information. You also have the right to ask us to restrict the purpose or to object to the processing of your personal information as well as a right to data portability. Please note that you have a right to object to processing of your personal data where that processing is carried out for our legitimate interest or for direct marketing. You may have the right to lodge a complaint about the processing of your personal information with your local data protection authority. If you wish to exercise any of your rights under this Privacy Policy, please send us your request via email to <GDPR@twosigma.com>. For the purposes of EU data protection laws, we are the data controller of your personal information collected on the Site. This means that we are responsible for, and control the processing of, your personal information. Our data protection representative for the EU in the UK is Two Sigma International Limited, and can be reached at <GDPR@twosigma.com>. 
+Individuals who are located in or residents of the European Union have certain data subject rights that may be subject to limitations and/or restrictions. 
+
+**You have the right to access, rectify and, subject to our other legal obligations and business considerations, erase your personal information.** You also have the right to ask us to restrict the purpose or to object to the processing of your personal information as well as a right to data portability. 
+
+**Please note that you have a right to object to processing of your personal data where that processing is carried out for our legitimate interest or for direct marketing.**
+
+**You may have the right to lodge a complaint about the processing of your personal information with your local data protection authority.**
+
+If you wish to exercise any of your rights under this Privacy Policy, please send us your request via email to <GDPR@twosigma.com>.
+
+For the purposes of EU data protection laws, we are the data controller of your personal information collected on the Site. This means that we are responsible for, and control the processing of, your personal information. Our data protection representative for the EU in the UK is Two Sigma International Limited, and can be reached at <GDPR@twosigma.com>. 
 
 ## YOUR CALIFORNIA PRIVACY RIGHTS. 
 
@@ -66,7 +96,7 @@ We take reasonable steps, consistent with industry standards, including technica
 
 ## WE MAY TRANSFER AND STORE PERSONAL INFORMATION IN THE UNITED STATES OR OTHER COUNTRIES.
 
-By participating to the Halite competition using the Site, you understand that your personal information will be processed in the U.S. where we operate the Site. Personal information we maintain may be transferred to and stored both within and outside of the United States. If you live outside of the United States, you understand and agree that we may transfer your personal information to the United States. This Site is subject to U.S. laws, which may not afford the same level of protection as those in your country. We will take all steps reasonably necessary to ensure that your personal information is treated securely and in accordance with this Privacy Policy.
+By participating in the Halite competition using the Site, you understand that your personal information will be processed in the U.S. where we operate the Site. Personal information we maintain may be transferred to and stored both within and outside of the United States. If you live outside of the United States, you understand and agree that we may transfer your personal information to the United States. This Site is subject to U.S. laws, which may not afford the same level of protection as those in your country. We will take all steps reasonably necessary to ensure that your personal information is treated securely and in accordance with this Privacy Policy.
 
 
 ## WE MAY LINK TO OTHER WEBSITES OR HAVE THIRD PARTY SERVICES ON OUR SITE WE DON'T CONTROL.
