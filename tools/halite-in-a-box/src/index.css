@@ -1,0 +1,92 @@
+@tailwind preflight;
+
+body {
+    @apply text-white h-screen;
+    background-color: #091B53;
+    background-image: linear-gradient(0deg, rgba(0,45,119,0) 4%, #003A99 100%), url(../../../website/assets/images/bg-pattern.png);
+    background-position: top;
+    background-repeat: no-repeat;
+}
+
+h2 {
+    @apply mt-2 mb-2;
+}
+
+a {
+    @apply text-grey-dark;
+}
+
+a:hover {
+    @apply text-grey-light;
+}
+
+p {
+    @apply my-2;
+}
+
+.tab-panel {
+    @apply h-full flex flex-col;
+}
+
+.btn {
+    @apply font-bold py-2 px-4 rounded;
+}
+
+.btn-blue {
+    @apply bg-blue text-white;
+}
+
+.modal-buttons .btn {
+    @apply px-8 ml-4;
+}
+
+.btn-blue:hover {
+    @apply bg-blue-dark;
+}
+
+.card {
+    @apply bg-gradient rounded overflow-hidden shadow-md text-center p-4;
+}
+
+@tailwind components;
+@tailwind utilities;
+
+.text-shadow {
+    text-shadow: 0 -1px 13px #00ABFF;
+}
+
+.bg-gradient-cyan {
+    background: linear-gradient(180deg, rgba(117,182,219,0) 0%, #97DDFF 100%);
+}
+
+.hover-bg-gradient-cyan:hover {
+    background: linear-gradient(180deg, rgba(117,182,219,0) 0%, #97DDFF 100%);
+}
+
+.bg-gradient {
+    background: linear-gradient(0deg, #0073DB 0%, #0044A4 100%);
+}
+
+/* .error { */
+/*     color: red; */
+/* } */
+
+/* h1 { */
+/*     span { */
+/*         font-size: 0.6em; */
+/*     } */
+/* } */
+
+/* tt { */
+/*     font-family: "Fira Mono", monospace; */
+/* } */
+
+/* fieldset { */
+/*     border: 0.1rem solid #d1d1d1; */
+/*     border-radius: 5px; */
+/*     padding: 0 1em; */
+/* } */
+
+/* th { */
+/*     font-weight: bold; */
+/* } */

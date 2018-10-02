@@ -22,7 +22,7 @@
                             <draggable v-model="bots" :options="{group: {name: 'bots'}}" >
                                 <div class="draggable-item" v-for="(bot, index) in bots" :key="index">
                                     {{bot.name}}
-                                    <button @click="() => bots.splice(index, 1)">Remove</button>
+                                    <button class="btn btn-blue" @click="() => bots.splice(index, 1)">Remove</button>
                                 </div>
                             </draggable>
                         </div>
@@ -93,11 +93,11 @@
 
         <template slot="buttons">
             <template v-if="params.status === 'setup'">
-                <button @click="event('cancel')">Cancel</button>
-                <button @click="start">Start</button>
+                <button class="btn btn-blue" @click="event('cancel')">Cancel</button>
+                <button class="btn btn-blue" @click="start">Start</button>
             </template>
             <template v-else-if="params.status === 'finished'">
-                <button @click="event()">Done</button>
+                <button class="btn btn-blue" @click="event()">Done</button>
             </template>
         </template>
     </modal>

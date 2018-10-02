@@ -1,30 +1,29 @@
 <template>
-    <section id="remote-bot">
-        <header>
-            <h2>Current Submission</h2>
-        </header>
-
+    <section id="remote-bot" class="tab-panel">
         <template v-if="remoteBot">
-            <p>{{remoteBot.language}} bot version {{remoteBot.version_number}} (status: {{remoteBot.compilation_status}})</p>
-            <p>Rank {{remoteBot.rank}}</p>
-            <p>{{remoteBot.games_played}} games played</p>
+            <div class="flex-initial card">
+                <h2>Current Submission</h2>
+                <p>{{remoteBot.language}} bot version {{remoteBot.version_number}} (status: {{remoteBot.compilation_status}})</p>
+                <p>Rank {{remoteBot.rank}}</p>
+                <p>{{remoteBot.games_played}} games played</p>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>μ</th> <th>σ</th> <th title="= μ - 3σ">Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{remoteBot.mu.toFixed(2)}}</td>
-                        <td>{{remoteBot.sigma.toFixed(2)}}</td>
-                        <td>{{remoteBot.score.toFixed(2)}}</td>
-                    </tr>
-                </tbody>
-            </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>μ</th> <th>σ</th> <th title="= μ - 3σ">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{remoteBot.mu.toFixed(2)}}</td>
+                            <td>{{remoteBot.sigma.toFixed(2)}}</td>
+                            <td>{{remoteBot.score.toFixed(2)}}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-            <button v-on:click="downloadBot">Download</button>
+                <button class="btn btn-blue" @click="downloadBot">Download</button>
+            </div>
         </template>
 
         <p v-else>
@@ -61,7 +60,9 @@
                         extensions: ['zip'],
                     }],
                 });
-                fs.writeFileSync(path, new Uint8Array(botZip));
+                if (path) {
+                    fs.writeFileSync(path, new Uint8Array(botZip));
+                }
             },
         },
     }

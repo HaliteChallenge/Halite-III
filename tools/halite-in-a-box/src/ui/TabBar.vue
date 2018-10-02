@@ -1,13 +1,33 @@
 <template>
-    <section class="tab-bar">
-        <nav>
-            <button
-                v-for="(tab, index) in tabs"
-                @click="currentTab = index"
-                :class="{ active: currentTab === index }"
-            >{{tab}}</button>
-        </nav>
-        <section v-for="(tab, index) in tabs" :style="{ display: index === currentTab ? 'block' : 'none' }">
+    <section class="tab-bar flex flex-col h-full">
+        <section class="flex border-b flex-initial items-center flex-no-shrink">
+            <slot name="header"></slot>
+            <section class="flex-1">
+                <template
+                    v-for="(tab, index) in tabs"
+                >
+                    <a
+                        v-if="currentTab === index"
+                        :class="{'ml-4': index === 0 }"
+                        @click="currentTab = index"
+                        class="-mb-px cursor-pointer inline-block py-4 px-4 text-cyan text-shadow bg-gradient-cyan">
+                        {{tab}}
+                    </a>
+                    <a
+                        v-else
+                        :class="{'ml-4': index === 0 }"
+                        @click="currentTab = index"
+                        class="-mb-px cursor-pointer inline-block py-4 px-4 text-cyan text-shadow hover-bg-gradient-cyan"
+                    >
+                        {{tab}}
+                    </a>
+                </template>
+            </section>
+            <slot name="right"></slot>
+        </section>
+        <section v-for="(tab, index) in tabs"
+                 :style="{ display: index === currentTab ? 'block' : 'none' }"
+                 class="flex-1 p-4">
             <slot v-bind:name="`tab-${index}`"></slot>
         </section>
     </section>
@@ -34,28 +54,3 @@
         },
     };
 </script>
-
-<style lang="scss" scoped>
-    nav {
-        border-bottom: 0.1em solid #d1d1d1;
-        button {
-            background: none;
-            letter-spacing: 0;
-            color: inherit;
-            border: 0;
-            border-right: 0.1em solid #d1d1d1;
-            border-radius: 0;
-            padding: 0 1.5em;
-            margin: 0;
-            text-transform: none;
-            font-size: inherit;
-            font-weight: normal;
-            font-family: inherit;
-
-            &.active {
-                font-weight: bold;
-                background: #d1d1d1;
-            }
-        }
-    }
-</style>

@@ -1,39 +1,40 @@
 <template>
-    <section class="local-match-history">
+    <section class="tab-panel flex flex-col">
         <h2>Local Match History</h2>
+        <section>
+            <table class="w-full text-left table-collapse">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Date Played</th>
+                        <th>Map Size</th>
+                        <th>Participants</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="game in games">
+                        <td>{{game.id}}</td>
+                        <td>{{game.date_played}}</td>
+                        <td>{{game.map_width}}x{{game.map_height}}</td>
+                        <td>
+                            <ul>
+                                <li v-for="(participant, index) in game.participants">
+                                    {{participant}} (rank #{{game.stats[index].rank}})
 
-        <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Date Played</th>
-                    <th>Map Size</th>
-                    <th>Participants</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="game in games">
-                    <td>{{game.id}}</td>
-                    <td>{{game.date_played}}</td>
-                    <td>{{game.map_width}}x{{game.map_height}}</td>
-                    <td>
-                        <ul>
-                            <li v-for="(participant, index) in game.participants">
-                                {{participant}} (rank #{{game.stats[index].rank}})
-
-                                <a v-if="game.error_logs && game.error_logs[index]"
-                                   href="javascript: void 0;"
-                                   @click="showLog(game.error_logs[index])">
-                                    (log file)
-                                </a>
-                            </li>
-                        </ul>
-                    </td>
-                    <td><a href="javascript: void 0;" @click="watchReplay(game.replay)">Watch Replay</a></td>
-                </tr>
-            </tbody>
-        </table>
+                                    <a v-if="game.error_logs && game.error_logs[index]"
+                                       href="javascript: void 0;"
+                                       @click="showLog(game.error_logs[index])">
+                                        (log file)
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                        <td><a href="javascript: void 0;" @click="watchReplay(game.replay)">Watch Replay</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
     </section>
 </template>
 

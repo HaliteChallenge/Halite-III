@@ -1,7 +1,6 @@
-import 'reset-css';
 import Vue from 'vue';
 
-import './index.scss';
+import './index.css';
 import Visualizer from './Visualizer.vue';
 
 const app = new Vue({

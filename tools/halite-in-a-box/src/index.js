@@ -1,10 +1,8 @@
-import 'reset-css';
-import 'milligram';
 import Vue from 'vue';
 
 import * as logger from './logger';
 
-import './index.scss';
+import './index.css';
 import Main from './Main.vue';
 import Modal from './Modal.vue';
 import BenchmarkModal from './modal/BenchmarkModal.vue';

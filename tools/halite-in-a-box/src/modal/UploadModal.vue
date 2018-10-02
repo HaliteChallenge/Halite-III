@@ -6,7 +6,7 @@
             <template v-if="props.params.status === 'previewing'">
                 <template v-if="props.params.files">
                     <p>Files to be uploaded:</p>
-                    <textarea>
+                    <textarea class="w-full my-4">
 {{props.params.files.join("\n")}}
                     </textarea>
                     <p>(A zip file will be created for you.)</p>
@@ -23,11 +23,11 @@
 
         <template slot="buttons">
             <template v-if="props.params.status === 'previewing'">
-                <button @click="props.event('cancel')">Cancel</button>
-                <button @click="props.event('upload')">Upload</button>
+                <button class="btn btn-blue" @click="props.event('cancel')">Cancel</button>
+                <button class="btn btn-blue" @click="props.event('upload')">Upload</button>
             </template>
             <template v-else-if="props.params.status === 'uploaded'">
-                <button @click="props.event('Ok')">Ok</button>
+                <button class="btn btn-blue" @click="props.event('Ok')">Ok</button>
             </template>
         </template>
     </modal>

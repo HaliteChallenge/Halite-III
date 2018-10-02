@@ -1,22 +1,31 @@
 <template>
-    <div>
+    <div class="h-screen">
         <div id="main-container" v-if="!loggedIn">
             <Login @login="checkLogin" />
         </div>
         <template v-else>
-            <div id="main-logged-in">
-                <header id="page-header">
-                    <h1>Halite III <span>in a box</span></h1>
-                </header>
-                <nav id="toolbar">
-                    <button @click="chooseReplay">Watch Replay</button>
-                </nav>
-                <tab-bar :tabs="['Bots', 'Local Match History']">
-                    <section class="bots-tab" slot="tab-0">
-                        <RemoteBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" />
-                        <LocalBot v-bind:remoteBot="remoteBot" :apiKey="apiKey" :userId="userId" @change="localBot = $event" />
+            <div id="main-logged-in" class="h-screen">
+                <tab-bar :tabs="['Local Bot', 'Online Bot', 'Local Match History', 'Help', 'Settings']">
+                    <h1 slot="header" class="font-normal text-4xl ml-4">
+                        Halite III <span class="text-lg">in a box</span>
+                    </h1>
+                    <section slot="right" class="mr-4">
+                        <button class="btn btn-blue" @click="chooseReplay">Watch Replay</button>
                     </section>
-                    <MatchHistory slot="tab-1" />
+                    <LocalBot
+                        slot="tab-0"
+                        :remoteBot="remoteBot"
+                        :apiKey="apiKey"
+                        :userId="userId"
+                        @change="localBot = $event"
+                    />
+                    <RemoteBot
+                        slot="tab-1"
+                        v-bind:remoteBot="remoteBot"
+                        :apiKey="apiKey"
+                        :userId="userId"
+                    />
+                    <MatchHistory slot="tab-2" />
                     <!-- <LocalBotGym slot="tab-2" :localBot="localBot" /> -->
                     <!-- <Settings slot="tab-3" /> -->
                 </tab-bar>
@@ -149,72 +158,3 @@
         },
     };
 </script>
-
-<style lang="scss" scoped>
-    #main-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-
-        width: 100%;
-        height: 100%;
-    }
-
-    #main {
-        display: flex;
-        flex-direction: column;
-
-        text-align: center;
-
-        ol {
-            text-align: left;
-        }
-    }
-
-    #main-logged-in {
-        display: grid;
-        box-sizing: border-box;
-        width: 100vw;
-        height: 100vh;
-
-        grid-template-columns:
-            [left] 1fr
-            [right] 1fr;
-
-        grid-template-rows:
-            [header] 4em
-            [content] 1fr
-            [footer] min-content;
-
-        #page-header {
-            grid-row: header;
-            grid-column: left;
-        }
-
-        #toolbar {
-            grid-row: header;
-            grid-column: right;
-
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-        .tab-bar {
-            grid-row: content;
-            grid-column: left / -1;
-        }
-
-        .bots-tab {
-            display: flex;
-        }
-
-        .bots-tab > section {
-            align-self: center;
-            padding: 1em;
-            text-align: center;
-            flex: 1;
-        }
-    }
-</style>
