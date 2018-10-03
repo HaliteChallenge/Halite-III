@@ -1,41 +1,17 @@
 <template>
-  <el-popover
-    placement="top"
-    width="320"
-    trigger="click"
-    v-model="show"
-    popper-class="tier-popover"
-  >
-    <span slot="reference" class="tier-clickable" :class="tier"></span>
-    <div class="tier-description">
-      <div class="header">
-        <p class="header-text">{{badge}} tier</p>
-        <span class="close-btn icon-remove" @click="show = false" />
-      </div>
-      <p class="tier-percetage"><i>{{percentage}}% of players achieved this badge</i></p>
-      <div class="tier-more-btn">
-        <a href="/learn-programming-challenge/contest-rules#ranking">
-          <button class="btn">
-            <span>LEARN MORE ABOUT TIERS</span>
-          </button>
-        </a>
-      </div>
-    </div>
-  </el-popover>
+  <a href="#" :title="`${badge} Tier (${percentage}% of players)`">
+    <span class="tier-clickable" :class="tier"></span>
+  </a>
 </template>
 
 <script>
   import Vue from 'vue'
-  import {Popover} from 'element-ui'
   const badges = ['Diamond', 'Platinum', 'Gold', 'Silver', 'Bronze']
   const percentages = ['1', '5', '10', '25', '59']
 
   export default {
     name: 'TierPopover',
     props: ['tier'],
-    components: {
-      'el-popover': Popover
-    },
     mounted: function () {
       const index = parseInt(this.tier.split('-')[2])
       const badge = badges[index - 1]
@@ -45,7 +21,6 @@
   },
     data: function () {
       return {
-        show: false,
         index: '',
         badge: '',
         percentage: ''
@@ -57,52 +32,5 @@
 <style lang="scss">
   .tier-clickable {
     cursor: pointer;
-  }
-  .tier-popover {
-    background-color: rgb(36, 37, 44);
-    border-color: rgb(36, 37, 44);
-    padding: 10px 15px 15px;
-
-    .popper__arrow {
-      border-top-color: rgb(36, 37, 44) !important;
-      border-bottom-color: rgb(36, 37, 44) !important;
-      &::after {
-        border-top-color: rgb(36, 37, 44) !important;
-        border-bottom-color: rgb(36, 37, 44) !important;
-      }
-    }
-  }
-
-  .tier-description {
-
-    color: #FFFFFF;
-    text-align: left;
-
-    p {
-      margin: 5px 0;
-      font-size: 14px;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .header-text {
-      margin: 0;
-      text-transform: Uppercase;
-      color: rgb(99, 205, 202);
-      font-size: 24px;
-      letter-spacing: 1px;
-    }
-
-    .close-btn {
-      cursor: pointer;
-    }
-
-    .tier-more-btn {
-      margin-top: 10px;
-    }
   }
 </style>
