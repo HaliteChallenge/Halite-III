@@ -8,17 +8,6 @@ import sqlalchemy
 from .. import config, model, util
 
 
-def rand_map_size():
-    # Pick map size. Duplicate entries are used to weight the
-    # probability of a particular size
-    map_sizes = [32, 40, 48, 56, 64]
-    base_size = random.choice(map_sizes)
-    map_width = map_height = base_size
-
-    # Width, height
-    return max(map_width, map_height), min(map_width, map_height)
-
-
 def serve_game_task(conn, has_gpu=False):
     """Try to find a set of players to play a game together."""
     if not config.COMPETITION_FINALS_PAIRING and random.random() < 0.1:
@@ -138,7 +127,6 @@ def serve_game_task(conn, has_gpu=False):
         if len(players) == player_count:
             break
 
-    map_width, map_height = rand_map_size()
     players = [{
         "user_id": player["user_id"],
         "bot_id": player["bot_id"],
@@ -153,8 +141,6 @@ def serve_game_task(conn, has_gpu=False):
     if len(players) == player_count:
         return util.response_success({
             "type": "game",
-            "width": map_width,
-            "height": map_height,
             "users": players,
             "challenge": None,
         })
@@ -267,7 +253,6 @@ def find_challenge(conn, has_gpu=False):
     else:
         selected_bots.append(random.choice(user_bots[random.choice(candidate_users)]))
 
-    map_width, map_height = rand_map_size()
     players = [{
         "user_id": player["user_id"],
         "bot_id": player["bot_id"],
@@ -284,8 +269,6 @@ def find_challenge(conn, has_gpu=False):
 
     return util.response_success({
         "type": "game",
-        "width": map_width,
-        "height": map_height,
         "users": players,
         "challenge": challenge["id"],
     })

@@ -421,12 +421,10 @@ def main(args):
                     executeCompileTask(task["user"], task["bot"], backend)
                 else:
                     logging.debug("Running a game task...\n")
-                    executeGameTask({
-                        "width": task["width"],
-                        "height": task["height"],
-                    }, task["users"], {
-                        "challenge": task.get("challenge"),
-                    }, backend.gameResult)
+                    executeGameTask(task.get("environment_parameters", {}),
+                                    task["users"], {
+                                        "challenge": task.get("challenge"),
+                                    }, backend.gameResult)
             elif task.get("type") == "ondemand":
                 environment_params = task["environment_parameters"]
                 extra_metadata = {
