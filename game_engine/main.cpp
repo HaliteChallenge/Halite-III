@@ -85,6 +85,12 @@ int main(int argc, char *argv[]) {
     // Set the random seed
     auto seed = seed_arg.isSet() ? seed_arg.getValue() : static_cast<unsigned int>(time(nullptr));
 
+    // Use the seed to determine default map size
+    std::mt19937 rng(seed);
+    std::vector<hlt::dimension_type> map_sizes = {32, 40, 48, 56, 64};
+    auto base_size = map_sizes[rng() % map_sizes.size()];
+    constants.DEFAULT_MAP_WIDTH = constants.DEFAULT_MAP_HEIGHT = base_size;
+
     // Get the map parameters
     auto map_width = width_arg.isSet() ? width_arg.getValue() : constants.DEFAULT_MAP_WIDTH;
     auto map_height = height_arg.isSet() ? height_arg.getValue() : constants.DEFAULT_MAP_HEIGHT;
