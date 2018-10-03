@@ -3,7 +3,6 @@
 
 import Vue from 'vue'
 import 'url-search-params-polyfill'
-import 'element-ui/lib/theme-default/index.css'
 import Associate from './templates/Associate.vue'
 import BotEditorPage from './templates/BotEditorPage.vue'
 import FinalsStatus from './templates/FinalsStatus.vue'
@@ -36,7 +35,6 @@ window.api = api
 
 Vue.use(require('vue-moment'))
 Vue.use(require('vue-cookie'))
-Vue.use(require('element-ui'))
 Vue.component('walkthrough-substeps', WalkthroughSubsteps)
 Vue.component('walkthrough-substep', WalkthroughSubstep)
 Vue.component('profile-image', ProfileImage)
