@@ -28,6 +28,7 @@ def make_challenge_record(challenge, participants):
     for participant in participants:
         result["players"][participant["user_id"]] = {
             "username": participant["username"],
+            "profile_image_key": participant["profile_image_key"],
             "points": participant["points"],
             "is_issuer": participant["user_id"] == result["issuer"],
         }
@@ -56,8 +57,8 @@ def get_challenge_helper(challenge_id):
 
         participants = conn.execute(
             model.challenge_participants.join(
-                model.users,
-                model.challenge_participants.c.user_id == model.users.c.id
+                model.all_users,
+                model.challenge_participants.c.user_id == model.all_users.c.user_id
             ).select(
                 model.challenge_participants.c.challenge_id == challenge["id"]
             )
@@ -102,6 +103,7 @@ def list_challenges_helper(offset, limit, participant_clause,
                 model.challenge_participants.c.user_id,
                 model.challenge_participants.c.points,
                 model.users.c.username,
+                model.users.c.oauth_profile_image_key.label("profile_image_key"),
             ]).select_from(model.challenge_participants.join(
                 model.users,
                 model.challenge_participants.c.user_id == model.users.c.id
