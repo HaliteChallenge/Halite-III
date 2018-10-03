@@ -67,7 +67,7 @@ build_script:
   - yarn install
   - cd C:\Halite\tools\halite-in-a-box
   - yarn install
-  - yarn build
+  - yarn webpack --mode=development
   - yarn electron-builder -w
 
 artifacts:
