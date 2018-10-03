@@ -1,30 +1,25 @@
 <template>
     <div class="logged-in">
-        <!-- <ul id="submitbutton" v-if="!isMobile && !isCreateAccount" class="nav navbar-nav navbar-right submit-bot hidden-xs hidden-sm">
-            <li>
-                <a href="/play-programming-challenge"><i class="fa fa-arrow-up"></i>Submit a Bot</a>
-            </li>
-        </ul> -->
-        <div id="profile" class="profile-container">
-            <a v-on:click.stop="slide_profile">
-              <profile-image
-                height="40"
-                :username="username"
-                :title="username + '\'s Profile'"
-                :alt="username + '\'s profile image'" />
-                <span class="user-name">{{username}}</span>
-                <i class="fa fa-sort-down"></i>
-                <ul class="nav profile-nav" v-if="!isCreateAccount">
-                  <li class="profile-nav-item"><a v-on:click="gaData('account','click-view-profile','account-flow')" href="/user?me"><span>view profile</span><i class="line line-bottom"></i></a></li>
-                  <li class="profile-nav-item"><a v-on:click="gaData('account','click-edit-profile','account-flow')" href="/user/edit-user"><span>edit profile</span><i class="line line-bottom"></i></a></li>
-                  <li class="profile-nav-item"><a v-on:click="gaData('account','click-edit-settings','account-flow')" href="/user/settings"><span>settings</span><i class="line line-bottom"></i></a></li>
-                  <li class="profile-nav-item"><a v-on:click.stop.prevent="sign_out"><span>sign out</span><i class="line line-bottom"></i></a></li>
-                </ul>
-                <ul class="nav profile-nav" v-else>
-                  <li class="profile-nav-item"><a v-on:click.stop.prevent="sign_out"><span>sign out</span><i class="line line-bottom"></i></a></li>
-                </ul>
-            </a>
-        </div>
+      <div id="profile" class="profile-container">
+        <a v-on:click.stop="slide_profile">
+          <profile-image
+            height="40"
+            :username="username"
+            :profileImage="username"
+          />
+          <span class="user-name">{{username}}</span>
+          <i class="fa fa-sort-down"></i>
+          <ul class="nav profile-nav" v-if="!isCreateAccount">
+            <li class="profile-nav-item"><a v-on:click="gaData('account','click-view-profile','account-flow')" href="/user?me"><span>view profile</span><i class="line line-bottom"></i></a></li>
+            <li class="profile-nav-item"><a v-on:click="gaData('account','click-edit-profile','account-flow')" href="/user/edit-user"><span>edit profile</span><i class="line line-bottom"></i></a></li>
+            <li class="profile-nav-item"><a v-on:click="gaData('account','click-edit-settings','account-flow')" href="/user/settings"><span>settings</span><i class="line line-bottom"></i></a></li>
+            <li class="profile-nav-item"><a v-on:click.stop.prevent="sign_out"><span>sign out</span><i class="line line-bottom"></i></a></li>
+          </ul>
+          <ul class="nav profile-nav" v-else>
+            <li class="profile-nav-item"><a v-on:click.stop.prevent="sign_out"><span>sign out</span><i class="line line-bottom"></i></a></li>
+          </ul>
+        </a>
+      </div>
     </div>
 </template>
 

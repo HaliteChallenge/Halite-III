@@ -1,6 +1,6 @@
 <template functional>
   <img
-    :src="`https://github.com/${props.username}.png`"
+    :src="$options.methods.profileUrl(props)"
     :alt="`${props.username}'s profile image`"
     :title="props.title || props.username"
     @error="$event.target.src = $options.methods.fallbackAvatar(props.username)"
@@ -17,6 +17,11 @@
     methods: {
       fallbackAvatar(username) {
         return api.fallbackAvatar(username);
+      },
+      profileUrl(props) {
+        return props.profileImage ?
+               `https://github.com/${props.profileImage}.png` :
+               this.fallbackAvatar(props.username);
       },
     },
   }

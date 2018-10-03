@@ -149,6 +149,7 @@ def list_matches_helper(offset, limit, participant_clause,
             for participant in participants:
                 match["players"][participant["user_id"]] = {
                     "username": participant["username"],
+                    "profile_image_key": participant["oauth_profile_image_key"],
                     "bot_id": participant["bot_id"],
                     "version_number": participant["version_number"],
                     "player_index": participant["player_index"],

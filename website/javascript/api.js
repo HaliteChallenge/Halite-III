@@ -13,12 +13,14 @@ export function me_cached () {
   if (cached_me) {
     return {
       user_id: cached_me['user_id'],
-      username: cached_me['username']
+      username: cached_me['username'],
+      profile_image_key: cached_me['profile_image_key'],
     }
   } else if (window.localStorage['cache']) {
     return {
       user_id: window.localStorage['user_id'],
-      username: window.localStorage['username']
+      username: window.localStorage['username'],
+      profile_image_key: window.localStorage['profile_image_key'],
     }
   } else {
     return null
@@ -44,6 +46,7 @@ export function me () {
       window.localStorage['cache'] = Date.now()
       window.localStorage['user_id'] = user.user_id
       window.localStorage['username'] = user.username
+      window.localStorage['profile_image_key'] = user.profile_image_key
       return user
     })
   })

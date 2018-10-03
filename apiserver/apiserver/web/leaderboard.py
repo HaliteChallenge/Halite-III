@@ -126,6 +126,7 @@ def leaderboard():
                 sqlalchemy.sql.select([
                     model.ranked_bots_users.c.user_id,
                     model.ranked_bots_users.c.username,
+                    model.ranked_bots_users.c.profile_image_key,
                     model.ranked_bots_users.c.player_level,
                     model.ranked_bots_users.c.organization_id,
                     model.ranked_bots_users.c.organization_name,
@@ -165,6 +166,7 @@ def leaderboard():
             user = {
                 "user_id": row["user_id"],
                 "username": row["username"],
+                "profile_image_key": row["profile_image_key"],
                 "level": row["player_level"],
                 "organization_id": row["organization_id"],
                 "organization": row["organization_name"],
@@ -209,6 +211,7 @@ def leaderboard():
                 row["team_members"] = [{
                     "user_id": tm["user_id"],
                     "username": tm["username"],
+                    "profile_image_key": tm["oauth_profile_image_key"],
                     "player_level": tm["player_level"],
                     "organization_id": tm["organization_id"],
                     "organization": tm["organization_name"],

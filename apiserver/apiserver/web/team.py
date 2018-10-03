@@ -41,6 +41,8 @@ def make_team_record(team, members, show_verification_code=False):
             "organization_name": member["organization_name"],
             "country_code": member["country_code"],
             "country_subdivision_code": member["country_subdivision_code"],
+            "profile_image_key": member["oauth_profile_image_key"],
+            "oauth_provider": "github" if "oauth_provider" in member and member["oauth_provider"] == 1 else "unknown",
         }
         if member["user_id"] == team["leader_id"]:
             result["num_submissions"] = member["num_submissions"]
@@ -57,6 +59,8 @@ def get_team_members(conn, team):
     return conn.execute(sqlalchemy.sql.select([
         model.all_users.c.user_id,
         model.all_users.c.username,
+        model.all_users.c.oauth_provider,
+        model.all_users.c.oauth_profile_image_key,
         model.all_users.c.player_level,
         model.all_users.c.organization_id,
         model.all_users.c.organization_name,

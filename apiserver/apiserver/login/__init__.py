@@ -187,6 +187,7 @@ def generic_login_callback(email, oauth_provider, oauth_id, default_username=Non
                     github_email=email,
                     oauth_id=str(oauth_id),
                     oauth_provider=oauth_provider,
+                    oauth_profile_image_key=default_username,
                 )).inserted_primary_key
                 flask.session["user_id"] = new_user_id[0]
             except sqlalchemy.exc.IntegrityError:

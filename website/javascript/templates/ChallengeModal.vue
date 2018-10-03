@@ -27,7 +27,9 @@
                         v-for="opponent in members[friends[index]]"
                         :key="opponent.username"
                         width="36" height="36"
-                        :username="opponent.username" />
+                        :username="opponent.username"
+                        :profileImage="opponent.profile_image_key"
+                      />
                       {{friends[index]}}
                     </a>
                     <a class="close" @click="removeFriend(index)"><span class="icon-remove"></span></a>

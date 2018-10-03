@@ -4,7 +4,11 @@
             <div class="user-profile">
                 <div class="bg-img"></div>
                 <div class="user-profile-avatar">
-                  <profile-image className="img-responsive" :username="user.username" />
+                  <profile-image
+                    className="img-responsive"
+                    :username="user.username"
+                    :profileImage="user.profile_image_key"
+                  />
                 </div>
                 <div class="user-profile-detail">
                   <span class="user-name">{{ user.username }}</span>
@@ -25,7 +29,9 @@
                             <a :href="`/user/?user_id=${member.user_id}`">
                               <profile-image
                                 height="20px"
-                                :username="member.username" />
+                                :username="member.username"
+                                :profileImage="member.profile_image_key"
+                              />
                                 {{member.username}}
                             </a>
                         </template>
@@ -286,7 +292,11 @@
                                                     :href="'/user?user_id=' + player.id"
                                                     class="game-participant"
                                                     :title="player.name_rank + (player.timed_out ? ' timed out or errored in this game. See the log for details.' : '')">
-                                                      <profile-image :username="player.username" v-bind:className="{ 'timed-out': player.timed_out }" />
+                                                      <profile-image
+                                                        :username="player.username"
+                                                        :profileImage="player.profile_image_key"
+                                                        v-bind:className="{ 'timed-out': player.timed_out }"
+                                                      />
                                                         <span class="rank">
                                                             {{ player.rank }}
                                                         </span>
@@ -444,7 +454,10 @@
                                                                 <span class="tropy-icon"></span>
                                                               </div>
                                                               <a v-for="(player, index) in challenge.players" :href="`/user?user_id=${player.user_id}`" class="game-participant">
-                                                                <profile-image :username="player.username" />
+                                                                <profile-image
+                                                                  :username="player.username"
+                                                                  :profileImage="player.profile_image_key"
+                                                                />
                                                                 <span class="rank">{{player.rank + 1}}</span>
                                                               </a>
                                                             </td>
@@ -506,7 +519,10 @@
                                                             <td class="little-pd td-title">
                                                                 <a :href="'/user?user_id=' + nemesis.id"
                                                                 class="game-participant">
-                                                                  <profile-image :username="nemesis.username" />
+                                                                  <profile-image
+                                                                    :username="nemesis.username"
+                                                                    :profileImage="nemesis.profile_image_key"
+                                                                  />
                                                                     <span class="rank">
                                                                         {{usernames[nemesis.id]}}
                                                                     </span>
@@ -977,7 +993,12 @@
 
                 let playerData = nemesisMap.get(participant)
                 if (typeof playerData === 'undefined') {
-                  playerData = {wins: 0, losses: 0, username: username }
+                  playerData = {
+                    wins: 0,
+                    losses: 0,
+                    username: username,
+                    profile_image_key: game.players[participant].profile_image_key,
+                  }
                   nemesisMap.set(participant, playerData)
                 }
 
@@ -996,6 +1017,7 @@
                 var obj = {
                   id: key,
                   username: value.username,
+                  profile_image_key: value.profile_image_key,
                   wins: Math.round(winRatio * 100),
                   losses: Math.round(lossRatio * 100),
                   total: totalGames

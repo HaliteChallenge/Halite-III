@@ -162,6 +162,7 @@ all_users = sqlalchemy.sql.select([
     users.c.is_email_good,
     users.c.is_gpu_enabled,
     users.c.oauth_provider,
+    users.c.oauth_profile_image_key,
     duplicate_teams.c.id.label("team_id"),
     duplicate_teams.c.name.label("team_name"),
     duplicate_teams.c.leader_id.label("team_leader_id"),
@@ -241,6 +242,7 @@ all_users = sqlalchemy.sql.select([
 ranked_bots_users = sqlalchemy.sql.select([
     users.c.id.label("user_id"),
     users.c.username,
+    users.c.oauth_profile_image_key.label("profile_image_key"),
     users.c.player_level,
     users.c.organization_id,
     organizations.c.organization_name,

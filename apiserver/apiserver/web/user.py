@@ -55,6 +55,7 @@ def make_user_record(row, *, logged_in, total_users=None):
         "is_email_good":row["is_email_good"],
         "is_gpu_enabled": row["is_gpu_enabled"],
         "oauth_provider": "github" if "oauth_provider" in row and row["oauth_provider"] == 1 else "unknown",
+        "profile_image_key": row["oauth_profile_image_key"],
     }
 
     if total_users and row["rank"] is not None:
