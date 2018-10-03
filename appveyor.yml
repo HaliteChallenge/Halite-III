@@ -58,7 +58,8 @@ build_script:
   - 7z a C:\Halite\python-windows-x86.zip C:\python-windows
 
   # Now build Halite-in-a-Box
-  - 7z e C:\Halite\python-windows-amd64.zip C:\Halite\tools\halite-in-a-box\extra\python-windows
+  - md C:\Halite\tools\halite-in-a-box\extra\python-windows\
+  - 7z e C:\Halite\python-windows-amd64.zip C:\Halite\tools\halite-in-a-box\extra\python-windows\
   # Add hlt_client into bundled libraries
   - cd C:\Halite\tools\hlt_client
   - 7z a C:\Halite\tools\halite-in-a-box\extra\python-windows\python37.zip hlt_client
@@ -66,6 +67,7 @@ build_script:
   - yarn install
   - cd C:\Halite\tools\halite-in-a-box
   - yarn install
+  - yarn build
   - yarn electron-builder -w
 
 artifacts:
