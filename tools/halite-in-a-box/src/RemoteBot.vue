@@ -10,13 +10,13 @@
                 </section>
 
                 <section class="card-r p-4">
-                    <table class="mx-auto">
+                    <table class="mx-auto text-center">
                         <thead>
                             <tr>
-                                <th class="px-4 py-1 border-b border-grey">Rank</th>
-                                <th class="px-4 py-1 border-b border-grey" title="= μ - 3σ">Rating</th>
-                                <th class="px-4 py-1 border-b border-grey">μ</th>
-                                <th class="px-4 py-1 border-b border-grey">σ</th>
+                                <th class="px-4 py-1 border-b border-grey text-center">Rank</th>
+                                <th class="px-4 py-1 border-b border-grey text-center" title="= μ - 3σ">Rating</th>
+                                <th class="px-4 py-1 border-b border-grey text-center">μ</th>
+                                <th class="px-4 py-1 border-b border-grey text-center">σ</th>
                             </tr>
                         </thead>
                         <tbody>

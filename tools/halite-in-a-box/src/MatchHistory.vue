@@ -2,7 +2,7 @@
     <section class="tab-panel flex flex-col">
         <h2>Local Match History</h2>
         <section class="overflow-auto">
-            <table class="w-full text-left table-collapse">
+            <table class="w-full text-left border-collapse">
                 <thead>
                     <tr>
                         <th>#</th>

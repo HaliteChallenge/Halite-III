@@ -4,6 +4,7 @@ import mkdirp from 'mkdirp';
 import path from 'path';
 
 import * as assets from "./assets";
+import * as python from "./python";
 import * as util from "./util";
 
 /**
@@ -30,7 +31,7 @@ export class InterpretedBot extends Bot {
 
     async makePath() {
         if (this.language === InterpretedBot.languages.Python) {
-            return assets.setCwd(path.dirname(this.path), `"${assets.pythonPath()}" "${this.path}"`);
+            return python.botPythonCommand(this.path);
         }
 
         throw new Error("Unrecognized bot interpreter ${this.language}");

@@ -58,44 +58,6 @@ export function embeddedResourcesPath() {
     }
 }
 
-export function pythonPath() {
-    if (process.platform === 'darwin') {
-        return path.join(pythonBasePath(), 'MacOS/python');
-    }
-    else if (process.platform === 'win32') {
-        return path.join(pythonBasePath(), 'python.exe');
-    }
-    return 'python3';
-}
-
-export function pythonBasePath() {
-    if (process.platform === 'darwin') {
-        return path.join(embeddedResourcesPath(), 'python-macos/Contents');
-    }
-    else if (process.platform === 'win32') {
-        return path.join(embeddedResourcesPath(), 'python-windows');
-    }
-    return '';
-}
-
-export function pythonHomePath() {
-    // Otherwise packaged Python doesn't know where it is
-    if (process.platform === 'darwin') {
-        return path.join(pythonBasePath(), 'Resources');
-    }
-    return '';
-}
-
-export function pythonPackagePath(otherPackages) {
-    const packages = [].concat(otherPackages);
-    if (process.platform === 'darwin') {
-        packages.push(path.join(pythonBasePath(), 'Resources/lib/python37.zip'));
-        packages.push(path.join(pythonBasePath(), 'Resources/lib/python3.7/lib-dynload'));
-    }
-    // On Windows, portable Python distribution takes care of this
-    return packages.join(':');
-}
-
 export function toolsPath() {
     return path.join(embeddedResourcesPath(), 'hlt_client');
 }

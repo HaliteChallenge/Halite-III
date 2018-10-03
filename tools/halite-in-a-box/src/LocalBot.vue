@@ -16,7 +16,7 @@
                 </p>
             </section>
 
-            <section class="card-r p-4">
+            <section class="card-r p-4 flex items-center">
                 <p>
                     Load the bot you're working on, then test it
                     against our benchmark bots or the bot you last
@@ -29,11 +29,14 @@
         <template v-if="localBot">
             <section class="flex-1 flex flex-row">
                 <section class="card flex-1 mr-4 mt-4 mb-4">
-                    <button class="btn btn-blue" @click="remoteBenchmark" :disabled="!canRunGame">Play Against Uploaded Bot</button>
+                    <button class="btn btn-blue" @click="remoteBenchmark" :disabled="!userId || !canRunGame">Play Against Uploaded Bot</button>
                     <p>
                         Play your bot against the bot you currently have
                         on the server for 10 matches, to see which is
                         better.
+                    </p>
+                    <p v-if="!userId">
+                        Log in at top to play.
                     </p>
                 </section>
                 <section class="card flex-1 ml-4 mt-4 mb-4">
@@ -52,7 +55,7 @@
                 <section class="card-l p-0 text-left h-full">
                     <button class="btn btn-blue w-full h-full p-4 rounded-r-none" @click="upload">Upload Bot</button>
                 </section>
-                <section class="card-r flex-1">
+                <section class="card-r flex-1 flex items-center justify-center">
                     <p>
                         Submit your bot to halite.io and play against other players.
                     </p>
@@ -78,7 +81,7 @@
     import { setCwd } from './assets';
     import * as bot from './bot';
     import * as games from './games';
-    import { pythonPath } from './assets';
+    import * as python from './python';
     import * as util from './util';
 
     const RECOGNIZED_EXTENSIONS = [ '.py', '.java', '.cpp', '.js', '.zip' ];
@@ -112,10 +115,12 @@
                     // Assume bot is executable
                     let botCommand = `"${this.localBot}"`;
                     if (path.extname(this.localBot).toLowerCase() === '.py') {
-                        botCommand = `"${pythonPath()}" "${this.localBot}"`;
+                        return python.botPythonCommand(this.localBot);
                     }
-                    // chdir to its directory first
-                    return setCwd(path.dirname(this.localBot), botCommand);
+                    else {
+                        // chdir to its directory first
+                        return setCwd(path.dirname(this.localBot), botCommand);
+                    }
                 }
                 return null;
             },

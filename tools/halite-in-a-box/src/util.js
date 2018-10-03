@@ -5,7 +5,8 @@ import mkdirp from 'mkdirp';
 import path from 'path';
 import readline from 'readline';
 
-import { pythonPath, pythonHomePath, pythonPackagePath, embeddedResourcesPath } from './assets';
+import { embeddedResourcesPath } from './assets';
+import * as python from './python';
 import * as logger from './logger';
 
 const DONE_READING = Symbol();
@@ -66,10 +67,10 @@ export async function* callAny(process, args, env) {
 
 export async function* call(args) {
     const fullArgs = ['-m', 'hlt_client', '--json'].concat(args);
-    const subprocess = spawn(pythonPath(), fullArgs, {
+    const subprocess = spawn(python.pythonPath(), fullArgs, {
         env: {
-            'PYTHONPATH': pythonPackagePath([ embeddedResourcesPath() ]),
-            'PYTHONHOME': pythonHomePath(),
+            'PYTHONPATH': python.pythonPackagePath([ embeddedResourcesPath() ]),
+            'PYTHONHOME': python.pythonHomePath(),
         },
     });
     const rl = readline.createInterface({

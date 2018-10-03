@@ -4,57 +4,86 @@
 
         <template slot="content">
             <template v-if="params.status === 'setup'">
-                <p v-if="error" class="error">{{error}}</p>
-                <fieldset>
-                    <legend>Select Bots (1 or 3)</legend>
-                    <div class="draggables">
-                        <div>
+                <p>
+                    Test how your bot performs against benchmark bots
+                    in a custom match-up. Select the bots to play
+                    against and the number of games to play, and we'll
+                    tell you your winrate.
+                </p>
+                <section class="card p-0 bg-gradient-cyan-light">
+                    <section>
+                        <p v-if="error" class="error">{{error}}</p>
+                        <p class="italic">Select bots to play against (1 or 3)</p>
+                    </section>
+                    <section class="flex">
+                        <div class="flex-1 border-r border-grey p-4">
                             <h3>Available Bots</h3>
-                            <p>Drag-and drop bots to the other side to place them in the match.</p>
+                            <p class="italic">
+                                Drag-and drop bots to the other side
+                                to place them in the match.
+                            </p>
                             <draggable v-model="availableBots" :options="{group: {name: 'bots', pull: 'clone', put: false}}" >
-                                <div class="draggable-item" v-for="(bot, index) in availableBots" :key="index">
+                                <div class="text-left bg-indigo-dark m-1 px-4 py-1 rounded" v-for="(bot, index) in availableBots" :key="index">
                                     {{bot.name}}
                                 </div>
                             </draggable>
                         </div>
-                        <div>
+                        <div class="flex-1 selected-bots">
                             <h3>Selected Bots</h3>
-                            <draggable v-model="bots" :options="{group: {name: 'bots'}}" >
-                                <div class="draggable-item" v-for="(bot, index) in bots" :key="index">
+                            <draggable
+                                v-model="bots"
+                                :options="{group: {name: 'bots'}}"
+                            >
+                                <div class="text-left bg-teal-dark m-1 px-4 py-1 rounded" v-for="(bot, index) in bots" :key="index">
                                     {{bot.name}}
                                     <button class="btn btn-blue" @click="() => bots.splice(index, 1)">Remove</button>
                                 </div>
                             </draggable>
                         </div>
-                    </div>
-                </fieldset>
-                <label for="rounds">Number of games to play:</label>
-                <input type="number" name="rounds" id="rounds" v-model="rounds" min="1" />
-                <p>
-                    Your bot will be played against the chosen bot(s) for
-                    the specified number of games.
-                </p>
+                    </section>
+                </section>
+                <section class="card card-lr mt-4">
+                    <section class="card-l p-4">
+                        <label for="rounds">Number of games to play:</label>
+                        <input type="number" name="rounds" id="rounds" v-model="rounds" min="1" />
+                    </section>
+                    <section class="card-r">
+                        <p>
+                            Your bot will be played against the chosen bot(s) for
+                            the specified number of games.
+                        </p>
+                    </section>
+                </section>
             </template>
             <template v-else>
-                <p style="margin: 0;">{{params.message}} ({{params.gamesPlayed}}/{{params.gamesTotal}} games played)</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Bot</th>
-                            <th>Games Won</th>
-                            <th>Win %</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="bot in params.stats">
-                            <td>{{bot.name}}</td>
-                            <td>{{bot.won}}</td>
-                            <td>{{(100 * bot.won / params.gamesTotal).toFixed(1)}}%</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <section class="card card-lr items-stretch">
+                    <section class="card-l flex items-center justify-center">
+                        <p>
+                            {{params.message}}
+                            ({{params.gamesPlayed}}/{{params.gamesTotal}} games played)
+                        </p>
+                    </section>
+                    <section class="card-r px-4 py-2 text-left">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Bot</th>
+                                    <th>Games Won</th>
+                                    <th>Win %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="bot in params.stats">
+                                    <td>{{bot.name}}</td>
+                                    <td>{{bot.won}}</td>
+                                    <td>{{(100 * bot.won / params.gamesTotal).toFixed(1)}}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                </section>
 
-                <div class="scroll-table">
+                <div class="my-4 overflow-y-auto" style="max-height: 40vh;">
                     <table>
                         <caption>Individual Games</caption>
                         <thead>
@@ -88,6 +117,7 @@
                         </tbody>
                     </table>
                 </div>
+                <p>Games will also be visible in the Local Match History tab.</p>
             </template>
         </template>
 
@@ -154,79 +184,8 @@
     }
 </script>
 
-<style lang="scss" scoped>
-    label {
-        display: inline;
-        font-weight: normal;
-    }
-
-    .scroll-table {
-        max-height: 30vh;
-        overflow-y: scroll;
-
-        caption {
-            position: sticky;
-            top: 0;
-            height: 1.5em;
-            background: #FFF;
-        }
-
-        thead th {
-            position: sticky;
-            top: 1.5em;
-            background: #FFF;
-            background-clip: padding-box;
-        }
-    }
-
-    .draggables {
-        display: flex;
-
-        p {
-            margin: 1rem 0;
-        }
-
-        .draggable-item {
-            border: 1px solid #d1d1d1;
-            border-radius: 5px;
-            margin: 0.5em 0;
-            cursor: move;
-            position: relative;
-        }
-
-        >div {
-            flex: 1;
-
-            h3 {
-                font-size: 1em;
-                font-style: italic;
-                margin: 0;
-            }
-
-            >div {
-                /* Draggable container */
-                height: 100%;
-
-                button {
-                    height: auto;
-                    padding: 0.25em 2em;
-                    line-height: 1.5em;
-                    margin: 0;
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                }
-            }
-        }
-
-        >div:first-child {
-            margin-right: 0.5em;
-        }
-
-        >div:last-child {
-            border-left: 0.1rem solid #d1d1d1;
-            padding-left: 0.5em;
-        }
+<style type="css">
+    .selected-bots > div {
+        height: 100%;
     }
 </style>

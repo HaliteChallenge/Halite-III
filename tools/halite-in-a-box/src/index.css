@@ -24,6 +24,22 @@ p {
     @apply my-2;
 }
 
+table {
+    @apply w-full border-collapse;
+}
+
+table caption {
+    @apply font-bold;
+}
+
+table td {
+    @apply py-2;
+}
+
+th {
+    @apply text-left border-b border-grey;
+}
+
 .error {
     @apply p-2 text-red-dark bg-red-lightest border-red-dark border-2;
 }
@@ -37,15 +53,23 @@ p {
 }
 
 .btn-blue {
-    @apply bg-blue text-white;
+    @apply bg-indigo-dark text-white;
+}
+
+.btn-blue:hover {
+    @apply bg-indigo-darker;
+}
+
+.btn[disabled] {
+    @apply bg-grey-darkest text-grey cursor-not-allowed;
+}
+
+.btn[disabled]:hover {
+    @apply bg-grey-darkest;
 }
 
 .modal-buttons .btn {
     @apply px-8 ml-4;
-}
-
-.btn-blue:hover {
-    @apply bg-blue-dark;
 }
 
 .card {
@@ -53,7 +77,7 @@ p {
 }
 
 .card-lr {
-    @apply flex flex-row items-center p-0;
+    @apply flex flex-row items-stretch p-0;
 }
 
 .card-l {
