@@ -154,7 +154,7 @@ def send_confirmation_email(recipient):
 
     :param notify.Recipient recipient:
     """
-    notify.add_user_to_contact_list(recipient)
+    notify.add_user_to_contact_list(recipient._asdict()['email'])
     notify.send_templated_notification(
         recipient,
         config.CONFIRMATION_TEMPLATE,
