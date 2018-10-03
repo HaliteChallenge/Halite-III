@@ -59,7 +59,7 @@ build_script:
 
   # Now build Halite-in-a-Box
   - md C:\Halite\tools\halite-in-a-box\extra\python-windows\
-  - 7z e C:\Halite\python-windows-amd64.zip C:\Halite\tools\halite-in-a-box\extra\python-windows\
+  - 7z x C:\Halite\python-windows-amd64.zip C:\Halite\tools\halite-in-a-box\extra\python-windows\
   # Add hlt_client into bundled libraries
   - cd C:\Halite\tools\hlt_client
   - 7z a C:\Halite\tools\halite-in-a-box\extra\python-windows\python37.zip hlt_client
