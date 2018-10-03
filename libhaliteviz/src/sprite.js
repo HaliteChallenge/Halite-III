@@ -1,5 +1,4 @@
 import * as PIXI from "pixi.js";
-import {MotionBlurFilter} from '@pixi/filter-motion-blur';
 
 import * as assets from "./assets";
 import {CELL_SIZE, PLAYER_COLORS} from "./assets";
@@ -32,12 +31,8 @@ export default class Ship {
         this.highlight = new PIXI.Sprite(spriteTexture);
         this.highlight.visible = false;
         this.highlight.alpha = 0.7;
-        this.motionblur = new MotionBlurFilter([0, 0], 9, 0);
-        this.sprite.filters = [this.motionblur];
-        this.inspiredSprite.filters = [this.motionblur];
 
         this.halo = new PIXI.Sprite(assets.HALO_SPRITE);
-        this.halo.filters = [this.motionblur];
         this.halo.visible = false;
 
         this.container = null;
@@ -210,8 +205,6 @@ export default class Ship {
             // Use a bit of easing on the time to make it look
             // nicer (cubic in/out easing)
             let t = this.visualizer.time;
-            this.motionblur.velocity.set(x_move * -20 * t * (t - 1),
-                                         y_move * -20 * t * (t - 1));
             t /= 0.5;
             if (t < 1) {
                 t = t*t*t/2;
