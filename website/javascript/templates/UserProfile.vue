@@ -694,6 +694,9 @@
               `${window.location.origin}${window.location.pathname}?user_id=${user.user_id}`)
           }
 
+          const titleEl = document.querySelector('title')
+          titleEl.innerText = titleEl.innerText.replace('User Profile', `User Profile - ${this.user.username}`)
+
           if (user.team_id) {
             api.get_team(user.team_id).then((team) => {
               this.team = team
