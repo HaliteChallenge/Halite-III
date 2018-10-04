@@ -1,4 +1,5 @@
 const path = require('path');
+const MarkdownIt = require('markdown-it');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
@@ -72,7 +73,15 @@ module.exports = {
                         },
                     },
                     {
-                        loader: "markdown-loader",
+                        loader: path.join(__dirname, "function-loader.js"),
+                        options: {
+                            fn: function(content) {
+                                return MarkdownIt({
+                                    html: true,
+                                    typographer: true,
+                                }).render(content);
+                            }
+                        },
                     },
                     {
                         loader: "front-matter-loader",
