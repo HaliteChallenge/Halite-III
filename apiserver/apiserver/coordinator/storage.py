@@ -4,6 +4,7 @@ import hashlib
 import io
 import os.path
 import tempfile
+import threading
 import zipfile
 
 import flask
@@ -19,6 +20,10 @@ from .blueprint import coordinator_api
 
 # Cache the worker blob to avoid repeated requests to object storage
 cache_dir = tempfile.TemporaryDirectory()
+# Lock that prevents multiple threads from initializing the cache
+cache_lock = threading.Lock()
+# CV for other threads to block upon
+cache_cv = threading.Condition()
 cache = FileSystemCache(cache_dir.name, default_timeout=60*5)
 
 
@@ -28,17 +33,27 @@ def download_source_blob():
 
     cached_blob = cache.get(config.WORKER_ARTIFACT_KEY)
     if cached_blob is None:
-        print("Getting from GCloud", config.WORKER_ARTIFACT_KEY)
-        # Retrieve from GCloud
-        try:
-            gcloud_blob = gcloud_storage.Blob(
-                config.WORKER_ARTIFACT_KEY,
-                model.get_deployed_artifacts_bucket(),
-                chunk_size=262144)
-            cached_blob = gcloud_blob.download_as_string()
-            cache.set(config.WORKER_ARTIFACT_KEY, cached_blob)
-        except gcloud_exceptions.NotFound:
-            raise util.APIError(404, message="Worker blob not found.")
+        if cache_lock.acquire(blocking=False):
+            print("Getting from GCloud", config.WORKER_ARTIFACT_KEY)
+            # Retrieve from GCloud
+            try:
+                gcloud_blob = gcloud_storage.Blob(
+                    config.WORKER_ARTIFACT_KEY,
+                    model.get_deployed_artifacts_bucket(),
+                    chunk_size=10 * 262144)
+                cached_blob = gcloud_blob.download_as_string()
+                cache.set(config.WORKER_ARTIFACT_KEY, cached_blob)
+            except gcloud_exceptions.NotFound:
+                raise util.APIError(404, message="Worker blob not found.")
+            finally:
+                cache_lock.release()
+            with cache_cv:
+                cache_cv.notify_all()
+        else:
+            with cache_cv:
+                while not cache.has(config.WORKER_ARTIFACT_KEY):
+                    cache_cv.wait()
+        cached_blob = cache.get(config.WORKER_ARTIFACT_KEY)
 
     if cached_blob is None:
         raise util.APIError(404, message="Worker blob not found.")
