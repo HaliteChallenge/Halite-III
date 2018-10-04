@@ -30,7 +30,7 @@ done <<< "$DB_INSTANCE"
 # to start up initially
 while ! screen -list | grep -q api; do
 screen -S api -d -m /bin/bash -c \
-    "NEW_RELIC_CONFIG_FILE=newrelic.ini PYTHONPATH=$(pwd) newrelic-admin run-program gunicorn apiserver.server:app -w 4 -b 0.0.0.0:5000"
+    "NEW_RELIC_CONFIG_FILE=newrelic.ini PYTHONPATH=$(pwd) newrelic-admin run-program gunicorn apiserver.server:app -w 12 -b 0.0.0.0:5000"
 sleep 5
 done
 
