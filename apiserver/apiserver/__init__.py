@@ -32,3 +32,6 @@ def setup_logging(log_name, logger):
     handler = logging.handlers.RotatingFileHandler(log_name, maxBytes=1024*1024*20, backupCount=20)
     handler.setLevel(logging.DEBUG)
     logger.addHandler(handler)
+    # Reduce amount of console spam
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
+    logging.getLogger("requests").setLevel(logging.WARNING)
