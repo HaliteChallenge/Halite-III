@@ -1,7 +1,21 @@
 <template>
     <section class="tab-panel">
-        <section class="card flex-no-shrink">
-            <h2>Halite in a Box</h2>
+        <section class="card card-lr flex-no-shrink">
+            <section class="card-l flex items-center justify-center">
+                <h2>Halite in a Box</h2>
+            </section>
+            <section class="card-r p-4 text-left">
+                <p>
+                    A tool to help you develop your bot by giving you
+                    ways to evaluate how well it performs before
+                    submission.
+                </p>
+                <p>
+                    Run games locally with the 'Local Bot' tab, then
+                    review past games, or check on how your submitted
+                    bot is doing.
+                </p>
+            </section>
         </section>
         <section class="card card-lr my-4 flex-no-shrink">
             <section class="card-l flex items-center justify-center">
