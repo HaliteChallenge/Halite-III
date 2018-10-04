@@ -99,7 +99,7 @@
             detectInterpreter() {
                 let path = 'python3';
                 if (process.platform === 'win32') {
-                    path = 'cmd.exe /C py -3';
+                    path = 'py';
                 }
                 python.validateCustomPython(path).then((result) => {
                     if (!result.valid) {
