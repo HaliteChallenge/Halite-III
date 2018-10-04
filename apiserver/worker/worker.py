@@ -37,7 +37,7 @@ MAX_LOG_FILE_SIZE = 50 * 1024  # 50 KiB
 
 # Used to ensure system is running (watchdog timer)
 TIME = datetime.datetime.now()
-TIME_THRESHOLD = 60 * 10 # 10 mins in s
+TIME_THRESHOLD = 60 * 18 # 18 mins in s
 
 # Used by Watchdog timer to keep time
 LOCK = threading.Lock()
