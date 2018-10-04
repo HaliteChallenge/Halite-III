@@ -28,6 +28,7 @@
                   <profile-image
                     :username="player.username"
                     :profileImage="player.profile_image_key"
+                    v-bind:title="player.rating_info + (player.timed_out ? ' timed out or errored in this game. See the log for details.' : '')"
                     v-bind:className="{ 'timed-out': player.timed_out, 'seed-player': player.player_index == 0 }"
                   />
                     <span class="username">
