@@ -83,7 +83,38 @@ export function setAssetRoot(path) {
 
     const promises = [];
 
-    if (theme.selectedTheme === "Halite II") {
+    if (theme.selectedTheme === "Colorblind") {
+        promises.push(loadSpritesheet(
+            require("../assets/colorblind.json"),
+            ASSET_ROOT + require("../assets/colorblind.png"),
+        ).then((sheet) => {
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-cb-0.png"],
+                sheet.textures["turtle-cb-0.png"],
+                sheet.textures["turtle-cb-0.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-cb-1.png"],
+                sheet.textures["turtle-cb-1.png"],
+                sheet.textures["turtle-cb-1.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-cb-2.png"],
+                sheet.textures["turtle-cb-2.png"],
+                sheet.textures["turtle-cb-2.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-cb-3.png"],
+                sheet.textures["turtle-cb-3.png"],
+                sheet.textures["turtle-cb-3.png"],
+            ]);
+            BASE_SPRITES.push(sheet.textures["base-cb-0.png"]);
+            BASE_SPRITES.push(sheet.textures["base-cb-1.png"]);
+            BASE_SPRITES.push(sheet.textures["base-cb-2.png"]);
+            BASE_SPRITES.push(sheet.textures["base-cb-3.png"]);
+        }));
+    }
+    else if (theme.selectedTheme === "Halite II") {
         promises.push(loadSpritesheet(
             require("../assets/planet-small.json"),
             ASSET_ROOT + require("../assets/planet-small.png"),

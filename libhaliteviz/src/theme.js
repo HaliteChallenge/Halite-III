@@ -7,6 +7,14 @@ export const THEMES = {
         },
         colorTheme: "TheSea",
     },
+    "Colorblind": {
+        tintFactory: false,
+        tintShip: false,
+        scale: {
+            ship: 1,
+        },
+        colorTheme: "Colorblind",
+    },
     "Halite II": {
         tintFactory: true,
         tintShip: true,
