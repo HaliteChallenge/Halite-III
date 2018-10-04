@@ -14,6 +14,12 @@
                         >
                             Choose Custom Python Interpreter
                         </button>
+                        <button
+                            class="btn btn-blue"
+                            @click="detectInterpreter"
+                        >
+                            Detect Python Interpreter
+                        </button>
 
                         <p v-if="error" class="error">{{error}}</p>
                     </template>
@@ -89,6 +95,22 @@
                         }
                     });
                 }
+            },
+            detectInterpreter() {
+                let path = 'python3';
+                if (process.platform === 'win32') {
+                    path = 'cmd.exe /C py -3';
+                }
+                python.validateCustomPython(path).then((result) => {
+                    if (!result.valid) {
+                        this.error = result.message;
+                    }
+                    else {
+                        python.setCustomPython(path);
+                        this.pyint = 'custom';
+                        this.pyintCustom = python.getCustomPython();
+                    }
+                });
             },
             resetInterpreter() {
                 python.setCustomPython('');
