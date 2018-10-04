@@ -59,8 +59,28 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(png|svg)$/,
+                test: /\.(png|svg|gif)$/,
                 loader: "url-loader",
+            },
+            {
+                test: /\.md$/,
+                use: [
+                    {
+                        loader: "html-loader",
+                        options: {
+                            root: path.resolve(__dirname, '../../website'),
+                        },
+                    },
+                    {
+                        loader: "markdown-loader",
+                    },
+                    {
+                        loader: "front-matter-loader",
+                        options: {
+                            onlyBody: true,
+                        },
+                    },
+                ]
             },
         ],
     },

@@ -91,7 +91,7 @@
                 }
             },
             resetInterpreter() {
-                python.setCustomPython(null);
+                python.setCustomPython('');
                 this.pyint = 'embedded';
             },
         },

@@ -30,6 +30,7 @@
                     :userId="userId"
                 />
                 <!-- <LocalBotGym slot="tab-2" :localBot="localBot" /> -->
+                <Help slot="tab-3" />
                 <Settings slot="tab-4" />
             </tab-bar>
         </div>
@@ -51,6 +52,7 @@
     import LocalBot from './LocalBot.vue';
     import LocalBotGym from './LocalBotGym.vue';
     import Settings from './SettingsPage.vue';
+    import Help from './HelpPage.vue';
 
     import logo from "../../../website/assets/images/full_logo.svg";
 
@@ -61,6 +63,7 @@
             RemoteBot,
             LocalBot,
             LocalBotGym,
+            Help,
             Settings,
         },
         data() {
