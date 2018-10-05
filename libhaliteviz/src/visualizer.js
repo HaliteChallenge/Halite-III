@@ -418,7 +418,7 @@ export class HaliteVisualizer {
         }
 
         if (prevFrame !== this.frame) {
-            this.update();
+            this.update(time > 0 ? 1 : -1);
         }
         this.onUpdate.dispatch();
     }
