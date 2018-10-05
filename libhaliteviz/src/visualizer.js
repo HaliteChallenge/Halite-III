@@ -738,9 +738,6 @@ export class HaliteVisualizer {
                 anim.draw(this.camera, frameTime - anim.start);
                 this.animationQueue.push(anim);
             }
-            else if (frameTime < anim.start) {
-                this.animationQueue.push(anim);
-            }
             else {
                 anim.finish();
             }
