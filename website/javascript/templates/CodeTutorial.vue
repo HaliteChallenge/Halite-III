@@ -287,14 +287,14 @@ export default {
       }, () => {
         this.uploadMessage = 'Hmm, something went wrong.'
       })
-      window.ga('send', 'event', 'tutorial', 'tutorial-flow', 'click-upload-bot')
+      window.ga('send', 'event', 'tutorial', 'click-upload-bot', 'tutorial-flow')
     },
     runGame: function () {
       this.$refs.stepper.runGame({
         width: 32,
         height: 32
       })
-      window.ga('send', 'event', 'tutorial', 'tutorial-flow', 'click-run-game')
+      window.ga('send', 'event', 'tutorial', 'click-run-game', 'tutorial-flow')
     }
   }
 }
