@@ -57,8 +57,8 @@ export class Map {
         // Generate the texture for a single map cell (16x16 white
         // square with a 2 pixel 70% black border blended on top)
         // Could probably be replaced with a real texture
-        const borderWidth = 0;
-        const textureWidth = 16;
+        let borderWidth = 0;
+        let textureWidth = 16;
         let g = new PIXI.Graphics();
         g.beginFill(0xFFFFFF, 1.0);
         g.drawRect(0, 0, textureWidth, textureWidth);
@@ -69,14 +69,25 @@ export class Map {
         g.drawRect(0, borderWidth, borderWidth, textureWidth - borderWidth);
         g.drawRect(textureWidth - borderWidth, borderWidth, borderWidth, textureWidth - borderWidth);
         g.drawRect(borderWidth, textureWidth - borderWidth, textureWidth - 2*borderWidth, borderWidth);
-        // END TWEAK: square cells
         const normalTex = renderer.generateTexture(g);
+
+        borderWidth = 3;
+        g = new PIXI.Graphics();
+        // Be careful not to overlap when drawing the border, or else
+        // some parts will be darker than others
+        g.beginFill(0xFFFFFF, 1);
+        g.drawRect(0, 0, textureWidth, borderWidth);
+        g.drawRect(0, borderWidth, borderWidth, textureWidth - borderWidth);
+        g.drawRect(textureWidth - borderWidth, borderWidth, borderWidth, textureWidth - borderWidth);
+        g.drawRect(borderWidth, textureWidth - borderWidth, textureWidth - 2*borderWidth, borderWidth);
+        const highlightTex = renderer.generateTexture(g);
+
 
         this.cells = [];
 
         // Cell placed underneath other cells to highlight mouse
         // position
-        this.pointer = PIXI.Sprite.from(normalTex);
+        this.pointer = PIXI.Sprite.from(highlightTex);
         // Cell placed underneath other cells to highlight selection
         this.highlight = PIXI.Sprite.from(normalTex);
 
