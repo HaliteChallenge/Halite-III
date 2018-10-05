@@ -114,7 +114,7 @@ export default {
       color: #1BB15A;
     }
     &.player-2{
-      color: #966AFB;
+      color: #E65598;
     }
     &.player-3{
       color: #F54356;
