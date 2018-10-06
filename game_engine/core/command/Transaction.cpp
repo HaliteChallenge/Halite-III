@@ -10,15 +10,12 @@ namespace hlt {
  * Dump energy onto a cell.
  *
  * @param store The game store.
- * @param entity The entity dumping energy.
  * @param location The location at which to dump.
  * @param cell The cell at which to dump.
  * @param energy The dumped amount of energy.
  */
-void dump_energy(Store &store, Entity &entity, const Location &location, Cell &cell, energy_type energy) {
-    // Decrease the entity's energy.
-    entity.energy -= energy;
-    if (cell.owner == Player::None) {
+void dump_energy(Store &store, const Location &location, Cell &cell, energy_type energy) {
+     if (cell.owner == Player::None) {
         // Just dump directly onto the cell.
         cell.energy += energy;
         store.map_total_energy += energy;
@@ -42,6 +39,12 @@ void dump_energy(Store &store, Entity &entity, const Location &location, Cell &c
             assert(false);
         }
     }
+}
+
+void dump_energy(Store &store, Entity &entity, const Location &location, Cell &cell, energy_type energy) {
+    // Decrease the entity's energy.
+    entity.energy -= energy;
+    dump_energy(store, location, cell, energy);
 }
 
 /**
@@ -97,37 +100,35 @@ bool ConstructTransaction::check() {
 
 /** If the transaction may be committed, commit the transaction. */
 void ConstructTransaction::commit() {
+    const auto cost = Constants::get().DROPOFF_COST;
     for (auto &[player_id, constructs] : commands) {
         auto &player = store.get_player(player_id);
         for (const ConstructCommand &command : constructs) {
-            auto cost = Constants::get().DROPOFF_COST;
             const auto entity_id = command.entity;
             const auto &entity = store.get_entity(entity_id);
             const auto location = player.get_entity_location(entity_id);
             auto &cell = map.at(location);
 
-            // Cost is reduced by cargo + halite on cell
-            if (cell.energy + entity.energy >= cost) {
-                // Give player extra halite
-                cost = 0;
-                player.energy += cell.energy + entity.energy - cost;
-            }
-            else {
-                cost -= cell.energy + entity.energy;
-            }
-
             // Mark as owned, clear contents of cell
             cell.owner = player_id;
             player.dropoffs.emplace_back(store.new_dropoff(location));
             store.map_total_energy -= cell.energy;
+
+            // Cost is reduced by cargo + halite on cell
+            const auto credit = cell.energy + entity.energy;
+
             cell.energy = 0;
             cell.entity = Entity::None;
             event_generated<ConstructionEvent>(location, player_id, command.entity);
             cell_updated(location);
-            player.remove_entity(entity_id);
-            store.delete_entity(entity_id);
+
+            // Use dump_halite for stats tracking
+            dump_energy(store, location, cell, credit);
             // Charge player
             player.energy -= cost;
+
+            player.remove_entity(entity_id);
+            store.delete_entity(entity_id);
         }
     }
 }
