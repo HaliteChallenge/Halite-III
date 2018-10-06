@@ -58,6 +58,16 @@ export const Alert = {
       })
     })
 
+    if (window.scroll) {
+      window.scroll({
+        top: 0,
+        behavior: 'smooth',
+      })
+    }
+    outerContainer.scrollIntoView(true, {
+      behavior: 'smooth',
+    })
+
     if(auto_hide)
     {
      setTimeout(function() {

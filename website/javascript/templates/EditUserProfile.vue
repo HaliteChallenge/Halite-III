@@ -10,10 +10,10 @@
                     <h1>Edit your profile</h1>
                 </div>
 
-                <h2 v-if="!user.is_email_good" class="form-heading">Resend Verification Mail</h2>
-                <p v-if="!user.is_email_good">If you cant find our account verification mail, resend a verification mail to your mail now.</p>
+                <h2 v-if="user && !user.is_email_good" class="form-heading">Resend Verification Mail</h2>
+                <p v-if="user && !user.is_email_good">If you cant find our account verification mail, resend a verification mail to your mail now.</p>
                 <br/>
-                <button v-if="!user.is_email_good" class="btn btn-primary" v-on:click="resend_verification_email">Resend Verfication</button>
+                <button v-if="user && !user.is_email_good" class="btn btn-primary" v-on:click="resend_verification_email">Resend Verfication</button>
 
                 <h2 class="form-heading">personal info</h2>
                 <form v-on:submit.prevent="submit" class="create-account-form">
@@ -329,6 +329,19 @@ export default {
         if (this.level !== 'High School' && this.email) {
           request['email'] = this.email
         }
+        api.update_me(this.user.user_id, request).then((response) => {
+          let message = 'You have updated your profile successfully.';
+          if (response.message)
+            message += ' ' + response.message;
+          Alert.show(message, 'success', true)
+          this.gaData('account', 'edit-profile-success', 'edit-profile-flow')
+        }, (error) => {
+          const errorMessage = error.responseJSON
+            ? error.responseJSON.message
+            : "Sorry, we couldn't update your profile. Please try again later."
+          Alert.show(errorMessage, 'error')
+          this.gaData('account', 'edit-profile-error', 'edit-profile-flow')
+        })
       },
       gaData: function (category, action, label) {
         utils.gaEvent(category, action, label)
