@@ -315,6 +315,9 @@ def find_idle_seed_player(conn, ranked_users, seed_filter, restrictions=False):
             model.game_participants.join(
                 model.games,
                 (model.games.c.id == model.game_participants.c.game_id) &
+                # Don't consider challenge games. For people who get
+                # challenged a lot, this avoids punishing them accidentally.
+                (model.games.c.challenge_id == None) &
                 # Only consider games in the past day. This speeds up
                 # performance drastically (1.2s -> 0.2s) and should
                 # not materially affect matchmaking: if a user hasn't
