@@ -55,7 +55,7 @@
                     <h2 id="section_account_info" class="form-heading">Account info</h2>
 
                     <div class="form-group">
-                        <label for="country">Your GitHub username</label>
+                        <label for="country">Your username</label>
                         <div class="relative-container">
                             <input type="text" class="form-control" placeholder="Enter your username" v-model="username" disabled>
                             <i class="fa fa-lock lock"></i>
