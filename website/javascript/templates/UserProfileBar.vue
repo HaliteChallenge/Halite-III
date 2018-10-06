@@ -36,13 +36,13 @@ export default {
         if (me) {
           return {
             username: me.username,
+            profile_image: me.profile_image,
             isMobile: isMobile,
             isCreateAccount: window.location.pathname == '/create-account'
           }
         }
         return {
           username: '',
-          profile_image: '',
           profile_image: null,
           isMobile: isMobile,
           isCreateAccount: false // window.location.pathname == '/create-account'
