@@ -5,7 +5,7 @@
           <profile-image
             height="40"
             :username="username"
-            :profileImage="username"
+            :profileImage="profile_image"
           />
           <span class="user-name">{{username}}</span>
           <i class="fa fa-sort-down"></i>
@@ -42,6 +42,7 @@ export default {
         }
         return {
           username: '',
+          profile_image: '',
           profile_image: null,
           isMobile: isMobile,
           isCreateAccount: false // window.location.pathname == '/create-account'
@@ -50,6 +51,7 @@ export default {
       mounted: function () {
         api.me().then((user) => {
           this.username = user.username
+          this.profile_image = user.profile_image_key
           $('profile').addClass('container-loaded')
           $('submitbutton').addClass('container-loaded')
         })
