@@ -290,6 +290,11 @@ void HaliteImpl::process_turn() {
                 extracted = gained = cell.energy;
             }
 
+            // Don't take more than the entity can hold.
+            if (extracted + entity.energy > max_energy) {
+                extracted = max_energy - entity.energy;
+            }
+
             // Apply bonus for inspired entities
             if (entity.is_inspired && bonus_multiplier > 0) {
                 gained += bonus_multiplier * gained;
