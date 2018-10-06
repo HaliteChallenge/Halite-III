@@ -494,8 +494,12 @@ export default {
           this.recording = true;
           visualizer.encodeVideo().then((blob) => {
             this.recording = false;
-            console.log(blob);
-            saveAs(blob, "video.webm");
+            if (this.game && this.game.game_id) {
+              saveAs(blob, `${this.game.game_id}.webm`);
+            }
+            else {
+              saveAs(blob, 'video.webm');
+            }
           });
         }
       }
