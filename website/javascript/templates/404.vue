@@ -6,7 +6,7 @@
         </div>
         <div>
           <br>
-          <img src="/assets/images/home-map.png" alt="Map">
+          <img src="/assets/images/home-cubes.png" alt="Cubes">
         </div>
         <div> 
           <p class="d1 c-org font-headline"> Return <a href="/" target="_blank">home</a> or navigate to <a href="https://2017.halite.io/" target="_blank">Halite II</a>.</p>
