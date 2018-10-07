@@ -58,7 +58,7 @@
                 <a class="btn btn-primary" href="/learn-programming-challenge/">Play now</a>
             </div>
             <div class="col-md-6">
-                <img src="/assets/images/home-map.png" alt="Cubes">
+                <img src="/assets/images/home-cubes.png" alt="Cubes">
             </div>
         </div>
         <div class="row section-overview">
