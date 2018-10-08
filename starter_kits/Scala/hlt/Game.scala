@@ -1,6 +1,6 @@
 package hlt
 
-class Game(name: String) {
+class Game {
 
   // Read in game parameters
   Constants.populateConstants(Input.readLine)
@@ -15,7 +15,7 @@ class Game(name: String) {
   val me: Player = players(myId.id)
   var turnNumber = 0
 
-  def ready() = System.out.println(name)
+  def ready(name: String) = System.out.println(name)
 
 
   def updateFrame() = {

@@ -6,9 +6,9 @@ object MyBot {
   def main(args: Array[String]) = {
     val rngSeed = if (args.length > 1) args(1).toInt else System.nanoTime
     val rng = new Random(rngSeed)
-    val game = new Game("MyBot")
+    val game = new Game()
     Log.log(s"Successfully created bot! My Player ID is $game.myId. Bot rng seed is $rngSeed.")
-    game.ready()
+    game.ready("MyBot")
     while (true) {
       game.updateFrame()
       val me = game.me
