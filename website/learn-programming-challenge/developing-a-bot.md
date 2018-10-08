@@ -63,7 +63,7 @@ When your bot times out or errors on the game servers, we save and display a log
 <br/>
 
 ##### Test new vs. old before upload
-Before submitting a new bot, we recommend running some games against the previous version of your bot. You can play your bot against older versions using the CLI, or on our website here.
+Before submitting a new bot, we recommend running some games against the previous version of your bot. You can play your bot against older versions using the CLI.
 
 <br/>
 
