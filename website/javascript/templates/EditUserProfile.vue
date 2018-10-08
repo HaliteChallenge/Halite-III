@@ -94,7 +94,7 @@
                   <i class="xline xline-top"></i>
                   <div class="no-team" v-if="!team">
                     <h2 class="form-heading">TEAM AFFILIATION</h2>
-                    <div class="tips">You are not affiliated with a team. Start a new team or join an existing one.</div>
+                    <div class="tips">You are not affiliated with a team. <br/><br/>Creating or joining a team is a permanent account conversion!</div>
                     <h3>Create Team</h3>
                     <div class="input-tips">New Team Name</div>
                     <input type="text" class="form-control" placeholder="Team name" v-model="new_team_name">
