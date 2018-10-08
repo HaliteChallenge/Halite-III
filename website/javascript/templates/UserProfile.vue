@@ -129,7 +129,7 @@
                         <div class="data-distribution">
                             <div class="data-line" ref="dataLine"></div>
                             <div class="scale min-line">0%</div>
-                            <div class="scale max-line">100%</div>
+                            <div class="scale max-line">150%</div>
                             <!-- Use test data -->
                             <div class="scale tire-line" :style="getLeftLen(efficiency.min)">{{(efficiency.min * 100).toFixed(0)}}%</div>
                             <div class="scale user-line" :style="getLeftLen(efficiency.mean)">{{(efficiency.mean * 100).toFixed(1)}}%</div>
@@ -1181,8 +1181,8 @@
         },
         // Get the location of the data by percentage --- issue #397
         getLeftLen(data) {
-            data = Math.max(0, Math.min(1, data))
-            return { left: `calc(${data * 100}% - 12px)` }
+            data = Math.max(0, Math.min(1.5, data))
+            return { left: `calc(${(data / 1.5) * 100}% - 12px)` }
         }
       }
     }
