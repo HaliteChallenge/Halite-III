@@ -9,6 +9,7 @@ import (
 
 // Game - Structure holding all metadata for the game
 type Game struct {
+    botName    string
 	numPlayers int
 	Me         *Player
 	players    []*Player
@@ -20,9 +21,13 @@ func (g *Game) String() string {
 	return fmt.Sprintf("Game{NumPlayers=%d,Me=%s,players=%d,Map=%s}", g.numPlayers, g.Me.String(), len(g.players), g.Map.String())
 }
 
+// Ready - When run, notifies the server that the bot is ready to start
+func (g *Game) Ready() {
+	fmt.Println(g.botName)
+}
+
 // NewGame - Creates a new game for bot named by the parameter
 func NewGame(name string) *Game {
-	fmt.Println(name)
 	var input = input.GetInstance()
 	if !input.Scanner.Scan() {
 		return nil
@@ -38,7 +43,7 @@ func NewGame(name string) *Game {
 	}
 	var gameMap = GenerateGameMap()
 	var me = players[myID]
-	return &Game{numPlayers, me, players, gameMap, 0}
+	return &Game{name, numPlayers, me, players, gameMap, 0}
 }
 
 // UpdateFrame - Runs a single turn in the game

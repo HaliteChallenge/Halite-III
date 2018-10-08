@@ -8,6 +8,7 @@ object MyBot {
     val rng = new Random(rngSeed)
     val game = new Game("MyBot")
     Log.log(s"Successfully created bot! My Player ID is $game.myId. Bot rng seed is $rngSeed.")
+    game.ready()
     while (true) {
       game.updateFrame()
       val me = game.me
