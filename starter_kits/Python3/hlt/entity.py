@@ -2,6 +2,8 @@ import abc
 
 from . import commands, constants
 from .positionals import Direction, Position
+from .networking import read_input
+
 
 class Entity(abc.ABC):
     """
@@ -19,7 +21,7 @@ class Entity(abc.ABC):
         :param player_id: The player id for the player who owns this entity
         :return: An instance of Entity along with its id
         """
-        ship_id, x_position, y_position = map(int, input().split())
+        ship_id, x_position, y_position = map(int, read_input().split())
         return ship_id, Entity(player_id, ship_id, Position(x_position, y_position))
 
     def __repr__(self):
@@ -84,7 +86,7 @@ class Ship(Entity):
         :param player_id: The id of the player who owns this ship
         :return: The ship id and ship object
         """
-        ship_id, x_position, y_position, halite = map(int, input().split())
+        ship_id, x_position, y_position, halite = map(int, read_input().split())
         return ship_id, Ship(player_id, ship_id, Position(x_position, y_position), halite)
 
     def __repr__(self):
