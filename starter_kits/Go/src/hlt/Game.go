@@ -20,9 +20,13 @@ func (g *Game) String() string {
 	return fmt.Sprintf("Game{NumPlayers=%d,Me=%s,players=%d,Map=%s}", g.numPlayers, g.Me.String(), len(g.players), g.Map.String())
 }
 
-// NewGame - Creates a new game for bot named by the parameter
-func NewGame(name string) *Game {
+// Ready - When run, notifies the server that the bot is ready to start
+func (g *Game) Ready(name string) {
 	fmt.Println(name)
+}
+
+// NewGame - Creates a new game for bot named by the parameter
+func NewGame() *Game {
 	var input = input.GetInstance()
 	if !input.Scanner.Scan() {
 		return nil

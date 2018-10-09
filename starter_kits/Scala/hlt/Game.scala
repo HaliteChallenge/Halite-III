@@ -1,20 +1,22 @@
 package hlt
 
-class Game(name: String) {
-  System.out.println(name)
+class Game {
 
   // Read in game parameters
   Constants.populateConstants(Input.readLine)
   val input: Input = Input.readInput
   val numPlayers: Int = input.getInt
-  val me: Player = players(myId.id)
 
   // Load players and game map
-  Log.open(myId.id)
   var myId = new PlayerId(input.getInt)
+  Log.open(myId.id)
   var players: List[Player] = List.tabulate(numPlayers)(_ => Player.initialize)
   var gameMap: GameMap = GameMap._generate
+  val me: Player = players(myId.id)
   var turnNumber = 0
+
+  def ready(name: String) = System.out.println(name)
+
 
   def updateFrame() = {
     turnNumber = Input.readInput.getInt

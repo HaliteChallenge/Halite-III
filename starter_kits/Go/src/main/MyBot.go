@@ -34,13 +34,14 @@ func main() {
 		seed, _ = strconv.ParseInt(args[0], 10, 64)
 	}
 	rand.Seed(seed)
-	var game = hlt.NewGame("MyBot")
+	var game = hlt.NewGame()
 
 	var config = gameconfig.GetInstance()
 	fileLogger := log.NewFileLogger(game.Me.ID)
 	var logger = fileLogger.Logger
 	logger.Printf("Successfully created bot! My Player ID is %d. Bot rng seed is %d.", game.Me.ID, seed)
 	gracefulExit(fileLogger)
+	game.Ready("MyBot")
 	for {
 		game.UpdateFrame()
 		var me = game.Me
