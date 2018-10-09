@@ -35,7 +35,15 @@
                       <template v-if="player.leaderboard_rank">
                         ({{ player.leaderboard_rank }})
                       </template>
-                      <template v-if="player.username.length <= 16">
+                      <template v-if="player.team_name">
+                        <template v-if="player.team_name.length <= 16">
+                          {{ player.team_name }}
+                        </template>
+                        <template v-else>
+                          {{ player.team_name.slice(0, 12) }}&hellip;
+                        </template>
+                      </template>
+                      <template v-else-if="player.username.length <= 16">
                         {{ player.username }}
                       </template>
                       <template v-else>

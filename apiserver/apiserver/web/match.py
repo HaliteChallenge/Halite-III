@@ -126,7 +126,11 @@ def list_matches_helper(offset, limit, participant_clause,
         for match in matches.fetchall():
             participants = conn.execute(
                 model.game_participants.join(
-                    model.users,
+                    model.users.join(
+                        model.teams,
+                        model.users.c.team_id == model.teams.c.id,
+                        isouter=True,
+                    ),
                     model.game_participants.c.user_id == model.users.c.id
                 ).select(
                     model.game_participants.c.game_id == match["id"]
@@ -149,6 +153,8 @@ def list_matches_helper(offset, limit, participant_clause,
             for participant in participants:
                 match["players"][participant["user_id"]] = {
                     "username": participant["username"],
+                    "team_name": participant["team_name"]
+                        if "name" in participant else None,
                     "profile_image_key": participant["oauth_profile_image_key"],
                     "bot_id": participant["bot_id"],
                     "version_number": participant["version_number"],
