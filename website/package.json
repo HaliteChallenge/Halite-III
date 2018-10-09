@@ -23,6 +23,7 @@
     "libhaliteviz": "file:../libhaliteviz",
     "lodash": "^4.17.4",
     "md5": "^2.2.1",
+    "numeral": "^2.0.6",
     "text-encoding": "^0.6.4",
     "vue": "^2.5.2",
     "vue-cookie": "^1.1.4",
