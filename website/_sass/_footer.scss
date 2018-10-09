@@ -41,7 +41,7 @@
     font-family: $font-headline;
     // border-bottom: 1px solid #474951;
     @media screen and (min-width: $screen-md-min) {
-      text-align: right;
+      text-align: center;
     }
     @media (max-width: $screen-xs-max){
       display: flex;
@@ -79,9 +79,9 @@
   }
 
   .footer-container{
-    
+
   }
-  
+
   .footer-copy{
     text-align: left;
     &-logo{
