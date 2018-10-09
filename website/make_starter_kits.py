@@ -42,10 +42,6 @@ TOOLS_FILE = "assets/downloads/Halite3Tools.zip"
 REPLAY_README = """Replays and error logs will appear here if you use the run_game.sh or run_game.bat scripts.
 """
 
-versions =  {"Python3" : "1.0", "C++" : "1.0", "Java" : "1.0", "CSharp" : "1.0" ,"JavaScript": "1.0",
-"ML-StarterBot-Python":"1.0", "Rust" : "1.0", "Scala" : "1.0", "Go" : "1.0", "Ruby" : "1.0-beta" , "Kotlin" : "0.9.0-beta", "Clojure" : "0.9.0-beta", "Julia" : "0.9.0-beta", "OCaml" : "0.9.0-beta", "Haskell" : "0.9.0-beta", "Elixir" : "0.9.0-beta", "PHP": "0.9.0-beta","Dart": "0.9.0-beta", "Swift": "0.9.0-beta",  "Cython3": "0.9.0-beta","FSharp": "0.9.0-beta",}
-
-
 def detect_environments(directory):
     """Detect which platform binaries we have."""
     environments = [(PLATFORM_AGNOSTIC, None, None)]
@@ -298,7 +294,7 @@ def main():
         output["languages"].append({
             "language": language,
             "files": language_kits,
-            "version": versions[language]
+            "version": args.version,
         })
 
     output["languages"].append({
