@@ -23,7 +23,7 @@ If you modify the JavaScript, you might want to run the Webpack watcher, which w
 
     $ yarn watch
 
-To deploy, You will also want a folder with compiled Halite environment binaries. The binaries should be named after the platform they are for, e.g. `MacOS`, `Linux-x64`, and `Windows.exe`. Run `make_starter_kits.py` to generate all the starter kits and source downloads.
+To deploy, you will also want a folder with compiled Halite environment binaries. The binaries should be named after the platform they are for, e.g. `MacOS`, `Linux-x64`, and `Windows.exe`. Run `make_starter_kits.py` to generate all the starter kits and source downloads.
 
 Currently, there is no automation for building the offline visualizer.
 

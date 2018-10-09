@@ -54,13 +54,13 @@
         </p>
         <br/>
         <h4 class="mt3">Ranking</h4>
-        <p>Rankings are based on the outcome of organized games where bots play against each other. Your bot moves up the leaderboard as you submit improved versions. When you submit a new version, your ranking is reset to a degree. After some games played, your bot should reach its new accurate ranking.
+        <p>Rankings are based on the outcome of organized games where bots play against each other. Your bot moves up the leaderboard as you submit improved versions. When you submit a new version, your ranking is reset to a degree. After some games played, your bot should reach its new accurate ranking. Read more about the ranking system used here, and learn more about our Bot Bosses here.
         </p>
         <p>Tiers are based on the percentile rank. The top 1% of players are considered Diamond; the next 5% are considered Platinum, then the next 10% are Gold, 25% are Silver, and the rest are Bronze.
         </p>
         <br/>
         <h4 class="mt3">Winning</h4>
-        <p>Last submissions are due at midnight EST (GMT-05:00) on January 22nd, and bots will run through the following week to compute ratings. The winners are the highest ranked players on the leaderboard at the end of this “Finals” period. We will freeze the scores and leaderboard and announce the winners on January 29th.
+        <p>Last submissions are due at midnight EST (GMT-05:00) on January 22nd, and bots will run through the following week to compute rankings. The winners are the highest ranked players on the leaderboard at the end of this “Finals” period. We will freeze the scores and leaderboard and announce the winners on January 29th.
         </p>
         <p>The top players will receive Halite apparel and awesome Halite trophies.
         </p>
