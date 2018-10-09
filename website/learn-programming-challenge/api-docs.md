@@ -18,7 +18,9 @@ This API Documentation refers to objects shipped with Halite III starter kits:
 * [SHIPYARD](#shipyard)
 * [DROPOFF](#dropoff)
 * [MAP](#map)
-* [DIRECTIONS, POSITIONS, & MAP CELLS](#directions-positions-and-map-cells)
+* [MAP CELL](#map-cell)
+* [POSITION](#position)
+* [DIRECTION](#direction)
 
 <br/>
 
