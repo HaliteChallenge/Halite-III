@@ -614,6 +614,7 @@ def update_user(intended_user_id, *, user_id, is_admin):
         "verification_code": "organization_verification_code",
         "is_gpu_enabled": "is_gpu_enabled",
         "is_active": "is_active",
+        "username": "username",
     }
 
     update = {}
@@ -632,6 +633,9 @@ def update_user(intended_user_id, *, user_id, is_admin):
     if (update.get("player_level") and
             not web_util.validate_user_level(update["player_level"])):
         raise util.APIError(400, message="Invalid player level.")
+
+    if update.get("username") and not is_valid_username(update["username"]):
+        raise util.APIError(400, message="Invalid username.")
 
     with model.engine.connect() as conn:
         old_user = conn.execute(
@@ -695,9 +699,19 @@ def update_user(intended_user_id, *, user_id, is_admin):
         # Don't execute update if no values to update (SQLAlchemy
         # generates invalid SQL)
         if update:
+            if "username" in update:
+                try:
+                    conn.execute(model.users.update().where(
+                        model.users.c.id == intended_user_id
+                    ).values(username=update.get("username")))
+                    del update["username"]
+                except sqlalchemy.exc.IntegrityError:
+                    raise util.APIError(400, message="Duplicate username.")
+
             conn.execute(model.users.update().where(
                 model.users.c.id == intended_user_id
             ).values(**update))
+
 
         user_data = conn.execute(sqlalchemy.sql.select(["*"]).select_from(
             model.users.join(
