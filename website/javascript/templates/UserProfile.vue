@@ -238,11 +238,11 @@
                                     <!-- <span title="Games played by your bot, replay files are kept forever, but games data might be deleted every 2 weeks" class="info-icon icon-info pull-right"></span> -->
                                 </h2>
 
-                                <!-- <div v-if="!games.length" class="section-empty">
-                                    <img :src="`${baseUrl}/assets/images/temp/game_video.png`" class="icon-"></img>
+                                <div v-if="!games.length" class="section-empty">
+                                    <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
                                     <h2>No games played yet</h2>
                                     <p v-if="is_my_page">Complete your first game and view replays. <br/> <a href="/play-programming-challenge">Play here</a></p>
-                                </div> -->
+                                </div>
                                 <div v-if="games.length">
                                     <table class="table table-leader">
                                         <thead>
