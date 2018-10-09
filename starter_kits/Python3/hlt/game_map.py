@@ -64,11 +64,7 @@ class Player:
         Creates a player object from the input given by the game engine
         :return: The player object
         """
-        try:
-            player, shipyard_x, shipyard_y = map(int, read_input().split())
-        except EOFError as eof:
-            logging.shutdown()
-            raise SystemExit(eof)
+        player, shipyard_x, shipyard_y = map(int, read_input().split())
         return Player(player, Shipyard(player, -1, Position(shipyard_x, shipyard_y)))
 
     def _update(self, num_ships, num_dropoffs, halite):
