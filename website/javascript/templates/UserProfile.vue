@@ -107,8 +107,6 @@
                     <div class="chart-container">
                         <div class="data-distribution">
                             <div class="data-line" ref="dataLine"></div>
-                            <div class="scale min-line">0%</div>
-                            <div class="scale max-line">150%</div>
                             <!-- Use test data -->
                             <div class="scale tire-line" :style="getLeftLen(efficiency.min)">{{(efficiency.min * 100).toFixed(0)}}%</div>
                             <div class="scale user-line" :style="getLeftLen(efficiency.mean)">{{(efficiency.mean * 100).toFixed(1)}}%</div>
