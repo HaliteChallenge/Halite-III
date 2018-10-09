@@ -14,6 +14,7 @@ export const THEMES = {
         scale: {
             ship: 1,
         },
+        playerColors: [0x5E5EFF, 0xAEAEE6, 0x575738, 0xBFBF00],
         colorTheme: "Colorblind",
     },
     "Halite II": {
@@ -22,17 +23,23 @@ export const THEMES = {
         scale: {
             ship: 0.75,
         },
+        playerColors: [0xBD00DB, 0x63CECA, 0xFFBE00, 0xC5EC98],
         colorTheme: "GraySpace",
     },
 };
 
 
-let __injectedCSS = null;
 export function applyTheme() {
-    if (!__injectedCSS) {
-        __injectedCSS = document.createElement("style");
+    if (theme().playerColors) {
+        const { playerColors } = theme();
+
+        const rules = [];
+        const sheet = window.document.styleSheets[0];
+        for (let i = 0; i < playerColors.length; i++) {
+            sheet.insertRule(`.color-${i+1} { color: #${playerColors[i].toString(16)} !important; }`,
+                             sheet.cssRules.length);
+        }
     }
-    __injectedCSS.innerText = "";
 }
 
 export let selectedTheme = "Turtles!";

@@ -80,6 +80,8 @@ export function setAssetRoot(path) {
 
     const promises = [];
 
+    theme.applyTheme();
+
     if (theme.selectedTheme === "Colorblind") {
         promises.push(loadSpritesheet(
             require("../assets/colorblind.json"),
