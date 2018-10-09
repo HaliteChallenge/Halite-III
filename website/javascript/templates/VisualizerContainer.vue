@@ -93,6 +93,7 @@
           this.is_downloading = false
           this.message = null
         }).catch((e) => {
+          console.error(e);
           this.is_downloading = false
           this.message = 'There was an error parsing the replay. Please let us know at halite@halite.io.'
         })

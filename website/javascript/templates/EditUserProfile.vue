@@ -55,10 +55,15 @@
                     <h2 id="section_account_info" class="form-heading">Account info</h2>
 
                     <div class="form-group">
-                        <label for="country">Your username</label>
+                        <label for="username">Your username</label>
                         <div class="relative-container">
-                            <input type="text" class="form-control" placeholder="Enter your username" v-model="username" disabled>
-                            <i class="fa fa-lock lock"></i>
+                            <input id="username" type="text" class="form-control" placeholder="Enter your username" v-model="username">
+                        </div>
+                        <div
+                          :class="{'has-error': !username_error.valid}"
+                          class="form-group"
+                          v-if="username_error.reason">
+                          <span id="error-help" class="help-block">{{ username_error.reason }}</span>
                         </div>
                     </div>
 
@@ -97,14 +102,18 @@
                     <p>You are not affiliated with a team.</p>
                     <p>Creating or joining a team is a permanent account conversion! <a href="/play-programming-challenge#rules-teams">Learn more about teams.</a></p>
                     <h3>Create Team</h3>
-                    <div class="input-tips">New Team Name</div>
-                    <input type="text" class="form-control" placeholder="Team name" v-model="new_team_name">
-                    <button class="btn btn-primary btn-sm" @click="createTeam">CREATE TEAM</button>
+                    <div class="form-group">
+                      <label for="team-name">New Team Name</label>
+                      <input id="team-name" type="text" class="form-control" placeholder="Team name" v-model="new_team_name">
+                      <button class="btn btn-primary btn-sm" @click="createTeam">CREATE TEAM</button>
+                    </div>
                     <h3>Join a Team</h3>
-                    <div class="input-tips">Enter join code here</div>
-                    <input type="text" class="form-control" placeholder="Join code" v-model="join_team_name">
-                    <button class="btn btn-primary btn-sm" @click="joinTeam">JOIN TEAM</button>
-                    <p class="error" v-if="teamJoinError">{{teamJoinError}}</p>
+                    <div class="form-group">
+                      <label for="join-team-code">Enter join code here</label>
+                      <input id="join-team-code" type="text" class="form-control" placeholder="Join code" v-model="join_team_name">
+                      <button class="btn btn-primary btn-sm" @click="joinTeam">JOIN TEAM</button>
+                      <p class="error" v-if="teamJoinError">{{teamJoinError}}</p>
+                    </div>
                   </div>
                   <div class="in-team" v-else>
                     <h2 class="form-heading">Team affiliation</h2>
@@ -137,6 +146,7 @@ export default {
           country_options: [],
           data: iso3166.data,
           username: '',
+          originalUsername: '',
           selected_country: null,
           selected_region: null,
           selected_highSchool: null,
@@ -152,6 +162,16 @@ export default {
           teamJoinError: null,
           new_team_name: "", // Team name required to create the team
           join_team_name: "", // Team name required to join the team
+          username_error: {
+            valid: false,
+            reason: '',
+          },
+          checkUsername: _.debounce(() => {
+            api.check_username(this.username).then((resp) => {
+              this.username_error.valid = resp.valid
+              this.username_error.reason = resp.reason
+            })
+          }, 750),
         }
   },
     mounted: function () {
@@ -203,6 +223,7 @@ export default {
         this.user = me
         this.level = me.level
         this.username = me.username
+        this.originalUsername = me.username
         // country
         this.selected_country = this.country_options.find((item) => {
           return item.value == me.country_code
@@ -302,6 +323,14 @@ export default {
 
         if(this.level === 'High School'){
           request['organization_id'] = this.selected_highSchool.id
+        }
+
+        if (this.username !== this.originalUsername) {
+          if (!this.username_error.valid) {
+            Alert.show('Invalid username.', 'error')
+            return
+          }
+          request['username'] = this.username
         }
 
         if (this.country_code !== '') {
@@ -406,6 +435,12 @@ export default {
           this.teamJoinError = "Invalid verification code."
         }
       },
+    },
+    watch: {
+      username(newUsername) {
+        this.username_error.reason = ''
+        this.checkUsername()
+      }
     }
   }
 </script>
