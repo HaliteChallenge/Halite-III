@@ -9,35 +9,6 @@ sort_key: 3
 
 <div class="doc-section" markdown="1">
 
-#### Best Practices
-
-<br/>
-
-##### Logging
-stdout and stdin are used to communicate with the game engine. Any use of functions like `System.out.println`, `print()`, or `std::cout` will cause engine errors. Instead, print debugging information to a log file.
-
-The starter kits have some functionality to write to a log file, and should include a simple log statement for your reference.
-
-When your bot times out or errors on the game servers, we save and display a log file with debugging information. You will be sent an email with this log, or you can visit your profile to find the logs from your recent games.
-
-<br/>
-
-##### Test new vs. old before upload
-Before submitting a new bot, we recommend running some games against the previous version of your bot. You can play your bot against older versions using the CLI, or on our website here.
-
-<br/>
-
-##### Using the CLI
-Your Halite Starter Kit comes with an executable that allows you to use a command line interface (CLI) to run games locally. You might find the CLI useful for specifying parameters and conditions for a game of Halite III.
-
-To see all available flags, run:
-`$ ./halite --help`
-
-<br/><br/>
-
-</div>
-<div class="doc-section" markdown="1">
-
 #### Debugging
 
 <br/>
@@ -45,7 +16,7 @@ To see all available flags, run:
 ##### Compilation Failures
 You will get an email notifying you if your bot fails to compile on the game servers. The most common causes of compilation failures are:
 * **Compilation errors in your code:** Make sure that you can compile your bot locally before submitting it to our game servers. A typo can make a big difference!
-* **Infrastructure issues:** You can reach out to the Halite Team to add first class support for your bot. To read more about customizing a bot, check out our guide here.
+* **Infrastructure issues:** You can reach out to the Halite Team to add first class support for your bot. To read more about customizing a bot, check out [our guide](/learn-programming-challenge/contributing).
 * **Incorrect bot archive structure:** Your file structure should adhere to the following format:
   * You should have a `MyBot.{extension for language}` in the root folder of your zip archive.
   * If you are building on top of a starter kit provided by us, make sure to include the /hlt folder.
@@ -70,7 +41,37 @@ When debugging timeout issues, it can be helpful to disable game engine timeouts
 Your bot could be crashing because of errors during game execution.
 * **Incorrect commands:** The most common reason for incorrect commands is using the inbuilt functions incorrectly, or writing new functions that emit commands that the game engine cannot parse. Check your formatting, and make sure that your raw command strings are valid engine commands.
 * **Illegal commands:** If your bot sends commands that are disallowed by the engine, the engine will kill your bot, resulting in a game loss. Some examples of these errors are attempting to send the same ship multiple commands, spending more halite in a turn than you have, or building a dropoff at an already-owned location.
-* **Out of memory:** Bots have a specific memory limit. If your code exceeds this limit, your bot is killed.
+* **Out of memory:** Bots have a memory limit of 1GB. If your code exceeds this limit, your bot is killed.
+
+
+<br/>
+</div>
+
+<div class="doc-section" markdown="1">
+
+#### Best Practices
+
+<br/>
+
+##### Logging
+stdout and stdin are used to communicate with the game engine. Any use of functions like `System.out.println`, `print()`, or `std::cout` will cause engine errors. Instead, print debugging information to a log file.
+
+The starter kits have some functionality to write to a log file, and should include a simple log statement for your reference.
+
+When your bot times out or errors on the game servers, we save and display a log file with debugging information. You will be sent an email with this log, or you can visit your profile to find the logs from your recent games.
+
+<br/>
+
+##### Test new vs. old before upload
+Before submitting a new bot, we recommend running some games against the previous version of your bot. You can play your bot against older versions using the CLI.
+
+<br/>
+
+##### Using the CLI
+Your Halite Starter Kit comes with an executable that allows you to use a command line interface (CLI) to run games locally. You might find the CLI useful for specifying parameters and conditions for a game of Halite III.
+
+To see all available flags, run:
+`$ ./halite --help`
 
 <br/>
 
@@ -78,6 +79,7 @@ Your bot could be crashing because of errors during game execution.
 You can replay games with the exact same map to debug or tweak bot behavior. To do so, specify a map seed with the -s or --seed flag followed by an integer when running a game:
 `$ ./halite -vvv --width 32 --height 32 --seed 4 "python MyBot.py" "python MyBetterBot.py"`
 
+<br/>
 
 </div>
 
