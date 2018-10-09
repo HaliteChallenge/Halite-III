@@ -125,7 +125,7 @@
 
             <div class="user-profile" v-if="season1stats">
               <div class="user-profile-detail">
-                <div class="title">Halite I Stats</div>
+                <div class="title">Halite 1 Stats</div>
 
                 <p>{{ season1stats.level }} <span v-if="season1stats.organization">at <a :href="`https://2016.halite.io/leaderboard.php?field=organization&value=${season1stats.organization}&heading=${season1stats.organization}`">{{ season1stats.organization }}</a></span></p>
                 <p v-if="season1stats.language">Bots in {{season1stats.language}}</p>
@@ -171,7 +171,7 @@
 
             <div class="user-profile" v-if="season2stats">
               <div class="user-profile-detail">
-                <div class="title">Halite II Stats</div>
+                <div class="title">Halite 2 Stats</div>
 
                 <p>{{ season2stats.player_level }} <span v-if="season2stats.organization">at {{ season2stats.organization }}</span></p>
                 <p v-if="season2stats.language">Bots in {{season2stats.language}}</p>
