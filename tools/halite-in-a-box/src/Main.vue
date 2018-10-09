@@ -4,7 +4,6 @@
             <tab-bar :tabs="['Local Bot', 'Local Match History', loggedIn ? 'Online Bot' : 'Log In', 'Help', 'Settings']">
                 <h1 slot="header" class="font-normal text-4xl ml-4">
                     <img :src="logo" alt="Halite III" class="align-bottom" />
-                    <span class="text-lg italic">in a box</span>
                 </h1>
                 <section slot="right" class="mr-4">
                     <button class="btn btn-blue" @click="chooseReplay">Watch Replay</button>
