@@ -102,7 +102,7 @@
                     <!-- <h2 class="highest-rank" v-if="highestRank" title="This is either your current (top rank) or highest rank any of your bots had achieved when retired"> Highest Rank Achieved: {{highestRank}}</h2> -->
 
                 </div>
-                <div class="user-efficiency">
+                <div class="user-efficiency" v-if="efficiency">
                     <div class="title">Halite Efficiency (Last 10 Games)</div>
                     <div class="chart-container">
                         <div class="data-distribution">
@@ -659,7 +659,7 @@
             percentile25: 0,
             mean: 0,
             percentile75: 0,
-            max: 1,
+            max: 0,
           },
         }
       },
@@ -711,6 +711,9 @@
 
           api.list_bots(user.user_id).then((bots) => {
             this.bots = bots
+            if (!bots || this.bots.length === 0) {
+              this.efficiency = null
+            }
           })
           this.fetch().then((games) => {
             if (games.length === 0) return

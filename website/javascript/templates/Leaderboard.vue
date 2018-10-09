@@ -90,7 +90,7 @@
                   <th>Player</th>
                   <th>Rating</th>
                   <th class="text-center">Tier</th>
-                  <th>Challenge</th>
+                  <th class="text-center">Challenge</th>
                   <th>Level</th>
                   <th class="text-center">Country</th>
                   <th>Organization</th>
@@ -219,9 +219,9 @@
               <thead>
                 <tr>
                   <th class="text-center">RANK</th>
-                  <th class="org-pg">ORGANIZATION</th>
-                  <th class="org-pg">Games WON</th>
-                  <th class="org-pg">LEVEL</th>
+                  <th>ORGANIZATION</th>
+                  <th>Games WON</th>
+                  <th>LEVEL</th>
                 </tr>
               </thead>
               <tbody>
