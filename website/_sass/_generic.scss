@@ -213,13 +213,13 @@ input:focus{
   color: $player-1 !important;
 }
 .color-2{
-  color: $player-2 !important;
+  color: darken($player-2, 10%) !important;
 }
 .color-3{
   color: $player-3 !important;
 }
 .color-4{
-  color: $player-4 !important;
+  color: lighten($player-4, 10%) !important;
 }
 
 .icon-tier-1, .icon-tier-2, .icon-tier-3, .icon-tier-4, .icon-tier-5{

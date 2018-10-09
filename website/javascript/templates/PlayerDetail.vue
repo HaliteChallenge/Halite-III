@@ -3,7 +3,7 @@
   <div v-for="(player,index) in statistics" :key="index">
     <div class="card-player">
       <div class="card-player-left">
-        <h4 :class="'card-player-name player-'+ (parseInt(index)+1) ">
+        <h4 :class="'card-player-name color-'+ (parseInt(index)+1) ">
           {{replay.players[index].name}}
         </h4>
         <div class="player-current-halite">
@@ -110,18 +110,6 @@ export default {
     font-weight: 600;
     letter-spacing: 0.53px;
     line-height: 17px;
-    &.player-1{
-      color: #1BB15A;
-    }
-    &.player-2{
-      color: #E65598;
-    }
-    &.player-3{
-      color: #F54356;
-    }
-    &.player-4{
-      color: #FABB2C;
-    }
   }
   .player-current-halite{
     display: flex;

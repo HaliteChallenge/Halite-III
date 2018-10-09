@@ -5,6 +5,7 @@ export const THEMES = {
         scale: {
             ship: 1,
         },
+        playerColors: [0x1BB15A, 0xF54356, 0xFABB2C, 0xE65598],
         colorTheme: "TheSea",
     },
     "Colorblind": {
@@ -24,6 +25,15 @@ export const THEMES = {
         colorTheme: "GraySpace",
     },
 };
+
+
+let __injectedCSS = null;
+export function applyTheme() {
+    if (!__injectedCSS) {
+        __injectedCSS = document.createElement("style");
+    }
+    __injectedCSS.innerText = "";
+}
 
 export let selectedTheme = "Turtles!";
 

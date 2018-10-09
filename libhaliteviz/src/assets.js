@@ -9,10 +9,7 @@ export const BASE_VISUALIZER_HEIGHT = 600;
 export const STATS_SIZE = 20;
 export const CELL_SIZE = 1;
 
-export const PLAYER_COLORS = [0x1BB15A, 0xE65598, 0xF54356, 0xFABB2C,
-                              0xff0000, 0xbd00db, 0xFFFF00, 0x009900,
-                              0xFF8C00, 0xff0000, 0x00FF00, 0xBA55D3,
-                              0xffae42, 0xbd00db, 0xFF69B4, 0xFFFF00];
+export const PLAYER_COLORS = theme.default().playerColors || [0x1BB15A, 0xF54356, 0xFABB2C, 0xE65598];
 export const EXPLOSION_COLOR = 0xb7b7b7;
 export const PLANET_COLOR = 0xb7b7b7;
 
@@ -161,9 +158,9 @@ export function setAssetRoot(path) {
                 .load((loader, resources) => {
                     HALO_SPRITE = resources.halo.texture;
                     BASE_SPRITES.push(resources.base_green.texture);
-                    BASE_SPRITES.push(resources.base_purple.texture);
                     BASE_SPRITES.push(resources.base_red.texture);
                     BASE_SPRITES.push(resources.base_yellow.texture);
+                    BASE_SPRITES.push(resources.base_purple.texture);
                     resolve();
                 });
         }));
@@ -177,11 +174,6 @@ export function setAssetRoot(path) {
                 sheet.textures["turtle-green-high.png"],
             ]);
             TURTLE_SPRITES.push([
-                sheet.textures["turtle-purple-low.png"],
-                sheet.textures["turtle-purple-medium.png"],
-                sheet.textures["turtle-purple-high.png"],
-            ]);
-            TURTLE_SPRITES.push([
                 sheet.textures["turtle-red-low.png"],
                 sheet.textures["turtle-red-medium.png"],
                 sheet.textures["turtle-red-high.png"],
@@ -190,6 +182,11 @@ export function setAssetRoot(path) {
                 sheet.textures["turtle-yellow-low.png"],
                 sheet.textures["turtle-yellow-medium.png"],
                 sheet.textures["turtle-yellow-high.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-purple-low.png"],
+                sheet.textures["turtle-purple-medium.png"],
+                sheet.textures["turtle-purple-high.png"],
             ]);
         }));
     }
