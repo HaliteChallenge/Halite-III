@@ -95,41 +95,18 @@
                         </div>
                         <div class="stats-item">
                             <div class="title">Games</div>
-                            <p>{{ user.num_games }}</p>
+                            <p>{{ getFormattedNumber(user.num_games) }}</p>
                         </div>
                     </div>
                     <i class="xline xline-bottom"></i>
                     <!-- <h2 class="highest-rank" v-if="highestRank" title="This is either your current (top rank) or highest rank any of your bots had achieved when retired"> Highest Rank Achieved: {{highestRank}}</h2> -->
 
                 </div>
-                <!-- <div class="stats-1-section">
-                    <i class="xline xline-top"></i>
-                    <h2>Halite 1 Stats</h2>
-                    <div class="user-profile-rank-stats">
-                        <div class="stats-item">
-                            <h3>Rank</h3>
-                            <p>{{ season1stats.rank }}</p>
-                        </div>
-                        <div class="stats-item">
-                            <h3>Bots</h3>
-                            <p>{{season1stats.num_submissions }}</p>
-                        </div>
-                        <div class="stats-item">
-                            <h3>Games</h3>
-                            <p>{{ season1stats.num_games }}</p>
-                        </div>
-                    </div>
-                    <p class="text-center">
-                        <a v-if="season1stats && season1stats.num_submissions > 0" class="user-name" target="_blank" :href="'https://2016.halite.io/user.php?userID=' + season1stats.userID">View Halite 1 Profile</a>
-                    </p>
-                </div> -->
                 <div class="user-efficiency">
                     <div class="title">Halite Efficiency (Last 10 Games)</div>
                     <div class="chart-container">
                         <div class="data-distribution">
                             <div class="data-line" ref="dataLine"></div>
-                            <div class="scale min-line">0%</div>
-                            <div class="scale max-line">150%</div>
                             <!-- Use test data -->
                             <div class="scale tire-line" :style="getLeftLen(efficiency.min)">{{(efficiency.min * 100).toFixed(0)}}%</div>
                             <div class="scale user-line" :style="getLeftLen(efficiency.mean)">{{(efficiency.mean * 100).toFixed(1)}}%</div>
@@ -146,7 +123,7 @@
 
             <div class="user-profile" v-if="season1stats">
               <div class="user-profile-detail">
-                <div class="title">Halite I Stats</div>
+                <div class="title">Halite 1 Stats</div>
 
                 <p>{{ season1stats.level }} <span v-if="season1stats.organization">at <a :href="`https://2016.halite.io/leaderboard.php?field=organization&value=${season1stats.organization}&heading=${season1stats.organization}`">{{ season1stats.organization }}</a></span></p>
                 <p v-if="season1stats.language">Bots in {{season1stats.language}}</p>
@@ -192,7 +169,7 @@
 
             <div class="user-profile" v-if="season2stats">
               <div class="user-profile-detail">
-                <div class="title">Halite II Stats</div>
+                <div class="title">Halite 2 Stats</div>
 
                 <p>{{ season2stats.player_level }} <span v-if="season2stats.organization">at {{ season2stats.organization }}</span></p>
                 <p v-if="season2stats.language">Bots in {{season2stats.language}}</p>
@@ -630,6 +607,7 @@
     import Vue from 'vue'
     import * as utils from '../utils'
     import moment from 'moment'
+    import numeral from 'numeral'
     import dateformat from 'dateformat'
     import ChallengeModal from './ChallengeModal.vue'
 
@@ -1160,6 +1138,9 @@
         },
         gaData: function (category, action, label) {
           utils.gaEvent(category, action, label)
+        },
+        getFormattedNumber: function (number) {
+         return numeral(number).format('0 a');
         },
         sortChallenge: function(players) {
           return _.sortBy(players, (player) => -player.points)

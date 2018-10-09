@@ -24,7 +24,7 @@
     margin-bottom: 15px;
   }
   a {
-    color: #0c0c0c;
+    color: #52678D;
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
@@ -170,6 +170,7 @@
     text-align: center;
     height: 95px;
     border-radius: 6px;
+    align-items: center;
     .stats-item {
       .title {
         font-size: 14px;
@@ -222,7 +223,7 @@
               top: -4px;
           }
           &.min-line {
-              left: -20px;
+              left: -32px;
           }
           &.max-line {
               right: -32px;
@@ -621,7 +622,7 @@
             border-right: none;
           }
           > h3 {
-            margin: 22px 0 0;
+            margin: 0;
             font-size: 17px;
             color: #0c0c0c;
             font-weight: 600;
