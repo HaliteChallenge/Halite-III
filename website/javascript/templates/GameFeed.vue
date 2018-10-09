@@ -71,6 +71,7 @@
         <button
             type="button"
             class="btn btn-primary"
+            v-if="this.is_behind"
             v-bind:class="{ 'hide-btn': !this.is_behind }"
             v-on:click="skip_forward">
           <span>Skip to Current</span>
