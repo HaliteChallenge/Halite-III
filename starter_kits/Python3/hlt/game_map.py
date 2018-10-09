@@ -3,6 +3,8 @@ import queue
 from . import constants
 from .entity import Entity, Shipyard, Ship, Dropoff
 from .positionals import Direction, Position
+from .networking import read_input
+
 
 class Player:
     """
@@ -62,7 +64,7 @@ class Player:
         Creates a player object from the input given by the game engine
         :return: The player object
         """
-        player, shipyard_x, shipyard_y = map(int, input().split())
+        player, shipyard_x, shipyard_y = map(int, read_input().split())
         return Player(player, Shipyard(player, -1, Position(shipyard_x, shipyard_y)))
 
     def _update(self, num_ships, num_dropoffs, halite):
@@ -241,10 +243,10 @@ class GameMap:
         Creates a map object from the input given by the game engine
         :return: The map object
         """
-        map_width, map_height = map(int, input().split())
+        map_width, map_height = map(int, read_input().split())
         game_map = [[None for _ in range(map_width)] for _ in range(map_height)]
         for y_position in range(map_height):
-            cells = input().split()
+            cells = read_input().split()
             for x_position in range(map_width):
                 game_map[y_position][x_position] = MapCell(Position(x_position, y_position),
                                                            int(cells[x_position]))
@@ -261,6 +263,6 @@ class GameMap:
             for x in range(self.width):
                 self[Position(x, y)].ship = None
 
-        for _ in range(int(input())):
-            cell_x, cell_y, cell_energy = map(int, input().split())
+        for _ in range(int(read_input())):
+            cell_x, cell_y, cell_energy = map(int, read_input().split())
             self[Position(cell_x, cell_y)].halite_amount = cell_energy

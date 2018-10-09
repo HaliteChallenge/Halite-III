@@ -5,6 +5,7 @@ import sys
 from . import constants
 from .game_map import GameMap, Player
 
+
 class Game:
     """
     The game object holds all metadata pertinent to the game and all its contents
@@ -17,10 +18,10 @@ class Game:
         self.turn_number = 0
 
         # Grab constants JSON
-        raw_constants = input()
+        raw_constants = read_input()
         constants.load_constants(json.loads(raw_constants))
 
-        num_players, self.my_id = map(int, input().split())
+        num_players, self.my_id = map(int, read_input().split())
 
         logging.basicConfig(
             filename="bot-{}.log".format(self.my_id),
@@ -46,11 +47,11 @@ class Game:
         Updates the game object's state.
         :returns: nothing.
         """
-        self.turn_number = int(input())
+        self.turn_number = int(read_input())
         logging.info("=============== TURN {:03} ================".format(self.turn_number))
 
         for _ in range(len(self.players)):
-            player, num_ships, num_dropoffs, halite = map(int, input().split())
+            player, num_ships, num_dropoffs, halite = map(int, read_input().split())
             self.players[player]._update(num_ships, num_dropoffs, halite)
 
         self.game_map._update()
@@ -82,3 +83,15 @@ def send_commands(commands):
     """
     print(" ".join(commands))
     sys.stdout.flush()
+
+
+def read_input():
+    """
+    Reads input from stdin, shutting down logging and exiting if an EOFError occurs
+    :return: input read
+    """
+    try:
+        return input()
+    except EOFError as eof:
+        logging.shutdown()
+        raise SystemExit(eof)
