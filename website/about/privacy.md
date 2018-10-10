@@ -72,7 +72,7 @@ We will use your personal information where in our legitimate interests to carry
 Parents, you can learn more about how to protect children’s privacy on-line [here](https://www.ftc.gov/news-events/media-resources/protecting-consumer-privacy/kids-privacy-coppa){:target="_blank"}.
 
 
-##YOUR EUROPEAN UNION PRIVACY RIGHTS.
+## YOUR EUROPEAN UNION PRIVACY RIGHTS.
 Individuals who are located in or residents of the European Union have certain data subject rights that may be subject to limitations and/or restrictions. 
 
 **You have the right to access, rectify and, subject to our other legal obligations and business considerations, erase your personal information.** You also have the right to ask us to restrict the purpose or to object to the processing of your personal information as well as a right to data portability. 
@@ -111,7 +111,7 @@ at:
 **Two Sigma Open Source, LLC**
 <br>100 Avenue of the Americas 16th Floor
 <br>New York, NY 10013
-<br>Attn: Legal – Halite Privacy Matters>
+<br>Attn: Legal – Halite Privacy Matters
 
 ## We may update this Privacy Policy.
 
