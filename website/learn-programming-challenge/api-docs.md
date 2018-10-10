@@ -18,7 +18,9 @@ This API Documentation refers to objects shipped with Halite III starter kits:
 * [SHIPYARD](#shipyard)
 * [DROPOFF](#dropoff)
 * [MAP](#map)
-* [DIRECTIONS, POSITIONS, & MAP CELLS](#directions-positions-and-map-cells)
+* [MAP CELL](#map-cell)
+* [POSITION](#position)
+* [DIRECTION](#direction)
 
 <br/>
 
@@ -38,7 +40,7 @@ This API Documentation refers to objects shipped with Halite III starter kits:
 
   * **Game loop**
 
-     The game loop sends the game state to the players and processes commands returned from the players. This repeats for each turn. Games last between 300 and 500 turns per game depending on map size. If your code takes more than 2,000 milliseconds to process, the game engine kills your bot.
+     The game loop sends the game state to the players and processes commands returned from the players. This repeats for each turn. Games last between 300 and 500 turns per game depending on map size. The game engine kills any bot that takes more than 2,000 milliseconds to process.
 
      `game.update_frame()` updates the game state, and returns nothing.
 
@@ -46,7 +48,7 @@ This API Documentation refers to objects shipped with Halite III starter kits:
 
   * **Command queue**
 
-     The command queue is a list of commands. The player’s code fills this list with commands and sends it to the game object, where it is sent to the game engine. If there are multiple commands to one ship, the game engine kills your bot.
+     The command queue is a list of commands. The player’s code fills this list with commands and sends it to the game object, where it is sent to the game engine. The game engine kills any bot that attempts to issue multiple commands to one ship.
 
      `game.end_turn([commands])`
 
@@ -73,7 +75,7 @@ Players have an `id`, a `shipyard`, a `halite_amount`, and dictionaries of ships
 
    `player.get_ship(ship_id)` returns the ship object associated with the ship id provided as an argument.
 
-   `player.get_ships()` returns a list of all ship objects
+   `player.get_ships()` returns a list of all ship objects.
 
    `player.has_ship(ship_id)` checks if you have a ship with this id.
 
@@ -146,7 +148,7 @@ Dropoffs have an `owner`, an `id`, and a `position`.
 <br/>
 
 #### MAP
-Gameplay takes place on a wrapping rectangular grid 32x32, 48x48, 64x64, or 80x80 in dimension. The map edges wrap to their opposite edge and create a torus shape. The game map can be indexed by a position or by a contained entity (ship, shipyard, or dropoff). The game map has `width` and `height` as member variables.
+Gameplay takes place on a wrapping rectangular grid 32x32, 40x40, 48x48, 56x56, or 64x64 in dimension. The map edges wrap to their opposite edge and create a torus shape. The game map can be indexed by a position or by a contained entity (ship, shipyard, or dropoff). The game map has `width` and `height` as member variables.
 
 <br/>
 
@@ -178,31 +180,17 @@ Gameplay takes place on a wrapping rectangular grid 32x32, 48x48, 64x64, or 80x8
 
   A method that returns a direction to move closer to a target without colliding with other entities. Returns a direction of “still” if no such move exists.
 
-  `gamemap.naive_navigate(ship, destination)` returns a single valid destination toward a given target.
+  `gamemap.naive_navigate(ship, destination)` returns a single valid direction toward a given target.
 
 <br/>
 
----
-#### Directions, Positions, and Map Cells
-Methods take and return map cells, positions, or directions. Some methods also take references to whole objects, for example a ship or ship.id versus a game_map[ship.id].position. It’s important to know the difference.
-
-* A *map cell* is an object inside the game map, and has detailed information about what is in this position on the map.
-* A *position* is an object with x and y values indicating the absolute position on the game map.
-* A *direction* is an (x, y) tuple indicating the direction of movement from an origin cell.
-
----
-
-
-<br/>
 
 ##### MAP CELL
-A map cell is an object representation of a cell on the game map. Map cell has `position`, `halite_amount`, `ship`, and `structure` as member variables.
+A map cell is an object representation of a cell on the game map. Map cell has `position`, `halite_amount`, `ship`, and `structure` as member variables. For example, you can index the game map and find a particular map cell with `gamemap[position]`.
 
 <br/>
 
 * **Property Accessors**
-
-   Map cell has property accessors that you can use to get information.
 
   `map_cell.is_empty` returns True if the cell is empty.
 
@@ -221,7 +209,7 @@ A map cell is an object representation of a cell on the game map. Map cell has `
 <br/>
 
 ##### POSITION
-A position is an object with x and y values indicating the absolute position on the game map. Position is defined in the file hlt/positionals.py.
+A position is an object with x and y values indicating the absolute position on the game map. Position is defined in the file hlt/positionals.py. You can use the position information on an entity (`entity.position`), or create a new position object with `Position(x, y)`.
 
   `position.directional_offset(direction)` returns a new position based on moving one unit in the given direction from the given position.
 
@@ -230,7 +218,7 @@ A position is an object with x and y values indicating the absolute position on 
 <br/>
 
 ##### DIRECTION
-A direction is an (x, y) tuple indicating the direction of movement from an origin cell. Direction is defined in the file hlt/positionals.py.
+A direction is a direction of movement: `Direction.West`, `Direction.North`, `Direction.East`, `Direction.South`. Direction is defined in the file hlt/positionals.py.
 
   `Direction.get_all_cardinals()` returns an array of all cardinal tuples.
 
