@@ -21,8 +21,10 @@ mac:
     - dmg
   extraResources:
     - extra/python-macos
+    - extra/halite_engine
 win:
   target:
     - portable
   extraResources:
     - extra/python-windows
+    - extra/halite_engine.exe
