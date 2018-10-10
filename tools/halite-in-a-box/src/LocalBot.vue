@@ -128,8 +128,8 @@
         methods: {
             chooseLocalBot() {
                 const result = electronRemote.dialog.showOpenDialog({
-                    title: 'Choose bot folder or MyBot file',
-                    properties: ['openFile', 'openDirectory'],
+                    title: 'Choose MyBot file',
+                    properties: ['openFile'],
                 });
                 if (!result || result.length === 0) {
                     return;

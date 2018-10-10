@@ -17,8 +17,8 @@
         </template>
 
         <template slot="buttons">
-            <button @click="props.event('cancel')">Cancel</button>
-            <button @click="props.event('override')">Override</button>
+            <button class="btn btn-blue" @click="props.event('cancel')">Cancel</button>
+            <button class="btn btn-blue" @click="props.event('override')">Override</button>
         </template>
     </modal>
 </template>
