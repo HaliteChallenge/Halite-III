@@ -46,5 +46,3 @@ We're providing our logos for press use or blogging, but please follow the guide
 For any questions on logo usage, contact the Halite team at <mailto:halite@halite.io>.
 
 </div>
-
-[FAQ]: {{ site.baseurl }}/about/frequently-asked-questions
