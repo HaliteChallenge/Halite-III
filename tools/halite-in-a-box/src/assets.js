@@ -67,7 +67,7 @@ export function toolsPath() {
  */
 export function setCwd(cwd, cmd) {
     if (process.platform === 'win32') {
-        return `cmd.exe /C "cd /d "${cwd}"; ${cmd}"`;
+        return `cmd.exe /C "cd /d "${cwd}" & ${cmd}"`;
     }
     return `sh -c 'cd "${cwd}"; ${cmd}'`;
 }
