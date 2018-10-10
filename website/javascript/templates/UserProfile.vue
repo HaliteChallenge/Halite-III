@@ -142,7 +142,7 @@
                 <p v-else>No Bot Submitted</p>
               </div>
 
-              <div class="past-year-stats">
+              <div class="past-year-stats" v-if="season1stats.language">
                 <i class="xline xline-top"></i>
                 <div class="stats-item">
                   <div class="title">Rating</div>
@@ -158,7 +158,7 @@
                 </div>
               </div>
 
-              <div class="user-profile-rank">
+              <div class="user-profile-rank" v-if="season1stats.language">
                 <div class="ranking-type">
                   <div style="width: 100%; text-align: center;">
                     <div>
@@ -174,7 +174,7 @@
               <p style="text-align: center; padding: 15px 0;">
                 <a target="_blank"
                    :href="`https://2016.halite.io/user.php?userID=${season1stats.userID}`">
-                  View Halite I Profile
+                  View Halite 1 Profile
                 </a>
               </p>
             </div>
@@ -188,7 +188,7 @@
                 <p v-else>No Bot Submitted</p>
               </div>
 
-              <div class="past-year-stats">
+              <div class="past-year-stats" v-if="season2stats.language">
                 <i class="xline xline-top"></i>
                 <div class="stats-item">
                   <div class="title">Rating</div>
@@ -204,7 +204,7 @@
                 </div>
               </div>
 
-              <div class="user-profile-rank">
+              <div class="user-profile-rank" v-if="season2stats.language">
                 <div class="ranking-type">
                   <div style="width: 100%; text-align: center;">
                     <div>
@@ -220,7 +220,7 @@
               <p style="text-align: center; padding: 15px 0;">
                 <a target="_blank"
                    :href="`https://2017.halite.io/user/?user_id=${season2stats.user_id} `">
-                  View Halite II Profile
+                  View Halite 2 Profile
                 </a>
               </p>
             </div>
