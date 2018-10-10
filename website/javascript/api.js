@@ -585,6 +585,6 @@ export function fallbackAvatar(username) {
     backColor: "#ffffffff",
   }
 
-  const identicon = jdenticon.toSvg(md5(username), 100);
+  const identicon = window.encodeURIComponent(jdenticon.toSvg(md5(username), 100))
   return `data:image/svg+xml;utf8,${identicon}`
 }
