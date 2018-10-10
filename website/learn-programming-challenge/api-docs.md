@@ -40,7 +40,7 @@ This API Documentation refers to objects shipped with Halite III starter kits:
 
   * **Game loop**
 
-     The game loop sends the game state to the players and processes commands returned from the players. This repeats for each turn. Games last between 300 and 500 turns per game depending on map size. The game engine kills any bot that takes more than 2,000 milliseconds to process.
+     The game loop sends the game state to the players and processes commands returned from the players. This repeats for each turn. Games last between 400 and 500 turns per game depending on map size. The game engine kills any bot that takes more than 2,000 milliseconds to process.
 
      `game.update_frame()` updates the game state, and returns nothing.
 
