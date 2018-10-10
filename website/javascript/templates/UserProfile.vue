@@ -379,13 +379,12 @@
                             <section class="profile-section">
                                 <h2>
                                     Rating Analysis
-                                    <!-- <span title="Rating is calculated as mu - 3 * sigma;" class="info-icon icon-info pull-right"></span> -->
                                 </h2>
-                                <!-- <div v-if="!user.mu" class="section-empty">
-                                    <img :src="`${baseUrl}/assets/images/leaderboard-zero-icon.png`" class="icon-"></img>
+                                <div v-if="!user.mu" class="section-empty">
+                                    <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
                                     <h2>No rating analysis</h2>
                                     <p v-if="is_my_page">Submit your first bot to get your rating. <br/> <a href="/play-programming-challenge">Play here</a></p>
-                                </div> -->
+                                </div>
                                 <div v-if="user.mu" class="user-profile-rank-stats">
                                     <div class="stats-item">
                                         <h3>Rating</h3>
@@ -400,12 +399,14 @@
                                         <p>{{ user.sigma.toFixed(2) }}</p>
                                     </div>
                                 </div>
+                                <p class="explanation">
+                                    Rating is calculated as mu - 3 * sigma.
+                                </p>
                                 <i class="xline xline-bottom"></i>
                             </section>
                             <section class="profile-section">
                                 <h2>
                                     Challenges
-                                    <!-- <span title="A challenge will run for 30 games. Challenge games will not affect your score and will never make up more than 10% of total games running while the competition is live. You can initiate up to three challenges per day." class="info-icon icon-info pull-right"></span> -->
                                 </h2>
                                 <div class="challenge-modal" v-if="!is_my_page">
                                     <button class="btn challenge-btn" v-if="challengeGames.length" :class="{ 'right-btn': challengeGames.length }" @click="openChallengeModal">
@@ -475,18 +476,29 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <p class="explanation">
+                                    A challenge will run for 30
+                                    games. Challenge games will not
+                                    affect your score and will never
+                                    make up more than 10% of total
+                                    games running while the
+                                    competition is live. You can
+                                    initiate up to three challenges
+                                    per day.
+                                </p>
+
                                 <i class="xline xline-bottom"></i>
                             </section>
                             <section class="profile-section">
                                 <h2>
                                     Nemesis
-                                    <!-- <span title="Players you most often lose/win (minimum 10 games played) against, based on analysis of the last 200 games." class="info-icon icon-info pull-right"></span> -->
                                 </h2>
-                                <!-- <div v-if="!nemesisList.length" class="section-empty">
-                                    <img :src="`${baseUrl}/assets/images/leaderboard-zero-icon.png`" class="icon-"></img>
+                                <div v-if="!nemesisList.length" class="section-empty">
+                                    <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
                                     <h2>No nemesis yet</h2>
                                     <p v-if="is_my_page">Submit your first bot to uncover your nemesis. <br/><a href="/play-programming-challenge">Play here</a></p>
-                                </div> -->
+                                </div>
                                 <div v-if="nemesisList.length > 0">
                                     <div class="table-sticky-container">
                                         <div class="table-wrapper">
@@ -540,6 +552,12 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <p class="explanation">
+                                    Players you most often lose/win (minimum 10 games played) against,
+                                    based on analysis of the last 200 games.
+                                </p>
+
                                 <i class="xline xline-bottom"></i>
                             </section>
                             <section class="profile-section">
