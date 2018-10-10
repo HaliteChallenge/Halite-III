@@ -64,7 +64,8 @@ build_script:
   - 7z a C:\Halite\tools\halite-in-a-box\extra\python-windows\python37.zip hlt_client
   - echo import sys >> C:\Halite\tools\halite-in-a-box\extra\python-windows\sitecustomize.py
   - echo sys.path.append('') >> C:\Halite\tools\halite-in-a-box\extra\python-windows\sitecustomize.py
-  - echo import site >> C:\Halite\tools\halite-in-a-box\extra\python-windows\python37._pth
+  # Lack of whitespace before >> is intentional
+  - echo import site>> C:\Halite\tools\halite-in-a-box\extra\python-windows\python37._pth
   - cd C:\Halite\libhaliteviz
   - yarn install
   - cd C:\Halite\tools\halite-in-a-box
