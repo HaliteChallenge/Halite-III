@@ -1,12 +1,12 @@
 <template>
-  <div class="upload-state-container">
+  <div class="doc-section text-center">
     <div class="upload-state" v-if="view == viewList.UPLOAD">
-      <h2>Bot File</h2>
+      <h1>Bot File</h1>
       <p class="upload-state-desc"><span class="icon-document"></span> {{botFile.name}}</p>
       <p class="upload-state-filename">New Bot Version: {{`${user.username} v${bot === null ? 1 : parseInt(bot.version_number) + 1}`}}</p>
       <div class="upload-state-buttons">
         <a @click="cancel">CANCEL</a>
-        <button class="btn-ha" @click="upload">SUBMIT YOUR BOT</button>
+        <button class="btn btn-primary" @click="upload">SUBMIT YOUR BOT</button>
       </div>
     </div>
     <div class="upload-state" v-else-if="view == viewList.SUBMITTED">
@@ -221,12 +221,15 @@ export default{
     },
   }
 </script>
-<style>
-  .upload-state-container{
-    padding-top: 100px;
-    padding-bottom: 100px;
-  }
-  a{
-    cursor: pointer;
-  }
+<style scoped>
+    h1 {
+      color: #033C89;
+      font-size: 24px;
+      line-height: 29px;
+      text-transform: uppercase;
+    }
+
+    a {
+      cursor: pointer;
+    }
 </style>

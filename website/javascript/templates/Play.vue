@@ -192,14 +192,14 @@
         // get the bot uploader container
         const container = document.getElementById('bot-upload-container')
         if (!container || !container.contains(e.target)) {
-          event.preventDefault()
+          e.preventDefault()
         }
       })
       $('body').on('dragover', (e) => {
         // get the bot uploader container
         const container = document.getElementById('bot-upload-container')
         if (!container || !container.contains(e.target)) {
-          event.preventDefault()
+          e.preventDefault()
         }
       });
   },
