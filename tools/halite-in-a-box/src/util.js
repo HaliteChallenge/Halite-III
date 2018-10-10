@@ -37,8 +37,7 @@ export async function* callAny(process, args, env) {
     subprocess.stderr.on('data', (a) => logger.warn(`stderr output from ${process}:`, new TextDecoder("utf-8").decode(a)));
 
     rl.on('line', (line) => {
-        const result = JSON.parse(line);
-        buffer.push(result);
+        buffer.push(line);
         const resolve = currentResolve;
         currentPromise = makePromise();
         resolve();

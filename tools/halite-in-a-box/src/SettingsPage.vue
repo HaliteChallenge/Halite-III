@@ -1,5 +1,9 @@
 <template>
     <section class="tab-panel">
+        <section class="card mb-4">
+            Engine version: {{haliteVersion}}
+        </section>
+
         <section class="card card-lr">
             <section class="card-l p-4 text-left flex items-center flex-1">
                 <div>
@@ -58,6 +62,7 @@
 <script>
     import { remote as electronRemote } from 'electron';
     import * as python from './python';
+    import * as assets from './assets';
 
     export default {
         data() {
@@ -65,9 +70,13 @@
                 pyint: 'embedded',
                 pyintCustom: python.getCustomPython(),
                 error: null,
+                haliteVersion: 'loading...',
             };
         },
         mounted() {
+            assets.getHaliteVersion().then((version) => {
+                this.haliteVersion = version;
+            });
             setTimeout(() => {
                 if (python.getCustomPython()) {
                     this.pyint = 'custom';

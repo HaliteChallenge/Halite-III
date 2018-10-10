@@ -218,3 +218,12 @@ export default async function assets() {
     _resolveAssets(result);
     return result;
 }
+
+export async function getHaliteVersion() {
+    const paths = assetPaths();
+    const buffer = [];
+    for await (const line of util.callAny(paths.environmentPath, ['--version'])) {
+        buffer.push(line);
+    }
+    return buffer.join('\n').trim().replace(/^.*version: /, '');
+}
