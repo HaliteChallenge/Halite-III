@@ -1,17 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="58px" height="58px" viewBox="0 0 58 58" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
-    <title>Upload Icon</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Home" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Play@2x" transform="translate(-692.000000, -839.000000)">
-            <g id="Group-2" transform="translate(247.000000, 311.000000)">
-                <g id="Upload-Icon" transform="translate(446.000000, 529.000000)">
-                    <circle id="Oval-2" stroke="#072C69" stroke-width="2" cx="28" cy="28" r="28"></circle>
-                    <path d="M37.9146825,29.593 C37.7536825,29.232 37.3956825,29 37.0006825,29 L30.0006825,29 L30.0006825,17 C30.0006825,16.448 29.5526825,16 29.0006825,16 L27.0006825,16 C26.4486825,16 26.0006825,16.448 26.0006825,17 L26.0006825,29 L19.0006825,29 C18.6056825,29 18.2476825,29.232 18.0866825,29.593 C17.9256825,29.952 17.9926825,30.374 18.2566825,30.669 L27.2566825,40.669 C27.4466825,40.88 27.7166825,41 28.0006825,41 C28.2846825,41 28.5546825,40.88 28.7436825,40.669 L37.7436825,30.669 C37.9126825,30.481 38.0006825,30.242 38.0006825,30 C38.0006825,29.862 37.9726825,29.724 37.9146825,29.593 Z" id="Shape" fill="#072C69" fill-rule="nonzero"></path>
-                </g>
-            </g>
-        </g>
-    </g>
-</svg>
+<svg width="58" height="58" viewBox="0 0 58 58" xmlns="http://www.w3.org/2000/svg"><title>Upload Icon</title><g transform="translate(1 1)" fill="none" fill-rule="evenodd"><circle stroke="#072C69" stroke-width="2" cx="28" cy="28" r="28"/><path d="M37.915 29.593A1 1 0 0 0 37 29h-7V17a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v12h-7a1 1 0 0 0-.744 1.669l9 10a1 1 0 0 0 1.487 0l9-10a1 1 0 0 0 .17-1.076z" fill="#072C69" fill-rule="nonzero"/></g></svg>

@@ -1,18 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="15px" height="16px" viewBox="0 0 15 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
-    <title>calendar-57</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
-        <g id="Glyphs/calendar-57" stroke="#4A5E83">
-            <g id="calendar-57">
-                <path d="M0.5,5.5 L14.5,5.5" id="Shape"></path>
-                <path d="M13.5,2.5 L1.5,2.5 C0.948,2.5 0.5,2.948 0.5,3.5 L0.5,14.5 C0.5,15.052 0.948,15.5 1.5,15.5 L13.5,15.5 C14.052,15.5 14.5,15.052 14.5,14.5 L14.5,3.5 C14.5,2.948 14.052,2.5 13.5,2.5 Z" id="Shape"></path>
-                <path d="M3.5,0.5 L3.5,2.5" id="Shape"></path>
-                <path d="M11.5,0.5 L11.5,2.5" id="Shape"></path>
-                <path d="M7.5,0.5 L7.5,2.5" id="Shape"></path>
-            </g>
-        </g>
-    </g>
-</svg>
+<svg width="15" height="16" viewBox="0 0 15 16" xmlns="http://www.w3.org/2000/svg"><title>calendar-57</title><g stroke="#4A5E83" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><path d="M.5 5.5h14M13.5 2.5h-12a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-11a1 1 0 0 0-1-1zM3.5.5v2M11.5.5v2M7.5.5v2"/></g></svg>
