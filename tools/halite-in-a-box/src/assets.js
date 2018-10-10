@@ -91,7 +91,7 @@ export function assetPaths() {
     }
     else if (process.platform === 'win32') {
         platform = 'Windows-AMD64';
-        environmentBinary = 'halite.exe';
+        environmentBinary = 'halite_engine.exe';
     }
     else if (process.platform === 'linux') {
         platform = 'Linux-AMD64';
