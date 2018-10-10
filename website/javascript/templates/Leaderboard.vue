@@ -1018,6 +1018,8 @@ export default {
         font-size: 16px;
         .leaderboard-name > img {
           margin-right: 10px;
+          margin-top: -3px;
+          vertical-align: top;
         }
       }
       tr:first-child td {
