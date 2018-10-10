@@ -156,7 +156,7 @@ def create_team(*, user_id):
 
     # Check if user is already on a team
     with model.engine.begin() as conn:
-        if conn.execute(model.teams.select(model.teams.c.name == team_name)).first():
+        if conn.execute(model.teams.select(sqlalchemy.sql.func.lower(model.teams.c.name) == team_name.lower())).first():
             raise util.APIError(
                 400, message="That team name is taken, sorry.")
 
@@ -166,11 +166,15 @@ def create_team(*, user_id):
             raise util.APIError(
                 400, message="You're already on a team.")
 
-        team_id = conn.execute(model.teams.insert().values(
-            name=team_name,
-            verification_code=verification_code,
-            leader_id=user_id,
-        )).inserted_primary_key[0]
+        try:
+            team_id = conn.execute(model.teams.insert().values(
+                name=team_name,
+                verification_code=verification_code,
+                leader_id=user_id,
+            )).inserted_primary_key[0]
+        except sqlalchemy.exc.IntegrityError:
+            raise util.APIError(400, message="Duplicate team name.")
+
         conn.execute(model.users.update().values(
             team_id=team_id,
         ).where(model.users.c.id == user_id))
