@@ -10,7 +10,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     pushd game_engine
     cmake -DCMAKE_BUILD_TYPE=Release .
     make -j2
-    mv ./halite ../artifacts/Halite-MacOS-$(date +%Y%m%d%H%M%S)-$(git rev-parse HEAD)
+    cp ./halite ../artifacts/Halite-MacOS-$(date +%Y%m%d%H%M%S)-$(git rev-parse HEAD)
     popd
 
     pushd libhaliteviz
@@ -26,6 +26,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     rsync -r \
           --exclude __pycache__ --exclude '*~' --exclude '*.pyc' \
           ../hlt_client/hlt_client/ extra/hlt_client
+    cp ../../game_engine/halite extra/halite_engine
     npm install
     $(npm root)/.bin/webpack --mode=production
     $(npm root)/.bin/electron-builder -m

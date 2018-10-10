@@ -65,6 +65,7 @@ build_script:
   - cd C:\Halite\libhaliteviz
   - yarn install
   - cd C:\Halite\tools\halite-in-a-box
+  - copy C:\Halite\game_engine\build\Release\halite.exe C:\Halite\tools\halite-in-a-box\extra\halite_engine.exe
   - yarn install
   - yarn webpack --mode=development
   - yarn electron-builder -w
