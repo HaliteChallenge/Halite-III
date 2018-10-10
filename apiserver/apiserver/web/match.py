@@ -153,7 +153,7 @@ def list_matches_helper(offset, limit, participant_clause,
             for participant in participants:
                 match["players"][participant["user_id"]] = {
                     "username": participant["username"],
-                    "team_name": participant["team_name"]
+                    "team_name": participant["name"]
                         if "name" in participant else None,
                     "profile_image_key": participant["oauth_profile_image_key"],
                     "bot_id": participant["bot_id"],
