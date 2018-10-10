@@ -30,8 +30,6 @@ export const LINE_WIDTH = 1;
 export const DRAW_LINES_BASE_MAP = true;
 export const DRAW_LINES_OWNER_MAP = false;
 
-export let PLANET_EXPLOSION_SHEET = null;
-export let SHIP_EXPLOSION_SHEET = null;
 export let TURTLE_SPRITES = [];
 export let BASE_SPRITES = [];
 export let HALO_SPRITE = null;
@@ -60,12 +58,6 @@ export function prepareAll(renderer, prepare) {
     // Workaround: https://stackoverflow.com/a/42762277
 
     if (!renderer.bindTexture) return;
-
-    // Object.keys(SHIP_EXPLOSION_SHEET.data.frames)
-    //     .forEach((frame) => renderer.bindTexture(PIXI.Texture.from(frame).baseTexture));
-
-    // Object.keys(PLANET_EXPLOSION_SHEET.data.frames)
-    //     .forEach((frame) => renderer.bindTexture(PIXI.Texture.from(frame).baseTexture));
 }
 
 export function setAssetRoot(path) {
