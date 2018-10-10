@@ -874,7 +874,7 @@ export default {
         this.leaderboard = leaderboard;
         // scroll to user
         if (this.show_user) {
-          setTimeout(() => {
+          this.$nextTick(() => {
             const id = $(`#user-row-${this.show_user}`);
             const offset = 60; // the header height
             $("body, html").scrollTop(id.offset().top - offset);
@@ -882,7 +882,7 @@ export default {
 
             // hight light
             id.addClass("hl");
-          }, 1000);
+          });
         }
       };
 
