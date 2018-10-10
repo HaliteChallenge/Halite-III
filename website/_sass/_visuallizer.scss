@@ -78,8 +78,7 @@
       }
     }
     .short{
-      display: flex;
-      justify-content: center;
+      display: block;
       @media (min-width: $screen-sm-min){
         display: none;
       }
