@@ -34,6 +34,7 @@ export let TURTLE_SPRITES = [];
 export let BASE_SPRITES = [];
 export let HALO_SPRITE = null;
 
+let SHEETS = [];
 
 function loadSpritesheet(meta, textureImage) {
     return new Promise((resolve) => {
@@ -58,6 +59,10 @@ export function prepareAll(renderer, prepare) {
     // Workaround: https://stackoverflow.com/a/42762277
 
     if (!renderer.bindTexture) return;
+
+    SHEETS.forEach(
+        sheet => Object.keys(sheet.data.frames)
+            .forEach(frame => renderer.bindTexture(PIXI.Texture.from(frame).baseTexture)));
 }
 
 export function setAssetRoot(path) {
@@ -74,11 +79,21 @@ export function setAssetRoot(path) {
 
     theme.applyTheme();
 
+    promises.push(new Promise((resolve) => {
+        PIXI.loader.add("halo", require("../assets/halo2.png"))
+            .load((loader, resources) => {
+                HALO_SPRITE = resources.halo.texture;
+                resolve();
+            });
+    }));
+
     if (theme.selectedTheme === "Colorblind") {
         promises.push(loadSpritesheet(
             require("../assets/colorblind.json"),
             ASSET_ROOT + require("../assets/colorblind.png"),
         ).then((sheet) => {
+            SHEETS.push(sheet);
+
             TURTLE_SPRITES.push([
                 sheet.textures["turtle-cb-0.png"],
                 sheet.textures["turtle-cb-0.png"],
@@ -110,6 +125,8 @@ export function setAssetRoot(path) {
             require("../assets/planet-small.json"),
             ASSET_ROOT + require("../assets/planet-small.png"),
         ).then((sheet) => {
+            SHEETS.push(sheet);
+
             BASE_SPRITES.push(sheet.textures["CoreSmall.png"]);
             BASE_SPRITES.push(sheet.textures["CoreSmall.png"]);
             BASE_SPRITES.push(sheet.textures["CoreSmall.png"]);
@@ -120,6 +137,8 @@ export function setAssetRoot(path) {
             require("../assets/ship-neutral.json"),
             ASSET_ROOT + require("../assets/ship-neutral.png"),
         ).then((sheet) => {
+            SHEETS.push(sheet);
+
             TURTLE_SPRITES.push([
                 sheet.textures["ship.png"],
                 sheet.textures["ship.png"],
@@ -143,25 +162,17 @@ export function setAssetRoot(path) {
         }));
     }
     else {
-        promises.push(new Promise((resolve) => {
-            PIXI.loader.add("halo", require("../assets/halo2.png"))
-                .add("base_green", require("../assets/base-green.png"))
-                .add("base_purple", require("../assets/base-purple.png"))
-                .add("base_red", require("../assets/base-red.png"))
-                .add("base_yellow", require("../assets/base-yellow.png"))
-                .load((loader, resources) => {
-                    HALO_SPRITE = resources.halo.texture;
-                    BASE_SPRITES.push(resources.base_green.texture);
-                    BASE_SPRITES.push(resources.base_red.texture);
-                    BASE_SPRITES.push(resources.base_yellow.texture);
-                    BASE_SPRITES.push(resources.base_purple.texture);
-                    resolve();
-                });
-        }));
         promises.push(loadSpritesheet(
             require("../assets/turtle.json"),
             ASSET_ROOT + require("../assets/turtle.png"),
         ).then((sheet) => {
+            SHEETS.push(sheet);
+
+            BASE_SPRITES.push(sheet.textures["base-green.png"]);
+            BASE_SPRITES.push(sheet.textures["base-red.png"]);
+            BASE_SPRITES.push(sheet.textures["base-yellow.png"]);
+            BASE_SPRITES.push(sheet.textures["base-purple.png"]);
+
             TURTLE_SPRITES.push([
                 sheet.textures["turtle-green-low.png"],
                 sheet.textures["turtle-green-medium.png"],
