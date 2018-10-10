@@ -443,10 +443,9 @@ def main(args):
                         extra_metadata,
                         e.language, e.log
                     )
-
-                sleep(random.randint(1, 4))
             else:
                 logging.debug("No task available at time %s (GMT). Sleeping...\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
+                sleep(random.randint(1, 4))
         except Exception as e:
             logging.exception("Error on get task %s\n" % str(e))
 
