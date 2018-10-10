@@ -2,7 +2,7 @@ import abc
 
 from . import commands, constants
 from .positionals import Direction, Position
-from .networking import read_input
+from .common import read_input
 
 
 class Entity(abc.ABC):

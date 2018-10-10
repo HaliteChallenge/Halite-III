@@ -106,6 +106,7 @@
                       <label for="team-name">New Team Name</label>
                       <input id="team-name" type="text" class="form-control" placeholder="Team name" v-model="new_team_name">
                       <button class="btn btn-primary btn-sm" @click="createTeam">CREATE TEAM</button>
+                      <p class="error" v-if="teamCreateError">{{teamCreateError}}</p>
                     </div>
                     <h3>Join a Team</h3>
                     <div class="form-group">
@@ -160,6 +161,7 @@ export default {
           edit_email: false,
           team: null,  // My team information
           teamJoinError: null,
+          teamCreateError: null,
           new_team_name: "", // Team name required to create the team
           join_team_name: "", // Team name required to join the team
           username_error: {
@@ -407,10 +409,15 @@ export default {
       // Create Team
       createTeam: function() {
         const team_name = this.new_team_name;
-        if(team_name) {
+        if (team_name) {
+          this.teamCreateError = null
           api.create_team(team_name).then((res)=>{
-            // TODO --- I am already in the team,  so I can't create a team. I don't know how to test the return data.
-            console.warn(res)
+            if (res.status === 'success') {
+              this.fetchTeamsList(res.team_id)
+            }
+            else {
+              this.teamCreateError = res.message
+            }
           })
         }
       },

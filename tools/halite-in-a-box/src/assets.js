@@ -87,7 +87,7 @@ export function assetPaths() {
     let environmentBinary;
     if (process.platform === 'darwin') {
         platform = 'MacOS';
-        environmentBinary = 'halite';
+        environmentBinary = 'halite_engine';
     }
     else if (process.platform === 'win32') {
         platform = 'Windows-AMD64';
@@ -99,7 +99,7 @@ export function assetPaths() {
     }
 
     // Path to halite executable
-    const environmentPath = path.join(dataDir, environmentBinary);
+    const environmentPath = path.join(embeddedResourcesPath(), environmentBinary);
     // Path to benchmark bots
     const botsPath = path.join(dataDir, BENCHMARK_BOT_DIRECTORY);
 
@@ -141,19 +141,6 @@ export default async function assets() {
         environmentBinary,
         botsPath,
     } = paths;
-
-    // Download the halite executable if needed
-    // TODO: try executing environment to get version
-    if (!fs.existsSync(environmentPath)) {
-        console.info(`Downloading environment to ${environmentPath}`);
-
-        const request = await util.download(`assets/downloads/Halite3_${platform}.zip`);
-        const rawZip = await request.arrayBuffer();
-        const zip = await JSZip.loadAsync(rawZip);
-        const binary = await zip.file(environmentBinary).async('uint8array');
-        await util.writeFile(environmentPath, binary);
-        fs.chmodSync(environmentPath, 0o775);
-    }
 
     // Download benchmark bots
     let downloadBots = false;

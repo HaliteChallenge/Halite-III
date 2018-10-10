@@ -2,6 +2,7 @@ import json
 import logging
 import sys
 
+from .common import read_input
 from . import constants
 from .game_map import GameMap, Player
 
@@ -83,15 +84,3 @@ def send_commands(commands):
     """
     print(" ".join(commands))
     sys.stdout.flush()
-
-
-def read_input():
-    """
-    Reads input from stdin, shutting down logging and exiting if an EOFError occurs
-    :return: input read
-    """
-    try:
-        return input()
-    except EOFError as eof:
-        logging.shutdown()
-        raise SystemExit(eof)

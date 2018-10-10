@@ -3,7 +3,7 @@ import queue
 from . import constants
 from .entity import Entity, Shipyard, Ship, Dropoff
 from .positionals import Direction, Position
-from .networking import read_input
+from .common import read_input
 
 
 class Player:

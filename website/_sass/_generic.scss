@@ -53,6 +53,10 @@ a{
   color: #FFBE00;
 }
 
+tr.hl {
+  background: rgba(255, 190, 0, 0.2);
+}
+
 h1, h2, h3{
   letter-spacing: 1px;
   font-family: $font-heading;
