@@ -1,3 +1,6 @@
+appId: halite-in-a-box
+productName: Halite Offline Tools
+
 directories:
   output: electron-dist
 files:
