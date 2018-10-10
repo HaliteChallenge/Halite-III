@@ -21,17 +21,18 @@
                                 Member of
                             </template>
                             <a target="_blank"
-                               :href="`/user/?user_id=${team.leader_id}`"
+                               :href="`/user/?user_id=${user.team_leader_id}`"
                             >{{ user.team_name }}</a>
                         </p>
 
                         <template v-if="team" v-for="member in team.members">
+                            
+                            <profile-image
+                              height="20px"
+                              :username="member.username"
+                              :profileImage="member.profile_image_key"
+                            />
                             <a :href="`/user/?user_id=${member.user_id}`">
-                              <profile-image
-                                height="20px"
-                                :username="member.username"
-                                :profileImage="member.profile_image_key"
-                              />
                                 {{member.username}}
                             </a>
                         </template>
@@ -66,7 +67,13 @@
                            :href="`/programming-competition-leaderboard?show_user=${user.user_id}`">
                             <div class="lvl-icon" :class="tierClass(user.tier || 'Bronze')"></div>
                             <div>
-                                <div class="type-title">Individual</div>
+                                
+                                <span v-if="team">
+                                  <div class="type-title">Team</div>
+                                </span>
+                                <span v-else>
+                                  <div class="type-title">Individual</div>
+                                </span>
                                 <div class="lvl">
                                     #{{user.rank}}
                                 </div>

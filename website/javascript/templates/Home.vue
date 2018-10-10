@@ -4,7 +4,10 @@
             <div class="left-container" v-if="user.rank">
                 <div class="top-bg"></div>
                 <div class="title">Hi, {{ user.username }}! </div>
-                <div class="text-tips">
+                <div class="text-tips" v-if="user.team_name">
+                    Keep up the good work. Your team's bot is ranked #{{ user.rank }}.<br/>
+                </div>
+                <div class="text-tips" v-else>
                     Keep up the good work. Your bot is ranked #{{ user.rank }}.<br/>
                 </div>
                 <a class="btn btn-primary btn-sm" href="/play-programming-challenge/">Keep playing</a>
@@ -28,7 +31,11 @@
                 </div>
                 <div class="data-item">
                     <div class="item-icon"></div>
-                    <div class="item-info">
+                    <div class="item-info" v-if="user.team_name">
+                        <div class="item-title">{{ user.team_name }}'s Global Rank</div>
+                        <div class="item-data">#{{ user.rank || "N/A" }}</div>
+                    </div>
+                    <div class="item-info" v-else>
                         <div class="item-title">Your Global Rank</div>
                         <div class="item-data">#{{ user.rank || "N/A" }}</div>
                     </div>
@@ -43,8 +50,8 @@
                 <div class="data-item" v-else>
                     <div class="item-icon"></div>
                     <div class="item-info">
-                        <div class="item-title">Organization</div>
-                        <div class="item-data">Not Affiliated</div>
+                        <div class="item-title">Organization Rank</div>
+                        <div class="item-data">#N/A</div>
                     </div>
                 </div>
             </div>
@@ -258,10 +265,6 @@
              })
            }
          })
-         // Test Code --- Because my own account has no data.
-         // api.get_user(1).then(res => {
-         //     this.user = res;
-         // });
        },
      }
    }
