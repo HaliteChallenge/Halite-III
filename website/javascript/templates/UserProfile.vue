@@ -59,12 +59,24 @@
                 </div>
                 <div class="user-profile-rank">
                     <div class="ranking-type">
-                        <div class="individual">
+                        <a v-if="user.rank"
+                           class="individual"
+                           target="_blank"
+                           :title="`Show ${user.team_id ? user.team_name : user.username} on leaderboard`"
+                           :href="`/programming-competition-leaderboard?show_user=${user.user_id}`">
                             <div class="lvl-icon" :class="tierClass(user.tier || 'Bronze')"></div>
                             <div>
                                 <div class="type-title">Individual</div>
                                 <div class="lvl">
-                                    {{ user.rank ? `#${user.rank}` : "No Rank" }}
+                                    #{{user.rank}}
+                                </div>
+                            </div>
+                        </a>
+                        <div class="individual" v-else>
+                            <div>
+                                <div class="type-title">Individual</div>
+                                <div class="lvl">
+                                    No Rank
                                 </div>
                             </div>
                         </div>
@@ -1190,3 +1202,8 @@
         }
     }
 </style>
+<!--
+     Local Variables:
+     web-mode-markup-indent-offset: 4
+     End:
+     End: -->

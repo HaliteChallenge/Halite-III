@@ -131,13 +131,16 @@
       align-items: center;
       border-top: 1px solid rgba(8, 27, 83, 0.1);
       border-bottom: 1px solid rgba(8, 27, 83, 0.1);
-      > div {
+      > div, > a {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 50%;
         height: 73px;
         text-align: left;
+        &:hover {
+          text-decoration: none;
+        }
         &.individual {
           border-right: 1px solid rgba(8, 27, 83, 0.1);
         }
