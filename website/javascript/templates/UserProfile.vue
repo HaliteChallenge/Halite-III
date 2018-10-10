@@ -26,7 +26,7 @@
                         </p>
 
                         <template v-if="team" v-for="member in team.members">
-                            
+
                             <profile-image
                               height="20px"
                               :username="member.username"
@@ -67,7 +67,7 @@
                            :href="`/programming-competition-leaderboard?show_user=${user.user_id}`">
                             <div class="lvl-icon" :class="tierClass(user.tier || 'Bronze')"></div>
                             <div>
-                                
+
                                 <span v-if="team">
                                   <div class="type-title">Team</div>
                                 </span>
@@ -275,8 +275,8 @@
                                         <tbody>
                                             <tr v-for="game in games">
                                                 <td class="little-pd watch" v-bind:class="game.versions_back ? (game.versions_back % 2 ? 'old-bot-odd' : 'old-bot-even') : ''">
-                                                    <span class="video-icon"></span>
                                                     <a :href="'/play?game_id=' + game.game_id">
+                                                        <span class="video-icon"></span>
                                                         {{getFormattedDateForGames(game.time_played)}}
                                                     </a>
                                                 </td>
