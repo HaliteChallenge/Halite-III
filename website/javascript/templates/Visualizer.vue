@@ -129,7 +129,7 @@
       <div class="stats-panel">
         <label class="panel-name">THEME</label>
         <div>
-          <v-select :options="themes" @input="changeTheme" :value="selectedTheme" style="display: inline-block;" id="theme">
+          <v-select :options="themes" @input="changeTheme" :value="selectedTheme" style="display: inline-block;width:250px" id="theme">
           </v-select>
         </div>
       </div>
