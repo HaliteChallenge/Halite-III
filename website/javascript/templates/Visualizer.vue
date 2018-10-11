@@ -7,28 +7,22 @@
         <div class="game-heading-players">
           <div class="short">
             <span :class="`player color-${sortedPlayers[0].index + 1}`" v-if="sortedPlayers.length >= 1">
-                <TierPopover :tier="tierClass(sortedPlayers[0].tier)"/>
                 <a v-if="sortedPlayers[0].user_id" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].user_id}`">{{sortedPlayers[0].name}}</a>
                 <span v-if="!sortedPlayers[0].user_id" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
-            <a v-if="sortedPlayers[0].index" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].index}`">{{sortedPlayers[0].name}}</a>
-            <span v-if="!sortedPlayers[0].index" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
             </span>
             <span class="action">defeats</span>
             <span :class="`player color-${sortedPlayers[1].index + 1}`" v-if="sortedPlayers.length >= 2">
-                <TierPopover :tier="tierClass(sortedPlayers[1].tier)"/>
                 <a class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[1].user_id}`">{{sortedPlayers[1].name}}</a>
               </span>
             <span class="action" v-if="sortedPlayers.length > 2">+{{sortedPlayers.length - 2}}</span>
           </div>
           <div class="long">
             <span :class="`player color-${sortedPlayers[0].index + 1}`" v-if="sortedPlayers.length >= 1">
-                <TierPopover :tier="tierClass(sortedPlayers[0].tier)"/>
                 <a v-if="sortedPlayers[0].user_id" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].user_id}`">{{sortedPlayers[0].name}}</a>
                 <span v-if="!sortedPlayers[0].user_id" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
             </span>
             <span class="action">defeats</span>
             <span :class="`player color-${player.index + 1}`" v-for="(player, index) in sortedPlayers" v-if="index > 0" :key="index">
-                <TierPopover :tier="tierClass(player.tier)"/>
                 <a v-if="player.user_id" class="player-name-anchor" :href="`/user/?user_id=${player.user_id}`">{{player.name}}</a>
                 <span v-if="!player.user_id" class="player-name-anchor" :href="`/user/?user_id=${player.user_id}`">{{player.name}}</span>
             </span>
