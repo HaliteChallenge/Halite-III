@@ -62,7 +62,7 @@
             min-height: 56px;
             line-height: 23px;
             color: #0c0c0c;
-            font-size: 16px;
+            font-size: 14px;
             background-color: #f9fcff;
             &.challenge{
               background-color: #2e2e1f;
@@ -71,7 +71,7 @@
               display: inline-block;
               position: relative;
               top: 3px;
-              margin-right: 14px;
+              margin-right: 6px;
               width: 18px;
               height: 16px;
               background: url("/assets/images/video-icon.png") center center
@@ -87,7 +87,7 @@
           padding-left: 20px;
         }
         .large-pd {
-          padding-left: 40px;
+          padding-left: 20px;
         }
       }
     }
@@ -105,11 +105,11 @@
   .watch {
     width: 17rem;
   }
-  .destroyed {
-    width: 15rem;
+  .result {
+    width: 17rem;
   }
   .map-size {
-    width: 12rem;
+    width: 7rem;
   }
   .turns {
     width: 7rem;
@@ -157,8 +157,8 @@
       width: 20px;
     }
     .username {
-      margin-left: 5px;
-      font-size: 1.3rem;
+      margin-left: 6px;
+      font-size: 14px;
     }
   }
   .game-table-enter-active, .game-table-leave-active {
