@@ -107,6 +107,7 @@
                         <div class="stats-item">
                             <div class="title">Rating</div>
                             <p>{{ Math.round(user.score * 100) / 100 }}</p>
+                            <p class="detailed-rating">{{user.mu.toFixed(2)}}μ {{user.sigma.toFixed(2)}}σ</p>
                         </div>
                         <div class="stats-item">
                             <div class="title">Bots</div>
@@ -1225,6 +1226,25 @@
             margin-top: 0;
             height: auto !important;
         }
+    }
+
+    .stats-item {
+      position: relative;
+    }
+
+    .stats-item:hover .detailed-rating {
+      opacity: 1;
+    }
+
+    .detailed-rating {
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+      font-size: 0.9em !important;
+      position: absolute;
+      margin-top: -0.75em !important;
+      left: 50%;
+      width: 100%;
+      transform: translateX(-50%);
     }
 </style>
 <!--

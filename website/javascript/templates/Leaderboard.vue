@@ -44,9 +44,6 @@
                   </v-select>
                   <v-select multiple placeholder="Language" v-model="language_filter" :options="filter_options.language_options">
                   </v-select>
-                  <!-- <div>
-                          <button class="btn"><span>APPLY FILTER</span></button>
-                        </div> -->
                 </div>
               </div>
             </form>
@@ -157,10 +154,8 @@
       <div role="tabpanel" class="tab-pane organizations" id="organizations">
         <div class="panel panel-stats">
           <div class="panel-heading" role="tab">
-     <!--   <i class="xline xline-top"></i> -->
             <a data-toggle="collapse" id="toggle_filter" aria-controls="panel_filter">
               <h4 class="title-h4">Filters</h4>
-              <!-- <span class="toggle-icon expand"></span> -->
             </a>
             <div class="filter-handler" v-if="filter_handle_view==='normal'">
               <a href="#" class="handler-item" @click="clearFilter(2)">
