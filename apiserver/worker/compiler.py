@@ -402,6 +402,9 @@ comp_args = {
     "Python": [
         ["python3.6", "-c", PYTHON_EXT_COMPILER],
     ],
+    "Python (PyPy)": [
+        ["pypy3", "-c", PYTHON_EXT_COMPILER],
+    ],
     "Rust": [
         ["cargo", "rustc", "--release", "-q", "--", "-Awarnings"],
     ],
@@ -516,6 +519,11 @@ languages = (
                  ([], ExternalCompiler(comp_args["F#/.NET Core"][1])),
              ]
     ),
+    Language("Forth", BOT +".fs", "MyBot.fs",
+        "gforth-fast MyBot.fs -e bye",
+        [],
+        [(["*.fs"], ChmodCompiler("Forth"))]
+    ),
     Language("Go", BOT +".go", "MyBot.go",
         "export GOPATH=\"$(pwd)\"; go run MyBot.go",
         [],
@@ -612,6 +620,15 @@ languages = (
         ["*.pyc"],
         [(["*.py"], ChmodCompiler("Python")),
         (["setup_exts"], ErrorFilterCompiler(comp_args["Python"][0], separate=True, filter_stderr='-Wstrict-prototypes'))]
+    ),
+    Language("Python (PyPy)", BOT +".pypy", "MyBot.pypy",
+        "pypy3 MyBot.pypy",
+        ["*.pyc"],
+        [
+            (["*.py"], ChmodCompiler("Python (PyPy)")),
+            (["*.pypy"], ChmodCompiler("Python (PyPy)")),
+            (["setup_exts"], ErrorFilterCompiler(comp_args["Python (PyPy)"][0], separate=True, filter_stderr='-Wstrict-prototypes'))
+        ]
     ),
     Language("Racket", BOT +".rkt", "MyBot.rkt",
         "racket MyBot.rkt",
