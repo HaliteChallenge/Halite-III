@@ -1,12 +1,9 @@
 <template>
 <div class="map-props">
-<!--  <div class="map-props-icon">
-    <span class="icon-ship"></span>
-  </div> -->
   <div class="map-props-list">
     <table>
       <tr>
-        <th>Selected Ship</th>
+        <th colspan="2">Selected Ship</th>
       </tr>
       <tr>
         <td>Owner:</td>

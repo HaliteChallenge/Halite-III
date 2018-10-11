@@ -5,7 +5,7 @@ export const THEMES = {
         scale: {
             ship: 1,
         },
-        playerColors: [0x1BB15A, 0xF54356, 0xFABB2C, 0xE65598],
+        playerColors: [0x1BB15A, 0xF54356, 0xFABB2C, 0xffa2e2],
         colorTheme: "TheSea",
     },
     "Colorblind": {

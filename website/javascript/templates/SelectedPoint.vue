@@ -1,12 +1,9 @@
 <template>
     <div class="map-props">
- <!--   <div class="map-props-icon">
-            <span class="icon-planet"></span>
-        </div>  -->
         <div class="map-props-list">
             <table>
               <tr>
-                <th>Selected Point</th>
+                <th colspan="2">Selected Point</th>
               </tr>
                 <tr>
                     <td>Location:</td>

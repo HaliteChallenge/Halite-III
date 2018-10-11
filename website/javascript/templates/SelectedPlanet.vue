@@ -6,7 +6,7 @@
   <div class="map-props-list">
     <table>
       <tr>
-        <th>Selected {{info.type}}</th>
+        <th colspan="2">Selected {{info.type}}</th>
       </tr>
       <tr>
         <td>Owner:</td>
