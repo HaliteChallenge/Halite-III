@@ -15,7 +15,6 @@
             <td class="little-pd">
             <div class="td-wrapper"><div>
                 <a :href="'/play?game_id=' + game.game_id">
-                    <span class="video-icon"></span>
                     {{getFormattedDateForGames(game.time_played)}}
                 </a>
             </div></div>
@@ -192,7 +191,7 @@ export default {
       var cdate = moment(date)
       if (cdate.isValid()) {
         var dateFormat = require('dateformat')
-        return dateFormat(date, 'mm/dd/yy HH:MM:ss')
+        return dateFormat(date, 'mm/dd/yy HH:MM')
       } else {
         return return_value_not_valid
       }
