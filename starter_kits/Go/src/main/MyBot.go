@@ -34,7 +34,11 @@ func main() {
 		seed, _ = strconv.ParseInt(args[0], 10, 64)
 	}
 	rand.Seed(seed)
+
 	var game = hlt.NewGame()
+	// At this point "game" variable is populated with initial map data.
+	// This is a good place to do computationally expensive start-up pre-processing.
+	// As soon as you call "ready" function below, the 2 second per turn timer will start.
 
 	var config = gameconfig.GetInstance()
 	fileLogger := log.NewFileLogger(game.Me.ID)
