@@ -15,38 +15,9 @@
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="players">
         <div class="panel panel-stats">
-       <!--   <div class="panel-statistic">
-            <i class="xline xline-top"></i>
-            <h4 class="title-h4">LEADERBOARD STATISTICS</h4>
-            <div class="statistic-box">
-              <div class="box-item player">
-                <div class="icon"></div>
-                <div class="statistic-data">
-                  <div class="num">{{ metric.players }}</div>
-                  <div class="data-title">Players</div>
-                </div>
-              </div>
-              <div class="box-item organizations">
-                <div class="icon"></div>
-                <div class="statistic-data">
-                  <div class="num">{{ metric.organizations }}</div>
-                  <div class="data-title">Organizations</div>
-                </div>
-              </div>
-              <div class="box-item countries">
-                <div class="icon"></div>
-                <div class="statistic-data">
-                  <div class="num">{{ metric.countries }}</div>
-                  <div class="data-title">Countries</div>
-                </div>
-              </div>
-            </div>
-          </div> -->
           <div class="panel-heading" role="tab" id="heading_player_details">
-        <!--    <i class="xline xline-top"></i> -->
             <a data-toggle="collapse" id="toggle_filter" aria-controls="panel_filter">
               <h4 class="title-h4">Filters</h4>
-              <!-- <span class="toggle-icon expand"></span> -->
             </a>
             <div class="filter-handler" v-if="filter_handle_view==='normal'">
               <a href="#" class="handler-item" @click="clearFilter(1)">

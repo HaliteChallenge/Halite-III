@@ -78,30 +78,6 @@
             </div>
           </div>
         </div>
- <!--   <div class="game-replay-controller">
-          <div class="game-replay-btn-list">
-            <button class="btn" @click="resetView">
-              <span class="fa fa-refresh"></span>
-              &nbsp;Reset Map Zoom/Pan
-            </button>
-            <a class="btn" v-if="game && game.game_id" :href="replay_download_link(game.game_id)">
-              <span class="icon-download"></span>
-              &nbsp;Download Replay File
-            </a>
-            <button class="btn" v-else="game && game.game_id" disabled>
-              <span class="icon-download"></span>
-              &nbsp;Replay File Unavailable
-            </button>
-            <button class="btn" @click="recordView">
-              <span class="fa fa-video-camera"></span>
-              &nbsp;Record Game As Video
-            </button>
-            <template v-if="showHoliday">
-              <label for="holiday">Holiday Theme:</label>
-              <input type="checkbox" class="pull-left" style="margin-top: -5px;" id="holiday" v-bind:checked="isHoliday" v-on:click="toggleHoliday(this)">
-            </template>
-          </div>
-        </div> -->
       </div>
 
     </div>
@@ -157,74 +133,6 @@
           </v-select>
         </div>
       </div>
-      <!-- <div class="panel-group" aria-multiselectable="true">
-        <VisualizerPanel name="map-stats" title="game/map stats">
-          <table class="map-stats-props">
-            <tbody>
-              <tr>
-                <th>Map Size:</th>
-                <td>{{`${replay.production_map.width}x${replay.production_map.height}`}}</td>
-              </tr>
-              <tr>
-                <th>Map Seed:</th>
-                <td>{{replay.map_generator_seed}}</td>
-              </tr>
-              <tr>
-                <th>Engine Version:</th>
-                <td>{{replay.ENGINE_VERSION}}</td>
-              </tr>
-              <tr>
-                <th>Replay Version:</th>
-                <td>{{replay.REPLAY_FILE_VERSION}}</td>
-              </tr>
-              <tr>
-                <th>Zoom Level:</th>
-                <td>{{Math.round(zoom*100)}}%</td>
-              </tr>
-              <tr>
-                <th>Camera Position:</th>
-                <td>{{pan.x}}, {{pan.y}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </VisualizerPanel>
-        <VisualizerPanel name="charts" title="charts">
-          <template slot-scope="panelOpen">
-            <section class="dashboard-graphs">
-              <section class="dashboard-graph">
-                <h4 class="dashboard-graph-heading">
-                  <span class="icon-ship"></span> Ships
-                </h4>
-                <PlayerLineChart ref="chart2" :selected-players="selectedPlayers" :maxLength="50" :chart-data="chartData.fleet" :index="frame" :showChart="panelOpen.panelOpen" @updateIndex="index => {frame = index}" />
-              </section>
-              <section class="dashboard-graph">
-                <h4 class="dashboard-graph-heading">
-                  <span class="icon-ship"></span> Current Halite
-                </h4>
-                <PlayerLineChart :selected-players="selectedPlayers" :maxLength="50" :chart-data="chartData.energy" :index="frame" :showChart="panelOpen.panelOpen" @updateIndex="index => {frame = index}" />
-              </section>
-            </section>
-          </template>
-        </VisualizerPanel>
-        <VisualizerPanel name="player-detail" title="player details" @click="gaData('visualizer','click-player-details','gameplay')">
-          <PlayerDetailPane :replay="replay" :statistics="statistics" :stats="stats" :frame="frame"></PlayerDetailPane>
-        </VisualizerPanel>
-        <VisualizerPanel ref="objectPanel" name="map-object-properties" title="map object properties" @click="gaData('visualizer','click-object-properties','gameplay')">
-          <div v-if="selectedPlanet">
-            <SelectedPlanet :selected-planet="selectedPlanet" :players="players"></SelectedPlanet>
-          </div>
-          <div v-if="selectedPoint && !selectedPlanet">
-            <SelectedPoint :selected-point="selectedPoint" :players="players"></SelectedPoint>
-          </div>
-          <div v-if="selectedShip">
-            <SelectedShip :selected-ship="selectedShip" :players="players"></SelectedShip>
-          </div>
-          <div class="message-box" v-if="!selectedPoint && !selectedShip">
-            <p><span class="icon-info"></span></p>
-            <p>Click on a ship, planet, or other map location to see properties</p>
-          </div>
-        </VisualizerPanel>
-      </div> -->
     </div>
   </div>
 </div>
@@ -810,15 +718,6 @@ export default {
       this.$refs.shareInput.select()
       document.execCommand('copy')
     },
-
-    // issues #361: Remove Post-Game dashboard
-    // toggleSelectedPlayer: function (id) {
-    //   this.selectedPlayers[id] = !this.selectedPlayers[id]
-    //   this.$refs.chart1.refreshGraph()
-    //   this.$refs.chart2.refreshGraph()
-    //   this.$refs.chart3.refreshGraph()
-    //   this.$refs.chart4.refreshGraph()
-    // },
     /**
      * Download link
      */

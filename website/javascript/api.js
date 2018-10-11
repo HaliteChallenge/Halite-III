@@ -27,10 +27,13 @@ export function me_cached () {
   }
 }
 
+let __meOnce = null
+
 export function me () {
   if (cached_me !== null) return Promise.resolve(cached_me)
   else if (logged_in === false) return Promise.resolve(null)
-  return $.get({
+  else if (__meOnce) return __meOnce
+  __meOnce = $.get({
     url: `${LOGIN_SERVER_URL}/me`,
     xhrFields: {
       withCredentials: true
@@ -50,6 +53,7 @@ export function me () {
       return user
     })
   })
+  return __meOnce
 }
 
 export function check_username(username) {
