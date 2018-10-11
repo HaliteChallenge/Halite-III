@@ -183,12 +183,12 @@ export default {
     game: Object,
     replay: Object,
     width: {
-      default: 600,
+      default: 650,
       required: false,
       type: Number
     },
     height: {
-      default: 600,
+      default: 650,
       required: false,
       type: Number
     },
@@ -305,13 +305,16 @@ export default {
     const onResize = () => {
       if (document.querySelector("canvas")) {
         const windowHeight = window.innerHeight
-        const canvasHeight = document.querySelector("canvas").offsetHeight
+        const canvasHeight = this.height
         const ratio = canvasHeight / windowHeight
+        const factor = 1 / (ratio + 0.2)
 
         if (ratio > 0.9) {
-          document.querySelector("canvas").style.zoom = (1 / (ratio + 0.2)).toString()
+          document.querySelector("canvas").style.width = `${factor * this.width}px`
+          document.querySelector("canvas").style.height = `${factor * this.height}px`
         } else {
-          document.querySelector("canvas").style.zoom = null
+          document.querySelector("canvas").style.width = `${this.width}px`
+          document.querySelector("canvas").style.height = `${this.height}px`
         }
       }
     }

@@ -86,7 +86,6 @@
 
     .player{
       max-width: 200px;
-      white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
       [class*="icon"]{
@@ -98,6 +97,10 @@
         width: 10px;
         height: 10px;
         border-radius: 5px;
+      }
+
+      @media (min-width: $screen-lg-min){
+        white-space: nowrap;
       }
     }
   }
