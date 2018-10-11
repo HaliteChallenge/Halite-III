@@ -4,10 +4,10 @@
       <table class="table table-leader">
         <thead>
           <tr>
-            <th class="watch little-pd">Watch</th>
-            <th class="result large-pd">Result</th>
-            <th class="map-size text-center hidden-xs" >Map Size</th>
-            <th class="turns text-center hidden-xs">Turns</th>
+            <th class="watch little-pd">Time played</th>
+            <th class="result large-pd">Results</th>
+            <th class="map-size little-pd" >Map</th>
+            <th class="turns little-pd">Turns</th>
           </tr>
         </thead>
         <transition-group name="game-table" tag="tbody">
@@ -55,15 +55,15 @@
                 </a>
             </div></div>
             </td>
-            <td class="text-center hidden-xs">
-              <div class="td-wrapper"><div class="text-center">
+            <td class=little-pd>
+              <div class="td-wrapper">
                 {{ game.map_width }}x{{ game.map_height }}
-              </div></div>
+              </div>
             </td>
-            <td class="text-center hidden-xs">
-              <div class="td-wrapper"><div class="text-center">
+            <td class="little-pd">
+              <div class="td-wrapper">
                 {{ game.turns_total }}
-              </div></div>
+              </div>
             </td>
           </tr>
         </transition-group>
@@ -192,7 +192,7 @@ export default {
       var cdate = moment(date)
       if (cdate.isValid()) {
         var dateFormat = require('dateformat')
-        return dateFormat(date, 'dd/mm/yy HH:MM:ss')
+        return dateFormat(date, 'mm/dd/yy HH:MM:ss')
       } else {
         return return_value_not_valid
       }
