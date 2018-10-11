@@ -100,8 +100,13 @@ select.form-control::-ms-expand {
   .form-control{
     margin-right: 0 !important;
   }
-  &.single.open .selected-tag{
-    position: static;
+  &.single {
+    &.open .selected-tag{
+      position: static;
+    }
+    .vs__actions {
+      display: none;
+    }
   }
 
   /** dropdown **/
