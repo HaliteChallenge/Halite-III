@@ -8,12 +8,66 @@
       visibility: hidden;
     }
   }
-  .table-leader {
-    table-layout: fixed;
-    white-space: nowrap;
+  .table-container {
+    overflow: auto;
+    .table-leader {
+      border-radius: 4px;
+      overflow: hidden;
+      table-layout: fixed;
+      white-space: nowrap;
+      min-width: 600px;
+      thead > tr {
+        border: none;
+        > th {
+          padding: 0 15px;
+          height: 56px;
+          line-height: 56px;
+          font-size: 14px;
+          border-right: 1.2px solid rgba(8, 27, 83, 0.1);
+          border-bottom: none;
+          background-color: rgba(2, 30, 82, 0.05);
+        }
+      }
+      tbody {
+        text-align: left;
+        tr {
+          border: none;
+          td {
+            min-height: 56px;
+            line-height: 23px;
+            border: 1.2px solid rgba(8, 27, 83, 0.1);
+            color: #0c0c0c;
+            font-size: 16px;
+            background-color: #f9fcff;
+            &.challenge{
+              background-color: #2e2e1f;
+            }
+            .video-icon {
+              display: inline-block;
+              position: relative;
+              top: 3px;
+              margin-right: 14px;
+              width: 18px;
+              height: 16px;
+              background: url("/assets/images/video-icon.png") center center
+                no-repeat;
+              background-size: cover;
+            }
+          }
+        }
+        tr:first-child td {
+          border-top: none;
+        }
+      }
 
-    tbody > tr> td.challenge{
-      background-color: #2e2e1f;
+      tr {
+        .little-pd {
+          padding-left: 20px;
+        }
+        .large-pd {
+          padding-left: 40px;
+        }
+      }
     }
   }
   .timed-out {
@@ -40,7 +94,7 @@
   }
   .table-leader .td-wrapper {
     height: 2.5rem;
-    max-height: 3rem;
+    // max-height: 3rem;
     overflow: hidden;
     position: relative;
   }
@@ -50,12 +104,38 @@
     position: absolute;
     bottom: 0;
   }
+
+  .result-td {
+    .td-wrapper {
+      width: 100%;
+      height: 100%;
+      overflow: inherit;
+      > div {
+        display: flex;
+        flex-wrap: wrap;
+        position: relative;
+        a {
+          display: flex;
+          align-items: flex-start;
+          width: 100%;
+          span {
+            display: inline-block;
+            width: calc(100% - 25px);
+            white-space: initial;
+            word-break: break-all;
+          }
+        }
+      }
+    }
+  }
+
   .game-participant {
     img {
       height: 20px;
       width: 20px;
     }
     .username {
+      margin-left: 5px;
       font-size: 1.3rem;
     }
   }

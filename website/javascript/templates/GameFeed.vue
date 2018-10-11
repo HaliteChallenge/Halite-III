@@ -4,22 +4,23 @@
       <table class="table table-leader">
         <thead>
           <tr>
-            <th class="watch">Watch</th>
-            <th class="result">Result</th>
+            <th class="watch little-pd">Watch</th>
+            <th class="result large-pd">Result</th>
             <th class="map-size text-center hidden-xs" >Map Size</th>
             <th class="turns text-center hidden-xs">Turns</th>
           </tr>
         </thead>
         <transition-group name="game-table" tag="tbody">
           <tr v-for="game in display_games" :key="game.game_id">
-            <td>
+            <td class="little-pd">
             <div class="td-wrapper"><div>
                 <a :href="'/play?game_id=' + game.game_id">
+                    <span class="video-icon"></span>
                     {{getFormattedDateForGames(game.time_played)}}
                 </a>
             </div></div>
             </td>
-            <td v-bind:class="{ 'challenge': game.challenge_id }">
+            <td v-bind:class="{ 'challenge': game.challenge_id }" class="result-td large-pd">
             <div class="td-wrapper"><div>
                 <a v-for="player in game.playerSorted"
                 :href="'/user?user_id=' + player.id"
