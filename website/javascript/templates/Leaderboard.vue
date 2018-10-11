@@ -869,7 +869,7 @@ export default {
         for (const user of leaderboard) {
           let mu_round = Math.round(user.mu * 100) / 100;
           let sigma_round = Math.round(user.sigma * 1000) / 1000;
-          user.rating_components = `${mu_round}μ${sigma_round}σ`;
+          user.rating_components = `${mu_round}μ ${sigma_round}σ`;
         }
         this.leaderboard = leaderboard;
         // scroll to user

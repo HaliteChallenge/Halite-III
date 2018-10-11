@@ -109,7 +109,7 @@
       <div class="statistics stats-panel">
         <label class="panel-name">GAME/MAP STATS</label>
         <ul class="panel-body list-hori">
-          <li class="list-item">
+          <li class="list-item" :title="`Halite v${replay.ENGINE_VERSION}`">
             Map Size
             <br>
             <span style="font-size: 1em">{{`${replay.production_map.width}x${replay.production_map.height}`}}, seed {{replay.map_generator_seed}}</span>
@@ -146,7 +146,7 @@
           </div>
           <div class="message-box" v-if="!selectedPoint && !selectedShip">
             <p><span class="icon-info"></span></p>
-            <p>Click on a ship, planet, or other map location to see properties</p>
+            <p>Click on a ship, dropoff, or other map location to see properties</p>
           </div>
         </div>
       </div>
