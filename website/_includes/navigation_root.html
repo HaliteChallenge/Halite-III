@@ -1,12 +1,67 @@
 <ul class="list-ha list-nav">
     <li class="toc-group">
-        <a class="sub-list-parent" href=""><span>{{ page.breadcrumb }}</span></a>
+        <a class="sub-list-parent" href="javascript:;"><span>GETTING STARTED</span></a>
     </li>
     <ul class="sub-list-ha">
         {% for subpage in include.level.pages %}
-        <li class="{% if subpage.url == page.url %}active{% endif %}">
-            <a href="{{ subpage.url }}"><span>{% if subpage.short_title %}{{ subpage.short_title }}{% else %}{{ subpage.title }}{% endif %}</span></a>
+        {% if subpage.url == '/learn-programming-challenge/game-overview' %}
+        <li class="{% if page.url contains subpage.url %}active{% endif %}">
+            <a href="{{ subpage.url }}">
+                <span>
+                    {% if subpage.short_title %}
+                    {{ subpage.short_title }}
+                    {% else %}
+                    {{ subpage.title }}
+                    {% endif %}
+                </span>
+            </a>
         </li>
+        {% endif %}
         {% endfor %}
+    </ul>
+    <li class="toc-group">
+        <a class="sub-list-parent" href="javascript:;"><span>DOCUMENTATION</span></a>
+    </li>
+    <ul class="sub-list-ha">
+        {% for subpage in include.level.pages %}
+        {% if subpage.url == '/learn-programming-challenge/tutorials'
+        or subpage.url == '/learn-programming-challenge/api-docs'
+        or subpage.url == '/learn-programming-challenge/developing-a-bot'%}
+        <li class="{% if page.url contains subpage.url %}active{% endif %}">
+            <a href="{{ subpage.url }}">
+                <span>
+                    {% if subpage.short_title %}
+                    {{ subpage.short_title }}
+                    {% else %}
+                    {{ subpage.title }}
+                    {% endif %}
+                </span>
+            </a>
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+    <li class="toc-group">
+        <a class="sub-list-parent" href="javascript:;"><span>DEV TOOLS</span></a>
+    </li>
+    <ul class="sub-list-ha">
+        {% for subpage in include.level.pages %}
+        {% if subpage.url == '/learn-programming-challenge/downloads' %}
+        <li class="{% if page.url contains subpage.url %}active{% endif %}">
+            <a href="{{ subpage.url }}">
+                <span>
+                    {% if subpage.short_title %}
+                    {{ subpage.short_title }}
+                    {% else %}
+                    {{ subpage.title }}
+                    {% endif %}
+                </span>
+            </a>
+        </li>
+        {% endif %}
+        {% endfor %}
+        <li>
+            <a href="/editor"><span>CODE EDITOR</span></a>
+        </li>
     </ul>
 </ul>
