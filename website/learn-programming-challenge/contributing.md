@@ -16,12 +16,12 @@ Halite is an open source project. We encourage you to check out our source code 
 ---------
 
 <br/>
-Halite III supports many languages for developing a bot through community contributions. Thank you for your interest in creating a new Halite III starter kit! We have put together this guide to help you, but if you have any questions feel free to reach out via our [Discord](https://discordapp.com/invite/rbVDB4n) chat or email us at [halite@halite.io](mailto:halite@halite.io).
+Halite III supports many languages for developing a bot through community contributions. Thank you for your interest in creating a new Halite III starter kit! We have put together this guide to help you, but if you have any questions feel free to reach out via email at [halite@halite.io](mailto:halite@halite.io).
 
 
 <br/>
 #### API Design
-Please adhere as best you can to the API design used in the Python3 starter kit. We have an API documentation page here.
+Please adhere as best you can to the API design used in the Python3 starter kit. We have an API documentation page [here](/learn-programming-challenge/api-docs).
 
 
 <br/>

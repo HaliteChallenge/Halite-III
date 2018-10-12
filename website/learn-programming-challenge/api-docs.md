@@ -231,5 +231,5 @@ A direction is a direction of movement: `Direction.West`, `Direction.North`, `Di
 </div>
 
 <div class="build-a-bot text-center">
-  <a href="#" class="btn btn-primary">Build a bot</a>
+  <a href="/editor" class="btn btn-primary">Build a bot</a>
 </div>

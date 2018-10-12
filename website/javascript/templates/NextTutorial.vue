@@ -39,7 +39,7 @@
 
       <img src="/assets/images/map_inspiration.gif" alt="TODO: an image showing an inspired ship.">
 
-      <br/>
+      <p>  </p>
 
       <button class="run-game" v-on:click="runGame">
         PLAY NOW

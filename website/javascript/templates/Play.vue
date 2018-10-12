@@ -11,7 +11,7 @@
       <div class="col-sm-6">
         <div class="doc-section doc-section-play text-center">
           <h4 class="mt3">WEB-BASED DEVELOPMENT</h4>
-          <p>Create, replay, and submit a Python, Java, or C++ bot via a web-based editor.</p>
+          <p>Create, replay, and submit a Python, Java, or C++ bot via the web-based editor.</p>
           <br>
           <a class="btn btn-primary" href="/editor">Go to Editor</a>
         </div>
