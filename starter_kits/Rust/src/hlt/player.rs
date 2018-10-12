@@ -12,24 +12,35 @@ pub struct Player {
     pub id: PlayerId,
     pub shipyard: Shipyard,
     pub halite: i32,
-    pub ships: HashMap<ShipId, Ship>,
-    pub dropoffs: HashMap<DropoffId, Dropoff>,
+    pub ship_ids: Vec<ShipId>,
+    pub dropoff_ids: Vec<DropoffId>,
 }
 
 impl Player {
-    pub fn update(&mut self, input: &mut Input, max_halite: i32, num_ships: i32, num_dropoffs: i32, halite: i32) {
+    pub fn update(
+        &mut self,
+        input: &mut Input,
+        max_halite: i32,
+        ships: &mut HashMap<ShipId, Ship>,
+        dropoffs: &mut HashMap<DropoffId, Dropoff>,
+        num_ships: i32,
+        num_dropoffs: i32,
+        halite: i32)
+    {
         self.halite = halite;
 
-        self.ships.clear();
+        self.ship_ids.clear();
         for _ in 0..num_ships {
             let ship = Ship::generate(input, self.id, max_halite);
-            self.ships.insert(ship.id, ship);
+            self.ship_ids.push(ship.id);
+            ships.insert(ship.id, ship);
         }
 
-        self.dropoffs.clear();
+        self.dropoff_ids.clear();
         for _ in 0..num_dropoffs {
             let dropoff = Dropoff::generate(input, self.id);
-            self.dropoffs.insert(dropoff.id, dropoff);
+            self.dropoff_ids.push(dropoff.id);
+            dropoffs.insert(dropoff.id, dropoff);
         }
     }
 
@@ -41,6 +52,6 @@ impl Player {
 
         let shipyard = Shipyard { owner: id, position: Position { x: shipyard_x, y: shipyard_y } };
 
-        Player { id, shipyard, halite: 0, ships: HashMap::new(), dropoffs: HashMap::new() }
+        Player { id, shipyard, halite: 0, ship_ids: Vec::new(), dropoff_ids: Vec::new() }
     }
 }

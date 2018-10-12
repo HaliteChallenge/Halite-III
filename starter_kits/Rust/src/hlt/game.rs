@@ -1,22 +1,29 @@
 use hlt::command::Command;
 use hlt::constants::Constants;
+use hlt::dropoff::Dropoff;
+use hlt::DropoffId;
 use hlt::game_map::GameMap;
 use hlt::input::Input;
 use hlt::log::Log;
+use hlt::map_cell::Structure;
 use hlt::player::Player;
 use hlt::PlayerId;
+use hlt::ship::Ship;
+use hlt::ShipId;
 use std::cell::RefCell;
+use std::collections::HashMap;
 use std::ops::DerefMut;
 use std::rc::Rc;
-use hlt::map_cell::Structure;
 
 pub struct Game {
     pub log: Rc<RefCell<Log>>,
     pub constants: Constants,
     pub turn_number: i32,
     pub my_id: PlayerId,
-    pub players: Vec<Player>,
     pub my_index: usize,
+    pub players: Vec<Player>,
+    pub ships: HashMap<ShipId, Ship>,
+    pub dropoffs: HashMap<DropoffId, Dropoff>,
     pub game_map: GameMap,
     input: Input,
 }
@@ -40,7 +47,18 @@ impl Game {
 
         let game_map = GameMap::generate(&mut input);
 
-        Game { log, constants, turn_number: 0, my_id, players, my_index: my_id.0 as usize, game_map, input }
+        Game {
+            log,
+            constants,
+            turn_number: 0,
+            my_id,
+            my_index: my_id.0 as usize,
+            players,
+            ships: HashMap::new(),
+            dropoffs: HashMap::new(),
+            game_map,
+            input
+        }
     }
 
     pub fn ready(name: &str) {
@@ -55,6 +73,9 @@ impl Game {
 
         self.log.borrow_mut().log(&format!("=============== TURN {} ================", self.turn_number));
 
+        self.ships.clear();
+        self.dropoffs.clear();
+
         for _ in 0..self.players.len() {
             input.read_and_parse_line();
             let current_player_id = input.next_i32();
@@ -62,21 +83,30 @@ impl Game {
             let num_dropoffs = input.next_i32();
             let halite = input.next_i32();
 
-            self.players[current_player_id as usize].update(input, self.constants.max_halite, num_ships, num_dropoffs, halite);
+            self.players[current_player_id as usize].update(
+                input,
+                self.constants.max_halite,
+                &mut self.ships,
+                &mut self.dropoffs,
+                num_ships,
+                num_dropoffs,
+                halite);
         }
 
         self.game_map.update(input);
 
         for player in &self.players {
-            for (id, ship) in &player.ships {
-                self.game_map.at_entity_mut(ship).mark_unsafe(*id);
+            for ship_id in &player.ship_ids {
+                let ship = &self.ships[ship_id];
+                self.game_map.at_entity_mut(ship).mark_unsafe(*ship_id);
             }
 
             let shipyard = &player.shipyard;
             self.game_map.at_entity_mut(shipyard).structure = Structure::Shipyard(player.id);
 
-            for (id, dropoff) in &player.dropoffs {
-                self.game_map.at_entity_mut(dropoff).structure = Structure::Dropoff(*id);
+            for dropoff_id in &player.dropoff_ids {
+                let dropoff = &self.dropoffs[dropoff_id];
+                self.game_map.at_entity_mut(dropoff).structure = Structure::Dropoff(*dropoff_id);
             }
         }
     }

@@ -8,11 +8,11 @@ impl Command {
         Command(format!("g"))
     }
 
-    pub fn transform_ship_into_dropoff_site(id: ShipId) -> Command {
-        Command(format!("c {}", id.0))
+    pub fn transform_ship_into_dropoff_site(ship_id: ShipId) -> Command {
+        Command(format!("c {}", ship_id.0))
     }
 
-    pub fn move_ship(id: ShipId, direction: Direction) -> Command {
-        Command(format!("m {} {}", id.0, direction.get_char_encoding()))
+    pub fn move_ship(ship_id: ShipId, direction: Direction) -> Command {
+        Command(format!("m {} {}", ship_id.0, direction.get_char_encoding()))
     }
 }
