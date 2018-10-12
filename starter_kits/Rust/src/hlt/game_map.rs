@@ -2,34 +2,34 @@ use hlt::direction::Direction;
 use hlt::entity::Entity;
 use hlt::input::Input;
 use hlt::map_cell::MapCell;
+use hlt::map_cell::Structure;
 use hlt::position::Position;
 use hlt::ship::Ship;
-use std::cell::RefCell;
 use std::cmp::min;
-use std::rc::Rc;
 
 pub struct GameMap {
     pub width: i32,
     pub height: i32,
-    cells: Vec<Vec<Rc<RefCell<MapCell>>>>,
+    cells: Vec<Vec<MapCell>>,
 }
 
 impl GameMap {
-    pub fn at_position(&self, position: &Position) -> Rc<RefCell<MapCell>> {
+    pub fn at_position(&self, position: &Position) -> &MapCell {
         let normalized = self.normalize(position);
-        self.cells[normalized.y as usize][normalized.x as usize].clone()
+        &self.cells[normalized.y as usize][normalized.x as usize]
     }
 
-    pub fn at_entity(&self, entity: &Entity) -> Rc<RefCell<MapCell>> {
+    pub fn at_position_mut(&mut self, position: &Position) -> &mut MapCell {
+        let normalized = self.normalize(position);
+        &mut self.cells[normalized.y as usize][normalized.x as usize]
+    }
+
+    pub fn at_entity(&self, entity: &Entity) -> &MapCell {
         self.at_position(&entity.position())
     }
 
-    pub fn at_entity_rc(&self, entity: &Rc<Entity>) -> Rc<RefCell<MapCell>> {
-        self.at_position(&entity.position())
-    }
-
-    pub fn at_entity_refcell(&self, entity: &RefCell<Entity>) -> Rc<RefCell<MapCell>> {
-        self.at_position(&entity.borrow().position())
+    pub fn at_entity_mut(&mut self, entity: &Entity) -> &mut MapCell {
+        self.at_position_mut(&entity.position())
     }
 
     pub fn calculate_distance(&self, source: &Position, target: &Position) -> i32 {
@@ -78,16 +78,16 @@ impl GameMap {
         possible_moves
     }
 
-    pub fn naive_navigate(&self, ship: Rc<Ship>, destination: &Position) -> Direction {
+    pub fn naive_navigate(&mut self, ship: &Ship, destination: &Position) -> Direction {
         let ship_position = &ship.position;
 
         // get_unsafe_moves normalizes for us
         for direction in self.get_unsafe_moves(&ship_position, destination) {
             let target_pos = ship_position.directional_offset(direction);
-            let target_cell = self.at_position(&target_pos);
+            let target_cell = self.at_position_mut(&target_pos);
 
-            if !target_cell.borrow().is_occupied() {
-                target_cell.borrow_mut().mark_unsafe(&ship);
+            if !target_cell.is_occupied() {
+                target_cell.mark_unsafe(ship.id);
                 return direction;
             }
         }
@@ -98,7 +98,7 @@ impl GameMap {
     pub fn update(&mut self, input: &mut Input) {
         for y in 0..self.height {
             for x in 0..self.width {
-                self.cells[y as usize][x as usize].borrow_mut().ship = None;
+                self.cells[y as usize][x as usize].ship = None;
             }
         }
 
@@ -111,7 +111,7 @@ impl GameMap {
             let y = input.next_i32();
             let halite = input.next_i32();
 
-            self.cells[y as usize][x as usize].borrow_mut().halite = halite;
+            self.cells[y as usize][x as usize].halite = halite;
         }
     }
 
@@ -120,17 +120,16 @@ impl GameMap {
         let width = input.next_i32();
         let height = input.next_i32();
 
-        let mut cells: Vec<Vec<Rc<RefCell<MapCell>>>> = Vec::with_capacity(height as usize);
+        let mut cells: Vec<Vec<MapCell>> = Vec::with_capacity(height as usize);
         for y in 0..height {
             input.read_and_parse_line();
 
-            let mut row: Vec<Rc<RefCell<MapCell>>> = Vec::with_capacity(width as usize);
+            let mut row: Vec<MapCell> = Vec::with_capacity(width as usize);
             for x in 0..width {
                 let halite = input.next_i32();
 
                 let position = Position { x, y };
-                let cell = MapCell { position, halite, ship: None, structure: None };
-                let cell = Rc::new(RefCell::new(cell));
+                let cell = MapCell { position, halite, ship: None, structure: Structure::None };
                 row.push(cell);
             }
 

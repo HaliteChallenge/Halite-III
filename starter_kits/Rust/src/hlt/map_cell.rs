@@ -1,13 +1,13 @@
-use hlt::entity::Entity;
+use hlt::DropoffId;
 use hlt::position::Position;
-use hlt::ship::Ship;
-use std::rc::Rc;
+use hlt::ShipId;
+use hlt::PlayerId;
 
 pub struct MapCell {
     pub position: Position,
     pub halite: i32,
-    pub ship: Option<Rc<Ship>>,
-    pub structure: Option<Rc<Entity>>,
+    pub ship: Option<ShipId>,
+    pub structure: Structure,
 }
 
 impl MapCell {
@@ -23,7 +23,27 @@ impl MapCell {
         self.structure.is_some()
     }
 
-    pub fn mark_unsafe(&mut self, ship: &Rc<Ship>) {
-        self.ship = Some(ship.clone());
+    pub fn mark_unsafe(&mut self, ship: ShipId) {
+        self.ship = Some(ship);
+    }
+}
+
+#[derive(Eq, PartialEq)]
+pub enum Structure {
+    None,
+    Dropoff(DropoffId),
+    Shipyard(PlayerId),
+}
+
+impl Structure {
+    pub fn is_some(&self) -> bool {
+        match *self {
+            Structure::None => false,
+            _ => true,
+        }
+    }
+
+    pub fn is_none(&self) -> bool {
+        !self.is_some()
     }
 }

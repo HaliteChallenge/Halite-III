@@ -37,15 +37,15 @@ fn main() {
 
     loop {
         game.update_frame();
-        let me = game.me.borrow();
-        let game_map = game.game_map.borrow();
+        let me = &game.players[game.my_index];
+        let game_map = &mut game.game_map;
 
         let mut command_queue: Vec<Command> = Vec::new();
 
         for (_, ship) in &me.ships {
-            let cell = game_map.at_entity(&**ship);
+            let cell = game_map.at_entity(ship);
 
-            let command = if cell.borrow().halite < game.constants.max_halite / 10 || ship.is_full() {
+            let command = if cell.halite < game.constants.max_halite / 10 || ship.is_full() {
                 let random_direction = Direction::get_all_cardinals()[rng.gen_range(0, 4)];
                 ship.move_ship(random_direction)
             } else {
@@ -54,12 +54,12 @@ fn main() {
             command_queue.push(command);
         }
 
-        let shipyard_cell = game_map.at_entity(&*me.shipyard);
+        let shipyard_cell = game_map.at_entity(&me.shipyard);
 
         if
             game.turn_number <= 200 &&
             me.halite >= game.constants.ship_cost &&
-            !shipyard_cell.borrow().is_occupied()
+            !shipyard_cell.is_occupied()
         {
             command_queue.push(me.shipyard.spawn());
         }

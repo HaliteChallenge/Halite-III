@@ -1,19 +1,19 @@
 use hlt::dropoff::Dropoff;
-use hlt::EntityId;
+use hlt::DropoffId;
 use hlt::input::Input;
 use hlt::PlayerId;
 use hlt::position::Position;
 use hlt::ship::Ship;
+use hlt::ShipId;
 use hlt::shipyard::Shipyard;
 use std::collections::HashMap;
-use std::rc::Rc;
 
 pub struct Player {
     pub id: PlayerId,
-    pub shipyard: Rc<Shipyard>,
+    pub shipyard: Shipyard,
     pub halite: i32,
-    pub ships: HashMap<EntityId, Rc<Ship>>,
-    pub dropoffs: HashMap<EntityId, Rc<Dropoff>>,
+    pub ships: HashMap<ShipId, Ship>,
+    pub dropoffs: HashMap<DropoffId, Dropoff>,
 }
 
 impl Player {
@@ -22,13 +22,13 @@ impl Player {
 
         self.ships.clear();
         for _ in 0..num_ships {
-            let ship = Rc::new(Ship::generate(input, self.id, max_halite));
+            let ship = Ship::generate(input, self.id, max_halite);
             self.ships.insert(ship.id, ship);
         }
 
         self.dropoffs.clear();
         for _ in 0..num_dropoffs {
-            let dropoff = Rc::new(Dropoff::generate(input, self.id));
+            let dropoff = Dropoff::generate(input, self.id);
             self.dropoffs.insert(dropoff.id, dropoff);
         }
     }
@@ -40,7 +40,6 @@ impl Player {
         let shipyard_y = input.next_i32();
 
         let shipyard = Shipyard { owner: id, position: Position { x: shipyard_x, y: shipyard_y } };
-        let shipyard = Rc::new(shipyard);
 
         Player { id, shipyard, halite: 0, ships: HashMap::new(), dropoffs: HashMap::new() }
     }

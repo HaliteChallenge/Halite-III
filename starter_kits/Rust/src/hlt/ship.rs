@@ -1,14 +1,14 @@
 use hlt::command::Command;
 use hlt::direction::Direction;
 use hlt::entity::Entity;
-use hlt::EntityId;
 use hlt::input::Input;
 use hlt::PlayerId;
 use hlt::position::Position;
+use hlt::ShipId;
 
 pub struct Ship {
     pub owner: PlayerId,
-    pub id: EntityId,
+    pub id: ShipId,
     pub position: Position,
     pub halite: i32,
     max_halite: i32,
@@ -33,7 +33,7 @@ impl Ship {
 
     pub fn generate(input: &mut Input, player_id: PlayerId, max_halite: i32) -> Ship {
         input.read_and_parse_line();
-        let id = EntityId(input.next_i32());
+        let id = ShipId(input.next_i32());
         let x = input.next_i32();
         let y = input.next_i32();
         let halite = input.next_i32();
@@ -45,10 +45,6 @@ impl Ship {
 impl Entity for Ship {
     fn owner(&self) -> PlayerId {
         self.owner
-    }
-
-    fn id(&self) -> EntityId {
-        self.id
     }
 
     fn position(&self) -> Position {

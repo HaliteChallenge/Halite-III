@@ -6,17 +6,18 @@ use hlt::log::Log;
 use hlt::player::Player;
 use hlt::PlayerId;
 use std::cell::RefCell;
-use std::rc::Rc;
 use std::ops::DerefMut;
+use std::rc::Rc;
+use hlt::map_cell::Structure;
 
 pub struct Game {
     pub log: Rc<RefCell<Log>>,
-    pub constants: Rc<Constants>,
+    pub constants: Constants,
     pub turn_number: i32,
     pub my_id: PlayerId,
-    pub players: Vec<Rc<RefCell<Player>>>,
-    pub me: Rc<RefCell<Player>>,
-    pub game_map: Rc<RefCell<GameMap>>,
+    pub players: Vec<Player>,
+    pub my_index: usize,
+    pub game_map: GameMap,
     input: Input,
 }
 
@@ -25,7 +26,6 @@ impl Game {
         let log = Rc::new(RefCell::new(Log::new()));
         let mut input = Input::new(&log);
         let constants = Constants::new(log.borrow_mut().deref_mut(), &input.read_and_return_line());
-        let constants = Rc::new(constants);
 
         input.read_and_parse_line();
         let num_players = input.next_i32();
@@ -33,17 +33,14 @@ impl Game {
 
         log.borrow_mut().open(my_id.0);
 
-        let mut players: Vec<Rc<RefCell<Player>>> = Vec::new();
+        let mut players: Vec<Player> = Vec::new();
         for _ in 0..num_players {
-            let player = Player::generate(&mut input);
-            players.push(Rc::new(RefCell::new(player)));
+            players.push(Player::generate(&mut input));
         }
-        let me = players[my_id.0 as usize].clone();
 
         let game_map = GameMap::generate(&mut input);
-        let game_map = Rc::new(RefCell::new(game_map));
 
-        Game { log, constants, turn_number: 0, my_id, players, me, game_map, input }
+        Game { log, constants, turn_number: 0, my_id, players, my_index: my_id.0 as usize, game_map, input }
     }
 
     pub fn ready(name: &str) {
@@ -65,24 +62,21 @@ impl Game {
             let num_dropoffs = input.next_i32();
             let halite = input.next_i32();
 
-            self.players[current_player_id as usize].borrow_mut().update(input, self.constants.max_halite, num_ships, num_dropoffs, halite);
+            self.players[current_player_id as usize].update(input, self.constants.max_halite, num_ships, num_dropoffs, halite);
         }
 
-        self.game_map.borrow_mut().update(input);
+        self.game_map.update(input);
 
         for player in &self.players {
-            for (_, ship) in &player.borrow().ships {
-                let cell = self.game_map.borrow_mut().at_entity(&**ship);
-                cell.borrow_mut().mark_unsafe(ship);
+            for (id, ship) in &player.ships {
+                self.game_map.at_entity_mut(ship).mark_unsafe(*id);
             }
 
-            let shipyard = &player.borrow().shipyard;
-            let cell = self.game_map.borrow_mut().at_entity(&**shipyard);
-            cell.borrow_mut().structure = Some(shipyard.clone());
+            let shipyard = &player.shipyard;
+            self.game_map.at_entity_mut(shipyard).structure = Structure::Shipyard(player.id);
 
-            for (_, dropoff) in &player.borrow().dropoffs {
-                let cell = self.game_map.borrow_mut().at_entity(&**dropoff);
-                cell.borrow_mut().structure = Some(dropoff.clone());
+            for (id, dropoff) in &player.dropoffs {
+                self.game_map.at_entity_mut(dropoff).structure = Structure::Dropoff(*id);
             }
         }
     }

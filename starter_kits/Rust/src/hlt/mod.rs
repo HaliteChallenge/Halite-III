@@ -32,4 +32,7 @@ mod input;
 pub struct PlayerId(pub i32);
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub struct EntityId(pub i32);
+pub struct DropoffId(pub i32);
+
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+pub struct ShipId(pub i32);

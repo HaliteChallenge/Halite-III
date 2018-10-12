@@ -1,8 +1,7 @@
-use hlt::EntityId;
+use hlt::command::Command;
+use hlt::entity::Entity;
 use hlt::PlayerId;
 use hlt::position::Position;
-use hlt::entity::Entity;
-use hlt::command::Command;
 
 pub struct Shipyard {
     pub owner: PlayerId,
@@ -18,10 +17,6 @@ impl Shipyard {
 impl Entity for Shipyard {
     fn owner(&self) -> PlayerId {
         self.owner
-    }
-
-    fn id(&self) -> EntityId {
-        EntityId(-1)
     }
 
     fn position(&self) -> Position {
