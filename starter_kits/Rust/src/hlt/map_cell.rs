@@ -23,8 +23,8 @@ impl MapCell {
         self.structure.is_some()
     }
 
-    pub fn mark_unsafe(&mut self, ship: ShipId) {
-        self.ship = Some(ship);
+    pub fn mark_unsafe(&mut self, ship_id: ShipId) {
+        self.ship = Some(ship_id);
     }
 }
 
