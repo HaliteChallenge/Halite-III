@@ -11,7 +11,7 @@ use std::collections::HashMap;
 pub struct Player {
     pub id: PlayerId,
     pub shipyard: Shipyard,
-    pub halite: i32,
+    pub halite: usize,
     pub ship_ids: Vec<ShipId>,
     pub dropoff_ids: Vec<DropoffId>,
 }
@@ -20,12 +20,12 @@ impl Player {
     pub fn update(
         &mut self,
         input: &mut Input,
-        max_halite: i32,
+        max_halite: usize,
         ships: &mut HashMap<ShipId, Ship>,
         dropoffs: &mut HashMap<DropoffId, Dropoff>,
-        num_ships: i32,
-        num_dropoffs: i32,
-        halite: i32)
+        num_ships: usize,
+        num_dropoffs: usize,
+        halite: usize)
     {
         self.halite = halite;
 
@@ -46,7 +46,7 @@ impl Player {
 
     pub fn generate(input: &mut Input) -> Player {
         input.read_and_parse_line();
-        let id = PlayerId(input.next_i32());
+        let id = PlayerId(input.next_usize());
         let shipyard_x = input.next_i32();
         let shipyard_y = input.next_i32();
 

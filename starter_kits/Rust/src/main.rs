@@ -37,7 +37,7 @@ fn main() {
 
     loop {
         game.update_frame();
-        let me = &game.players[game.my_index];
+        let me = &game.players[game.my_id.0];
         let game_map = &mut game.game_map;
 
         let mut command_queue: Vec<Command> = Vec::new();

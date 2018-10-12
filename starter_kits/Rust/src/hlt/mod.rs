@@ -29,10 +29,10 @@ pub mod shipyard;
 mod input;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub struct PlayerId(pub i32);
+pub struct PlayerId(pub usize);
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub struct DropoffId(pub i32);
+pub struct DropoffId(pub usize);
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub struct ShipId(pub i32);
+pub struct ShipId(pub usize);

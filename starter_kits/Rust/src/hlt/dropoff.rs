@@ -23,7 +23,7 @@ impl Entity for Dropoff {
 impl Dropoff {
     pub fn generate(input: &mut Input, player_id: PlayerId) -> Dropoff {
         input.read_and_parse_line();
-        let id = DropoffId(input.next_i32());
+        let id = DropoffId(input.next_usize());
         let x = input.next_i32();
         let y = input.next_i32();
 

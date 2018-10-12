@@ -3,6 +3,7 @@ use std::cell::RefCell;
 use std::io::stdin;
 use std::process::exit;
 use std::rc::Rc;
+use std::str::FromStr;
 
 pub struct Input {
     log: Rc<RefCell<Log>>,
@@ -38,12 +39,20 @@ impl Input {
     }
 
     pub fn next_i32(&mut self) -> i32 {
+        self.next()
+    }
+
+    pub fn next_usize(&mut self) -> usize {
+        self.next()
+    }
+
+    pub fn next<T: FromStr>(&mut self) -> T {
         let token = &self.tokens[self.current_token];
         self.current_token += 1;
 
         let result = match token.parse() {
             Ok(x) => x,
-            Err(_) => self.log.borrow_mut().panic(&format!("Can't parse '{}' as i32.", token)),
+            Err(_) => self.log.borrow_mut().panic(&format!("Can't parse '{}'.", token)),
         };
         result
     }

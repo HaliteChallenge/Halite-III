@@ -8,8 +8,8 @@ use hlt::ship::Ship;
 use std::cmp::min;
 
 pub struct GameMap {
-    pub width: i32,
-    pub height: i32,
+    pub width: usize,
+    pub height: usize,
     cells: Vec<Vec<MapCell>>,
 }
 
@@ -32,12 +32,12 @@ impl GameMap {
         self.at_position_mut(&entity.position())
     }
 
-    pub fn calculate_distance(&self, source: &Position, target: &Position) -> i32 {
+    pub fn calculate_distance(&self, source: &Position, target: &Position) -> usize {
         let normalized_source = self.normalize(source);
         let normalized_target = self.normalize(target);
 
-        let dx = (normalized_source.x - normalized_target.x).abs();
-        let dy = (normalized_source.y - normalized_target.y).abs();
+        let dx = (normalized_source.x - normalized_target.x).abs() as usize;
+        let dy = (normalized_source.y - normalized_target.y).abs() as usize;
 
         let toroidal_dx = min(dx, self.width - dx);
         let toroidal_dy = min(dy, self.height - dy);
@@ -46,8 +46,10 @@ impl GameMap {
     }
 
     pub fn normalize(&self, position: &Position) -> Position {
-        let x = ((position.x % self.width) + self.width) % self.width;
-        let y = ((position.y % self.height) + self.height) % self.height;
+        let width = self.width as i32;
+        let height = self.height as i32;
+        let x = ((position.x % width) + width) % width;
+        let y = ((position.y % height) + height) % height;
         Position { x, y }
     }
 
@@ -55,8 +57,8 @@ impl GameMap {
         let normalized_source = self.normalize(source);
         let normalized_destination = self.normalize(destination);
 
-        let dx = (normalized_source.x - normalized_destination.x).abs();
-        let dy = (normalized_source.y - normalized_destination.y).abs();
+        let dx = (normalized_source.x - normalized_destination.x).abs() as usize;
+        let dy = (normalized_source.y - normalized_destination.y).abs() as usize;
 
         let wrapped_dx = self.width - dx;
         let wrapped_dy = self.height - dy;
@@ -98,37 +100,37 @@ impl GameMap {
     pub fn update(&mut self, input: &mut Input) {
         for y in 0..self.height {
             for x in 0..self.width {
-                self.cells[y as usize][x as usize].ship = None;
+                self.cells[y][x].ship = None;
             }
         }
 
         input.read_and_parse_line();
-        let update_count = input.next_i32();
+        let update_count = input.next_usize();
 
         for _ in 0..update_count {
             input.read_and_parse_line();
-            let x = input.next_i32();
-            let y = input.next_i32();
-            let halite = input.next_i32();
+            let x = input.next_usize();
+            let y = input.next_usize();
+            let halite = input.next_usize();
 
-            self.cells[y as usize][x as usize].halite = halite;
+            self.cells[y][x].halite = halite;
         }
     }
 
     pub fn generate(input: &mut Input) -> GameMap {
         input.read_and_parse_line();
-        let width = input.next_i32();
-        let height = input.next_i32();
+        let width = input.next_usize();
+        let height = input.next_usize();
 
-        let mut cells: Vec<Vec<MapCell>> = Vec::with_capacity(height as usize);
+        let mut cells: Vec<Vec<MapCell>> = Vec::with_capacity(height);
         for y in 0..height {
             input.read_and_parse_line();
 
-            let mut row: Vec<MapCell> = Vec::with_capacity(width as usize);
+            let mut row: Vec<MapCell> = Vec::with_capacity(width);
             for x in 0..width {
-                let halite = input.next_i32();
+                let halite = input.next_usize();
 
-                let position = Position { x, y };
+                let position = Position { x: x as i32, y: y as i32 };
                 let cell = MapCell { position, halite, ship: None, structure: Structure::None };
                 row.push(cell);
             }

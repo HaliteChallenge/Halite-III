@@ -5,7 +5,7 @@ use hlt::PlayerId;
 
 pub struct MapCell {
     pub position: Position,
-    pub halite: i32,
+    pub halite: usize,
     pub ship: Option<ShipId>,
     pub structure: Structure,
 }

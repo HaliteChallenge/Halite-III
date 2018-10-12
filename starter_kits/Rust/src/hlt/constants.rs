@@ -3,18 +3,18 @@ use std::collections::HashMap;
 use std::str::FromStr;
 
 pub struct Constants {
-    pub max_halite: i32,
-    pub ship_cost: i32,
-    pub dropoff_cost: i32,
-    pub max_turns: i32,
-    pub extract_ratio: i32,
-    pub move_cost_ratio: i32,
+    pub max_halite: usize,
+    pub ship_cost: usize,
+    pub dropoff_cost: usize,
+    pub max_turns: usize,
+    pub extract_ratio: usize,
+    pub move_cost_ratio: usize,
     pub inspiration_enabled: bool,
-    pub inspiration_radius: i32,
-    pub inspiration_ship_count: i32,
-    pub inspired_extract_ratio: i32,
+    pub inspiration_radius: usize,
+    pub inspiration_ship_count: usize,
+    pub inspired_extract_ratio: usize,
     pub inspired_bonus_multiplier: f64,
-    pub inspired_move_cost_ratio: i32,
+    pub inspired_move_cost_ratio: usize,
 }
 
 impl Constants {

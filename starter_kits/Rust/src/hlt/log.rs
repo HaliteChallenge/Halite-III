@@ -14,7 +14,7 @@ impl Log {
         Log { log_buffer: Some(Vec::new()), file: None }
     }
 
-    pub fn open(&mut self, bot_id: i32) {
+    pub fn open(&mut self, bot_id: usize) {
         if self.file.is_some() {
             self.panic(&format!("Error: log: tried to open({}) but we have already opened before.", bot_id));
         }

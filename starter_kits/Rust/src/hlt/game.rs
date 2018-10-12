@@ -18,9 +18,8 @@ use std::rc::Rc;
 pub struct Game {
     pub log: Rc<RefCell<Log>>,
     pub constants: Constants,
-    pub turn_number: i32,
+    pub turn_number: usize,
     pub my_id: PlayerId,
-    pub my_index: usize,
     pub players: Vec<Player>,
     pub ships: HashMap<ShipId, Ship>,
     pub dropoffs: HashMap<DropoffId, Dropoff>,
@@ -35,8 +34,8 @@ impl Game {
         let constants = Constants::new(log.borrow_mut().deref_mut(), &input.read_and_return_line());
 
         input.read_and_parse_line();
-        let num_players = input.next_i32();
-        let my_id = PlayerId(input.next_i32());
+        let num_players = input.next_usize();
+        let my_id = PlayerId(input.next_usize());
 
         log.borrow_mut().open(my_id.0);
 
@@ -52,7 +51,6 @@ impl Game {
             constants,
             turn_number: 0,
             my_id,
-            my_index: my_id.0 as usize,
             players,
             ships: HashMap::new(),
             dropoffs: HashMap::new(),
@@ -69,7 +67,7 @@ impl Game {
         let input = &mut self.input;
 
         input.read_and_parse_line();
-        self.turn_number = input.next_i32();
+        self.turn_number = input.next_usize();
 
         self.log.borrow_mut().log(&format!("=============== TURN {} ================", self.turn_number));
 
@@ -78,12 +76,12 @@ impl Game {
 
         for _ in 0..self.players.len() {
             input.read_and_parse_line();
-            let current_player_id = input.next_i32();
-            let num_ships = input.next_i32();
-            let num_dropoffs = input.next_i32();
-            let halite = input.next_i32();
+            let current_player_id = input.next_usize();
+            let num_ships = input.next_usize();
+            let num_dropoffs = input.next_usize();
+            let halite = input.next_usize();
 
-            self.players[current_player_id as usize].update(
+            self.players[current_player_id].update(
                 input,
                 self.constants.max_halite,
                 &mut self.ships,

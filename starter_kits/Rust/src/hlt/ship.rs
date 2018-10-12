@@ -10,8 +10,8 @@ pub struct Ship {
     pub owner: PlayerId,
     pub id: ShipId,
     pub position: Position,
-    pub halite: i32,
-    max_halite: i32,
+    pub halite: usize,
+    max_halite: usize,
 }
 
 impl Ship {
@@ -31,12 +31,12 @@ impl Ship {
         Command::move_ship(self.id, Direction::Still)
     }
 
-    pub fn generate(input: &mut Input, player_id: PlayerId, max_halite: i32) -> Ship {
+    pub fn generate(input: &mut Input, player_id: PlayerId, max_halite: usize) -> Ship {
         input.read_and_parse_line();
-        let id = ShipId(input.next_i32());
+        let id = ShipId(input.next_usize());
         let x = input.next_i32();
         let y = input.next_i32();
-        let halite = input.next_i32();
+        let halite = input.next_usize();
 
         Ship { owner: player_id, id, position: Position { x, y }, halite, max_halite }
     }
