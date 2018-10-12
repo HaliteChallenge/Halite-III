@@ -26,7 +26,8 @@
         {% for subpage in include.level.pages %}
         {% if subpage.url == '/learn-programming-challenge/tutorials'
         or subpage.url == '/learn-programming-challenge/api-docs'
-        or subpage.url == '/learn-programming-challenge/developing-a-bot'%}
+        or subpage.url == '/learn-programming-challenge/developing-a-bot'
+        or subpage.url == '/learn-programming-challenge/contributing' %}
         <li class="{% if page.url contains subpage.url %}active{% endif %}">
             <a href="{{ subpage.url }}">
                 <span>
