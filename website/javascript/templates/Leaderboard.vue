@@ -67,7 +67,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr :id="`user-row-${player.user_id}`" :key="player.user_id" v-for="player in leaderboard">
+                <tr v-for="player in leaderboard"
+                    :id="`user-row-${player.user_id}`"
+                    :key="player.user_id"
+                    :class="{ 'hl': show_user && show_user.includes(player.user_id.toString()) }">
                   <td class="text-center">{{ player.rank || player.local_rank }}</td>
                   <td class="nowrap">
                     <a :href="'/user?user_id=' + player.user_id" class="leaderboard-name" v-bind:title="player_link_title(player)">
@@ -349,6 +352,21 @@ export default {
       this.build_params_count = -1;
       this.calculate_filters();
     });
+  },
+  updated() {
+    // scroll to user
+    if (this.show_user) {
+      console.log(this.show_user)
+      const id = $(`#user-row-${this.show_user}`);
+      if (id.length === 0) {
+        return;
+      }
+      const offset = 60; // the header height
+      $("body, html").scrollTop(id.offset().top - offset);
+
+      // highlight
+      id.addClass("hl");
+    }
   },
   computed: {
     saved_filters: function() {
@@ -838,18 +856,6 @@ export default {
           user.rating_components = `${mu_round}μ ${sigma_round}σ`;
         }
         this.leaderboard = leaderboard;
-        // scroll to user
-        if (this.show_user) {
-          this.$nextTick(() => {
-            const id = $(`#user-row-${this.show_user}`);
-            const offset = 60; // the header height
-            $("body, html").scrollTop(id.offset().top - offset);
-            this.show_user = null;
-
-            // hight light
-            id.addClass("hl");
-          });
-        }
       };
 
       if (this.all_leaderboards && defaultFilter) {

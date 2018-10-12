@@ -1237,7 +1237,7 @@
       position: absolute;
       margin-top: -0.75em !important;
       left: 50%;
-      width: 125%;
+      width: 150%;
       transform: translateX(-50%);
       cursor: help;
     }
