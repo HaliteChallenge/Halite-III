@@ -91,7 +91,7 @@ export class Dropoff {
 
     draw() {
         const pixelsPerUnit = assets.CELL_SIZE * this.visualizer.camera.scale;
-        this.core.width = this.core.height = 1.5 * pixelsPerUnit;
+        this.core.width = this.core.height = 1.5 * pixelsPerUnit * theme().scale.dropoff;
         // this.core.rotation = (((this.visualizer.frame + this.visualizer.time) % 20) / 20) * 2 * Math.PI;
 
         // Account for camera panning
@@ -135,6 +135,6 @@ export class Factory extends Dropoff {
     draw() {
         super.draw();
         const pixelsPerUnit = assets.CELL_SIZE * this.visualizer.camera.scale;
-        this.core.width = this.core.height = 2 * pixelsPerUnit;
+        this.core.width = this.core.height = 2 * pixelsPerUnit * theme().scale.base;
     }
 }

@@ -1,7 +1,7 @@
 {
 	"meta": {
 		"image": "nethack.png",
-		"size": {"w":977,"h":916},
+		"size": {"w":1374,"h":916},
 		"scale": "1"
 	},
 	"frames": {
@@ -13,7 +13,7 @@
 			"spriteSourceSize": {"x":0,"y":0,"w":458,"h":458},
 			"sourceSize": {"w":458,"h":458}
 		},
-		"gt.png":
+		"dot.png":
 		{
 			"frame": {"x":458,"y":0,"w":458,"h":458},
 			"rotated": false,
@@ -21,7 +21,7 @@
 			"spriteSourceSize": {"x":0,"y":0,"w":458,"h":458},
 			"sourceSize": {"w":458,"h":458}
 		},
-		"hash.png":
+		"gt.png":
 		{
 			"frame": {"x":0,"y":458,"w":458,"h":458},
 			"rotated": false,
@@ -29,7 +29,7 @@
 			"spriteSourceSize": {"x":0,"y":0,"w":458,"h":458},
 			"sourceSize": {"w":458,"h":458}
 		},
-		"lt.png":
+		"hash.png":
 		{
 			"frame": {"x":458,"y":458,"w":458,"h":458},
 			"rotated": false,
@@ -37,13 +37,21 @@
 			"spriteSourceSize": {"x":0,"y":0,"w":458,"h":458},
 			"sourceSize": {"w":458,"h":458}
 		},
-		"dot.png":
+		"lcurly.png":
 		{
-			"frame": {"x":916,"y":0,"w":61,"h":61},
+			"frame": {"x":916,"y":0,"w":458,"h":458},
 			"rotated": false,
 			"trimmed": false,
-			"spriteSourceSize": {"x":0,"y":0,"w":61,"h":61},
-			"sourceSize": {"w":61,"h":61}
+			"spriteSourceSize": {"x":0,"y":0,"w":458,"h":458},
+			"sourceSize": {"w":458,"h":458}
+		},
+		"lt.png":
+		{
+			"frame": {"x":916,"y":458,"w":458,"h":458},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":458,"h":458},
+			"sourceSize": {"w":458,"h":458}
 		}
 	}
 }

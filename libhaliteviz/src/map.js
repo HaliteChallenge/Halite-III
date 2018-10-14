@@ -149,8 +149,10 @@ export class Map {
         container.addChild(this.pointer);
         container.addChild(this.tintMap);
         container.addChild(this.highlight);
-        container.filters = [new AdvancedBloomFilter({threshold: 0, brightness: 1.0})];
-        container.filterArea = new PIXI.Rectangle(0, 0, this.renderer.width, this.renderer.height);
+        if (themeParams.bloom) {
+            container.filters = [new AdvancedBloomFilter({threshold: 0, brightness: 1.0})];
+            container.filterArea = new PIXI.Rectangle(0, 0, this.renderer.width, this.renderer.height);
+        }
 
         this.container = container;
     }
@@ -244,10 +246,10 @@ export class Map {
     draw() {
         if (this.hovered) {
             const [ cellX, cellY ] = this.camera.worldToCamera(this.hovered.x, this.hovered.y);
-            this.pointer.position.x = cellX * this.scale;
-            this.pointer.position.y = cellY * this.scale;
-            this.pointer.width = this.scale;
-            this.pointer.height = this.scale;
+            this.pointer.position.x = (cellX - 0.05) * this.scale;
+            this.pointer.position.y = (cellY - 0.0) * this.scale;
+            this.pointer.width = 1.1 * this.scale;
+            this.pointer.height = 1.1 * this.scale;
             this.pointer.visible = true;
         }
         else {
@@ -257,10 +259,10 @@ export class Map {
         const camera = this.camera;
         if (camera.selected && camera.selected.type === "point") {
             const [ cellX, cellY ] = this.camera.worldToCamera(camera.selected.x, camera.selected.y);
-            this.highlight.position.x = cellX * this.scale;
-            this.highlight.position.y = cellY * this.scale;
-            this.highlight.width = this.scale;
-            this.highlight.height = this.scale;
+            this.highlight.position.x = (cellX - 0.05) * this.scale;
+            this.highlight.position.y = (cellY - 0.05) * this.scale;
+            this.highlight.width = 1.1 * this.scale;
+            this.highlight.height = 1.1 * this.scale;
             this.highlight.visible = true;
             this.highlight.alpha = 0.4;
         }

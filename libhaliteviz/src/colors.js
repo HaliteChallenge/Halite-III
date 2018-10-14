@@ -18,6 +18,7 @@ export const THEMES = {
     "TheSea": [ 0x141EA0, COLOR_SCALE ],
     "GraySpace": [ 0x000000, COLOR_SCALE_2 ],
     "Colorblind": [ 0x191933, COLORBLIND ],
+    "ANSI": [ 0x000000, [ 0x00005f, 0x000087, 0x0000af, 0x0000d7, 0x0000ff, 0x00ffff ] ],
 };
 
 export default function colorTheme() {

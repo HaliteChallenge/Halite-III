@@ -170,7 +170,7 @@ export function setAssetRoot(path) {
         ).then((sheet) => {
             SHEETS.push(sheet);
 
-            MAP_SPRITE = sheet.textures["dot.png"];
+            MAP_SPRITE = sheet.textures["lcurly.png"];
             MAP_BORDER_SPRITE = sheet.textures["hash.png"];
 
             TURTLE_SPRITES.push([
