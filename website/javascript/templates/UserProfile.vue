@@ -493,7 +493,7 @@
                             </section>
                             <section class="profile-section">
                                 <h2>
-                                    Nemesis
+                                    Nemeses
                                 </h2>
                                 <div v-if="!nemesisList.length" class="section-empty">
                                     <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
