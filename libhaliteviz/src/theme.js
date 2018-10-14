@@ -1,5 +1,5 @@
 export const THEMES = {
-    "Turtles!": {
+    "Turtles": {
         tintFactory: false,
         tintShip: false,
         rotateShip: true,
