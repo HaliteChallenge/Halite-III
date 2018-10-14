@@ -187,7 +187,7 @@ window.cookieconsent.initialise({
     </div>
     {% endif %}
 
-    {% if page.no_header %}
+    {% if page.no_header or page.menu == 'editor' or page.title == "Code Tutorial" or page.title == "Next Step Tutorials" %}
     <footer class="footer container-empty">
     </footer>
     {% else %}
