@@ -1,26 +1,25 @@
 <template>
   <div class="doc-section text-center">
     <div class="upload-state" v-if="view == viewList.UPLOAD">
-      <h1>Bot File</h1>
-      <p class="upload-state-desc"><span class="icon-document"></span> {{botFile.name}}</p>
-      <p class="upload-state-filename">New Bot Version: {{`${user.username} v${bot === null ? 1 : parseInt(bot.version_number) + 1}`}}</p>
+      <h1>Submit Your New Bot</h1>
+      <p class="upload-state-desc"><span class="icon-document"></span> Your bot submission: {{botFile.name}}</p>
+      <p class="upload-state-filename">New bot version: {{`${user.username} v${bot === null ? 1 : parseInt(bot.version_number) + 1}`}}</p>
       <div class="upload-state-buttons">
-        <a @click="cancel">CANCEL</a>
         <button class="btn btn-primary" @click="upload">SUBMIT YOUR BOT</button>
+        <a @click="cancel" style="padding-left:15px">CANCEL</a>
       </div>
     </div>
     <div class="upload-state" v-else-if="view == viewList.SUBMITTED">
       <img :src="`${baseUrl}/assets/images/icon-wait.svg`" alt="success" class="upload-state-icon">
-      <h2>bot submitted. currently compiling.</h2>
-      <p class="upload-state-desc">Your bot: {{botFile.name}} <br>New name: {{`${user.username} v${bot === null ? 1 : parseInt(bot.version_number) + 1}`}}</p>
+      <h2>Your bot has been submitted and is currently compiling.</h2>
+      <p class="upload-state-desc">Your bot submission: {{botFile.name}} <br>New bot version: {{`${user.username} v${bot === null ? 1 : parseInt(bot.version_number) + 1}`}}</p>
     </div>
     <div class="upload-state" v-else>
         <img :src="`${baseUrl}/assets/images/icon-success.svg`" alt="success" class="upload-state-icon">
         <h2>Success!</h2>
-        <p class="upload-state-desc">New Bot Version: {{`${user.username} v${bot === null ? 1 : parseInt(bot.version_number) + 1}`}}</p>
+        <p class="upload-state-desc">New bot version: {{`${user.username} v${bot === null ? 1 : parseInt(bot.version_number) + 1}`}}</p>
         <div class="upload-state-buttons">
-          <!-- <a class="btn-ha btn-ha-clear btn-ha-lg" href="/halite-tv-coding-game-videos">Watch Halite TV</a> -->
-          <a class="btn-ha btn-ha-lg" href="/user?me">See your results</a>
+          <a class="btn btn-primary" href="/user?me">GO TO PROFILE</a>
         </div>
       </div>
   </div>
