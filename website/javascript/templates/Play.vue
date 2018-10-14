@@ -1,40 +1,40 @@
 <template>
   <div class="play-container">
     <div class="container-fluid" v-if="currentView == 'upload'">
-      <h1 class="page-heading">Play Halite III</h1>
+    <!--  <h1 class="page-heading">Play Halite III</h1> -->
       <div class="doc-section doc-section-play text-center">
         <p><img src="/assets/images/icon-flag.svg" width="30" alt="flag"></p>
-        <h4 class="mt3">SUBMIT A BOT</h4>
-     <!--   <p class="sub-title">Global launch: October 16, 2018</p> -->
+        <h2 class="mt3">PLAY HALITE III</h2>
         <p>Halite III bots can be developed locally or in a web-based editor. Submit your bot via one of the below options to participate in Halite III.</p>
-      </div>
-      <div class="col-sm-6">
-        <div class="doc-section doc-section-play text-center">
-          <h4 class="mt3">WEB-BASED DEVELOPMENT</h4>
-          <p>Create, replay, and submit a Python, Java, or C++ bot via the web-based editor.</p>
-          <br>
-          <a class="btn btn-primary" href="/editor">Go to Editor</a>
+        <br>
+        <div class="col-sm-6">
+        <!--  <div class="doc-section doc-section-play text-center"> -->
+            <h4 class="mt3">WEB-BASED DEVELOPMENT</h4>
+            <p>Create, replay, and submit a Python, Java, or C++ bot via the web-based editor.</p>
+            <br>
+            <a class="btn btn-primary" href="/editor">Go to Editor</a>
+          <!-- </div> -->
         </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="doc-section doc-section-play text-center">
-          <h4 class="mt3">LOCAL DEVELOPMENT</h4>
-    <!--  <p class="sub-title">Submit your bot here</p> -->
-          <p>Or, <a href="/learn-programming-challenge/downloads">download</a> the game environment and starter kit bundle for your platform and language of choice.</p>
-          <p>To submit your local Halite bot in the competition, upload a .zip file here. The root of your zip should contain a MyBot.{extension} file and the /hlt folder from the starter kit.</p>
-          <halite-upload-zone
-            description="<br>Select or drop .zip file <br> to upload your bot"
-            buttonText = "Select File"
-            :icon="`/assets/images/icon-upload.svg`"
-            v-on:change="upload_bot"
-            :progressBar="is_downloading"
-            :progress="uploadProgress"
-            :message="uploadMessage">
-            </halite-upload-zone>
+        <div class="col-sm-6">
+          <!--<div class="doc-section doc-section-play text-center"> -->
+            <h4 class="mt3">LOCAL DEVELOPMENT</h4>
+            <p>Or, <a href="/learn-programming-challenge/downloads">download</a> the game environment and starter kit bundle for your platform and language of choice.</p>
+            <p>To submit your local Halite bot in the competition, upload a .zip file here. The root of your zip should contain a MyBot.{extension} file and the /hlt folder from the starter kit.</p>
+            <br>
+            <halite-upload-zone
+              description="Select or drop .zip file to upload your bot"
+              buttonText = "Select File"
+              :icon="`/assets/images/icon-upload.svg`"
+              v-on:change="upload_bot"
+              :progressBar="is_downloading"
+              :progress="uploadProgress"
+              :message="uploadMessage">
+              </halite-upload-zone>
+         <!-- </div> -->
         </div>
       </div>
       <div class="doc-section doc-section-play" style="text-align:left" id="competition-rules">
-        <h4 class="mt3" style="text-align: center">COMPETITION RULES</h4>
+        <h2 class="mt3" style="text-align: center">COMPETITION RULES</h2>
         <p>
         <p style="text-align: center"><b>Start date:</b> October 16, 2018</p>
         <p style="text-align: center"><b>Submissions end:</b> January 22, 2018 at 11:59pm EST (GMT-05:00)</p>

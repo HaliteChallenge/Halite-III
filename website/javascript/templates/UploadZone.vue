@@ -5,14 +5,9 @@
          @dragleave="drag_over = false"
          v-bind:class="{ dragging: drag_over }">
         <div class="panel-body">
-            <img class="upload-zone-icon" :src="icon" alt="">
+       <!-- <img class="upload-zone-icon" :src="icon" alt=""> -->
             <h2 v-if="title">{{ title }}</h2>
             <p v-if="description" v-html="description" class="upload-zone-desc"></p>
-
-            <!-- <div class="upload-zone-btn text-center">
-                <button class="btn-ha btn-ha-lg"><span>{{ buttonText }}</span></button>
-            </div> -->
-
             <p class="hidden" v-if="message">{{ message }}</p>
             <input class="form-control" type="file" v-on:change="on_changed" />
             <p v-if="caption" class="upload-zone-caption">{{ caption }}</p>
@@ -55,6 +50,10 @@
         h2 {
             text-align: center;
             font-weight: 300;
+        }
+
+        p {
+            margin: 0px 0px;
         }
 
         input {
