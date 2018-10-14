@@ -52,12 +52,18 @@ export class Dropoff {
         factoryShape.drawCircle(0, 0, 64);
         factoryShape.endFill();
         let factoryTexture = renderer.generateTexture(factoryShape);
-        this.core = new PIXI.Sprite(assets.BASE_SPRITES[this.owner]);
+        // Use separate sprites for dropoff if theme calls for it
+        const offset = this._spriteIndexOffset();
+        this.core = new PIXI.Sprite(assets.BASE_SPRITES[this.owner + offset]);
         this.highlight = new PIXI.Sprite(factoryTexture);
 
         if (theme().tintFactory) {
             this.core.tint = assets.PLAYER_COLORS[this.owner];
         }
+    }
+
+    _spriteIndexOffset() {
+        return theme().dropoffSprite ? 4 : 0;
     }
 
     /**
@@ -120,6 +126,10 @@ export class Factory extends Dropoff {
     constructor(...args) {
         super(...args);
         this.core.alpha = 0.9;
+    }
+
+    _spriteIndexOffset() {
+        return 0;
     }
 
     draw() {

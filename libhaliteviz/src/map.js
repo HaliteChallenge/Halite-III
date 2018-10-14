@@ -5,7 +5,9 @@ import {AdvancedBloomFilter} from '@pixi/filter-advanced-bloom';
 import * as assets from "./assets";
 import {PLAYER_COLORS} from "./assets";
 import colorTheme from "./colors";
+import theme from "./theme";
 
+const themeParams = theme();
 const [ _, COLOR_SCALE ] = colorTheme();
 
 /**
@@ -93,7 +95,17 @@ export class Map {
 
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
-                const cell = PIXI.Sprite.from(normalTex);
+                let sprite = normalTex;
+                if (themeParams.mapSprite) {
+                    sprite = assets.MAP_SPRITE;
+                    if (themeParams.borderSprite) {
+                        if (row === 0 || col === 0 ||
+                            row === this.rows - 1 || col === this.cols - 1) {
+                            sprite = assets.MAP_BORDER_SPRITE;
+                        }
+                    }
+                }
+                const cell = PIXI.Sprite.from(sprite);
                 cell.alpha = 0.9;
                 cell.width = this.scale;
                 cell.height = this.scale;
@@ -208,14 +220,19 @@ export class Map {
                 const cell = this.cells[row * this.cols + col];
                 const bg = this.renderer.backgroundColor;
                 cell.tint = alphaBlend(base, bg, baseOpacity);
-                // TWEAK: uncomment to make size vary with amount of halite
-                if (production_fraction <= 0.2) {
-                    cell.width = Math.sqrt(production_fraction) * this.scale;
-                    cell.height = Math.sqrt(production_fraction) * this.scale;
+                if (themeParams.scaleMapSprite) {
+                    if (production_fraction <= 0.2) {
+                        cell.width = Math.sqrt(production_fraction) * this.scale;
+                        cell.height = Math.sqrt(production_fraction) * this.scale;
+                    }
+                    else {
+                        cell.width = (0.3 + 0.7 * production_fraction) * this.scale;
+                        cell.height = (0.3 + 0.7 * production_fraction) * this.scale;
+                    }
                 }
                 else {
-                    cell.width = (0.3 + 0.7 * production_fraction) * this.scale;
-                    cell.height = (0.3 + 0.7 * production_fraction) * this.scale;
+                    cell.width = this.scale;
+                    cell.height = this.scale;
                 }
                 const [ cellX, cellY ] = this.camera.worldToCamera(col, row);
                 cell.position.x = (cellX + 0.5) * this.scale;

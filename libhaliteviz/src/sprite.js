@@ -156,7 +156,9 @@ export default class Ship {
                     // If still, preserve rotation
                     direction = this.sprite.rotation;
                 }
-                this.sprite.rotation = direction;
+                if (themeParams.rotateShip) {
+                    this.sprite.rotation = direction;
+                }
 
                 // To prevent "glitching" when a move is recorded that
                 // isn't processed (because there wasn't enough

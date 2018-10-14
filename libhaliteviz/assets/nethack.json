@@ -1,0 +1,49 @@
+{
+	"meta": {
+		"image": "nethack.png",
+		"size": {"w":977,"h":916},
+		"scale": "1"
+	},
+	"frames": {
+		"at.png":
+		{
+			"frame": {"x":0,"y":0,"w":458,"h":458},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":458,"h":458},
+			"sourceSize": {"w":458,"h":458}
+		},
+		"gt.png":
+		{
+			"frame": {"x":458,"y":0,"w":458,"h":458},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":458,"h":458},
+			"sourceSize": {"w":458,"h":458}
+		},
+		"hash.png":
+		{
+			"frame": {"x":0,"y":458,"w":458,"h":458},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":458,"h":458},
+			"sourceSize": {"w":458,"h":458}
+		},
+		"lt.png":
+		{
+			"frame": {"x":458,"y":458,"w":458,"h":458},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":458,"h":458},
+			"sourceSize": {"w":458,"h":458}
+		},
+		"dot.png":
+		{
+			"frame": {"x":916,"y":0,"w":61,"h":61},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":61,"h":61},
+			"sourceSize": {"w":61,"h":61}
+		}
+	}
+}

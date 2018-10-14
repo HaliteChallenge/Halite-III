@@ -2,6 +2,8 @@ export const THEMES = {
     "Turtles!": {
         tintFactory: false,
         tintShip: false,
+        rotateShip: true,
+        scaleMapSprite: true,
         scale: {
             ship: 1,
         },
@@ -11,6 +13,8 @@ export const THEMES = {
     "Colorblind": {
         tintFactory: false,
         tintShip: false,
+        rotateShip: true,
+        scaleMapSprite: true,
         scale: {
             ship: 1,
         },
@@ -20,11 +24,27 @@ export const THEMES = {
     "Halite II": {
         tintFactory: true,
         tintShip: true,
+        rotateShip: true,
+        scaleMapSprite: true,
         scale: {
             ship: 0.75,
         },
         playerColors: [0xBD00DB, 0x63CECA, 0xFFBE00, 0xC5EC98],
         colorTheme: "GraySpace",
+    },
+    "Roguelike": {
+        tintFactory: true,
+        tintShip: true,
+        scaleMapSprite: false,
+        mapSprite: true,
+        dropoffSprite: true,
+        rotateShip: false,
+        borderSprite: true,
+        scale: {
+            ship: 1,
+        },
+        playerColors: [0x1BB15A, 0xF54356, 0xFABB2C, 0xffa2e2],
+        colorTheme: "TheSea",
     },
 };
 

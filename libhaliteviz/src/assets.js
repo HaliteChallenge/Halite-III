@@ -33,6 +33,8 @@ export const DRAW_LINES_OWNER_MAP = false;
 export let TURTLE_SPRITES = [];
 export let BASE_SPRITES = [];
 export let HALO_SPRITE = null;
+export let MAP_SPRITE = null;
+export let MAP_BORDER_SPRITE = null;
 
 let SHEETS = [];
 
@@ -159,6 +161,46 @@ export function setAssetRoot(path) {
                 sheet.textures["ship.png"],
                 sheet.textures["ship.png"],
             ]);
+        }));
+    }
+    else if (theme.selectedTheme === "Roguelike") {
+        promises.push(loadSpritesheet(
+            require("../assets/nethack.json"),
+            ASSET_ROOT + require("../assets/nethack.png"),
+        ).then((sheet) => {
+            SHEETS.push(sheet);
+
+            MAP_SPRITE = sheet.textures["dot.png"];
+            MAP_BORDER_SPRITE = sheet.textures["hash.png"];
+
+            TURTLE_SPRITES.push([
+                sheet.textures["at.png"],
+                sheet.textures["at.png"],
+                sheet.textures["at.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["at.png"],
+                sheet.textures["at.png"],
+                sheet.textures["at.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["at.png"],
+                sheet.textures["at.png"],
+                sheet.textures["at.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["at.png"],
+                sheet.textures["at.png"],
+                sheet.textures["at.png"],
+            ]);
+            BASE_SPRITES.push(sheet.textures["lt.png"]);
+            BASE_SPRITES.push(sheet.textures["lt.png"]);
+            BASE_SPRITES.push(sheet.textures["lt.png"]);
+            BASE_SPRITES.push(sheet.textures["lt.png"]);
+            BASE_SPRITES.push(sheet.textures["gt.png"]);
+            BASE_SPRITES.push(sheet.textures["gt.png"]);
+            BASE_SPRITES.push(sheet.textures["gt.png"]);
+            BASE_SPRITES.push(sheet.textures["gt.png"]);
         }));
     }
     else {
