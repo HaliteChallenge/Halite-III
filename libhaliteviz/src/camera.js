@@ -37,11 +37,8 @@ export default class Camera {
     // Adjust coordinates to account for scaling on canvas
     scaledToScreen(x, y) {
         const canvas = this.visualizer.application.renderer.view;
-        const rawZoom = canvas.style.zoom ? canvas.style.zoom : '1';
-        let zoom = parseFloat(rawZoom);
-        if (!Number.isFinite(zoom)) {
-            zoom = 1;
-        }
+        const actualHeight = canvas.offsetHeight;
+        const zoom = actualHeight / this.visualizer.height;
         return [ x / zoom, y / zoom ];
     }
 
