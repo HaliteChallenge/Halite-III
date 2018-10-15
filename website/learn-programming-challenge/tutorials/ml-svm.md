@@ -17,7 +17,7 @@ Training a bot for an AI competition like Halite III makes a lot of sense - espe
 #### What is an SVM?
 A Support Vector Machine (SVM) is a supervised machine learning model with associated learning algorithms for classification and regression analysis. SVMs are based on the idea of finding a hyperplane that best divides marked data into two groups, and in doing so building a model that can assign new unmarked data to one group or the other. A more in-depth look at SVMs is available [here](http://scikit-learn.org/stable/modules/svm.html).
 
-We used a specific kind of SVM called an rbf kernel weighted classifier. RBF kernel works well in practice, and is relatively easy to calibrate. It’s well-studied and widely understood, and makes a great starting place.
+We used a specific kind of SVM called an RBF kernel weighted classifier. RBF kernel works well in practice, and is relatively easy to calibrate. It’s well-studied and widely understood, and makes a great starting place.
 
 <br/>
 #### Our Data and Method
@@ -27,7 +27,7 @@ A good strategy for developing an ML bot is to train on a winning bot’s data. 
 <span style="display:block;text-align:center">![a centered gif showing wrapping map grid edges and collision](/assets/images/MLbot.gif)</span>
 
 #### The Bots
-We built a simple bot that uses the machine-taught models to navigate. We used an object oriented style that allowed us to share code between the passive and aggressive bots; SVM bot is an object initialized by its training weights, which come from whichever model it is given at runtime.
+We built a simple bot that uses the machine-taught models to navigate. We used an object-oriented style that allowed us to share code between the passive and aggressive bots; SVM bot is an object initialized by its training weights, which come from whichever model it is given at runtime.
 
 We found that the machine-taught models were bad at getting ships reliably back to base, so we coded that capability manually. We were thus additional able to further trim the data, throwing out any data about moving the ship closer to the shipyard. We also manually coded the logic to construct new ships, as this strategic decision was not a focus of our machine learning. After this data trimming, the bots took a quick ten minutes each to train.
 
