@@ -4,7 +4,7 @@ title: Contributing
 breadcrumb: Learn
 toc: false
 description: Learn about how to contribute to Halite III
-sort_key: 3
+sort_key: 4
 ---
 
 <div class="doc-section" markdown="1">
@@ -16,21 +16,24 @@ Halite is an open source project. We encourage you to check out our source code 
 ---------
 
 <br/>
-Halite III supports many languages for developing a bot through community contributions. Thank you for your interest in creating a new Halite III starter kit! We have put together this guide to help you, but if you have any questions feel free to reach out via email at [halite@halite.io](mailto:halite@halite.io).
+#### Starter kit development
+Starter kits help players develop Halite bots in their preferred language. The languages and versions supported by the Halite game servers are listed [here](https://forums.halite.io/t/the-halite-iii-server-environment/94). 
+
+We have put together this guide to help you create a new starter kit. If you have any questions, feel free to reach out via email at [halite@halite.io](mailto:halite@halite.io).
 
 
 <br/>
-#### API Design
-Please adhere as best you can to the API design used in the Python3 starter kit. We have an API documentation page [here](/learn-programming-challenge/api-docs).
+### API Design
+Please adhere as best you can to the API design used in the Python3 starter kit. Our API documentation is [here](/learn-programming-challenge/api-docs).
 
 
 <br/>
-#### Game Communication Overview
-Bots communicate with the environment via JSON, stdin, and stdout using a stream of space-separated integers. There are two stages of communication: initialization, and turn formats.
+### Game Communication Overview
+Bots communicate with the environment via JSON, stdin, and stdout using a stream of space-separated integers. There are two stages of communication: initialization and turn formats.
 
 
 <br/>
-#### Initialization
+### Initialization
 **Constants**
 
 At the beginning of the game, the bot must parse a blob of JSON constants from the game environment.
@@ -46,7 +49,7 @@ The game environment also sends a stream of space-separated integers representin
 
 
 <br/>
-#### Turn
+### Turn
 Each turn, every bot is sent:
 1. The turn number.
 2. Each player in the game.
@@ -58,7 +61,7 @@ Some objects are recreated from scratch each turn, such as ships. Other objects 
 
 
 <br/>
-#### Submitting your new starter kit
+### Submitting your new starter kit
 To submit your starter kit, fork our repo, place your starter package in the `starter-kits/` folder, and send us a pull request! If we accept your PR, your starter package will be added to the site.
 
 
@@ -66,7 +69,7 @@ To submit your starter kit, fork our repo, place your starter package in the `st
 
 
 <br/>
-#### Tips
+### Tips
 * Adhere to the Python 3 starter kit design, function/object/variable names, and class structure as much as possible. The Python 3 kit is the most fully documented, and the online API documentation refers to the Python 3 starter kit.
 * Support seeding the internal bot RNG from the command line, as it’s helpful for debugging.
 * The game environment allows time to analyze the initial game map before your bot returns its name. Make sure that your starter kit bot can take advantage of this time by keeping analysis functions separate, as in existing kits.
