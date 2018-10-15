@@ -9,17 +9,37 @@ sort_key: 4
 
 <div class="doc-section" markdown="1">
 #### Open Source
-Halite is an open source project. We encourage you to check out our source code on [Github](https://github.com/HaliteChallenge/Halite-III). A great way to contribute is to write a new starter kit so that you and others can develop Halite III bots in your favorite language. Check out our Starter Kit guide below.
+Halite is an open source project. We encourage you to check out our source code on [Github](https://github.com/HaliteChallenge/Halite-III). Here are some of the ways you can contribute:
+
+<br/>
+
+* [OPEN ISSUES ON GITHUB](https://github.com/HaliteChallenge/Halite-III/issues)
+* [COMMUNITY TOOLS](#community-tools)
+* [NEW STARTER KIT GUIDE](#create-a-new-starter-kit)
+
 
 <br/>
 
 ---------
+<br/>
+## Community Tools
+Our community creates and shares a wide variety of tools for developing Halite bots. Our [Community Halite Projects](https://forums.halite.io/c/community-halite-projects) forum is a great place to talk about a tool you're working on, or one you'd like to see!
+
+Last year, our community created tools for analyzing their Halite II bots:
+* [Match Manager](https://github.com/smiley1983/halite2-match-manager)
+* [Alternative Local Replay Viewer](https://github.com/fohristiwhirl/chlorine)
+* [Fast 1v1 bot tests](https://github.com/HaliteChallenge/Halite-II/tree/master/tools/hlt_client/hlt_client)
+* Another [offline visualizer](https://github.com/HaliteChallenge/Halite-II/tree/master/tools/standalone_visualizer)
+
 
 <br/>
-#### Starter kit development
-Starter kits help players develop Halite bots in their preferred language. The languages and versions supported by the Halite game servers are listed [here](https://forums.halite.io/t/the-halite-iii-server-environment/94). 
 
-We have put together this guide to help you create a new starter kit. If you have any questions, feel free to reach out via email at [halite@halite.io](mailto:halite@halite.io).
+------------
+
+<br/>
+## Create a New Starter Kit
+<br/>
+Thank you for your interest in creating a new Halite III starter kit! Starter kits help players develop Halite bots in their preferred language. We have put together this guide to help you create a new starter kit that will work with our game engine and be easy to use for other players. If you have any questions, feel free to reach out via email at [halite@halite.io](mailto:halite@halite.io).
 
 
 <br/>
