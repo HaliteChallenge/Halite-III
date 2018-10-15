@@ -76,7 +76,7 @@ export function applyTheme() {
     }
 }
 
-export let selectedTheme = "Turtles!";
+export let selectedTheme = "Turtles";
 
 {
     let savedTheme = window.localStorage.getItem('visualizer-theme');
