@@ -1,5 +1,5 @@
 export const THEMES = {
-    "Turtles!": {
+    "Turtles": {
         tintFactory: false,
         tintShip: false,
         rotateShip: true,
@@ -76,7 +76,7 @@ export function applyTheme() {
     }
 }
 
-export let selectedTheme = "Turtles!";
+export let selectedTheme = "Turtles";
 
 {
     let savedTheme = window.localStorage.getItem('visualizer-theme');

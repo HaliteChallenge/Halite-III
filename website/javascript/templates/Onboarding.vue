@@ -255,7 +255,7 @@ export default {
 	  submitCode: function(){
 			this.$refs.botEditor.upload_bot().then(() => {
 				this.step = 3;
-				utils.Alert.show("Your bot has been submitted and will start playing games within the next 15 mins.", "success");
+		//		utils.Alert.show("Your bot has been submitted and will start playing games within the next 15 mins.", "success");
 			}).catch((message) => {
 				utils.Alert.show("Bot submission failed: " + message, "error");
 			});

@@ -17,7 +17,7 @@
     <div class="upload-state" v-else>
         <img :src="`${baseUrl}/assets/images/icon-success.svg`" alt="success" class="upload-state-icon">
         <h2>Success!</h2>
-        <p class="upload-state-desc">New bot version: {{`${user.username} v${bot === null ? 1 : parseInt(bot.version_number) + 1}`}}</p>
+        <p class="upload-state-desc">New bot version: {{`${user.username} v${bot === null ? 1 : parseInt(bot.version_number) + 1}`}}<br>Your new bot will start playing games soon.</p>
         <div class="upload-state-buttons">
           <a class="btn btn-primary" href="/user?me">GO TO PROFILE</a>
         </div>
@@ -177,7 +177,7 @@ export default{
           api.update_bot(user_id, bot_id, this.botFile, (progress) => {
             this.uploadProgress = Math.floor(progress * 100)
           }).then(() => {
-            this.showMessage('success', 'Your bot has been submitted and will start playing games within the next 15 mins.')
+         //   this.showMessage('success', 'Your bot has been submitted and will start playing games within the next 15 mins.')
             this.gaData('play', 'submit-success', 'play-submit-flow')
             this.view = this.viewList.SUBMITTED
             this.checkBotStatus()

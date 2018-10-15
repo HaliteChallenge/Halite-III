@@ -189,7 +189,7 @@
                 <tr>
                   <th class="text-center">RANK</th>
                   <th>ORGANIZATION</th>
-                  <th>Games WON</th>
+                  <th>Games WON (Past 7 days)</th>
                   <th>LEVEL</th>
                 </tr>
               </thead>

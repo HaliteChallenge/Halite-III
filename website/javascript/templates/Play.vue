@@ -245,7 +245,7 @@
           this.botFile = files[0]
           this.currentView = 'botUpload'
         } else {
-          Alert.show('You may only upload a zip file.', 'error')
+          Alert.show('You must upload a .zip file.', 'error')
         }
       },
     }

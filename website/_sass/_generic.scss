@@ -8,24 +8,6 @@ html{
   @media (max-width: $screen-sm-min){
     background-size: auto;
   }
-
-  // background
-  // &:before{
-  //   position: absolute;
-  //   content: "";
-  //   display: block;
-  //   width: 100%;
-  //   height: 100%;
-  //   background: #091B53;
-  // }
-  // &:after{
-  //   position: absolute;
-  //   content: "";
-  //   display: block;
-  //   width: 100%;
-  //   height: 100%;
-  //   opacity: 0.3;
-  // }
 }
 
 body{
@@ -34,9 +16,6 @@ body{
   color: $foreground;
   font-size: 1.6rem;
 
-  // > .body {
-  //   margin-top: 30px;
-  // }
 
   &.noscroll{
     overflow: hidden;
