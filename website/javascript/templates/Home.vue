@@ -60,7 +60,7 @@
             <div class="col-md-6">
                 <h1>Welcome to Halite</h1>
                 <p>Halite is an open source artificial intelligence challenge, created by Two Sigma.</p>
-                <p>Halite III is a resource management game. Your goal is to build a bot that efficiently navigates the seas removing halite, a luminous energy resource.</p>
+                <p>Halite III is a resource management game. Your goal is to build a bot that efficiently navigates the seas collecting halite, a luminous energy resource.</p>
                 <br>
                 <a class="btn btn-primary" href="/learn-programming-challenge/">Play now</a>
             </div>
@@ -70,22 +70,24 @@
         </div>
         <div class="row section-overview">
             <div class="col-md-6">
-                <h2>Build a bot</h2>
-                <p>This year's Halite challenge launches October 16 at <a href="https://halite.io">halite.io</a>. Last year, over 6,000 participants from over 100 countries built bots in 20+ programming languages.</p>
-                <p>Build a bot to play other bots created around the world.</p>
+                <img src="/assets/images/sample_game.png" alt="Game map" style="max-width:70%;margin:auto;display:block;">
             </div>
             <div class="col-md-6">
+                <h2>Build a bot</h2>
+                <p>The Halite III challenge runs through January 22, 2019. Last year, over 6,000 participants from over 100 countries built Halite II bots in 20+ programming languages.</p>
+                <p>Join in to play other bots created around the world.</p>
+            </div>
+       <!--     <div class="col-md-6">
                 <h2>Share your feedback</h2>
                 <p>Do you have an idea for a new feature? Are you interested in contributing to or writing about Halite?</p>
                 <p>We'd like to hear from you! Write us at <a href="mailto:halite@halite.io">halite@halite.io</a>.</p>
                 <br>
-            </div>
+            </div> -->
         </div>
-<!--        <div class="row section-feed">
-            <div class="col-md-4">
+        <div class="row section-feed">
+         <!--   <div class="col-md-4">
                 <div class="feed-block">
                     <div class="feed-header">
-                        <img src="/assets/images/icon-trophy.svg" alt="trophy" class="feed-icon">
                         <h3>Competition Updates</h3>
                     </div>
                     <div class="feed-body">
@@ -119,15 +121,21 @@
                         </article>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-
+            </div> -->
+            <div class="col-md-6">
                 <div class="feed-block">
                     <div class="feed-header">
-                        <img src="/assets/images/icon-medal.svg" alt="medal" class="feed-icon">
+                        <h3>Competition Updates</h3>
+                    </div>
+                     <a data-height="500px" class="twitter-timeline" href="https://twitter.com/HaliteAI"></a>
+                </div>
+
+             <!--   <div class="feed-block">
+                    <div class="feed-header">
                         <h3>In The Press</h3>
                     </div>
                     <div class="feed-body">
+                        <div class="top-bg"></div>
                         <article class="feed-item">
                             <h3>5 Tips for this year's Halite competition</h3>
                             <p>The Two Sigma Investments, LP Deep Learning team worked on a new write-up about </p>
@@ -157,38 +165,25 @@
                             </div>
                         </article>
                     </div>
-                </div>
+                </div> -->
             </div>
-            <div class="col-md-4">
-                <div class="parnter-block">
-                    <h3>Partners</h3>
+            <div class="col-md-6">
+                <div class="partner-block">
+                    <div class="feed-header">
+                        <h3>Two Sigma</h3>
+                    </div>
                     <div class="partner-main">
                         <div class="logo">
                             <img src="/assets/images/logo-two-sigma.png" alt="two sigma">
                         </div>
-                        <div class="name">Two <br>Sigma</div>
+                     <!--   <div class="name">Two Sigma</div> -->
                     </div>
-                    <div class="partners">
-                        <div class="partner">
-                            <div class="logo">
-                                <img src="/assets/images/logo-google-cloud.png" alt="google cloud">
-                            </div>
-                            <div class="name">
-                                Google Cloud
-                            </div>
-                        </div>
-                        <div class="partner">
-                            <div class="logo">
-                                <img src="/assets/images/logo-university.png" alt="university">
-                            </div>
-                            <div class="name">
-                                University (TBD)
-                            </div>
-                        </div>
-                    </div>
+                    <br>
+                    <p>Two Sigma is an investment manager applying technology and data science to discover value in the world’s data. Each Halite season, Two Sigma looks forward to meeting participants with creative and successful Halite bots.</p>
+                    <p> Learn more about careers at Two Sigma <a href="https://www.twosigma.com/careers" onclick="javascript:handleOutboundLinkClicks('click-external', 'click-ts','careers');return true;">here</a>.</p>
                 </div>
             </div>
-        </div> -->
+        </div>
 
     </div>
 </template>

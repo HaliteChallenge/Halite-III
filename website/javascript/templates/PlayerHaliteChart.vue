@@ -1,6 +1,6 @@
 <template>
   <div class="player-halite-chart">
-    <svg width='100%' height='147' ref="mainSvg"></svg>
+    <svg width='100%' height='130' ref="mainSvg"></svg>
   </div>
 </template>
 <script>

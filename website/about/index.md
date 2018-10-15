@@ -9,24 +9,21 @@ description: Halite is an Artificial Intelligence programming game run by Two Si
 
 <div class="doc-section" markdown="1">
 
-Halite is an artificial intelligence programming challenge created by [Two Sigma](https://www.twosigma.com){:target="_blank"}, in which players build game-playing bots using the coding language of their choice.
+Halite is an artificial intelligence programming challenge created by [Two Sigma](https://www.twosigma.com){:target="_blank"}, in which players build bots using the coding language of their choice to compete in an original online multiplayer game. Since 2016, more than 7,000 students and professionals around the world have played Halite, applying algorithms in a dynamic, open source game setting.
 
 
-## HALITE HISTORY
-[Halite I](https://2016.halite.io){:target="_blank"} was conceived of and developed by Benjamin Spector and Michael Truell in 2016. Two Sigma, with a history of running playful programming challenges for its mathematical and software-oriented teams (e.g., see the Robotic Air Hockey Competition) retained Ben and Michael as 2016 summer interns to develop Halite, run an internal Halite Challenge, and ultimately open Halite up to coding enthusiasts worldwide. Halite I was a great success, developing a flourishing community of bot builders from around the globe, representing 35+ universities and 20+ organizations.
+## Halite III
 
-In 2017, the Two Sigma team created [Halite II](https://2017.halite.io), an iteration of the original game with new rules but a similar structure and philosophy. Halite involved moving pieces around a board with only up-down-left-right options. In 2017’s Halite II, bots battle for control of a virtual continuous universe, where ships mine planets to grow larger fleets and win the game.
+This year’s Halite challenge has a resource management premise and an ocean theme. Players build bots that efficiently navigate the seas collecting halite, a luminous energy resource. See our [Game Overview](/learn-programming-challenge/game-overview) to learn more about Halite III.
 
-Halite II garnered nearly 6,000 players from almost 1,000 organizations and over 100 countries around the world. The competition launched with support for a handful of programming languages; with contributions from the active community, the number of support languages surpassed 20 by the end of the competition.
+The Halite III competition runs from October 16th to January 22nd, and the winners will be announced January 29th. Players can join the competition any time, and will submit bots that play against each other on our game servers to determine rank. See [here](/play-programming-challenge) to learn more about how to play. As players improve and resubmit new versions of their bots, players can watch their progress on our [leaderboard](/leaderboard).
 
+Halite I and Halite II were especially successful because of their excellent community contributions and robust forums. Any player, from beginner to advanced, can contribute to the [open source Halite III project](https://github.com/HaliteChallenge/Halite-III/) or join the [forums](/forums) to ask questions or learn best practices.
 
-## PLAYING HALITE
+## Halite Design Principles
 
-Halite players can download a starter bot, try out one of our tutorials to make updates to the bot, and/or improve the bot on their own. The Halite team each year has provided a number of helper methods that can allow a beginner to jump right in, and we expect sophisticated players to try Machine Learning and other advanced techniques.
-
-Users that improve and re-submit their bots should see their rankings on the leaderboard change.
-
-Halite I and Halite II were especially successful because of their robust forum communities. Any player, from beginner to advanced, can join a forum to ask questions or learn best practices.
+Learn more about the design and implementation of online programming competitions and the principles behind successful competitive multiplayer programming games in [The Design and Implementation of
+Modern Online Programming Competitions](https://arxiv.org/abs/1710.07738), by Halite creators Benjamin Spector and Michael Truell.
 
 The strategic depth and immersive, interactive nature of Halite make it a unique learning environment. Learn more about the design principles behind Halite by watching our July 2018 presentation at Google Cloud Next:
 <br>
@@ -34,9 +31,9 @@ The strategic depth and immersive, interactive nature of Halite make it a unique
 <br>
 
 
-## HALITE III
+## About Two Sigma
 
-Halite III launches October 16, 2018. Stay tuned for updates!
+Two Sigma is an investment manager applying innovative technology and data science to discover value in the world’s data. Two Sigma employs more than 1,400 people and has offices in New York, Hong Kong, Tokyo, Houston, and London. Visit [Two Sigma Careers](https://www.twosigma.com/careers/) for more information.
 
 
 </div>

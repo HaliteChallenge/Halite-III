@@ -2,7 +2,6 @@
 <div class="player-cards-list">
   <div v-for="(player,index) in statistics" :key="index">
     <div class="card-player">
-      <div class="card-player-left">
         <h4 :class="'card-player-name color-'+ (parseInt(index)+1) ">
           {{replay.players[index].name}}
         </h4>
@@ -15,9 +14,10 @@
             {{(currentEfficiency(index) * 100).toFixed(2)}}%
           </span>
         </div>
-        <img class="stats-cube" :src="`/assets/images/visualizer/cube1.png`" alt="cube">
-      </div>
-      <div class="chat-box">
+   <!--     <img class="stats-cube" :src="`/assets/images/visualizer/cube1.png`" alt="cube"> -->
+    </div>
+    <div class="card-player">
+      <div class="chart-box">
         <PlayerHaliteChart :chartData="chartData[index]" :maxY="maxY" :index="frame"/>
       </div>
       <ul class="player-stats-list">
@@ -95,11 +95,11 @@ export default {
   padding: 0;
   .card-player{
     margin: 0;
-    padding: 10px 20px;
+    padding: 6px 20px;
     padding-right: 0;
     color: #0C0C0C;
     display: flex;
-    justify-content: space-between;
+ // justify-content: space-between;
     border-bottom: 1.2px solid rgba(8,27,83,.1);
   }
   .card-player-left{
@@ -113,7 +113,7 @@ export default {
   }
   .player-current-halite{
     display: flex;
-    align-items: baseline;
+ // align-items: baseline;
     font-size: 28px;
     line-height: 34px;
     position: relative;
@@ -132,7 +132,7 @@ export default {
     width: 60px;
     margin-top: 10px;
   }
-  .chat-box{
+  .chart-box{
     width: 100%;
   }
   .player-stats-list{
@@ -142,11 +142,11 @@ export default {
     li{
       display: flex;
       justify-content: space-between;
-      line-height: 33px;
+      line-height: 26px;
       padding-top: 10px;
       border-bottom: 1.2px solid rgba(8,27,83,.1);
       width: 170px;
-      font-size: 18px;
+      font-size: 14px;
       padding-right: 20px;
       &:last-child{
         border: none;
@@ -158,7 +158,7 @@ export default {
   }
 
   @media (min-width:1200px) and (max-width: 1400px) {
-    .chat-box {
+    .chart-box {
       margin-left: -15px;
     }
     .player-stats-list {
