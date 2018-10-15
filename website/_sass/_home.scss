@@ -12,6 +12,14 @@ $mobile-breakpoint: 991px;
   font-size: 20px;
   line-height: 1.5em;
 
+  h2{
+    font-size: 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #B4E6FF; // color: #033C89;
+    text-shadow: 0 1px 8px #00ABFF; // added
+  }
+
   .personal-msg {
     display: flex;
     margin: auto;
@@ -125,18 +133,17 @@ $mobile-breakpoint: 991px;
   }
 
   .feed-block{
-    background-color: #f1f9ff;
+  //  background-color: #f1f9ff;
+  //  background: linear-gradient(0deg, #3CABE6 0%, rgba(24,109,194,0.41) 100%);
     border-radius: 4px;
     @media (max-width: $screen-sm-max){
       margin-top: 30px;
     }
     .feed-header{
-      background-image: url("/assets/images/bg-pixel.png");
-      background-position: top center;
-      background-repeat: repeat-x;
-      background-size: contain;
+      background: linear-gradient(0deg, #0073DB 0%, #0044A4 100%);
+      border-radius: 4px; // added
       padding: 20px 15px;
-      border-bottom: 1px solid #d5dadf;
+//      border-bottom: 1px solid #d5dadf;
       display: flex;
       align-items: center;
       // &:after{
@@ -153,7 +160,8 @@ $mobile-breakpoint: 991px;
         font-size: 24px;
         font-weight: 600;
         text-transform: uppercase;
-        color: #033C89;
+        color: #B4E6FF; // color: #033C89;
+        text-shadow: 0 1px 8px #00ABFF; //
         line-height: 28px;
         margin-left: 10px;
         margin-top: 0;
@@ -167,7 +175,7 @@ $mobile-breakpoint: 991px;
     }
   }
 
-  .parnter-block{
+  .partner-block{
     h3{
       @include heading(24px);
       @media screen and (max-width: $screen-sm-max) {
@@ -187,7 +195,7 @@ $mobile-breakpoint: 991px;
         left: 0;
         width: 100%;
         height: 1px;
-        background-image: linear-gradient(90deg, rgba(19, 151,216, 0) 0%, #19B7E7 50%, rgba(19, 151,216, 0) 100%);
+        background: linear-gradient(90deg, rgba(19, 151,216, 0) 0%, #19B7E7 50%, rgba(19, 151,216, 0) 100%);
       }
       .logo{
         flex: 1;
@@ -244,13 +252,14 @@ $mobile-breakpoint: 991px;
   h3{
     font-size: 20px;
     font-weight: 600;
-    color: #1A1A1A;
+    color: #FFFFFF;
+    opacity: 0.6; //
     line-height: 27px;
     margin: 0 0 10px 0;
   }
   p{
     font-size: 18px;
-    color: #52678D;
+    color: #FFFFFF;
     letter-spacing: 0.22px;
     line-height: 27px;
   }
@@ -264,7 +273,7 @@ $mobile-breakpoint: 991px;
     }
     .read-more{
       font-size: 18px;
-      color: #F7862D;
+      color: #FFBE00;
       text-transform: uppercase;
     }
     .icon-date{
@@ -296,3 +305,33 @@ $mobile-breakpoint: 991px;
   background-repeat: no-repeat;
   background-position: center;
 }
+
+.feed-header{
+  background: linear-gradient(0deg, #0073DB 0%, #0044A4 100%);
+  border-radius: 4px; // added
+  padding: 20px 15px;
+  display: flex;
+  align-items: center;
+  // &:after{
+  //   content: "";
+  //   display: block;
+  //   clear: both;
+  // }
+  .feed-icon{
+    // float: left;
+    width: 55px;
+    display: block;
+  }
+  h3{
+    font-size: 24px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #B4E6FF; // color: #033C89;
+    text-shadow: 0 1px 8px #00ABFF; // added
+    line-height: 28px;
+    margin-left: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
