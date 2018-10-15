@@ -80,9 +80,13 @@
         <label class="panel-name">GAME/MAP STATS</label>
         <ul class="panel-body list-hori">
           <li class="list-item" :title="`Halite v${replay.ENGINE_VERSION}`">
-            Map Size
+            Map
             <br>
-            <span style="font-size: 1em">{{`${replay.production_map.width}x${replay.production_map.height}`}}, seed {{replay.map_generator_seed}}</span>
+            Size:
+            <span style="font-size: 1em">{{`${replay.production_map.width}x${replay.production_map.height}`}}</span>
+            <br>
+            Seed:
+            <span style="font-size: 1em">{{replay.map_generator_seed}}</span>
           </li>
           <li class="list-item">
             Halite Available
@@ -771,7 +775,7 @@ export default {
     margin: 16px 0;
     background: #fff;
     border-radius: 4px;
-    box-shadow: inset 0 1px 3px 0 rgba(0,0,0,0.5), inset 0 1px 14px 0 rgba(151,182,255,0.45);
+   //@at-root box-shadow: inset 0 1px 3px 0 rgba(0,0,0,0.5), inset 0 1px 14px 0 rgba(151,182,255,0.45);
     &.not-padding {
       padding: 0;
       overflow: hidden;
