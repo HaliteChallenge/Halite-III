@@ -23,8 +23,8 @@ _PATH_DELIMITER = '/'
 
 
 class GameDownloader:
-    _GOLD_BUCKET_URI = 'https://www.googleapis.com/storage/v1/b/halite-2-gold-replays/o'
-    _SALT_BUCKET_URI = 'https://www.googleapis.com/storage/v1/b/halite-2-replays/o'
+    _GOLD_BUCKET_URI = 'https://www.googleapis.com/storage/v1/b/ts2018-halite-3-gold-replays/o'
+    _SALT_BUCKET_URI = 'https://www.googleapis.com/storage/v1/b/ts2018-halite-3-replays/o'
     _BUCKET_URIS = [_SALT_BUCKET_URI, _GOLD_BUCKET_URI]
 
     def __init__(self, destination, buckets, prefix):
@@ -49,6 +49,10 @@ class GameDownloader:
         :return: parse URIs for objects
         """
         response = []
+
+        if _ITEMS_KEY not in bucket_json:
+            raise ValueError("No games found. (When downloading by date, use YYYYMMDD format.)")
+
         for bucket_object in bucket_json[_ITEMS_KEY]:
             response.append(bucket_object[_SELFLINK_KEY])
         return response
@@ -124,7 +128,7 @@ class DatedGameDownloader(GameDownloader):
 
 
 class UserGameDownloader(GameDownloader):
-    _USER_BOT_URI = 'https://api.halite.io/v1/api/user/{}/match?limit={}&offset={}'
+    _USER_BOT_URI = 'https://api.2018.halite.io/v1/api/user/{}/match?limit={}&offset={}'
     _FETCH_THRESHOLD = 250
     _BUCKETS = []
 

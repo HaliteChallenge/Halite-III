@@ -23,10 +23,10 @@ __license__ = "MIT"
 __status__ = "Production"
 __version__ = "1.5"
 
-URI_HALITE_API = 'http://35.190.92.101/v1/api'
+URI_HALITE_API = 'https://api.2018.halite.io/v1/api'
 URI_API_CREATE_BOT = URI_HALITE_API + "/user/{}/bot"
 URI_API_EXISTING_BOT = URI_HALITE_API + "/user/{}/bot/{}"
-URI_HALITE_WEB_PAGE = 'http://halite.io'
+URI_HALITE_WEB_PAGE = 'https://halite.io'
 URI_WEB_API_KEY = "{}/user/settings".format(URI_HALITE_WEB_PAGE)
 
 CONFIG_DIR = 'HALITE_CONFIG_DIR'
@@ -199,7 +199,7 @@ def _parse_arguments():
     # .Modes.Replay.Modes.Date
     replay_regex_parser = replay_subparser.add_parser(REPLAY_MODE_DATE, help='Retrieve replays based on regex')
     replay_regex_parser.add_argument('-t', '--date', action='store', type=str, dest='date', required=True,
-                                     help="Fetch replay files matching the specified date. To fetch a day's files user"
+                                     help="Fetch replay files matching the specified date. To fetch a day's files use"
                                           "the YYYYMMDD format.")
     replay_regex_parser.add_argument('-a', '--all', action='store_true', default=False,
                                      help="Whether to retrieve all files. Omit for only Gold and higher.")
@@ -253,6 +253,8 @@ def main():
             else:
                 upload_bot.download(args.bot_path)
         elif args.mode == REPLAY_MODE:
+            if not args.replay_mode:
+                raise ValueError("Provide a download mode (date or user)")
             download_game.download(args.replay_mode, args.destination,
                                    getattr(args, 'date', None), getattr(args, 'all', None),
                                    Config().user_id if Config.auth_exists() else None, getattr(args, 'user_id', None),

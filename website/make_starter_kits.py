@@ -272,7 +272,7 @@ def main():
                 "files": [BENCHMARK_FILE, None, None, None],
             },
             {
-                "name": "CLI Client",
+                "name": "Client Tools",
                 "files": [TOOLS_FILE, None, None, None],
             },
             {
