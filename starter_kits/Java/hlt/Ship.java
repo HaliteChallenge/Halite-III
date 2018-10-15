@@ -1,7 +1,7 @@
 package hlt;
 
 public class Ship extends Entity {
-    private final int halite;
+    public final int halite;
 
     public Ship(final PlayerId owner, final EntityId id, final Position position, final int halite) {
         super(owner, id, position);
