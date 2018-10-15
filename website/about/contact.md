@@ -9,9 +9,9 @@ description: Contact the Halite team with questions, suggestions, press requests
 
 <div class="doc-section" markdown="1">
 
-## Halite III launches October 16, 2018.
+## The Halite team
 
-In the meantime, you can contact the Halite team with questions, suggestions, or press requests at <mailto:halite@halite.io>.
+You can contact the Halite team with questions, suggestions, or press requests at <mailto:halite@halite.io>.
 
 
 [comment]: ## NEED HELP PLAYING HALITE?
@@ -19,7 +19,7 @@ In the meantime, you can contact the Halite team with questions, suggestions, or
 [comment]: If you get stuck while playing Halite, we suggest you check out our [community forums](https://forums.halite.io){:target="_blank"} to see what other players are discussing and to see if others have had your problem before. If you don't see your question answered, feel free to start a new thread! There's also a lively conversation on the [Discord chat](https://discordapp.com/invite/EqW8DCB){:target="_blank"}.
 
 
-## CONTACT OUR PARENT
+## OUR PARENT
 
 For questions related to anything non-game related like legal issues, you can contact our parent company, [Two Sigma](https://www.twosigma.com){:target="_blank"}.
 
