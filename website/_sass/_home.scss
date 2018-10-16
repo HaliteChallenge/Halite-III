@@ -18,6 +18,14 @@ $mobile-breakpoint: 991px;
     text-transform: uppercase;
     color: #B4E6FF; // color: #033C89;
     text-shadow: 0 1px 8px #00ABFF; // added
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .row {
+      margin-right: 0px;
+      margin-left: 0px;
   }
 
   .personal-msg {
@@ -101,14 +109,19 @@ $mobile-breakpoint: 991px;
     }
   }
 
+  .section-feed{
+    padding: 50px 40px;
+  }
+
   .section-overview{
-    padding: 50px 0;
+    padding: 50px 40px;
     p{
       letter-spacing: 0.25px;
     }
     h1{
-      @include heading(36px);
+      @include heading(50px);
       line-height: 1.4em;
+      margin-top: 0px;
     }
     img{
       max-width: 100%;
@@ -120,7 +133,7 @@ $mobile-breakpoint: 991px;
         font-size: 18px;
       }
       h1{
-        font-size: 28px;
+        font-size: 50px;
       }
       img{
         margin-top: 30px;
@@ -135,12 +148,19 @@ $mobile-breakpoint: 991px;
   .feed-block{
   //  background-color: #f1f9ff;
   //  background: linear-gradient(0deg, #3CABE6 0%, rgba(24,109,194,0.41) 100%);
+    margin: auto;
+    max-width: 80%;
     border-radius: 4px;
     @media (max-width: $screen-sm-max){
       margin-top: 30px;
     }
     .feed-header{
-      background: linear-gradient(0deg, #0073DB 0%, #0044A4 100%);
+      h2{
+        margin: auto;
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+      // background: linear-gradient(0deg, #0073DB 0%, #0044A4 100%);
       border-radius: 4px; // added
       padding: 20px 15px;
 //      border-bottom: 1px solid #d5dadf;
@@ -181,7 +201,7 @@ $mobile-breakpoint: 991px;
       @media screen and (max-width: $screen-sm-max) {
         text-align: center;
       }
-    }
+  }
     .partner-main{
       padding: 30px 15px;
       display: flex;
@@ -307,7 +327,7 @@ $mobile-breakpoint: 991px;
 }
 
 .feed-header{
-  background: linear-gradient(0deg, #0073DB 0%, #0044A4 100%);
+  // background: linear-gradient(0deg, #0073DB 0%, #0044A4 100%);
   border-radius: 4px; // added
   padding: 20px 15px;
   display: flex;
