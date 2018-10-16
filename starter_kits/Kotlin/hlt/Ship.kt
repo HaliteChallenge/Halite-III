@@ -1,6 +1,6 @@
 package hlt
 
-class Ship(owner: PlayerId, id: EntityId, position: Position, private val halite: Int) : Entity(owner, id, position) {
+class Ship(owner: PlayerId, id: EntityId, position: Position, val halite: Int) : Entity(owner, id, position) {
 
     val isFull: Boolean
         get() = halite >= Constants.MAX_HALITE
