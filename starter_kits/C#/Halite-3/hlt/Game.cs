@@ -18,7 +18,7 @@ namespace MyBot.hlt
 
              Input input = Input.readInput();
              int numPlayers = input.getInt();
-            myId = new PlayerId(input.getInt());
+             myId = new PlayerId(input.getInt());
 
             Constants.setID(myId.id);
 
