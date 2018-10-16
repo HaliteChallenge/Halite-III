@@ -18,6 +18,9 @@ $mobile-breakpoint: 991px;
     text-transform: uppercase;
     color: #B4E6FF; // color: #033C89;
     text-shadow: 0 1px 8px #00ABFF; // added
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
   }
 
   .row {
@@ -152,6 +155,11 @@ $mobile-breakpoint: 991px;
       margin-top: 30px;
     }
     .feed-header{
+      h2{
+        margin: auto;
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
       // background: linear-gradient(0deg, #0073DB 0%, #0044A4 100%);
       border-radius: 4px; // added
       padding: 20px 15px;
@@ -193,7 +201,7 @@ $mobile-breakpoint: 991px;
       @media screen and (max-width: $screen-sm-max) {
         text-align: center;
       }
-    }
+  }
     .partner-main{
       padding: 30px 15px;
       display: flex;

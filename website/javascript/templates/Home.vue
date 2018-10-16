@@ -72,10 +72,10 @@
             <div class="col-md-12" style="width:66.66%;margin:auto;text-align:center;">
                 <h2>How to Play</h2>
                 <p>The Halite III challenge runs through January 22, 2019.</p>
-                <p>You can build a bot in your preferred coding language, via our code editor or on your computer. Submit your own bot or play on a team to join in the challenge. Submitted bots will play thousands of games on the Halite servers against bots from around the world.</p>
+                <p>You can build a bot in your preferred programming language, via our online code editor or locally. Create your own bot or play on a team to join in the challenge. Your bot will play thousands of games on the Halite servers against bots from around the world.</p>
                 <p>Last year, over 6,000 participants from over 100 countries built Halite II bots in 20+ programming languages.</p>
                 <br>
-                <a class="btn btn-primary btn-sm" href="/about" style="color:#fff;background-image:linear-gradient(0deg, #0073DB 0%, #0044A4 100%);">Learn more</a>
+                <a class="btn btn-primary btn-sm" href="/play-programming-challenge" style="color:#fff;background-image:linear-gradient(0deg, #0073DB 0%, #0044A4 100%);">Learn more</a>
             </div>
         </div>
         <div class="row section-feed">
@@ -88,7 +88,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="partner-block">
+                <div class="partner-block" style="text-align:center;">
                     <div class="feed-header">
                         <h2>About Two Sigma</h2>
                     </div>
@@ -96,7 +96,6 @@
                         <div class="logo">
                             <img src="/assets/images/logo-two-sigma.png" alt="two sigma">
                         </div>
-                     <!--   <div class="name">Two Sigma</div> -->
                     </div>
                     <br>
                     <p>Two Sigma is an investment manager applying technology and data science to discover value in the world’s data. Each Halite season, Two Sigma looks forward to meeting participants with creative and successful Halite bots.</p>
