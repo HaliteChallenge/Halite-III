@@ -75,7 +75,7 @@
                         </v-select>
                     </div>
 
-                    <div class="form-group" v-if="country_code !== ''">
+                    <div class="form-group" v-if="country_code !== '' && country_code !== 'NONE' && !(this.country_code.code && this.country_code.code === 'NONE')">
                         <label for="country">What is your state, province, or region?</label>
                         <v-select
                             placeholder="(would prefer not to disclose)"
@@ -172,7 +172,10 @@ export default {
       },
       computed: {
         regions: function () {
-          const regions = Object.entries(iso3166.data[this.country_code.code].sub)
+          const regions = (
+            this.country_code === 'NONE' ||
+            (this.country_code.code && this.country_code.code === 'NONE')
+          ) ? [] : Object.entries(iso3166.data[this.country_code.code].sub)
 
           const codes = []
 
@@ -213,7 +216,8 @@ export default {
             'organization_id': this.organization === 'NONE' ? null : this.organization
           }
 
-          if (this.country_code !== '') {
+          if (this.country_code !== '' && this.country_code !== 'NONE' &&
+              !(this.country_code.code && this.country_code.code === 'NONE')) {
             const codes = {}
 
             // Build conversion table of 2-char country code to 3-char
@@ -222,7 +226,7 @@ export default {
             }
 
             request['country_code'] = this.country_code.value
-            if (this.country_region_code !== '') {
+            if (this.country_region_code !== '' && this.country_region_code.value !== 'NONE') {
               request['country_subdivision_code'] = this.country_region_code.value
             }
           }
