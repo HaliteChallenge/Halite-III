@@ -14,7 +14,7 @@ The Halite executable comes with a command line interface (CLI). Run `$ ./halite
 
 ## Submitting your bot
 * Zip your MyBot.{extension} file and /hlt directory together.
-* Submit your zipped file here: https://beta.halite.io/play-programming-challenge
+* Submit your zipped file here: https://halite.io/play-programming-challenge
 
 ## Compiling your bot on our game servers
 * Your bot has `10 minutes` to install dependencies and compile on the game server.
