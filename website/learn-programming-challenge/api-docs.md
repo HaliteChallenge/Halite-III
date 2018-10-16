@@ -87,7 +87,7 @@ Players have an `id`, a `shipyard`, a `halite_amount`, and dictionaries of ships
 
    `player.get_dropoff(dropoff_id)` returns the dropoff object associated with the dropoff id provided as an argument.
 
-   `player.get_dropoffs()` returns a list of all dropff objects.
+   `player.get_dropoffs()` returns a list of all dropoff objects.
 
 <br/>
 
