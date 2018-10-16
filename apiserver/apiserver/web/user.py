@@ -20,7 +20,7 @@ import wordfilter
 tld.update_tld_names()
 
 
-USERNAME_REGEX = re.compile(r'^[a-zA-Z][a-zA-Z0-9_\-]*$')
+USERNAME_REGEX = re.compile(r'^[a-zA-Z0-9][a-zA-Z0-9_\-]*$')
 USERNAME_LENGTH = 40
 
 

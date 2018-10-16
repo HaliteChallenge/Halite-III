@@ -16,7 +16,7 @@ from . import util as web_util
 from .blueprint import web_api
 
 
-TEAM_NAME_REGEX = re.compile(r'^[a-zA-Z][a-zA-Z0-9_\-]*$')
+TEAM_NAME_REGEX = re.compile(r'^[a-zA-Z0-9][a-zA-Z0-9_\-]*$')
 TEAM_NAME_LENGTH = 32
 
 def make_team_record(team, members, show_verification_code=False):
