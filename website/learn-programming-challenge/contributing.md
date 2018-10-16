@@ -74,7 +74,7 @@ Each turn, every bot is sent:
 1. The turn number.
 2. Each player in the game.
   * A list of this player’s ships.
-  * A list of this player’s dropoffs and shipyards.
+  * A list of this player’s dropoffs.
 3. The changed cells on the game map, represented by an update count (how many cells have changed) and the details of changed cells (x, y, halite amount).
 
 Some objects are recreated from scratch each turn, such as ships. Other objects are reused and updated each turn, such as the the map and player. It’s helpful to be clear when writing your starter kit which objects are recreated and which are reused from turn to turn.
