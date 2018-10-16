@@ -23,7 +23,7 @@ pub struct Game {
     pub players: Vec<Player>,
     pub ships: HashMap<ShipId, Ship>,
     pub dropoffs: HashMap<DropoffId, Dropoff>,
-    pub game_map: GameMap,
+    pub map: GameMap,
     input: Input,
 }
 
@@ -44,7 +44,7 @@ impl Game {
             players.push(Player::generate(&mut input));
         }
 
-        let game_map = GameMap::generate(&mut input);
+        let map = GameMap::generate(&mut input);
 
         Game {
             log,
@@ -54,7 +54,7 @@ impl Game {
             players,
             ships: HashMap::new(),
             dropoffs: HashMap::new(),
-            game_map,
+            map,
             input
         }
     }
@@ -91,20 +91,15 @@ impl Game {
                 halite);
         }
 
-        self.game_map.update(input);
+        self.map.update(input);
 
         for player in &self.players {
-            for ship_id in &player.ship_ids {
-                let ship = &self.ships[ship_id];
-                self.game_map.at_entity_mut(ship).mark_unsafe(*ship_id);
-            }
-
             let shipyard = &player.shipyard;
-            self.game_map.at_entity_mut(shipyard).structure = Structure::Shipyard(player.id);
+            self.map.at_entity_mut(shipyard).structure = Structure::Shipyard(player.id);
 
             for dropoff_id in &player.dropoff_ids {
                 let dropoff = &self.dropoffs[dropoff_id];
-                self.game_map.at_entity_mut(dropoff).structure = Structure::Dropoff(*dropoff_id);
+                self.map.at_entity_mut(dropoff).structure = Structure::Dropoff(*dropoff_id);
             }
         }
     }

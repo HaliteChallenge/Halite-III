@@ -17,6 +17,8 @@ pub mod log;
 #[allow(dead_code)]
 pub mod map_cell;
 #[allow(dead_code)]
+pub mod navi;
+#[allow(dead_code)]
 pub mod player;
 #[allow(dead_code)]
 pub mod position;
