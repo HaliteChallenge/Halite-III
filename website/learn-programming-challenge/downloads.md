@@ -53,7 +53,7 @@ Download a language-specific starter kit to start building your bot. Can’t fin
         </tbody>
     </table>
 </div>
-
+<br>
 ## Halite Tools and Source Download
 
 <div class="table-container">
@@ -93,3 +93,12 @@ Download a language-specific starter kit to start building your bot. Can’t fin
         </tbody>
     </table>
 </div>
+<br/>
+## Community Tools
+Our community creates and shares a wide variety of tools for developing Halite bots. Our [Community Halite Projects](https://forums.halite.io/c/community-halite-projects) forum is a great place to talk about a tool you're working on, or one you'd like to see!
+
+* [Reloader Script](https://forums.halite.io/t/halite-3-reloader-script/120) displays the difference a bot's output and a given replay file.
+* [Alternative Local Replay Viewer](https://forums.halite.io/t/fluorine-a-halite-3-replay-viewer/99)
+
+
+<br/>
