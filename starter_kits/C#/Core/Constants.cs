@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Linq;
 
 namespace Halite3.Core
 {
@@ -33,22 +33,31 @@ namespace Halite3.Core
 
         public static void populateConstants(string stringFromEngine)
         {
-            dynamic tokens = JsonConvert.DeserializeObject(stringFromEngine);
+            var temp = stringFromEngine.Replace('{', ' ');
+            temp = temp.Replace('}', ' ');
+            temp = temp.Replace('"', ' ');
+
+            var tokens = temp.Split(',');
+
+            var lookup = tokens.Select(token => {
+                var split = token.Split(':');
+                return new { key = split[0].Trim(), value = split[1].Trim() };
+            }).ToDictionary(token => token.key, token => token.value);
 
             var constantsMap = new Dictionary<string, string>();
 
-            SHIP_COST = tokens.NEW_ENTITY_ENERGY_COST;
-            DROPOFF_COST = tokens.DROPOFF_COST;
-            MAX_HALITE = tokens.MAX_ENERGY;
-            MAX_TURNS = tokens.MAX_TURNS;
-            EXTRACT_RATIO = tokens.EXTRACT_RATIO;
-            MOVE_COST_RATIO = tokens.MOVE_COST_RATIO;
-            INSPIRATION_ENABLED = tokens.INSPIRATION_ENABLED;
-            INSPIRATION_RADIUS = tokens.INSPIRATION_RADIUS;
-            INSPIRATION_SHIP_COUNT = tokens.INSPIRATION_SHIP_COUNT;
-            INSPIRED_EXTRACT_RATIO = tokens.INSPIRED_EXTRACT_RATIO;
-            INSPIRED_BONUS_MULTIPLIER = tokens.INSPIRED_BONUS_MULTIPLIER;
-            INSPIRED_MOVE_COST_RATIO = tokens.INSPIRED_MOVE_COST_RATIO;
+            SHIP_COST = int.Parse(lookup["NEW_ENTITY_ENERGY_COST"]);
+            DROPOFF_COST = int.Parse(lookup["DROPOFF_COST"]);
+            MAX_HALITE = int.Parse(lookup["MAX_ENERGY"]);
+            MAX_TURNS = int.Parse(lookup["MAX_TURNS"]);
+            EXTRACT_RATIO = int.Parse(lookup["EXTRACT_RATIO"]);
+            MOVE_COST_RATIO = int.Parse(lookup["MOVE_COST_RATIO"]);
+            INSPIRATION_ENABLED = bool.Parse(lookup["INSPIRATION_ENABLED"]);
+            INSPIRATION_RADIUS = int.Parse(lookup["INSPIRATION_RADIUS"]);
+            INSPIRATION_SHIP_COUNT = int.Parse(lookup["INSPIRATION_SHIP_COUNT"]);
+            INSPIRED_EXTRACT_RATIO = int.Parse(lookup["INSPIRED_EXTRACT_RATIO"]);
+            INSPIRED_BONUS_MULTIPLIER = double.Parse(lookup["INSPIRED_BONUS_MULTIPLIER"]);
+            INSPIRED_MOVE_COST_RATIO = int.Parse(lookup["INSPIRED_MOVE_COST_RATIO"]);
         }
     }
 }
