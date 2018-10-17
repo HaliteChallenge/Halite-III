@@ -77,8 +77,8 @@ namespace Halite3.Core
         {
             foreach (var command in commands)
             {
-                Console.WriteLine(command.CommandValue);
-                Console.WriteLine(' ');
+                Console.Write(command.CommandValue);
+                Console.Write(' ');
             }
             Console.WriteLine();
         }
