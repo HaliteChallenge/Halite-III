@@ -211,7 +211,7 @@ A map cell is an object representation of a cell on the game map. Map cell has `
 ##### POSITION
 A position is an object with x and y values indicating the absolute position on the game map. Position is defined in the file hlt/positionals.py. You can use the position information on an entity (`entity.position`), or create a new position object with `Position(x, y)`.
 
-  `position.directional_offset(direction)` returns a new position based on moving one unit in the given direction from the given position.
+  `position.directional_offset(direction)` returns a new position based on moving one unit in the given direction from the given position. This method takes a direction such as `Direction.West` or an equivalent tuple such as `(0, -1)`, but will not work with commands such as `"w"`.
 
   `position.get_surrounding_cardinals()` returns a list of all positions around the given position in each cardinal direction.
 
