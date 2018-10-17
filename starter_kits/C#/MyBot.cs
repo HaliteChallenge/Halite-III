@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Halite3.Core;
-using NLog;
 
 namespace Halite3
 {
