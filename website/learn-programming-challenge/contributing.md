@@ -25,7 +25,6 @@ Halite is an open source project. We encourage you to check out our source code 
 ## Community Tools
 Our community creates and shares a wide variety of tools for developing Halite bots. Our [Community Halite Projects](https://forums.halite.io/c/community-halite-projects) forum is a great place to talk about a tool you're working on, or one you'd like to see!
 
-* [Match Manager](https://gitlab.com/smiley1983/halite2-match-manager)
 * [Reloader Script](https://forums.halite.io/t/halite-3-reloader-script/120) displays the difference a bot's output and a given replay file.
 * [Alternative Local Replay Viewer](https://forums.halite.io/t/fluorine-a-halite-3-replay-viewer/99)
 
