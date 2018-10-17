@@ -1,0 +1,2 @@
+csc hlt\Command.cs hlt\Constants.cs hlt\Direction.cs hlt\Dropoff.cs hlt\Entity.cs hlt\EntityId.cs hlt\Game.cs hlt\GameMap.cs hlt\Input.cs hlt\Log.cs hlt\MapCell.cs hlt\Player.cs hlt\PlayerId.cs hlt\Position.cs hlt\Ship.cs hlt\Shipyard.cs MyBot.cs
+halite.exe --replay-directory replays/ -vvv --width 32 --height 32 "MyBot.exe" "MyBot.exe"
