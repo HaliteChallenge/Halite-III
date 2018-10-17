@@ -87,7 +87,7 @@ Players have an `id`, a `shipyard`, a `halite_amount`, and dictionaries of ships
 
    `player.get_dropoff(dropoff_id)` returns the dropoff object associated with the dropoff id provided as an argument.
 
-   `player.get_dropoffs()` returns a list of all dropff objects.
+   `player.get_dropoffs()` returns a list of all dropoff objects.
 
 <br/>
 
@@ -156,7 +156,7 @@ Gameplay takes place on a wrapping rectangular grid 32x32, 40x40, 48x48, 56x56, 
 
    A method that computes the Manhattan distance between two locations, and accounts for the toroidal wraparound.
 
-   `gamemap.calculate_distance(source, target)` returns a number.
+   `game_map.calculate_distance(source, target)` returns a number.
 
 <br/>
 
@@ -164,7 +164,7 @@ Gameplay takes place on a wrapping rectangular grid 32x32, 40x40, 48x48, 56x56, 
 
    A method that normalizes a position within the bounds of the toroidal map. Useful for handling the wraparound modulus arithmetic on x and y. For example, if a ship at (x = 31, y = 4) moves to the east on a 32x32 map, the normalized position would be (x = 0, y = 4), rather than the off-the-map position of (x = 32, y = 4).
 
-   `gamemap.normalize(position)` returns a normalized position.
+   `game_map.normalize(position)` returns a normalized position.
 
 <br/>
 
@@ -172,7 +172,7 @@ Gameplay takes place on a wrapping rectangular grid 32x32, 40x40, 48x48, 56x56, 
 
    A method that returns a list of direction(s) to move closer to a target disregarding collision possibilities. Returns an empty list if the source and destination are the same.
 
-   `gamemap.get_unsafe_moves(source, destination)` returns a list of closest directions toward the given target.
+   `game_map.get_unsafe_moves(source, destination)` returns a list of closest directions toward the given target.
 
 <br/>
 
@@ -180,13 +180,13 @@ Gameplay takes place on a wrapping rectangular grid 32x32, 40x40, 48x48, 56x56, 
 
   A method that returns a direction to move closer to a target without colliding with other entities. Returns a direction of “still” if no such move exists.
 
-  `gamemap.naive_navigate(ship, destination)` returns a single valid direction toward a given target.
+  `game_map.naive_navigate(ship, destination)` returns a single valid direction toward a given target.
 
 <br/>
 
 
 ##### MAP CELL
-A map cell is an object representation of a cell on the game map. Map cell has `position`, `halite_amount`, `ship`, and `structure` as member variables. For example, you can index the game map and find a particular map cell with `gamemap[position]`.
+A map cell is an object representation of a cell on the game map. Map cell has `position`, `halite_amount`, `ship`, and `structure` as member variables. For example, you can index the game map and find a particular map cell with `game_map[position]`.
 
 <br/>
 

@@ -35,6 +35,8 @@ To prevent your bot from timing out, you should optimize your code wherever poss
 When debugging timeout issues, it can be helpful to disable game engine timeouts. To do so, append the --no-timeouts flag when running a game:
 `$ ./halite -vvv --width 32 --height 32 --no-timeouts "python MyBot.py" "python MyBetterBot.py"`
 
+*Note:* In Windows, escape flags with dashes in them: `--"no-timeouts"`
+
 <br/>
 
 ##### In Game Failures
