@@ -48,21 +48,12 @@ class Ship extends Entity
         return new Ship($playerId, $shipId, new Position($x, $y), $halite);
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        if (!super.equals(o)) return false;
-//
-//        Ship ship = (Ship) o;
-//
-//        return halite == ship.halite;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        int result = super.hashCode();
-//        result = 31 * result + halite;
-//        return result;
-//    }
+    public function equals($other): bool
+    {
+        if (!($other instanceof self)) {
+            return false;
+        }
+
+        return $this->halite === $other->halite;
+    }
 }

@@ -29,18 +29,12 @@ class Command
         $this->command = $command;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//
-//        Command command1 = (Command) o;
-//
-//        return command.equals(command1.command);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return command.hashCode();
-//    }
+    public function equals($o): bool
+    {
+        if (!($o instanceof self)) {
+            return false;
+        }
+
+        return $this->command === $o->command;
+    }
 }

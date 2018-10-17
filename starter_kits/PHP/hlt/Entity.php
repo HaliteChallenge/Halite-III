@@ -24,23 +24,12 @@ class Entity {
         $this->position = $position;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//
-//        Entity entity = (Entity) o;
-//
-//        if (!owner.equals(entity.owner)) return false;
-//        if (!id.equals(entity.id)) return false;
-//        return position.equals(entity.position);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        int result = owner.hashCode();
-//        result = 31 * result + id.hashCode();
-//        result = 31 * result + position.hashCode();
-//        return result;
-//    }
+    public function equals($other): bool
+    {
+        if (!($other instanceof self)) {
+            return false;
+        }
+
+        return $this->owner->equals($other->owner) && $this->id->equals($other->id) && $this->position->equals($other->position);
+    }
 }

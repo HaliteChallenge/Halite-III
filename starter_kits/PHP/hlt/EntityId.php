@@ -17,19 +17,12 @@ class EntityId {
         return '' . $this->id;
     }
 
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//
-//        EntityId entityId = (EntityId) o;
-//
-//        return id == entityId.id;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return id;
-//    }
+    public function equals($other): bool
+    {
+        if (!($other instanceof self)) {
+            return false;
+        }
+
+        return $this->id === $other->id;
+    }
 }
