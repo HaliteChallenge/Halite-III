@@ -21,7 +21,7 @@ namespace Halite3.Core
             int numPlayers = input.getInt();
             MyId = new PlayerId(input.getInt());
 
-            Log.logger().Info("My Id: " + MyId.Id);
+            Log.Info("My Id: " + MyId.Id);
 
             for (var i = 0; i < numPlayers; ++i)
             {
@@ -41,7 +41,7 @@ namespace Halite3.Core
         public void UpdateFrame()
         {
             TurnNumber = Input.readInput().getInt();
-            Log.logger().Info("=============== TURN " + TurnNumber + " ================");
+            Log.Info("=============== TURN " + TurnNumber + " ================");
 
             for (int i = 0; i < Players.Count; ++i)
             {
