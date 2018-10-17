@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Halite3.Core;
@@ -20,7 +20,7 @@ namespace Halite3
             // As soon as you call "ready" function below, the 2 second per turn timer will start.
             game.Ready("PopAye");
 
-            Log.logger().Info("Successfully created bot! My Player ID is " + game.MyId + ".");
+            Log.Info("Successfully created bot! My Player ID is " + game.MyId + ".");
 
             var allDirections = new List<Direction> { Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST };
 
