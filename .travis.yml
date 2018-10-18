@@ -46,6 +46,11 @@ jobs:
     - cd ./starter_kits/Python3
     - python3 -m py_compile MyBot.py
     deploy:
+  - name: Ruby starter kit
+    env: []
+    script:
+    - cd ./starter_kits/Ruby
+    - ruby -c MyBot.rb
   - name: C++ starter kit
     env: COMPILER="g++-7 gcc-7" CCOMPILE=gcc-7 CXXCOMPILE=g++-7
     script:
