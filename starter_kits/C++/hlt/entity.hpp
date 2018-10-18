@@ -6,7 +6,7 @@
 namespace hlt {
     struct Entity {
         PlayerId owner;
-        EntityId id;
+        EntityId id; // if id is -1, then it's a shipyard
         Position position;
 
         Entity(PlayerId owner, EntityId id, int x, int y) :
