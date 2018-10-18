@@ -189,7 +189,7 @@ def find_challenge(conn, has_gpu=False):
                  datetime.datetime.now() - datetime.timedelta(minutes=30))
             )
         ).order_by(
-            model.challenges.c.most_recent_game_task.asc()
+            model.challenges.c.most_recent_game_task.asc().nullsfirst()
         )
     ).first()
 
