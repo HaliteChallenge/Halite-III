@@ -65,11 +65,11 @@ class Map
     y_cardinality, x_cardinality = self.class.get_target_direction(source, destination)
 
     if distance.x != 0
-      possible_moves.append(distance.x < (@width / 2) ? x_cardinality :
+      possible_moves << (distance.x < (@width / 2) ? x_cardinality :
                   Direction.invert(x_cardinality))
     end
     if distance.y != 0
-      possible_moves.append(distance.y < (@height / 2) ? y_cardinality :
+      possible_moves << (distance.y < (@height / 2) ? y_cardinality :
                   Direction.invert(y_cardinality))
     end
     return possible_moves
