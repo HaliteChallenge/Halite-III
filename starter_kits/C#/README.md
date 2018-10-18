@@ -4,6 +4,9 @@ PopAye - A C# starter kit for Halite 3 written for .NET Core and VS Code. Works 
 ## Usage
 Copy halite.exe into root directory and run the batch/sh file to start.
 
+## Submitting your bot
+Copy MyBot.cs along with the Core directory and any other files/directories that you create on top of these into a zip file and submit.
+
 ## Using the Visual Studio Code Debugger
 If you would like to use the built-in VS Code debugger to debug your code then do this:
 
