@@ -388,7 +388,7 @@ def find_newbie_seed_player(conn, ranked_users, seed_filter):
     :return:
     """
     sqlfunc = sqlalchemy.sql.func
-    game_curve = 1 / (model.bots.c.games_played + 1)
+    game_curve = 1.0 / (model.bots.c.games_played + 1)
     # weight the curve between half and full weight
     rand_factor = 0.5 + (sqlfunc.random() * 0.5)
     # Since the curve is cut in half every doubling of games, this means a bot

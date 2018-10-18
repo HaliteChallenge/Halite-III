@@ -123,7 +123,7 @@
 
                 </div>
                 <div class="user-efficiency" v-if="efficiency">
-                    <div class="title">Halite Efficiency (Last 10 Games)</div>
+                    <div class="title">Halite Efficiency (Last 10 Games)  <span title="Halite Efficiency is calculated as the percent of halite added to your stored halite / total halite you collect from the sea. This percent can exceed 100% when additional halite is gained in the inspired state." class="info-icon icon-info"></span></div>
                     <div class="chart-container">
                         <div class="data-distribution">
                             <div class="data-line" ref="dataLine"></div>
@@ -401,7 +401,7 @@
                                     </div>
                                 </div>
                                 <p class="explanation">
-                                    Rating is calculated as mu - 3 * sigma.
+                                    Rating is calculated as mu - 3 * sigma. Learn more about how ratings are calculated <a style="color:#ffbe00" href="https://forums.halite.io/t/how-ratings-get-calculated-for-halite-iii/95">here</a>.
                                 </p>
                                 <i class="xline xline-bottom"></i>
                             </section>

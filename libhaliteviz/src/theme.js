@@ -69,7 +69,7 @@ export function applyTheme() {
         const sheet = window.document.styleSheets[0];
         for (let i = 0; i < playerColors.length; i++) {
             const color = playerColors[i];
-            const hex = `0x${((color & 0xFF0000) >> 4).toString(2)}${((color & 0xFF00) >> 2).toString(2)}${(color & 0xFF).toString(2)}`;
+            const hex = `${((color & 0xFF0000) >> 16).toString(16).padStart(2, '0')}${((color & 0xFF00) >> 8).toString(16).padStart(2, '0')}${(color & 0xFF).toString(16).padStart(2, '0')}`;
             sheet.insertRule(`.color-${i+1} { color: #${hex} !important; }`,
                              sheet.cssRules.length);
         }

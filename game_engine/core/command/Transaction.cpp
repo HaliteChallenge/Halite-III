@@ -317,7 +317,7 @@ void SpawnTransaction::commit() {
                                                                       std::vector<Entity::id_type>{cell.entity},
                                                                       !Constants::get().STRICT_ERRORS);
                 }
-                event_generated<CollisionEvent>(player.factory, std::vector<Entity::id_type>{cell.entity});
+                event_generated<CollisionEvent>(owner.factory, std::vector<Entity::id_type>{cell.entity});
 
                 // Use dump_energy in case the collision was from a
                 // different player.

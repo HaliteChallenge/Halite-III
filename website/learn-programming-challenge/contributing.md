@@ -14,22 +14,8 @@ Halite is an open source project. We encourage you to check out our source code 
 <br/>
 
 * [OPEN ISSUES ON GITHUB](https://github.com/HaliteChallenge/Halite-III/issues)
-* [COMMUNITY TOOLS](#community-tools)
+* [COMMUNITY TOOLS](/learn-programming-challenge/downloads#community-tools)
 * [NEW STARTER KIT GUIDE](#create-a-new-starter-kit)
-
-
-<br/>
-
----------
-<br/>
-## Community Tools
-Our community creates and shares a wide variety of tools for developing Halite bots. Our [Community Halite Projects](https://forums.halite.io/c/community-halite-projects) forum is a great place to talk about a tool you're working on, or one you'd like to see!
-
-Last year, our community created tools for analyzing their Halite II bots:
-* [Match Manager](https://github.com/smiley1983/halite2-match-manager)
-* [Alternative Local Replay Viewer](https://github.com/fohristiwhirl/chlorine)
-* [Fast 1v1 bot tests](https://github.com/HaliteChallenge/Halite-II/tree/master/tools/hlt_client/hlt_client)
-* Another [offline visualizer](https://github.com/HaliteChallenge/Halite-II/tree/master/tools/standalone_visualizer)
 
 
 <br/>
@@ -74,7 +60,7 @@ Each turn, every bot is sent:
 1. The turn number.
 2. Each player in the game.
   * A list of this player’s ships.
-  * A list of this player’s dropoffs and shipyards.
+  * A list of this player’s dropoffs.
 3. The changed cells on the game map, represented by an update count (how many cells have changed) and the details of changed cells (x, y, halite amount).
 
 Some objects are recreated from scratch each turn, such as ships. Other objects are reused and updated each turn, such as the the map and player. It’s helpful to be clear when writing your starter kit which objects are recreated and which are reused from turn to turn.
