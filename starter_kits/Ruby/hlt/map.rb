@@ -36,8 +36,8 @@ class Map
     source = normalize(source)
     target = normalize(target)
     resulting_position = (source - target).abs
-    return min(resulting_position.x, @width - resulting_position.x) +
-      min(resulting_position.y, @height - resulting_position.y)
+    return [resulting_position.x, @width - resulting_position.x].min +
+      [resulting_position.y, @height - resulting_position.y].min
   end
 
   # Normalize the position within the bounds of the toroidal map.
