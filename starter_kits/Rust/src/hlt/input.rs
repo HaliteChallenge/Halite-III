@@ -1,19 +1,16 @@
 use hlt::log::Log;
-use std::cell::RefCell;
 use std::io::stdin;
 use std::process::exit;
-use std::rc::Rc;
 use std::str::FromStr;
 
 pub struct Input {
-    log: Rc<RefCell<Log>>,
     tokens: Vec<String>,
     current_token: usize,
 }
 
 impl Input {
-    pub fn new(log: &Rc<RefCell<Log>>) -> Input {
-        Input { log: log.clone(), tokens: Vec::new(), current_token: 0 }
+    pub fn new() -> Input {
+        Input { tokens: Vec::new(), current_token: 0 }
     }
 
     pub fn read_and_return_line(&mut self) -> String {
@@ -21,8 +18,8 @@ impl Input {
         match stdin().read_line(&mut buf) {
             Ok(_) => (),
             Err(_) => {
-                self.log.borrow_mut().log("Input connection from server closed. Exiting...");
-                self.log.borrow_mut().flush();
+                Log::log("Input connection from server closed. Exiting...");
+                Log::flush();
                 exit(0);
             },
         }
@@ -52,7 +49,7 @@ impl Input {
 
         let result = match token.parse() {
             Ok(x) => x,
-            Err(_) => self.log.borrow_mut().panic(&format!("Can't parse '{}'.", token)),
+            Err(_) => Log::panic(&format!("Can't parse '{}'.", token)),
         };
         result
     }

@@ -10,13 +10,9 @@ use hlt::player::Player;
 use hlt::PlayerId;
 use hlt::ship::Ship;
 use hlt::ShipId;
-use std::cell::RefCell;
 use std::collections::HashMap;
-use std::ops::DerefMut;
-use std::rc::Rc;
 
 pub struct Game {
-    pub log: Rc<RefCell<Log>>,
     pub constants: Constants,
     pub turn_number: usize,
     pub my_id: PlayerId,
@@ -29,15 +25,14 @@ pub struct Game {
 
 impl Game {
     pub fn new() -> Game {
-        let log = Rc::new(RefCell::new(Log::new()));
-        let mut input = Input::new(&log);
-        let constants = Constants::new(log.borrow_mut().deref_mut(), &input.read_and_return_line());
+        let mut input = Input::new();
+        let constants = Constants::new(&input.read_and_return_line());
 
         input.read_and_parse_line();
         let num_players = input.next_usize();
         let my_id = PlayerId(input.next_usize());
 
-        log.borrow_mut().open(my_id.0);
+        Log::open(my_id.0);
 
         let mut players: Vec<Player> = Vec::new();
         for _ in 0..num_players {
@@ -47,7 +42,6 @@ impl Game {
         let map = GameMap::generate(&mut input);
 
         Game {
-            log,
             constants,
             turn_number: 0,
             my_id,
@@ -69,7 +63,7 @@ impl Game {
         input.read_and_parse_line();
         self.turn_number = input.next_usize();
 
-        self.log.borrow_mut().log(&format!("=============== TURN {} ================", self.turn_number));
+        Log::log(&format!("=============== TURN {} ================", self.turn_number));
 
         self.ships.clear();
         self.dropoffs.clear();
