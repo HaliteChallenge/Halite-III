@@ -89,7 +89,7 @@ class Map
       end
     end
 
-    return Direction.Still
+    return Direction::STILL
   end
 
   # Updates this map object from the input given by the game engine
