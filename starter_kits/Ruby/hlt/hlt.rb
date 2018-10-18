@@ -1,0 +1,8 @@
+require_relative 'commands'
+require_relative 'constants'
+require_relative 'entity'
+require_relative 'game_map'
+require_relative 'input_reader'
+require_relative 'networking'
+require_relative 'player'
+require_relative 'positionals'
