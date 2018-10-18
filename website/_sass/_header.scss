@@ -63,7 +63,7 @@ header.unloaded{
 .navbar-fixed-top{
   @media screen and (min-width: $screen-md-min) {
     position: relative;
-    top: auto;  
+    top: auto;
   }
 }
 
@@ -100,7 +100,7 @@ header.unloaded{
   // disable border color when expand menu
   .navbar-collapse{
     border-color: transparent;
-    
+
   }
   // color: #000;
   .navbar-nav{
@@ -284,7 +284,7 @@ header.unloaded{
           border-left: none !important;
           background: transparent !important;
           >a {
-            margin: auto; 
+            margin: auto;
             .profile-nav {
               left: 50%;
               transform: translateX(-100px);
@@ -372,7 +372,7 @@ header.navbar{
       padding: 0 14px;
       height: 60px;
       vertical-align: top;
-      background: linear-gradient(0deg, #081D57 0%, #05327B 100%);	
+      background: linear-gradient(0deg, #081D57 0%, #05327B 100%);
       box-shadow: 8px 21px 36px 0 rgba(23,174, 219, 0.05);
       border-left: 1px solid rgba(145, 219, 255, 0.2);
       cursor: pointer;
@@ -381,6 +381,10 @@ header.navbar{
         font-size: 18px;
         color: #91DBFF;
         text-shadow: 0 -1px 13px 0 #00ABFF;
+
+        @media (min-width: $mobile-breakpoint) and (max-width: 1090px){
+            display: none;
+        }
       }
       .fa-sort-down {
         margin-top: -12px;
@@ -393,7 +397,7 @@ header.navbar{
       > a > img {
         width: 42px;
         height: 42px;
-        border: 0.8px solid #91DBFF;	
+        border: 0.8px solid #91DBFF;
         border-radius: 3.2px;
       }
       > a:hover{
@@ -580,7 +584,7 @@ header.navbar{
           }
         }
       }
-      
+
     }
   }
 
