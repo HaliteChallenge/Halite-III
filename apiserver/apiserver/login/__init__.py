@@ -210,7 +210,7 @@ def generic_login_callback(email, oauth_provider, oauth_id, default_username=Non
             return flask.redirect(flask.request.args["redirectURL"])
         else:
             flask.session["user_id"] = user["id"]
-            return flask.redirect(urllib.parse.urljoin(config.SITE_URL, "/user/?me"))
+            return flask.redirect(config.SITE_URL)
 
     if "redirectURL" in flask.request.args:
         return flask.redirect(flask.request.args["redirectURL"])
