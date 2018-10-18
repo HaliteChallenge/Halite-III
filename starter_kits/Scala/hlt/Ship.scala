@@ -11,7 +11,7 @@ object Ship {
   }
 }
 
-class Ship(owner: PlayerId, id: EntityId, position: Position, halite: Int) extends Entity(owner, id, position) {
+class Ship(owner: PlayerId, id: EntityId, position: Position, val halite: Int) extends Entity(owner, id, position) {
   def isFull: Boolean = halite >= Constants.MAX_HALITE
 
   def makeDropoff: Command = Command.transformShipIntoDropoffSite(id)
