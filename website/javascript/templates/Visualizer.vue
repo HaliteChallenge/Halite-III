@@ -162,6 +162,7 @@ const speedList = {
   12: '3x',
   16: '4x',
   20: '5x',
+  40: '10x'
 }
 
 const loadGame = (game) => {
