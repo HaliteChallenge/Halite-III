@@ -32,10 +32,10 @@ Your bot will be killed if it exceeds the following time limits during game exec
 
 To prevent your bot from timing out, you should optimize your code wherever possible. You might implement a timer to ensure that your bot returns commands in time to prevent losing the match.
 
-When debugging timeout issues, it can be helpful to disable game engine timeouts. To do so, append the --no-timeouts flag when running a game:
-`$ ./halite -vvv --width 32 --height 32 --no-timeouts "python MyBot.py" "python MyBetterBot.py"`
+When debugging timeout issues, it can be helpful to disable game engine timeouts. To do so, append the --no-timeout flag when running a game:
+`$ ./halite -vvv --width 32 --height 32 --no-timeout "python MyBot.py" "python MyBetterBot.py"`
 
-*Note:* In Windows, escape flags with dashes in them: `--"no-timeouts"`
+*Note:* In Windows, escape flags with dashes in them: `--"no-timeout"`
 
 <br/>
 
