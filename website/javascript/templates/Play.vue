@@ -37,7 +37,7 @@
         <h2 class="mt3" style="text-align: center">COMPETITION RULES</h2>
         <p>
         <p style="text-align: center"><b>Start date:</b> October 16, 2018</p>
-        <p style="text-align: center"><b>Submissions end:</b> January 22, 2018 at 11:59pm EST (GMT-05:00)</p>
+        <p style="text-align: center"><b>Submissions end:</b> January 22, 2019 at 11:59pm EST (GMT-05:00)</p>
         <p style="text-align: center"><b>Winners announced:</b> January 29th</p>
 
         <br/>
