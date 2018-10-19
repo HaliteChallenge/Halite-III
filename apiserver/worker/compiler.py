@@ -356,8 +356,8 @@ comp_args = {
         ["vbnc", "-out:%s.exe" % BOT],
     ],
     "C++": [
-        ["g++", "-O3", "-w", "-std=c++11", "-c"],
-        ["g++", "-O2", "-lm", "-std=c++11", "-o", BOT],
+        ["g++", "-O3", "-w", "-c"],
+        ["g++", "-O2", "-lm", "-o", BOT],
     ],
     "D": [
         ["dmd", "-O", "-inline", "-release", "-noboundscheck", "-version=StdLoggerDisableLogging", "-of" + BOT],
