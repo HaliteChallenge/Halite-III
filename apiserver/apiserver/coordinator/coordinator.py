@@ -276,9 +276,9 @@ def store_game_results(conn, game_output, stats, replay_name,
     for user in users:
         if user["user_id"] in error_log_keys:
             conn.execute(model.game_participants.update().where(
-                game_id=game_id,
-                user_id=user["user_id"],
-                bot_id=user["bot_id"],
+                (model.game_participants.c.game_id == game_id) &
+                (model.game_participants.c.user_id == user["user_id"]) &
+                (model.game_participants.c.bot_id == user["bot_id"])
             ).values(
                 log_name=error_log_keys[user["user_id"]],
             ))
