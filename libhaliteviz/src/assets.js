@@ -89,7 +89,7 @@ export function setAssetRoot(path) {
             });
     }));
 
-    if (theme.selectedTheme === "Colorblind" | theme.selectedTheme === "Colorblind II") {
+    if (theme.selectedTheme === "Colorblind") {
         promises.push(loadSpritesheet(
             require("../assets/colorblind.json"),
             ASSET_ROOT + require("../assets/colorblind.png"),
@@ -120,6 +120,39 @@ export function setAssetRoot(path) {
             BASE_SPRITES.push(sheet.textures["base-cb-1.png"]);
             BASE_SPRITES.push(sheet.textures["base-cb-2.png"]);
             BASE_SPRITES.push(sheet.textures["base-cb-3.png"]);
+        }));
+    }
+    else if (theme.selectedTheme === "Colorblind II") {
+        promises.push(loadSpritesheet(
+            require("../assets/colorblind-ii.json"),
+            ASSET_ROOT + require("../assets/colorblind-ii.png"),
+        ).then((sheet) => {
+            SHEETS.push(sheet);
+
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-white.png"],
+                sheet.textures["turtle-white.png"],
+                sheet.textures["turtle-white.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-black.png"],
+                sheet.textures["turtle-black.png"],
+                sheet.textures["turtle-black.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-yellow.png"],
+                sheet.textures["turtle-yellow.png"],
+                sheet.textures["turtle-yellow.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["turtle-red.png"],
+                sheet.textures["turtle-red.png"],
+                sheet.textures["turtle-red.png"],
+            ]);
+            BASE_SPRITES.push(sheet.textures["base-white.png"]);
+            BASE_SPRITES.push(sheet.textures["base-black.png"]);
+            BASE_SPRITES.push(sheet.textures["base-yellow.png"]);
+            BASE_SPRITES.push(sheet.textures["base-red.png"]);
         }));
     }
     else if (theme.selectedTheme === "Halite II") {

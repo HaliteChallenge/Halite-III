@@ -28,8 +28,8 @@ export const THEMES = {
         colorTheme: "Colorblind",
     },
     "Colorblind II": {
-            tintFactory: true,
-            tintShip: true,
+            tintFactory: false,
+            tintShip: false,
             rotateShip: true,
             scaleMapSprite: true,
             bloom: true,
@@ -38,7 +38,7 @@ export const THEMES = {
                 base: 1,
                 dropoff: 1,
             },
-            playerColors: [0x000000, 0xD0D0E0, 0xFF0008, 0xDBF952],
+            playerColors: [0xD0D0E0, 0x000000, 0xAFC73F, 0xFF0008],
             colorTheme: "TheSea",
     },
     "Halite II": {
