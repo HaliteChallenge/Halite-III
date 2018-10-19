@@ -177,6 +177,8 @@ def store_game_artifacts(game_id, replay_name, users):
     blob = gcloud_storage.Blob(replay_key, bucket, chunk_size=262144)
     blob.upload_from_file(flask.request.files[replay_name])
 
+    error_logs = {}
+
     # Store error logs
     for user in users:
         if user["timed_out"]:
@@ -193,8 +195,9 @@ def store_game_artifacts(game_id, replay_name, users):
                                        model.get_error_log_bucket(),
                                        chunk_size=262144)
             blob.upload_from_file(flask.request.files[error_log_name])
+            error_logs[user["user_id"]] = error_log_key
 
-    return replay_key, bucket_class
+    return replay_key, bucket_class, error_logs
 
 
 def store_game_results(conn, game_output, stats, replay_name,
@@ -236,7 +239,7 @@ def store_game_results(conn, game_output, stats, replay_name,
             user_id=user["user_id"],
             bot_id=user["bot_id"],
             version_number=user["version_number"],
-            log_name=user["log_name"],
+            log_name=None,
             rank=user["rank"],
             # Which player in the game (numbered starting from 0) was
             # this user?
@@ -261,13 +264,25 @@ def store_game_results(conn, game_output, stats, replay_name,
             update_user_timeout(conn, game_id, user)
 
     # Store the replay and any error logs
-    replay_key, bucket_class = store_game_artifacts(game_id, replay_name, users)
+    replay_key, bucket_class, error_log_keys = \
+        store_game_artifacts(game_id, replay_name, users)
     conn.execute(model.games.update().where(
         model.games.c.id == game_id
     ).values(
         replay_name=replay_key,
         replay_bucket=bucket_class,
     ))
+
+    for user in users:
+        if user["user_id"] in error_log_keys:
+            conn.execute(model.game_participants.update().where(
+                game_id=game_id,
+                user_id=user["user_id"],
+                bot_id=user["bot_id"],
+            ).values(
+                log_name=error_log_keys[user["user_id"]],
+            ))
+
 
     if challenge is not None:
         store_challenge_results(conn, users, challenge, stats)
