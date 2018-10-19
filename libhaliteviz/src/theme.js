@@ -38,7 +38,7 @@ export const THEMES = {
                 base: 1,
                 dropoff: 1,
             },
-            playerColors: [0xD0D0E0, 0x000000, 0xDBF952, 0xFF0008],
+            playerColors: [0x000000, 0xD0D0E0, 0xFF0008, 0xDBF952],
             colorTheme: "TheSea",
     },
     "Halite II": {
