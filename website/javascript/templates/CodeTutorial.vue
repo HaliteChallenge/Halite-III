@@ -53,9 +53,21 @@
       </p>
 
       <button class="run-game" v-on:click="runGame">
-        PLAY NOW
+        RUN GAME
         <img src="/assets/images/icons/pixelate-arrow.png" alt="play"/>
       </button>
+      <br><br>
+      <p>
+        Your bot has run! Submit it now to get on the leaderboard.
+      </p>
+
+      <p v-if="uploadMessage">
+        <strong>{{uploadMessage}}</strong>
+      </p>
+      <button v-on:click="upload" v-else>
+                    UPLOAD
+                </button>
+      <br/><br/>
     </Step>
     <Step title="Basic Movement" name="basic-movement">
       <p>
@@ -76,7 +88,7 @@
       </p>
 
       <button class="run-game" v-on:click="runGame">
-        PLAY NOW
+        RUN GAME
         <img src="/assets/images/icons/pixelate-arrow.png" alt="play"/>
       </button>
     </Step>
@@ -97,7 +109,7 @@
         stored halite.
       </p>
       <button class="run-game" v-on:click="runGame">
-        PLAY NOW
+        RUN GAME
         <img src="/assets/images/icons/pixelate-arrow.png" alt="play"/>
       </button>
     </Step>
@@ -123,7 +135,7 @@ logging.info("Ship {} has {} halite.".format(ship.id, ship.halite_amount))</code
       </p>
 
       <button class="run-game" v-on:click="runGame">
-        PLAY NOW
+        RUN GAME
         <img src="/assets/images/icons/pixelate-arrow.png" alt="play"/>
       </button>
     </Step>
@@ -171,7 +183,7 @@ elif ship.halite_amount >= constants.MAX_HALITE / 4:
       </p>
 
       <button class="run-game" v-on:click="runGame">
-        PLAY NOW
+        RUN GAME
         <img src="/assets/images/icons/pixelate-arrow.png" alt="play"/>
       </button>
     </Step>
@@ -204,7 +216,7 @@ elif ship.halite_amount >= constants.MAX_HALITE / 4:
       </p>
 
       <button class="run-game" v-on:click="runGame">
-        PLAY NOW
+        RUN GAME
         <img src="/assets/images/icons/pixelate-arrow.png" alt="play"/>
       </button>
     </Step>
@@ -217,7 +229,7 @@ elif ship.halite_amount >= constants.MAX_HALITE / 4:
         <strong>{{uploadMessage}}</strong>
       </p>
       <button v-on:click="upload" v-else>
-                    Upload
+                    UPLOAD
                 </button>
       <br/><br/>
       <p>
@@ -245,11 +257,6 @@ elif ship.halite_amount >= constants.MAX_HALITE / 4:
       <p>
         Halite III also has a great community, and we’re excited to see you there! Join us on the official <b><a href="https://forums.halite.io/" target="_blank">Forums</a></b>.
       </p>
-
-      <button class="run-game" v-on:click="runGame">
-        PLAY NOW
-        <img src="/assets/images/icons/pixelate-arrow.png" alt="play"/>
-      </button>
     </Step>
   </template>
 
