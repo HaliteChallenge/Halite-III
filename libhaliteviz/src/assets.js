@@ -89,7 +89,7 @@ export function setAssetRoot(path) {
             });
     }));
 
-    if (theme.selectedTheme === "Colorblind") {
+    if (theme.selectedTheme === "Colorblind" | theme.selectedTheme === "Colorblind II") {
         promises.push(loadSpritesheet(
             require("../assets/colorblind.json"),
             ASSET_ROOT + require("../assets/colorblind.png"),
