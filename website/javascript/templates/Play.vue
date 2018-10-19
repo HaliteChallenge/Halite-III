@@ -19,7 +19,7 @@
           <!--<div class="doc-section doc-section-play text-center"> -->
             <h4 class="mt3">LOCAL DEVELOPMENT</h4>
             <p>Or, <a href="/learn-programming-challenge/downloads">download</a> the game environment and starter kit bundle for your platform and language of choice.</p>
-            <p>To submit your local Halite bot in the competition, upload a .zip file here. The root of your zip should contain a MyBot.{extension} file and the /hlt folder from the starter kit.</p>
+            <p>To submit your local Halite bot to the competition, upload a .zip file here. In general, the root of your zip should contain a <i>MyBot.{extension}</i> file and the <i>hlt</i> folder from the starter kit, which is sufficient for Python and Java. Some languages may require additional files, such as <i>CMakeLists.txt</i> for C++ and <i>Cargo.toml</i> for Rust. A single top level directory in the archive that contains all the above is supported as well.</p>
             <br>
             <halite-upload-zone
               description="Select or drop .zip file to upload your bot"
