@@ -38,7 +38,7 @@ class Cell
   end
 
   def ==(other)
-    return @position == other.position
+    other.nil? ? false : @position == other.position
   end
 
   def to_s

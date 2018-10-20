@@ -36,7 +36,7 @@ class Position
   end
 
   def ==(other)
-    return @x == other.x && @y == other.y
+    return other.nil? ? false : @x == other.x && @y == other.y
   end
 
   def to_s
