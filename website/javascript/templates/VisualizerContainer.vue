@@ -39,8 +39,12 @@
     const promisify = (jq) => new Promise((resolve) => {
       jq.then((...args) => resolve(...args))
     })
-    const users = Promise.all(
-      Object.keys(game.game.players).map(id => promisify(api.get_user(id))));
+    const users = game.game ?
+                  Promise.all(
+                    Object.keys(game.game.players)
+                          .map(id => promisify(api.get_user(id)))
+                  ) :
+                  Promise.resolve([]);
 
     const buffer = game.replay
     return import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
