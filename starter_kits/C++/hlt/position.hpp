@@ -10,10 +10,23 @@ namespace hlt {
         int x;
         int y;
 
+        Position() : x(0), y(0) {}
         Position(int x, int y) : x(x), y(y) {}
 
         bool operator==(const Position& other) const { return x == other.x && y == other.y; }
         bool operator!=(const Position& other) const { return x != other.x || y != other.y; }
+
+        // strict weak ordering, useful for non-hash-based maps
+        bool operator<(const Position &other) const {
+            if (y != other.y) {
+                return y < other.y;
+            }
+            return x < other.x;
+        }
+
+        std::string to_string() const {
+            return std::to_string(x) + ':' + std::to_string(y);
+        }
 
         Position directional_offset(Direction d) const {
             auto dx = 0;
@@ -35,7 +48,7 @@ namespace hlt {
                     // No move
                     break;
                 default:
-                    log::log(std::string("Error: invert_direction: unknown direction ") + static_cast<char>(d));
+                    log::log(std::string("Error: directional_offset: unknown direction ") + static_cast<char>(d));
                     exit(1);
             }
             return Position{x + dx, y + dy};

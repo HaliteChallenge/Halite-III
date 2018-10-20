@@ -114,7 +114,7 @@
         }).catch((e) => {
           console.error(e);
           this.is_downloading = false
-          this.message = 'There was an error parsing the replay. Try force-refreshing (Control-Shift-R or Command-Shift-R), or if that does not work, please let us know at halite@halite.io.'
+          this.message = 'There was an error parsing the replay. To resolve the issue, try hard refreshing the page with Ctrl + F5 (Windows) or Command + Shift + R (Mac).'
         })
       }
 
