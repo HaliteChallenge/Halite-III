@@ -15,19 +15,16 @@ namespace hlt {
 
         bool operator==(const Position& other) const { return x == other.x && y == other.y; }
         bool operator!=(const Position& other) const { return x != other.x || y != other.y; }
-        
-        // strict weak ordering
-        bool operator<(const Position &other) const
-        {
-            if (y != other.y)
-                return y < other.y;
 
+        // strict weak ordering, useful for non-hash-based maps
+        bool operator<(const Position &other) const {
+            if (y != other.y) {
+                return y < other.y;
+            }
             return x < other.x;
         }
-        
-        // return as string
-        const std::string to_string() const
-        {
+
+        const std::string to_string() const {
             return std::to_string(x) + ":" + std::to_string(y);
         }
 
