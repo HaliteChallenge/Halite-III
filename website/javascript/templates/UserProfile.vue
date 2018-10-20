@@ -411,7 +411,7 @@
                                 </h2>
                                 <div class="challenge-modal" v-if="!is_my_page">
                                     <button class="btn challenge-btn" v-if="challengeGames.length" :class="{ 'right-btn': challengeGames.length }" @click="openChallengeModal">
-                                        <span>Challenge {{user.username}}</span>
+                                        <span>Challenge {{user.team_name||user.username}}</span>
                                     </button>
                                     <ChallengeModal :baseUrl="baseUrl" :isOn="isChallengeModalOpen" :close="closeChallengeModal" :username="user.username"></ChallengeModal>
                                 </div>
@@ -419,7 +419,7 @@
                                     <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
                                     <h2>No Challenges yet</h2>
                                     <button v-if="!is_my_page" class="btn challenge-btn" @click="openChallengeModal">
-                                        <span>Challenge {{user.username}}</span>
+                                        <span>Challenge {{user.team_name||user.username}}</span>
                                     </button>
                                 </div>
                                 <div v-if="challengeGames.length > 0">
