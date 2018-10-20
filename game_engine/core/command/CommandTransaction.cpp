@@ -13,14 +13,14 @@ static constexpr auto MAX_COMMANDS_PER_ENTITY = 1;
  * @param command The command.
  */
 bool CommandTransaction::check_ownership(const Player &player, Entity::id_type entity, const MoveCommand &command) {
-    if (player.id != store.get_entity(entity).owner) {
+    if (!player.has_entity(entity)) {
         move_ownership_faulty[player.id].emplace_back(command);
         return false;
     }
     return true;
 }
 bool CommandTransaction::check_ownership(const Player &player, Entity::id_type entity, const ConstructCommand &command) {
-    if (player.id != store.get_entity(entity).owner) {
+    if (!player.has_entity(entity)) {
         construct_ownership_faulty[player.id].emplace_back(command);
         return false;
     }
