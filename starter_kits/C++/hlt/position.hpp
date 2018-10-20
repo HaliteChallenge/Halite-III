@@ -25,7 +25,7 @@ namespace hlt {
         }
 
         std::string to_string() const {
-            return std::to_string(x) + ":" + std::to_string(y);
+            return std::to_string(x) + ':' + std::to_string(y);
         }
 
         Position directional_offset(Direction d) const {
