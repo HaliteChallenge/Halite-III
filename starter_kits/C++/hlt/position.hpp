@@ -24,7 +24,7 @@ namespace hlt {
             return x < other.x;
         }
 
-        const std::string to_string() const {
+        std::string to_string() const {
             return std::to_string(x) + ":" + std::to_string(y);
         }
 
