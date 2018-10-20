@@ -3,7 +3,12 @@
   <div v-for="(player,index) in statistics" :key="index">
     <div class="card-player">
         <h4 :class="'card-player-name color-'+ (parseInt(index)+1) ">
-          {{replay.players[index].name}}
+          <a v-if="indexedPlayers[index]" :href="`/user/?user_id=${indexedPlayers[index].user_id}`">
+            {{replay.players[index].name}}
+          </a>
+          <template v-else>
+            {{replay.players[index].name}}
+          </template>
         </h4>
         <div class="player-current-halite">
           {{currentHalite[index]}}
@@ -20,7 +25,7 @@
       <div class="chart-box">
         <PlayerHaliteChart :chartData="chartData[index]" :maxY="maxY" :index="frame"/>
       </div>
-      <ul class="player-stats-list">
+      <ul class="player-stats-list" v-if="stats">
         <li>
           <label>Ships</label>
           <span>{{stats.frames[frame].players[index].currentShips}}</span>
@@ -45,14 +50,19 @@ import * as d3 from 'd3'
 import PlayerHaliteChart from './PlayerHaliteChart.vue'
 export default {
   name: 'PlayerDetail',
-  props: ['replay', 'frame', 'stats', 'statistics', 'chartData'],
+  props: ['players', 'replay', 'frame', 'stats', 'statistics', 'chartData'],
   data: function () {
-    return {}
+    return {
+      indexedPlayers: {}
+    }
   },
   components: {
     PlayerHaliteChart
   },
-  mounted: function () {
+  mounted() {
+    for (const player of Object.values(this.players)) {
+      this.indexedPlayers[player.player_index] = player
+    }
   },
   computed: {
     playerInfo: function () {
@@ -77,6 +87,7 @@ export default {
   },
   methods: {
     currentEfficiency(index) {
+      if (!this.stats) return 0;
       const deposited = this.replay.GAME_CONSTANTS.INITIAL_ENERGY + this.stats.frames[this.frame].players[index].depositedHalite
       return this.currentHalite[index] / deposited
     },
@@ -91,6 +102,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  a {
+    color: inherit;
+  }
 .player-cards-list{
   padding: 0;
   .card-player{

@@ -6,26 +6,32 @@
         <p class="game-heading-date" v-if="game">{{game.time_played | moment("MMM Do, YY - HH:mm:ss")}}</p>
         <div class="game-heading-players">
           <div class="short">
+            <TierPopover v-if="sortedPlayers[0] && sortedPlayers[0].user" :tier="sortedPlayers[0].user.tier" />&nbsp;
             <span :class="`player color-${sortedPlayers[0].index + 1}`" v-if="sortedPlayers.length >= 1">
                 <a v-if="sortedPlayers[0].user_id" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].user_id}`">{{sortedPlayers[0].name}}</a>
                 <span v-if="!sortedPlayers[0].user_id" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
             </span>
             <span class="action">defeats</span>
+            &nbsp;<TierPopover v-if="sortedPlayers[1] && sortedPlayers[1].user" :tier="sortedPlayers[1].user.tier" />&nbsp;
             <span :class="`player color-${sortedPlayers[1].index + 1}`" v-if="sortedPlayers.length >= 2">
                 <a class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[1].user_id}`">{{sortedPlayers[1].name}}</a>
               </span>
             <span class="action" v-if="sortedPlayers.length > 2">+{{sortedPlayers.length - 2}}</span>
           </div>
           <div class="long">
+            <TierPopover v-if="sortedPlayers[0] && sortedPlayers[0].user" :tier="sortedPlayers[0].user.tier" />&nbsp;
             <span :class="`player color-${sortedPlayers[0].index + 1}`" v-if="sortedPlayers.length >= 1">
                 <a v-if="sortedPlayers[0].user_id" class="player-name-anchor" :href="`/user/?user_id=${sortedPlayers[0].user_id}`">{{sortedPlayers[0].name}}</a>
                 <span v-if="!sortedPlayers[0].user_id" class="player-name-anchor">{{sortedPlayers[0].name}}</span>
             </span>
             <span class="action">defeats</span>
-            <span :class="`player color-${player.index + 1}`" v-for="(player, index) in sortedPlayers" v-if="index > 0" :key="index">
+            <template v-for="(player, index) in sortedPlayers" v-if="index > 0">
+              &nbsp;<TierPopover v-if="player.user" :tier="player.user.tier" :key="`tier-${index}`" />&nbsp;
+              <span :class="`player color-${player.index + 1}`" :key="`span-${index}`">
                 <a v-if="player.user_id" class="player-name-anchor" :href="`/user/?user_id=${player.user_id}`">{{player.name}}</a>
                 <span v-if="!player.user_id" class="player-name-anchor" :href="`/user/?user_id=${player.user_id}`">{{player.name}}</span>
-            </span>
+              </span>
+            </template>
           </div>
         </div>
       </div>
@@ -103,7 +109,7 @@
       <div class="stats-panel plyer">
         <label class="panel-name">PLAYER STATS</label>
         <div class="panel-body not-padding">
-           <PlayerDetail :replay="replay" :statistics="statistics" :stats="stats" :frame="frame" :chartData="chartData.energy"></PlayerDetail>
+           <PlayerDetail :players="game.players" :replay="replay" :statistics="statistics" :stats="stats" :frame="frame" :chartData="chartData.energy"></PlayerDetail>
         </div>
       </div>
       <div class="stats-panel map-object">
@@ -270,7 +276,7 @@ export default {
     SelectedPoint,
     TierPopover
   },
-  mounted: function () {
+  mounted() {
     const width = document.body.offsetWidth;
     if(width < 768) {
       const canvasWidth = width - 30;
@@ -319,163 +325,163 @@ export default {
     window.addEventListener("resize", onResize)
 
     import ( /* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
-    .then((libhaliteviz) => {
-      this.themes = Object.keys(libhaliteviz.theme.THEMES);
-      this.selectedTheme = libhaliteviz.theme.selectedTheme;
-      const visualizer = new libhaliteviz.HaliteVisualizer(this.replay, this.width, this.height)
-      this.getVisualizer = function () {
-        return visualizer
-      }
-      const storedSpeedIndex = sessionStorage.getItem('halite-replaySpeed')
-      if (storedSpeedIndex) {
-        const speedIndex = parseInt(storedSpeedIndex)
-        this.speedIndex = speedIndex
-        const value = Object.keys(speedList)[speedIndex]
-        const label = speedList[value]
-        this.speedLabel = label
-        visualizer.playSpeed = value
-      } else {
-        visualizer.playSpeed = 6
-      }
-      this.stats = visualizer.stats
-
-      visualizer.onUpdate.add(() => {
-        this.frame = visualizer.frame
-        this.time = visualizer.time
-        this.zoom = visualizer.camera.scale / visualizer.camera.initScale
-        const camera = visualizer.camera
-        this.pan.x = (camera.cols - camera.pan.x) % camera.cols
-        this.pan.y = (camera.rows - camera.pan.y) % camera.rows
-      })
-      visualizer.onPlay.add(() => {
-        this.playing = true
-      })
-      visualizer.onPause.add(() => {
-        this.playing = false
-      })
-      visualizer.onSelect.add((kind, args) => {
-        this.selected.kind = kind
-        this.selected.id = args.id
-        this.selected.owner = args.owner
-        this.selected.x = args.x
-        this.selected.y = args.y
-        this.selected.production = args.production
-        this.$refs.objectPanel.open()
-        visualizer.onUpdate.dispatch()
-        this.$forceUpdate()
-        this.gaData('visualizer', 'click-map-objects', 'gameplay')
-      })
-      visualizer.attach('.game-replay-viewer')
-      onResize()
-      // play the replay - delay a bit to make sure assets load/are rendered
-      if (this.autoplay) {
-        window.setTimeout(function () {
-          visualizer.play()
-        }, 500);
-      }
-
-      // action
-      this.playVideo = (e) => {
-        if (visualizer) {
-          if (this.frame >= this.replay.game_statistics.number_turns - 1) {
-            visualizer.scrub(0, 0)
-            this.frame = 0
-            this.time = 0.0
-          }
-          visualizer.play()
-          this.gaData('visualizer', 'click-play', 'gameplay')
-        }
-      }
-      this.pauseVideo = (e) => {
-        if (visualizer) {
-          visualizer.pause()
-        }
-
-        this.gaData('visualizer', 'click-pause', 'gameplay')
-      }
-      this.resetView = () => {
-        if (visualizer) {
-          visualizer.camera.reset();
-        }
-      }
-      this.recordView = () => {
-        if (visualizer) {
-          this.recording = true;
-          visualizer.encodeVideo().then((blob) => {
-            this.recording = false;
-            if (this.game && this.game.game_id) {
-              saveAs(blob, `${this.game.game_id}.webm`);
+          .then((libhaliteviz) => {
+            this.themes = Object.keys(libhaliteviz.theme.THEMES);
+            this.selectedTheme = libhaliteviz.theme.selectedTheme;
+            const visualizer = new libhaliteviz.HaliteVisualizer(this.replay, this.width, this.height)
+            this.getVisualizer = function () {
+              return visualizer
             }
-            else {
-              saveAs(blob, 'video.webm');
+            const storedSpeedIndex = sessionStorage.getItem('halite-replaySpeed')
+            if (storedSpeedIndex) {
+              const speedIndex = parseInt(storedSpeedIndex)
+              this.speedIndex = speedIndex
+              const value = Object.keys(speedList)[speedIndex]
+              const label = speedList[value]
+              this.speedLabel = label
+              visualizer.playSpeed = value
+            } else {
+              visualizer.playSpeed = 6
             }
-          });
-        }
-      }
-      this.snapshot = () => {
-        window.prompt("Copy the snapshot:", visualizer.snapshot())
-      }
+            this.stats = visualizer.stats
 
-      const changeSpeed = (speed) => {
-        this.speedIndex = speed
-        if (this.speedIndex >= Object.keys(speedList).length) this.speedIndex = 0
+            visualizer.onUpdate.add(() => {
+              this.frame = visualizer.frame
+              this.time = visualizer.time
+              this.zoom = visualizer.camera.scale / visualizer.camera.initScale
+              const camera = visualizer.camera
+              this.pan.x = (camera.cols - camera.pan.x) % camera.cols
+              this.pan.y = (camera.rows - camera.pan.y) % camera.rows
+            })
+            visualizer.onPlay.add(() => {
+              this.playing = true
+            })
+            visualizer.onPause.add(() => {
+              this.playing = false
+            })
+            visualizer.onSelect.add((kind, args) => {
+              this.selected.kind = kind
+              this.selected.id = args.id
+              this.selected.owner = args.owner
+              this.selected.x = args.x
+              this.selected.y = args.y
+              this.selected.production = args.production
+              this.$refs.objectPanel.open()
+              visualizer.onUpdate.dispatch()
+              this.$forceUpdate()
+              this.gaData('visualizer', 'click-map-objects', 'gameplay')
+            })
+            visualizer.attach('.game-replay-viewer')
+            onResize()
+            // play the replay - delay a bit to make sure assets load/are rendered
+            if (this.autoplay) {
+              window.setTimeout(function () {
+                visualizer.play()
+              }, 500);
+            }
 
-        const value = Object.keys(speedList)[this.speedIndex]
-        const label = speedList[value]
-        this.speedLabel = label
+            // action
+            this.playVideo = (e) => {
+              if (visualizer) {
+                if (this.frame >= this.replay.game_statistics.number_turns - 1) {
+                  visualizer.scrub(0, 0)
+                  this.frame = 0
+                  this.time = 0.0
+                }
+                visualizer.play()
+                this.gaData('visualizer', 'click-play', 'gameplay')
+              }
+            }
+            this.pauseVideo = (e) => {
+              if (visualizer) {
+                visualizer.pause()
+              }
 
-        if (visualizer) {
-          visualizer.playSpeed = value
-        }
+              this.gaData('visualizer', 'click-pause', 'gameplay')
+            }
+            this.resetView = () => {
+              if (visualizer) {
+                visualizer.camera.reset();
+              }
+            }
+            this.recordView = () => {
+              if (visualizer) {
+                this.recording = true;
+                visualizer.encodeVideo().then((blob) => {
+                  this.recording = false;
+                  if (this.game && this.game.game_id) {
+                    saveAs(blob, `${this.game.game_id}.webm`);
+                  }
+                  else {
+                    saveAs(blob, 'video.webm');
+                  }
+                });
+              }
+            }
+            this.snapshot = () => {
+              window.prompt("Copy the snapshot:", visualizer.snapshot())
+            }
 
-        this.gaData('visualizer', 'click-speed', 'gameplay')
+            const changeSpeed = (speed) => {
+              this.speedIndex = speed
+              if (this.speedIndex >= Object.keys(speedList).length) this.speedIndex = 0
 
-        sessionStorage.setItem('halite-replaySpeed', this.speedIndex)
-      }
+              const value = Object.keys(speedList)[this.speedIndex]
+              const label = speedList[value]
+              this.speedLabel = label
 
-      this.toggleSpeed = (e) => {
-        changeSpeed(this.speedIndex + 1);
-      }
+              if (visualizer) {
+                visualizer.playSpeed = value
+              }
 
-      this.prevFrame = () => {
-        if (visualizer && this.frame > 0) {
-          visualizer.scrub(this.frame + -1, 0)
-        }
+              this.gaData('visualizer', 'click-speed', 'gameplay')
 
-        this.gaData('visualizer', 'click-back', 'gameplay')
-      }
-      this.nextFrame = () => {
-        if (visualizer && this.frame < this.replay.full_frames.length - 1) {
-          visualizer.scrub(this.frame + 1, 0)
-        }
+              sessionStorage.setItem('halite-replaySpeed', this.speedIndex)
+            }
 
-        this.gaData('visualizer', 'click-forward', 'gameplay')
-      }
-      this.changeFrame = (event) => {
-        // waiting for the slider dot finish to move
-        setTimeout(() => {
-          if (visualizer) {
-            visualizer.scrub(this.frame, 0)
-          }
-        }, 200)
+            this.toggleSpeed = (e) => {
+              changeSpeed(this.speedIndex + 1);
+            }
 
-        this.gaData('visualizer', 'click-slider', 'gameplay')
-      }
+            this.prevFrame = () => {
+              if (visualizer && this.frame > 0) {
+                visualizer.scrub(this.frame + -1, 0)
+              }
 
-      this.toggleHoliday = function () {
-        if (window.localStorage['holiday'] === undefined || window.localStorage['holiday'] === 'true') {
-          window.localStorage['holiday'] = "false";
-          this.isHoliday = false;
-        } else {
-          window.localStorage['holiday'] = "true";
-          this.isHoliday = true;
-        }
-      }
+              this.gaData('visualizer', 'click-back', 'gameplay')
+            }
+            this.nextFrame = () => {
+              if (visualizer && this.frame < this.replay.full_frames.length - 1) {
+                visualizer.scrub(this.frame + 1, 0)
+              }
 
-      setTimeout(() => {
-        this.$refs.slider.refresh();
-      }, 2000);
-    })
+              this.gaData('visualizer', 'click-forward', 'gameplay')
+            }
+            this.changeFrame = (event) => {
+              // waiting for the slider dot finish to move
+              setTimeout(() => {
+                if (visualizer) {
+                  visualizer.scrub(this.frame, 0)
+                }
+              }, 200)
+
+              this.gaData('visualizer', 'click-slider', 'gameplay')
+            }
+
+            this.toggleHoliday = function () {
+              if (window.localStorage['holiday'] === undefined || window.localStorage['holiday'] === 'true') {
+                window.localStorage['holiday'] = "false";
+                this.isHoliday = false;
+              } else {
+                window.localStorage['holiday'] = "true";
+                this.isHoliday = true;
+              }
+            }
+
+            setTimeout(() => {
+              this.$refs.slider.refresh();
+            }, 2000);
+          })
   },
   computed: {
     statistics: function () {
@@ -648,6 +654,7 @@ export default {
             for (const [userId, user] of Object.entries(this.game.players)) {
               if (player.player_id === user.player_index) {
                 player.user_id = userId;
+                player.user = user;
                 break;
               }
             }
@@ -660,6 +667,7 @@ export default {
       const players = await this.getPlayers()
       this.players = _.sortBy(players, ['player_id'])
       this.sortedPlayers = _.sortBy(players, ['rank'])
+      console.log(this.sortedPlayers)
 
       const selectedPlayers = []
       this.players.forEach(function (item, index) {

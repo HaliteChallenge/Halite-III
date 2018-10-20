@@ -490,6 +490,7 @@
     left: 2em;
     top: 12.5px;
     transform: translateY(-50%);
+    box-shadow: 6px 17px 29px rgba(23,174,219,0.05);
 
     h4 {
         text-transform: uppercase;
@@ -510,6 +511,10 @@
         clear: both;
         margin: 0;
         text-align: left;
+        font-weight: 600;
+        white-space: normal;
+        letter-spacing: 0;
+        text-transform: none;
     }
 }
 
