@@ -104,7 +104,7 @@ export default{
       if (me) {
         this.me = me
 
-        api.leaderboard(null, null, 0, 99999).then((members) => {
+        api.leaderboard(null, 0, 99999).then((members) => {
           this.options = members
             .filter((member) => {
               if (member.team_name) {
@@ -127,7 +127,12 @@ export default{
           this.members = arr
 
           if (this.username) {
-            this.friends.push(this.username)
+            if (this.teamMap[this.username]) {
+              this.friends.push(this.teamMap[this.username])
+            }
+            else {
+              this.friends.push(this.username)
+            }
           } else {
             this.friends.push("")
           }

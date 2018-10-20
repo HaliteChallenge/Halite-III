@@ -3,11 +3,11 @@
     :title="`${badge} Tier (${percentage}% of players)`"
     @click="open = !open"
   >
-    <span class="tier-clickable" :class="tier"></span>
+    <span class="tier-clickable" :class="icon"></span>
     <transition name="fadeIn">
       <div v-if="open" class="tier-popup">
         <header>
-          <h4><span :class="tier"></span> {{badge}} Tier</h4>
+          <h4><span :class="icon"></span> {{badge}} Tier</h4>
           <span class="close-btn icon-remove" />
         </header>
         <p>{{percentage}}% of players achieve this badge.</p>
@@ -25,11 +25,19 @@
     name: 'TierPopover',
     props: ['tier'],
     mounted: function () {
-      const index = parseInt(this.tier.split('-')[2])
-      const badge = badges[index - 1]
-      this.index = index
-      this.badge = badge
-      this.percentage = percentages[index - 1]
+      const badgeIndex = badges.indexOf(this.tier)
+      if (badgeIndex >= 0) {
+        this.index = badgeIndex
+        this.badge = this.tier
+        this.percentage = percentages[badgeIndex]
+      }
+      else {
+        const index = parseInt(this.tier.split('-')[2])
+        const badge = badges[index - 1]
+        this.index = index
+        this.badge = badge
+        this.percentage = percentages[index - 1]
+      }
     },
     data: function () {
       return {
@@ -37,6 +45,11 @@
         badge: '',
         percentage: '',
         open: false,
+      }
+    },
+    computed: {
+      icon() {
+        return `icon-tier-${this.index+1}`
       }
     },
   }

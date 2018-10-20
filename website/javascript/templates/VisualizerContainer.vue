@@ -36,21 +36,40 @@
       visualizer.getVisualizer().destroy()
     }
 
+    const promisify = (jq) => new Promise((resolve) => {
+      jq.then((...args) => resolve(...args))
+    })
+    const users = game.game ?
+                  Promise.all(
+                    Object.keys(game.game.players)
+                          .map(id => promisify(api.get_user(id)))
+                  ) :
+                  Promise.resolve([]);
+
     const buffer = game.replay
     return import(/* webpackChunkName: "libhaliteviz" */ "libhaliteviz")
-      .then((libhaliteviz) => {
-        // just for electron
-        if (window && window.process && window.process.type) {
-          return libhaliteviz.setAssetRoot('assets/js/').then(() => libhaliteviz)
-        }
-        return libhaliteviz.setAssetRoot('').then(() => libhaliteviz)
-      }).then((libhaliteviz) => {
+      .then((libhaliteviz) =>Promise.all([
+          (
+            // just for electron
+            (window && window.process &&
+             window.process.type) ?
+            libhaliteviz.setAssetRoot('assets/js/') :
+            libhaliteviz.setAssetRoot('')
+          ).then(() => libhaliteviz),
+          users,
+      ]))
+      .then(([ libhaliteviz, users ]) => {
         return libhaliteviz.parseReplay(buffer).then((replay) => {
           let outerContainer = document.getElementById('halitetv-visualizer')
           outerContainer.innerHTML = ''
 
           let container = document.createElement('div')
           document.getElementById('halitetv-visualizer').appendChild(container)
+
+          for (const user of users) {
+            game.game.players[user.user_id] =
+              Object.assign({}, game.game.players[user.user_id], user)
+          }
 
           new Vue({
             el: container,
@@ -203,7 +222,7 @@
             }).then(() => {
               this.message = null
             }).catch(() => {
-              this.message = 'There was an error parsing the replay. Please let us know at halite@halite.io.'
+              this.message = 'There was an error parsing the replay. Try force-refreshing (Control-Shift-R or Command-Shift-R), or if that does not work, please let us know at halite@halite.io.'
             })
           }
           reader.readAsArrayBuffer(files[0])
