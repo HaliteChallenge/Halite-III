@@ -106,14 +106,9 @@
           </li>
         </ul>
       </div>
-      <div class="stats-panel plyer">
-        <label class="panel-name">PLAYER STATS</label>
-        <div class="panel-body not-padding">
-           <PlayerDetail :players="game ? game.players : {}" :replay="replay" :statistics="statistics" :stats="stats" :frame="frame" :chartData="chartData.energy"></PlayerDetail>
-        </div>
-      </div>
-      <div class="stats-panel map-object">
+      <div class="stats-panel map-object" v-if="selectedPoint || selectedShip">
         <label class="panel-name">MAP OBJECT PROPERTIES</label>
+        <button type="button" class="btn" @click="selected.kind = ''">Close</button>
         <div class="panel-body">
           <div v-if="selectedPlanet" class="map-object">
             <SelectedPlanet :selected-planet="selectedPlanet" :players="players"></SelectedPlanet>
@@ -124,6 +119,17 @@
           <div v-if="selectedShip" class="map-object">
             <SelectedShip :selected-ship="selectedShip" :players="players"></SelectedShip>
           </div>
+        </div>
+      </div>
+      <div class="stats-panel plyer">
+        <label class="panel-name">PLAYER STATS</label>
+        <div class="panel-body not-padding">
+           <PlayerDetail :players="game ? game.players : {}" :replay="replay" :statistics="statistics" :stats="stats" :frame="frame" :chartData="chartData.energy"></PlayerDetail>
+        </div>
+      </div>
+      <div class="stats-panel map-object" v-if="!selectedPoint && !selectedShip">
+        <label class="panel-name">MAP OBJECT PROPERTIES</label>
+        <div class="panel-body">
           <div class="message-box" v-if="!selectedPoint && !selectedShip">
             <p><span class="icon-info"></span></p>
             <p>Click on a ship, dropoff, or other map location to see properties</p>
@@ -360,13 +366,16 @@ export default {
               this.playing = false
             })
             visualizer.onSelect.add((kind, args) => {
+              if (kind === null) {
+                this.selected.kind = ''
+                return
+              }
               this.selected.kind = kind
               this.selected.id = args.id
               this.selected.owner = args.owner
               this.selected.x = args.x
               this.selected.y = args.y
               this.selected.production = args.production
-              this.$refs.objectPanel.open()
               visualizer.onUpdate.dispatch()
               this.$forceUpdate()
               this.gaData('visualizer', 'click-map-objects', 'gameplay')
