@@ -108,7 +108,7 @@
       </div>
       <div class="stats-panel map-object" v-if="selectedPoint || selectedShip">
         <label class="panel-name">MAP OBJECT PROPERTIES</label>
-        <button type="button" class="btn" @click="selected.kind = ''">Close</button>
+        <button type="button" class="btn btn-sm" @click="selected.kind = ''">Close</button>
         <div class="panel-body">
           <div v-if="selectedPlanet" class="map-object">
             <SelectedPlanet :selected-planet="selectedPlanet" :players="players"></SelectedPlanet>
@@ -779,6 +779,17 @@ export default {
 .stats-panel{
   label{
     font-weight: normal;
+  }
+  th{
+    color: #000000;
+    font-size: 14px;
+  }
+  td{
+    font-size: 14px;
+  }
+  .btn{
+    margin-left: 10px;
+    opacity: 0.8;
   }
   .panel-name{
     margin-bottom: 0;
