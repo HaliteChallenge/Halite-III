@@ -45,7 +45,7 @@ def safeglob(pattern):
     for root, dirs, files in os.walk("."):
         files = fnmatch.filter(files, pattern)
         for fname in files:
-            if SAFEPATH.match(fname) and os.path.splitext(fname)[0] != "RandomBot":
+            if SAFEPATH.match(fname):
                 safepaths.append(os.path.join(root, fname))
     return safepaths
 
