@@ -57,7 +57,8 @@ class GameMap
         return new Position($x, $y);
     }
 
-    public function getUnsafeMoves( Position $source,  Position $destination) {
+    public function getUnsafeMoves( Position $source,  Position $destination)
+    {
          $possibleMoves = [];
 
          $normalizedSource = $this->normalize($source);
@@ -83,7 +84,8 @@ class GameMap
         return $possibleMoves;
     }
 
-    public function naiveNavigate( Ship $ship,  Position $destination): Direction {
+    public function naiveNavigate( Ship $ship,  Position $destination): Direction
+    {
         // getUnsafeMoves normalizes for us
         foreach ( $this->getUnsafeMoves($ship->position, $destination) as $direction) {
              $targetPos = $ship->position->directionalOffset($direction);

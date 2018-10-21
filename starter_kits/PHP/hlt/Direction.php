@@ -62,7 +62,6 @@ class Direction
         return $this->charValue;
     }
 
-
     public function equals($other): bool
     {
         if (!($other instanceof self)) {

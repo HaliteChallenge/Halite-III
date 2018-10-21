@@ -4,7 +4,6 @@ namespace hlt;
 
 class Position
 {
-
     /**
      * @var  int
      */

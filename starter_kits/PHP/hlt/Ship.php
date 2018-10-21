@@ -4,7 +4,6 @@ namespace hlt;
 
 class Ship extends Entity
 {
-
     /**
      * @var int
      */

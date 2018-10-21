@@ -18,7 +18,8 @@ class Entity {
      */
     public $position;
 
-    public function __construct( PlayerId $owner,  EntityId $id,  Position $position) {
+    public function __construct( PlayerId $owner,  EntityId $id,  Position $position)
+    {
         $this->owner = $owner;
         $this->id = $id;
         $this->position = $position;

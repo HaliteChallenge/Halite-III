@@ -8,7 +8,8 @@ class EntityId {
      */
     public $id;
 
-    public function __construct(int $id = -1) {
+    public function __construct(int $id = -1)
+    {
         $this->id = $id;
     }
 

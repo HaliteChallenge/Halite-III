@@ -19,10 +19,12 @@ spl_autoload_register(function ($class) {
 });
 
 $game = new Game();
-
+// At this point "game" variable is populated with initial map data.
+// This is a good place to do computationally expensive start-up pre-processing.
+// As soon as you call "ready" function below, the 2 second per turn timer will start.
 $game->ready('MyPHPBot');
 
-for (; ;) {
+for (;;) {
     $game->updateFrame();
     $me = $game->me;
     $gameMap = $game->gameMap;

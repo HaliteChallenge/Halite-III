@@ -10,7 +10,6 @@ class Dropoff extends Entity
         parent::__construct($owner, $id, $position);
     }
 
-
     static function _generate(PlayerId $playerId): Dropoff
     {
         $input = Input::readInput();
@@ -23,6 +22,5 @@ class Dropoff extends Entity
         $dropoffId = new EntityId($input->getInt());
 
         return new Dropoff($playerId, $dropoffId, new Position($x, $y));
-
     }
 }
