@@ -119,7 +119,7 @@
       }
 
       if (params.has('ondemand')) {
-        this.message = "Downloading latest ondemand game.`"
+        this.message = "Downloading latest on-demand game..."
         this.is_upload = false;
 
         (async function() {
