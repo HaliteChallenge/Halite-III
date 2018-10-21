@@ -241,7 +241,8 @@
       },
       upload_bot(files) {
         window.scrollTo(0, 0)
-        if (files.length && files[0].type === "application/zip") {
+        const zipTypes = ["application/zip", "application/octet-stream", "application/x-zip-compressed", "multipart/x-zip"]
+        if (files.length && zipTypes.includes(files[0].type)) {
           this.botFile = files[0]
           this.currentView = 'botUpload'
         } else {
