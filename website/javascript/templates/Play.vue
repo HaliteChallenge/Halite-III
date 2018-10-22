@@ -57,15 +57,20 @@
         <p>The top players will receive Halite apparel and awesome Halite trophies.
         </p>
         <br/>
+        <h4 class="mt3">Accounts</h4>
+        <p>Each player may have one account and may submit one bot to the competition. You may not have an individual account and a team account. Multiple accounts are considered rule-breaking, and may be deleted and/or banned at the Halite team’s discretion.</p>
+        <br/>
         <h4 class="mt3" id="rules-teams">Teams</h4>
-        <p>Players may form teams and create bots together this year. Creating or joining a team is a <i>permanent</i> conversion for your account. Only the team leader may submit a bot.
+        <p>Players may form teams and create bots together this year. Creating or joining a team is a <b>permanent</b> conversion for your account. Only the team leader may submit a bot.
         </p>
         <p>To form a new team and become a team leader, go to your profile page, edit your profile, and choose your team name. Your account will be converted to a team account and you will get a shareable invite link to invite your team members.
         </p>
         <p>To join a team, insert your invite code on your profile.
         </p>
         <br/>
-
+        <h4 class="mt3">Original Code</h4>
+        <p>You are expected to write original code for Halite III. <b>Plagiarism is not tolerated.</b> You are permitted to use any code found in official documentation, tutorials, and starter kits from the Halite III repository. But if you submit code written by another Halite player (even if it has posted it publicly), your account may be deleted from the leaderboard and/or banned.</p>
+        <br/>
       </div>
     </div>
     <div id="halite-uploaded-bot" v-if="currentView=='botUpload'">
