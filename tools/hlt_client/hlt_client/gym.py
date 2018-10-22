@@ -155,7 +155,7 @@ def add_match(conn, bots, results):
     rerank_bots(conn)
 
 
-def run_matches(db_path, hlt_path, output_dir, map_dimensions, iterations):
+def run_matches(db_path, hlt_path, output_dir, iterations):
     flags = []
 
     if output_dir:
@@ -164,7 +164,6 @@ def run_matches(db_path, hlt_path, output_dir, map_dimensions, iterations):
         flags = ['-i', abs_output_dir]
 
     for i in range(iterations):
-        map_size = random.choice(map_dimensions)
         with connect(db_path) as conn:
             all_bots = list_bots(conn)
             num_players = random.choice((2, 4))
@@ -182,7 +181,6 @@ def run_matches(db_path, hlt_path, output_dir, map_dimensions, iterations):
             overrides.append('-o')
             overrides.append(bot['name'])
         raw_results = compare_bots._play_game(hlt_path,
-                                              map_size[0], map_size[1],
                                               [bot['path'] for bot in bots],
                                               flags + overrides)
         results = json.loads(raw_results)
@@ -288,10 +286,9 @@ def main(args):
     elif args.gym_mode == EVALUATE_MODE:
         hlt_path = args.halite_binary
         output_dir = args.game_output_dir
-        map_dimensions = [(32, 32), (48, 48), (64, 64), (80, 80)]
         iterations = args.iterations
 
-        run_matches(args.db_path, hlt_path, output_dir, map_dimensions, iterations)
+        run_matches(args.db_path, hlt_path, output_dir, iterations)
 
 
 def parse_arguments(subparser):
