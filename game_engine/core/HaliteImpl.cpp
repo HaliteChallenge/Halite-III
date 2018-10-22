@@ -460,7 +460,7 @@ void HaliteImpl::update_inspiration() {
  * @return True if the player can play on the next turn
  */
 bool HaliteImpl::player_can_play(const Player &player) const {
-    return !player.entities.empty() || player.energy > Constants::get().NEW_ENTITY_ENERGY_COST;
+    return !player.entities.empty() || player.energy >= Constants::get().NEW_ENTITY_ENERGY_COST;
 }
 /**
  * Determine whether the game has ended.
