@@ -29,6 +29,9 @@ MAX_ERROR_PERCENTAGE = 0.1
 # How many minutes old a compilation job must be to be considered stuck.
 COMPILATION_STUCK_THRESHOLD = 30
 
+# How many times we will try to compile
+MAX_COMPILATION_ATTEMPTS = 3
+
 # Flask settings
 # Max size of an upload, in bytes
 MAX_BOT_UPLOAD_SIZE = 20 * 1024 * 1024
