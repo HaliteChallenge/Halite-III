@@ -53,6 +53,7 @@ def nightmare(replay, player_id):
             for dropoff in dropoffs[player_index]:
                 yield '{} {} {}'.format(dropoff['id'], dropoff['location']['x'], dropoff['location']['y'])
 
+        yield str(len(frame['cells']))
         for cell in frame['cells']:
             yield '{} {} {}'.format(cell['x'], cell['y'], cell['production'])
 
