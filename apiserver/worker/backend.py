@@ -1,3 +1,4 @@
+import logging
 import urllib.request
 import requests
 from hashlib import md5
@@ -32,7 +33,7 @@ def getTask(kind="task"):
     }
     content = requests.get(MANAGER_URL + kind, params=params).text
 
-    print("Task call %s\n" % content)
+    logging.info("Task call %s\n" % content)
     if content == "null":
         return None
     else:
@@ -50,7 +51,7 @@ def getBotHash(user_id, bot_id, is_compile=False):
 
     result = requests.get(MANAGER_URL+"botHash", params=params)
 
-    print("Getting bot hash %s\n" % result.text)
+    logging.debug("Getting bot hash %s\n" % result.text)
     return json.loads(result.text).get("hash")
 
 
@@ -67,7 +68,7 @@ def storeBotLocally(user_id, bot_id, storage_dir, is_compile=False):
         if is_compile:
             url += "&compile=1"
 
-        print("Bot file url %s\n" % url)
+        logging.debug("Bot file url %s\n" % url)
 
         remote_zip = urllib.request.urlopen(url)
         zip_filename = remote_zip.headers.get('Content-disposition').split("filename")[1]
@@ -110,14 +111,14 @@ def storeBotRemotely(user_id, bot_id, zip_file_path):
                               "bot_id": str(bot_id),
                           },
                           files={"bot.zip": zip_contents})
-        print("Posting compiled bot archive %s\n" % r.text)
+        logging.debug("Posting compiled bot archive %s\n" % r.text)
         if r.status_code >= 400 and r.status_code <= 499:
-            print("Got a 4xx status code")
+            logging.error("Got a 4xx status code %s", r.status_code)
             r.raise_for_status()
 
         # Try again if local and remote hashes differ
         if local_hash != getBotHash(user_id, bot_id):
-            print("Hashes do not match! Redoing file upload...\n")
+            logging.debug("Hashes do not match! Redoing file upload...\n")
             iterations += 1
             sleep(backoff)
             if backoff < MAX_UPLOAD_BACKOFF:
@@ -141,7 +142,7 @@ def compileResult(user_id, bot_id, did_compile, language, errors=None):
         "server_id": SERVER_ID,
         "capability": CAPABILITIES,
     })
-    print("Posted compile result %s\n" % r.text)
+    logging.debug("Posted compile result %s\n" % r.text)
 
 
 def gameResult(users, game_output, extra_metadata, url_path="game"):
@@ -155,7 +156,7 @@ def gameResult(users, game_output, extra_metadata, url_path="game"):
     """
 
     replay_path = game_output["replay"]
-    print("Posting game result %s (GMT)\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
+    logging.debug("Posting game result %s (GMT)\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
     files = {os.path.basename(replay_path): open(replay_path, "rb").read()}
     for path in game_output["error_logs"].values():
         files[os.path.basename(path)] = open(path, "rb").read()
@@ -175,15 +176,15 @@ def gameResult(users, game_output, extra_metadata, url_path="game"):
     for key, value in extra_metadata.items():
         data[key] = json.dumps(value)
 
-    print("Uploading game result")
-    print(json.dumps(users, indent=4))
-    print(json.dumps(game_output, indent=4))
+    logging.info("Uploading game result")
+    logging.info(json.dumps(users, indent=4))
+    logging.info(json.dumps(game_output, indent=4))
     r = requests.post(MANAGER_URL + url_path, data=data, files=files)
 
-    print("Got game result %s (GMT)\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
-    print("\n-------Game result:-----")
-    print(r.text)
-    print("------------------------\n")
+    logging.info("Got game result %s (GMT)\n" % str(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
+    logging.debug("\n-------Game result:-----")
+    logging.info(r.text)
+    logging.debug("------------------------\n")
 
 
 def ondemandResult(users, game_output, extra_metadata):
@@ -204,6 +205,6 @@ def ondemandError(users, extra_metadata, language, log):
         data[key] = json.dumps(value)
 
     r = requests.post(MANAGER_URL + "ondemand_compile", data=data)
-    print("\n-------Game result:-----")
-    print(r.text)
-    print("------------------------\n")
+    logging.debug("\n-------Game result:-----")
+    logging.debug(r.text)
+    logging.debug("------------------------\n")
