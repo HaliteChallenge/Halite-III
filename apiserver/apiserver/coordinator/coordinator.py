@@ -295,7 +295,7 @@ def store_challenge_results(conn, users, challenge, stats):
         num_games=model.challenges.c.num_games + 1,
         status=sqlalchemy.case(
             [
-                (model.challenges.c.num_games >= 30,
+                (model.challenges.c.num_games >= 10,
                  sqlalchemy.sql.func.cast(
                      model.ChallengeStatus.FINISHED.value,
                      model.challenges.c.status.type

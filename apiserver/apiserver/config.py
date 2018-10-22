@@ -29,6 +29,9 @@ MAX_ERROR_PERCENTAGE = 0.1
 # How many minutes old a compilation job must be to be considered stuck.
 COMPILATION_STUCK_THRESHOLD = 30
 
+# How many times we will try to compile
+MAX_COMPILATION_ATTEMPTS = 3
+
 # Flask settings
 # Max size of an upload, in bytes
 MAX_BOT_UPLOAD_SIZE = 20 * 1024 * 1024
@@ -42,28 +45,30 @@ FLASK_SECRET_KEY = ""
 API_KEY_HEADER = "X-Api-Key"
 # What session cookie to use
 SESSION_COOKIE = "user_id"
+SESSION_SECRET = ""
 
 # Google Cloud
-GCLOUD_PROJECT = 'TODO'
-GCLOUD_PROJECT_ID = 'TODO'
+GCLOUD_PROJECT = ''
+GCLOUD_PROJECT_ID = ''
 GCLOUD_ZONE = 'us-central1-c'
 
-GCLOUD_COMPILATION_BUCKET = 'TODO'
-GCLOUD_BOT_BUCKET = 'TODO'
+GCLOUD_COMPILATION_BUCKET = ''
+GCLOUD_BOT_BUCKET = ''
 # Replays are saved in different buckets based on player level
 GCLOUD_REPLAY_BUCKETS = {
     # 0 is the normal bucket
-    0: 'todo',
+    0: '',
     # 1 is the bucket for gold and above players
-    1: 'todo',
+    1: '',
 }
-GCLOUD_ONDEMAND_REPLAY_BUCKET = "TODO"
+GCLOUD_ONDEMAND_REPLAY_BUCKET = ""
 # Bucket for pre-assembled bots that players fight in the
 # tutorial/online editor
 GCLOUD_GYM_BUCKET = ""
-GCLOUD_ERROR_LOG_BUCKET = 'TODO'
-GCLOUD_DEPLOYED_ARTIFACTS_BUCKET = 'TODO'
-GCLOUD_EDITOR_BUCKET = 'editor-bucket'
+GCLOUD_ERROR_LOG_BUCKET = ''
+GCLOUD_DEPLOYED_ARTIFACTS_BUCKET = ''
+GCLOUD_EDITOR_BUCKET = ''
+GCLOUD_WORKER_LOG_BUCKET = ''
 
 # The name of the worker source blob in the object storage bucket.
 WORKER_ARTIFACT_KEY = ""
@@ -115,7 +120,7 @@ GAME_ERROR_MESSAGES = 10445
 NEWSLETTERS_ARTICLES = 10447
 GOODNEWS_ACCOMPLISHMENTS = 10449
 
-C_NEWSLETTER_SUBSCRIPTION = "Newsletter_Subscription" 
+C_NEWSLETTER_SUBSCRIPTION = "Newsletter_Subscription"
 C_REGISTRATION_CONFIRMATION = "Registration Confirmation"
 C_BOT_DISABLED = "Bot disabled ="
 C_BOT_TIMED_OUT = "Bot timed out"

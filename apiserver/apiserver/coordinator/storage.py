@@ -175,3 +175,22 @@ def hash_bot():
     return util.response_success({
         "hash": binascii.hexlify(base64.b64decode(blob.md5_hash)).decode('utf-8'),
     })
+
+
+@coordinator_api.route("/uploadLog", methods=["POST"])
+def upload_worker_log():
+    """Store a log file from a worker."""
+    worker = flask.request.form["worker"]
+
+    if "log" not in flask.request.files:
+        raise util.APIError(400, message="Please provide the log file.")
+
+    uploaded_file = flask.request.files["log"]
+
+    # Save to GCS
+    blob = gcloud_storage.Blob("{}_{}".format(user_id, bot_id),
+                               model.get_worker_log_bucket(),
+                               chunk_size=262144)
+    blob.upload_from_file(uploaded_file)
+
+    return util.response_success()
