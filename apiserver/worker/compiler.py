@@ -846,7 +846,7 @@ def compile_anything(bot_dir, installTimeLimit=600, timelimit=600, max_error_len
 
     print("compiling")
     compiled, compile_errors = compile_function(detected_language, bot_dir, timelimit)
-    if not compiled:
+    if not compiled or install_errors:
         return (detected_language.name,
                 truncate_errors(install_stdout, install_errors,
                                 language_errors, compile_errors, max_error_len))
