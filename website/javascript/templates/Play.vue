@@ -45,14 +45,6 @@
         <p>The competition is open to the public, free to enter, and encourages professionals and students from all over the world to join in. Create an account and submit a bot during the dates of the competition to appear on the leaderboard.
         </p>
         <br/>
-        <h4 class="mt3" id="rules-teams">Teams</h4>
-        <p>Players may form teams and create bots together this year. To form a new team and become a team leader, go to your profile page, edit your profile, and choose your team name. Your account will be converted to a team account and you will get a shareable invite link to invite your team members.
-        </p>
-        <p>To join a team, insert your invite code on your profile. Joining a team is a permanent choice for your account.
-        </p>
-        <p>Once on a team, any team member can submit a bot to replace the team's current bot.
-        </p>
-        <br/>
         <h4 class="mt3">Ranking</h4>
         <p>Rankings are based on the outcome of organized games where bots play against each other. Your bot moves up the leaderboard as you submit improved versions. When you submit a new version, your ranking is reset to a degree. After some games played, your bot should reach its new accurate ranking. Read more about the ranking system used <a href="https://forums.halite.io/t/how-ratings-get-calculated-for-halite-iii/95">here</a>. <!--, and learn more about our Bot Bosses here.-->
         </p>
@@ -65,6 +57,15 @@
         <p>The top players will receive Halite apparel and awesome Halite trophies.
         </p>
         <br/>
+        <h4 class="mt3" id="rules-teams">Teams</h4>
+        <p>Players may form teams and create bots together this year. Creating or joining a team is a <i>permanent</i> conversion for your account. Only the team leader may submit a bot.
+        </p>
+        <p>To form a new team and become a team leader, go to your profile page, edit your profile, and choose your team name. Your account will be converted to a team account and you will get a shareable invite link to invite your team members.
+        </p>
+        <p>To join a team, insert your invite code on your profile.
+        </p>
+        <br/>
+
       </div>
     </div>
     <div id="halite-uploaded-bot" v-if="currentView=='botUpload'">
