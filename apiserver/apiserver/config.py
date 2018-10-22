@@ -68,6 +68,7 @@ GCLOUD_GYM_BUCKET = ""
 GCLOUD_ERROR_LOG_BUCKET = 'TODO'
 GCLOUD_DEPLOYED_ARTIFACTS_BUCKET = 'TODO'
 GCLOUD_EDITOR_BUCKET = 'editor-bucket'
+GCLOUD_WORKER_LOG_BUCKET = 'TODO'
 
 # The name of the worker source blob in the object storage bucket.
 WORKER_ARTIFACT_KEY = ""
