@@ -42,6 +42,7 @@ FLASK_SECRET_KEY = ""
 API_KEY_HEADER = "X-Api-Key"
 # What session cookie to use
 SESSION_COOKIE = "user_id"
+SESSION_SECRET = ""
 
 # Google Cloud
 GCLOUD_PROJECT = 'TODO'
@@ -115,7 +116,7 @@ GAME_ERROR_MESSAGES = 10445
 NEWSLETTERS_ARTICLES = 10447
 GOODNEWS_ACCOMPLISHMENTS = 10449
 
-C_NEWSLETTER_SUBSCRIPTION = "Newsletter_Subscription" 
+C_NEWSLETTER_SUBSCRIPTION = "Newsletter_Subscription"
 C_REGISTRATION_CONFIRMATION = "Registration Confirmation"
 C_BOT_DISABLED = "Bot disabled ="
 C_BOT_TIMED_OUT = "Bot timed out"
