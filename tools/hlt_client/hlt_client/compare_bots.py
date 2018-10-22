@@ -19,19 +19,15 @@ def _determine_winner(results):
             return player_id
 
 
-def _play_game(binary, map_width, map_height, bot_commands, flags):
+def _play_game(binary, bot_commands, flags):
     """
     Plays one game considering the specified bots and the game and map constraints.
     :param binary: The halite binary
-    :param map_width: The map width
-    :param map_height: The map height
     :param bot_commands: The commands to run each of the bots
     :return: The game's result string
     """
     command = [
         binary,
-        "--width", str(map_width),
-        "--height", str(map_height),
         "--results-as-json"
     ]
     command.extend(flags)
@@ -45,8 +41,8 @@ def play_games(binary, game_output_dir, map_width, map_height, bot_commands, num
     Runs number_of_runs games using the designated bots and binary, recording the tally of wins per player
     :param binary: The Halite binary.
     :param game_output_dir: Where to put replays and log files.
-    :param map_width: The map width
-    :param map_height: The map height
+    :param map_width: The map width, set to None for engine random choice
+    :param map_height: The map height, set to None for engine random choice
     :param bot_commands: The commands to run each of the bots (must be either 2 or 4)
     :param number_of_runs: How many runs total
     :return: Nothing
@@ -64,12 +60,17 @@ def play_games(binary, game_output_dir, map_width, map_height, bot_commands, num
 
         flags = flags + ['-i', game_output_dir]
 
+    if map_width is not None:
+        flags.extend(["--width", str(map_width)])
+    if map_height is not None:
+        flags.extend(["--height", str(map_height)])
+
     output.output("Comparing Bots!")
     result = {}
     if not(len(bot_commands) == 4 or len(bot_commands) == 2):
         raise IndexError("The number of bots specified must be either 2 or 4.")
     for current_run in range(0, number_of_runs):
-        match_output = _play_game(binary, map_width, map_height, bot_commands, flags)
+        match_output = _play_game(binary, bot_commands, flags)
         results = json.loads(match_output)
         winner = _determine_winner(results)
         result[winner] = result.setdefault(winner, 0) + 1
@@ -99,12 +100,12 @@ def parse_arguments(subparser):
     bot_parser.add_argument('-W', '--width',
                             dest='map_width',
                             action='store',
-                            type=int, default=48,
+                            type=int, default=None,
                             help="The map width the simulations will run in")
     bot_parser.add_argument('-H', '--height',
                             dest='map_height',
                             action='store',
-                            type=int, default=48,
+                            type=int, default=None,
                             help="The map height the simulations will run in")
     bot_parser.add_argument('-i', '--iterations',
                             dest='iterations',
