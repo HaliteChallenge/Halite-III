@@ -69,7 +69,7 @@
         </p>
         <br/>
         <h4 class="mt3">Original Code</h4>
-        <p>You are expected to write original code for Halite III. <b>Plagiarism is not tolerated.</b> You are permitted to use any code found in official documentation, tutorials, and starter kits from the Halite III repository. But if you submit code written by another Halite player (even if it has posted it publicly), your account may be deleted from the leaderboard and/or banned.</p>
+        <p>You are expected to write original code for Halite III. <b>Plagiarism is not tolerated.</b> You are permitted to use any code found in official documentation, tutorials, and starter kits from the Halite III repository. But if you submit code written by another Halite player (even if it has been posted publicly), your account may be deleted from the leaderboard and/or banned.</p>
         <br/>
       </div>
     </div>
