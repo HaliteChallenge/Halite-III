@@ -54,6 +54,9 @@ func NewShip(playerID int) *Ship {
 	return &Ship{&Entity{shipID, playerID, &Position{x, y}}, halite}
 }
 
+// GetID - Get a Ship's ID
+func (s *Ship) GetID() int { return s.E.id }
+
 // IsFull - Returns true if the ship is full
 func (s *Ship) IsFull() bool {
 	var maxHalite, _ = gameconfig.GetInstance().GetInt(gameconfig.MaxHalite)
