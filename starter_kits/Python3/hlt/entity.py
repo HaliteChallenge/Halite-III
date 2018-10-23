@@ -58,7 +58,8 @@ class Ship(Entity):
         else:
             self = super(Ship, cls).__new__(cls)
             Ship.__ships[id] = self
-
+            self.owner = owner
+        
         self.position = position
         self.halite = halite
         return self
