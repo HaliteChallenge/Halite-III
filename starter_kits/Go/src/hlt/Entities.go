@@ -13,6 +13,9 @@ type Entity struct {
 	Pos      *Position
 }
 
+// GetID - Gets an entity's ID, which is unique within their subtype.
+func (e *Entity) GetID() int { return e.id }
+
 /*********************************************************************************/
 
 // Dropoff - Dropoff structure
