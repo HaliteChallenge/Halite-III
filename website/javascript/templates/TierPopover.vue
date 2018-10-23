@@ -34,7 +34,7 @@
       else {
         const index = parseInt(this.tier.split('-')[2])
         const badge = badges[index - 1]
-        this.index = index
+        this.index = index - 1
         this.badge = badge
         this.percentage = percentages[index - 1]
       }
