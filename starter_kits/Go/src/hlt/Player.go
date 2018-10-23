@@ -30,10 +30,8 @@ func NewPlayer() *Player {
 
 // GetShip - Get a specific Ship by its ID.
 func (p *Player) GetShip(shipId int) (*Ship, error) {
-	for i := 0; i < len(p.Ships); i++ {
-		if p.Ships[i].GetID() == shipId {
-			return p.Ships[i], nil
-		}
+	if ship, ok := p.Ships[shipId]; ok {
+		return ship, nil
 	}
 	return nil, errors.New(fmt.Sprintf("No ship with ID %d", shipId))
 }
