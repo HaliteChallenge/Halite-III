@@ -1,32 +1,78 @@
 import Foundation
 
 struct Constant: Codable {
-    let SHIP_COST: Int // x
-    let DROPOFF_COST: Int // x
-    let MAX_HALITE: Int // x
-    let MAX_TURNS: Int // x
-    let EXTRACT_RATIO: Int // x
-    let MOVE_COST_RATIO: Int // x
-    let INSPIRATION_ENABLED: Bool// x
-    let INSPIRATION_RADIUS: Int // x
-    let INSPIRATION_SHIP_COUNT: Int // x
-    let INSPIRED_EXTRACT_RATIO: Int // x
-    let INSPIRED_BONUS_MULTIPLIER: Double // x
-    let INSPIRED_MOVE_COST_RATIO: Int // x
+    let CAPTURE_ENABLED: Bool
+    let CAPTURE_RADIUS: Int
+    let DEFAULT_MAP_HEIGHT: Int
+    let DEFAULT_MAP_WIDTH: Int
+    let DROPOFF_COST: Int
+    let DROPOFF_PENALTY_RATIO: Int
+    let EXTRACT_RATIO: Int
+    let FACTOR_EXP_1: Double
+    let FACTOR_EXP_2: Double
+    let INITIAL_ENERGY: Int
+    let INSPIRATION_ENABLED: Bool
+    let INSPIRATION_SHIP_COUNT: Int
+    let INSPIRED_BONUS_MULTIPLIER: Double
+    let INSPIRED_EXTRACT_RATIO: Int
+    let INSPIRED_MOVE_COST_RATIO: Int
+    let MAX_CELL_PRODUCTION: Int
+    let MAX_ENERGY: Int
+    let MAX_PLAYERS: Int
+    let MAX_TURNS: Int
+    let MAX_TURN_THRESHOLD: Int
+    let MIN_CELL_PRODUCTION: Int
+    let MIN_TURNS: Int
+    let MIN_TURN_THRESHOLD: Int
+    let MOVE_COST_RATIO: Int
+    let NEW_ENTITY_ENERGY_COST: Int
+    let PERSISTENCE: Double
+    let SHIPS_ABOVE_FOR_CAPTURE: Int
+    let STRICT_ERRORS: Bool
+    let game_seed: Int
+}
+
+class Log {
+    let filename: String
+    private let logFile : FileHandle
+    
+    init(filename: String) {
+        self.filename = filename
+        logFile = FileHandle(forWritingAtPath: filename)!
+    }
+    deinit {
+        logFile.closeFile()
+    }
+    
+    func debug(_ string: String) {
+        append(prefix: "DEBUG", message: string)
+    }
+    func info(_ string: String) {
+        append(prefix: "INFO", message: string)
+    }
+    func error(_ string: String) {
+        append(prefix: "ERROR", message: string)
+    }
+    
+    private func append(prefix: String, message: String) {
+        let string = "[\(prefix)] \(message)"
+        logFile.write(string.data(using: .utf8)!)
+    }
 }
 
 class Game {
     var turnNumber = 0
-    
+    let log = Log(filename: "output.log")
     init() {
         let input = readLine(strippingNewline: false)!
+        log.debug(input)
         let data = input.data(using: .utf8)!
         let decoder = JSONDecoder()
         do {
             let constant = try decoder.decode(Constant.self, from: data)
-            print("loaded, \(constant.INSPIRED_BONUS_MULTIPLIER)")
+            log.debug("loaded, \(constant.INSPIRED_BONUS_MULTIPLIER)")
         } catch {
-            print("\(error)")
+            log.error("\(error)")
         }
     }
 }
