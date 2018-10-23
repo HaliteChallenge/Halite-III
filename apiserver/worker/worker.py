@@ -105,8 +105,8 @@ def give_ownership(top_dir, group, dir_perms):
 def rm_as_user(user, directory):
     """Remove a directory tree as the specified user."""
     subprocess.call(["sudo", "-H", "-u", user, "-s", "rm", "-rf", directory],
-                    stderr=subprocess.PIPE,
-                    stdout=subprocess.PIPE)
+                    stderr=subprocess.DEVNULL,
+                    stdout=subprocess.DEVNULL)
 
 
 def executeCompileTask(user_id, bot_id, backend):
