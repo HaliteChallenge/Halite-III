@@ -37,7 +37,7 @@ class Shipyard : Entity
 
   final void spawn() const
   {
-    write("g");
+    write("g ");
   }
 }
 
@@ -59,16 +59,16 @@ class Ship : Entity
 
   final void make_dropoff() const
   {
-    write(format!"c %d"(id));
+    write(format!"c %d "(id));
   }
 
   final void move(Direction direction) const
   {
-    write(format!"m %d %c"(id, direction));
+    write(format!"m %d %c "(id, direction));
   }
 
   final void stay_still() const
   {
-    write(format!"m %d %c"(id, Direction.STILL));
+    write(format!"m %d %c "(id, Direction.STILL));
   }
 }
