@@ -51,15 +51,7 @@ class Ship(Entity):
     Ship class to house ship entities
     """
     __ships = {}
-    
-    def __new__(cls, owner, id, position, halite):
-        if id in Ship.__ships.keys():
-            self = Ship.__ships[id]
-        else:
-            self = super().__new__(cls)
-            Ship.__ships[id] = self
-        return self
-    
+
     def __init__(self, owner, id, position, halite_amount):
         super().__init__(owner, id, position)
         self.halite_amount = halite_amount
@@ -91,13 +83,27 @@ class Ship(Entity):
 
     @staticmethod
     def _generate(player_id):
-        """
-        Creates an instance of a ship for a given player given the engine's input.
-        :param player_id: The id of the player who owns this ship
-        :return: The ship id and ship object
-        """
-        ship_id, x_position, y_position, halite = map(int, read_input().split())
-        return ship_id, Ship(player_id, ship_id, Position(x_position, y_position), halite)
+    """
+    Creates an instance of a ship for a given player given the engine's input.
+    If an instance with the same ship.id has previously been generated, that instance will be returned.
+    :param player_id: The id of the player who owns this ship
+    :return: The ship id and ship object
+    """
+    # Read game engine input
+    ship_id, x_position, y_position, halite = map(int, read_input().split())
+
+    # Check storage to see if ship already exists
+    # If the ship exists, update its position and halite
+    if ship_id in Ship.__ships.keys():    
+        old_ship = Ship.__ships[id]
+        old_ship.position = Position(x_position, y_position)
+        old_ship.halite_amount = halite
+        return ship_id, old_ship
+    else:
+        # Otherwise, create and return a new instance
+        new_ship = Ship(player_id, ship_id, Position(x_position, y_position), halite)
+        Ship.__ships[ship_id] = new_ship
+        return ship_id, new_ship
 
     def __repr__(self):
         return "{}(id={}, {}, cargo={} halite)".format(self.__class__.__name__,
