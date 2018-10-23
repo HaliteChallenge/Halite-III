@@ -1,6 +1,7 @@
 package hlt
 
 import (
+	"errors"
 	"fmt"
 	"hlt/input"
 )
@@ -25,6 +26,14 @@ func NewPlayer() *Player {
 	var x, _ = input.GetInt()
 	var y, _ = input.GetInt()
 	return &Player{playerID, NewShipyard(playerID, &Position{x, y}), 0, nil, nil}
+}
+
+// GetShip - Get a specific Ship by its ID.
+func (p *Player) GetShip(shipId int) (*Ship, error) {
+	if ship, ok := p.Ships[shipId]; ok {
+		return ship, nil
+	}
+	return nil, errors.New(fmt.Sprintf("No ship with ID %d", shipId))
 }
 
 // Update - Updates the player, reading the ships and dropoffs data
