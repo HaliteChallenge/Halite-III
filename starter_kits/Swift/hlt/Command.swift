@@ -5,6 +5,8 @@ enum Direction: String {
     case west = "w"
     case south = "s"
     case east = "e"
+
+    case still = "still"
 }
 
 enum Command {
