@@ -20,7 +20,7 @@ struct Constants
     "1/MOVE_COST_RATIO halite (truncated) is needed to move off a cell."
     MOVE_COST_RATIO::Int
     "Whether inspiration is enabled."
-    INSPIRATION_ENABLED::Int
+    INSPIRATION_ENABLED::Bool
     """
     A ship is inspired if at least INSPIRATION_SHIP_COUNT opponent
     ships are within this Manhattan distance.
@@ -32,7 +32,7 @@ struct Constants
     """
     INSPIRATION_SHIP_COUNT::Int
     "An inspired ship mines 1/X halite from a cell per turn instead."
-    INSPIRED_BONUS_MULTIPLIER::Int
+    INSPIRED_BONUS_MULTIPLIER::Float
     "An inspired ship that removes Y halite from a cell collects X*Y additional halite."
     INSPIRED_EXTRACT_RATIO::Int
     "An inspired ship instead spends 1/X% halite to move."
