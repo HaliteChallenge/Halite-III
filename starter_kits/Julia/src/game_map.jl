@@ -58,6 +58,17 @@ get_ship(player::Player, ship_id::Int) = player.ships[ship_id]
 "Returns all ship objects for given player in an array."
 get_ships(player::Player) = collect(values(player.ships))
 
+"Return a random Ship from from all ships for given player."
+function random_ship(player::Player)
+    ships = get_ships(player) 
+    if length(ships) == 0
+        # TODO: unsafe if player has no ships what to return?
+        return @info "Tried to get a random ship but player has no ships."
+    else
+        return rand(ships)
+    end 
+end
+
 """
 Returns a singular dropoff mapped by its id.
 # Arguments
@@ -104,7 +115,6 @@ mutable struct MapCell
     position::Position
     halite_amount::Int
     ship::Union{Ship, Nothing}
-    # TODO check Entity is what is needed and not supertype(Entity)
     structure::Union{Entity, Nothing}
 end
 
@@ -124,7 +134,10 @@ structure_type(cell::MapCell) = has_structure(cell) ? typeof(cell.structure) : t
 Mark this cell as unsafe (occupied) for navigation.
 Use in conjunction with GameMap.naive_navigate.
 """
-mark_unsafe(cell::MapCell, ship::Ship) = cell.ship = ship
+function mark_unsafe!(cell::MapCell, ship::Ship)
+    cell.ship = ship
+    cell
+end
 
 """
 The game map.
@@ -147,7 +160,6 @@ it within those bounds considering wraparound.
 - `position::Position` : A position object.
 """
 normalize(game_map::GameMap, position::Position) = Position(position.x % game_map.width, position.y % game_map.height)
-# TODO: test
 
 """
 Compute the Manhattan distance between two locations.
@@ -158,7 +170,6 @@ Accounts for wrap-around.
 - `pos_2::Position` : The target to where calculate.
 """
 function calculate_distance(game_map::GameMap, pos_1::Position, pos_2::Position) 
-# TODO: test
     source = normalize(game_map, pos_1)
     target = normalize(game_map, pos_2)
     resulting_position = abs(source - target)
@@ -174,21 +185,8 @@ NOTE: Ignores toroid
 - `target::Position` : The target position.
 """
 function get_targert_direction(source::Position, target::Position)
-# TODO: test (A tuple item (or both) could be None if within same coords) replaced with (0, 0)
-    if target.y > source.y
-        y = 1
-    elseif target.y < source.y 
-        y = -1
-    else
-        y = 0
-    end
-    if target.x > source.x 
-        x = 1
-    elseif target.x < source.x 
-        x = -1
-    else 
-        x = 0
-    end
+    y = target.y > source.y ? 1 : target.y < source.y ? -1 : 0
+    x = target.x > source.x ? 1 : target.x < source.x ? -1 : 0
     y, x
 end
 
@@ -203,15 +201,13 @@ are viable.
 - `destination::Position` : The destination towards which you wish to move your object.
 """
 function get_unsafe_moves(game_map::GameMap, source::Position, destination::Position)
-# TODO: test
     source = normalize(game_map, source)
     destination = normalize(game_map, destination)
     distance = abs(destination - source)
     y_cardinality, x_cardinality = get_targert_direction(source, destination)
-    possible_moves = Vector{Int}()
-    push!(possible_moves, distance.x < game_map.width / 2 ? x_cardinality : invert(x_cardinality))
-    push!(possible_moves, distance.y < game_map.height / 2 ? y_cardinality : invert(y_cardinality))
-    return possible_moves
+    x = distance.x < game_map.width / 2 ? x_cardinality : -x_cardinality
+    y = distance.y < game_map.height / 2 ? y_cardinality : -y_cardinality
+    x, y
 end
 
 """
@@ -222,11 +218,11 @@ Returns a singular safe move towards the destination.
 - `destination::Position` : Ending position.
 """
 function naive_navigate(game_map::GameMap, ship::Ship, destination::Position)
-# TODO: test return type is what we want
+    # TODO: test return type is what we want
     # No need to normalize destination, since get_unsafe_moves does that.
     for target_pos in get_unsafe_moves(game_map, ship, destination)
         if !is_occupied(target_pos)
-            mark_unsafe(target_pos, ship)
+            mark_unsafe!(target_pos, ship)
             return target_pos
         end
     end
