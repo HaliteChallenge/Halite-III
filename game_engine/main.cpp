@@ -76,6 +76,7 @@ int main(int argc, char *argv[]) {
 
     if (turn_limit_arg.isSet()) {
         constants.MAX_TURNS = turn_limit_arg.getValue();
+        constants.MIN_TURNS = turn_limit_arg.getValue();
     }
 
     if (strict_switch.isSet()) {
