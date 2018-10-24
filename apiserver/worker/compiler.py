@@ -835,7 +835,7 @@ def compile_anything(bot_dir, installTimeLimit=600, timelimit=600, max_error_len
     install_errors = []
     if os.path.exists(os.path.join(bot_dir, "install.sh")):
         install_stdout, install_errors, _ = _run_cmd(
-            "chmod +x install.sh; ./install.sh", bot_dir, installTimeLimit)
+            "bash ./install.sh", bot_dir, installTimeLimit)
 
     detected_language, language_errors = detect_language(bot_dir)
 
