@@ -12,7 +12,7 @@ function init_game()
     constants = load_constants(JSON.parse(readline(stdin)))
     num_players, my_id = parse.(Int, split(readline()))
 
-    players = Dict(i => generate_players() for _=0:num_players-1)
+    players = Dict(i => generate_players() for i=0:num_players-1)
 
     me = players[my_id]
     game_map = generate_game_map()

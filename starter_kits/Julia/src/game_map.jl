@@ -27,7 +27,7 @@ struct Ship <: Entity
 end
 
 "Is this ship at max halite capacity?"
-is_full(ship::Ship) = ship.halite_amount >= Constants.MAX_HALITE
+is_full(ship::Ship, max_halite::Int) = ship.halite_amount >= max_halite
 
 "Return a move to transform this ship into a dropoff."
 make_dropoff(ship::Ship) = "$(Commands.CONSTRUCT) $(ship.id)"
@@ -124,7 +124,7 @@ structure_type(cell::MapCell) = has_structure(cell) ? typeof(cell.structure) : t
 Mark this cell as unsafe (occupied) for navigation.
 Use in conjunction with GameMap.naive_navigate.
 """
-mark_unsafe(cell::MapCell, ship::Ship) = cell.shp = ship
+mark_unsafe(cell::MapCell, ship::Ship) = cell.ship = ship
 
 """
 The game map.
