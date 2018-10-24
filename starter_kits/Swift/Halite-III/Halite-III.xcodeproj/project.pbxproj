@@ -1,0 +1,74 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXFileReference section */
+		831B307B2180A3D20039507D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = main.swift; path = ../main.swift; sourceTree = "<group>"; };
+		831B307C2180A3D20039507D /* hlt */ = {isa = PBXFileReference; lastKnownFileType = folder; name = hlt; path = ../hlt; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		831B30742180A3B20039507D = {
+			isa = PBXGroup;
+			children = (
+				831B307C2180A3D20039507D /* hlt */,
+				831B307B2180A3D20039507D /* main.swift */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		831B30752180A3B20039507D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1000;
+			};
+			buildConfigurationList = 831B30782180A3B20039507D /* Build configuration list for PBXProject "Halite-III" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 831B30742180A3B20039507D;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		831B30792180A3B20039507D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		831B307A2180A3B20039507D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		831B30782180A3B20039507D /* Build configuration list for PBXProject "Halite-III" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				831B30792180A3B20039507D /* Debug */,
+				831B307A2180A3B20039507D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 831B30752180A3B20039507D /* Project object */;
+}
