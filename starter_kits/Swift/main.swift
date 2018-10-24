@@ -1,5 +1,7 @@
 import Foundation
 
+
+
 class Game {
     var turnNumber = 0
     let log = Log(filename: "output.log")
@@ -15,6 +17,16 @@ class Game {
             log.error("\(error)")
         }
     }
+    
+    func ready(botName: String) {
+        
+    }
+    
+    func updateFrame() {
+        
+    }
+    
+    func endTurn([Command])
 }
 
 let game = Game()
