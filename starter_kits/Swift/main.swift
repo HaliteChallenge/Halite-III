@@ -1,22 +1,10 @@
 import Foundation
 
-
+// Load constants
+_ = Constant.shared
 
 class Game {
     var turnNumber = 0
-    let log = Log(filename: "output.log")
-    init() {
-        let input = readLine(strippingNewline: false)!
-        log.debug(input)
-        let data = input.data(using: .utf8)!
-        let decoder = JSONDecoder()
-        do {
-            let constant = try decoder.decode(Constant.self, from: data)
-            log.debug("loaded, \(constant.INSPIRED_BONUS_MULTIPLIER)")
-        } catch {
-            log.error("\(error)")
-        }
-    }
     
     func ready(botName: String) {
         
@@ -26,7 +14,9 @@ class Game {
         
     }
     
-    func endTurn([Command])
+    func endTurn(commands: [Command]) {
+        
+    }
 }
 
 let game = Game()

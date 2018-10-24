@@ -30,4 +30,20 @@ struct Constant: Codable {
     let SHIPS_ABOVE_FOR_CAPTURE: Int
     let STRICT_ERRORS: Bool
     let game_seed: Int
+    
+    static var shared: Constant = {
+        let log = Log(filename: "output.log")
+        
+        let input = readLine(strippingNewline: false)!
+        log.debug(input)
+        let data = input.data(using: .utf8)!
+        do {
+            let constants = try JSONDecoder().decode(Constant.self, from: data)
+            log.debug("got constants.")
+            return constants
+        } catch {
+            log.error("\(error)")
+            fatalError("Failed to load constants.")
+        }
+    }()
 }

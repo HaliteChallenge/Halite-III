@@ -1,16 +1,16 @@
 import Foundation
 
+enum Direction: String {
+    case north = "n"
+    case west = "w"
+    case south = "s"
+    case east = "e"
+}
+
 enum Command {
-    enum MoveDirection: String {
-        case north = "n"
-        case west = "w"
-        case south = "s"
-        case east = "e"
-    }
-    
     case generate
     case construct
-    case move(direction: MoveDirection)
+    case move(direction: Direction)
     
     static func string(for command: Command) -> String {
         switch command {
