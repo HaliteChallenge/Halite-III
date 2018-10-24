@@ -109,7 +109,7 @@ export default{
           return false
         }
 
-        const language_project_file_identifiers = ['cargo.toml', 'project.clj', 'package.swift', 'halite2.sln', 'mix.lock', 'build.gradle', 'build.sbt', 'stack.yaml']
+        const language_project_file_identifiers = ['cargo.toml', 'project.clj', 'package.swift', 'halite2.sln', 'mix.lock', 'build.gradle', 'build.sbt', 'stack.yaml', 'cmakelists.txt']
         // Identify a common root folder, to allow players to zip up a folder.
 
         const roots = new Set();
