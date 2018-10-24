@@ -105,14 +105,13 @@ def make_source_download():
     for directory, _, file_list in os.walk("../game_engine"):
         target_dir = os.path.relpath(directory, "../game_engine")
         for filename in file_list:
-            _, ext = os.path.splitext(filename)
-            if ext.lower() in {".cpp", ".c", ".hpp", ".h", ".bat"} or \
-                    filename == "Makefile":
-                source_path = os.path.join(directory, filename)
-                target_path = os.path.normpath(
-                    os.path.join("Halite/", target_dir, filename))
+            # Just include all files in directory, since we should be
+            # deploying from a clean repo.
+            source_path = os.path.join(directory, filename)
+            target_path = os.path.normpath(
+                os.path.join("Halite/", target_dir, filename))
 
-                included_files.append((source_path, target_path))
+            included_files.append((source_path, target_path))
 
     with zipfile.ZipFile(SOURCE_FILE, "w", zipfile.ZIP_DEFLATED) as archive:
         for source_path, target_path in included_files:
