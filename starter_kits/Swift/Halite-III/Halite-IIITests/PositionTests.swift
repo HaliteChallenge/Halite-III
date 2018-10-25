@@ -64,6 +64,18 @@ class PositionTests: XCTestCase {
         XCTAssertEqual(newPosition, southPosition)
     }
     
+    func testInPlaceAddition() {
+        var newPosition = initialPosition
+        newPosition += .north
+        XCTAssertEqual(newPosition, northPosition)
+    }
+    
+    func testInPlaceSubtraction() {
+        var newPosition = initialPosition
+        newPosition -= .north
+        XCTAssertEqual(newPosition, southPosition)
+    }
+    
     func testNonNormalizedResult() {
         let newPosition = Position(x: 0, y: 0) + .north
         XCTAssertEqual(newPosition, Position(x: 0, y: -1))

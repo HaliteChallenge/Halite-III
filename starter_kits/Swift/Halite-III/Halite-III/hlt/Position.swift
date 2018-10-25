@@ -59,7 +59,15 @@ extension Position {
         return position + direction
     }
     
+    static func +=(_ position: inout Position, _ direction: Direction) {
+        position = position + direction
+    }
+    
     static func -(_ position: Position, _ direction: Direction) -> Position {
         return position + Direction.invert(direction)
+    }
+    
+    static func -=(_ position: inout Position, _ direction: Direction) {
+        position = position - direction
     }
 }
