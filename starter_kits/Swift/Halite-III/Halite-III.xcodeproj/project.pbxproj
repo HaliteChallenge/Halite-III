@@ -12,6 +12,14 @@
 		83FA263C218142A700714BB9 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2638218142A700714BB9 /* Log.swift */; };
 		83FA263D218142A700714BB9 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2639218142A700714BB9 /* Command.swift */; };
 		83FA263E218142A700714BB9 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA263A218142A700714BB9 /* Player.swift */; };
+		83FA2640218143DB00714BB9 /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA263F218143DB00714BB9 /* Direction.swift */; };
+		83FA26422181441300714BB9 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26412181441300714BB9 /* Position.swift */; };
+		83FA26442181444200714BB9 /* Ship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26432181444200714BB9 /* Ship.swift */; };
+		83FA26462181446000714BB9 /* Shipyard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26452181446000714BB9 /* Shipyard.swift */; };
+		83FA26482181447B00714BB9 /* Dropoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26472181447B00714BB9 /* Dropoff.swift */; };
+		83FA264A2181449D00714BB9 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26492181449D00714BB9 /* Map.swift */; };
+		83FA264C218144B500714BB9 /* MapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA264B218144B500714BB9 /* MapCell.swift */; };
+		83FA264E2181452500714BB9 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA264D2181452500714BB9 /* Game.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,6 +41,14 @@
 		83FA2638218142A700714BB9 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		83FA2639218142A700714BB9 /* Command.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
 		83FA263A218142A700714BB9 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		83FA263F218143DB00714BB9 /* Direction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Direction.swift; sourceTree = "<group>"; };
+		83FA26412181441300714BB9 /* Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
+		83FA26432181444200714BB9 /* Ship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ship.swift; sourceTree = "<group>"; };
+		83FA26452181446000714BB9 /* Shipyard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shipyard.swift; sourceTree = "<group>"; };
+		83FA26472181447B00714BB9 /* Dropoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dropoff.swift; sourceTree = "<group>"; };
+		83FA26492181449D00714BB9 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
+		83FA264B218144B500714BB9 /* MapCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapCell.swift; sourceTree = "<group>"; };
+		83FA264D2181452500714BB9 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,7 +93,15 @@
 				83FA2637218142A700714BB9 /* Constant.swift */,
 				83FA2638218142A700714BB9 /* Log.swift */,
 				83FA2639218142A700714BB9 /* Command.swift */,
+				83FA263F218143DB00714BB9 /* Direction.swift */,
 				83FA263A218142A700714BB9 /* Player.swift */,
+				83FA26492181449D00714BB9 /* Map.swift */,
+				83FA26472181447B00714BB9 /* Dropoff.swift */,
+				83FA264B218144B500714BB9 /* MapCell.swift */,
+				83FA26452181446000714BB9 /* Shipyard.swift */,
+				83FA26432181444200714BB9 /* Ship.swift */,
+				83FA26412181441300714BB9 /* Position.swift */,
+				83FA264D2181452500714BB9 /* Game.swift */,
 			);
 			path = hlt;
 			sourceTree = "<group>";
@@ -139,11 +163,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83FA26422181441300714BB9 /* Position.swift in Sources */,
+				83FA26442181444200714BB9 /* Ship.swift in Sources */,
+				83FA264C218144B500714BB9 /* MapCell.swift in Sources */,
+				83FA264E2181452500714BB9 /* Game.swift in Sources */,
 				83FA26302181425800714BB9 /* main.swift in Sources */,
+				83FA26462181446000714BB9 /* Shipyard.swift in Sources */,
 				83FA263B218142A700714BB9 /* Constant.swift in Sources */,
 				83FA263C218142A700714BB9 /* Log.swift in Sources */,
+				83FA26482181447B00714BB9 /* Dropoff.swift in Sources */,
+				83FA264A2181449D00714BB9 /* Map.swift in Sources */,
 				83FA263E218142A700714BB9 /* Player.swift in Sources */,
 				83FA263D218142A700714BB9 /* Command.swift in Sources */,
+				83FA2640218143DB00714BB9 /* Direction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

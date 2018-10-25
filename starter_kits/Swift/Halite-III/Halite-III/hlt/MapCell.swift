@@ -1,0 +1,54 @@
+//
+//  MapCell.swift
+//  Halite-III
+//
+//  Created by Chris Downie on 10/24/18.
+//  Copyright © 2018 Chris Downie. All rights reserved.
+//
+
+import Foundation
+
+/// A map cell is an object representation of a cell on the game map.
+struct MapCell {
+    let position: Position
+    let haliteAmount: Int
+    let ship: Ship?
+    let structure: String // what is this?
+    
+    /// Returns True if the cell is empty.
+    ///
+    /// - Returns: True if the cell is empty.
+    func isEmpty() -> Bool {
+        return false
+    }
+    
+    /// Returns True if there is a ship on this cell.
+    ///
+    /// - Returns: True if there is a ship on this cell.
+    func isOccupied() -> Bool {
+        return ship != nil
+    }
+    
+    /// Returns True if there is a structure (a dropoff or shipyard) on this cell.
+    ///
+    /// - Returns: True if there is a structure (a dropoff or shipyard) on this cell.
+    func hasStructure() -> Bool {
+        return false
+    }
+    
+    /// Returns the type of structure on this cell, or nil if there is no structure.
+    ///
+    /// - Returns: Returns the type of structure on this cell, or nil if there is no structure.
+    func structureType() -> String? {
+        return nil
+    }
+    
+    /// Used to mark the cell under this ship as unsafe (occupied) for collision avoidance.
+    ///
+    /// This marking resets every turn and is used by naive_navigate to avoid collisions.
+    ///
+    /// - Parameter ship: The ship on this cell.
+    func markUnsafe(ship: Ship) {
+        
+    }
+}

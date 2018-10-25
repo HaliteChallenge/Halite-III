@@ -1,3 +1,10 @@
+//
+//  Constant.swift
+//  Halite-III
+//
+//  Created by Chris Downie on 10/24/18.
+//  Copyright © 2018 Chris Downie. All rights reserved.
+//
 import Foundation
 
 struct Constant: Codable {
