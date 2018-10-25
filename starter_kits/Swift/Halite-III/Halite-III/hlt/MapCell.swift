@@ -13,13 +13,13 @@ struct MapCell {
     let position: Position
     let haliteAmount: Int
     let ship: Ship?
-    let structure: String // what is this?
+    let structure: Structure?
     
     /// Returns True if the cell is empty.
     ///
     /// - Returns: True if the cell is empty.
     func isEmpty() -> Bool {
-        return false
+        return true
     }
     
     /// Returns True if there is a ship on this cell.

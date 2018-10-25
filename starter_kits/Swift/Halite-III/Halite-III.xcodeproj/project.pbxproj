@@ -33,6 +33,10 @@
 		83FA26682181E57700714BB9 /* Shipyard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26452181446000714BB9 /* Shipyard.swift */; };
 		83FA26692181E58B00714BB9 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2637218142A700714BB9 /* Constant.swift */; };
 		83FA266A2181E5BA00714BB9 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2638218142A700714BB9 /* Log.swift */; };
+		83FA266C2181E74D00714BB9 /* Structure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA266B2181E74D00714BB9 /* Structure.swift */; };
+		83FA266D2181E74D00714BB9 /* Structure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA266B2181E74D00714BB9 /* Structure.swift */; };
+		83FA266E2181E8E200714BB9 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA263A218142A700714BB9 /* Player.swift */; };
+		83FA266F2181E8F100714BB9 /* Dropoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26472181447B00714BB9 /* Dropoff.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -68,6 +72,7 @@
 		83FA265C2181C9E100714BB9 /* PositionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositionTests.swift; sourceTree = "<group>"; };
 		83FA26612181DC0F00714BB9 /* DirectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionTests.swift; sourceTree = "<group>"; };
 		83FA26632181E22400714BB9 /* MapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTests.swift; sourceTree = "<group>"; };
+		83FA266B2181E74D00714BB9 /* Structure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structure.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +135,7 @@
 				83FA26412181441300714BB9 /* Position.swift */,
 				83FA26452181446000714BB9 /* Shipyard.swift */,
 				83FA26432181444200714BB9 /* Ship.swift */,
+				83FA266B2181E74D00714BB9 /* Structure.swift */,
 			);
 			path = hlt;
 			sourceTree = "<group>";
@@ -239,6 +245,7 @@
 				83FA264C218144B500714BB9 /* MapCell.swift in Sources */,
 				83FA264E2181452500714BB9 /* Game.swift in Sources */,
 				83FA26302181425800714BB9 /* main.swift in Sources */,
+				83FA266C2181E74D00714BB9 /* Structure.swift in Sources */,
 				83FA26462181446000714BB9 /* Shipyard.swift in Sources */,
 				83FA263B218142A700714BB9 /* Constant.swift in Sources */,
 				83FA263C218142A700714BB9 /* Log.swift in Sources */,
@@ -259,13 +266,16 @@
 				83FA266A2181E5BA00714BB9 /* Log.swift in Sources */,
 				83FA26662181E56100714BB9 /* MapCell.swift in Sources */,
 				83FA26652181E55E00714BB9 /* Map.swift in Sources */,
+				83FA266D2181E74D00714BB9 /* Structure.swift in Sources */,
 				83FA265E2181CF9B00714BB9 /* Position.swift in Sources */,
 				83FA26622181DC0F00714BB9 /* DirectionTests.swift in Sources */,
+				83FA266F2181E8F100714BB9 /* Dropoff.swift in Sources */,
 				83FA26642181E22400714BB9 /* MapTests.swift in Sources */,
 				83FA26602181CFE400714BB9 /* Command.swift in Sources */,
 				83FA26682181E57700714BB9 /* Shipyard.swift in Sources */,
 				83FA265F2181CFDD00714BB9 /* Direction.swift in Sources */,
 				83FA26672181E57400714BB9 /* Ship.swift in Sources */,
+				83FA266E2181E8E200714BB9 /* Player.swift in Sources */,
 				83FA26692181E58B00714BB9 /* Constant.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

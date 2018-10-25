@@ -65,7 +65,7 @@ struct Map {
     /// - Parameter position: The position to return a map cell
     subscript(_ position: Position) -> MapCell {
         get {
-            return MapCell(position: position, haliteAmount: 0, ship: nil, structure: "what")
+            return MapCell(position: position, haliteAmount: 0, ship: nil, structure: nil)
         }
     }
 }

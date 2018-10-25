@@ -8,8 +8,10 @@
 
 import Foundation
 
-struct Shipyard {
+struct Shipyard: Structure {
     typealias ID = String
+    
+    let type = StructureType.shipyard
     
     let owner: String
     let id: ID
