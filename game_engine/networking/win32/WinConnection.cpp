@@ -126,7 +126,7 @@ std::string WinConnection::get_string(std::chrono::milliseconds timeout) {
     auto initial_time = high_resolution_clock::now();
     while (true) {
         DWORD bytes_available = 0;
-        while (bytes_available < 1) {
+        while (true) {
             if (!config.ignore_timeout) {
                 auto current_time = high_resolution_clock::now();
                 auto remaining = timeout - duration_cast<milliseconds>(current_time - initial_time);
@@ -134,7 +134,14 @@ std::string WinConnection::get_string(std::chrono::milliseconds timeout) {
                     throw TimeoutError("when reading string", timeout, result);
                 }
             }
+
             PeekNamedPipe(read_pipe, nullptr, 0, nullptr, &bytes_available, nullptr);
+
+            if (bytes_available > 0) {
+                break;
+            }
+
+            Sleep(1);
         }
 
         DWORD chars_read;
