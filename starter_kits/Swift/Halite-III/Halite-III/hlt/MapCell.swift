@@ -16,10 +16,8 @@ struct MapCell {
     let structure: Structure?
     
     /// Returns True if the cell is empty.
-    ///
-    /// - Returns: True if the cell is empty.
-    func isEmpty() -> Bool {
-        return true
+    var isEmpty: Bool {
+        return ship == nil && structure == nil
     }
     
     /// Returns True if there is a ship on this cell.

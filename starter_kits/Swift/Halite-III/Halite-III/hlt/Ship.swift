@@ -11,7 +11,7 @@ import Foundation
 struct Ship {
     typealias ID = String
     
-    let owner: Int // what is this?
+    let owner: Player.ID
     let id: ID
     let position: Position
     let haliteAmount: Int
