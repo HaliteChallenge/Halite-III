@@ -58,7 +58,7 @@ get_ship(player::Player, ship_id::Int) = player.ships[ship_id]
 "Returns all ship objects for given player in an array."
 get_ships(player::Player) = collect(values(player.ships))
 
-"Return a random Ship from from all ships for given player."
+"Return a random Ship from all ships for given player."
 function random_ship(player::Player)
     ships = get_ships(player) 
     if length(ships) == 0
@@ -159,7 +159,7 @@ it within those bounds considering wraparound.
 - `game_map::GameMap` : The game map.
 - `position::Position` : A position object.
 """
-normalize(game_map::GameMap, position::Position) = Position(position.x % game_map.width, position.y % game_map.height)
+normalize(game_map::GameMap, position::Position) = Position(mod(position.x, game_map.width), mod(position.y, game_map.height))
 
 """
 Compute the Manhattan distance between two locations.
