@@ -8,6 +8,10 @@ type Position struct {
 	y int
 }
 
+func NewPosition(x int, y int) *Position {
+	return &Position{x, y}
+}
+
 func (p *Position) Coordinates() (int, int) {
 	return p.x, p.y
 }
