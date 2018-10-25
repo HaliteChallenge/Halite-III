@@ -87,3 +87,16 @@ struct Map {
         }
     }
 }
+
+extension Map {
+    /// Computes the Manhattan distance between two locations, and accounts for the toroidal wraparound.
+    ///
+    /// This is a convenience method on calculateDistance(source:target) the fits the Swift language better
+    /// - Parameters:
+    ///   - from: The position to measure from
+    ///   - to: The position to measure to
+    /// - Returns: The manhattan distance between those two positions
+    func distance(from: Position, to: Position) -> Int {
+        return calculateDistance(source: from, target: to)
+    }
+}

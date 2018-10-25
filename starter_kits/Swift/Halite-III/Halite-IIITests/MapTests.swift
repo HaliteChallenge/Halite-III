@@ -85,6 +85,13 @@ class MapTests: XCTestCase {
         
         XCTAssertEqual(distance, 4)
     }
+    
+    // MARK: - Convenience methods
+    func testDistance() {
+        XCTAssertEqual(tinyMap.distance(from: Position(x: 1, y: 1), to: Position(x: 3, y: 3)), 4)
+        XCTAssertEqual(tinyMap.distance(from: Position(x: 4, y: 4), to: Position(x: 0, y: 0)), 2)
+        XCTAssertEqual(tinyMap.distance(from: Position(x: 5, y: 5), to: Position(x: -2, y: -2)), 4)
+    }
 }
 
 class MapCellTests: XCTestCase {
