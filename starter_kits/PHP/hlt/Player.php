@@ -48,7 +48,7 @@ class Player
         for ($i = 0; $i < $numDropoffs; ++$i) {
             $dropoff = Dropoff::_generate($this->id);
 
-            $this->ships[$dropoff->id->id] = $dropoff;
+            $this->dropoffs[$dropoff->id->id] = $dropoff;
         }
     }
 
