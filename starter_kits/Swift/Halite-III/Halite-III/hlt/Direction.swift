@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum Direction {
+enum Direction: CaseIterable {
     case north, west, south, east
     case still
     

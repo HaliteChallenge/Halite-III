@@ -37,7 +37,12 @@ struct Position {
     ///
     /// - Returns: A list of all positions around the given position in each cardinal direction.
     func getSurroundingCardinals() -> [Position] {
-        return []
+        return Direction.allCases.compactMap { direction -> Position? in
+            guard direction != .still else {
+                return nil
+            }
+            return self + direction
+        }
     }
 }
 

@@ -35,4 +35,20 @@ class PositionTests: XCTestCase {
         let newPosition = initialPosition.directionalOffset(.east)
         XCTAssertEqual(newPosition, eastPosition)
     }
+    
+    func testNoOffset() {
+        let newPosition = initialPosition.directionalOffset(.still)
+        XCTAssertEqual(newPosition, initialPosition)
+    }
+    
+    // MARK: Testing getSurroundingCardinals
+    func testGetSurroundingCardinals() {
+        let cardinals = initialPosition.getSurroundingCardinals()
+        
+        XCTAssertEqual(cardinals.count, 4)
+        XCTAssert(cardinals.contains(northPosition))
+        XCTAssert(cardinals.contains(southPosition))
+        XCTAssert(cardinals.contains(eastPosition))
+        XCTAssert(cardinals.contains(westPosition))
+    }
 }
