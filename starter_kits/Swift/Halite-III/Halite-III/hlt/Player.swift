@@ -9,7 +9,9 @@
 import Foundation
 
 struct Player {
-    let id: String
+    typealias ID = String
+    
+    let id: ID
     let shipyard: Shipyard
     let haliteAmount: Int
     

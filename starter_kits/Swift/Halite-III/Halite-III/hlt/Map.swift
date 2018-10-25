@@ -59,4 +59,13 @@ struct Map {
     func naiveNavigate(ship: Ship, destination: Position) -> Direction {
         return .still
     }
+    
+    /// Index the game map and find a particular map cell with game_map[position].
+    ///
+    /// - Parameter position: The position to return a map cell
+    subscript(_ position: Position) -> MapCell {
+        get {
+            return MapCell(position: position, haliteAmount: 0, ship: nil, structure: "what")
+        }
+    }
 }
