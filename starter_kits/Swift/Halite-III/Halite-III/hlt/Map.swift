@@ -34,7 +34,19 @@ struct Map {
     /// - Parameter position: The position to normalize
     /// - Returns: The normalized position.
     func normalize(position: Position) -> Position {
-        return position
+        var x = position.x
+        var y = position.y
+        
+        // In Swift, % is a remainder operator, not modulus. So we have to get a positive number to get the wrap
+        // around to work correctly.
+        while x < 0 {
+            x += width
+        }
+        while y < 0 {
+            y += height
+        }
+        
+        return Position(x: x % width, y: y % height)
     }
     
     /// A method that returns a list of direction(s) to move closer to a target disregarding collision possibilities.

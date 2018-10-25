@@ -9,12 +9,37 @@
 import XCTest
 
 class MapTests: XCTestCase {
+    let tinyMap = Map(width: 5, height: 5)
+    
     func testSubscript() {
-        let map = Map(width: 5, height: 5)
         let middle = Position(x: 2, y: 2)
         
-        let cell = map[middle]
+        let cell = tinyMap[middle]
         XCTAssert(cell.isEmpty)
+    }
+    
+    func testNormalizeWithNormalPosition() {
+        let position = Position(x: 2, y: 2)
+        let normalizedPosition = tinyMap.normalize(position: position)
+        XCTAssertEqual(normalizedPosition, position)
+    }
+    
+    func testNormalizeWithNegativePosition() {
+        let position = Position(x: -1, y: -1)
+        let normalizedPosition = tinyMap.normalize(position: position)
+        XCTAssertEqual(normalizedPosition, Position(x: 4, y: 4))
+        
+        // Test that normalization is stable
+        XCTAssertEqual(tinyMap.normalize(position: normalizedPosition), normalizedPosition)
+    }
+    
+    func testNormalizeWithLargePosition() {
+        let position = Position(x: 6, y: 6)
+        let normalizedPosition = tinyMap.normalize(position: position)
+        XCTAssertEqual(normalizedPosition, Position(x: 1, y: 1))
+        
+        // Test that normalization is stable
+        XCTAssertEqual(tinyMap.normalize(position: normalizedPosition), normalizedPosition)
     }
 }
 
