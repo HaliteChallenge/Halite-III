@@ -98,7 +98,16 @@ WinConnection::WinConnection(const std::string &command, NetworkingConfig config
  * Destroy the WinConnection, terminating the subprocess if there is one.
  */
 WinConnection::~WinConnection() noexcept {
-    TerminateProcess(process, 0);
+    if (read_pipe != INVALID_HANDLE_VALUE) {
+        CloseHandle(read_pipe);
+    }
+    if (write_pipe != INVALID_HANDLE_VALUE) {
+        CloseHandle(write_pipe);
+    }
+    if (process != INVALID_HANDLE_VALUE) {
+        TerminateProcess(process, 0);
+        CloseHandle(process);
+    }
 }
 
 /**
