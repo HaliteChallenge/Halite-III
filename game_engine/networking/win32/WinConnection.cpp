@@ -85,7 +85,6 @@ WinConnection::WinConnection(const std::string &command, NetworkingConfig config
         CloseHandle(write[PIPE_TAIL]);
         throw NetworkingError("Could not start process");
     }
-    CloseHandle(piProcInfo.hProcess);
     CloseHandle(piProcInfo.hThread);
     read_pipe = read[PIPE_HEAD];
     write_pipe = write[PIPE_TAIL];
