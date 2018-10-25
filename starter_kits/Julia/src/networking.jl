@@ -11,9 +11,7 @@ end
 function init_game()
     constants = load_constants(JSON.parse(readline(stdin)))
     num_players, my_id = parse.(Int, split(readline()))
-
     players = Dict(i => generate_players() for i=0:num_players-1)
-
     me = players[my_id]
     game_map = generate_game_map()
     constants, Game(0, my_id, players, game_map, me)
@@ -39,7 +37,7 @@ function update_frame!(game::Game)
     game.game_map = update_game_map!(game.game_map)
     for player in values(game.players)
         for ship in get_ships(player)
-            mark_unsafe(game.game_map.cells[ship.position], ship)
+            mark_unsafe!(game.game_map.cells[ship.position], ship)
         end
         game.game_map.cells[player.shipyard.position].structure = player.shipyard
         for dropoff in get_dropoffs(player)

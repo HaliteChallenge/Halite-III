@@ -1,5 +1,6 @@
 module Halite3
 
+import Base: +, -, abs
 import JSON
 import Logging
 import Random

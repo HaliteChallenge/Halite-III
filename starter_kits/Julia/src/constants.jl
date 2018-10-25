@@ -32,7 +32,7 @@ struct Constants
     """
     INSPIRATION_SHIP_COUNT::Int
     "An inspired ship mines 1/X halite from a cell per turn instead."
-    INSPIRED_BONUS_MULTIPLIER::Float
+    INSPIRED_BONUS_MULTIPLIER::Float64
     "An inspired ship that removes Y halite from a cell collects X*Y additional halite."
     INSPIRED_EXTRACT_RATIO::Int
     "An inspired ship instead spends 1/X% halite to move."
