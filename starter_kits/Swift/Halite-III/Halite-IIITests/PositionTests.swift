@@ -51,4 +51,21 @@ class PositionTests: XCTestCase {
         XCTAssert(cardinals.contains(eastPosition))
         XCTAssert(cardinals.contains(westPosition))
     }
+    
+    // MARK: Test addition & subtraction
+    // This is mostly tested by .directionalOffset(:). So this is more documentation than test coverage.
+    func testPositionAddition() {
+        let newPosition = initialPosition + .north
+        XCTAssertEqual(newPosition, northPosition)
+    }
+    
+    func testPositionSubtraction() {
+        let newPosition = initialPosition - .north
+        XCTAssertEqual(newPosition, southPosition)
+    }
+    
+    func testNonNormalizedResult() {
+        let newPosition = Position(x: 0, y: 0) + .north
+        XCTAssertEqual(newPosition, Position(x: 0, y: -1))
+    }
 }
