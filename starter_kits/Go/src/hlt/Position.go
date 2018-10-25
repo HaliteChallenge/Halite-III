@@ -8,6 +8,10 @@ type Position struct {
 	y int
 }
 
+func (p *Position) Coordinates() (int, int) {
+	return p.x, p.y
+}
+
 func (p *Position) String() string {
 	return fmt.Sprintf("Pos{x=%d,y=%d}", p.x, p.y)
 }
