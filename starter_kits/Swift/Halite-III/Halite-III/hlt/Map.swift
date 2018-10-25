@@ -22,7 +22,12 @@ struct Map {
     ///   - target: The position to measure to
     /// - Returns: The distance between the source and the target
     func calculateDistance(source: Position, target: Position) -> Int {
-        return 0
+        let from = normalize(position: source)
+        let to = normalize(position: target)
+        let horizontalDistance = abs(from.x - to.x)
+        let verticalDistance = abs(from.y - to.y)
+        
+        return horizontalDistance + verticalDistance
     }
     
     /// A method that normalizes a position within the bounds of the toroidal map.

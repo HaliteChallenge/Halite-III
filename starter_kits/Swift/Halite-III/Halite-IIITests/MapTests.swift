@@ -18,6 +18,7 @@ class MapTests: XCTestCase {
         XCTAssert(cell.isEmpty)
     }
     
+    // MARK: - Test normalize method
     func testNormalizeWithNormalPosition() {
         let position = Position(x: 2, y: 2)
         let normalizedPosition = tinyMap.normalize(position: position)
@@ -40,6 +41,49 @@ class MapTests: XCTestCase {
         
         // Test that normalization is stable
         XCTAssertEqual(tinyMap.normalize(position: normalizedPosition), normalizedPosition)
+    }
+    
+    // MARK: - Test distance method
+    func testHorizontalDistance() {
+        let from = Position(x: 1, y: 1)
+        let to = Position(x: 3, y: 1)
+        let distance = tinyMap.calculateDistance(source: from, target: to)
+        
+        XCTAssertEqual(distance, 2)
+    }
+    
+    func testVerticalDistance() {
+        let from = Position(x: 1, y: 1)
+        let to = Position(x: 1, y: 3)
+        let distance = tinyMap.calculateDistance(source: from, target: to)
+        
+        XCTAssertEqual(distance, 2)
+    }
+    
+    func testDiagonalDistance() {
+        let from = Position(x: 1, y: 1)
+        let to = Position(x: 3, y: 3)
+        let distance = tinyMap.calculateDistance(source: from, target: to)
+        
+        XCTAssertEqual(distance, 4)
+    }
+    
+    func testWraparoundDistance() {
+        // This is interesting, because the shortest distance is wrapping around the map.
+        let bottomRight = Position(x: 4, y: 4)
+        let topLeft = Position(x: 0, y: 0)
+        let distance = tinyMap.calculateDistance(source: bottomRight, target: topLeft)
+        
+        XCTAssertEqual(distance, 2)
+    }
+    
+    func testDistanceWithAbnormalValues() {
+        // The wraparound is also faster here. Without wraparound, the distance is 6
+        let tooBig = Position(x: 5, y: 5)
+        let tooSmall = Position(x: -2, y: -2)
+        let distance = tinyMap.calculateDistance(source: tooBig, target: tooSmall)
+        
+        XCTAssertEqual(distance, 4)
     }
 }
 
