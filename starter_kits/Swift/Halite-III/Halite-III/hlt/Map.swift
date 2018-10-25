@@ -27,7 +27,8 @@ struct Map {
         let horizontalDistance = abs(from.x - to.x)
         let verticalDistance = abs(from.y - to.y)
         
-        return horizontalDistance + verticalDistance
+        return min(horizontalDistance, width - horizontalDistance)
+            + min(verticalDistance, height - verticalDistance)
     }
     
     /// A method that normalizes a position within the bounds of the toroidal map.
