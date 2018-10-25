@@ -24,7 +24,7 @@ struct Position {
     ///
     /// - Returns: A list of all positions around the given position in each cardinal direction.
     func getSurroundingCardinals() -> [Position] {
-        return Direction.getAllCardinals().map { direction -> Position in
+        return Direction.allCardinals.map { direction -> Position in
             return self + direction
         }
     }

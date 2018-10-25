@@ -58,9 +58,16 @@ enum Direction: CaseIterable {
     }
 }
 
+// MARK: - Convenience accessors
+// This doesn't match the letter of the API, but it feels like a more Swift-friendly means of providing the same
+// functionality.
 extension Direction {
     static prefix func -(_ direction: Direction) -> Direction {
         return Direction.invert(direction)
     }
+    
+    static var allCardinals = {
+        return Direction.getAllCardinals()
+    }()
 }
 
