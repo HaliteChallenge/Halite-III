@@ -9,10 +9,30 @@
 import XCTest
 
 class PositionTests: XCTestCase {
+    let initialPosition = Position(x: 10, y: 10)
+    let southPosition = Position(x: 10, y: 11)
+    let northPosition = Position(x: 10, y: 9)
+    let westPosition = Position(x: 9, y: 10)
+    let eastPosition = Position(x: 11, y: 10)
+    
+    // MARK: - Testing directionalOffset
     func testNorthOffset() {
-        let position = Position(x: 10, y: 10)
-        let newPosition = position.directionalOffset(.north)
-        XCTAssertEqual(newPosition.x, 10)
-        XCTAssertEqual(newPosition.y, 9)
+        let newPosition = initialPosition.directionalOffset(.north)
+        XCTAssertEqual(newPosition, northPosition)
+    }
+    
+    func testSouthOffset() {
+        let newPosition = initialPosition.directionalOffset(.south)
+        XCTAssertEqual(newPosition, southPosition)
+    }
+    
+    func testWestOffset() {
+        let newPosition = initialPosition.directionalOffset(.west)
+        XCTAssertEqual(newPosition, westPosition)
+    }
+    
+    func testEastOffset() {
+        let newPosition = initialPosition.directionalOffset(.east)
+        XCTAssertEqual(newPosition, eastPosition)
     }
 }

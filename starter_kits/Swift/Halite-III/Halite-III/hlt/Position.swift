@@ -20,8 +20,7 @@ struct Position {
     /// - Parameter direction: The direction to move this position
     /// - Returns: The position moved one unit from the given direction
     func directionalOffset(_ direction: Direction) -> Position {
-        // TODO
-        return Position(x:0, y: 0)
+        return self + direction
     }
     
     /// This is a convenience method for directionalOffset(:) that takes a tuple instead of a direction.
@@ -39,5 +38,36 @@ struct Position {
     /// - Returns: A list of all positions around the given position in each cardinal direction.
     func getSurroundingCardinals() -> [Position] {
         return []
+    }
+}
+
+// MARK: - Equatable
+extension Position: Equatable {}
+
+// MARK: - Some numeric-style methods
+extension Position {
+    static func +(_ position: Position, _ direction: Direction) -> Position {
+        var x = position.x, y = position.y
+        switch direction {
+        case .north:
+            y -= 1
+        case .south:
+            y += 1
+        case .east:
+            x += 1
+        case .west:
+            x -= 1
+        case .still:
+            break;
+        }
+        return Position(x: x, y: y)
+    }
+    
+    static func +(_ direction: Direction, _ position: Position) -> Position {
+        return position + direction
+    }
+    
+    static func -(_ position: Position, _ direction: Direction) -> Position {
+        return position + Direction.invert(direction)
     }
 }
