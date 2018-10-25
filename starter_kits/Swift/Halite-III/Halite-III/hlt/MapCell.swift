@@ -21,24 +21,18 @@ struct MapCell {
     }
     
     /// Returns True if there is a ship on this cell.
-    ///
-    /// - Returns: True if there is a ship on this cell.
-    func isOccupied() -> Bool {
+    var isOccupied: Bool {
         return ship != nil
     }
     
     /// Returns True if there is a structure (a dropoff or shipyard) on this cell.
-    ///
-    /// - Returns: True if there is a structure (a dropoff or shipyard) on this cell.
-    func hasStructure() -> Bool {
-        return false
+    var hasStructure: Bool {
+        return structure != nil
     }
     
     /// Returns the type of structure on this cell, or nil if there is no structure.
-    ///
-    /// - Returns: Returns the type of structure on this cell, or nil if there is no structure.
-    func structureType() -> String? {
-        return nil
+    var structureType: StructureType? {
+        return structure?.type
     }
     
     /// Used to mark the cell under this ship as unsafe (occupied) for collision avoidance.
