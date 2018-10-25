@@ -20,6 +20,11 @@
 		83FA264A2181449D00714BB9 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26492181449D00714BB9 /* Map.swift */; };
 		83FA264C218144B500714BB9 /* MapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA264B218144B500714BB9 /* MapCell.swift */; };
 		83FA264E2181452500714BB9 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA264D2181452500714BB9 /* Game.swift */; };
+		83FA26562181C97B00714BB9 /* Halite_IIITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26552181C97B00714BB9 /* Halite_IIITests.swift */; };
+		83FA265D2181C9E100714BB9 /* PositionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA265C2181C9E100714BB9 /* PositionTests.swift */; };
+		83FA265E2181CF9B00714BB9 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26412181441300714BB9 /* Position.swift */; };
+		83FA265F2181CFDD00714BB9 /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA263F218143DB00714BB9 /* Direction.swift */; };
+		83FA26602181CFE400714BB9 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2639218142A700714BB9 /* Command.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -49,10 +54,21 @@
 		83FA26492181449D00714BB9 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
 		83FA264B218144B500714BB9 /* MapCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapCell.swift; sourceTree = "<group>"; };
 		83FA264D2181452500714BB9 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		83FA26532181C97B00714BB9 /* Halite-IIITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Halite-IIITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		83FA26552181C97B00714BB9 /* Halite_IIITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Halite_IIITests.swift; sourceTree = "<group>"; };
+		83FA26572181C97B00714BB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		83FA265C2181C9E100714BB9 /* PositionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		83FA26292181425800714BB9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83FA26502181C97B00714BB9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -66,6 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				83FA262E2181425800714BB9 /* Halite-III */,
+				83FA26542181C97B00714BB9 /* Halite-IIITests */,
 				83FA262D2181425800714BB9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -74,6 +91,7 @@
 			isa = PBXGroup;
 			children = (
 				83FA262C2181425800714BB9 /* Halite-III */,
+				83FA26532181C97B00714BB9 /* Halite-IIITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -106,6 +124,16 @@
 			path = hlt;
 			sourceTree = "<group>";
 		};
+		83FA26542181C97B00714BB9 /* Halite-IIITests */ = {
+			isa = PBXGroup;
+			children = (
+				83FA26552181C97B00714BB9 /* Halite_IIITests.swift */,
+				83FA265C2181C9E100714BB9 /* PositionTests.swift */,
+				83FA26572181C97B00714BB9 /* Info.plist */,
+			);
+			path = "Halite-IIITests";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -126,6 +154,23 @@
 			productReference = 83FA262C2181425800714BB9 /* Halite-III */;
 			productType = "com.apple.product-type.tool";
 		};
+		83FA26522181C97B00714BB9 /* Halite-IIITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83FA26582181C97B00714BB9 /* Build configuration list for PBXNativeTarget "Halite-IIITests" */;
+			buildPhases = (
+				83FA264F2181C97B00714BB9 /* Sources */,
+				83FA26502181C97B00714BB9 /* Frameworks */,
+				83FA26512181C97B00714BB9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Halite-IIITests";
+			productName = "Halite-IIITests";
+			productReference = 83FA26532181C97B00714BB9 /* Halite-IIITests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -137,6 +182,9 @@
 				ORGANIZATIONNAME = "Chris Downie";
 				TargetAttributes = {
 					83FA262B2181425800714BB9 = {
+						CreatedOnToolsVersion = 10.0;
+					};
+					83FA26522181C97B00714BB9 = {
 						CreatedOnToolsVersion = 10.0;
 					};
 				};
@@ -154,9 +202,20 @@
 			projectRoot = "";
 			targets = (
 				83FA262B2181425800714BB9 /* Halite-III */,
+				83FA26522181C97B00714BB9 /* Halite-IIITests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		83FA26512181C97B00714BB9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		83FA26282181425800714BB9 /* Sources */ = {
@@ -176,6 +235,18 @@
 				83FA263E218142A700714BB9 /* Player.swift in Sources */,
 				83FA263D218142A700714BB9 /* Command.swift in Sources */,
 				83FA2640218143DB00714BB9 /* Direction.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83FA264F2181C97B00714BB9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83FA265D2181C9E100714BB9 /* PositionTests.swift in Sources */,
+				83FA26562181C97B00714BB9 /* Halite_IIITests.swift in Sources */,
+				83FA265E2181CF9B00714BB9 /* Position.swift in Sources */,
+				83FA26602181CFE400714BB9 /* Command.swift in Sources */,
+				83FA265F2181CFDD00714BB9 /* Direction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,6 +386,40 @@
 			};
 			name = Release;
 		};
+		83FA26592181C97B00714BB9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Halite-IIITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "net.chrisdownie.Halite-IIITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+			};
+			name = Debug;
+		};
+		83FA265A2181C97B00714BB9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Halite-IIITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "net.chrisdownie.Halite-IIITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -332,6 +437,15 @@
 			buildConfigurations = (
 				83FA26342181425800714BB9 /* Debug */,
 				83FA26352181425800714BB9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83FA26582181C97B00714BB9 /* Build configuration list for PBXNativeTarget "Halite-IIITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83FA26592181C97B00714BB9 /* Debug */,
+				83FA265A2181C97B00714BB9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
