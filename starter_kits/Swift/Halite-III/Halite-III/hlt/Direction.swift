@@ -58,3 +58,9 @@ enum Direction: CaseIterable {
     }
 }
 
+extension Direction {
+    static prefix func -(_ direction: Direction) -> Direction {
+        return Direction.invert(direction)
+    }
+}
+
