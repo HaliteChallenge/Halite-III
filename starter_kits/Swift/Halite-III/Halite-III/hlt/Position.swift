@@ -68,3 +68,10 @@ extension Position {
         position = position - direction
     }
 }
+
+// MARK: - Convenience Methods
+extension Position {
+    var surroundingCardinals: [Position] {
+        return getSurroundingCardinals()
+    }
+}

@@ -52,6 +52,17 @@ class PositionTests: XCTestCase {
         XCTAssert(cardinals.contains(westPosition))
     }
     
+    func testSurroundingCardinals() {
+        // This is the same as getSurroundingCardinals, but is more familiar to Swift
+        let cardinals = initialPosition.surroundingCardinals
+        
+        XCTAssertEqual(cardinals.count, 4)
+        XCTAssert(cardinals.contains(northPosition))
+        XCTAssert(cardinals.contains(southPosition))
+        XCTAssert(cardinals.contains(eastPosition))
+        XCTAssert(cardinals.contains(westPosition))
+    }
+    
     // MARK: Test addition & subtraction
     // This is mostly tested by .directionalOffset(:). So this is more documentation than test coverage.
     func testPositionAddition() {
