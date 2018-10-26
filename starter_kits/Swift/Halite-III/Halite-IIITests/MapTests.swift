@@ -86,7 +86,7 @@ class MapTests: XCTestCase {
         XCTAssertEqual(distance, 4)
     }
     
-    // MARK: - Convenience methods
+    // MARK: Convenience methods
     func testDistance() {
         XCTAssertEqual(tinyMap.distance(from: Position(x: 1, y: 1), to: Position(x: 3, y: 3)), 4)
         XCTAssertEqual(tinyMap.distance(from: Position(x: 4, y: 4), to: Position(x: 0, y: 0)), 2)
@@ -95,12 +95,14 @@ class MapTests: XCTestCase {
 }
 
 class MapCellTests: XCTestCase {
+    // MARK: Common properties
     let initialPosition = Position(x: 10, y: 10)
     let playerId = "1"
     let dropoffId = "2"
     let shipyardId = "3"
     let shipId = "4"
     
+    // MARK: - Test Cell property methods
     func testEmptyCell() {
         let cell = MapCell(position: initialPosition, haliteAmount: 0, ship: nil, structure: nil)
         
@@ -150,4 +152,15 @@ class MapCellTests: XCTestCase {
         XCTAssertTrue(cell.hasStructure)
         XCTAssertEqual(cell.structureType, .shipyard)
     }
+    
+    // MARK: - Test mark unsafe
+    func testMarkUnsafe() {
+        let ship = Ship(owner: playerId, id: shipId, position: initialPosition, haliteAmount: 0)
+        var cell = MapCell(position: initialPosition, haliteAmount: 0, ship: nil, structure: nil)
+        
+        XCTAssertFalse(cell.isOccupied)
+        cell.markUnsafe(ship: ship)
+        XCTAssertTrue(cell.isOccupied)
+    }
+
 }

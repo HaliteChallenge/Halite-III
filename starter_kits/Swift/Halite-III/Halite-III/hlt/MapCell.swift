@@ -12,7 +12,7 @@ import Foundation
 struct MapCell {
     let position: Position
     let haliteAmount: Int
-    let ship: Ship?
+    var ship: Ship?
     let structure: Structure?
     
     /// Returns True if the cell is empty.
@@ -40,8 +40,7 @@ struct MapCell {
     /// This marking resets every turn and is used by naive_navigate to avoid collisions.
     ///
     /// - Parameter ship: The ship on this cell.
-    func markUnsafe(ship: Ship) {
-        // TODO: Implement this
-        fatalError("Not implemented")
+    mutating func markUnsafe(ship: Ship) {
+        self.ship = ship
     }
 }
