@@ -20,7 +20,7 @@ struct Ship {
     ///
     /// - Returns: True if ship is carrying 1,000 halite (the maximum). Otherwise returns False.
     func isFull() -> Bool {
-        return haliteAmount >= Constant.shared.MAX_ENERGY
+        return haliteAmount >= Constant.shared.MAX_HALITE
     }
     
     /// Returns an engine command to convert this ship into a dropoff.

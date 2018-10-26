@@ -13,6 +13,8 @@ class Log {
 
     init(filename: String) {
         self.filename = filename
+        // TODO: Handle creating the file if it doesn't exist.
+        // TODO: Create a unique log file for each run.
         logFile = FileHandle(forWritingAtPath: filename)!
     }
     deinit {

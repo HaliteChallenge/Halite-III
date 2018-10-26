@@ -12,7 +12,7 @@ import Foundation
 /// engine. Game initializes the game, which includes generating the map and registering the players.
 class Game {
     var turnNumber = 0
-    // TODO: Define these variables
+    // TODO: Define these variables. They probably shouldn't be optional.
     var me: Player?
     var gameMap: Map?
     
@@ -21,7 +21,7 @@ class Game {
     ///
     /// - Parameter botName: The name of the bot
     func ready(botName: String) {
-        
+        // TODO: Implement this.
     }
     
     /// The game loop sends the game state to the players and processes commands returned from the players. This
@@ -30,7 +30,7 @@ class Game {
     ///
     /// Updates the game state, and returns nothing.
     func updateFrame() {
-        
+        // TODO: Implement this.
     }
     
     /// The command queue is a list of commands. The player’s code fills this list with commands and sends it to the
@@ -39,6 +39,6 @@ class Game {
     ///
     /// - Parameter commands: The command queue to execute.
     func endTurn(commands: [Command]) {
-        
+        // TODO: Implement this.
     }
 }

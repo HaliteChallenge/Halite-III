@@ -21,6 +21,7 @@ struct Player {
     /// - Parameter ship: The ship ID to query for.
     /// - Returns: The ship object associated with the ship ID provided as an argument.
     func get(ship: Ship.ID) -> Ship? {
+        // TODO: Implement this
         return nil
     }
     
@@ -28,6 +29,7 @@ struct Player {
     ///
     /// - Returns: All ship objects.
     func getShips() -> [Ship] {
+        // TODO: Implement this
         return []
     }
     
@@ -36,6 +38,7 @@ struct Player {
     /// - Parameter ship: The ship ID to query for.
     /// - Returns: True if you have a ship with this id.
     func has(ship: Ship.ID) -> Bool {
+        // TODO: Implement this
         return false
     }
     
@@ -45,6 +48,7 @@ struct Player {
     /// - Parameter dropoff: The dropoff ID to query for
     /// - Returns: The dropoff object associated with the dropoff id provided as an argument.
     func get(dropoff: Dropoff.ID) -> Dropoff? {
+        // TODO: Implement this
         return nil
     }
 
@@ -52,6 +56,7 @@ struct Player {
     ///
     /// - Returns: All dropoff objects.
     func getDropoffs() -> [Dropoff] {
+        // TODO: Implement this
         return []
     }
 }

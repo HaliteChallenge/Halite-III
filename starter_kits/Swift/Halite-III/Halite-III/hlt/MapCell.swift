@@ -41,6 +41,7 @@ struct MapCell {
     ///
     /// - Parameter ship: The ship on this cell.
     func markUnsafe(ship: Ship) {
+        // TODO: Implement this
         fatalError("Not implemented")
     }
 }

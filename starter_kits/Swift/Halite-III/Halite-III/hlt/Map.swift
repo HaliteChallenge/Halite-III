@@ -63,6 +63,7 @@ struct Map {
     ///   - destination: The position to move to
     /// - Returns: List of closest directions toward the given target.
     func getUnsafeMoves(source: Position, destination: Position) -> [Direction] {
+        // TODO: Implement this
         return []
     }
     
@@ -75,6 +76,7 @@ struct Map {
     ///   - destination: The ship's desired position.
     /// - Returns: A single valid direction toward a given target.
     func naiveNavigate(ship: Ship, destination: Position) -> Direction {
+        // TODO: Implement this
         return .still
     }
     
@@ -86,6 +88,8 @@ struct Map {
             return MapCell(position: position, haliteAmount: 0, ship: nil, structure: nil)
         }
     }
+    
+    // TODO: Implement subscripts for ship, dropoff?
 }
 
 extension Map {
