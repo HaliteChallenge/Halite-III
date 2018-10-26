@@ -1,6 +1,5 @@
 "Holds positional values (not tuples) in relation to cardinal directions."
 struct Direction
-    # TODO: test if this is what we want
     val::String
 end
 
@@ -30,6 +29,7 @@ function invert(direction::Direction)
    elseif direction == Direction("East") return Direction("West")
    elseif direction == Direction("West") return Direction("East")
    elseif direction == Direction("Still") return Direction("Still")
+   elseif direction == nothing return nothing
    else throw(DomainError(direction))
    end
 end
