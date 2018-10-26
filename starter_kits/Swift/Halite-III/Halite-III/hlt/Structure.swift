@@ -8,11 +8,14 @@
 
 import Foundation
 
+protocol Placeable {
+    var position: Position { get }
+}
+
 typealias StructureID = String
 protocol Structure {
     var id: StructureID { get }
     var owner: Player.ID { get }
-    var position: Position { get }
     var type: StructureType { get }
 }
 

@@ -16,7 +16,7 @@ struct Map {
     let height: Int
     
     /// A map cell is an object representation of a cell on the game map.
-    struct Cell {
+    struct Cell: Placeable {
         let position: Position
         let haliteAmount: Int
         var ship: Ship?
@@ -156,13 +156,18 @@ struct Map {
     /// - Parameter position: The position to return a map cell
     subscript(_ position: Position) -> Map.Cell {
         get {
+            // TODO: Actually pull from a the map's data source.
             return Map.Cell(position: position, haliteAmount: 0, ship: nil, structure: nil)
         }
     }
     
-    // TODO: Implement subscripts for ship, dropoff?
-    
     // Mark: - Convenience methods
+    subscript(_ placeable: Placeable) -> Map.Cell {
+        get {
+            return self[placeable.position]
+        }
+    }
+    
     func unsafeMoves(from: Position, to: Position) -> [Direction] {
         return getUnsafeMoves(source: from, destination: to)
     }

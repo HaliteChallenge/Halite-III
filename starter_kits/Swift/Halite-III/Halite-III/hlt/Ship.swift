@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Ship {
+struct Ship: Placeable {
     typealias ID = String
     
     let owner: Player.ID

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Shipyard: Structure {
+struct Shipyard: Placeable, Structure {
     typealias ID = String
     
     let type = StructureType.shipyard

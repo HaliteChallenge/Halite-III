@@ -11,7 +11,7 @@ import Foundation
 /// You create a dropoff at any location on the map by converting a ship. Ships can store halite at a dropoff point
 /// just as they would at the shipyard. If two dropoffs are constructed in the same location, the engine returns an
 /// error and the construct command fails. The player class has the methods to access dropoffs.
-struct Dropoff: Structure {
+struct Dropoff: Placeable, Structure {
     typealias ID = String
     let type = StructureType.dropoff
     
