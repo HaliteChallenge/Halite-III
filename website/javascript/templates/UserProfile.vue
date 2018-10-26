@@ -243,7 +243,7 @@
                         </a>
                     </li>
                     <li role="presentation">
-                        <a href="#analysis" @click="refreshStickyTable" aria-controls="analysis" role="tab" data-toggle="tab">
+                        <a href="#analysis" @click="analysisOpened" aria-controls="analysis" role="tab" data-toggle="tab">
                         <span>Analysis</span>
                         </a>
                     </li>
@@ -699,6 +699,7 @@
             percentile75: 0,
             max: 0,
           },
+          loadedExtraData: false,
         }
       },
       mounted: function () {
@@ -776,10 +777,8 @@
           })
 
           this.fetchErrorGames()
-          this.fetchnemesis()
           this.fetchhistory()
           this.fetchHalite1Stats()
-          this.fetchChallengeGames()
 
           // switch to analysis tab if requested
           const url = new URLSearchParams(location.search)
@@ -824,6 +823,16 @@
         },
         refreshStickyTable: function () {
             window.refreshStickyTable();
+        },
+        analysisOpened() {
+          this.refreshStickyTable()
+          if (!this.loadedExtraData) {
+            this.loadedExtraData = true
+            window.requestIdleCallback(() => {
+              this.fetchChallengeGames()
+              this.fetchnemesis()
+            })
+          }
         },
         fetch: function (options={}) {
           let query = `order_by=desc,time_played&offset=${this.offset}&limit=${options.limit || this.limit}`
@@ -890,7 +899,7 @@
           const location = `${state ? state + ', ' : ''}${country}`
           return location || ''
         },
-        fetchChallengeGames: function(){
+        fetchChallengeGames() {
           this.challengeGames = []
           let url = `${api.API_SERVER_URL}/user/${this.user.user_id}/challenge?limit=250&order_by=desc,created`
           return $.get(url).then((data) => {
