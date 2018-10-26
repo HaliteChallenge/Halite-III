@@ -181,7 +181,7 @@ class MapCellTests: XCTestCase {
     
     // MARK: - Test Cell property methods
     func testEmptyCell() {
-        let cell = MapCell(position: initialPosition, haliteAmount: 0, ship: nil, structure: nil)
+        let cell = Map.Cell(position: initialPosition, haliteAmount: 0, ship: nil, structure: nil)
         
         XCTAssertTrue(cell.isEmpty)
         XCTAssertFalse(cell.isOccupied)
@@ -191,7 +191,7 @@ class MapCellTests: XCTestCase {
     
     func testCellWithShip() {
         let ship = Ship(owner: playerId, id: shipId, position: initialPosition, haliteAmount: 0)
-        let cell = MapCell(position: initialPosition, haliteAmount: 0, ship: ship, structure: nil)
+        let cell = Map.Cell(position: initialPosition, haliteAmount: 0, ship: ship, structure: nil)
         
         XCTAssertFalse(cell.isEmpty)
         XCTAssertTrue(cell.isOccupied)
@@ -201,7 +201,7 @@ class MapCellTests: XCTestCase {
     
     func testCellWithDropoff() {
         let structure = Dropoff(owner: playerId, id: dropoffId, position: initialPosition)
-        let cell = MapCell(position: initialPosition, haliteAmount: 0, ship: nil, structure: structure)
+        let cell = Map.Cell(position: initialPosition, haliteAmount: 0, ship: nil, structure: structure)
         
         XCTAssertFalse(cell.isEmpty)
         XCTAssertFalse(cell.isOccupied)
@@ -211,7 +211,7 @@ class MapCellTests: XCTestCase {
     
     func testCellWithShipyard() {
         let structure = Shipyard(owner: playerId, id: shipyardId, position: initialPosition)
-        let cell = MapCell(position: initialPosition, haliteAmount: 0, ship: nil, structure: structure)
+        let cell = Map.Cell(position: initialPosition, haliteAmount: 0, ship: nil, structure: structure)
         
         XCTAssertFalse(cell.isEmpty)
         XCTAssertFalse(cell.isOccupied)
@@ -222,7 +222,7 @@ class MapCellTests: XCTestCase {
     func testCellWithShipAndDropoff() {
         let ship = Ship(owner: playerId, id: shipId, position: initialPosition, haliteAmount: 0)
         let structure = Shipyard(owner: playerId, id: shipyardId, position: initialPosition)
-        let cell = MapCell(position: initialPosition, haliteAmount: 0, ship: ship, structure: structure)
+        let cell = Map.Cell(position: initialPosition, haliteAmount: 0, ship: ship, structure: structure)
         
         XCTAssertFalse(cell.isEmpty)
         XCTAssertTrue(cell.isOccupied)
@@ -233,7 +233,7 @@ class MapCellTests: XCTestCase {
     // MARK: - Test mark unsafe
     func testMarkUnsafe() {
         let ship = Ship(owner: playerId, id: shipId, position: initialPosition, haliteAmount: 0)
-        var cell = MapCell(position: initialPosition, haliteAmount: 0, ship: nil, structure: nil)
+        var cell = Map.Cell(position: initialPosition, haliteAmount: 0, ship: nil, structure: nil)
         
         XCTAssertFalse(cell.isOccupied)
         cell.markUnsafe(ship: ship)

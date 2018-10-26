@@ -18,7 +18,6 @@
 		83FA26462181446000714BB9 /* Shipyard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26452181446000714BB9 /* Shipyard.swift */; };
 		83FA26482181447B00714BB9 /* Dropoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26472181447B00714BB9 /* Dropoff.swift */; };
 		83FA264A2181449D00714BB9 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26492181449D00714BB9 /* Map.swift */; };
-		83FA264C218144B500714BB9 /* MapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA264B218144B500714BB9 /* MapCell.swift */; };
 		83FA264E2181452500714BB9 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA264D2181452500714BB9 /* Game.swift */; };
 		83FA26562181C97B00714BB9 /* Halite_IIITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26552181C97B00714BB9 /* Halite_IIITests.swift */; };
 		83FA265D2181C9E100714BB9 /* PositionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA265C2181C9E100714BB9 /* PositionTests.swift */; };
@@ -28,7 +27,6 @@
 		83FA26622181DC0F00714BB9 /* DirectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26612181DC0F00714BB9 /* DirectionTests.swift */; };
 		83FA26642181E22400714BB9 /* MapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26632181E22400714BB9 /* MapTests.swift */; };
 		83FA26652181E55E00714BB9 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26492181449D00714BB9 /* Map.swift */; };
-		83FA26662181E56100714BB9 /* MapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA264B218144B500714BB9 /* MapCell.swift */; };
 		83FA26672181E57400714BB9 /* Ship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26432181444200714BB9 /* Ship.swift */; };
 		83FA26682181E57700714BB9 /* Shipyard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26452181446000714BB9 /* Shipyard.swift */; };
 		83FA26692181E58B00714BB9 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2637218142A700714BB9 /* Constant.swift */; };
@@ -64,7 +62,6 @@
 		83FA26452181446000714BB9 /* Shipyard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shipyard.swift; sourceTree = "<group>"; };
 		83FA26472181447B00714BB9 /* Dropoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dropoff.swift; sourceTree = "<group>"; };
 		83FA26492181449D00714BB9 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
-		83FA264B218144B500714BB9 /* MapCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapCell.swift; sourceTree = "<group>"; };
 		83FA264D2181452500714BB9 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		83FA26532181C97B00714BB9 /* Halite-IIITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Halite-IIITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		83FA26552181C97B00714BB9 /* Halite_IIITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Halite_IIITests.swift; sourceTree = "<group>"; };
@@ -130,7 +127,6 @@
 				83FA264D2181452500714BB9 /* Game.swift */,
 				83FA2638218142A700714BB9 /* Log.swift */,
 				83FA26492181449D00714BB9 /* Map.swift */,
-				83FA264B218144B500714BB9 /* MapCell.swift */,
 				83FA263A218142A700714BB9 /* Player.swift */,
 				83FA26412181441300714BB9 /* Position.swift */,
 				83FA26452181446000714BB9 /* Shipyard.swift */,
@@ -242,7 +238,6 @@
 			files = (
 				83FA26422181441300714BB9 /* Position.swift in Sources */,
 				83FA26442181444200714BB9 /* Ship.swift in Sources */,
-				83FA264C218144B500714BB9 /* MapCell.swift in Sources */,
 				83FA264E2181452500714BB9 /* Game.swift in Sources */,
 				83FA26302181425800714BB9 /* main.swift in Sources */,
 				83FA266C2181E74D00714BB9 /* Structure.swift in Sources */,
@@ -264,7 +259,6 @@
 				83FA265D2181C9E100714BB9 /* PositionTests.swift in Sources */,
 				83FA26562181C97B00714BB9 /* Halite_IIITests.swift in Sources */,
 				83FA266A2181E5BA00714BB9 /* Log.swift in Sources */,
-				83FA26662181E56100714BB9 /* MapCell.swift in Sources */,
 				83FA26652181E55E00714BB9 /* Map.swift in Sources */,
 				83FA266D2181E74D00714BB9 /* Structure.swift in Sources */,
 				83FA265E2181CF9B00714BB9 /* Position.swift in Sources */,
