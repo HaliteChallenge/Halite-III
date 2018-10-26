@@ -92,6 +92,83 @@ class MapTests: XCTestCase {
         XCTAssertEqual(tinyMap.distance(from: Position(x: 4, y: 4), to: Position(x: 0, y: 0)), 2)
         XCTAssertEqual(tinyMap.distance(from: Position(x: 5, y: 5), to: Position(x: -2, y: -2)), 4)
     }
+    
+    // MARK: - Test getUnsafeMoves
+    func testUnsafeMovesWithSameSourceAndDestination() {
+        let point = Position(x: 2, y: 2)
+        let unsafeMoves = tinyMap.getUnsafeMoves(source: point, destination: point)
+        
+        XCTAssertTrue(unsafeMoves.isEmpty)
+    }
+    
+    func testUnsafeMovesWithEqualOptions() {
+        let topLeft = Position(x: 1, y: 1)
+        let bottomRight = Position(x: 2, y: 2)
+        let unsafeMoves = tinyMap.getUnsafeMoves(source: topLeft, destination: bottomRight)
+        
+        XCTAssertEqual(unsafeMoves.count, 2)
+        XCTAssert(unsafeMoves.contains(.east))
+        XCTAssert(unsafeMoves.contains(.south))
+        
+        let backwardsMoves = tinyMap.getUnsafeMoves(source: bottomRight, destination: topLeft)
+        
+        XCTAssertEqual(backwardsMoves.count, 2)
+        XCTAssert(backwardsMoves.contains(.north))
+        XCTAssert(backwardsMoves.contains(.west))
+    }
+    
+    func testUnsafeMovesWithHorizontalOptions() {
+        let left = Position(x: 1, y: 1)
+        let right = Position(x: 2, y: 1)
+        let unsafeMoves = tinyMap.getUnsafeMoves(source: left, destination: right)
+        
+        XCTAssertEqual(unsafeMoves.count, 1)
+        XCTAssert(unsafeMoves.contains(.east))
+        
+        let backwardsMoves = tinyMap.getUnsafeMoves(source: right, destination: left)
+        
+        XCTAssertEqual(backwardsMoves.count, 1)
+        XCTAssert(backwardsMoves.contains(.west))
+    }
+    
+    func testUnsafeMovesWithVerticalOptions() {
+        let top = Position(x: 1, y: 1)
+        let bottom = Position(x: 1, y: 2)
+        let unsafeMoves = tinyMap.getUnsafeMoves(source: top, destination: bottom)
+        
+        XCTAssertEqual(unsafeMoves.count, 1)
+        XCTAssert(unsafeMoves.contains(.south))
+        
+        let backwardsMoves = tinyMap.getUnsafeMoves(source: bottom, destination: top)
+        
+        XCTAssertEqual(backwardsMoves.count, 1)
+        XCTAssert(backwardsMoves.contains(.north))
+    }
+    
+    func testUnsafeMovesWithLargeHorizontalDistance() {
+        let left = Position(x: 1, y: 1)
+        let right = Position(x: 3, y: 1)
+        let unsafeMoves = tinyMap.getUnsafeMoves(source: left, destination: right)
+        
+        XCTAssertEqual(unsafeMoves.count, 1)
+        XCTAssert(unsafeMoves.contains(.east))
+    }
+    
+    func testunSafeMovesWithDiagonalWraparound() {
+        let minExtreme = Position(x: 0, y: 0)
+        let maxExtreme = Position(x: tinyMap.width - 1, y: tinyMap.height - 1)
+        let unsafeMoves = tinyMap.getUnsafeMoves(source: minExtreme, destination: maxExtreme)
+        
+        XCTAssertEqual(unsafeMoves.count, 2)
+        XCTAssert(unsafeMoves.contains(.north))
+        XCTAssert(unsafeMoves.contains(.west))
+        
+        let backwardsMoves = tinyMap.getUnsafeMoves(source: maxExtreme, destination: minExtreme)
+        
+        XCTAssertEqual(backwardsMoves.count, 2)
+        XCTAssert(backwardsMoves.contains(.south))
+        XCTAssert(backwardsMoves.contains(.east))
+    }
 }
 
 class MapCellTests: XCTestCase {

@@ -63,8 +63,32 @@ struct Map {
     ///   - destination: The position to move to
     /// - Returns: List of closest directions toward the given target.
     func getUnsafeMoves(source: Position, destination: Position) -> [Direction] {
-        // TODO: Implement this
-        return []
+        let from = normalize(position: source)
+        let to = normalize(position: destination)
+        let xDistance = to.x - from.x
+        let yDistance = to.y - from.y
+        let xCardinality: Direction = xDistance > 0 ? .east : .west
+        let yCardinality: Direction = yDistance > 0 ? .south : .north
+        
+        var possibleMoves = [Direction]()
+        
+        if xDistance != 0 {
+            if Double(abs(xDistance)) < Double(width) / 2.0 {
+                possibleMoves.append(xCardinality)
+            } else {
+                possibleMoves.append(Direction.invert(xCardinality))
+            }
+        }
+        
+        if yDistance != 0 {
+            if Double(abs(yDistance)) < Double(width) / 2.0 {
+                possibleMoves.append(yCardinality)
+            } else {
+                possibleMoves.append(Direction.invert(yCardinality))
+            }
+        }
+        
+        return possibleMoves
     }
     
     /// A method that returns a direction to move closer to a target without colliding with other entities.
