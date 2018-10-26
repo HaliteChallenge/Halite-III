@@ -66,20 +66,32 @@ struct Constant: Codable {
     let game_seed: Int?
     
     static var shared: Constant = {
-        let log = Log(filename: "output.log")
+        guard let input = readLine(strippingNewline: false) else {
+            let errorMessage = "Failed to read from input"
+            Log.shared.error(errorMessage)
+            fatalError(errorMessage)
+        }
         
-        let input = readLine(strippingNewline: false)!
-        log.debug(input)
+        Log.shared.debug(input)
+        
         do {
             return try from(json: input)
         } catch {
-            fatalError("Failed to load constants.")
+            let errorMessage = "Failed to load constants."
+            Log.shared.error(errorMessage)
+            fatalError(errorMessage)
         }
     }()
     
     static func from(json: String) throws -> Constant {
-        let data = json.data(using: .utf8)!
+        guard let data = json.data(using: .utf8) else {
+            throw ConstantError.jsonIsNotUTF8
+        }
         let constants = try JSONDecoder().decode(Constant.self, from: data)
         return constants
     }
+}
+
+enum ConstantError: Error {
+    case jsonIsNotUTF8
 }

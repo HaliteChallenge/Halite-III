@@ -1,6 +1,7 @@
 import Foundation
 
 // Load constants
+_ = Log.seedShared(playerId: "playerID")
 let constants = Constant.shared
 
 //This game object contains the initial game state.
@@ -14,14 +15,15 @@ let game = Game()
 
 game.ready(botName: "MySwiftBot")
 
+Log.shared.info("Successfully created bot! My Player ID is \(game)")
 while true {
     // This loop handles each turn of the game. The game object changes every turn, and you refresh that state by
     // running updateFrame().
     game.updateFrame()
     
     // You extract player metadata and the updated map metadata here for convenience.
-    let me = game.me!
-    let gameMap = game.gameMap!
+    let me = game.me
+    let gameMap = game.gameMap
     
     // A command queue holds all the commands you will run this turn. You build this list up and submit it at the
     // end of the turn.

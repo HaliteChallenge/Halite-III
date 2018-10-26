@@ -12,9 +12,20 @@ import Foundation
 /// engine. Game initializes the game, which includes generating the map and registering the players.
 class Game {
     var turnNumber = 0
-    // TODO: Define these variables. They probably shouldn't be optional.
-    var me: Player?
-    var gameMap: Map?
+    
+    var me: Player
+    var gameMap: Map
+    
+    init() {
+        // TODO: Actually load from input.
+        let playerId = "playerId"
+        let haliteAmount = 0
+        
+        let shipyard = Shipyard(owner: playerId, id: "34", position: Position(x: 0, y: 0))
+        me = Player(id: playerId, shipyard: shipyard, haliteAmount: haliteAmount)
+        
+        gameMap = Map(width: 20, height: 20)
+    }
     
     /// A game of Halite III is initialized when each player sends a string name. Game forwards this to the engine,
     /// and launches the game.
