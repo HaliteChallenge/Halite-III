@@ -12,6 +12,9 @@ import Foundation
 /// engine. Game initializes the game, which includes generating the map and registering the players.
 class Game {
     var turnNumber = 0
+    // TODO: Define these variables
+    var me: Player?
+    var gameMap: Map?
     
     /// A game of Halite III is initialized when each player sends a string name. Game forwards this to the engine,
     /// and launches the game.

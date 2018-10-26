@@ -8,6 +8,7 @@
 import Foundation
 
 struct Constant: Codable {
+    // These match all the constants we see in the input JSON exactly.
     let CAPTURE_ENABLED: Bool
     let CAPTURE_RADIUS: Int
     let DEFAULT_MAP_HEIGHT: Int
@@ -37,6 +38,14 @@ struct Constant: Codable {
     let SHIPS_ABOVE_FOR_CAPTURE: Int
     let STRICT_ERRORS: Bool
     let game_seed: Int
+    
+    // Here are some convenience accessors with friendlier names I noticed in the code
+    var MAX_HALITE: Int {
+        return MAX_ENERGY
+    }
+    var SHIP_COST: Int {
+        return NEW_ENTITY_ENERGY_COST
+    }
     
     static var shared: Constant = {
         let log = Log(filename: "output.log")

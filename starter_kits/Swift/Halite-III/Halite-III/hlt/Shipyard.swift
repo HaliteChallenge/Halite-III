@@ -13,7 +13,7 @@ struct Shipyard: Structure {
     
     let type = StructureType.shipyard
     
-    let owner: String
+    let owner: Player.ID
     let id: ID
     let position: Position
     
