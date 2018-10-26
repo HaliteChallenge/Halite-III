@@ -145,12 +145,14 @@ Can be indexed by a contained entity.
 Coordinates start at 0. Coordinates are normalized for you
 """
 struct GameMap
-    # (TODO: implement getindex() for gamemap by a position) 
     width::Int
     height::Int
     cells::Dict{Position, MapCell}
 end
 
+# index game_map[x, y] or game_map[Position()] without calling game_map.cells
+Base.getindex(G::GameMap, i::Vararg{Int, 2}) = G.cells[Position(i[1], i[2])]
+Base.getindex(G::GameMap, p::Position) = G.cells[p]
 """
 Returns a normalized position object fitting within the bounds of the toroidal map.
 i.e.: Takes a point which may or may not be within width and height bounds, and places

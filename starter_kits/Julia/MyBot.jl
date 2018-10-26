@@ -25,7 +25,7 @@ while true
     log("=============== TURN $(game.turn_number) ================")
     # You extract player metadata and the updated map metadata here for convenience.
     me = game.me
-    game_map = game.game_map.cells
+    game_map = game.game_map
 
     # A command queue holds all the commands you will run this turn. You build this list up and submit it at the
     #   end of the turn.
