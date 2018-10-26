@@ -35,6 +35,7 @@
 		83FA266D2181E74D00714BB9 /* Structure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA266B2181E74D00714BB9 /* Structure.swift */; };
 		83FA266E2181E8E200714BB9 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA263A218142A700714BB9 /* Player.swift */; };
 		83FA266F2181E8F100714BB9 /* Dropoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26472181447B00714BB9 /* Dropoff.swift */; };
+		83FA2681218352EB00714BB9 /* ConstantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2680218352EB00714BB9 /* ConstantTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -70,6 +71,7 @@
 		83FA26612181DC0F00714BB9 /* DirectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionTests.swift; sourceTree = "<group>"; };
 		83FA26632181E22400714BB9 /* MapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTests.swift; sourceTree = "<group>"; };
 		83FA266B2181E74D00714BB9 /* Structure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structure.swift; sourceTree = "<group>"; };
+		83FA2680218352EB00714BB9 /* ConstantTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,9 +142,10 @@
 			isa = PBXGroup;
 			children = (
 				83FA26552181C97B00714BB9 /* Halite_IIITests.swift */,
-				83FA265C2181C9E100714BB9 /* PositionTests.swift */,
+				83FA2680218352EB00714BB9 /* ConstantTests.swift */,
 				83FA26612181DC0F00714BB9 /* DirectionTests.swift */,
 				83FA26632181E22400714BB9 /* MapTests.swift */,
+				83FA265C2181C9E100714BB9 /* PositionTests.swift */,
 				83FA26572181C97B00714BB9 /* Info.plist */,
 			);
 			path = "Halite-IIITests";
@@ -267,6 +270,7 @@
 				83FA26642181E22400714BB9 /* MapTests.swift in Sources */,
 				83FA26602181CFE400714BB9 /* Command.swift in Sources */,
 				83FA26682181E57700714BB9 /* Shipyard.swift in Sources */,
+				83FA2681218352EB00714BB9 /* ConstantTests.swift in Sources */,
 				83FA265F2181CFDD00714BB9 /* Direction.swift in Sources */,
 				83FA26672181E57400714BB9 /* Ship.swift in Sources */,
 				83FA266E2181E8E200714BB9 /* Player.swift in Sources */,
