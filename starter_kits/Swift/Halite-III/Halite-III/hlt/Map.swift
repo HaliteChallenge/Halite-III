@@ -137,8 +137,18 @@ struct Map {
     ///   - destination: The ship's desired position.
     /// - Returns: A single valid direction toward a given target.
     func naiveNavigate(ship: Ship, destination: Position) -> Direction {
-        // TODO: Implement this
-        return .still
+        // No need to normalize destination, since getUnsafeMoves does that
+        let direction = getUnsafeMoves(source: ship.position, destination: destination).first { direction in
+            let targetPosition = ship.position.directionalOffset(direction)
+            return !self[targetPosition].isOccupied
+        }
+        
+        if let direction = direction {
+            var cell = self[ship.position.directionalOffset(direction)]
+            cell.markUnsafe(ship: ship)
+        }
+        
+        return direction ?? .still
     }
     
     /// Index the game map and find a particular map cell with game_map[position].
@@ -151,6 +161,11 @@ struct Map {
     }
     
     // TODO: Implement subscripts for ship, dropoff?
+    
+    // Mark: - Convenience methods
+    func unsafeMoves(from: Position, to: Position) -> [Direction] {
+        return getUnsafeMoves(source: from, destination: to)
+    }
 }
 
 extension Map {

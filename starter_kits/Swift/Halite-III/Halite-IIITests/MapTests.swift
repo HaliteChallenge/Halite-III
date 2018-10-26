@@ -10,6 +10,8 @@ import XCTest
 
 class MapTests: XCTestCase {
     let tinyMap = Map(width: 5, height: 5)
+    let playerId = "1"
+    let shipId = "2"
     
     func testSubscript() {
         let middle = Position(x: 2, y: 2)
@@ -154,7 +156,7 @@ class MapTests: XCTestCase {
         XCTAssert(unsafeMoves.contains(.east))
     }
     
-    func testunSafeMovesWithDiagonalWraparound() {
+    func testUnsafeMovesWithDiagonalWraparound() {
         let minExtreme = Position(x: 0, y: 0)
         let maxExtreme = Position(x: tinyMap.width - 1, y: tinyMap.height - 1)
         let unsafeMoves = tinyMap.getUnsafeMoves(source: minExtreme, destination: maxExtreme)
@@ -169,8 +171,90 @@ class MapTests: XCTestCase {
         XCTAssert(backwardsMoves.contains(.south))
         XCTAssert(backwardsMoves.contains(.east))
     }
+    
+    // MARK: - Test naiveNavigate
+    func testNaiveNavigateWithShipAtDestination() {
+        let shipPosition = Position(x: 1, y: 1)
+        let ship = Ship(owner: playerId, id: shipId, position: shipPosition, haliteAmount: 0)
+        
+        let direction = tinyMap.naiveNavigate(ship: ship, destination: shipPosition)
+        XCTAssertEqual(direction, .still)
+    }
+    
+    func testNaiveNavigateEast() {
+        let shipPosition = Position(x: 1, y: 1)
+        let shipDestination = Position(x: 2, y: 1)
+        let ship = Ship(owner: playerId, id: shipId, position: shipPosition, haliteAmount: 0)
+        
+        let direction = tinyMap.naiveNavigate(ship: ship, destination: shipDestination)
+        XCTAssertEqual(direction, .east)
+    }
+    
+    func testNaiveNavigateWest() {
+        let shipPosition = Position(x: 1, y: 1)
+        let shipDestination = Position(x: 0, y: 1)
+        let ship = Ship(owner: playerId, id: shipId, position: shipPosition, haliteAmount: 0)
+        
+        let direction = tinyMap.naiveNavigate(ship: ship, destination: shipDestination)
+        XCTAssertEqual(direction, .west)
+    }
+    
+    func testNaiveNavigateNorth() {
+        let shipPosition = Position(x: 1, y: 1)
+        let shipDestination = Position(x: 1, y: 0)
+        let ship = Ship(owner: playerId, id: shipId, position: shipPosition, haliteAmount: 0)
+        
+        let direction = tinyMap.naiveNavigate(ship: ship, destination: shipDestination)
+        XCTAssertEqual(direction, .north)
+    }
+    
+    func testNaiveNavigateSouth() {
+        let shipPosition = Position(x: 1, y: 1)
+        let shipDestination = Position(x: 1, y: 2)
+        let ship = Ship(owner: playerId, id: shipId, position: shipPosition, haliteAmount: 0)
+        
+        let direction = tinyMap.naiveNavigate(ship: ship, destination: shipDestination)
+        XCTAssertEqual(direction, .south)
+    }
+    
+    func testNaiveNavigateNorthWithWraparound() {
+        let shipPosition = Position(x: 1, y: 1)
+        let shipDestination = Position(x: 1, y: 4)
+        let ship = Ship(owner: playerId, id: shipId, position: shipPosition, haliteAmount: 0)
+        
+        let direction = tinyMap.naiveNavigate(ship: ship, destination: shipDestination)
+        XCTAssertEqual(direction, .north)
+    }
+    
+    func testNaiveNavigateWestWithWraparound() {
+        let shipPosition = Position(x: 1, y: 1)
+        let shipDestination = Position(x: 4, y: 1)
+        let ship = Ship(owner: playerId, id: shipId, position: shipPosition, haliteAmount: 0)
+        
+        let direction = tinyMap.naiveNavigate(ship: ship, destination: shipDestination)
+        XCTAssertEqual(direction, .west)
+    }
+    
+    func testNaiveNavigateSouthEast() {
+        let shipPosition = Position(x: 1, y: 1)
+        let shipDestination = Position(x: 2, y: 2)
+        let ship = Ship(owner: playerId, id: shipId, position: shipPosition, haliteAmount: 0)
+        
+        let direction = tinyMap.naiveNavigate(ship: ship, destination: shipDestination)
+        XCTAssert(direction == .south || direction == .east)
+    }
+    
+    func testNaiveNavigateSouthEastWithWraparound() {
+        let shipPosition = Position(x: 4, y: 4)
+        let shipDestination = Position(x: 0, y: 0)
+        let ship = Ship(owner: playerId, id: shipId, position: shipPosition, haliteAmount: 0)
+        
+        let direction = tinyMap.naiveNavigate(ship: ship, destination: shipDestination)
+        XCTAssert(direction == .south || direction == .east)
+    }
 }
 
+// MARK: - Map.Cell Tests
 class MapCellTests: XCTestCase {
     // MARK: Common properties
     let initialPosition = Position(x: 10, y: 10)
