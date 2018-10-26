@@ -145,7 +145,7 @@ Can be indexed by a contained entity.
 Coordinates start at 0. Coordinates are normalized for you
 """
 struct GameMap
-# (TODO: by a position, or) 
+    # (TODO: implement getindex() for gamemap by a position) 
     width::Int
     height::Int
     cells::Dict{Position, MapCell}
@@ -184,9 +184,9 @@ NOTE: Ignores toroid
 - `source::Position` : The source position.
 - `target::Position` : The target position.
 """
-function get_targert_direction(source::Position, target::Position)
-    y = target.y > source.y ? 1 : target.y < source.y ? -1 : 0
-    x = target.x > source.x ? 1 : target.x < source.x ? -1 : 0
+function get_target_direction(source::Position, target::Position)
+    y = target.y > source.y ? Direction("South") : target.y < source.y ? Direction("North") : nothing 
+    x = target.x > source.x ? Direction("East") : target.x < source.x ? Direction("West") : nothing
     y, x
 end
 
@@ -204,10 +204,10 @@ function get_unsafe_moves(game_map::GameMap, source::Position, destination::Posi
     source = normalize(game_map, source)
     destination = normalize(game_map, destination)
     distance = abs(destination - source)
-    y_cardinality, x_cardinality = get_targert_direction(source, destination)
-    x = distance.x < game_map.width / 2 ? x_cardinality : -x_cardinality
-    y = distance.y < game_map.height / 2 ? y_cardinality : -y_cardinality
-    x, y
+    y_cardinality, x_cardinality = get_target_direction(source, destination)
+    x = distance.x < game_map.width / 2 ? x_cardinality : invert(x_cardinality)
+    y = distance.y < game_map.height / 2 ? y_cardinality : invert(y_cardinality)
+    [x, y]
 end
 
 """
@@ -218,15 +218,16 @@ Returns a singular safe move towards the destination.
 - `destination::Position` : Ending position.
 """
 function naive_navigate(game_map::GameMap, ship::Ship, destination::Position)
-    # TODO: test return type is what we want
     # No need to normalize destination, since get_unsafe_moves does that.
-    for target_pos in get_unsafe_moves(game_map, ship, destination)
-        if !is_occupied(target_pos)
-            mark_unsafe!(target_pos, ship)
-            return target_pos
+    for direction in get_unsafe_moves(game_map, ship.position, destination)
+        if direction == nothing continue end
+        target_pos = normalize(game_map, directional_offset(ship.position, direction))
+        if !is_occupied(game_map.cells[target_pos])
+            mark_unsafe!(game_map.cells[target_pos], ship)
+            return direction
         end
     end
-    0, 0
+    Direction("Still")
 end
 
 "Creates a map object from the input given by the game engine."
