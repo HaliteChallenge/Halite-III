@@ -425,21 +425,11 @@
                                 <div v-if="challengeGames.length > 0">
                                     <div class="table-sticky-container">
                                         <div class="table-wrapper">
-                                            <table class="table table-leader table-sticky">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="little-pd">Challengers</th>
-                                                        <th class="text-center hidden-xs">Games</th>
-                                                        <th class="text-center">Date Initiated</th>
-                                                        <th class="text-center">Status</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
                                             <div class="table-scrollable-content">
                                                 <table class="table table-leader">
                                                     <thead>
                                                         <tr>
-                                                            <th class="little-pd">Challengers</th>
+                                                            <th class="little-pd challenge-first-cell">Challengers</th>
                                                             <th class="text-center hidden-xs">Games</th>
                                                             <th class="text-center">Date Initiated</th>
                                                             <th class="text-center">Status</th>
@@ -447,16 +437,16 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="challenge in challengeGames">
-                                                            <td class="little-pd">
+                                                            <td class="little-pd challenge-first-cell">
                                                               <div class="info-icon-trophy" v-if="challenge.players[0].rank == 0 && challenge.status == 'Completed'">
                                                                 <span class="tropy-icon"></span>
                                                               </div>
-                                                              <a v-for="(player, index) in challenge.players" :href="`/user?user_id=${player.user_id}`" class="game-participant">
+                                                              <a v-for="(player, index) in challenge.players" :href="`/user?user_id=${player.user_id}`" class="game-participant" :title="player.username">
                                                                 <profile-image
                                                                   :username="player.username"
                                                                   :profileImage="player.profile_image_key"
                                                                 />
-                                                                <span class="rank">{{player.rank + 1}}</span>
+                                                                <span class="rank">#{{player.rank + 1}} ({{player.points}} points, {{player.wins}} wins)</span>
                                                               </a>
                                                             </td>
                                                             <td class="text-center hidden-xs">
@@ -487,6 +477,14 @@
                                     competition is live. You can
                                     initiate up to three challenges
                                     per day.
+                                </p>
+
+                                <p class="explanation">
+                                    Challenges are scored by points;
+                                    points are assigned by rank in a
+                                    challenge game. First place
+                                    receives 4 points, second place
+                                    receives 3 points, and so on.
                                 </p>
 
                                 <i class="xline xline-bottom"></i>
@@ -916,15 +914,36 @@
 
               // sort
               if (challenge.num_games > 0){
+                let playerObjects = {}
                 let sortedPlayers = _.orderBy(newChallenge.players, ['points'], ['desc'])
                 _.forEach(newChallenge.players, (player, index) => {
                   sortedPlayers.forEach((p, i) => {
                     if (p.user_id == player.user_id){
                       newChallenge.players[index].rank = i
+                      newChallenge.players[index].wins = 0
+                      playerObjects[player.user_id] = newChallenge.players[index]
                       return false
                     }
                   })
                 })
+
+                window.fetch(`${api.API_SERVER_URL}/challenge/${challenge.challenge_id}/match`)
+                                     .then(r => r.json())
+                                     .then(matches => {
+                                       for (const match of matches) {
+                                         for (const ps of match.stats.player_statistics) {
+                                           if (ps.rank === 1) {
+                                             for (const [user_id, player] of Object.entries(match.players)) {
+                                               if (player.player_index === ps.player_id) {
+                                                 playerObjects[user_id].wins += 1
+                                                 break;
+                                               }
+                                             }
+                                             break;
+                                           }
+                                         }
+                                       }
+                                     })
               } else {
                 // set rank to 1 if there is no game
                 _.forEach(newChallenge.players, (player, index) => {
@@ -1249,6 +1268,10 @@
       width: 150%;
       transform: translateX(-50%);
       cursor: help;
+    }
+
+    .challenge-first-cell {
+      max-width: 10em;
     }
 </style>
 <!--
