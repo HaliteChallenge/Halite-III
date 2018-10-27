@@ -20,23 +20,12 @@ struct Map {
     init(width: Int, height: Int, initialHalite: [[Int]]? = nil) {
         self.width = width
         self.height = height
-        if let initialHalite = initialHalite {
-            self.cells = initialHalite.enumerated().map { row, haliteRow in
-                haliteRow.enumerated().map { column, haliteAmount in
-                    Cell(position: Position(x: column, y: row),
-                         haliteAmount: haliteAmount,
-                         ship: nil,
-                         structure: nil)
-                }
-            }
-        } else {
-            self.cells = (0..<height).map { row in
-                (0..<width).map { column in
-                    Cell(position: Position(x: column, y: row),
-                         haliteAmount: 0,
-                         ship: nil,
-                         structure: nil)
-                }
+        self.cells = (0 ..< height).map { row in
+            (0 ..< width).map { column in
+                Cell(position: Position(x: column, y: row),
+                     haliteAmount: initialHalite?[row][column] ?? 0,
+                     ship: nil,
+                     structure: nil)
             }
         }
     }
