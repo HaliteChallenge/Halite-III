@@ -17,19 +17,43 @@ struct Map {
     
     private var cells: [[Cell]]
     
-    init(width: Int, height: Int, initialHalite: [[Int]]) {
+    init(width: Int, height: Int, initialHalite: [[Int]]? = nil) {
         self.width = width
         self.height = height
-        self.cells = [[Cell]]()
-        // TODO: Use the initial Halite and make the grid.
+        if let initialHalite = initialHalite {
+            self.cells = initialHalite.enumerated().map { row, haliteRow in
+                haliteRow.enumerated().map { column, haliteAmount in
+                    Cell(position: Position(x: column, y: row),
+                         haliteAmount: haliteAmount,
+                         ship: nil,
+                         structure: nil)
+                }
+            }
+        } else {
+            self.cells = (0..<height).map { row in
+                (0..<width).map { column in
+                    Cell(position: Position(x: column, y: row),
+                         haliteAmount: 0,
+                         ship: nil,
+                         structure: nil)
+                }
+            }
+        }
     }
     
     /// A map cell is an object representation of a cell on the game map.
-    struct Cell: Placeable {
+    class Cell: Placeable {
         let position: Position
         let haliteAmount: Int
         var ship: Ship?
         let structure: Structure?
+        
+        init(position: Position, haliteAmount: Int, ship: Ship?, structure: Structure?) {
+            self.position = position
+            self.haliteAmount = haliteAmount
+            self.ship = ship
+            self.structure = structure
+        }
         
         /// Returns True if the cell is empty.
         var isEmpty: Bool {
@@ -56,7 +80,7 @@ struct Map {
         /// This marking resets every turn and is used by naive_navigate to avoid collisions.
         ///
         /// - Parameter ship: The ship on this cell.
-        mutating func markUnsafe(ship: Ship) {
+        func markUnsafe(ship: Ship) {
             self.ship = ship
         }
     }
@@ -153,7 +177,7 @@ struct Map {
         }
         
         if let direction = direction {
-            var cell = self[ship.position.directionalOffset(direction)]
+            let cell = self[ship.position.directionalOffset(direction)]
             cell.markUnsafe(ship: ship)
         }
         
@@ -165,8 +189,8 @@ struct Map {
     /// - Parameter position: The position to return a map cell
     subscript(_ position: Position) -> Map.Cell {
         get {
-            // TODO: Actually pull from a the map's data source.
-            return Map.Cell(position: position, haliteAmount: 0, ship: nil, structure: nil)
+            let normalized = normalize(position: position)
+            return cells[normalized.y][normalized.x]
         }
     }
     

@@ -10,7 +10,7 @@ import XCTest
 
 class MapTests: XCTestCase {
     let tinyMap = Map(width: 5, height: 5)
-    let playerId = "1"
+    let playerId = 1
     let shipId = "2"
     
     func testSubscript() {
@@ -18,6 +18,18 @@ class MapTests: XCTestCase {
         
         let cell = tinyMap[middle]
         XCTAssert(cell.isEmpty)
+    }
+    
+    // MARK - Test Initialization
+    func testInitializationWithNoHalite() {
+        let size = 3
+        let map = Map(width: size, height: size)
+        
+        (0..<size).forEach { row in
+            (0..<size).forEach{ column in
+                XCTAssertEqual(map[Position(x: column, y: row)].haliteAmount, 0)
+            }
+        }
     }
     
     // MARK: - Test normalize method
@@ -258,9 +270,9 @@ class MapTests: XCTestCase {
 class MapCellTests: XCTestCase {
     // MARK: Common properties
     let initialPosition = Position(x: 10, y: 10)
-    let playerId = "1"
-    let dropoffId = "2"
-    let shipyardId = "3"
+    let playerId = 1
+    let dropoffId = 2
+    let shipyardId = 3
     let shipId = "4"
     
     // MARK: - Test Cell property methods
@@ -317,7 +329,7 @@ class MapCellTests: XCTestCase {
     // MARK: - Test mark unsafe
     func testMarkUnsafe() {
         let ship = Ship(owner: playerId, id: shipId, position: initialPosition, haliteAmount: 0)
-        var cell = Map.Cell(position: initialPosition, haliteAmount: 0, ship: nil, structure: nil)
+        let cell = Map.Cell(position: initialPosition, haliteAmount: 0, ship: nil, structure: nil)
         
         XCTAssertFalse(cell.isOccupied)
         cell.markUnsafe(ship: ship)
