@@ -37,11 +37,11 @@ function update_frame!(game::Game)
     update_game_map!(game.game_map)
     for player in values(game.players)
         for ship in get_ships(player)
-            mark_unsafe!(game.game_map.cells[ship.position], ship)
+            mark_unsafe!(game.game_map[ship.position], ship)
         end
-        game.game_map.cells[player.shipyard.position].structure = player.shipyard
+        game.game_map[player.shipyard.position].structure = player.shipyard
         for dropoff in get_dropoffs(player)
-            game.game_map.cells[dropoff.position].structure = dropoff
+            game.game_map[dropoff.position].structure = dropoff
         end
     end
     game
