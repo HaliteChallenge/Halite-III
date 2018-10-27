@@ -32,6 +32,29 @@ class MapTests: XCTestCase {
         }
     }
     
+    func testInitializationWithSomeHalite() {
+        let size = 3
+        let amount = 10
+        let halite = [
+            [amount, 0, 0],
+            [0, amount, 0],
+            [0, 0, amount]
+        ]
+        
+        let map = Map(width: size, height: size, initialHalite: halite)
+        
+        (0..<size).forEach { row in
+            (0..<size).forEach{ column in
+                let position = Position(x: column, y: row)
+                if row == column {
+                    XCTAssertEqual(map[position].haliteAmount, amount)
+                } else {
+                    XCTAssertEqual(map[position].haliteAmount, 0)
+                }
+            }
+        }
+    }
+    
     // MARK: - Test normalize method
     func testNormalizeWithNormalPosition() {
         let position = Position(x: 2, y: 2)
