@@ -469,12 +469,12 @@
                                 </div>
 
                                 <p class="explanation">
-                                    A challenge will run for 30
-                                    games. Challenge games will not
-                                    affect your score and will never
-                                    make up more than 10% of total
-                                    games running while the
-                                    competition is live. You can
+                                    A challenge will run for at least
+                                    10 games (formerly 30). Challenge
+                                    games will not affect your score
+                                    and will never make up more than
+                                    10% of total games running while
+                                    the competition is live. You can
                                     initiate up to three challenges
                                     per day.
                                 </p>
