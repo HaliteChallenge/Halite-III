@@ -13,18 +13,47 @@ import Foundation
 class Game {
     var turnNumber = 0
     
-    var me: Player
+    var me: Player {
+        return players[myId]
+    }
     var gameMap: Map
     
+    private var myId: Int
+    private var players: [Player]
+    private let shouldStripNewlines = false
+    private let networking: Networking
+    
     init() {
-        // TODO: Actually load from input.
-        let playerId = "playerId"
-        let haliteAmount = 0
+        let networking = Networking()
+        self.networking = networking
         
-        let shipyard = Shipyard(owner: playerId, id: "34", position: Position(x: 0, y: 0))
-        me = Player(id: playerId, shipyard: shipyard, haliteAmount: haliteAmount)
+        // Load shared constants from the first line of input
+        let constantInput = networking.readConstants()
+        do {
+            try Constant.loadShared(with: constantInput.json)
+        } catch {
+            fatalError("Failed to parse constants from input")
+        }
         
-        gameMap = Map(width: 20, height: 20)
+        // Load player count and ID from next line of input.
+        let identity = networking.readIdentity()
+        myId = identity.myId
+        
+        // Load each player
+        players = (0..<identity.numPlayers).map { index in
+            let playerInput = networking.readPlayer()
+            let shipyard = Shipyard(owner: playerInput.playerId, id: unknownStructureId, position: playerInput.shipyardPosition)
+            return Player(id: playerInput.playerId, shipyard: shipyard)
+        }
+        
+        // Load map size
+        let mapSize = networking.readMapDimensions()
+        let initialHalite = (0..<mapSize.mapHeight).map { row -> [Int] in
+            let mapRow = networking.readMapRow()
+            return mapRow.haliteAmount
+        }
+
+        gameMap = Map(width: mapSize.mapWidth, height: mapSize.mapHeight, initialHalite: initialHalite)
     }
     
     /// A game of Halite III is initialized when each player sends a string name. Game forwards this to the engine,

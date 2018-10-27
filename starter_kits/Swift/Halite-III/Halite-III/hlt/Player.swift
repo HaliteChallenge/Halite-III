@@ -9,11 +9,11 @@
 import Foundation
 
 struct Player {
-    typealias ID = String
+    typealias ID = Int
     
     let id: ID
     let shipyard: Shipyard
-    let haliteAmount: Int
+    let haliteAmount: Int = 0
     
     // MARK: Ships
     /// Returns the ship object associated with the ship id provided as an argument.

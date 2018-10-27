@@ -15,6 +15,15 @@ struct Map {
     let width: Int
     let height: Int
     
+    private var cells: [[Cell]]
+    
+    init(width: Int, height: Int, initialHalite: [[Int]]) {
+        self.width = width
+        self.height = height
+        self.cells = [[Cell]]()
+        // TODO: Use the initial Halite and make the grid.
+    }
+    
     /// A map cell is an object representation of a cell on the game map.
     struct Cell: Placeable {
         let position: Position

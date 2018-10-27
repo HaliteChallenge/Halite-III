@@ -1,7 +1,7 @@
 import Foundation
 
 // Load constants
-_ = Log.seedShared(playerId: "playerID")
+_ = Log.seedShared(playerId: 23)
 let constants = Constant.shared
 
 //This game object contains the initial game state.

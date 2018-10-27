@@ -65,23 +65,13 @@ struct Constant: Codable {
     let STRICT_ERRORS: Bool?
     let game_seed: Int?
     
-    static var shared: Constant = {
-        guard let input = readLine(strippingNewline: false) else {
-            let errorMessage = "Failed to read from input"
-            Log.shared.error(errorMessage)
-            fatalError(errorMessage)
+    static private var _shared: Constant?
+    static var shared: Constant {
+        guard let _shared = _shared else {
+            fatalError("You need to call loadShared before accessing this singleton.")
         }
-        
-        Log.shared.debug(input)
-        
-        do {
-            return try from(json: input)
-        } catch {
-            let errorMessage = "Failed to load constants."
-            Log.shared.error(errorMessage)
-            fatalError(errorMessage)
-        }
-    }()
+        return _shared
+    }
     
     static func from(json: String) throws -> Constant {
         guard let data = json.data(using: .utf8) else {
@@ -89,6 +79,10 @@ struct Constant: Codable {
         }
         let constants = try JSONDecoder().decode(Constant.self, from: data)
         return constants
+    }
+    
+    static func loadShared(with json: String) throws {
+        _shared = try from(json: json)
     }
 }
 

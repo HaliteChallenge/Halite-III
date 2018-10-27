@@ -12,7 +12,8 @@ protocol Placeable {
     var position: Position { get }
 }
 
-typealias StructureID = String
+typealias StructureID = Int
+let unknownStructureId = -1
 protocol Structure {
     var id: StructureID { get }
     var owner: Player.ID { get }

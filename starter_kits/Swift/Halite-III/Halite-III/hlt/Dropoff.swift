@@ -12,7 +12,7 @@ import Foundation
 /// just as they would at the shipyard. If two dropoffs are constructed in the same location, the engine returns an
 /// error and the construct command fails. The player class has the methods to access dropoffs.
 struct Dropoff: Placeable, Structure {
-    typealias ID = String
+    typealias ID = Int
     let type = StructureType.dropoff
     
     let owner: Player.ID
