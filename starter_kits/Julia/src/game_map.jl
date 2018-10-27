@@ -150,9 +150,6 @@ struct GameMap
     cells::Dict{Position, MapCell}
 end
 
-# index game_map[x, y] or game_map[Position()] without calling game_map.cells
-Base.getindex(G::GameMap, i::Vararg{Int, 2}) = G.cells[Position(i[1], i[2])]
-Base.getindex(G::GameMap, p::Position) = G.cells[p]
 """
 Returns a normalized position object fitting within the bounds of the toroidal map.
 i.e.: Takes a point which may or may not be within width and height bounds, and places
@@ -162,6 +159,10 @@ it within those bounds considering wraparound.
 - `position::Position` : A position object.
 """
 normalize(game_map::GameMap, position::Position) = Position(mod(position.x, game_map.width), mod(position.y, game_map.height))
+
+# index game_map[x, y] or game_map[Position()] without calling game_map.cells
+Base.getindex(G::GameMap, i::Vararg{Int, 2}) = G.cells[normalize(G, Position(i[1], i[2]))]
+Base.getindex(G::GameMap, p::Position) = G.cells[normalize(G, p)]
 
 """
 Compute the Manhattan distance between two locations.
@@ -224,8 +225,8 @@ function naive_navigate(game_map::GameMap, ship::Ship, destination::Position)
     for direction in get_unsafe_moves(game_map, ship.position, destination)
         if direction == nothing continue end
         target_pos = normalize(game_map, directional_offset(ship.position, direction))
-        if !is_occupied(game_map.cells[target_pos])
-            mark_unsafe!(game_map.cells[target_pos], ship)
+        if !is_occupied(game_map[target_pos])
+            mark_unsafe!(game_map[target_pos], ship)
             return direction
         end
     end
@@ -251,13 +252,13 @@ end
 function update_game_map!(game_map::GameMap)
     for y in 0:game_map.height-1
         for x in 0:game_map.width-1
-            game_map.cells[Position(x, y)].ship = nothing
+            game_map[Position(x, y)].ship = nothing
         end
     end
 
     for _ in 1:parse(Int, readline())
         cell_x, cell_y, cell_energy = parse.(Int, split(readline()))
-        game_map.cells[Position(cell_x, cell_y)].halite_amount = cell_energy
+        game_map[Position(cell_x, cell_y)].halite_amount = cell_energy
     end
     game_map
 end
