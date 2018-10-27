@@ -93,6 +93,16 @@ class Networking {
         return MapUpdates(updates: updates)
     }
     
+    func write(commands: [Command]) {
+        let output = commands.map { $0.rawValue }.joined(separator: " ")
+        Log.shared.debug("Sending:\(output)")
+        print(output)
+    }
+    
+    func writeReady(botName: String) {
+        print(botName)
+    }
+    
     // MARK: - Private helpers
     private func readLine(message: String) -> String {
         guard let input = Swift.readLine(strippingNewline: true) else {

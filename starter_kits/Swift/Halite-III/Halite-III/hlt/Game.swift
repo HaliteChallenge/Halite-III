@@ -66,7 +66,7 @@ class Game {
     ///
     /// - Parameter botName: The name of the bot
     func ready(botName: String) {
-        // TODO: Implement this.
+        networking.writeReady(botName: botName)
     }
     
     /// The game loop sends the game state to the players and processes commands returned from the players. This
@@ -84,6 +84,6 @@ class Game {
     ///
     /// - Parameter commands: The command queue to execute.
     func endTurn(commands: [Command]) {
-        // TODO: Implement this.
+        networking.write(commands: commands)
     }
 }
