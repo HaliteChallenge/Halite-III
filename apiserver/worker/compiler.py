@@ -376,7 +376,6 @@ comp_args = {
     ],
     "Julia": [
         ["""JULIA_DEPOT_PATH=$(pwd) julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate()'"""],
-        ["chmod", "+x", BOT + ".jl"],
     ],
     "Haskell": [
         ["ghc", "--make", BOT + ".hs", "-O", "-v0", "-rtsopts"],
@@ -565,8 +564,8 @@ languages = (
         "JULIA_DEPOT_PATH=$(pwd) julia --project MyBot.jl",
         [],
         [
-            ([], ErrorFilterCompiler(comp_args["Julia"][0])),
-            ([], ErrorFilterCompiler(comp_args["Julia"][1])),
+            ([], ExternalCompiler(comp_args["Julia"][0])),
+            (["*.jl"], ChmodCompiler("Julia")),
         ]
     ),
     Language("Lisp", BOT, "MyBot.lisp",
