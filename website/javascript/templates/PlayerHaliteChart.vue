@@ -56,7 +56,7 @@ export default {
       if (width < 0) return
       const g1 = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
       const g2 = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')').attr('class', 'group-2')
-      const innerSvg = g1.append('foreignObject').attr('height', height).attr('width', width).append('svg')
+      const innerSvg = g1.append('foreignObject').attr('height', height).attr('width', width).attr('style', 'opacity: 0.9;').append('svg')
 
       this.path1List = []
       this.path2List = []
