@@ -579,11 +579,14 @@ languages = (
         [],
         [(["*.lua"], ChmodCompiler("Lua"))]
     ),
-    # Language("Lua/Lua5.2", BOT +".lua", "MyBot.lua",
-    #     "lua5.2 MyBot.lua",
-    #     [],
-    #     [(["*.lua"], ChmodCompiler("Lua"))]
-    # ),
+    Language("Lua/Lua5.3", BOT +".lua53", "MyBot.lua53",
+        "lua5.3 MyBot.lua53",
+        [],
+        [
+            (["*.lua"], ChmodCompiler("Lua")),
+            (["*.lua53"], ChmodCompiler("Lua")),
+        ]
+    ),
     Language("OCaml", BOT +".native", "MyBot.ml",
         "./MyBot.native",
         [BOT + ".native"],
