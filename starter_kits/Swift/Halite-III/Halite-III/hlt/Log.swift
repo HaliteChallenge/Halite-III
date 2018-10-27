@@ -50,7 +50,7 @@ class Log {
 
     // MARK: - Private methods
     private func append(prefix: String, message: String) {
-        let string = "[\(prefix)] \(message)"
+        let string = "[\(prefix)] \(message)\n"
         logFile.write(string.data(using: .utf8)!)
     }
 }

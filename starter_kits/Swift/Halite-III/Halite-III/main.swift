@@ -1,9 +1,5 @@
 import Foundation
 
-// Load constants
-_ = Log.seedShared(playerId: 23)
-let constants = Constant.shared
-
 //This game object contains the initial game state.
 let game = Game()
 
@@ -32,7 +28,7 @@ while true {
     for ship in me.getShips() {
         // For each of your ships, move randomly if the ship is on a low halite location or the ship is full. Else,
         // collect halite.
-        if gameMap[ship.position].haliteAmount < constants.MAX_HALITE / 10 || ship.isFull() {
+        if gameMap[ship.position].haliteAmount < Constant.shared.MAX_HALITE / 10 || ship.isFull() {
             commandQueue.append(ship.move(direction: Direction.allCardinals.randomElement()!))
         } else {
             commandQueue.append(ship.stayStill())
@@ -42,7 +38,7 @@ while true {
     // If the game is in the first 200 turns and you have enough halite, spawn a ship. Don't spawn a ship if you
     // currently have a ship at port, though - the ships will collide.
     if game.turnNumber <= 200,
-        me.haliteAmount >= constants.SHIP_COST,
+        me.haliteAmount >= Constant.shared.SHIP_COST,
         !gameMap[me.shipyard.position].isOccupied {
         commandQueue.append(me.shipyard.spawn())
     }

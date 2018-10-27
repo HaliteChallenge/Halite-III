@@ -39,17 +39,22 @@ class Game {
         let identity = networking.readIdentity()
         myId = identity.myId
         
+        _ = Log.seedShared(playerId: myId)
+        
         // Load each player
         players = (0..<identity.numPlayers).map { index in
             let playerInput = networking.readPlayer()
+            Log.shared.info("Got player: \(playerInput)")
             let shipyard = Shipyard(owner: playerInput.playerId, id: unknownStructureId, position: playerInput.shipyardPosition)
             return Player(id: playerInput.playerId, shipyard: shipyard)
         }
         
         // Load map size
         let mapSize = networking.readMapDimensions()
+        Log.shared.info("Got map size: \(mapSize)")
         let initialHalite = (0..<mapSize.mapHeight).map { row -> [Int] in
             let mapRow = networking.readMapRow()
+            Log.shared.info("Got map row: \(mapRow)")
             return mapRow.haliteAmount
         }
 
