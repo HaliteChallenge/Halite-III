@@ -1,7 +1,9 @@
 package hlt
 
-class EntityId(val id: Int) {
+data class EntityId(val id: Int) {
     companion object {
         val NONE = EntityId(-1)
     }
+
+    override fun toString(): String = id.toString()
 }
