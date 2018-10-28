@@ -42,6 +42,14 @@ class Networking {
         let updates: [Update]
     }
     
+    struct PlayerUpdate {
+        let playerID: Player.ID
+        let halite: Int
+        
+        let ships: [Ship]
+        let dropoffs: [Dropoff]
+    }
+    
     // MARK - Read methods
     func readConstants() -> ConstantsInput {
         let line = readLine(message: "Failed to read constant json input.")
@@ -93,10 +101,49 @@ class Networking {
         return MapUpdates(updates: updates)
     }
     
+    func readTurnNumber() -> Int {
+        let line = readLine(message: "Failed to read the new turn number.")
+        guard let turnNumber = Int(line) else {
+            fatalError("The number of updates to expect wasn't a number.")
+        }
+        return turnNumber
+    }
+    
+    func readPlayerUpdate() -> PlayerUpdate {
+        let line = readLine(message: "Failed to read updated player information.")
+        let numbers = line.split(separator: " ").compactMap { Int($0) }
+        assert(numbers.count == 4)
+        let playerId = numbers[0]
+        let shipCount = numbers[1]
+        let dropoffCount = numbers[2]
+        let playerHalite = numbers[3]
+        
+        let ships = (0..<shipCount).map { _ -> Ship in
+            let line = readLine(message: "Failed to read a ship from a player update")
+            let numbers = line.split(separator: " ").compactMap { Int($0) }
+            assert(numbers.count == 4)
+            return Ship(owner: playerId,
+                        id: numbers[0],
+                        position: Position(x: numbers[1], y: numbers[2]),
+                        haliteAmount: numbers[3])
+        }
+        
+        let dropoffs = (0..<dropoffCount).map { _ -> Dropoff in
+            let line = readLine(message: "Failed to read a dropoff from a player update")
+            let numbers = line.split(separator: " ").compactMap { Int($0) }
+            assert(numbers.count == 3)
+            return Dropoff(owner: playerId,
+                           id: numbers[0],
+                           position: Position(x: numbers[1], y: numbers[2]))
+        }
+        
+        return PlayerUpdate(playerID: playerId, halite: playerHalite, ships: ships, dropoffs: dropoffs)
+    }
+    
     func write(commands: [Command]) {
         let output = commands.map { $0.rawValue }.joined(separator: " ")
         Log.shared.debug("Sending:\(output)")
-        print(output)
+        print("\(output)\n")
     }
     
     func writeReady(botName: String) {

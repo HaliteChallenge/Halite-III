@@ -66,6 +66,7 @@ class Game {
     ///
     /// - Parameter botName: The name of the bot
     func ready(botName: String) {
+        Log.shared.debug("Sending ready command with name \(botName)")
         networking.writeReady(botName: botName)
     }
     
@@ -75,7 +76,24 @@ class Game {
     ///
     /// Updates the game state, and returns nothing.
     func updateFrame() {
-        // TODO: Implement this.
+        turnNumber = networking.readTurnNumber()
+        
+        Log.shared.info("============ TURN \(turnNumber) ============")
+        
+        let playerUpdates = (0..<players.count).map { _ -> Networking.PlayerUpdate in
+            let playerUpdate = networking.readPlayerUpdate()
+            // TODO: Use the player update
+            Log.shared.debug("Got update for player \(playerUpdate.playerID): \(playerUpdate.ships.count) ships, \(playerUpdate.dropoffs.count) dropoffs.")
+            return playerUpdate
+        }
+        Log.shared.debug("Got \(playerUpdates.count) player updates.")
+        
+        let mapUpdates = networking.readMapUpdates()
+        Log.shared.debug("Got \(mapUpdates.updates.count) map updates.")
+        // TODO: Use the map update
+        
+        // TODO: Clear & mark all unsafe cells
+        
     }
     
     /// The command queue is a list of commands. The player’s code fills this list with commands and sends it to the
@@ -84,6 +102,7 @@ class Game {
     ///
     /// - Parameter commands: The command queue to execute.
     func endTurn(commands: [Command]) {
+        Log.shared.debug("Ending turn with \(commands.count) commands")
         networking.write(commands: commands)
     }
 }

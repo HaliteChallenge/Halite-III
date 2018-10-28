@@ -11,7 +11,7 @@ import XCTest
 class MapTests: XCTestCase {
     let tinyMap = Map(width: 5, height: 5)
     let playerId = 1
-    let shipId = "2"
+    let shipId = 2
     
     func testSubscript() {
         let middle = Position(x: 2, y: 2)
@@ -296,7 +296,7 @@ class MapCellTests: XCTestCase {
     let playerId = 1
     let dropoffId = 2
     let shipyardId = 3
-    let shipId = "4"
+    let shipId = 4
     
     // MARK: - Test Cell property methods
     func testEmptyCell() {

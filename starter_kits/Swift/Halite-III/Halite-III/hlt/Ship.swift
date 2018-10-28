@@ -9,7 +9,7 @@
 import Foundation
 
 struct Ship: Placeable {
-    typealias ID = String
+    typealias ID = Int
     
     let owner: Player.ID
     let id: ID
