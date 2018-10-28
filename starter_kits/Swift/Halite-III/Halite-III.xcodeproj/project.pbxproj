@@ -1,0 +1,488 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		835EC3EE2184A5C900277E76 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835EC3ED2184A5C900277E76 /* Networking.swift */; };
+		83FA26302181425800714BB9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA262F2181425800714BB9 /* main.swift */; };
+		83FA263B218142A700714BB9 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2637218142A700714BB9 /* Constant.swift */; };
+		83FA263C218142A700714BB9 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2638218142A700714BB9 /* Log.swift */; };
+		83FA263D218142A700714BB9 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2639218142A700714BB9 /* Command.swift */; };
+		83FA263E218142A700714BB9 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA263A218142A700714BB9 /* Player.swift */; };
+		83FA2640218143DB00714BB9 /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA263F218143DB00714BB9 /* Direction.swift */; };
+		83FA26422181441300714BB9 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26412181441300714BB9 /* Position.swift */; };
+		83FA26442181444200714BB9 /* Ship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26432181444200714BB9 /* Ship.swift */; };
+		83FA26462181446000714BB9 /* Shipyard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26452181446000714BB9 /* Shipyard.swift */; };
+		83FA26482181447B00714BB9 /* Dropoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26472181447B00714BB9 /* Dropoff.swift */; };
+		83FA264A2181449D00714BB9 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26492181449D00714BB9 /* Map.swift */; };
+		83FA264E2181452500714BB9 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA264D2181452500714BB9 /* Game.swift */; };
+		83FA26562181C97B00714BB9 /* Halite_IIITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26552181C97B00714BB9 /* Halite_IIITests.swift */; };
+		83FA265D2181C9E100714BB9 /* PositionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA265C2181C9E100714BB9 /* PositionTests.swift */; };
+		83FA265E2181CF9B00714BB9 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26412181441300714BB9 /* Position.swift */; };
+		83FA265F2181CFDD00714BB9 /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA263F218143DB00714BB9 /* Direction.swift */; };
+		83FA26602181CFE400714BB9 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2639218142A700714BB9 /* Command.swift */; };
+		83FA26622181DC0F00714BB9 /* DirectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26612181DC0F00714BB9 /* DirectionTests.swift */; };
+		83FA26642181E22400714BB9 /* MapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26632181E22400714BB9 /* MapTests.swift */; };
+		83FA26652181E55E00714BB9 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26492181449D00714BB9 /* Map.swift */; };
+		83FA26672181E57400714BB9 /* Ship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26432181444200714BB9 /* Ship.swift */; };
+		83FA26682181E57700714BB9 /* Shipyard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26452181446000714BB9 /* Shipyard.swift */; };
+		83FA26692181E58B00714BB9 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2637218142A700714BB9 /* Constant.swift */; };
+		83FA266A2181E5BA00714BB9 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2638218142A700714BB9 /* Log.swift */; };
+		83FA266C2181E74D00714BB9 /* Structure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA266B2181E74D00714BB9 /* Structure.swift */; };
+		83FA266D2181E74D00714BB9 /* Structure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA266B2181E74D00714BB9 /* Structure.swift */; };
+		83FA266E2181E8E200714BB9 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA263A218142A700714BB9 /* Player.swift */; };
+		83FA266F2181E8F100714BB9 /* Dropoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA26472181447B00714BB9 /* Dropoff.swift */; };
+		83FA2681218352EB00714BB9 /* ConstantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FA2680218352EB00714BB9 /* ConstantTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		83FA262A2181425800714BB9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		835EC3ED2184A5C900277E76 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
+		83FA262C2181425800714BB9 /* Halite-III */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Halite-III"; sourceTree = BUILT_PRODUCTS_DIR; };
+		83FA262F2181425800714BB9 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		83FA2637218142A700714BB9 /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
+		83FA2638218142A700714BB9 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		83FA2639218142A700714BB9 /* Command.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
+		83FA263A218142A700714BB9 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		83FA263F218143DB00714BB9 /* Direction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Direction.swift; sourceTree = "<group>"; };
+		83FA26412181441300714BB9 /* Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
+		83FA26432181444200714BB9 /* Ship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ship.swift; sourceTree = "<group>"; };
+		83FA26452181446000714BB9 /* Shipyard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shipyard.swift; sourceTree = "<group>"; };
+		83FA26472181447B00714BB9 /* Dropoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dropoff.swift; sourceTree = "<group>"; };
+		83FA26492181449D00714BB9 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
+		83FA264D2181452500714BB9 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		83FA26532181C97B00714BB9 /* Halite-IIITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Halite-IIITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		83FA26552181C97B00714BB9 /* Halite_IIITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Halite_IIITests.swift; sourceTree = "<group>"; };
+		83FA26572181C97B00714BB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		83FA265C2181C9E100714BB9 /* PositionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositionTests.swift; sourceTree = "<group>"; };
+		83FA26612181DC0F00714BB9 /* DirectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionTests.swift; sourceTree = "<group>"; };
+		83FA26632181E22400714BB9 /* MapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTests.swift; sourceTree = "<group>"; };
+		83FA266B2181E74D00714BB9 /* Structure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structure.swift; sourceTree = "<group>"; };
+		83FA2680218352EB00714BB9 /* ConstantTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		83FA26292181425800714BB9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83FA26502181C97B00714BB9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		83FA26232181425800714BB9 = {
+			isa = PBXGroup;
+			children = (
+				83FA262E2181425800714BB9 /* Halite-III */,
+				83FA26542181C97B00714BB9 /* Halite-IIITests */,
+				83FA262D2181425800714BB9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		83FA262D2181425800714BB9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				83FA262C2181425800714BB9 /* Halite-III */,
+				83FA26532181C97B00714BB9 /* Halite-IIITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		83FA262E2181425800714BB9 /* Halite-III */ = {
+			isa = PBXGroup;
+			children = (
+				83FA2636218142A700714BB9 /* hlt */,
+				83FA262F2181425800714BB9 /* main.swift */,
+			);
+			path = "Halite-III";
+			sourceTree = "<group>";
+		};
+		83FA2636218142A700714BB9 /* hlt */ = {
+			isa = PBXGroup;
+			children = (
+				83FA2639218142A700714BB9 /* Command.swift */,
+				83FA2637218142A700714BB9 /* Constant.swift */,
+				83FA26472181447B00714BB9 /* Dropoff.swift */,
+				83FA263F218143DB00714BB9 /* Direction.swift */,
+				83FA264D2181452500714BB9 /* Game.swift */,
+				83FA2638218142A700714BB9 /* Log.swift */,
+				83FA26492181449D00714BB9 /* Map.swift */,
+				83FA263A218142A700714BB9 /* Player.swift */,
+				835EC3ED2184A5C900277E76 /* Networking.swift */,
+				83FA26412181441300714BB9 /* Position.swift */,
+				83FA26452181446000714BB9 /* Shipyard.swift */,
+				83FA26432181444200714BB9 /* Ship.swift */,
+				83FA266B2181E74D00714BB9 /* Structure.swift */,
+			);
+			path = hlt;
+			sourceTree = "<group>";
+		};
+		83FA26542181C97B00714BB9 /* Halite-IIITests */ = {
+			isa = PBXGroup;
+			children = (
+				83FA26552181C97B00714BB9 /* Halite_IIITests.swift */,
+				83FA2680218352EB00714BB9 /* ConstantTests.swift */,
+				83FA26612181DC0F00714BB9 /* DirectionTests.swift */,
+				83FA26632181E22400714BB9 /* MapTests.swift */,
+				83FA265C2181C9E100714BB9 /* PositionTests.swift */,
+				83FA26572181C97B00714BB9 /* Info.plist */,
+			);
+			path = "Halite-IIITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		83FA262B2181425800714BB9 /* Halite-III */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83FA26332181425800714BB9 /* Build configuration list for PBXNativeTarget "Halite-III" */;
+			buildPhases = (
+				83FA26282181425800714BB9 /* Sources */,
+				83FA26292181425800714BB9 /* Frameworks */,
+				83FA262A2181425800714BB9 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Halite-III";
+			productName = "Halite-III";
+			productReference = 83FA262C2181425800714BB9 /* Halite-III */;
+			productType = "com.apple.product-type.tool";
+		};
+		83FA26522181C97B00714BB9 /* Halite-IIITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83FA26582181C97B00714BB9 /* Build configuration list for PBXNativeTarget "Halite-IIITests" */;
+			buildPhases = (
+				83FA264F2181C97B00714BB9 /* Sources */,
+				83FA26502181C97B00714BB9 /* Frameworks */,
+				83FA26512181C97B00714BB9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Halite-IIITests";
+			productName = "Halite-IIITests";
+			productReference = 83FA26532181C97B00714BB9 /* Halite-IIITests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		83FA26242181425800714BB9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1000;
+				LastUpgradeCheck = 1000;
+				ORGANIZATIONNAME = "Chris Downie";
+				TargetAttributes = {
+					83FA262B2181425800714BB9 = {
+						CreatedOnToolsVersion = 10.0;
+					};
+					83FA26522181C97B00714BB9 = {
+						CreatedOnToolsVersion = 10.0;
+					};
+				};
+			};
+			buildConfigurationList = 83FA26272181425800714BB9 /* Build configuration list for PBXProject "Halite-III" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 83FA26232181425800714BB9;
+			productRefGroup = 83FA262D2181425800714BB9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				83FA262B2181425800714BB9 /* Halite-III */,
+				83FA26522181C97B00714BB9 /* Halite-IIITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		83FA26512181C97B00714BB9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		83FA26282181425800714BB9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83FA26422181441300714BB9 /* Position.swift in Sources */,
+				83FA26442181444200714BB9 /* Ship.swift in Sources */,
+				83FA264E2181452500714BB9 /* Game.swift in Sources */,
+				83FA26302181425800714BB9 /* main.swift in Sources */,
+				83FA266C2181E74D00714BB9 /* Structure.swift in Sources */,
+				83FA26462181446000714BB9 /* Shipyard.swift in Sources */,
+				83FA263B218142A700714BB9 /* Constant.swift in Sources */,
+				83FA263C218142A700714BB9 /* Log.swift in Sources */,
+				83FA26482181447B00714BB9 /* Dropoff.swift in Sources */,
+				83FA264A2181449D00714BB9 /* Map.swift in Sources */,
+				83FA263E218142A700714BB9 /* Player.swift in Sources */,
+				83FA263D218142A700714BB9 /* Command.swift in Sources */,
+				83FA2640218143DB00714BB9 /* Direction.swift in Sources */,
+				835EC3EE2184A5C900277E76 /* Networking.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83FA264F2181C97B00714BB9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83FA265D2181C9E100714BB9 /* PositionTests.swift in Sources */,
+				83FA26562181C97B00714BB9 /* Halite_IIITests.swift in Sources */,
+				83FA266A2181E5BA00714BB9 /* Log.swift in Sources */,
+				83FA26652181E55E00714BB9 /* Map.swift in Sources */,
+				83FA266D2181E74D00714BB9 /* Structure.swift in Sources */,
+				83FA265E2181CF9B00714BB9 /* Position.swift in Sources */,
+				83FA26622181DC0F00714BB9 /* DirectionTests.swift in Sources */,
+				83FA266F2181E8F100714BB9 /* Dropoff.swift in Sources */,
+				83FA26642181E22400714BB9 /* MapTests.swift in Sources */,
+				83FA26602181CFE400714BB9 /* Command.swift in Sources */,
+				83FA26682181E57700714BB9 /* Shipyard.swift in Sources */,
+				83FA2681218352EB00714BB9 /* ConstantTests.swift in Sources */,
+				83FA265F2181CFDD00714BB9 /* Direction.swift in Sources */,
+				83FA26672181E57400714BB9 /* Ship.swift in Sources */,
+				83FA266E2181E8E200714BB9 /* Player.swift in Sources */,
+				83FA26692181E58B00714BB9 /* Constant.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		83FA26312181425800714BB9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		83FA26322181425800714BB9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		83FA26342181425800714BB9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+			};
+			name = Debug;
+		};
+		83FA26352181425800714BB9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+			};
+			name = Release;
+		};
+		83FA26592181C97B00714BB9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Halite-IIITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "net.chrisdownie.Halite-IIITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+			};
+			name = Debug;
+		};
+		83FA265A2181C97B00714BB9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Halite-IIITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "net.chrisdownie.Halite-IIITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		83FA26272181425800714BB9 /* Build configuration list for PBXProject "Halite-III" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83FA26312181425800714BB9 /* Debug */,
+				83FA26322181425800714BB9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83FA26332181425800714BB9 /* Build configuration list for PBXNativeTarget "Halite-III" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83FA26342181425800714BB9 /* Debug */,
+				83FA26352181425800714BB9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83FA26582181C97B00714BB9 /* Build configuration list for PBXNativeTarget "Halite-IIITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83FA26592181C97B00714BB9 /* Debug */,
+				83FA265A2181C97B00714BB9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 83FA26242181425800714BB9 /* Project object */;
+}
