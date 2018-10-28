@@ -16,9 +16,7 @@ Log.shared.info("Successfully created bot! My Player ID is \(game.me.id)")
 while true {
     // This loop handles each turn of the game. The game object changes every turn, and you refresh that state by
     // running updateFrame().
-    Log.shared.debug("About to update frame.")
     game.updateFrame()
-    Log.shared.debug("Frame updated.")
     
     // You extract player metadata and the updated map metadata here for convenience.
     let me = game.me
@@ -46,9 +44,7 @@ while true {
         commandQueue.append(me.shipyard.spawn())
     }
     
-    Log.shared.debug("Ending turn...")
     // Send your moves back to the game environment, ending this turn.
     game.endTurn(commands: commandQueue)
-    Log.shared.debug("...turn ended.")
 }
 

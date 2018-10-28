@@ -138,7 +138,6 @@ class Networking {
     
     func write(commands: [Command]) {
         let output = commands.map { $0.rawValue }.joined(separator: " ")
-        Log.shared.debug("Sending:\(output)")
         write(string: output)
     }
     

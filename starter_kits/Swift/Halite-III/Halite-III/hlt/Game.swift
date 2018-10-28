@@ -44,17 +44,14 @@ struct Game {
         // Load each player
         players = (0..<identity.numPlayers).map { index in
             let playerInput = networking.readPlayer()
-            Log.shared.info("Got player: \(playerInput)")
             let shipyard = Shipyard(owner: playerInput.playerId, id: unknownStructureId, position: playerInput.shipyardPosition)
             return Player(id: playerInput.playerId, shipyard: shipyard)
         }
         
         // Load map size
         let mapSize = networking.readMapDimensions()
-        Log.shared.info("Got map size: \(mapSize)")
         let initialHalite = (0..<mapSize.mapHeight).map { row -> [Int] in
             let mapRow = networking.readMapRow()
-            Log.shared.info("Got map row: \(mapRow)")
             return mapRow.haliteAmount
         }
 
@@ -66,7 +63,6 @@ struct Game {
     ///
     /// - Parameter botName: The name of the bot
     func ready(botName: String) {
-        Log.shared.debug("Sending ready command with name \(botName)")
         networking.writeReady(botName: botName)
     }
     
@@ -81,9 +77,7 @@ struct Game {
         Log.shared.info("============ TURN \(turnNumber) ============")
         
         let playerUpdates = (0..<players.count).map { _ -> Networking.PlayerUpdate in
-            let playerUpdate = networking.readPlayerUpdate()
-            Log.shared.debug("Got update for player \(playerUpdate.playerID): \(playerUpdate.ships.count) ships, \(playerUpdate.dropoffs.count) dropoffs.")
-            return playerUpdate
+            networking.readPlayerUpdate()
         }
         let mapUpdates = networking.readMapUpdates()
         
@@ -96,14 +90,11 @@ struct Game {
     ///
     /// - Parameter commands: The command queue to execute.
     func endTurn(commands: [Command]) {
-        Log.shared.debug("Ending turn with \(commands.count) commands")
         networking.write(commands: commands)
     }
     
     // MARK: - Private methods
     mutating func apply(playerUpdates: [Networking.PlayerUpdate], mapUpdates: [Networking.MapUpdate]) {
-        Log.shared.debug("Applying \(playerUpdates.count) player updates and \(mapUpdates.count) map updates.")
-        
         // Update Players
         var updatedPlayers = [Player]()
         playerUpdates.forEach { update in
