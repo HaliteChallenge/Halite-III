@@ -375,10 +375,7 @@ comp_args = {
         ["jar", "cfe", BOT + ".jar", BOT],
     ],
     "Julia": [
-        ["JULIA_PKGDIR=$(pwd) julia -e 'Pkg.init(); Pkg.update()'"],
-        ["mv", "REQUIRE", "v0.6/"],
-        ["JULIA_PKGDIR=$(pwd) julia -e 'Pkg.resolve()'"],
-        ["chmod", "+x", BOT + ".jl"],
+        ["""JULIA_DEPOT_PATH=$(pwd) julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate()'"""],
     ],
     "Haskell": [
         ["ghc", "--make", BOT + ".hs", "-O", "-v0", "-rtsopts"],
@@ -564,13 +561,11 @@ languages = (
         [(["*.jar"], ChmodCompiler("JAR"))]
     ),
     Language("Julia", BOT +".jl", "MyBot.jl",
-        "JULIA_PKGDIR=$(pwd) julia MyBot.jl",
+        "JULIA_DEPOT_PATH=$(pwd) julia --project MyBot.jl",
         [],
         [
-            ([], ErrorFilterCompiler(comp_args["Julia"][0])),
-            ([], ErrorFilterCompiler(comp_args["Julia"][1])),
-            ([], ErrorFilterCompiler(comp_args["Julia"][2])),
-            ([], ErrorFilterCompiler(comp_args["Julia"][3])),
+            ([], ExternalCompiler(comp_args["Julia"][0])),
+            (["*.jl"], ChmodCompiler("Julia")),
         ]
     ),
     Language("Lisp", BOT, "MyBot.lisp",
@@ -583,11 +578,14 @@ languages = (
         [],
         [(["*.lua"], ChmodCompiler("Lua"))]
     ),
-    # Language("Lua/Lua5.2", BOT +".lua", "MyBot.lua",
-    #     "lua5.2 MyBot.lua",
-    #     [],
-    #     [(["*.lua"], ChmodCompiler("Lua"))]
-    # ),
+    Language("Lua/Lua5.3", BOT +".lua53", "MyBot.lua53",
+        "lua5.3 MyBot.lua53",
+        [],
+        [
+            (["*.lua"], ChmodCompiler("Lua")),
+            (["*.lua53"], ChmodCompiler("Lua")),
+        ]
+    ),
     Language("OCaml", BOT +".native", "MyBot.ml",
         "./MyBot.native",
         [BOT + ".native"],
@@ -835,7 +833,7 @@ def compile_anything(bot_dir, installTimeLimit=600, timelimit=600, max_error_len
     install_errors = []
     if os.path.exists(os.path.join(bot_dir, "install.sh")):
         install_stdout, install_errors, _ = _run_cmd(
-            "chmod +x install.sh; ./install.sh", bot_dir, installTimeLimit)
+            "bash ./install.sh", bot_dir, installTimeLimit)
 
     detected_language, language_errors = detect_language(bot_dir)
 
@@ -846,7 +844,7 @@ def compile_anything(bot_dir, installTimeLimit=600, timelimit=600, max_error_len
 
     print("compiling")
     compiled, compile_errors = compile_function(detected_language, bot_dir, timelimit)
-    if not compiled:
+    if not compiled or install_errors:
         return (detected_language.name,
                 truncate_errors(install_stdout, install_errors,
                                 language_errors, compile_errors, max_error_len))

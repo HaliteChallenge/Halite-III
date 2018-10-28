@@ -1,4 +1,5 @@
 import logging
+import secrets
 import traceback
 import urllib.parse
 import uuid
@@ -68,9 +69,9 @@ def google_login_init():
 @oauth_login.route("/me")
 @cross_origin(methods=["GET"], origins=config.CORS_ORIGINS, supports_credentials=True)
 def me():
-    if "user_id" in flask.session:
+    if config.SESSION_COOKIE in flask.session:
         return flask.jsonify({
-            "user_id": flask.session["user_id"],
+            "user_id": flask.session[config.SESSION_COOKIE],
         })
     else:
         user = util.validate_api_key(
@@ -180,6 +181,7 @@ def generic_login_callback(email, oauth_provider, oauth_id, default_username=Non
 
         if not user:
             # New user
+            session_secret = secrets.token_hex(16)
             try:
                 new_user_id = conn.execute(model.users.insert().values(
                     username="user{}".format(uuid.uuid4().hex),
@@ -188,8 +190,10 @@ def generic_login_callback(email, oauth_provider, oauth_id, default_username=Non
                     oauth_id=str(oauth_id),
                     oauth_provider=oauth_provider,
                     oauth_profile_image_key=default_username,
+                    session_secret=session_secret,
                 )).inserted_primary_key
-                flask.session["user_id"] = new_user_id[0]
+                flask.session[config.SESSION_SECRET] = session_secret
+                flask.session[config.SESSION_COOKIE] = new_user_id[0]
             except sqlalchemy.exc.IntegrityError:
                 raise util.APIError(400, message="User already exists with this email.")
 
@@ -203,19 +207,23 @@ def generic_login_callback(email, oauth_provider, oauth_id, default_username=Non
                     pass
 
             return flask.redirect(urllib.parse.urljoin(config.SITE_URL, "/create-account"))
-        elif not user["is_active"]:
+
+
+        if not user["is_active"]:
             raise util.APIError(403, message="User is disabled.")
-        elif "redirectURL" in flask.request.args:
-            flask.session["user_id"] = user["id"]
+
+        session_secret = secrets.token_hex(16)
+        conn.execute(model.users.update().values(
+            session_secret=session_secret,
+        ).where(model.users.c.id == user["id"]))
+
+        flask.session[config.SESSION_COOKIE] = user["id"]
+        flask.session[config.SESSION_SECRET] = session_secret
+
+        if "redirectURL" in flask.request.args:
             return flask.redirect(flask.request.args["redirectURL"])
         else:
-            flask.session["user_id"] = user["id"]
             return flask.redirect(config.SITE_URL)
-
-    if "redirectURL" in flask.request.args:
-        return flask.redirect(flask.request.args["redirectURL"])
-
-    return util.response_success()
 
 
 @github.tokengetter
