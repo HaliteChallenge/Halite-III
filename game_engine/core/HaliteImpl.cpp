@@ -468,7 +468,12 @@ bool HaliteImpl::player_can_play(const Player &player) const {
  */
 bool HaliteImpl::game_ended() const {
     if (game.store.map_total_energy == 0) {
-        return true;
+        auto all_entities = game.store.all_entities();
+        return std::all_of(all_entities.begin(),
+                           all_entities.end(),
+                           [](const auto& entity) {
+                               return entity.second.energy == 0;
+                           });
     }
     long num_alive_players = 0;
     for (auto &&[_, player] : game.store.players) {
