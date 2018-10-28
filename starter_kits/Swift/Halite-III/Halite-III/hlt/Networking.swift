@@ -139,11 +139,11 @@ class Networking {
     func write(commands: [Command]) {
         let output = commands.map { $0.rawValue }.joined(separator: " ")
         Log.shared.debug("Sending:\(output)")
-        print("\(output)\n")
+        print("\(output)")
     }
     
     func writeReady(botName: String) {
-        print(botName)
+        print("\(botName)")
     }
     
     // MARK: - Private helpers

@@ -16,6 +16,7 @@ Log.shared.info("Successfully created bot! My Player ID is \(game.me.id)")
 while true {
     // This loop handles each turn of the game. The game object changes every turn, and you refresh that state by
     // running updateFrame().
+    Log.shared.debug("About to update frame.")
     game.updateFrame()
     Log.shared.debug("Frame updated.")
     
