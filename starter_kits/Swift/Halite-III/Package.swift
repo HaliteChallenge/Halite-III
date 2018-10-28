@@ -15,6 +15,6 @@ let package = Package(
         .target(
             name: "Halite-III",
             dependencies: [],
-            path: "../Halite-III"),
+            path: "Halite-III"),
     ]
 )
