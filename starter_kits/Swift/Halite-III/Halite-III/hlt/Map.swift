@@ -16,6 +16,9 @@ struct Map {
     let height: Int
     
     private var cells: [[Cell]]
+    var haliteGrid: [[Int]] {
+        return cells.map { $0.map { $0.haliteAmount } }
+    }
     
     init(width: Int, height: Int, initialHalite: [[Int]]? = nil) {
         self.width = width
@@ -35,7 +38,7 @@ struct Map {
         let position: Position
         let haliteAmount: Int
         var ship: Ship?
-        let structure: Structure?
+        var structure: Structure?
         
         init(position: Position, haliteAmount: Int, ship: Ship?, structure: Structure?) {
             self.position = position

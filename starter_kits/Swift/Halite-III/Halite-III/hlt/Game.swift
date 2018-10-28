@@ -10,7 +10,7 @@ import Foundation
 
 /// The game object holds all metadata to run the game, and is an organizing layer between your code and the game
 /// engine. Game initializes the game, which includes generating the map and registering the players.
-class Game {
+struct Game {
     var turnNumber = 0
     
     var me: Player {
@@ -75,25 +75,19 @@ class Game {
     /// kills any bot that takes more than 2,000 milliseconds to process.
     ///
     /// Updates the game state, and returns nothing.
-    func updateFrame() {
+    mutating func updateFrame() {
         turnNumber = networking.readTurnNumber()
         
         Log.shared.info("============ TURN \(turnNumber) ============")
         
         let playerUpdates = (0..<players.count).map { _ -> Networking.PlayerUpdate in
             let playerUpdate = networking.readPlayerUpdate()
-            // TODO: Use the player update
             Log.shared.debug("Got update for player \(playerUpdate.playerID): \(playerUpdate.ships.count) ships, \(playerUpdate.dropoffs.count) dropoffs.")
             return playerUpdate
         }
-        Log.shared.debug("Got \(playerUpdates.count) player updates.")
-        
         let mapUpdates = networking.readMapUpdates()
-        Log.shared.debug("Got \(mapUpdates.updates.count) map updates.")
-        // TODO: Use the map update
         
-        // TODO: Clear & mark all unsafe cells
-        
+        apply(playerUpdates: playerUpdates, mapUpdates: mapUpdates)
     }
     
     /// The command queue is a list of commands. The player’s code fills this list with commands and sends it to the
@@ -104,5 +98,43 @@ class Game {
     func endTurn(commands: [Command]) {
         Log.shared.debug("Ending turn with \(commands.count) commands")
         networking.write(commands: commands)
+    }
+    
+    // MARK: - Private methods
+    mutating func apply(playerUpdates: [Networking.PlayerUpdate], mapUpdates: [Networking.MapUpdate]) {
+        Log.shared.debug("Applying \(playerUpdates.count) player updates and \(mapUpdates.count) map updates.")
+        
+        // Update Players
+        var updatedPlayers = [Player]()
+        playerUpdates.forEach { update in
+            guard let playerToUpdate = players.first(where: { $0.id == update.playerID }) else {
+                fatalError("Can't fild player with id \(update.playerID) to update.")
+            }
+            let updatedPlayer = Player(id: update.playerID,
+                                       shipyard: playerToUpdate.shipyard,
+                                       ships: update.ships,
+                                       dropoffs: update.dropoffs)
+            updatedPlayers.append(updatedPlayer)
+        }
+        players = updatedPlayers
+        
+        // Update Map
+        var haliteGrid = gameMap.haliteGrid
+        mapUpdates.forEach { update in
+            haliteGrid[update.position.y][update.position.x] = update.haliteAmount
+        }
+        let newMap = Map(width: gameMap.width, height: gameMap.height, initialHalite: haliteGrid)
+
+        players.forEach { player in
+            player.getShips().forEach { ship in
+                newMap[ship.position].markUnsafe(ship: ship)
+            }
+            newMap[player.shipyard.position].structure = player.shipyard
+            
+            player.getDropoffs().forEach { dropoff in
+                newMap[dropoff.position].structure = dropoff
+            }
+        }
+        gameMap = newMap
     }
 }

@@ -33,13 +33,9 @@ class Networking {
         let haliteAmount: [Int]
     }
     
-    struct MapUpdates {
-        struct Update {
-            let position: Position
-            let haliteAmount: Int
-        }
-        
-        let updates: [Update]
+    struct MapUpdate {
+        let position: Position
+        let haliteAmount: Int
     }
     
     struct PlayerUpdate {
@@ -84,21 +80,21 @@ class Networking {
         return MapRowInput(haliteAmount: numbers)
     }
     
-    func readMapUpdates() -> MapUpdates {
+    func readMapUpdates() -> [MapUpdate] {
         let linesToReadString = readLine(message: "Failed to read how many updates we need to process")
         guard let linesToRead = Int(linesToReadString) else {
             fatalError("The number of updates to expect wasn't a number.")
         }
         let range = 0..<linesToRead
-        let updates = range.map { updateNumber -> Networking.MapUpdates.Update in
+        let updates = range.map { updateNumber -> Networking.MapUpdate in
             let line = readLine(message: "Failed to read a map's update data for update #\(updateNumber).")
             let numbers = line.split(separator: " ").compactMap { Int($0) }
             assert(numbers.count == 3)
             let position = Position(x: numbers[0], y: numbers[1])
-            return MapUpdates.Update(position: position, haliteAmount: numbers[2])
+            return MapUpdate(position: position, haliteAmount: numbers[2])
         }
         
-        return MapUpdates(updates: updates)
+        return updates
     }
     
     func readTurnNumber() -> Int {
