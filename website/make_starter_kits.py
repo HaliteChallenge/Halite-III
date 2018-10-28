@@ -15,14 +15,76 @@ import zipfile
 
 ENVIRONMENT_DIR_HELP = "Directory containing precompiled Halite environment " \
                        "executables, each named after their platform. "
-BOX_DIR_HELP = "Directory containing precompiled Halite-in-a-Box builds, each named after their platform."
+BOX_DIR_HELP = "Directory containing precompiled Halite-in-a-Box builds, " \
+               "each named after their platform."
 VERSION_HELP = "The version string to embed in the downloads page."
-IGNORED_EXTENSIONS = [".exe", ".class", ".pyc", ".obj"]
-INCLUDED_EXTENSIONS = [".py", ".java", ".cpp", ".hpp", ".cs", ".csproj", ".scala", ".js", ".sh", ".bat", ".toml", ".rs",".go",".txt",".rb", ".kt", ".clj",".jl", ".ml", ".hs", ".exs", ".ex", ".lock",".php", ".sln",".dart",".sbt",".properties",".swift",".pyx",".pxd",".fs",".fsproj",".svc"]
-INCLUDED_FILES = ["Makefile", "README", "REQUIRE","LANGUAGE","build.gradle"]
+INCLUDED_EXTENSIONS = {
+    ".bat",
+    ".clj",
+    ".coffee",
+    ".cpp",
+    ".cs",
+    ".csproj",
+    ".d",
+    ".dart",
+    ".erl",
+    ".ex",
+    ".exs",
+    ".fs",
+    ".fsproj",
+    ".go",
+    ".groovy",
+    ".h",
+    ".hpp",
+    ".hs",
+    ".java",
+    ".jl",
+    ".js",
+    ".kt",
+    ".lisp",
+    ".lock",
+    ".lua",
+    ".m",
+    ".md",
+    ".ml",
+    ".pas",
+    ".php",
+    ".pl",
+    ".properties",
+    ".pxd",
+    ".py",
+    ".pyx",
+    ".rb",
+    ".rkt",
+    ".rs",
+    ".sbt",
+    ".scala",
+    ".sh",
+    ".sln",
+    ".svc",
+    ".swift",
+    ".toml",
+    ".txt",
+}
+INCLUDED_FILES = {
+    "Makefile",
+    "README",
+    "REQUIRE",
+    "LANGUAGE",
+    "build.gradle",
+}
 STARTER_KIT_DIR = "../starter_kits"
 DOWNLOAD_DATA = "_data/downloads.json"
 PLATFORM_AGNOSTIC = "None"
+
+# Kits that we support
+OFFICIAL_KITS = {
+    "Python3",
+    "JavaScript",
+    "Java",
+    "C++",
+    "Rust",
+}
 
 # Names of generated downloads
 # Standard language + platform
@@ -293,7 +355,7 @@ def main():
         output["languages"].append({
             "language": language,
             "files": language_kits,
-            "version": args.version,
+            "version": args.version if language in OFFICIAL_KITS else "Community-contributed",
         })
 
     output["languages"].append({

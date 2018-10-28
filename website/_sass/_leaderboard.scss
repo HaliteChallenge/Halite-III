@@ -263,15 +263,17 @@
             }
             .vs__selected-options {
               .selected-tag {
-                display: flex;
-                align-items: center;
-                padding: 8px 6px;
+                padding: 8px 20px 8px 6px;
                 height: 32px;
+                line-height: 16px;
+                overflow-x: hidden;
+                text-overflow: ellipsis;
                 font-size: 14px;
                 background-color: #0049B9;
                 .close {
-                  position: relative;
-                  margin-left: 15px;
+                  position: absolute;
+                  top: 5px;
+                  right: 5px;
                   color: #FFFFFF;
                   opacity: 1;
                 }
