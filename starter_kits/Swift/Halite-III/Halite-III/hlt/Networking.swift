@@ -147,7 +147,7 @@ class Networking {
     
     private func write(string: String) {
         print(string)
-        fflush(__stdoutp)
+        fflush(stdout)
     }
     
     // MARK: - Private helpers

@@ -16,7 +16,8 @@ class Log {
         filename = "bot-\(playerId).log"
         
         // Create the file if it doesn't exist.
-        FileManager().createFile(atPath: filename, contents: nil, attributes: nil)
+        let success = FileManager.default.createFile(atPath: filename, contents: nil, attributes: nil)
+        assert(success, "File manager should be able to create that file.")
         
         logFile = FileHandle(forWritingAtPath: filename)!
     }
