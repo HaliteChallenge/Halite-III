@@ -139,16 +139,21 @@ class Networking {
     func write(commands: [Command]) {
         let output = commands.map { $0.rawValue }.joined(separator: " ")
         Log.shared.debug("Sending:\(output)")
-        print("\(output)")
+        write(string: output)
     }
     
     func writeReady(botName: String) {
-        print("\(botName)")
+        write(string: botName)
+    }
+    
+    private func write(string: String) {
+        print(string)
+        fflush(__stdoutp)
     }
     
     // MARK: - Private helpers
     private func readLine(message: String) -> String {
-        guard let input = Swift.readLine(strippingNewline: true) else {
+        guard let input = Swift.readLine() else {
             fatalError(message)
         }
         return input
