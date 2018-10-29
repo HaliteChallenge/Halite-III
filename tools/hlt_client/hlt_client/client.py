@@ -180,8 +180,6 @@ def _parse_arguments():
                                    help="Include files with these extensions in the upload. May pass 0 or more times (if not given, defaults to Python/Java/C++)")
     # .Modes.Play
     compare_bots.parse_arguments(subparser)
-    # .Modes.Gym
-    gym.parse_arguments(subparser)
     # .Modes.Replay
     replay_parser = subparser.add_parser('replay', help='Actions associated with replay files')
     # .Modes.Replay.Modes
@@ -205,6 +203,8 @@ def _parse_arguments():
                                      help="Whether to retrieve all files. Omit for only Gold and higher.")
     replay_regex_parser.add_argument('-d', '--destination', dest='destination', action='store', type=str, required=True,
                                      help="In which folder to store all resulting replay files.")
+    # .Modes.Gym
+    gym.parse_arguments(subparser)
     if len(sys.argv) < 2:
         parser.print_help()
     return parser.parse_args()
