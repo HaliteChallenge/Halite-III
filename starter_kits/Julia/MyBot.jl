@@ -2,13 +2,11 @@ using Halite3
 using Logging
 
 # Initialize the game.
-constants, game = init_game()
-# Logging allows you to save messages for yourself. This is required because the regular STDOUT
-#   (print statements) are reserved for the engine-bot communication.
-io = open("bot-$(game.id).log", "w+")
-logger = SimpleLogger(io)
-global_logger(logger)
-log(s, io=io) = (@info s; flush(io))
+log, constants, game = init_game()
+# log is a function which takes a string and allows you to save messages for yourself.
+# log is not available to use inside /src/*jl instead use @info to log from inside Halite3 module.
+# This is required because the regular STDOUT (print statements) are reserved for the engine-bot communication.
+
 # At this point "game" variable is populated with initial map data.
 # This is a good place to do computationally expensive start-up pre-processing.
 # As soon as you call "start_game" function below, the 2 second per turn timer will start.
@@ -50,4 +48,3 @@ while true
     # Send your moves back to the game environment, ending this turn.
     end_turn(command_queue)
 end
-close(io)
