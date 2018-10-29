@@ -11,10 +11,14 @@ end
 function init_game()
     constants = load_constants(JSON.parse(readline(stdin)))
     num_players, my_id = parse.(Int, split(readline()))
+    io = open("bot-$(my_id).log", "w+")
+    logger = Logging.SimpleLogger(io)
+    Logging.global_logger(logger)
+    log(s::String, io=io) = (@info s; flush(io))
     players = Dict(i => generate_players() for i=0:num_players-1)
     me = players[my_id]
     game_map = generate_game_map()
-    constants, Game(0, my_id, players, game_map, me)
+    log, constants, Game(0, my_id, players, game_map, me)
 end
 
 "Sends a list of commands to the engine."

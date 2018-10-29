@@ -15,8 +15,8 @@ end
 function convert(direction::Direction)
     if direction == Direction("North") return Commands.NORTH
     elseif direction == Direction("South") return Commands.SOUTH
-    elseif direction == Direction("East") return Commands.WEST
-    elseif direction == Direction("West") return Commands.EAST
+    elseif direction == Direction("East") return Commands.EAST
+    elseif direction == Direction("West") return Commands.WEST
     elseif direction == Direction("Still") return Commands.STAY_STILL
     else throw(DomainError(direction))
     end
