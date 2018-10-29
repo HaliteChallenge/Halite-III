@@ -180,14 +180,14 @@ def _parse_arguments():
                                    help="Include files with these extensions in the upload. May pass 0 or more times (if not given, defaults to Python/Java/C++)")
     # .Modes.Play
     compare_bots.parse_arguments(subparser)
-    # .Modes.Gym
-    gym.parse_arguments(subparser)
     # .Modes.Replay
     replay_parser = subparser.add_parser('replay', help='Actions associated with replay files')
     # .Modes.Replay.Modes
     replay_subparser = replay_parser.add_subparsers(dest='replay_mode', metavar='{date, user}')
     # .Modes.Replay.Modes.User
     replay_user_parser = replay_subparser.add_parser(REPLAY_MODE_USER, help='Retrieve replays based on a specified user')
+    replay_user_parser.add_argument('--decompress', action='store_true', dest='decompress',
+                                    help="Decompress replays after downloading.")
     replay_user_parser.add_argument('-i', '--id', action='store', dest='user_id',
                                     help="Fetch recent replay files apposite a user. "
                                          "Enter a user id to fetch that specific"
@@ -198,6 +198,8 @@ def _parse_arguments():
                                     help="In which folder to store all resulting replay files.")
     # .Modes.Replay.Modes.Date
     replay_regex_parser = replay_subparser.add_parser(REPLAY_MODE_DATE, help='Retrieve replays based on regex')
+    replay_regex_parser.add_argument('--decompress', action='store_true', dest='decompress',
+                                     help="Decompress replays after downloading.")
     replay_regex_parser.add_argument('-t', '--date', action='store', type=str, dest='date', required=True,
                                      help="Fetch replay files matching the specified date. To fetch a day's files use"
                                           "the YYYYMMDD format.")
@@ -205,6 +207,8 @@ def _parse_arguments():
                                      help="Whether to retrieve all files. Omit for only Gold and higher.")
     replay_regex_parser.add_argument('-d', '--destination', dest='destination', action='store', type=str, required=True,
                                      help="In which folder to store all resulting replay files.")
+    # .Modes.Gym
+    gym.parse_arguments(subparser)
     if len(sys.argv) < 2:
         parser.print_help()
     return parser.parse_args()
@@ -258,7 +262,7 @@ def main():
             download_game.download(args.replay_mode, args.destination,
                                    getattr(args, 'date', None), getattr(args, 'all', None),
                                    Config().user_id if Config.auth_exists() else None, getattr(args, 'user_id', None),
-                                   getattr(args, 'limit', None))
+                                   getattr(args, 'limit', None), args.decompress)
         elif args.mode == PLAY_MODE:
             compare_bots.play_games(args.halite_binary,
                                     args.game_output_dir,

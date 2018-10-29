@@ -218,13 +218,14 @@ def make_benchmark_download():
 
 def make_tools_download():
     included_files = []
-    for directory, _, file_list in os.walk("../tools/hlt_client/hlt_client"):
+    for directory, _, file_list in os.walk("../tools/hlt_client"):
+        target_dir = os.path.relpath(directory, "../tools/hlt_client")
         for filename in file_list:
             _, ext = os.path.splitext(filename)
-            if ext.lower() in {".py"}:
+            if ext.lower() in {".py", ".md", ".txt"} or filename == "hlt":
                 source_path = os.path.join(directory, filename)
                 target_path = os.path.normpath(
-                    os.path.join("hlt_client/", filename))
+                    os.path.join("hlt_client/", target_dir, filename))
                 included_files.append((source_path, target_path))
 
     with zipfile.ZipFile(TOOLS_FILE, "w", zipfile.ZIP_DEFLATED) as archive:
@@ -328,17 +329,18 @@ def main():
         "languages": [],
         "environments": [],
         "tools": [
-            {
-                "name": "Benchmark Bots",
-                "files": [BENCHMARK_FILE, None, None, None],
-            },
-            {
-                "name": "Client Tools",
-                "files": [TOOLS_FILE, None, None, None],
-            },
+            # Don't allow downloading benchmark bots
+            # {
+            #     "name": "Benchmark Bots",
+            #     "files": [BENCHMARK_FILE, None, None, None],
+            # },
             {
                 "name": "Halite Visualizer & Gym",
                 "files": make_box_halite_download(args.box_dir),
+            },
+            {
+                "name": "CLI Client Tools",
+                "files": [TOOLS_FILE, None, None, None],
             },
         ],
         "source": SOURCE_FILE,
