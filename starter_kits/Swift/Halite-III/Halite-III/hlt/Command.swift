@@ -8,13 +8,8 @@
 
 import Foundation
 
-enum Command: String {
-    case north = "n"
-    case south = "s"
-    case east = "e"
-    case west = "w"
-    case stayStill = "o"
-    case generate = "g"
-    case construct = "c"
-    case move = "m"
+enum Command {
+    case move(shipId: Ship.ID, direction: Direction)
+    case construct(fromShipId: Ship.ID)
+    case generate
 }
