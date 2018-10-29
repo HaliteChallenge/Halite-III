@@ -328,17 +328,18 @@ def main():
         "languages": [],
         "environments": [],
         "tools": [
-            {
-                "name": "Benchmark Bots",
-                "files": [BENCHMARK_FILE, None, None, None],
-            },
-            {
-                "name": "Client Tools",
-                "files": [TOOLS_FILE, None, None, None],
-            },
+            # Don't allow downloading benchmark bots
+            # {
+            #     "name": "Benchmark Bots",
+            #     "files": [BENCHMARK_FILE, None, None, None],
+            # },
             {
                 "name": "Halite Visualizer & Gym",
                 "files": make_box_halite_download(args.box_dir),
+            },
+            {
+                "name": "CLI Client Tools",
+                "files": [TOOLS_FILE, None, None, None],
             },
         ],
         "source": SOURCE_FILE,
