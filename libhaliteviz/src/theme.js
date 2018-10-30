@@ -72,6 +72,20 @@ export const THEMES = {
         playerColors: [0x800000, 0x008000, 0x808000, 0x800080],
         colorTheme: "ANSI",
     },
+    "Halloween": {
+      tintFactory: false,
+      tintShip: false,
+      rotateShip: true,
+      scaleMapSprite: true,
+      bloom: true,
+      scale: {
+          ship: 1,
+          base: 1,
+          dropoff: 1,
+      },
+      playerColors: [0x16FF05, 0xFF7B05, 0xdA05FF, 0xcdcdcd],
+      colorTheme: "Colorblind",
+    },
 };
 
 
