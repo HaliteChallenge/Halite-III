@@ -23,19 +23,8 @@ enum Direction: CaseIterable {
     ///
     /// - Parameter direction: The direction to convert to a
     /// - Returns: A command equivalent to the given direction
-    static func convert(_ direction: Direction) -> Command {
-        switch direction {
-        case .north:
-            return .north
-        case .south:
-            return .south
-        case .east:
-            return .east
-        case .west:
-            return .west
-        case .still:
-            return .stayStill
-        }
+    static func convert(_ direction: Direction, forShipId shipId: Ship.ID) -> Command {
+        return .move(shipId: shipId, direction: direction)
     }
     
     /// Returns the opposite cardinal direction given a direction

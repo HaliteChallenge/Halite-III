@@ -32,7 +32,7 @@ struct Ship: Placeable {
     ///
     /// - Returns: An engine command to convert this ship into a dropoff.
     func makeDropoff() -> Command {
-        return .construct
+        return .construct(fromShipId: id)
     }
     
     /// Returns an engine command to keep this ship where it is and collect halite.
@@ -41,7 +41,7 @@ struct Ship: Placeable {
     ///
     /// - Returns: An engine command to keep this ship where it is and collect halite.
     func stayStill() -> Command {
-        return .stayStill
+        return .move(shipId: id, direction: .still)
     }
     
     /// Returns an engine command to move this ship in a direction without checking for collisions.
@@ -53,6 +53,6 @@ struct Ship: Placeable {
     /// - Parameter direction: The direction to move
     /// - Returns: An engine command to move this ship in a direction without checking for collisions.
     func move(direction: Direction) -> Command {
-        return Direction.convert(direction)
+        return .move(shipId: id, direction: direction)
     }
 }

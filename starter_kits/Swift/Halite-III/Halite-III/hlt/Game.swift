@@ -14,7 +14,7 @@ struct Game {
     var turnNumber = 0
     
     var me: Player {
-        return players[myId]
+        return players.first(where: { $0.id == myId })!
     }
     var gameMap: Map
     
@@ -103,6 +103,7 @@ struct Game {
             }
             let updatedPlayer = Player(id: update.playerID,
                                        shipyard: playerToUpdate.shipyard,
+                                       haliteAmount: update.halite,
                                        ships: update.ships,
                                        dropoffs: update.dropoffs)
             updatedPlayers.append(updatedPlayer)

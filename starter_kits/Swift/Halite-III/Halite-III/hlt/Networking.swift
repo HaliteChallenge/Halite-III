@@ -137,7 +137,7 @@ class Networking {
     }
     
     func write(commands: [Command]) {
-        let output = commands.map { $0.rawValue }.joined(separator: " ")
+        let output = commands.map { string(from: $0) }.joined(separator: " ")
         write(string: output)
     }
     
@@ -156,5 +156,31 @@ class Networking {
             fatalError(message)
         }
         return input
+    }
+    
+    private func string(from command: Command) -> String {
+        switch command {
+        case .move(let shipId, let direction):
+            return "m \(shipId) \(string(from: direction))"
+        case .generate:
+            return "g"
+        case .construct(let shipId):
+            return "c \(shipId)"
+        }
+    }
+    
+    private func string(from direction: Direction) -> String {
+        switch direction {
+        case .north:
+            return "n"
+        case .south:
+            return "s"
+        case .east:
+            return "e"
+        case .west:
+            return "w"
+        case .still:
+            return "s"
+        }
     }
 }
