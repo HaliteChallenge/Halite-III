@@ -114,6 +114,10 @@ def detect_environments(directory):
             # .DS_Store, .gitignore, etc.
             continue
 
+        if platform == 'Swift':
+            # Skip this for now (licensing)
+            continue
+
         print("Detected platform", platform)
         environments.append((platform,
                              os.path.join(directory, filename),
