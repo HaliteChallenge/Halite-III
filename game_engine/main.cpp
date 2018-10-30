@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <limits>
 
 #include "Constants.hpp"
 #include "Generator.hpp"
@@ -84,7 +85,19 @@ int main(int argc, char *argv[]) {
     }
 
     // Set the random seed
-    auto seed = seed_arg.isSet() ? seed_arg.getValue() : static_cast<unsigned int>(time(nullptr));
+    unsigned int seed = 0;
+    if (seed_arg.isSet()) {
+        seed=seed_arg.getValue();
+    } else {
+        // Use milliseconds for seed as games sometimes run multiple times per second
+        // A gym running games quickly will cause problems with the same seed being reused
+        unsigned long ms_since_epoch=
+            std::chrono::duration_cast<std::chrono::milliseconds>
+                (std::chrono::system_clock::now().time_since_epoch()).count();
+        // Clip to range before setting seed
+        ms_since_epoch = ms_since_epoch % std::numeric_limits<unsigned int>::max();
+        seed=static_cast<unsigned int>(ms_since_epoch);
+    }
 
     // Use the seed to determine default map size
     std::mt19937 rng(seed);
