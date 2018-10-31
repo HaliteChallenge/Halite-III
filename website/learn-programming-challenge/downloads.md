@@ -9,12 +9,11 @@ sort_key: 3
 
 <div class="doc-section" markdown="1">
 
-Download a language-specific starter kit to start building your bot. Can’t find your preferred language? We love contributions! Check out our [contribution guide](/learn-programming-challenge/contributing).
 
-
----
 
 ## STARTER KITS DOWNLOAD
+Download a language-specific starter kit to start building your bot. Can’t find your preferred language? We love contributions! Check out our [contribution guide](/learn-programming-challenge/contributing).
+
 
 <div class="table-container">
     <table class="table">
@@ -55,6 +54,8 @@ Download a language-specific starter kit to start building your bot. Can’t fin
 </div>
 <br>
 ## Halite Tools and Source Download
+Download tools to let you play games locally. Read the [Halite Client Readme](https://github.com/HaliteChallenge/Halite-III/tree/master/tools/hlt_client/README.md) for installation and usage instructions.
+
 
 <div class="table-container">
     <table class="table">
