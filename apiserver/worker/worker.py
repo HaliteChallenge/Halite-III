@@ -243,10 +243,10 @@ def setupParticipant(user_index, user, temp_dir):
     bot_group = "bots_{}".format(user_index)
     bot_cgroup = "bot_{}".format(user_index)
 
-    # We want 775 so that the bot can create files still; leading 2
+    # We want 770 so that the bot can create files still; leading 2
     # is equivalent to g+s which forces new files to be owned by the
     # group
-    give_ownership(bot_dir, bot_group, 0o2775)
+    give_ownership(bot_dir, bot_group, 0o2770)
 
     bot_command = BOT_COMMAND.format(
         cgroup=bot_cgroup,
