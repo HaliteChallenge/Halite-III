@@ -84,6 +84,7 @@ OFFICIAL_KITS = {
     "Java",
     "C++",
     "Rust",
+    "ml",
 }
 
 # Names of generated downloads
