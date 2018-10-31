@@ -375,7 +375,7 @@ comp_args = {
         ["jar", "cfe", BOT + ".jar", BOT],
     ],
     "Julia": [
-        ["""JULIA_DEPOT_PATH=$(pwd) julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate()'"""],
+        ["JULIA_DEPOT_PATH=$(pwd) julia -e 'using Pkg; Pkg.instantiate()'"],
     ],
     "Haskell": [
         ["ghc", "--make", BOT + ".hs", "-O", "-v0", "-rtsopts"],
