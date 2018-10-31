@@ -41,7 +41,7 @@ def validate_user_level(level):
                      'Professional')
 
 
-def validate_session_cookie(user_id):
+def validate_session_cookie(user_id, session_secret):
     """
     Validate the session cookie and retrieve the corresponding user record.
     """
@@ -52,7 +52,9 @@ def validate_session_cookie(user_id):
             model.users.c.api_key_hash,
             model.users.c.is_email_good,
             model.users.c.is_active,
-        ]).where(model.users.c.id == user_id)).first()
+            model.users.c.session_secret,
+        ]).where((model.users.c.id == user_id) &
+                 (model.users.c.session_secret == session_secret))).first()
 
         return user
 
@@ -82,7 +84,8 @@ def requires_login(accept_key=False, optional=False, admin=False,
 
             if not user:
                 user = validate_session_cookie(
-                    flask.session.get(config.SESSION_COOKIE))
+                    flask.session.get(config.SESSION_COOKIE),
+                    flask.session.get(config.SESSION_SECRET))
 
             if user:
                 if not user["is_active"]:

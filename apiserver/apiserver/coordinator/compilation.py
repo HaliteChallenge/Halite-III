@@ -13,6 +13,7 @@ def reset_compilation_tasks(conn):
     """Check ongoing compilation tasks, and reset ones that are "stuck"."""
     reset_stuck_tasks = model.bots.update().where(
         (model.bots.c.compile_status == model.CompileStatus.IN_PROGRESS.value) &
+        (model.bots.c.compile_attempts < config.MAX_COMPILATION_ATTEMPTS) &
         (model.bots.c.compile_start <
          datetime.datetime.now() - datetime.timedelta(
              minutes=config.COMPILATION_STUCK_THRESHOLD))
@@ -21,6 +22,18 @@ def reset_compilation_tasks(conn):
         compile_start=None,
     )
     conn.execute(reset_stuck_tasks)
+
+    fail_stuck_tasks = model.bots.update().where(
+        (model.bots.c.compile_status == model.CompileStatus.IN_PROGRESS.value) &
+        (model.bots.c.compile_attempts >= config.MAX_COMPILATION_ATTEMPTS) &
+        (model.bots.c.compile_start <
+         datetime.datetime.now() - datetime.timedelta(
+             minutes=config.COMPILATION_STUCK_THRESHOLD))
+    ).values(
+        compile_status=model.CompileStatus.FAILED.value,
+        compile_start=None,
+    )
+    conn.execute(fail_stuck_tasks)
 
 
 def serve_compilation_task(conn):
@@ -43,6 +56,7 @@ def serve_compilation_task(conn):
                 .where((model.bots.c.user_id == user_id) &
                        (model.bots.c.id == bot_id)) \
                 .values(compile_status=model.CompileStatus.IN_PROGRESS.value,
+                        compile_attempts=model.bots.c.compile_attempts + 1,
                         compile_start=sqlalchemy.sql.func.now())
             conn.execute(update)
             return util.response_success({

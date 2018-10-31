@@ -105,8 +105,8 @@ def give_ownership(top_dir, group, dir_perms):
 def rm_as_user(user, directory):
     """Remove a directory tree as the specified user."""
     subprocess.call(["sudo", "-H", "-u", user, "-s", "rm", "-rf", directory],
-                    stderr=subprocess.PIPE,
-                    stdout=subprocess.PIPE)
+                    stderr=subprocess.DEVNULL,
+                    stdout=subprocess.DEVNULL)
 
 
 def executeCompileTask(user_id, bot_id, backend):
@@ -170,9 +170,8 @@ def executeCompileTask(user_id, bot_id, backend):
 
             backend.compileResult(user_id, bot_id, didCompile, language,
                                   errors=(None if didCompile else "\n".join(errors)))
-        except:
-            logging.debug("Bot did not upload\n")
-            traceback.print_exc()
+        except Exception as e:
+            logging.error("Bot did not upload", e)
             errors.append(UPLOAD_ERROR_MESSAGE + traceback.format_exc())
             backend.compileResult(user_id, bot_id, False, language,
                                   errors="\n".join(errors))
@@ -221,7 +220,7 @@ def setupParticipant(user_index, user, temp_dir):
         try:
             shutil.copytree(compile_dir, bot_dir)
         except shutil.Error as e:
-            print(e)
+            logging.error("Could not compile bot ondemand", e)
 
         rm_as_user("bot_compilation", compile_dir)
 
@@ -284,7 +283,7 @@ def runGame(environment_parameters, users, offset=0):
             user['bot_dir'] = bot_dir
 
         logging.debug("Run game command %s\n" % command)
-        print(command)
+        logging.debug(command)
         logging.debug("Waiting for game output...\n")
         lines = subprocess.Popen(
             command,

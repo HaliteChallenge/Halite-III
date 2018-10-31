@@ -15,14 +15,77 @@ import zipfile
 
 ENVIRONMENT_DIR_HELP = "Directory containing precompiled Halite environment " \
                        "executables, each named after their platform. "
-BOX_DIR_HELP = "Directory containing precompiled Halite-in-a-Box builds, each named after their platform."
+BOX_DIR_HELP = "Directory containing precompiled Halite-in-a-Box builds, " \
+               "each named after their platform."
 VERSION_HELP = "The version string to embed in the downloads page."
-IGNORED_EXTENSIONS = [".exe", ".class", ".pyc", ".obj"]
-INCLUDED_EXTENSIONS = [".py", ".java", ".cpp", ".hpp", ".cs", ".csproj", ".scala", ".js", ".sh", ".bat", ".toml", ".rs",".go",".txt",".rb", ".kt", ".clj",".jl", ".ml", ".hs", ".exs", ".ex", ".lock",".php", ".sln",".dart",".sbt",".properties",".swift",".pyx",".pxd",".fs",".fsproj",".svc"]
-INCLUDED_FILES = ["Makefile", "README", "REQUIRE","LANGUAGE","build.gradle"]
+INCLUDED_EXTENSIONS = {
+    ".bat",
+    ".clj",
+    ".coffee",
+    ".cpp",
+    ".cs",
+    ".csproj",
+    ".d",
+    ".dart",
+    ".erl",
+    ".ex",
+    ".exs",
+    ".fs",
+    ".fsproj",
+    ".go",
+    ".groovy",
+    ".h",
+    ".hpp",
+    ".hs",
+    ".java",
+    ".jl",
+    ".js",
+    ".kt",
+    ".lisp",
+    ".lock",
+    ".lua",
+    ".m",
+    ".md",
+    ".ml",
+    ".pas",
+    ".php",
+    ".pl",
+    ".properties",
+    ".pxd",
+    ".py",
+    ".pyx",
+    ".rb",
+    ".rkt",
+    ".rs",
+    ".sbt",
+    ".scala",
+    ".sh",
+    ".sln",
+    ".svc",
+    ".swift",
+    ".toml",
+    ".txt",
+}
+INCLUDED_FILES = {
+    "Makefile",
+    "README",
+    "REQUIRE",
+    "LANGUAGE",
+    "build.gradle",
+}
 STARTER_KIT_DIR = "../starter_kits"
 DOWNLOAD_DATA = "_data/downloads.json"
 PLATFORM_AGNOSTIC = "None"
+
+# Kits that we support
+OFFICIAL_KITS = {
+    "Python3",
+    "JavaScript",
+    "Java",
+    "C++",
+    "Rust",
+    "ml",
+}
 
 # Names of generated downloads
 # Standard language + platform
@@ -105,14 +168,13 @@ def make_source_download():
     for directory, _, file_list in os.walk("../game_engine"):
         target_dir = os.path.relpath(directory, "../game_engine")
         for filename in file_list:
-            _, ext = os.path.splitext(filename)
-            if ext.lower() in {".cpp", ".c", ".hpp", ".h", ".bat"} or \
-                    filename == "Makefile":
-                source_path = os.path.join(directory, filename)
-                target_path = os.path.normpath(
-                    os.path.join("Halite/", target_dir, filename))
+            # Just include all files in directory, since we should be
+            # deploying from a clean repo.
+            source_path = os.path.join(directory, filename)
+            target_path = os.path.normpath(
+                os.path.join("Halite/", target_dir, filename))
 
-                included_files.append((source_path, target_path))
+            included_files.append((source_path, target_path))
 
     with zipfile.ZipFile(SOURCE_FILE, "w", zipfile.ZIP_DEFLATED) as archive:
         for source_path, target_path in included_files:
@@ -157,13 +219,14 @@ def make_benchmark_download():
 
 def make_tools_download():
     included_files = []
-    for directory, _, file_list in os.walk("../tools/hlt_client/hlt_client"):
+    for directory, _, file_list in os.walk("../tools/hlt_client"):
+        target_dir = os.path.relpath(directory, "../tools/hlt_client")
         for filename in file_list:
             _, ext = os.path.splitext(filename)
-            if ext.lower() in {".py"}:
+            if ext.lower() in {".py", ".md", ".txt"} or filename == "hlt":
                 source_path = os.path.join(directory, filename)
                 target_path = os.path.normpath(
-                    os.path.join("hlt_client/", filename))
+                    os.path.join("hlt_client/", target_dir, filename))
                 included_files.append((source_path, target_path))
 
     with zipfile.ZipFile(TOOLS_FILE, "w", zipfile.ZIP_DEFLATED) as archive:
@@ -227,6 +290,10 @@ def main():
         if directory in ("starterkitdocs", "benchmark"):
             continue
 
+        if directory == 'Swift':
+            # Skip this for now (licensing)
+            continue
+
         language = directory
         generated_languages.append(language)
         print("Language:", language)
@@ -267,17 +334,18 @@ def main():
         "languages": [],
         "environments": [],
         "tools": [
-            {
-                "name": "Benchmark Bots",
-                "files": [BENCHMARK_FILE, None, None, None],
-            },
-            {
-                "name": "Client Tools",
-                "files": [TOOLS_FILE, None, None, None],
-            },
+            # Don't allow downloading benchmark bots
+            # {
+            #     "name": "Benchmark Bots",
+            #     "files": [BENCHMARK_FILE, None, None, None],
+            # },
             {
                 "name": "Halite Visualizer & Gym",
                 "files": make_box_halite_download(args.box_dir),
+            },
+            {
+                "name": "CLI Client Tools",
+                "files": [TOOLS_FILE, None, None, None],
             },
         ],
         "source": SOURCE_FILE,
@@ -294,7 +362,7 @@ def main():
         output["languages"].append({
             "language": language,
             "files": language_kits,
-            "version": args.version,
+            "version": args.version if language in OFFICIAL_KITS else "Community-contributed",
         })
 
     output["languages"].append({

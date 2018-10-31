@@ -27,12 +27,13 @@ class GameDownloader:
     _SALT_BUCKET_URI = 'https://www.googleapis.com/storage/v1/b/ts2018-halite-3-replays/o'
     _BUCKET_URIS = [_SALT_BUCKET_URI, _GOLD_BUCKET_URI]
 
-    def __init__(self, destination, buckets, prefix):
+    def __init__(self, destination, buckets, prefix, decompress):
         """
         Download replays files
         :param destination: Where to download
         :param buckets: List of bucket(s) to fetch from
         :param prefix: What prefix to fetch from
+        :param decompress: Whether to decompress replays
         """
         if not os.path.isdir(destination):
             raise FileNotFoundError("Directory path does not exist")
@@ -40,6 +41,7 @@ class GameDownloader:
         self.objects = []
         for bucket in buckets:
             self.objects += self._parse_objects(requests.get(bucket + _PREFIX_OPTION + prefix).json())
+        self.decompress = decompress
 
     @staticmethod
     def _parse_objects(bucket_json):
@@ -98,9 +100,13 @@ class GameDownloader:
         """
         game_id = self._parse_id_from_url(url)
         try:
-            with open(os.path.join(self.destination, game_id), 'w') as fout:
-                print("downloading {}".format(url))
-                fout.writelines(self._unzip(game_id, requests.get(url + _MEDIA_DOWNLOAD_OPTION).content))
+            print("downloading {}".format(url))
+            if self.decompress:
+                with open(os.path.join(self.destination, game_id + '.json'), 'w') as fout:
+                    fout.writelines(self._unzip(game_id, requests.get(url + _MEDIA_DOWNLOAD_OPTION).content))
+            else:
+                with open(os.path.join(self.destination, game_id + '.hlt'), 'wb') as fout:
+                    fout.write(requests.get(url + _MEDIA_DOWNLOAD_OPTION).content)
         except Exception:
             raise IOError("Could not write file {} to {}".format(game_id, self.destination))
 
@@ -116,7 +122,7 @@ class GameDownloader:
 
 class DatedGameDownloader(GameDownloader):
 
-    def __init__(self, destination, date, all_bots=False):
+    def __init__(self, destination, date, all_bots=False, decompress=False):
         """
         Download games for a date
         :param destination: Where to download
@@ -124,7 +130,7 @@ class DatedGameDownloader(GameDownloader):
         :param all_bots: True if you wish to download silver ranked bots as well. False for only gold.
         """
         buckets = [self._GOLD_BUCKET_URI] + ([self._SALT_BUCKET_URI] if all_bots else [])
-        super(DatedGameDownloader, self).__init__(destination, buckets, _REPLAY_PREPEND + date)
+        super(DatedGameDownloader, self).__init__(destination, buckets, _REPLAY_PREPEND + date, decompress)
 
 
 class UserGameDownloader(GameDownloader):
@@ -132,14 +138,14 @@ class UserGameDownloader(GameDownloader):
     _FETCH_THRESHOLD = 250
     _BUCKETS = []
 
-    def __init__(self, destination, user_id, limit):
+    def __init__(self, destination, user_id, limit, decompress=False):
         """
         Download games for a user
         :param destination: Where to download
         :param user_id: Which user's replays to fetch
         :param limit: How many replays to fetch (max)
         """
-        self.destination = destination
+        super(UserGameDownloader, self).__init__(destination, [], None, decompress)
         self.objects = self._parse_user_metadata(self._fetch_metadata(user_id, limit))
 
     def _fetch_metadata(self, user_id, limit):
@@ -181,7 +187,8 @@ def _valid_date(date):
     return re.compile('^\d{1,8}').search(date)
 
 
-def download(mode, destination, date, all_bots, default_user_id, user_id, limit):
+def download(mode, destination, date, all_bots, default_user_id, user_id,
+             limit, decompress):
     """
     Downloads bot replay files matching the designated requirements
     :param mode: Whether to download files matching a date or a user id
@@ -191,15 +198,18 @@ def download(mode, destination, date, all_bots, default_user_id, user_id, limit)
     :param default_user_id: What is the user id of the user making the request
     :param user_id: What is the user id desired if any
     :param limit: How many replays to download (currently only in user mode)
+    :param decompress: Whether to decompress the replays.
     :return: Nothing
     """
     print('Downloading game files')
+    if decompress:
+        print('Decompressing replays before saving.')
     if mode == client.REPLAY_MODE_DATE:
         if not _valid_date(date):
             raise ValueError("Date must match format YYYYMMDD")
-        DatedGameDownloader(destination, date, all_bots).get_objects()
+        DatedGameDownloader(destination, date, all_bots, decompress).get_objects()
     elif mode == client.REPLAY_MODE_USER:
         if not (default_user_id or user_id):
             raise ValueError("Cannot run default mode without authenticating .Please run `client.py --auth` first.")
-        UserGameDownloader(destination, default_user_id if not user_id else user_id, limit).get_objects()
+        UserGameDownloader(destination, default_user_id if not user_id else user_id, limit, decompress).get_objects()
     print('Finished writing files to desired location')

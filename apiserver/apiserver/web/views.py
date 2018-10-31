@@ -22,7 +22,10 @@ def discourse_sso():
     Implements an SSO endpoint for Discourse forums, as described at
     https://meta.discourse.org/t/official-single-sign-on-for-discourse/13045
     """
-    user = api_util.validate_session_cookie(flask.session.get(config.SESSION_COOKIE))
+    user = api_util.validate_session_cookie(
+        flask.session.get(config.SESSION_COOKIE),
+        flask.session.get(config.SESSION_SECRET),
+    )
     user_id = None
     if user:
         user_id = user["user_id"]

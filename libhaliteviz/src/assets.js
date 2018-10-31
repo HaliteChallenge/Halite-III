@@ -236,6 +236,40 @@ export function setAssetRoot(path) {
             BASE_SPRITES.push(sheet.textures["gt.png"]);
         }));
     }
+    else if (theme.selectedTheme === "Halloween") {
+        promises.push(loadSpritesheet(
+            require("../assets/hallotheme.json"),
+            ASSET_ROOT + require("../assets/hallotheme.png"),
+        ).then((sheet) => {
+            SHEETS.push(sheet);
+
+            BASE_SPRITES.push(sheet.textures["greenbase.png"]);
+            BASE_SPRITES.push(sheet.textures["orangebase.png"]);
+            BASE_SPRITES.push(sheet.textures["purpbase.png"]);
+            BASE_SPRITES.push(sheet.textures["whitebase.png"]);
+
+            TURTLE_SPRITES.push([
+                sheet.textures["bat_green_3.png"],
+                sheet.textures["bat_green_2.png"],
+                sheet.textures["bat_green_1.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["bat_orange_3.png"],
+                sheet.textures["bat_orange_2.png"],
+                sheet.textures["bat_orange_1.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["bat_purp_3.png"],
+                sheet.textures["bat_purp_2.png"],
+                sheet.textures["bat_purp_1.png"],
+            ]);
+            TURTLE_SPRITES.push([
+                sheet.textures["bat_white_3.png"],
+                sheet.textures["bat_white_2.png"],
+                sheet.textures["bat_white_1.png"],
+            ]);
+        }));
+    }
     else {
         promises.push(loadSpritesheet(
             require("../assets/turtle.json"),

@@ -55,14 +55,17 @@ def get_challenge_helper(challenge_id):
                 404,
                 message="Challenge {} not found.".format(challenge_id))
 
-        participants = conn.execute(
-            model.challenge_participants.join(
-                model.all_users,
-                model.challenge_participants.c.user_id == model.all_users.c.user_id
-            ).select(
-                model.challenge_participants.c.challenge_id == challenge["id"]
-            )
-        )
+        participants = conn.execute(sqlalchemy.sql.select([
+            model.challenge_participants.c.user_id,
+            model.challenge_participants.c.points,
+            model.users.c.username,
+            model.users.c.oauth_profile_image_key.label("profile_image_key"),
+        ]).select_from(model.challenge_participants.join(
+            model.users,
+            model.challenge_participants.c.user_id == model.users.c.id
+        )).where(
+            model.challenge_participants.c.challenge_id == challenge["id"]
+        )).fetchall()
         return make_challenge_record(challenge, participants)
 
 

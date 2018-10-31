@@ -13,6 +13,9 @@ type Entity struct {
 	Pos      *Position
 }
 
+// GetID - Gets an entity's ID, which is unique within their subtype.
+func (e *Entity) GetID() int { return e.id }
+
 /*********************************************************************************/
 
 // Dropoff - Dropoff structure
@@ -50,6 +53,9 @@ func NewShip(playerID int) *Ship {
 	var halite, _ = input.GetInt()
 	return &Ship{&Entity{shipID, playerID, &Position{x, y}}, halite}
 }
+
+// GetID - Get a Ship's ID
+func (s *Ship) GetID() int { return s.E.id }
 
 // IsFull - Returns true if the ship is full
 func (s *Ship) IsFull() bool {

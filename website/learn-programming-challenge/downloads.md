@@ -99,6 +99,6 @@ Our community creates and shares a wide variety of tools for developing Halite b
 
 * [Reloader Script](https://forums.halite.io/t/halite-3-reloader-script/120) displays the difference a bot's output and a given replay file.
 * [Alternative Local Replay Viewer](https://forums.halite.io/t/fluorine-a-halite-3-replay-viewer/99)
-
+* [Match Manager](https://gitlab.com/smiley1983/halite3-match-manager)
 
 <br/>

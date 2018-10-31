@@ -79,7 +79,7 @@ def play_games(binary, game_output_dir, map_width, map_height, bot_commands, num
 
 
 def parse_arguments(subparser):
-    bot_parser = subparser.add_parser('play', help='Train your Bot(s)!')
+    bot_parser = subparser.add_parser('play', help='Play games using your bot(s).')
     bot_parser.add_argument('-r', '--run-command',
                             dest='run_commands',
                             action='append',
@@ -89,7 +89,7 @@ def parse_arguments(subparser):
                             dest='halite_binary',
                             action='store',
                             type=str, required=True,
-                            help="The halite executable/binary path, used to run the games")
+                            help="The halite game engine path, used to run the games. Included in starter kits/from the download page.")
 
     bot_parser.add_argument('--output-dir',
                             dest='game_output_dir',

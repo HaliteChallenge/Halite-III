@@ -292,7 +292,7 @@ def main(args):
 
 
 def parse_arguments(subparser):
-    gym_parser = subparser.add_parser('gym', help='Train your Bot(s)!')
+    gym_parser = subparser.add_parser('gym', help='ADVANCED FEATURE: train your bot(s)!')
     gym_parser.add_argument('--db-path',
                             dest='db_path',
                             action='store',

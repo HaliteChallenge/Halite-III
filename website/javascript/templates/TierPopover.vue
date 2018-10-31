@@ -27,7 +27,7 @@
     mounted: function () {
       const badgeIndex = badges.indexOf(this.tier)
       if (badgeIndex >= 0) {
-        this.index = badgeIndex
+        this.index = badgeIndex + 1
         this.badge = this.tier
         this.percentage = percentages[badgeIndex]
       }
@@ -49,7 +49,7 @@
     },
     computed: {
       icon() {
-        return `icon-tier-${this.index+1}`
+        return `icon-tier-${this.index}`
       }
     },
   }
