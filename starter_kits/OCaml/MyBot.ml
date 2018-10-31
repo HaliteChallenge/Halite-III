@@ -30,8 +30,8 @@ let mybot_fun state =
 
 let run bot =
   try (
-    (* If you want to log to a specific file *)
-    (*Debug.setup_logging 0 "MyOcamlBot";*) 
+    (* It is necessary log to a file for any medium-large amount of data *)
+    Debug.setup_logging 0 "MyOcamlBot";
     let state = Game.new_state() in
     Random.init(max (state.const.game_seed - 7813) (state.const.game_seed + 8973));
     (* I was getting poor quality random results until I started discarding
