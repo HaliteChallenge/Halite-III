@@ -11,13 +11,13 @@ import (
 type Game struct {
 	numPlayers int
 	Me         *Player
-	players    []*Player
+	Players    []*Player
 	Map        *GameMap
 	TurnNumber int
 }
 
 func (g *Game) String() string {
-	return fmt.Sprintf("Game{NumPlayers=%d,Me=%s,players=%d,Map=%s}", g.numPlayers, g.Me.String(), len(g.players), g.Map.String())
+	return fmt.Sprintf("Game{NumPlayers=%d,Me=%s,Players=%d,Map=%s}", g.numPlayers, g.Me.String(), len(g.Players), g.Map.String())
 }
 
 // Ready - When run, notifies the server that the bot is ready to start
@@ -36,13 +36,13 @@ func NewGame() *Game {
 	gameconfig.Init(constantsString)
 	var numPlayers, _ = input.GetInt()
 	var myID, _ = input.GetInt()
-	var players = make([]*Player, numPlayers)
-	for i := range players {
-		players[i] = NewPlayer()
+	var Players = make([]*Player, numPlayers)
+	for i := range Players {
+		Players[i] = NewPlayer()
 	}
 	var gameMap = GenerateGameMap()
-	var me = players[myID]
-	return &Game{numPlayers, me, players, gameMap, 0}
+	var me = Players[myID]
+	return &Game{numPlayers, me, Players, gameMap, 0}
 }
 
 // UpdateFrame - Runs a single turn in the game
@@ -51,17 +51,17 @@ func (g *Game) UpdateFrame() {
 	var input = input.GetInstance()
 	g.TurnNumber, _ = input.GetInt()
 	logger.Printf("=============== TURN %d ================\n", g.TurnNumber)
-	for i := range g.players {
+	for i := range g.Players {
 		// Player ID variable being read here. It isn't used, so we can't assign it in Go without error, but we still need to consume it from the input
 		input.GetInt()
 		var numShips, _ = input.GetInt()
 		var numDropoffs, _ = input.GetInt()
 		var halite, _ = input.GetInt()
-		g.players[i].Update(numShips, numDropoffs, halite)
+		g.Players[i].Update(numShips, numDropoffs, halite)
 	}
 	g.Map.Update()
-	for i := range g.players {
-		var player = g.players[i]
+	for i := range g.Players {
+		var player = g.Players[i]
 		for j := range player.Ships {
 			var ship = player.Ships[j]
 			g.Map.AtEntity(ship.E).MarkUnsafe(ship)
