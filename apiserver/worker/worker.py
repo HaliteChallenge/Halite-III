@@ -142,8 +142,8 @@ def executeCompileTask(user_id, bot_id, backend):
 
             # Give the compilation user access
             os.chmod(temp_dir, 0o755)
-            # User needs to be able to write to the directory
-            give_ownership(temp_dir, "bots", 0o774)
+            # User needs to be able to write to the directory and create files
+            give_ownership(temp_dir, "bots", 0o2770)
 
             # Reset cwd before compilation, in case it was in a
             # deleted temporary folder
