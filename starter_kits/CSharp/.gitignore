@@ -1,3 +1,6 @@
+# The *.sln is ignored in the top-level .gitignore, but is needed for CSharp kit.
+!MyBot.sln
+
 ####################################################################################
 # Ignore replay and bot-log files
 ####################################################################################
