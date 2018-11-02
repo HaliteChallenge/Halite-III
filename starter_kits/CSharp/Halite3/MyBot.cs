@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Halite3
 {
-    public class Sharpie
+    public class MyBot
     {
         public static void Main(string[] args)
         {
