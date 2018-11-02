@@ -54,7 +54,7 @@ Download a language-specific starter kit to start building your bot. Can’t fin
 </div>
 <br>
 ## Halite Tools and Source Download
-Download tools to let you play games locally. Read the [Halite Client Readme](https://github.com/HaliteChallenge/Halite-III/tree/master/tools/hlt_client/README.md) for installation and usage instructions.
+Download tools to play games locally. Read the CLI Client Tools README included in the download for installation and usage instructions.
 
 
 <div class="table-container">

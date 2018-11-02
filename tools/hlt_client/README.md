@@ -7,11 +7,11 @@ Download the tool from our [downloads page](https://halite.io/learn-programming-
 * You may have to `sudo` or use an admin shell.
 
 ## Usage
-The Halite Client will let you interface with our game servers and play games locally using the command line.
+The Halite Client lets you interface with our game servers and play games locally using the command line.
 
 **Authorize your client**
 
-Before you can use most features of the client, you'll need to authenticate your account. Run `hlt auth` and follow the directions to connect your Halite account with your local client.
+Before you can use most features of the client, you'll need to connect it to your Halite account. Have your Halite API key ready, or generate a new one at https://halite.io/user/settings.
 
 `hlt auth`
 
@@ -37,7 +37,7 @@ This command runs the number of games you specify, creating save logs and replay
 `hlt play -r [BOT_COMMAND] -r [BOT_COMMAND] -b [PATH_TO_HALITE.EXE] --output-dir [OUTPUT_LOCATION] -i [NUMBER_OF_ITERATIONS]`
 
 * You may give two or four `-r [BOT_COMMAND]` parameters to run two or four player games.
-* `[BOT_COMMAND]` allows you to specify how to run a bot. The command defaults to Python 3; if only a path is given, the client will run the bot assuming it is a Python bot. You may also mix and match: `hlt play -r "python3 Halite3_Py/MyBot.py" -r "ruby Halite3_Ruby/MyBot.py" ...` allows you to compare bots in different languages.
+* `[BOT_COMMAND]` allows you to specify how to run a bot. The command defaults to Python 3; if only a path is given, the client will run the bot assuming it is a Python bot. You may also mix and match: `hlt play -r "python3 Halite3_Py/MyBot.py" -r "ruby Halite3_Ruby/MyBot.rb" ...` allows you to compare bots in different languages.
 * The halite.exe game binary is required to play games. Specify the path after the -b (--binary) parameter: `-b Halite3_Py/halite`
 * If you'd like to specify the game map size, you can add `-W [WIDTH] -H [HEIGHT]` parameters. Game maps are 32x32, 40x40, 48x48, 56x56, or 64x64 in width and height.
 

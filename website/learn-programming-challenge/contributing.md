@@ -66,7 +66,7 @@ Each turn, every bot is sent:
 
 <br/>
 ### Submitting your new starter kit
-To submit your starter kit, fork our repo, place your starter package in the `starter-kits/` folder, and send us a pull request! Please ensure that your code does not include copyright language; see more in our [Terms of Use](http://localhost:4000/about/terms-and-conditions). If we accept your PR, your starter package will be added to the site.
+To submit your starter kit, fork our repo, place your starter package in the `starter-kits/` folder, and send us a pull request! The Halite repo is licensed under the MIT License; please ensure that your code does not include copyright language. If we accept your PR, your starter package will be added to the site.
 
 
 **Note:** please include the `run_game.sh` and `run_game.bat` scripts, following the Python3 starter kit as a template.
