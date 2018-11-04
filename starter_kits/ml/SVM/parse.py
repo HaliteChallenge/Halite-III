@@ -12,10 +12,10 @@ ARBITRARY_ID = -1
 def parse_replay_file(file_name, player_name):
     print("Load Replay: " + file_name)
     with open(file_name, 'rb') as f:
-        data = json.loads(zstd.loads(f.read()))
+        data = json.loads(zstd.loads(f.read()).decode('utf-8'))
 
     print("Load Basic Information")
-    player = [p for p in data['players'] if p['name'].split(" ")[0] == player_name][0]
+    player = [p for p in data['players'] if p['name'] == player_name][0]
     player_id = int(player['player_id'])
     my_shipyard = hlt.Shipyard(player_id, ARBITRARY_ID,
                                hlt.Position(player['factory_location']['x'], player['factory_location']['y']))
