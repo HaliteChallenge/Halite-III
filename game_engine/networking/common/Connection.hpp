@@ -56,7 +56,10 @@ public:
 };
 
 /** The type of platform-specific connections. */
-#ifdef _WIN32
+#ifdef __EMSCRIPTEN__
+class WasmConnection;
+using OSConnection = WasmConnection;
+#elif _WIN32
 class WinConnection;
 using OSConnection = WinConnection;
 #else

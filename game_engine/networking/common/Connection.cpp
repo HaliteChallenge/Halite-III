@@ -2,7 +2,9 @@
 #include "NetworkingError.hpp"
 #include "TimeoutError.hpp"
 
-#ifdef _WIN32
+#ifdef __EMSCRIPTEN__
+#include "WasmConnection.hpp"
+#elif _WIN32
 #include "WinConnection.hpp"
 #else
 #include "UnixConnection.hpp"

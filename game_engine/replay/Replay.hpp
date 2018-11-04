@@ -148,7 +148,7 @@ struct Replay {
      * @param seed Seed for random number generator for map
      * @param production_map Initialized map for game play
      */
-    Replay(GameStatistics &game_statistics, size_t number_of_players, unsigned int seed, const Map production_map) :
+    Replay(GameStatistics &game_statistics, size_t number_of_players, unsigned int seed, const Map& production_map) :
             game_statistics(game_statistics), number_of_players(number_of_players),
             map_generator_seed(seed), production_map(production_map) {}
 

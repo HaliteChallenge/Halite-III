@@ -11,12 +11,12 @@
 #include "NetworkingConfig.hpp"
 #include "Player.hpp"
 
-#ifdef _WIN32
+#ifdef __EMSCRIPTEN__
+#include "WasmConnection.hpp"
+#elif _WIN32
 #include "WinConnection.hpp"
 #else
-
 #include "UnixConnection.hpp"
-
 #endif
 
 namespace hlt {
@@ -55,6 +55,10 @@ public:
      * @param player The player whose connection to end.
      */
     void kill_player(const hlt::Player &player);
+
+    /** Generate the input sent to a bot for this turn. */
+    std::string generate_player_input();
+    std::string generate_player_init_input(const hlt::Player& player);
 
     /**
      * Handle the networking for a single frame, obtaining commands from the player if there are any.

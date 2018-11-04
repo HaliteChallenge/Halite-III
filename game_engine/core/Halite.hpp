@@ -18,6 +18,10 @@ struct Snapshot;
 
 /** Halite game interface, exposing the top level of the game. */
 class Halite final {
+    // Make everything available to Emscripten
+#ifdef __EMSCRIPTEN__
+public:
+#endif
     /** Transient game state. */
     unsigned long turn_number{};      /**< The turn number. */
     Store store;                      /**< The entity store. */
@@ -38,6 +42,12 @@ class Halite final {
 
 public:
     PlayerLogs logs;                  /**< The player logs. */
+
+#ifdef __EMSCRIPTEN__
+    HaliteImpl& get_impl() { return *impl; }
+    PlayerLogs& get_logs() { return logs; }
+    net::Networking* get_networking() { return &networking; }
+#endif
 
     /**
      * Constructor for the main game.

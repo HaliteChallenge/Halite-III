@@ -6,6 +6,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+include(CheckCXXCompilerFlag)
+
+CHECK_CXX_COMPILER_FLAG(-fsanitize=address COMPILER_SUPPORTS_ASAN)
+CHECK_CXX_COMPILER_FLAG(-fsanitize=undefined COMPILER_SUPPORTS_UBSAN)
+
+message(${CMAKE_SYSTEM_NAME})
+
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif(NOT CMAKE_BUILD_TYPE)
@@ -17,9 +24,15 @@ if(MSVC)
 else()
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -pedantic -Wextra -Wno-unused-variable")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pedantic -Wextra -Wno-unused-variable -g -O0 -fno-inline")
-    if(NOT MINGW)
-        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=undefined,address")
-    endif()
+endif()
+
+if (NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+if (COMPILER_SUPPORTS_ASAN)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address")
+endif()
+if (COMPILER_SUPPORTS_UBSAN)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=undefined")
+endif()
 endif()
 
 # versions of cmake before 3.4 always link with -rdynamic on linux, which breaks static linkage with clang
@@ -38,9 +51,14 @@ include_directories(${CMAKE_SOURCE_DIR}/networking/common)
 include_directories(${CMAKE_SOURCE_DIR}/replay)
 include_directories(${CMAKE_SOURCE_DIR}/util)
 
-if(WIN32)
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+    message("Using WASM connection")
+    include_directories(${CMAKE_SOURCE_DIR}/networking/wasm)
+elseif(WIN32)
+    message("Using Win32 connection")
     include_directories(${CMAKE_SOURCE_DIR}/networking/win32)
 else()
+    message("Using Unix connection")
     include_directories(${CMAKE_SOURCE_DIR}/networking/unix)
 endif()
 
@@ -64,7 +82,9 @@ set(dirs
     ${CMAKE_SOURCE_DIR}/util
 )
 
-if(WIN32)
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+    list(APPEND dirs ${CMAKE_SOURCE_DIR}/networking/wasm)
+elseif(WIN32)
     list(APPEND dirs ${CMAKE_SOURCE_DIR}/networking/win32)
 else()
     list(APPEND dirs ${CMAKE_SOURCE_DIR}/networking/unix)
@@ -103,6 +123,13 @@ link_directories(${EXTERNAL_INSTALL_LOCATION}/zstd/build/cmake/lib)
 
 add_library(halite_core OBJECT ${SOURCE_FILES})
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+    message("Building WASM library.")
+    add_executable(halite_web $<TARGET_OBJECTS:halite_core> glue.cpp)
+    get_filename_component(WASM_GLUE_JS libhaliteweb_glue.js REALPATH)
+    set_target_properties(halite_web PROPERTIES LINK_FLAGS "-o libhalitecore.js -s BINARYEN_METHOD='native-wasm' -s WASM=1 --bind")
+endif()
+
 add_executable(halite $<TARGET_OBJECTS:halite_core> main.cpp)
 if(NOT WIN32)
     add_dependencies(halite VERSION_CHECK libzstd_static)
@@ -111,7 +138,7 @@ endif()
 file(GLOB_RECURSE SOURCE ${CMAKE_SOURCE_DIR}/test/*.[ch]*)
 set(TEST_FILES "${TEST_FILES}" ${SOURCE})
 
-if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
+if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32 AND NOT CMAKE_PLATFORM_NAME MATCHES Emscripten)
     set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules)
 
     file(GLOB_RECURSE TEST_FILES ${CMAKE_SOURCE_DIR}/test/*.[ch]*)

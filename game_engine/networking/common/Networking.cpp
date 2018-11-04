@@ -64,27 +64,10 @@ void Networking::connect_player(hlt::Player &player) {
  * @param player The player to communicate with.
  */
 void Networking::initialize_player(Player &player) {
-    std::stringstream message_stream;
     Logging::log("Sending init message", Logging::Level::Debug, player.id);
-    // Send the game constants
-    nlohmann::json constants = Constants::get();
-    constants["game_seed"] = game.replay.map_generator_seed;
-    message_stream << constants.dump() << std::endl;
-
-    // Send the number of players and player ID
-    message_stream << game.store.players.size()
-                   << " " << player.id << std::endl;
-    // Send each player's ID and factory location
-    for (const auto &[player_id, other_player] : game.store.players) {
-        message_stream << player_id
-                       << " " << other_player.factory
-                       << std::endl;
-    }
-    // Send the map
-    message_stream << game.map;
-
+    const auto& bot_input = generate_player_init_input(player);
     try {
-        connections.get(player.id)->send_string(message_stream.str());
+        connections.get(player.id)->send_string(bot_input);
         Logging::log("Init message sent", Logging::Level::Debug, player.id);
         // Receive a name from the player.
         static constexpr auto INIT_TIMEOUT = std::chrono::seconds(30);
@@ -103,14 +86,31 @@ void Networking::initialize_player(Player &player) {
     }
 }
 
-/**
- * Handle the networking for a single frame, obtaining commands from the player if there are any.
- * Safe to invoke from multiple threads on different players.
- *
- * @param player The player to communicate with.
- * @return The commands from the player.
- */
-std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
+
+std::string Networking::generate_player_init_input(const Player& player) {
+    std::stringstream message_stream;
+    // Send the game constants
+    nlohmann::json constants = Constants::get();
+    constants["game_seed"] = game.replay.map_generator_seed;
+    message_stream << constants.dump() << std::endl;
+
+    // Send the number of players and player ID
+    message_stream << game.store.players.size()
+                   << " " << player.id << std::endl;
+    // Send each player's ID and factory location
+    for (const auto &[player_id, other_player] : game.store.players) {
+        message_stream << player_id
+                       << " " << other_player.factory
+                       << std::endl;
+    }
+    // Send the map
+    message_stream << game.map;
+    return message_stream.str();
+}
+
+
+
+std::string Networking::generate_player_input() {
     std::stringstream message_stream;
     // Send the turn number, then each player in the game.
     message_stream << game.turn_number << std::endl;
@@ -135,10 +135,23 @@ std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
         message_stream << location << " " << game.map.at(location).energy << std::endl;
     }
 
+    return message_stream.str();
+}
+
+/**
+ * Handle the networking for a single frame, obtaining commands from the player if there are any.
+ * Safe to invoke from multiple threads on different players.
+ *
+ * @param player The player to communicate with.
+ * @return The commands from the player.
+ */
+std::vector<std::unique_ptr<Command>> Networking::handle_frame(Player &player) {
+    std::string bot_input = generate_player_input();
+
     std::vector<std::unique_ptr<Command>> commands;
     std::string received_input;
     try {
-        connections.get(player.id)->send_string(message_stream.str());
+        connections.get(player.id)->send_string(bot_input);
         Logging::log("Turn info sent", Logging::Level::Debug, player.id);
         // Get commands from the player.
         received_input = connections.get(player.id)->get_string();

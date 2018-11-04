@@ -11,10 +11,16 @@
 
 namespace hlt {
 
+using Commands = std::vector<std::unique_ptr<Command>>;
+
 /** Halite implementation class, expressing core game logic. */
 class HaliteImpl final {
     friend class Halite;
 
+    // Make everything available to Emscripten
+#ifdef __EMSCRIPTEN__
+public:
+#endif
     /** The game interface. */
     Halite &game;
 
@@ -73,8 +79,19 @@ class HaliteImpl final {
     /** Retrieve and process commands, and update the game state for the current turn. */
     void process_turn();
 
+    /** Retrieve and process commands, and update the game state for the current turn. */
+    void process_turn_from_input(std::map<Player::id_type, std::string> input);
+
+    /** Retrieve and process commands, and update the game state for the current turn. */
+    void process_turn_commands(ordered_id_map<Player, Commands> commands);
+
     /** Remove a player from the game. */
     void kill_player(const Player::id_type &player_id);
+
+    void initialize_players();
+    void start_turn();
+    void end_turn();
+    void end_game();
 
     /**
      * Handle a player command error.

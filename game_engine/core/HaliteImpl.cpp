@@ -97,10 +97,7 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
     game.replay.full_frames.back().add_end_state(game.store);
 }
 
-/** Run the game. */
-void HaliteImpl::run_game() {
-    const auto &constants = Constants::get();
-
+void HaliteImpl::initialize_players() {
     ordered_id_map<Player, std::future<void>> results{};
     bool success = true;
     for (auto &[player_id, player] : game.store.players) {
@@ -137,31 +134,48 @@ void HaliteImpl::run_game() {
     }
     game.replay.players.insert(game.store.players.begin(), game.store.players.end());
     Logging::log("Player initialization complete");
+}
 
+/** Run the game. */
+void HaliteImpl::run_game() {
+    initialize_players();
+
+    const auto &constants = Constants::get();
     for (game.turn_number = 1; game.turn_number <= constants.MAX_TURNS; game.turn_number++) {
-        Logging::set_turn_number(game.turn_number);
-        game.logs.set_turn_number(game.turn_number);
-        Logging::log([turn_number = game.turn_number]() {
-            return "Starting turn " + std::to_string(turn_number);
-        }, Logging::Level::Debug);
-        // Create new turn struct for replay file, to be filled by further turn actions
-        game.replay.full_frames.emplace_back();
-
-        // Add state of entities at start of turn.
-        // First, update inspiration flags, so they can be used for
-        // movement/mining and so they are part of the replay.
-        update_inspiration();
-        game.replay.full_frames.back().add_entities(game.store);
-
+        start_turn();
         process_turn();
-
-        // Add end of frame state.
-        game.replay.full_frames.back().add_end_state(game.store);
+        end_turn();
 
         if (game_ended()) {
             break;
         }
     }
+
+    end_game();
+}
+
+void HaliteImpl::start_turn() {
+    Logging::set_turn_number(game.turn_number);
+    game.logs.set_turn_number(game.turn_number);
+    Logging::log([turn_number = game.turn_number]() {
+                     return "Starting turn " + std::to_string(turn_number);
+                 }, Logging::Level::Debug);
+    // Create new turn struct for replay file, to be filled by further turn actions
+    game.replay.full_frames.emplace_back();
+
+    // Add state of entities at start of turn.
+    // First, update inspiration flags, so they can be used for
+    // movement/mining and so they are part of the replay.
+    update_inspiration();
+    game.replay.full_frames.back().add_entities(game.store);
+}
+
+void HaliteImpl::end_turn() {
+    // Add end of frame state.
+    game.replay.full_frames.back().add_end_state(game.store);
+}
+
+void HaliteImpl::end_game() {
     game.game_statistics.number_turns = game.turn_number;
 
     // Add state of entities at end of game.
@@ -186,7 +200,6 @@ void HaliteImpl::run_game() {
 /** Retrieve and process commands, and update the game state for the current turn. */
 void HaliteImpl::process_turn() {
     // Retrieve all commands
-    using Commands = std::vector<std::unique_ptr<Command>>;
     ordered_id_map<Player, Commands> commands{};
     id_map<Player, std::future<Commands>> results{};
     for (auto &[player_id, player] : game.store.players) {
@@ -206,6 +219,38 @@ void HaliteImpl::process_turn() {
         }
     }
 
+    process_turn_commands(std::move(commands));
+}
+
+void HaliteImpl::process_turn_from_input(std::map<Player::id_type, std::string> input) {
+    ordered_id_map<Player, Commands> all_commands{};
+
+    for (const auto &[player_id, received_input] : input) {
+        try {
+            Commands commands;
+            std::istringstream command_stream(received_input);
+            std::unique_ptr<Command> command;
+            while (command_stream >> command) {
+                commands.push_back(std::move(command));
+            }
+            command_stream >> command;
+
+            Logging::log([number = commands.size()]() {
+                             return "Received " + std::to_string(number) + " commands";
+                         }, Logging::Level::Debug, player_id);
+            all_commands[player_id] = std::move(commands);
+        } catch (const BotError &e) {
+            Logging::log("Communication failed", Logging::Level::Error, player_id);
+            game.logs.log(player_id, e.what(), PlayerLog::Level::Error);
+            kill_player(player_id);
+            all_commands.erase(player_id);
+        }
+    }
+
+    process_turn_commands(std::move(all_commands));
+}
+
+void HaliteImpl::process_turn_commands(ordered_id_map<Player, Commands> commands) {
     // Process valid player commands, removing players if they submit invalid ones.
     std::unordered_set<Entity::id_type> changed_entities;
     while (!commands.empty()) {
