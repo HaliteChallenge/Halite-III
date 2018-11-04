@@ -2,7 +2,8 @@ package hlt
 
 import (
 	"fmt"
-	"hlt/input"
+
+	"./input"
 )
 
 // GameMap - Top level structure for the game map

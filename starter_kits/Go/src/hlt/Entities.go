@@ -2,8 +2,9 @@ package hlt
 
 import (
 	"fmt"
-	"hlt/gameconfig"
-	"hlt/input"
+
+	"./gameconfig"
+	"./input"
 )
 
 // Entity - Base entity structure
@@ -60,7 +61,7 @@ func (s *Ship) GetID() int { return s.E.id }
 // IsFull - Returns true if the ship is full
 func (s *Ship) IsFull() bool {
 	var maxHalite, _ = gameconfig.GetInstance().GetInt(gameconfig.MaxHalite)
-	return s.Halite > maxHalite
+	return s.Halite >= maxHalite
 }
 
 // MakeDropoff - Creates command to turn the ship into a dropoff

@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"hlt"
-	"hlt/gameconfig"
-	"hlt/log"
 	"math/rand"
 	"os"
 	"os/signal"
 	"strconv"
 	"syscall"
 	"time"
+
+	"./hlt"
+	"./hlt/gameconfig"
+	"./hlt/log"
 )
 
 func gracefulExit(logger *log.FileLogger) {
