@@ -2,8 +2,9 @@ package hlt
 
 import (
 	"fmt"
-	"hlt/gameconfig"
-	"hlt/input"
+
+	"./gameconfig"
+	"./input"
 )
 
 // Entity - Base entity structure

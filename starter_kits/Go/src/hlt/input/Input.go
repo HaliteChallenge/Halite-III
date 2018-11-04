@@ -2,12 +2,13 @@ package input
 
 import (
 	"bufio"
-	"hlt/log"
 	"io"
 	"os"
 	"regexp"
 	"strconv"
 	"sync"
+
+	"../log"
 )
 
 // Input - Reads from the game runner, helps with parsing

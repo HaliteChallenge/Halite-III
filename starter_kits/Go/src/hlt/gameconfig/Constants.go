@@ -3,10 +3,11 @@ package gameconfig
 import (
 	"bytes"
 	"fmt"
-	"hlt/log"
 	"regexp"
 	"strconv"
 	"sync"
+
+	"../log"
 )
 
 // Game setting keys

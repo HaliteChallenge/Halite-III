@@ -2,9 +2,10 @@ package hlt
 
 import (
 	"fmt"
-	"hlt/gameconfig"
-	"hlt/input"
-	"hlt/log"
+
+	"./gameconfig"
+	"./input"
+	"./log"
 )
 
 // Game - Structure holding all metadata for the game
