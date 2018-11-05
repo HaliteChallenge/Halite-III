@@ -377,6 +377,9 @@ comp_args = {
     "Julia": [
         ["JULIA_DEPOT_PATH=\$(pwd) julia -e 'using Pkg; Pkg.activate(\\\".\\\"); Pkg.instantiate()'"],
     ],
+    "Kotlin": [
+        ["kotlinc", "-include-runtime", "-d", BOT + ".jar"],
+    ],
     "Haskell": [
         ["ghc", "--make", BOT + ".hs", "-O", "-v0", "-rtsopts"],
     ],
@@ -566,6 +569,13 @@ languages = (
         [
             ([], ExternalCompiler(comp_args["Julia"][0])),
             (["*.jl"], ChmodCompiler("Julia")),
+        ]
+    ),
+    Language("Kotlin", BOT +".jar", "MyBot.kt",
+        "java -Xmx" + str(MEMORY_LIMIT) + "m -cp MyBot.jar MyBot",
+        ["*.class, *.jar"],
+        [
+            (["*.kt"], ExternalCompiler(comp_args["Kotlin"][0])),
         ]
     ),
     Language("Lisp", BOT, "MyBot.lisp",
