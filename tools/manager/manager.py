@@ -32,9 +32,9 @@ visualizer_command = ["electron", "../visualizer", "-o"]
 # db_filename is now specified at command line, with the default set to "db.sqlite3"
 browser_binary = "firefox"
 
+
 def max_match_rounds(width, height):
     return 300 # FIXME check the actual final forumla
-
 
 
 class Manager:
@@ -84,7 +84,6 @@ class Manager:
         contestants.extend(pool[:num])
         random.shuffle(contestants)
         return contestants
-
 
     def run_rounds(self, player_dist, map_dist):
         try:
@@ -155,9 +154,6 @@ class Manager:
     def view_replay_id(self, id):
         filename = self.db.get_replay_filename(id)
         view_replay(filename)
-        
-
-
 
 
 def view_replay(filename):
@@ -397,6 +393,7 @@ class Commandline:
         
         elif self.no_args:
             self.parser.print_help()
+
 
 cmd = Commandline()
 cmd.parse(sys.argv[1:])
