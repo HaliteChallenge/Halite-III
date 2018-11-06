@@ -163,7 +163,8 @@ def executeCompileTask(user_id, bot_id, backend):
 
                 # Make things group-readable
                 subprocess.call([
-                    "sudo", "-H", "-u", user, "-s", "chmod", "-R", "770", temp_dir
+                    "sudo", "-H", "-u", "bot_compilation", "-s",
+                    "chmod", "-R", "2770", temp_dir,
                 ], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
                 archive_path = os.path.join(temp_dir, str(user_id)+".zip")
                 archive.zipFolder(temp_dir, archive_path)
