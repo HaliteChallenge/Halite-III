@@ -70,9 +70,16 @@ def google_login_init():
 @cross_origin(methods=["GET"], origins=config.CORS_ORIGINS, supports_credentials=True)
 def me():
     if config.SESSION_COOKIE in flask.session:
-        return flask.jsonify({
-            "user_id": flask.session[config.SESSION_COOKIE],
-        })
+        with model.read_conn() as conn:
+            user = conn.execute(sqlalchemy.sql.select([
+                model.users.c.id.label("user_id"),
+            ]).where((model.users.c.id == flask.session[config.SESSION_COOKIE]) &
+                     (model.users.c.session_secret == flask.session[config.SESSION_SECRET]))).first()
+
+            if user:
+                return flask.jsonify({
+                    "user_id": flask.session[config.SESSION_COOKIE],
+                })
     else:
         user = util.validate_api_key(
             flask.request.headers.get(config.API_KEY_HEADER))
