@@ -31,6 +31,17 @@ void to_json(nlohmann::json &json, const EntityInfo &info) {
             INFO_FIELD_TO_JSON(energy)};
 }
 
+std::string Replay::as_json_string() {
+    nlohmann::json json;
+    nlohmann::to_json(json, this);
+    return json.dump();
+}
+
+std::string Replay::turn_as_json_string(int index) {
+    nlohmann::json json;
+    nlohmann::to_json(json, full_frames.at(index));
+    return json.dump();
+}
 
 /**
  * Convert turn information to JSON format.

@@ -93,6 +93,11 @@ public:
     void end_turn();
     void end_game();
 
+#ifdef __EMSCRIPTEN__
+    void set_turn_number(int turn_number) { game.turn_number = turn_number; }
+    int max_turns() { return Constants::get().MAX_TURNS; }
+#endif
+
     /**
      * Handle a player command error.
      * @param offenders The set of players this turn who have caused errors.

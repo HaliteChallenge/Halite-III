@@ -132,6 +132,9 @@ struct Replay {
      */
     friend void to_json(nlohmann::json &json, const Replay &replay);
 
+    std::string as_json_string();
+    std::string turn_as_json_string(int index);
+
     /**
      * Output replay into file. Replay will be in json format and may be compressed
      *

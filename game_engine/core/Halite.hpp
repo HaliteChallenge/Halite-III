@@ -44,6 +44,7 @@ public:
     PlayerLogs logs;                  /**< The player logs. */
 
 #ifdef __EMSCRIPTEN__
+    Store& get_store() { return store; }
     HaliteImpl& get_impl() { return *impl; }
     PlayerLogs& get_logs() { return logs; }
     net::Networking* get_networking() { return &networking; }

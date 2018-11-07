@@ -98,6 +98,7 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
 }
 
 void HaliteImpl::initialize_players() {
+#ifndef __EMSCRIPTEN__
     ordered_id_map<Player, std::future<void>> results{};
     bool success = true;
     for (auto &[player_id, player] : game.store.players) {
@@ -132,6 +133,7 @@ void HaliteImpl::initialize_players() {
             kill_player(player_id);
         }
     }
+#endif
     game.replay.players.insert(game.store.players.begin(), game.store.players.end());
     Logging::log("Player initialization complete");
 }

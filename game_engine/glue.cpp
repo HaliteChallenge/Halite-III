@@ -1,5 +1,6 @@
 #include "Halite.hpp"
 #include "HaliteImpl.hpp"
+#include "Logging.hpp"
 
 #include <emscripten/bind.h>
 
@@ -14,10 +15,23 @@ EMSCRIPTEN_BINDINGS(libhaliteweb) {
     class_<GameStatistics>("GameStatistics")
         .constructor<>();
     class_<Replay>("Replay")
-        .constructor<GameStatistics&, size_t, unsigned int, const Map&>();
+        .constructor<GameStatistics&, size_t, unsigned int, const Map&>()
+        .function("as_json_string", &Replay::as_json_string)
+        .function("turn_as_json_string", &Replay::turn_as_json_string)
+        ;
 
     enum_<mapgen::MapType>("MapgenMapType")
         .value("Fractal", mapgen::MapType::Fractal);
+    enum_<Logging::Level>("LoggingLevel")
+        .value("Debug", Logging::Level::Debug)
+        .value("Info", Logging::Level::Info)
+        .value("Warning", Logging::Level::Warning)
+        .value("Error", Logging::Level::Error)
+        ;
+
+    class_<Logging>("Logging")
+        .class_function("set_level", &Logging::set_level)
+        ;
 
     value_object<mapgen::MapParameters>("MapgenParameters")
         .field("type", &mapgen::MapParameters::type)
@@ -35,6 +49,9 @@ EMSCRIPTEN_BINDINGS(libhaliteweb) {
     class_<Snapshot>("Snapshot")
         .constructor<>();
 
+    class_<Store>("Store")
+        .function("get_player", &Store::get_player);
+
     class_<Player::id_type>("PlayerId")
         .constructor<long>();
     register_map<Player::id_type, std::string>("MapPlayerIdString");
@@ -47,13 +64,19 @@ EMSCRIPTEN_BINDINGS(libhaliteweb) {
     class_<HaliteImpl>("HaliteImpl")
         .function("start_turn", &HaliteImpl::start_turn)
         .function("initialize_game", &HaliteImpl::initialize_game)
+        .function("initialize_players", &HaliteImpl::initialize_players)
         .function("end_turn", &HaliteImpl::end_turn)
         .function("end_game", &HaliteImpl::end_game)
+        .function("game_ended", &HaliteImpl::game_ended)
         .function("process_turn_from_input", &HaliteImpl::process_turn_from_input)
+        .function("set_turn_number", &HaliteImpl::set_turn_number)
+        .function("max_turns", &HaliteImpl::max_turns)
         ;
 
     class_<Halite>("Halite")
         .constructor<Map&, const net::NetworkingConfig&, GameStatistics&, Replay&>()
         .function("get_impl", &Halite::get_impl)
-        .function("get_networking", &Halite::get_networking, allow_raw_pointers());
+        .function("get_store", &Halite::get_store)
+        .function("get_networking", &Halite::get_networking, allow_raw_pointers())
+        ;
 }
