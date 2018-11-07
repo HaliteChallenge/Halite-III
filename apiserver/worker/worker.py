@@ -160,6 +160,12 @@ def executeCompileTask(user_id, bot_id, backend):
         try:
             if didCompile:
                 logging.debug("Bot did compile\n")
+
+                # Make things group-readable
+                subprocess.call([
+                    "sudo", "-H", "-u", "bot_compilation", "-s",
+                    "chmod", "-R", "g+r", temp_dir,
+                ], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
                 archive_path = os.path.join(temp_dir, str(user_id)+".zip")
                 archive.zipFolder(temp_dir, archive_path)
                 backend.storeBotRemotely(user_id, bot_id, archive_path)

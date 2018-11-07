@@ -412,29 +412,20 @@ void HaliteImpl::update_inspiration() {
             }
 
             // Explore locations around this ship
-            std::unordered_set<Location> visited_locs{};
-            std::unordered_set<Location> to_visit_locs{location};
-            while (!to_visit_locs.empty()) {
-                const Location cur = *to_visit_locs.begin();
-                visited_locs.emplace(cur);
-                to_visit_locs.erase(to_visit_locs.begin());
+            for (auto dx = -inspiration_radius; dx <= inspiration_radius; dx++) {
+                for (auto dy = -inspiration_radius; dy <= inspiration_radius; dy++) {
+                    const auto cur = Location{
+                        (((location.x + dx) % game.map.width) + game.map.width) % game.map.width,
+                        (((location.y + dy) % game.map.height) + game.map.height) % game.map.height
+                    };
 
-                const auto &cur_cell = game.map.at(cur);
-                if (cur_cell.entity != Entity::None) {
+                    const auto &cur_cell = game.map.at(cur);
+                    if (cur_cell.entity == Entity::None ||
+                        game.map.distance(location, cur) > inspiration_radius) {
+                        continue;
+                    }
                     const auto &other_entity = game.store.get_entity(cur_cell.entity);
                     ships_in_radius[other_entity.owner]++;
-                }
-
-                for (const Location &neighbor : game.map.get_neighbors(cur)) {
-                    if((visited_locs.find(neighbor) == visited_locs.end())
-                       && (to_visit_locs.find(neighbor) == to_visit_locs.end())) {
-                        if (game.map.distance(location, neighbor) <= inspiration_radius) {
-                            to_visit_locs.emplace(neighbor);
-                        }
-                        else {
-                            visited_locs.emplace(neighbor);
-                        }
-                    }
                 }
             }
 
