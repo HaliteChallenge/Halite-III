@@ -82,7 +82,7 @@ export function setAssetRoot(path) {
     theme.applyTheme();
 
     promises.push(new Promise((resolve) => {
-        PIXI.loader.add("halo", require("../assets/halo2.png"))
+        PIXI.loader.add("halo", ASSET_ROOT + require("../assets/halo2.png"))
             .load((loader, resources) => {
                 HALO_SPRITE = resources.halo.texture;
                 resolve();
