@@ -98,7 +98,9 @@ void HaliteImpl::initialize_game(const std::vector<std::string> &player_commands
 }
 
 void HaliteImpl::initialize_players() {
-#ifndef __EMSCRIPTEN__
+    // When compiled as a library, the library user must perform all
+    // this initialization.
+#ifndef LIBHALITE
     ordered_id_map<Player, std::future<void>> results{};
     bool success = true;
     for (auto &[player_id, player] : game.store.players) {

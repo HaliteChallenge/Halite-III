@@ -126,6 +126,8 @@ add_library(halite_core OBJECT ${SOURCE_FILES})
 if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
     message("Building WASM library.")
     add_executable(halite_web $<TARGET_OBJECTS:halite_core> glue.cpp)
+    # Define a symbol that exposes normally private things
+    target_compile_definitions(halite_web PUBLIC LIBHALITE)
     get_filename_component(WASM_GLUE_JS libhaliteweb_glue.js REALPATH)
     set_target_properties(halite_web PROPERTIES LINK_FLAGS "-o libhalitecore.js -s BINARYEN_METHOD='native-wasm' -s WASM=1 -s DEMANGLE_SUPPORT=1 -s TOTAL_MEMORY=128MB -s MODULARIZE=1 -s 'EXPORT_NAME=\"HaliteWeb\"' --bind")
 endif()

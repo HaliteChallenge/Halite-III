@@ -17,13 +17,12 @@ using Commands = std::vector<std::unique_ptr<Command>>;
 class HaliteImpl final {
     friend class Halite;
 
-    // Make everything available to Emscripten
-#ifdef __EMSCRIPTEN__
-public:
-#endif
     /** The game interface. */
     Halite &game;
 
+#ifdef LIBHALITE
+public:
+#endif
     /**
      * Initialize the game.
      * @param player_commands The list of player commands.
@@ -88,16 +87,6 @@ public:
     /** Remove a player from the game. */
     void kill_player(const Player::id_type &player_id);
 
-    void initialize_players();
-    void start_turn();
-    void end_turn();
-    void end_game();
-
-#ifdef __EMSCRIPTEN__
-    void set_turn_number(int turn_number) { game.turn_number = turn_number; }
-    int max_turns() { return Constants::get().MAX_TURNS; }
-#endif
-
     /**
      * Handle a player command error.
      * @param offenders The set of players this turn who have caused errors.
@@ -107,6 +96,23 @@ public:
     void handle_error(std::unordered_set<Player::id_type> &offenders,
                       ordered_id_map<Player, std::vector<std::unique_ptr<Command>>> &commands,
                       CommandError error);
+
+    /**
+     * Perform start-of-game tasks, including launching bots.
+     *
+     * When compiled as a library, does not launch or initialize bots.
+     */
+    void initialize_players();
+    /** Perform start-of-turn tasks. */
+    void start_turn();
+    /** Perform end-of-turn cleanup. */
+    void end_turn();
+    /** Perform end-of-game cleanup: ranking & statistics. */
+    void end_game();
+
+    /* Meant for use when built as a library. */
+    void set_turn_number(int turn_number) { game.turn_number = turn_number; }
+    int max_turns() { return Constants::get().MAX_TURNS; }
 
 public:
     /**
