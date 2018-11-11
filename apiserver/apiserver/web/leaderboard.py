@@ -175,6 +175,7 @@ def leaderboard():
                 "num_games": int(row["num_games"]),
                 "score": float(row["score"]),
                 "language": row["language"],
+                "is_gpu_enabled": row["is_gpu_enabled"],
                 "country": row["country_code"],
                 "rank": int(row["rank"]) if row["rank"] is not None else None,
                 "organization_rank": int(row["organization_rank"]) if row["organization_rank"] is not None and row["organization_id"] is not None else None,
