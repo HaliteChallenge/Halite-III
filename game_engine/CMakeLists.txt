@@ -8,7 +8,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(CheckCXXCompilerFlag)
 
+set(CMAKE_REQUIRED_FLAGS -fsanitize=address)
 CHECK_CXX_COMPILER_FLAG(-fsanitize=address COMPILER_SUPPORTS_ASAN)
+unset(CMAKE_REQUIRED_FLAGS)
 CHECK_CXX_COMPILER_FLAG(-fsanitize=undefined COMPILER_SUPPORTS_UBSAN)
 
 message(${CMAKE_SYSTEM_NAME})
