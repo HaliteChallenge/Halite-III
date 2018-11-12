@@ -95,7 +95,7 @@ class Ship(Entity):
         # Check storage to see if ship already exists
         # If the ship exists, update its position and halite
         if ship_id in Ship.__ships.keys():    
-            old_ship = Ship.__ships[id]
+            old_ship = Ship.__ships[ship_id]
             old_ship.position = Position(x_position, y_position)
             old_ship.halite_amount = halite
             return ship_id, old_ship
