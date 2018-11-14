@@ -1,6 +1,6 @@
 // Let's do some movement that's really easy and "smart"!
 void random_move(unsigned short ship_id){
-	unsigned char decision = random() % 100;
+	unsigned char decision = rand() % 100;
 
 	// 10% chance each to move north/east/south/west (This is extra smart)
 	if(decision <= 10){
@@ -21,7 +21,7 @@ void random_move(unsigned short ship_id){
 
 // There's something that random_move is forgetting... Let's avoid collisions!
 void naive_navigate(unsigned short ship_id){
-	unsigned char decision = random() % 100, x = ships[ship_id].x, y = ships[ship_id].y;
+	unsigned char decision = rand() % 100, x = ships[ship_id].x, y = ships[ship_id].y;
 
 	// North is y - 1
 	// South is y + 1

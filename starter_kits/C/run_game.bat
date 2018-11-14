@@ -1,1 +1,1 @@
-halite.exe --replay-directory replays/ -vvv --width 32 --height 32 "src\MyBot" "src\MyBot MyOtherBot.log"
+halite.exe --replay-directory replays/ -vvv "src\MyBot" "src\MyBot MyOtherBot.log"
