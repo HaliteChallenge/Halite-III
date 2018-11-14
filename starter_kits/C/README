@@ -2,7 +2,7 @@ Welcome to the C starter kit.
 
 Don't expect very much abstraction, and expect to get your hands
 quite dirty, this is C after all. Here is some documentation to
-give you a basic run down of wtf is happening:
+give you a basic run down of what is happening:
 
 
 
@@ -27,21 +27,42 @@ GLOBAL VARIABLES:
 
 
 
+FUNCTION REFERENCE:
+	MACROS
+
+	NORM_X:		Normalizes the X coordinate (0 - 1 = map_width, map_width + 1 = 0)
+	NORM_Y:		Normalizes the Y coordinate (0 - 1 = map_height, map_height + 1 = 0)
+	CALC_DIST:	Calculates the distance between two sets of X and Y values
+	TILE_OCCUPIED:	1 if the tile has a ship on it, otherwise 0
+
+	MOVE_STILL:	Move ship direction o, which keeps you ship on the same tile
+	MOVE_NORTH: Move ship direction n, North
+	MOVE_SOUTH: Move ship direction s, South
+	MOVE_EAST: Move ship direction e, East
+	MOVE_WEST: Move ship direction w, West
+	CONVERT_DROPOFF:	Converts the ship into a dropoff
+	SPAWN_SHIP:			Creates a ship in your ship yard
+
+
+	NORMAL FUNCTIONS
+
+	random_move:		Moves the ship in a random direction
+	naive_natigate:		Same as random_move, but avoid collisions
+
+
 
 BUILD INSTRUCTIONS:
 
-This bot has only been tested on Linux, with the GNU C library
-(glibc), and the GCC compiler. To build, simply open your terminal,
-cd into this directory, and type "make". You can modify the makefile
-however you like. Then you upload your C bot, the halite server will
-compile your bot using the makefile.
-
+Simply cd into the directory and type "make". If this doesn't work,
+file a bug report and we can hopefully work together to make the
+starter kit better. 
 
 
 
 NOTES:
 
-Your bot name must end with a \n new line character, or else your bot
-will fail to initialize.
-https://halite.io/learn-programming-challenge/api-docs for a
+ * Your bot name and all turns must end with a \n new line character,
+or else your bot will fail to initialize or move.
+ * The default "smart" logic isn't very smart.
+ * https://halite.io/learn-programming-challenge/api-docs for a
 definitive reference on game rules.

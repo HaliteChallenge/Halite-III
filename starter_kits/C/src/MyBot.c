@@ -7,9 +7,13 @@
 #include <string.h>
 #include <unistd.h>
 
-// We include time.h so we can seed the RNG for default (stupid) movement with time()
+// We include time.h so we can seed the RNG for default "smart" movement with time()
 #include <time.h>
 
+
+// Now let's include some helper macros
+// You might reasonably want to keep some of these
+#include "macros.c"
 
 
 // Now for our data structures. These are intentionally left rather basic, so add whatever you want to them
@@ -19,13 +23,14 @@ struct ship{
 } ships[4096];
 
 struct player{
-	unsigned char dropoffs[64], dropoff_count, ship_count, spawn[2];
+	unsigned char dropoffs[64], dropoff_count, ship_count, ship_yard[2];
 	unsigned short ships[1024];
 	unsigned int halite;
 } players[4] = {0};
 
 struct map{
 	unsigned short halite;
+	unsigned short occupied; //(unsigned short)-1 means it's not occupied
 } map[64][64];
 
 
@@ -47,10 +52,7 @@ int main(int argc, char* argv[]){
 	unsigned short s, ssa, ssb;
 	unsigned int sia;
 
-	// Firstly, we srand for our default (bad) logic
-	srand(time(NULL));
-
-	// Secondly, we open a log file. If no log file is specified, it defaults to "MyBot.log"
+	// Firstly, we open a log file. If no log file is specified, it defaults to "MyBot.log"
 	if(argc != 2)
 		c = "MyBot.log";
 	else
@@ -66,13 +68,18 @@ int main(int argc, char* argv[]){
 	if(scanf("%hhu %hhu", &number_of_players, &my_id) < 1)
 		exit(1);
 
-	// Get each player's spawn point coordinates
+
+	// Now that we have our player ID, we add it to time(NULL) to seed our "smart" RNG
+	srand(time(NULL) + my_id);
+
+
+	// Get each player's ship yard point coordinates
 	for(i=0; i<number_of_players; i++){
 		if(scanf("%hhu %hhu %hhu", &sca, &scb, &scc) < 3)
 			exit(1);
 
-		players[sca].spawn[0] = scb;
-		players[sca].spawn[1] = scc;
+		players[sca].ship_yard[0] = scb;
+		players[sca].ship_yard[1] = scc;
 	}
 
 	// Read the map size
@@ -86,19 +93,19 @@ int main(int argc, char* argv[]){
 	// Figure out the max turn (We could just parse this from the JSON at the start, but that would be too easy)
 	switch(map_size[0]){
 		case 32:
-			max_turn = 401;
+			max_turn = 400;
 		break;
 		case 40:
-			max_turn = 426;
+			max_turn = 425;
 		break;
 		case 48:
-			max_turn = 451;
+			max_turn = 450;
 		break;
 		case 56:
-			max_turn = 476;
+			max_turn = 475;
 		break;
 		case 64:
-			max_turn = 501;
+			max_turn = 500;
 		break;
 	}
 
@@ -116,6 +123,12 @@ int main(int argc, char* argv[]){
 
 	// Now we start the game loop
 	for(;;){
+		// Before we deal with the game engine, we should reset whether or not each map tile is occupied
+		for(i=0; i<map_size[1]; i++)
+			for(j=0; j<map_size[0]; j++)
+				map[j][i].occupied = (unsigned short)-1;
+
+
 		// Read the turn number
 		if(scanf("%hu", &turn_number) < 1)
 			exit(6);
@@ -144,6 +157,9 @@ int main(int argc, char* argv[]){
 				ships[ssa].x = sca;
 				ships[ssa].y = scb;
 				ships[ssa].halite = ssb;
+
+				// And mark the map tile as occupied
+				map[sca][scb].occupied = ssa;
 			}
 
 			// And now parse drop offs
@@ -172,18 +188,29 @@ int main(int argc, char* argv[]){
 
 		// Now we add logic for controlling the ships here
 		// Here, we call the default move function from default_logic.c for each of our ships
-		for(i=0; i<players[my_id].ship_count; i++)
-			default_move(players[my_id].ships[i]);
+		for(i=0; i<players[my_id].ship_count; i++){
+			// Let's borrow ssa for the ship's ID just to make the code a little easier
+			ssa = players[my_id].ships[i];
+			naive_navigate(ssa);
+
+			// Let's also show how far each ship is away from the ship yard
+			fprintf(log_file, "Ship %hu is %hhu moves away from the ship yard!\n", ssa, CALC_DIST(ships[ssa].x, ships[ssa].y, players[my_id].ship_yard[0], players[my_id].ship_yard[1]));
+			fflush(log_file);
+		}
 
 		// Then we add logic for when to spawn ships
-		// The default (stupid) logic will be to spawn a ship every 5th + 1 turn until we run out of halite
-		if(turn_number % 5 == 1 && players[my_id].halite >= 1000)
-			printf("g ");
+		// The default "smart" logic will be to spawn a ship every 5th + 1 turn until we run out of halite
+		if(turn_number % 5 == 0 && turn_number <= 50 && players[my_id].halite >= 1000)
+			SPAWN_SHIP();
 
 
 		// Finally, we print a new line, and then flush the stdout buffer so the game engine receives our commands
 		printf("\n");
 		fflush(stdout);
+
+		// And write another log stating it's the end of the turn!
+		fprintf(log_file, "Ending turn %hu\n\n", turn_number);
+		fflush(log_file);
 	}
 
 	return 0;
