@@ -1,0 +1,7 @@
+
+FILES := project.clj ./hlt/lib/hlt/*.clj ./hlt/app/halite3/mybot.clj
+
+all: mybot.zip
+
+mybot.zip: $(FILES)
+	zip -r $@ $(FILES)
