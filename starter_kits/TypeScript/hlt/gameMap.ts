@@ -1,19 +1,22 @@
-const constants = require('./constants');
-const { Ship, Dropoff, Shipyard } = require('./entity');
-const { Direction, Position } = require('./positionals');
+import { Shipyard, Ship, Dropoff, Entity } from "./entity";
+import { Position, Direction } from "./positionals";
+import { Constants } from "./constants";
+
 
 /** Player object, containing all entities/metadata for the player. */
-class Player {
-    constructor(playerId, shipyard, halite=0) {
-        this.id = playerId;
-        this.shipyard = shipyard;
-        this.haliteAmount = halite;
-        this._ships = new Map();
-        this._dropoffs = new Map();
+export class Player {
+    private _ships = new Map<number, Ship>();
+    private _dropoffs = new Map<number, Dropoff>();
+
+    constructor(
+        public id: number,
+        public shipyard: Shipyard,
+        public haliteAmount = 0
+    ) {
     }
 
     /** Get a single ship by its ID. */
-    getShip(shipId) {
+    getShip(shipId: number) {
         return this._ships.get(shipId);
     }
 
@@ -27,7 +30,7 @@ class Player {
     }
 
     /** Get a single dropoff by its ID. */
-    getDropoff(dropoffId) {
+    getDropoff(dropoffId: number) {
         return this._dropoffs.get(dropoffId);
     }
 
@@ -41,21 +44,20 @@ class Player {
     }
 
     /** Check whether a ship with a given ID exists. */
-    hasShip(shipId) {
+    hasShip(shipId: number) {
         return this._ships.has(shipId);
     }
 
     /**
      * Create a player object using input from the game engine.
-     * @private
      */
-    static async _generate(getLine) {
+    static async _generate(getLine: () => Promise<string>) {
         const line = await getLine();
-        const [ playerId, shipyardX, shipyardY ] = line
-              .split(/\s+/)
-              .map(x => parseInt(x, 10));
+        const [playerId, shipyardX, shipyardY] = line
+            .split(/\s+/)
+            .map(x => parseInt(x, 10));
         return new Player(playerId,
-                          new Shipyard(playerId, -1, new Position(shipyardX, shipyardY)));
+            new Shipyard(playerId, -1, new Position(shipyardX, shipyardY)));
     }
 
     /**
@@ -63,46 +65,48 @@ class Player {
      * the game engine.
      * @private
      */
-    async _update(numShips, numDropoffs, halite, getLine) {
+    async _update(numShips: number, numDropoffs: number, halite: number, getLine: () => Promise<string>) {
         this.haliteAmount = halite;
         this._ships = new Map();
         for (let i = 0; i < numShips; i++) {
-            const [ shipId, ship ] = await Ship._generate(this.id, getLine);
+            const { shipId, ship } = await Ship._generate(this.id, getLine);
             this._ships.set(shipId, ship);
         }
         this._dropoffs = new Map();
         for (let i = 0; i < numDropoffs; i++) {
-            const [ dropoffId, dropoff ] = await Dropoff._generate(this.id, getLine);
-            this._dropoffs.set(dropoffId, dropoff);
+            const { id, dropoff } = await Dropoff._generate(this.id, getLine);
+            this._dropoffs.set(id, dropoff);
         }
     }
 }
 
 /** A cell on the game map. */
-class MapCell {
-    constructor(position, halite) {
-        this.position = position;
-        this.haliteAmount = halite;
-        this.ship = null;
-        this.structure = null;
+export class MapCell {
+    ship: Ship | null = null;
+    structure: any = null;
+
+    constructor(
+        public position: Position,
+        public haliteAmount: number
+    ) {
     }
 
     /**
-     * @returns {Boolean} whether this cell has no ships or structures.
+     * Whether this cell has no ships or structures.
      */
     get isEmpty() {
         return !this.isOccupied && !this.hasStructure;
     }
 
     /**
-     * @returns {Boolean} whether this cell has any ships.
+     * Whether this cell has any ships.
      */
     get isOccupied() {
         return this.ship !== null;
     }
 
     /**
-     * @returns {Boolean} whether this cell has any structures.
+     * Whether this cell has any structures.
      */
     get hasStructure() {
         return this.structure !== null;
@@ -112,7 +116,7 @@ class MapCell {
      * @returns The type of the structure in this cell, or null.
      */
     get structureType() {
-        if (this.hasStructure) {
+        if (this.structure !== null) {
             return this.structure.constructor;
         }
         return null;
@@ -122,14 +126,12 @@ class MapCell {
      * Mark this cell as unsafe (occupied) for navigation.
      *
      * Use in conjunction with {@link GameMap#getSafeMove}.
-     *
-     * @param {Ship} ship The ship occupying this cell.
      */
-    markUnsafe(ship) {
+    markUnsafe(ship: Ship) {
         this.ship = ship;
     }
 
-    equals(other) {
+    equals(other: MapCell) {
         return this.position.equals(other.position);
     }
 
@@ -144,11 +146,16 @@ class MapCell {
  * Can be indexed by a position, or by a contained entity.
  * Coordinates start at 0. Coordinates are normalized for you.
  */
-class GameMap {
-    constructor(cells, width, height) {
-        this.width = width;
-        this.height = height;
-        this._cells = cells;
+export interface Location {
+    x: number;
+    y: number;
+}
+export class GameMap {
+    constructor(
+        private cells: MapCell[][], 
+        public width: number, 
+        public height: number
+    ) {
     }
 
     /**
@@ -156,19 +163,15 @@ class GameMap {
      * @param location the position or entity to access in this map
      * @returns the contents housing that cell or entity
     */
-    get(...args) {
-        if (args.length === 2) {
-            return this._cells[args[1]][args[0]];
-        }
-        let [ location ] = args;
+    get(location: Location | Position | Entity): MapCell {
         if (location instanceof Position) {
             location = this.normalize(location);
-            return this._cells[location.y][location.x];
+            return this.cells[location.y][location.x];
+        } else if ((<Location>location).x !== undefined && (<Location>location).y !== undefined) {
+            return this.get(new Position((<Location>location).x, (<Location>location).y));
+        } else { 
+            return this.get((<Entity>location).position);
         }
-        else if (location.position) {
-            return this.get(location.position);
-        }
-        return null;
     }
 
     /**
@@ -178,7 +181,7 @@ class GameMap {
      * @param target The target to where calculate
      * @returns The distance between these items
     */
-    calculateDistance(source, target) {
+    calculateDistance(source: Position, target: Position) {
         source = this.normalize(source);
         target = this.normalize(target);
         const delta = source.sub(target).abs();
@@ -194,7 +197,7 @@ class GameMap {
      * @param {Position} position A position object.
      * @returns A normalized position object fitting within the bounds of the map
     */
-    normalize(position) {
+    normalize(position: Position) {
         let x = ((position.x % this.width) + this.width) % this.width;
         let y = ((position.y % this.height) + this.height) % this.height;
         return new Position(x, y);
@@ -204,14 +207,14 @@ class GameMap {
      * Determine the relative direction of the target compared to the
      * source (i.e. is the target north, south, east, or west of the
      * source). Does not account for wraparound.
-     * @param {Position} source The source position
-     * @param {Position} target The target position
+     * @param source The source position
+     * @param target The target position
      * @returns {[Direction | null, Direction | null]} A 2-tuple whose
      * elements are: the relative direction for each of the Y and X
      * coordinates (note the inversion), or null if the coordinates
      * are the same.
      */
-    static _getTargetDirection(source, target) {
+    static _getTargetDirection(source: Position, target: Position): [Direction | null, Direction | null] {
         return [
             target.y > source.y ? Direction.South :
                 (target.y < source.y ? Direction.North : null),
@@ -227,27 +230,24 @@ class GameMap {
      * This does not account for collisions. Multiple directions may
      * be returned if movement in both coordinates is viable.
      *
-     * @param {Position} source The (normalized) source position
-     * @param {Position} destination The (normalized) target position
+     * @param source The (normalized) source position
+     * @param destination The (normalized) target position
      * @returns A list of Directions moving towards the target (if
      * any)
      */
-    getUnsafeMoves(source, destination) {
-        if (!(source instanceof Position && destination instanceof Position)) {
-            throw new Error("source and destination must be of type Position");
-        }
-
+    getUnsafeMoves(source: Position, destination: Position) {
         source = this.normalize(source);
         destination = this.normalize(destination);
 
-        const possibleMoves = [];
+        const possibleMoves: Direction[] = [];
         const distance = destination.sub(source).abs();
-        const [ yDir, xDir ] = GameMap._getTargetDirection(source, destination);
+        const [yDir, xDir] = GameMap._getTargetDirection(source, destination);
 
-        if (distance.x !== 0) {
+        // Account for wraparound
+        if (xDir && distance.x !== 0) {
             possibleMoves.push(distance.x < (this.width / 2) ? xDir : xDir.invert());
         }
-        if (distance.y !== 0) {
+        if (yDir && distance.y !== 0) {
             possibleMoves.push(distance.y < (this.height / 2) ? yDir : yDir.invert());
         }
 
@@ -255,12 +255,12 @@ class GameMap {
     }
 
     /**
-     * Returns a singular safe move towards the destination.
-     * @param {Ship} ship - the ship to move
-     * @param {Position} destination - the location to move towards
-     * @return {Direction}
+     * Returns a singular safe move towards the destination. Marks the next cell as occupied. Does not check for enough halite to make the move!
+     * @param ship - the ship to move
+     * @param destination - the location to move towards
+     * @return A direction towards the destination that is unoccupied.
      */
-    naiveNavigate(ship, destination) {
+    naiveNavigate(ship: Ship, destination: Position) {
         // No need to normalize destination since getUnsafeMoves does
         // that
         for (const direction of this.getUnsafeMoves(ship.position, destination)) {
@@ -275,22 +275,18 @@ class GameMap {
         return Direction.Still;
     }
 
-    static async _generate(getLine) {
-        const [ mapWidth, mapHeight ] = (await getLine())
-              .split(/\s+/)
-              .map(x => parseInt(x, 10));
+    static async _generate(getLine: () => Promise<string>) {
+        const [mapWidth, mapHeight] = (await getLine())
+            .split(/\s+/)
+            .map(x => parseInt(x, 10));
         const gameMap = [];
-        for (let i = 0; i < mapHeight; i++) {
-            const row = [];
-            row.fill(null, 0, mapWidth);
-            gameMap.push(row);
-        }
-
         for (let y = 0; y < mapHeight; y++) {
             const cells = (await getLine()).split(/\s+/);
+            const row = [];
             for (let x = 0; x < mapWidth; x++) {
-                gameMap[y][x] = new MapCell(new Position(x, y), parseInt(cells[x], 10));
+                row.push(new MapCell(new Position(x, y), parseInt(cells[x], 10)));
             }
+            gameMap.push(row);
         }
 
         return new GameMap(gameMap, mapWidth, mapHeight);
@@ -300,28 +296,22 @@ class GameMap {
      * Update this map object from the input given by the game
      * engine.
      */
-    async _update(getLine) {
+    async _update(getLine: () => Promise<string>) {
         // Mark cells as safe for navigation (re-mark unsafe cells
         // later)
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {
-                this.get(x, y).ship = null;
+                this.get({x, y}).ship = null;
             }
         }
 
         const numChangedCells = parseInt(await getLine(), 10);
         for (let i = 0; i < numChangedCells; i++) {
             const line = (await getLine());
-            const [ cellX, cellY, cellEnergy ] = line
-                  .split(/\s+/)
-                  .map(x => parseInt(x, 10));
-            this.get(cellX, cellY).haliteAmount = cellEnergy;
+            const [x, y, cellEnergy] = line
+                .split(/\s+/)
+                .map(i => parseInt(i, 10));
+            this.get({x, y}).haliteAmount = cellEnergy;
         }
     }
 }
-
-module.exports = {
-    Player,
-    GameMap,
-    MapCell,
-};

@@ -1,12 +1,18 @@
-const commands = require('./commands');
+import { Commands } from './commands';
 
-class Direction {
-    constructor(dx, dy) {
+export class Direction {
+    static North = new Direction(0, -1);
+    static South = new Direction(0, 1);
+    static East = new Direction(1, 0);
+    static West = new Direction(-1, 0);
+    static Still = new Direction(0, 0);
+
+    constructor(public dx: number, public dy: number) {
         this.dx = dx;
         this.dy = dy;
     }
 
-    equals(other) {
+    equals(other: Direction) {
         return this.dx === other.dx && this.dy === other.dy;
     }
 
@@ -20,19 +26,19 @@ class Direction {
 
     toWireFormat() {
         if (this.equals(Direction.North)) {
-            return commands.NORTH;
+            return Commands.NORTH;
         }
         else if (this.equals(Direction.South)) {
-            return commands.SOUTH;
+            return Commands.SOUTH;
         }
         else if (this.equals(Direction.East)) {
-            return commands.EAST;
+            return Commands.EAST;
         }
         else if (this.equals(Direction.West)) {
-            return commands.WEST;
+            return Commands.WEST;
         }
         else if (this.equals(Direction.Still)) {
-            return commands.STAY_STILL;
+            return Commands.STAY_STILL;
         }
         throw new Error(`Non-cardinal direction cannot be converted to wire format: ${this}`);
     }
@@ -56,19 +62,14 @@ class Direction {
         throw new Error(`Non-cardinal direction cannot be inverted: ${this}`);
     }
 }
-Direction.North = new Direction(0, -1);
-Direction.South = new Direction(0, 1);
-Direction.East = new Direction(1, 0);
-Direction.West = new Direction(-1, 0);
-Direction.Still = new Direction(0, 0);
 
-class Position {
-    constructor(x, y) {
+export class Position {
+    constructor(public x: number, public y: number) {
         this.x = x;
         this.y = y;
     }
 
-    directionalOffset(direction) {
+    directionalOffset(direction: Direction) {
         return this.add(new Position(direction.dx, direction.dy));
     }
 
@@ -77,20 +78,20 @@ class Position {
             .map(currentDirection => this.directionalOffset(currentDirection));
     }
 
-    add(other) {
+    add(other: Position) {
         return new Position(this.x + other.x, this.y + other.y);
     }
 
-    sub(other) {
+    sub(other: Position) {
         return new Position(this.x - other.x, this.y - other.y);
     }
 
-    addMut(other) {
+    addMut(other: Position) {
         this.x += other.x;
         this.y += other.y;
     }
 
-    subMut(other) {
+    subMut(other: Position) {
         this.x -= other.x;
         this.y -= other.y;
     }
@@ -99,7 +100,7 @@ class Position {
         return new Position(Math.abs(this.x), Math.abs(this.y));
     }
 
-    equals(other) {
+    equals(other: Position) {
         return this.x === other.x && this.y === other.y;
     }
 
@@ -107,8 +108,3 @@ class Position {
         return `${this.constructor.name}(${this.x}, ${this.y})`;
     }
 }
-
-module.exports = {
-    Direction,
-    Position,
-};
