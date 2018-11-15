@@ -1,3 +1,4 @@
 *.hlt
 *.log
 *~ts
+/out/*
