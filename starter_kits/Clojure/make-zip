@@ -1,5 +1,5 @@
 
-FILES := project.clj ./hlt/lib/hlt/*.clj ./hlt/app/halite3/mybot.clj
+FILES := project.clj ./hlt/lib/hlt/*.clj ./hlt/app/MyBot.clj
 
 all: mybot.zip
 

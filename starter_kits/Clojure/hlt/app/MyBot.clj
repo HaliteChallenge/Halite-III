@@ -1,4 +1,4 @@
-(ns halite3.mybot
+(ns MyBot
   (:require [hlt.log :refer [log]]
             [hlt.random :refer [set-seed! rrand-int]]
             [hlt.input :refer [as-int]]
