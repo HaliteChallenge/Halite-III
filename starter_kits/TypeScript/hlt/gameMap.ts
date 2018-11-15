@@ -255,7 +255,7 @@ export class GameMap {
     }
 
     /**
-     * Returns a singular safe move towards the destination. Marks the next cell as occupied. Does not check for enough halite to make the move!
+     * Returns a singular safe move towards the destination. Marks the next cell as occupied.
      * @param ship - the ship to move
      * @param destination - the location to move towards
      * @return A direction towards the destination that is unoccupied.
@@ -266,7 +266,7 @@ export class GameMap {
         for (const direction of this.getUnsafeMoves(ship.position, destination)) {
             const targetPos = ship.position.directionalOffset(direction);
 
-            if (!this.get(targetPos).isOccupied) {
+            if (!this.get(targetPos).isOccupied && (ship.haliteAmount >= (this.get(ship.position).haliteAmount / Constants.MOVE_COST_RATIO))) {
                 this.get(targetPos).markUnsafe(ship);
                 return direction;
             }
