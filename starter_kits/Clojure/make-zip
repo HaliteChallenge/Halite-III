@@ -1,5 +1,12 @@
+# -*- mode: makefile -*-
+# This is a Makefile
+# You can use it to create a zip to submit
+# make -f make-zip
 
-FILES := project.clj ./hlt/lib/hlt/*.clj ./hlt/app/MyBot.clj
+# If you add additional namespaces put those files here
+MYFILES := ./hlt/app/MyBot.clj
+
+FILES := project.clj ./hlt/lib/hlt/*.clj $(MYFILES)
 
 all: mybot.zip
 
