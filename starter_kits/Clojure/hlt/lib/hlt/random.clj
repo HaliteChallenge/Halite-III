@@ -7,9 +7,8 @@
 (defn set-seed! [seed]
   (swap! state assoc :seed seed))
 
-;; This function is required b/c
+;; This function is required b/c (and to avoid a dep on data.genertors)
 ;; https://dev.clojure.org/jira/browse/CLJ-1452
-;; is unresolved and the data.generators workaround is not sufficient
 (defn rrand-int
   "repeatable rand-int"
   [n]
