@@ -1,0 +1,10 @@
+(ns hlt.commands)
+
+(def north "n")
+(def south "s")
+(def east "e")
+(def west "w")
+(def stay-still "o")
+(def generate "g")
+(def construct "c")
+(def move "m")
