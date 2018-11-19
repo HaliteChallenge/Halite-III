@@ -10,7 +10,7 @@ game.initialize().then(async () => {
     // At this point "game" variable is populated with initial map data.
     // This is a good place to do computationally expensive start-up pre-processing.
     // As soon as you call "ready" function below, the 2 second per turn timer will start.
-    await game.ready('MyJavaScriptBot');
+    await game.ready('MyTypeScriptBot');
 
     Logging.info(`My Player ID is ${game.myId}.`);
 
@@ -25,21 +25,31 @@ game.initialize().then(async () => {
 
         const commandQueue = [];
 
+        // Movement algorithm parameters
+        const fullCargoCoefficient = 0.5;
+        const tooLittleHaliteToKeepHarvestingCoefficient = 0.1;
+        const spawnNewShipsUntilGameTurnCoefficient = 0.75;
+
         for (const ship of me.getShips()) {
-            if (ship.haliteAmount > Constants.MAX_ENERGY / 2) {
+            if (ship.haliteAmount > fullCargoCoefficient * Constants.MAX_ENERGY) {
+                // Go home if full
                 const destination = me.shipyard.position;
                 const safeMove = gameMap.naiveNavigate(ship, destination);
                 commandQueue.push(ship.move(safeMove));
             }
-            else if (gameMap.get(ship.position).haliteAmount < Constants.MAX_ENERGY / 10) {
-                const direction = Direction.getAllCardinals()[Math.floor(4 * Math.random())];
+            else if (gameMap.get(ship.position).haliteAmount < tooLittleHaliteToKeepHarvestingCoefficient * Constants.MAX_ENERGY) {
+                // Go harvest to a new place
+                const getRandomArrayElement = (anArray: any[]) => anArray[Math.floor(anArray.length * Math.random())];
+                const direction = getRandomArrayElement(Direction.getAllCardinals());
                 const destination = ship.position.directionalOffset(direction);
                 const safeMove = gameMap.naiveNavigate(ship, destination);
                 commandQueue.push(ship.move(safeMove));
             }
+            // Keep still and harvest in place
         }
 
-        if (game.turnNumber < 0.75 * Constants.MAX_TURNS &&
+        if (game.turnNumber < spawnNewShipsUntilGameTurnCoefficient * Constants.MAX_TURNS &&
+            // Spawn new ships
             me.haliteAmount >= Constants.SHIP_COST &&
             !gameMap.get(me.shipyard).isOccupied) {
             commandQueue.push(me.shipyard.spawn());
