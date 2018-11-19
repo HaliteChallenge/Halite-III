@@ -24,11 +24,8 @@ export class Ship extends Entity {
      * Return a command to move this ship in a direction without
      * checking for collisions.
      */
-    move(direction: string | Direction) {
-        if (direction instanceof Direction) {
-            direction = direction.toWireFormat();
-        }
-        return `${Commands.MOVE} ${this.id} ${direction}`;
+    move(direction: Direction) {
+        return `${Commands.MOVE} ${this.id} ${direction.toWireFormat()}`;
     }
 
     /**
