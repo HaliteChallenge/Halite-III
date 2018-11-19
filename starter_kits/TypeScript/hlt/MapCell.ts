@@ -40,6 +40,10 @@ export class MapCell {
         this.ship = ship;
     }
 
+    markSafe() {
+        this.ship = undefined;
+    }
+
     equals(other: MapCell) {
         return this.position.equals(other.position);
     }
