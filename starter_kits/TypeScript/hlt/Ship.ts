@@ -6,9 +6,8 @@ import { Entity } from './entity';
 
 /** Represents a ship. */
 export class Ship extends Entity {
-    constructor(owner: any, id: number, position: Position, public haliteAmount: number) {
+    constructor(owner: number, id: number, position: Position, public haliteAmount: number) {
         super(owner, id, position);
-        this.haliteAmount = haliteAmount;
     }
 
     /** Is this ship at max halite capacity? */

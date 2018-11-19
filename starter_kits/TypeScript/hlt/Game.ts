@@ -83,7 +83,6 @@ export class Game {
     async updateFrame() {
         this.turnNumber = parseInt(await this._getLine(), 10);
         Logging.info(`================ TURN ${this.turnNumber.toString().padStart(3, '0')} ================`);
-        const f = new String("dsf");
 
         for (let i = 0; i < this.players.size; i++) {
             const [playerId, numShips, numDropoffs, halite] = (await this._getLine())
