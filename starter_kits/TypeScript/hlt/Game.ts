@@ -1,7 +1,8 @@
 import { createInterface } from "readline";
-import { Constants } from "./constants";
-import { Logging } from "./logging";
-import { Player, GameMap } from "./gameMap";
+import { Constants } from "./Constants";
+import { Logging } from "./Logging";
+import { GameMap } from "./GameMap";
+import { Player } from "./Player";
 
 
 export class Game {
@@ -73,7 +74,7 @@ export class Game {
 
     /** Indicate that your bot is ready to play. */
     async ready(name: string) {
-        await sendCommands([name]);
+        await this.sendCommands([name]);
     }
 
     /**
@@ -121,19 +122,20 @@ export class Game {
      * @param commands
      */
     async endTurn(commands: string[]) {
-        await sendCommands(commands);
+        await this.sendCommands(commands);
+    }
+
+    /**
+     * Sends a list of commands to the engine.
+     * @param commands The list of commands to send.
+     * @returns a Promise fulfilled once stdout is drained.
+     */
+    sendCommands(commands: string[]) {
+        return new Promise((resolve) => {
+            process.stdout.write(commands.join(' ') + '\n', function () {
+                resolve();
+            });
+        });
     }
 }
 
-/**
- * Sends a list of commands to the engine.
- * @param commands The list of commands to send.
- * @returns a Promise fulfilled once stdout is drained.
- */
-function sendCommands(commands: string[]) {
-    return new Promise((resolve) => {
-        process.stdout.write(commands.join(' ') + '\n', function () {
-            resolve();
-        });
-    });
-}

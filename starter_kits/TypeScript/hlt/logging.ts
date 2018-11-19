@@ -1,4 +1,3 @@
-
 import { WriteStream, createWriteStream, PathLike } from 'fs';
 
 export class Logging {

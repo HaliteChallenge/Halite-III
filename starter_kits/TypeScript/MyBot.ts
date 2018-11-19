@@ -1,8 +1,9 @@
-import { Constants } from './hlt/constants';
-import { Direction } from './hlt/positionals';
-import { Logging } from './hlt/logging';
-import { Game } from './hlt/networking';
-import { GameMap, Player } from './hlt/gameMap';
+import { Constants } from './hlt/Constants';
+import { Direction } from './hlt/Direction';
+import { Logging } from './hlt/Logging';
+import { Game } from './hlt/Game';
+import { GameMap } from './hlt/GameMap';
+import { Player } from "./hlt/Player";
 
 const game = new Game();
 game.initialize().then(async () => {
