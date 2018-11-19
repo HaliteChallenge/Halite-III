@@ -4,6 +4,10 @@ import { Logging } from './hlt/Logging';
 import { Game } from './hlt/Game';
 import { GameMap } from './hlt/GameMap';
 import { Player } from "./hlt/Player";
+import { Random } from './hlt/Random';
+
+const firstArgument = process.argv[2];
+const random = new Random(firstArgument ? Number(firstArgument) : 324231);
 
 const game = new Game();
 game.initialize().then(async () => {
@@ -39,7 +43,7 @@ game.initialize().then(async () => {
             }
             else if (gameMap.get(ship.position).haliteAmount < tooLittleHaliteToKeepHarvestingCoefficient * Constants.MAX_ENERGY) {
                 // Go harvest to a new place
-                const getRandomArrayElement = (anArray: any[]) => anArray[Math.floor(anArray.length * Math.random())];
+                const getRandomArrayElement = (anArray: any[]) => anArray[Math.floor(anArray.length * random.next())];
                 const direction = getRandomArrayElement(Direction.getAllCardinals());
                 const destination = ship.position.directionalOffset(direction);
                 const safeMove = gameMap.naiveNavigate(ship, destination);
