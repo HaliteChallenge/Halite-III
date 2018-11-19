@@ -1,10 +1,12 @@
 import { Ship } from "./Ship";
 import { Position } from "./Position";
+import { Shipyard } from "./Shipyard";
+import { Dropoff } from "./Dropoff";
 
 /** A cell on the game map. */
 export class MapCell {
-    ship: Ship | null = null;
-    structure: any = null;
+    ship: Ship | undefined = undefined;
+    structure: Shipyard | Dropoff | undefined = undefined;
     constructor(public position: Position, public haliteAmount: number) {
     }
 
@@ -19,24 +21,14 @@ export class MapCell {
      * Whether this cell has any ships.
      */
     get isOccupied() {
-        return this.ship !== null;
+        return this.ship !== undefined;
     }
 
     /**
      * Whether this cell has any structures.
      */
     get hasStructure() {
-        return this.structure !== null;
-    }
-
-    /**
-     * @returns The type of the structure in this cell, or null.
-     */
-    get structureType() {
-        if (this.structure !== null) {
-            return this.structure.constructor;
-        }
-        return null;
+        return this.structure !== undefined;
     }
 
     /**
