@@ -7,4 +7,4 @@ cmake \
     -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN_ROOT/cmake/Modules/Platform/Emscripten.cmake
 
-cmake --build embuild -- -j4
+cmake --build embuild --target halite_web -- -j4
