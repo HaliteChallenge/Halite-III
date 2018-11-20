@@ -13,25 +13,6 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     cp ./halite ../artifacts/Halite-MacOS-$(date +%Y%m%d%H%M%S)-$(git rev-parse HEAD)
     popd
 
-    pushd libhaliteviz
-    npm install
-    popd
-
-    pushd tools/halite-in-a-box
-    pushd macos-portable-python
-    ./build.sh
-    popd
-
-    cp -r macos-portable-python/dist/python-macos.app extra/python-macos
-    rsync -r \
-          --exclude __pycache__ --exclude '*~' --exclude '*.pyc' \
-          ../hlt_client/hlt_client/ extra/hlt_client
-    cp ../../game_engine/halite extra/halite_engine
-    npm install
-    $(npm root)/.bin/webpack --mode=production
-    $(npm root)/.bin/electron-builder -m
-    mv ./electron-dist/*.dmg ../../artifacts
-
     cd ../../
     ls artifacts
 else

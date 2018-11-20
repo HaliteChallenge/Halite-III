@@ -27,6 +27,7 @@ deploy:
   skip_cleanup: true
   local-dir: artifacts
   on:
+    all_branches: true
     tags: true
     condition: "$TRAVIS_OS_NAME == 'osx' || $COMPILER = *gcc* "
 before_install: "./.travis.before_install.sh"
