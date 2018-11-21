@@ -102,5 +102,6 @@ Our community creates and shares a wide variety of tools for developing Halite b
 * [Alternative Local Replay Viewer](https://forums.halite.io/t/fluorine-a-halite-3-replay-viewer/99)
 * [Match Manager (smiley1983)](https://gitlab.com/smiley1983/halite3-match-manager)
 * [Match Manager (ported from Halite I)](https://github.com/HaliteChallenge/Halite-III/tree/master/tools/manager)
+* [Stats and Analysis Page](https://forums.halite.io/t/halite-2018-stats-analysis/830/3)
 
 <br/>
