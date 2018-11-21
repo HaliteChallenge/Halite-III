@@ -16,6 +16,7 @@ Halite is an open source project. We encourage you to check out our source code 
 * [OPEN ISSUES ON GITHUB](https://github.com/HaliteChallenge/Halite-III/issues)
 * [COMMUNITY TOOLS](/learn-programming-challenge/downloads#community-tools)
 * [NEW STARTER KIT GUIDE](#create-a-new-starter-kit)
+* [NEW THEME GUIDE](https://forums.halite.io/t/custom-themes-for-halite-iii/737)
 
 
 <br/>
