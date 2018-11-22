@@ -2,15 +2,13 @@ import { Constants } from './hlt/Constants';
 import { Direction } from './hlt/Direction';
 import { Logging } from './hlt/Logging';
 import { Game } from './hlt/Game';
-import { GameMap } from './hlt/GameMap';
-import { Player } from "./hlt/Player";
 import { Random } from './hlt/Random';
 
 const firstArgument = process.argv[2];
 const random = new Random(firstArgument ? Number(firstArgument) : 324231);
 
 const game = new Game();
-game.initialize().then(async () => {
+game.initialize().then(async ([gameMap, me]) => {
     // At this point "game" variable is populated with initial map data.
     // This is a good place to do computationally expensive start-up pre-processing.
     // As soon as you call "ready" function below, the 2 second per turn timer will start.
@@ -20,12 +18,6 @@ game.initialize().then(async () => {
 
     while (true) {
         await game.updateFrame();
-
-        const gameMap =  game.gameMap;
-        const me = game.me;
-        if(!(gameMap instanceof GameMap) || !(me instanceof Player)) {
-            throw "Game not initialized properly!";
-        }
 
         const commandQueue = [];
 
@@ -49,7 +41,9 @@ game.initialize().then(async () => {
                 const safeMove = gameMap.naiveNavigate(ship, destination);
                 commandQueue.push(ship.move(safeMove));
             }
-            // Keep still and harvest in place
+            else {
+                // Keep still and harvest in place
+            }
         }
 
         if (game.turnNumber < spawnNewShipsUntilGameTurnCoefficient * Constants.MAX_TURNS &&
