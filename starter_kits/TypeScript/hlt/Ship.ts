@@ -36,18 +36,11 @@ export class Ship extends Entity {
     stayStill() {
         return `${Commands.MOVE} ${this.id} ${Commands.STAY_STILL}`;
     }
-    
-    /**
-     * Create a Ship instance for a player using the engine input.
-     * @param playerId the owner
-     * @return The ship ID and ship object.
-     * @private
-     */
-    static async _generate(playerId: number, getLine: () => Promise<string>) {
-        const [shipId, xPos, yPos, halite] = (await getLine())
-            .split(/\s+/)
-            .map(x => parseInt(x, 10));
-        return {shipId, ship: new Ship(playerId, shipId, new Position(xPos, yPos), halite)};
+
+    updateShip(x: number, y: number, halite: number) {
+        this.position.x = x;
+        this.position.y = y;
+        this.haliteAmount = halite;
     }
 
     toString() {
