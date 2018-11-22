@@ -1,12 +1,13 @@
 import { Ship } from "./Ship";
 import { Shipyard } from "./Shipyard";
 import { Dropoff } from "./Dropoff";
-import { Position } from "./Position";
 
 /** Player object, containing all entities/metadata for the player. */
 export class Player {
-    private ships = new Map<number, Ship>();
-    private dropoffs = new Map<number, Dropoff>();
+    ships = new Map<number, Ship>();
+    lostShips = new Map<number, Ship>();
+    dropoffs = new Map<number, Dropoff>();
+    lostDropoffs = new Map<number, Dropoff>();
     constructor(public id: number, public shipyard: Shipyard, public haliteAmount = 0) {
     }
 
@@ -35,32 +36,16 @@ export class Player {
         return this.ships.has(shipId);
     }
 
-    /**
-     * Create a player object using input from the game engine.
+    /** 
+     * Remove ship from the ships list and add it to the lostShips list
+     * to keep the ship state even when lost. 
      */
-    static async _generate(getLine: () => Promise<string>) {
-        const line = await getLine();
-        const [playerId, shipyardX, shipyardY] = line
-            .split(/\s+/)
-            .map(x => parseInt(x, 10));
-        return new Player(playerId, new Shipyard(playerId, -1, new Position(shipyardX, shipyardY)));
+    loseShip(shipId: number) {
+        this.lostShips.set(shipId, <Ship>this.ships.get(shipId));
+        this.ships.delete(shipId);
     }
-    
-    /**
-     * Update the player object for the current turn using input from
-     * the game engine.
-     */
-    async _update(numShips: number, numDropoffs: number, halite: number, getLine: () => Promise<string>) {
-        this.haliteAmount = halite;
-        this.ships = new Map();
-        for (let i = 0; i < numShips; i++) {
-            const { shipId, ship } = await Ship._generate(this.id, getLine);
-            this.ships.set(shipId, ship);
-        }
-        this.dropoffs = new Map();
-        for (let i = 0; i < numDropoffs; i++) {
-            const { id, dropoff } = await Dropoff._generate(this.id, getLine);
-            this.dropoffs.set(id, dropoff);
-        }
+
+    addShip(ship: Ship) {
+        this.ships.set(ship.id, ship);
     }
 }
