@@ -42,6 +42,7 @@ int main(int argc, char *argv[]) {
                                              constants.DEFAULT_MAP_HEIGHT,
                                              "positive integer", cmd);
     ValueArg<unsigned int> seed_arg("s", "seed", "The seed for the map generator.", false, 0, "positive integer", cmd);
+    ValueArg<unsigned int> timeout_arg("", "timeout", "Bot timeouts in milliseconds.", false, 2000, "positive integer", cmd);
     ValueArg<unsigned long> turn_limit_arg("", "turn-limit", "The maximum number of turns to play.",
                                            false, 0, "positive integer", cmd);
     ValueArg<std::string> replay_arg("i", "replay-directory", "The path to directory for replay output.", false, ".",
@@ -138,6 +139,7 @@ int main(int argc, char *argv[]) {
 
     net::NetworkingConfig networking_config{};
     networking_config.ignore_timeout = timeout_switch.getValue();
+    networking_config.timeout = std::chrono::milliseconds(timeout_arg.getValue());
 
     hlt::Map map(map_parameters.width, map_parameters.height);
     hlt::mapgen::Generator::generate(map, map_parameters);
