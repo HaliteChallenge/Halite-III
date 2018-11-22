@@ -1,0 +1,19 @@
+{
+  "name": "halite3-bot",
+  "version": "0.0.1",
+  "description": "Halite III Bot",
+  "main": "./out/MyBot.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^10.12.10",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.6"
+  },
+  "scripts": {
+    "tsc": "node ./node_modules/typescript/bin/tsc",
+    "tslint": "node ./node_modules/tslint/bin/tslint --project ."
+  },
+  "author": "",
+  "license": "",
+  "private": true
+}
