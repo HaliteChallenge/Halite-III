@@ -1,140 +1,115 @@
-import { createInterface } from "readline";
-import { Constants } from "./Constants";
 import { Logging } from "./Logging";
 import { GameMap } from "./GameMap";
 import { Player } from "./Player";
-
+import { Ship } from "./Ship";
+import { Position } from "./Position";
+import { Shipyard } from "./Shipyard";
+import { Dropoff } from "./Dropoff";
+import { ServerCommunication } from "./ServerCommunicaion";
 
 export class Game {
-    turnNumber: number;
+    turnNumber: number = 0;
+    server: ServerCommunication = new ServerCommunication();
 
-    _getLine: () => Promise<string>;
     public myId: number = 0;
     public players = new Map<number, Player>();
-    public me: Player | undefined = undefined;
-    public gameMap: GameMap | undefined = undefined;
-
-    // We use here multiple Promises as async mechanism;
-    // With node 10 we can use async generators mabe? 
-    // TODO: https://medium.com/@segersian/howto-async-generators-in-nodejs-c7f0851f9c02
-    constructor() {
-        this.turnNumber = 0;
-
-        // Setup input/output
-        const rl = createInterface({
-            input: process.stdin,
-            output: undefined,
-        });
-        const buffer: string[] = [];
-        let currentResolve: (value?: {} | PromiseLike<{}> | undefined) => void;
-        const makePromise = function () {
-            return new Promise((resolve) => {
-                currentResolve = resolve;
-            });
-        };
-        let currentPromise = makePromise();
-        rl.on('line', (line) => {
-            buffer.push(line);
-            currentResolve();
-            currentPromise = makePromise();
-        });
-        const getLine = () => {
-            return new Promise(async (resolve:(value: string) => void) => {
-                while (buffer.length === 0) {
-                    await currentPromise;
-                }
-                resolve(<string>buffer.shift()); // With the above condition we guarantie that we return a sting
-            });
-        };
-        this._getLine = getLine;
-    }
+    public me?: Player;
+    public gameMap?: GameMap;
 
     /**
      * Initialize a game object collecting all the start-state
      * instances for pre-game. Also sets up a log file in
      * "bot-<bot_id>.log".
+     * @returns The initialized gameMap and me so we don't have to check if undefined.
      */
-    async initialize() {
-        const rawConstants = await this._getLine();
-        Constants.loadConstants(JSON.parse(rawConstants));
+    async initialize(): Promise<[GameMap, Player]> {
+        const serverData = await this.server.getInitialData();
+        this.myId = serverData.myId;
 
-        const [numPlayers, myId] = (await this._getLine())
-            .split(/\s+/)
-            .map(token => parseInt(token, 10));
-        this.myId = myId;
+        Logging.setup(`bot-${this.myId}.log`);
 
-        Logging.setup(`bot-${myId}.log`);
-
-        for (let i = 0; i < numPlayers; i++) {
-            this.players.set(i, await Player._generate(this._getLine));
-        }
+        serverData.players.forEach(playerData => {
+            const player = new Player(playerData.id, new Shipyard(playerData.id, -1, new Position(playerData.x, playerData.y)))
+            this.players.set(player.id, player);
+        });
         this.me = this.players.get(this.myId);
-        this.gameMap = await GameMap._generate(this._getLine);
-    }
 
-    /** Indicate that your bot is ready to play. */
-    async ready(name: string) {
-        await this.sendCommands([name]);
+        this.gameMap = new GameMap(serverData.cells);
+
+        return [<GameMap>this.gameMap, <Player>this.me]; // We cast here because we have just initialized
     }
 
     /**
      * Updates the game object's state.
      */
     async updateFrame() {
-        this.turnNumber = parseInt(await this._getLine(), 10);
+        const data = await this.server.getUpdateData(this.players.size);
+        this.turnNumber = data.turn;
         Logging.info(`================ TURN ${this.turnNumber.toString().padStart(3, '0')} ================`);
+        data.players.forEach(playerData => {
+            const player = <Player>this.players.get(playerData.id);
+            player.haliteAmount = playerData.halite;
 
-        for (let i = 0; i < this.players.size; i++) {
-            const [playerId, numShips, numDropoffs, halite] = (await this._getLine())
-                .split(/\s+/)
-                .map(x => parseInt(x, 10));
-            const player = this.players.get(playerId);
-            if(player instanceof Player) {
-                await (<Player>this.players.get(playerId))._update(numShips, numDropoffs, halite, this._getLine);
-            } else {
-                throw "Game.updateFrame got wrong player Id from the stdin or Game is not initialized yet!";
-            }
-        }
+            // Process ships
+            const newShipsData = playerData.ships
+                .filter(shipData => !player.hasShip(shipData.id));
+            newShipsData.forEach(newShipData =>
+                player.addShip(new Ship(player.id, newShipData.id, new Position(newShipData.x, newShipData.y), newShipData.halite)));
 
-        if(this.gameMap instanceof GameMap) {
-            await (this.gameMap)._update(this._getLine);
-        } else {
-            throw "Game.updateFrame() called when Game is not initialized!";
-        }
+            const lostShips = player.getShips()
+                .filter(ship => !playerData.ships.some(shipData => shipData.id === ship.id));
+            lostShips.forEach(ship => player.loseShip(ship.id));
 
-        // Mark cells with ships as unsafe for navigation
+            player.getShips().forEach(ship => {
+                const updatedShipData = playerData.ships
+                    .find(shipData => ship.id === shipData.id);
+                if (updatedShipData) {
+                    [ship.haliteAmount, ship.position.x, ship.position.y] = [updatedShipData.halite, updatedShipData.x, updatedShipData.y];
+                }
+            });
 
+            // Process dropoffs
+            const newDropoffsData = playerData.dropoffs
+                .filter(dropoffData => !player.dropoffs.has(dropoffData.id));
+            newDropoffsData.forEach((newDropoffData: { id: number, x: number, y: number }) =>
+                player.dropoffs.set(newDropoffData.id,
+                    new Dropoff(player.id, newDropoffData.id, new Position(newDropoffData.x, newDropoffData.y))));
+
+            const lostDropoffs = Array.from(player.dropoffs.values())
+                .filter(dropoff => !playerData.dropoffs.some(dropoffData => dropoffData.id === dropoff.id));
+            lostDropoffs.forEach(lostDropoff => {
+                player.dropoffs.delete(lostDropoff.id);
+                player.lostDropoffs.set(lostDropoff.id, lostDropoff);
+            });
+        });
+
+        const gameMap = <GameMap>this.gameMap;
+        // Mark all cells as safe
+        gameMap.cells.forEach(row => row.forEach(cell => cell.markSafe()));
+        // Update cells
+        data.cells.forEach(cell => gameMap.get(new Position(cell.x, cell.y)).haliteAmount = cell.halite);
+        // Mark cells with ships as unsafe for navigation, mark sturctures
         for (const player of this.players.values()) {
-            for (const ship of player.getShips()) {
-                this.gameMap.get(ship.position).markUnsafe(ship);
-            }
-            this.gameMap.get(player.shipyard.position).structure = player.shipyard;
-            for (const dropoff of player.getDropoffs()) {
-                this.gameMap.get(dropoff.position).structure = dropoff;
-            }
+            player.getShips()
+                .forEach(ship => gameMap.get(ship.position).markUnsafe(ship));
+            player.getDropoffs()
+                .forEach(dropoff => gameMap.get(dropoff.position).structure = dropoff);
         }
+    }
+
+    /** 
+     * Indicate that your bot is ready to play by sending the bot name. 
+     */
+    async ready(botName: string) {
+        await this.server.sendCommands([botName]);
     }
 
     /**
      * Send all commands to the game engine, effectively ending your
      * turn.
-     * @param commands
      */
     async endTurn(commands: string[]) {
-        await this.sendCommands(commands);
-    }
-
-    /**
-     * Sends a list of commands to the engine.
-     * @param commands The list of commands to send.
-     * @returns a Promise fulfilled once stdout is drained.
-     */
-    sendCommands(commands: string[]) {
-        return new Promise((resolve) => {
-            process.stdout.write(commands.join(' ') + '\n', function () {
-                resolve();
-            });
-        });
+        await this.server.sendCommands(commands);
     }
 }
 
