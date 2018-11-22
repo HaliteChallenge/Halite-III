@@ -5,8 +5,9 @@ import { Dropoff } from "./Dropoff";
 
 /** A cell on the game map. */
 export class MapCell {
-    ship: Ship | undefined = undefined;
-    structure: Shipyard | Dropoff | undefined = undefined;
+    ship?: Ship;
+    structure?: Shipyard | Dropoff;
+
     constructor(public position: Position, public haliteAmount: number) {
     }
 
@@ -33,8 +34,6 @@ export class MapCell {
 
     /**
      * Mark this cell as unsafe (occupied) for navigation.
-     *
-     * Use in conjunction with {@link GameMap#getSafeMove}.
      */
     markUnsafe(ship: Ship) {
         this.ship = ship;
