@@ -1,4 +1,4 @@
-import { Direction } from './Direction';
+import { Direction } from "./Direction";
 
 export class Position {
     constructor(public x: number, public y: number) {
@@ -6,42 +6,42 @@ export class Position {
         this.y = y;
     }
 
-    directionalOffset(direction: Direction) {
+    public directionalOffset(direction: Direction) {
         return this.add(new Position(direction.dx, direction.dy));
     }
 
-    getSurroundingCardinals() {
+    public getSurroundingCardinals() {
         return Direction.getAllCardinals()
-            .map(currentDirection => this.directionalOffset(currentDirection));
+            .map((currentDirection) => this.directionalOffset(currentDirection));
     }
 
-    add(other: Position) {
+    public add(other: Position) {
         return new Position(this.x + other.x, this.y + other.y);
     }
 
-    sub(other: Position) {
+    public sub(other: Position) {
         return new Position(this.x - other.x, this.y - other.y);
     }
 
-    addMut(other: Position) {
+    public addMut(other: Position) {
         this.x += other.x;
         this.y += other.y;
     }
 
-    subMut(other: Position) {
+    public subMut(other: Position) {
         this.x -= other.x;
         this.y -= other.y;
     }
 
-    abs() {
+    public abs() {
         return new Position(Math.abs(this.x), Math.abs(this.y));
     }
 
-    equals(other: Position) {
+    public equals(other: Position) {
         return this.x === other.x && this.y === other.y;
     }
-    
-    toString() {
+
+    public toString() {
         return `${this.constructor.name}(${this.x}, ${this.y})`;
     }
 }

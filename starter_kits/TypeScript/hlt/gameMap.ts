@@ -1,9 +1,9 @@
-import { Ship } from "./Ship";
-import { Direction } from "./Direction";
-import { Position } from "./Position";
 import { Constants } from "./Constants";
-import { MapCell } from "./MapCell";
+import { Direction } from "./Direction";
 import { Entity } from "./Entity";
+import { MapCell } from "./MapCell";
+import { Position } from "./Position";
+import { Ship } from "./Ship";
 
 /**
  * The game map.
@@ -12,7 +12,27 @@ import { Entity } from "./Entity";
  * Coordinates start at 0. Coordinates are normalized for you.
  */
 export class GameMap {
-    readonly cells: MapCell[][];
+
+    /**
+     * Determine the relative direction of the target compared to the
+     * source (i.e. is the target north, south, east, or west of the
+     * source). Does not account for wraparound.
+     * @returns A 2-tuple whose
+     * elements are: the relative direction for each of the Y and X
+     * coordinates (note the inversion), or undefined if the coordinates
+     * are the same.
+     */
+    public static _getTargetDirection(
+        source: Position, destination: Position,
+    ): [Direction | undefined, Direction | undefined] {
+        return [
+            destination.y > source.y ? Direction.South :
+                (destination.y < source.y ? Direction.North : undefined),
+            destination.x > source.x ? Direction.East :
+                (destination.x < source.x ? Direction.West : undefined),
+        ];
+    }
+    public readonly cells: MapCell[][];
     public width = 0;
     public height = 0;
 
@@ -26,8 +46,8 @@ export class GameMap {
      * Getter for position object or entity objects within the game map
      * @param location the position or entity to access in this map
      * @returns the contents housing that cell or entity
-    */
-    get(positionOrEntity: Position | Entity): MapCell {
+     */
+    public get(positionOrEntity: Position | Entity): MapCell {
         if (positionOrEntity instanceof Position) {
             const normalizedPosition = this.normalize(positionOrEntity);
             return this.cells[normalizedPosition.y][normalizedPosition.x];
@@ -42,8 +62,8 @@ export class GameMap {
      * @param source The source from where to calculate
      * @param destination The target to where calculate
      * @returns The distance between these items
-    */
-    calculateDistance(source: Position, destination: Position) {
+     */
+    public calculateDistance(source: Position, destination: Position) {
         source = this.normalize(source);
         destination = this.normalize(destination);
         const delta = source.sub(destination).abs();
@@ -58,29 +78,11 @@ export class GameMap {
      * wraparound.
      * @param {Position} position A position object.
      * @returns A normalized position object fitting within the bounds of the map
-    */
-    normalize(position: Position) {
+     */
+    public normalize(position: Position) {
         const x = ((position.x % this.width) + this.width) % this.width;
         const y = ((position.y % this.height) + this.height) % this.height;
         return new Position(x, y);
-    }
-
-    /**
-     * Determine the relative direction of the target compared to the
-     * source (i.e. is the target north, south, east, or west of the
-     * source). Does not account for wraparound.
-     * @returns A 2-tuple whose
-     * elements are: the relative direction for each of the Y and X
-     * coordinates (note the inversion), or undefined if the coordinates
-     * are the same.
-     */
-    static _getTargetDirection(source: Position, destination: Position): [Direction | undefined, Direction | undefined] {
-        return [
-            destination.y > source.y ? Direction.South :
-                (destination.y < source.y ? Direction.North : undefined),
-            destination.x > source.x ? Direction.East :
-                (destination.x < source.x ? Direction.West : undefined),
-        ];
     }
 
     /**
@@ -95,7 +97,7 @@ export class GameMap {
      * @returns A list of Directions moving towards the target (if
      * any)
      */
-    getUnsafeMoves(source: Position, destination: Position) {
+    public getUnsafeMoves(source: Position, destination: Position) {
         source = this.normalize(source);
         destination = this.normalize(destination);
 
@@ -120,13 +122,15 @@ export class GameMap {
      * @param destination - the location to move towards
      * @return A direction towards the destination that is unoccupied.
      */
-    naiveNavigate(ship: Ship, destination: Position) {
+    public naiveNavigate(ship: Ship, destination: Position) {
         // No need to normalize destination since getUnsafeMoves does
         // that
         for (const direction of this.getUnsafeMoves(ship.position, destination)) {
             const targetPos = ship.position.directionalOffset(direction);
 
-            if (!this.get(targetPos).isOccupied && (ship.haliteAmount >= (this.get(ship.position).haliteAmount / Constants.MOVE_COST_RATIO))) {
+            if (!this.get(targetPos).isOccupied &&
+                (ship.haliteAmount >= (this.get(ship.position).haliteAmount / Constants.MOVE_COST_RATIO))
+            ) {
                 this.get(targetPos).markUnsafe(ship);
                 return direction;
             }
@@ -135,7 +139,7 @@ export class GameMap {
         return Direction.Still;
     }
 
-    toString() {
+    public toString() {
         return JSON.stringify(this);
     }
 }

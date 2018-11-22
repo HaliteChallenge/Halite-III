@@ -1,12 +1,12 @@
-import { Ship } from "./Ship";
-import { Position } from "./Position";
-import { Shipyard } from "./Shipyard";
 import { Dropoff } from "./Dropoff";
+import { Position } from "./Position";
+import { Ship } from "./Ship";
+import { Shipyard } from "./Shipyard";
 
 /** A cell on the game map. */
 export class MapCell {
-    ship?: Ship;
-    structure?: Shipyard | Dropoff;
+    public ship?: Ship;
+    public structure?: Shipyard | Dropoff;
 
     constructor(public position: Position, public haliteAmount: number) {
     }
@@ -35,19 +35,19 @@ export class MapCell {
     /**
      * Mark this cell as unsafe (occupied) for navigation.
      */
-    markUnsafe(ship: Ship) {
+    public markUnsafe(ship: Ship) {
         this.ship = ship;
     }
 
-    markSafe() {
+    public markSafe() {
         this.ship = undefined;
     }
 
-    equals(other: MapCell) {
+    public equals(other: MapCell) {
         return this.position.equals(other.position);
     }
-    
-    toString() {
+
+    public toString() {
         return `MapCell(${this.position}, halite=${this.haliteAmount})`;
     }
 }

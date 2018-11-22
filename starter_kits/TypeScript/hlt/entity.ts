@@ -5,7 +5,7 @@ export class Entity {
     constructor(public owner: number, public id: number, public position: Position) {
     }
 
-    toString() {
+    public toString() {
         return `${this.constructor.name}(id=${this.id}, ${this.position})`;
     }
 }

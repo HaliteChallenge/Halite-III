@@ -1,8 +1,8 @@
-import { Commands } from './commands';
+import { Commands } from "./commands";
+import { Constants } from "./constants";
 import { Direction } from "./Direction";
+import { Entity } from "./entity";
 import { Position } from "./Position";
-import { Constants } from './constants';
-import { Entity } from './entity';
 
 /** Represents a ship. */
 export class Ship extends Entity {
@@ -16,7 +16,7 @@ export class Ship extends Entity {
     }
 
     /** Return a move to turn this ship into a dropoff. */
-    makeDropoff() {
+    public makeDropoff() {
         return `${Commands.CONSTRUCT} ${this.id}`;
     }
 
@@ -24,7 +24,7 @@ export class Ship extends Entity {
      * Return a command to move this ship in a direction without
      * checking for collisions.
      */
-    move(direction: Direction) {
+    public move(direction: Direction) {
         return `${Commands.MOVE} ${this.id} ${direction.toWireFormat()}`;
     }
 
@@ -33,17 +33,17 @@ export class Ship extends Entity {
      *
      * Not strictly needed, since ships do nothing by default.
      */
-    stayStill() {
+    public stayStill() {
         return `${Commands.MOVE} ${this.id} ${Commands.STAY_STILL}`;
     }
 
-    updateShip(x: number, y: number, halite: number) {
+    public updateShip(x: number, y: number, halite: number) {
         this.position.x = x;
         this.position.y = y;
         this.haliteAmount = halite;
     }
 
-    toString() {
+    public toString() {
         return `${this.constructor.name}(id=${this.id}, ${this.position}, cargo=${this.haliteAmount} halite)`;
     }
 }

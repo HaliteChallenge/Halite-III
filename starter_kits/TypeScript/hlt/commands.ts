@@ -3,12 +3,12 @@
  */
 
 export class Commands {
-    static readonly NORTH = 'n';
-    static readonly SOUTH = 's';
-    static readonly EAST = 'e';
-    static readonly WEST = 'w';
-    static readonly STAY_STILL = 'o';
-    static readonly GENERATE = 'g';
-    static readonly CONSTRUCT = 'c';
-    static readonly MOVE = 'm';
+    public static readonly NORTH = "n";
+    public static readonly SOUTH = "s";
+    public static readonly EAST = "e";
+    public static readonly WEST = "w";
+    public static readonly STAY_STILL = "o";
+    public static readonly GENERATE = "g";
+    public static readonly CONSTRUCT = "c";
+    public static readonly MOVE = "m";
 }

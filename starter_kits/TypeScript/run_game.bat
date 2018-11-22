@@ -1,1 +1,1 @@
-tsc && halite.exe --replay-directory replays/ -vvv --width 32 --height 32 "node .\out\MyBot.js" "node .\out\MyBot.js"
+tslint --project . && tsc && halite.exe --replay-directory replays/ -vvv --width 32 --height 32 "node .\out\MyBot.js" "node .\out\MyBot.js"
