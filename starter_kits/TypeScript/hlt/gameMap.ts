@@ -1,10 +1,9 @@
-import { Entity } from "./Entity";
 import { Ship } from "./Ship";
 import { Direction } from "./Direction";
 import { Position } from "./Position";
 import { Constants } from "./Constants";
 import { MapCell } from "./MapCell";
-
+import { Entity } from "./Entity";
 
 /**
  * The game map.
@@ -12,16 +11,15 @@ import { MapCell } from "./MapCell";
  * Can be indexed by a position, or by a contained entity.
  * Coordinates start at 0. Coordinates are normalized for you.
  */
-export interface Location {
-    x: number;
-    y: number;
-}
 export class GameMap {
-    constructor(
-        private cells: MapCell[][], 
-        public width: number, 
-        public height: number
-    ) {
+    readonly cells: MapCell[][];
+    public width: number = 0;
+    public height: number = 0;
+
+    constructor(cells: number[][]) {
+        this.width = cells[0].length;
+        this.height = cells.length;
+        this.cells = cells.map((row, y) => row.map((halite, x) => new MapCell(new Position(x, y), halite)));
     }
 
     /**
@@ -29,14 +27,12 @@ export class GameMap {
      * @param location the position or entity to access in this map
      * @returns the contents housing that cell or entity
     */
-    get(location: Location | Position | Entity): MapCell {
-        if (location instanceof Position) {
-            location = this.normalize(location);
-            return this.cells[location.y][location.x];
-        } else if ((<Location>location).x !== undefined && (<Location>location).y !== undefined) {
-            return this.get(new Position((<Location>location).x, (<Location>location).y));
-        } else { 
-            return this.get((<Entity>location).position);
+    get(positionOrEntity: Position | Entity): MapCell {
+        if (positionOrEntity instanceof Position) {
+            const normalizedPosition = this.normalize(positionOrEntity);
+            return this.cells[normalizedPosition.y][normalizedPosition.x];
+        } else {
+            return this.get(positionOrEntity.position);
         }
     }
 
@@ -44,13 +40,13 @@ export class GameMap {
      * Compute the Manhattan distance between two locations.
      * Accounts for wrap-around.
      * @param source The source from where to calculate
-     * @param target The target to where calculate
+     * @param destination The target to where calculate
      * @returns The distance between these items
     */
-    calculateDistance(source: Position, target: Position) {
+    calculateDistance(source: Position, destination: Position) {
         source = this.normalize(source);
-        target = this.normalize(target);
-        const delta = source.sub(target).abs();
+        destination = this.normalize(destination);
+        const delta = source.sub(destination).abs();
         return Math.min(delta.x, this.width - delta.x) +
             Math.min(delta.y, this.height - delta.y);
     }
@@ -64,8 +60,8 @@ export class GameMap {
      * @returns A normalized position object fitting within the bounds of the map
     */
     normalize(position: Position) {
-        let x = ((position.x % this.width) + this.width) % this.width;
-        let y = ((position.y % this.height) + this.height) % this.height;
+        const x = ((position.x % this.width) + this.width) % this.width;
+        const y = ((position.y % this.height) + this.height) % this.height;
         return new Position(x, y);
     }
 
@@ -73,19 +69,17 @@ export class GameMap {
      * Determine the relative direction of the target compared to the
      * source (i.e. is the target north, south, east, or west of the
      * source). Does not account for wraparound.
-     * @param source The source position
-     * @param target The target position
-     * @returns {[Direction | null, Direction | null]} A 2-tuple whose
+     * @returns A 2-tuple whose
      * elements are: the relative direction for each of the Y and X
-     * coordinates (note the inversion), or null if the coordinates
+     * coordinates (note the inversion), or undefined if the coordinates
      * are the same.
      */
-    static _getTargetDirection(source: Position, target: Position): [Direction | null, Direction | null] {
+    static _getTargetDirection(source: Position, destination: Position): [Direction | undefined, Direction | undefined] {
         return [
-            target.y > source.y ? Direction.South :
-                (target.y < source.y ? Direction.North : null),
-            target.x > source.x ? Direction.East :
-                (target.x < source.x ? Direction.West : null),
+            destination.y > source.y ? Direction.South :
+                (destination.y < source.y ? Direction.North : undefined),
+            destination.x > source.x ? Direction.East :
+                (destination.x < source.x ? Direction.West : undefined),
         ];
     }
 
@@ -141,43 +135,7 @@ export class GameMap {
         return Direction.Still;
     }
 
-    static async _generate(getLine: () => Promise<string>) {
-        const [mapWidth, mapHeight] = (await getLine())
-            .split(/\s+/)
-            .map(x => parseInt(x, 10));
-        const gameMap = [];
-        for (let y = 0; y < mapHeight; y++) {
-            const cells = (await getLine()).split(/\s+/);
-            const row = [];
-            for (let x = 0; x < mapWidth; x++) {
-                row.push(new MapCell(new Position(x, y), parseInt(cells[x], 10)));
-            }
-            gameMap.push(row);
-        }
-
-        return new GameMap(gameMap, mapWidth, mapHeight);
-    }
-
-    /**
-     * Update this map object from the input given by the game
-     * engine.
-     */
-    async _update(getLine: () => Promise<string>) {
-        // Mark cells as safe for navigation (re-mark unsafe cells
-        // later)
-        for (let y = 0; y < this.height; y++) {
-            for (let x = 0; x < this.width; x++) {
-                this.get({x, y}).markSafe();
-            }
-        }
-
-        const numChangedCells = parseInt(await getLine(), 10);
-        for (let i = 0; i < numChangedCells; i++) {
-            const line = (await getLine());
-            const [x, y, cellEnergy] = line
-                .split(/\s+/)
-                .map(i => parseInt(i, 10));
-            this.get({x, y}).haliteAmount = cellEnergy;
-        }
+    toString() {
+        return JSON.stringify(this);
     }
 }
