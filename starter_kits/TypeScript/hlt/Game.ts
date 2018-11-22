@@ -8,10 +8,10 @@ import { Dropoff } from "./Dropoff";
 import { ServerCommunication } from "./ServerCommunicaion";
 
 export class Game {
-    turnNumber: number = 0;
+    turnNumber = 0;
     server: ServerCommunication = new ServerCommunication();
 
-    public myId: number = 0;
+    public myId = 0;
     public players = new Map<number, Player>();
     public me?: Player;
     public gameMap?: GameMap;

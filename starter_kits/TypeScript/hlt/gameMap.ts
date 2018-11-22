@@ -13,8 +13,8 @@ import { Entity } from "./Entity";
  */
 export class GameMap {
     readonly cells: MapCell[][];
-    public width: number = 0;
-    public height: number = 0;
+    public width = 0;
+    public height = 0;
 
     constructor(cells: number[][]) {
         this.width = cells[0].length;

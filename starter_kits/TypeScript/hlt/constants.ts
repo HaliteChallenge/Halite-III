@@ -8,18 +8,18 @@ export class Constants {
      */
     static readonly MAX_BFS_STEPS = 1024;  // search an entire 32x32 region
 
-    static SHIP_COST: number = 0;
-    static DROPOFF_COST: number = 0;
-    static MAX_ENERGY: number = 0;
-    static MAX_TURNS: number = 0;
-    static EXTRACT_RATIO: number = 0;
-    static MOVE_COST_RATIO: number = 0;
-    static INSPIRATION_ENABLED: number = 0;
-    static INSPIRATION_RADIUS: number = 0;
-    static INSPIRATION_SHIP_COUNT: number = 0;
-    static INSPIRED_EXTRACT_RATIO: number = 0;
-    static INSPIRED_BONUS_MULTIPLIER: number = 0;
-    static INSPIRED_MOVE_COST_RATIO: number = 0;
+    static SHIP_COST = 0;
+    static DROPOFF_COST = 0;
+    static MAX_ENERGY = 0;
+    static MAX_TURNS = 0;
+    static EXTRACT_RATIO = 0;
+    static MOVE_COST_RATIO = 0;
+    static INSPIRATION_ENABLED = 0;
+    static INSPIRATION_RADIUS = 0;
+    static INSPIRATION_SHIP_COUNT = 0;
+    static INSPIRED_EXTRACT_RATIO = 0;
+    static INSPIRED_BONUS_MULTIPLIER = 0;
+    static INSPIRED_MOVE_COST_RATIO = 0;
 
     /**
      * Load constants from JSON given by the game engine.

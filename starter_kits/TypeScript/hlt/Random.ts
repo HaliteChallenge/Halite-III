@@ -2,8 +2,8 @@
 
 export class Random {
     private _seed: number;
-    
-    constructor(public seed: number = Math.random() * 32423534) {
+
+    constructor(public seed = Math.random() * 32423534) {
         this._seed = Math.floor(Math.abs(seed)) % 2147483647;
     }
 
