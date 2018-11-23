@@ -101,6 +101,9 @@ void HaliteImpl::initialize_players() {
     // When compiled as a library, the library user must perform all
     // this initialization.
 #ifndef LIBHALITE
+#ifdef __EMSCRIPTEN__
+#error Can only target Emscripten/WebAssembly with LIBHALITE defined.
+#endif
     ordered_id_map<Player, std::future<void>> results{};
     bool success = true;
     for (auto &[player_id, player] : game.store.players) {
