@@ -1,5 +1,6 @@
 import base64
 import binascii
+import datetime
 import hashlib
 import io
 import os.path
@@ -188,7 +189,7 @@ def upload_worker_log():
     uploaded_file = flask.request.files["log"]
 
     # Save to GCS
-    blob = gcloud_storage.Blob("{}_{}".format(user_id, bot_id),
+    blob = gcloud_storage.Blob("{}_{}".format(datetime.datetime.now().isoformat(), worker),
                                model.get_worker_log_bucket(),
                                chunk_size=262144)
     blob.upload_from_file(uploaded_file)
