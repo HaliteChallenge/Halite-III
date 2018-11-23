@@ -64,6 +64,7 @@ This API Documentation refers to objects shipped with Halite III starter kits:
 
 <br/>
 
+
 #### PLAYER
 Players have an `id`, a `shipyard`, a `halite_amount`, and dictionaries of ships and dropoffs as member variables.
 
@@ -90,6 +91,15 @@ Players have an `id`, a `shipyard`, a `halite_amount`, and dictionaries of ships
    `player.get_dropoffs()` returns a list of all dropoff objects.
 
 <br/>
+
+* **Access Other Players**
+
+  Players can access all players' ships, shipyard, and dropoffs. `game.players` is a dictionary of player ids keys to player objects in the game.
+
+  `for player in game.players:` loops over each player in the game by player_id key, including you.
+
+<br/>
+
 
 #### SHIP
 Ships carry up to 1,000 halite as cargo and can be issued one command per turn via the command queue. Ships automatically deposit their cargo when over the shipyard or dropoff points. If two ships collide, both are destroyed; their cargo falls back into the sea at the collision site.
