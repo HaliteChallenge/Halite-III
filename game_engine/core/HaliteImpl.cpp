@@ -520,8 +520,9 @@ void HaliteImpl::update_player_stats() {
                 player_stats.halite_per_dropoff[dropoff.location] = dropoff.deposited_halite;
             }
         } else {
-            player_stats.turn_productions.push_back(0);
-            player_stats.turn_deposited.push_back(0);
+            // Keep updating their stats in any case
+            player_stats.turn_productions.push_back(player.energy);
+            player_stats.turn_deposited.push_back(player.total_energy_deposited);
         }
     }
 }
@@ -592,7 +593,6 @@ void HaliteImpl::kill_player(const Player::id_type &player_id) {
         cell.entity = Entity::None;
         game.store.delete_entity(entity_id);
     }
-    player.energy = 0;
 }
 
 /**
