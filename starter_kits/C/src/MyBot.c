@@ -168,7 +168,7 @@ int main(int argc, char* argv[]){
 	fflush(log_file);
 
 	// The first input we get from the engine is some JSON-encoded constants. I'm just going to scanf this becuase the formatting is consistent
-	if(scanf("{\"CAPTURE_ENABLED\":%*5[^,],\"CAPTURE_RADIUS\":%*u,\"DEFAULT_MAP_HEIGHT\":%*u,\"DEFAULT_MAP_WIDTH\":%*u,\"DROPOFF_COST\":%hu,\"DROPOFF_PENALTY_RATIO\":%*u,\"EXTRACT_RATIO\":%hhu,\"FACTOR_EXP_1\":%*f,\"FACTOR_EXP_2\":%*f,\"INITIAL_ENERGY\":%*u,\"INSPIRATION_ENABLED\":%5[^,],\"INSPIRATION_RADIUS\":%hhu,\"INSPIRATION_SHIP_COUNT\":%hhu,\"INSPIRED_BONUS_MULTIPLIER\":%hhu.0,\"INSPIRED_EXTRACT_RATIO\":%hhu,\"INSPIRED_MOVE_COST_RATIO\":%hhu,\"MAX_CELL_PRODUCTION\":%*u,\"MAX_ENERGY\":%hu,\"MAX_PLAYERS\":%*u,\"MAX_TURNS\":%hu,\"MAX_TURN_THRESHOLD\":%*u,\"MIN_CELL_PRODUCTION\":%*u,\"MIN_TURNS\":%*u,\"MIN_TURN_THRESHOLD\":%*u,\"MOVE_COST_RATIO\":%hhu,\"NEW_ENTITY_ENERGY_COST\":%hu,\"PERSISTENCE\":%*f,\"SHIPS_ABOVE_FOR_CAPTURE\":%*u,\"STRICT_ERRORS\":%*5[^,],\"game_seed\":%*u}", &dropoff_cost, &extract_ratio, (char *)&inspiration_enabled_str, &inspiration_radius, &inspiration_ship_count, &inspired_bonus_multiplier, &inspired_extract_ratio, &inspired_move_cost_ratio, &max_energy, &max_turns, &move_cost_ratio, &ship_cost) == 255){
+	if(scanf("{\"CAPTURE_ENABLED\":%*5[^,],\"CAPTURE_RADIUS\":%*u,\"DEFAULT_MAP_HEIGHT\":%*u,\"DEFAULT_MAP_WIDTH\":%*u,\"DROPOFF_COST\":%hu,\"DROPOFF_PENALTY_RATIO\":%*u,\"EXTRACT_RATIO\":%hhu,\"FACTOR_EXP_1\":%*f,\"FACTOR_EXP_2\":%*f,\"INITIAL_ENERGY\":%*u,\"INSPIRATION_ENABLED\":%5[^,],\"INSPIRATION_RADIUS\":%hhu,\"INSPIRATION_SHIP_COUNT\":%hhu,\"INSPIRED_BONUS_MULTIPLIER\":%hhu.0,\"INSPIRED_EXTRACT_RATIO\":%hhu,\"INSPIRED_MOVE_COST_RATIO\":%hhu,\"MAX_CELL_PRODUCTION\":%*u,\"MAX_ENERGY\":%hu,\"MAX_PLAYERS\":%*u,\"MAX_TURNS\":%hu,\"MAX_TURN_THRESHOLD\":%*u,\"MIN_CELL_PRODUCTION\":%*u,\"MIN_TURNS\":%*u,\"MIN_TURN_THRESHOLD\":%*u,\"MOVE_COST_RATIO\":%hhu,\"NEW_ENTITY_ENERGY_COST\":%hu,\"PERSISTENCE\":%*f,\"SHIPS_ABOVE_FOR_CAPTURE\":%*u,\"STRICT_ERRORS\":%*5[^,],\"game_seed\":%*u}", &dropoff_cost, &extract_ratio, (char *)&inspiration_enabled_str, &inspiration_radius, &inspiration_ship_count, &inspired_bonus_multiplier, &inspired_extract_ratio, &inspired_move_cost_ratio, &max_energy, &max_turns, &move_cost_ratio, &ship_cost) < 12){
 		exit(1);
 	}
 
@@ -306,7 +306,7 @@ int main(int argc, char* argv[]){
 
 		// Then we add logic for when to spawn ships
 		// The default "smart" logic will be to spawn a ship every 5th turn until we run out of halite or pass turn 50
-		if(turn_number % 5 == 0 && turn_number <= 50 && players[my_id].halite >= 1000){
+		if(turn_number % 5 == 0 && turn_number <= 50 && players[my_id].halite >= ship_cost){
 			spawn_ship();
 		}
 
