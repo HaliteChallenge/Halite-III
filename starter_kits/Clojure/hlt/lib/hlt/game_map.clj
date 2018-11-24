@@ -3,7 +3,7 @@
             [hlt.input :refer [read-line-ints]]
             [hlt.direction :refer [invert]]
             [hlt.position :refer [new-position abs-position sub-position
-                                  position? directional-offset]]
+                                  get-position directional-offset]]
             [hlt.map-cell :as map-cell :refer [read-map-cells]]
             [hlt.direction :as direction]))
 
@@ -15,10 +15,7 @@
 (defn at
   "Get cell at position"
   [position-or-entity]
-  (let [position (if (position? position-or-entity)
-                   position-or-entity
-                   (:position position-or-entity))]
-    (get-in @game [:game-map :map-cells position])))
+  (get-in @game [:game-map :map-cells (get-position position-or-entity)]))
 
 (defn is-occupied?
   "Is cell occupied?"
@@ -47,8 +44,8 @@
   "A method that computes the Manhattan distance between two locations,
   and accounts for the toroidal wraparound."
   [source target]
-  (let [source (normalize source)
-        target (normalize target)
+  (let [source (-> source get-position normalize)
+        target (-> target get-position normalize)
         [x y] (abs-position (sub-position source target))
         {:keys [width height]} (game-map)]
     (+ (min x (- width x)) (min y (- height y)))))
@@ -57,8 +54,8 @@
   "Returns where in the cardinality spectrum the target is from source.
   e.g.: North, East; South, West; etc."
   [source target]
-  (let [[sx sy] source
-        [tx ty] target
+  (let [[sx sy] (-> source get-position)
+        [tx ty] (-> target get-position)
         cx (if (> tx sx)
              direction/east
              (if (< tx sx)
@@ -75,8 +72,8 @@
   if the source and destination are the same."
   [source destination]
   (let [{:keys [width height]} (game-map)
-        source (normalize source)
-        destination (normalize destination)
+        source (-> source get-position normalize)
+        destination (-> destination get-position normalize)
         [dx dy] (abs-position (sub-position destination source))
         [cx cy] (get-target-direction source destination)
         m0 (if-not (zero? dx)
@@ -100,8 +97,8 @@
   without colliding with other entities. Returns a direction of
   still if no such move exists."
   [ship destination]
-  (let [ship-position (:position ship)
-        destination-position (:position destination)
+  (let [ship-position (get-position ship)
+        destination-position (get-position destination)
         unsafe-moves (get-unsafe-moves ship-position destination-position)
         dir (reduce
               (fn [_ direction]
