@@ -101,7 +101,8 @@
   still if no such move exists."
   [ship destination]
   (let [ship-position (:position ship)
-        unsafe-moves (get-unsafe-moves ship-position destination)
+        destination-position (:position destination)
+        unsafe-moves (get-unsafe-moves ship-position destination-position)
         dir (reduce
               (fn [_ direction]
                 (if (is-empty?
