@@ -40,6 +40,13 @@
   [x]
   (and (vector? x) (= 2 (count x))))
 
+(defn get-position
+  "Gets a position from an entity -or- returns the arg if it is a position"
+  [position-or-entity]
+  (if (or (map? position-or-entity) (not (position? position-or-entity)))
+    (:position position-or-entity)
+    position-or-entity))
+
 (defn new-position
   "Create a new position"
   [x y]
