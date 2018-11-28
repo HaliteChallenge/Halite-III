@@ -467,11 +467,15 @@ bool HaliteImpl::game_ended() const {
                            });
     }
     long num_alive_players = 0;
-    for (auto &&[_, player] : game.store.players) {
+    for (auto &&[player_id, player] : game.store.players) {
         bool can_play = player_can_play(player);
         if (player.can_play && !can_play) {
             Logging::log("player has insufficient resources to continue", Logging::Level::Info, player.id);
             player.can_play = false;
+            // Update 'last turn alive' one last time (liveness lasts
+            // to the end of a turn)
+            auto& stats = game.game_statistics.player_statistics[player_id.value];
+            stats.last_turn_alive = game.turn_number;
         }
         if (!player.terminated && can_play) {
             num_alive_players++;
