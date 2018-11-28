@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using static Halite3.hlt.Direction;
 
 namespace Halite3.hlt
@@ -60,6 +61,19 @@ namespace Halite3.hlt
             }
 
             return new Position(x + dx, y + dy);
+        }
+
+        /// <summary>
+        /// Returns a list of all positions around the given position in each cardinal direction
+        /// </summary>
+        public List<Position> GetSurroundingCardinals()
+        {
+            List<Position> positions = new List<Position>();
+            positions.Add(DirectionalOffset(Direction.NORTH));
+            positions.Add(DirectionalOffset(Direction.EAST));
+            positions.Add(DirectionalOffset(Direction.SOUTH));
+            positions.Add(DirectionalOffset(Direction.WEST));
+            return positions;
         }
     }
 }
