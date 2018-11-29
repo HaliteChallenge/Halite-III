@@ -16,12 +16,15 @@ struct PlayerStatistics {
     unsigned int random_id;                      /**< Random number assigned to player for use in ties. */
     long rank{};                                 /**< The rank of the player (1 = highest) */
     long last_turn_alive{};                      /**< The last turn the player remained alive */
+    long last_turn_ship_spawn{};                 /**< The last turn the player spawned a ship */
     std::vector<energy_type> turn_productions{}; /**< Production granted to player each turn, turn 1 at front of vector. */
     std::vector<energy_type> turn_deposited{};   /**< Running total of how much halite has been collected by this player each turn. */
     energy_type total_production{};              /**< Production granted to player each turn, turn 1 at front of vector. */
     energy_type total_mined{};                   /**< Total amount extracted from map, including energy not deposited (lost due to collision or some other means), but not including bonuses from inspiration. */
     energy_type total_bonus{};                   /**< Total halite collected from inspiration bonuses, including energy not deposited (lost due to collision or some other means). */
     energy_type total_mined_from_captured{};     /**< Total amount mined, including energy not deposited (lost due to collision or some other means) and bonuses from inspiration, by ships captured from other players. */
+    energy_type total_dropped{};                 /**< Total amount of halite lost due collisions. */
+    energy_type carried_at_end{};                /**< Amount of halite on ships last frame. */
     dimension_type max_entity_distance{};        /**< The maximum distance any entity traveled from the player's factory. */
     dimension_type total_distance{};             /**< The total distance of all entities over all turns from factory. */
     dimension_type total_entity_lifespan{};      /**< Total lifespan of all entities (ie 1 entity for 10 turns plus 1 for 300 = 310. */
@@ -31,6 +34,9 @@ struct PlayerStatistics {
     long ships_given{};                          /**< The number of ships captured from this player. */
     long self_collisions{};                      /**< The number of ships involved in collisions with allied ships. */
     long all_collisions{};                       /**< The number of ships involved in collisions with any ships, allied or not. Note there may be overlap with self_collisions if a 3+ ship collision occurs. */
+    long dropoff_collisions{};                   /**< The number of ships involved in collisions with any ships, allied or not over a dropoff. */
+    long ships_spawned{};                        /**< The number of ships spawned. */
+    long ships_peak{};                           /**< The maximum number of ship spawned at the same time. */
     std::unordered_map<Location, energy_type> halite_per_dropoff{}; /**< The amount of halite collected at each dropoff. */
 
     /**
@@ -61,6 +67,9 @@ struct PlayerStatistics {
 struct GameStatistics {
     std::vector<PlayerStatistics> player_statistics;        /**< Statistics for each player. */
     unsigned long number_turns{};                           /**< Total number of turns that finished before game ends. */
+    energy_type map_total_halite{};                         /**< Total halite available at the start. */
+
+    unsigned long turn_number{};                            /**< Used to track last_turn_ship_spawn */
 
     /**
      * Convert game statistics to json format

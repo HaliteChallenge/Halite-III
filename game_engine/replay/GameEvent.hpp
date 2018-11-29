@@ -73,6 +73,8 @@ public:
     SpawnEvent(Location location, energy_type energy, Player::id_type owner_id, Entity::id_type id) :
             BaseEvent(location), energy(energy), owner_id(owner_id), id(id) {};
     ~SpawnEvent() override = default;
+
+    virtual void update_stats(const Store &store, const Map &map, GameStatistics &stats) override;
 };
 
 /** An event for entity captures */

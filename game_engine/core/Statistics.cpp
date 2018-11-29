@@ -50,6 +50,7 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
             FIELD_TO_JSON(random_id),
             FIELD_TO_JSON(rank),
             FIELD_TO_JSON(last_turn_alive),
+            FIELD_TO_JSON(last_turn_ship_spawn),
             {"final_production", final_production},
             FIELD_TO_JSON(total_production),
             FIELD_TO_JSON(max_entity_distance),
@@ -57,11 +58,16 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
             FIELD_TO_JSON(interaction_opportunities),
             FIELD_TO_JSON(ships_captured),
             FIELD_TO_JSON(ships_given),
+            FIELD_TO_JSON(ships_spawned),
+            FIELD_TO_JSON(ships_peak),
             FIELD_TO_JSON(self_collisions),
             FIELD_TO_JSON(all_collisions),
+            FIELD_TO_JSON(dropoff_collisions),
             FIELD_TO_JSON(total_mined),
             FIELD_TO_JSON(total_bonus),
             FIELD_TO_JSON(total_mined_from_captured),
+            FIELD_TO_JSON(total_dropped),
+            FIELD_TO_JSON(carried_at_end),
             {"mining_efficiency", mining_efficiency},
             FIELD_TO_JSON(halite_per_dropoff),
             {"average_entity_distance", average_distance}};
@@ -74,7 +80,8 @@ void to_json(nlohmann::json &json, const PlayerStatistics &stats) {
  */
 void to_json(nlohmann::json &json, const GameStatistics &stats) {
     json = {FIELD_TO_JSON(number_turns),
-            FIELD_TO_JSON(player_statistics)};
+            FIELD_TO_JSON(player_statistics),
+            FIELD_TO_JSON(map_total_halite)};
 }
 
 }

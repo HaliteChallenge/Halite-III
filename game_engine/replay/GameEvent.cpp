@@ -29,6 +29,14 @@ void SpawnEvent::to_json(nlohmann::json &json) const {
             FIELD_TO_JSON(energy)};
 }
 
+void SpawnEvent::update_stats(const Store &store, const Map &map,
+                              GameStatistics &stats) {
+    (void)map;
+
+	stats.player_statistics.at(owner_id.value).ships_spawned++;
+	stats.player_statistics.at(owner_id.value).last_turn_ship_spawn = stats.turn_number;
+}
+
 /**
  * Convert capture event to json format
  * @param[out] json JSON to be filled by spawn event
@@ -60,8 +68,15 @@ void CollisionEvent::update_stats(const Store &store, const Map &map,
     ordered_id_map<Player, int> ships_involved;
     for (const auto &ship_id : ships) {
         const auto &entity = store.get_entity(ship_id);
-        stats.player_statistics.at(entity.owner.value).all_collisions++;
+        auto &player_stats = stats.player_statistics.at(entity.owner.value);
+        
         ships_involved[entity.owner]++;
+        player_stats.all_collisions++;
+        player_stats.total_dropped += entity.energy;
+        
+        if (map.at(location).owner != Player::None) { // There is a dropoff
+            player_stats.dropoff_collisions++;
+        }
     }
     for (const auto &[player_id, num_ships] : ships_involved) {
         // Increment self-collision to account for uncounted ship
