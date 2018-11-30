@@ -29,6 +29,9 @@ class Entity(abc.ABC):
                                       self.id,
                                       self.position)
 
+    def __hash__(self):
+        return self.id
+
 
 class Dropoff(Entity):
     """
