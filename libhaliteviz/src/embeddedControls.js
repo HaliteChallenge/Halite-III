@@ -70,6 +70,8 @@ const css = `
     color: #FFF;
     font-size: 0.75em;
     line-height: 1.25em;
+    white-space: nowrap;
+    overflow: visible;
 }
 
 .embedded-toolbar {
