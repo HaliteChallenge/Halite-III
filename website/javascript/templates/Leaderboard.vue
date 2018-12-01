@@ -780,7 +780,7 @@ export default {
             }
           }
           if (gotoIndex > -1) {
-            this.page = Math.ceil(gotoIndex / this.limit);
+            this.page = 1 + Math.floor(gotoIndex / this.limit);
           }
         }
         this.update_filter(true, true);
