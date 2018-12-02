@@ -29,6 +29,12 @@ class Entity(abc.ABC):
                                       self.id,
                                       self.position)
 
+    def __hash__(self):
+        return hash((self.owner, self.id))
+
+    def __eq__(self, other):
+        return self.owner == other.owner and self.id == other.id
+
 
 class Dropoff(Entity):
     """
