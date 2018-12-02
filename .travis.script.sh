@@ -12,9 +12,6 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     make -j2
     cp ./halite ../artifacts/Halite-MacOS-$(date +%Y%m%d%H%M%S)-$(git rev-parse HEAD)
     popd
-
-    cd ../
-    ls artifacts
 else
     docker exec build /bin/bash -c "which $CCOMPILE"
     docker exec build /bin/bash -c "which $CXXCOMPILE"
