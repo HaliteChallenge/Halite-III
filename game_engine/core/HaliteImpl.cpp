@@ -141,6 +141,8 @@ void HaliteImpl::run_game() {
     for (game.turn_number = 1; game.turn_number <= constants.MAX_TURNS; game.turn_number++) {
         Logging::set_turn_number(game.turn_number);
         game.logs.set_turn_number(game.turn_number);
+        // Used to track the current turn number inside Event::update_stats
+        game.game_statistics.turn_number = game.turn_number;
         Logging::log([turn_number = game.turn_number]() {
             return "Starting turn " + std::to_string(turn_number);
         }, Logging::Level::Debug);
@@ -532,8 +534,6 @@ void HaliteImpl::update_player_stats() {
             player_stats.turn_deposited.push_back(0);
         }
     }
-	// Used to track the current turn number inside Event::update_stats
-	game.game_statistics.turn_number = game.turn_number;
 }
 
 /**
