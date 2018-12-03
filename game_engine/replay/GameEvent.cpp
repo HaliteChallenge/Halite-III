@@ -32,9 +32,9 @@ void SpawnEvent::to_json(nlohmann::json &json) const {
 void SpawnEvent::update_stats(const Store &store, const Map &map,
                               GameStatistics &stats) {
     (void)map;
-
-	stats.player_statistics.at(owner_id.value).ships_spawned++;
-	stats.player_statistics.at(owner_id.value).last_turn_ship_spawn = stats.turn_number;
+    
+    stats.player_statistics.at(owner_id.value).ships_spawned++;
+    stats.player_statistics.at(owner_id.value).last_turn_ship_spawn = stats.turn_number;
 }
 
 /**
