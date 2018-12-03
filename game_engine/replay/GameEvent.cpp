@@ -74,7 +74,7 @@ void CollisionEvent::update_stats(const Store &store, const Map &map,
         player_stats.all_collisions++;
         player_stats.total_dropped += entity.energy;
         
-        if (map.at(location).owner != Player::None) { // There is a dropoff
+        if (map.at(location).owner == entity.owner) { // There is a friendly dropoff
             player_stats.dropoff_collisions++;
         }
     }

@@ -34,7 +34,7 @@ struct PlayerStatistics {
     long ships_given{};                          /**< The number of ships captured from this player. */
     long self_collisions{};                      /**< The number of ships involved in collisions with allied ships. */
     long all_collisions{};                       /**< The number of ships involved in collisions with any ships, allied or not. Note there may be overlap with self_collisions if a 3+ ship collision occurs. */
-    long dropoff_collisions{};                   /**< The number of ships involved in collisions with any ships, allied or not over a dropoff. */
+    long dropoff_collisions{};                   /**< The number of ships involved in collisions with allied ships over a friendly dropoff. */
     long ships_spawned{};                        /**< The number of ships spawned. */
     long ships_peak{};                           /**< The maximum number of ship spawned at the same time. */
     std::unordered_map<Location, energy_type> halite_per_dropoff{}; /**< The amount of halite collected at each dropoff. */
