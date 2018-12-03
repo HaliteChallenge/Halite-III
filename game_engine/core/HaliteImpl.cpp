@@ -173,13 +173,6 @@ void HaliteImpl::run_game() {
     update_player_stats();
     game.replay.full_frames.back().add_end_state(game.store);
 
-	// Calculate carried_at_end
-	for (auto &[player_id, player] : game.store.players) {
-		for (const auto &[_entity_id, location] : player.entities) {
-			game.game_statistics.player_statistics[player_id.value].carried_at_end += game.store.get_entity(_entity_id).energy;
-		}
-	}
-
     rank_players();
     Logging::log("Game has ended");
     Logging::set_turn_number(Logging::ended);
@@ -508,6 +501,12 @@ void HaliteImpl::update_player_stats() {
         if (!player.terminated && player.can_play) {
             if (player_can_play(player)) { // Player may have died during this turn, in which case do not update final turn
                 player_stats.last_turn_alive = game.turn_number;
+
+				// Calculate carried_at_end
+                player_stats.carried_at_end = 0;
+                for (const auto &[_entity_id, location] : player.entities) {
+                    player_stats.carried_at_end += game.store.get_entity(_entity_id).energy;
+                }
             }
             player_stats.turn_productions.push_back(player.energy);
             player_stats.turn_deposited.push_back(player.total_energy_deposited);
