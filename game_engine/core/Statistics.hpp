@@ -68,6 +68,7 @@ struct GameStatistics {
     std::vector<PlayerStatistics> player_statistics;        /**< Statistics for each player. */
     unsigned long number_turns{};                           /**< Total number of turns that finished before game ends. */
     energy_type map_total_halite{};                         /**< Total halite available at the start. */
+    long long execution_time{};                             /**< Execution time of the game in ms. */
 
     unsigned long turn_number{};                            /**< Used to track last_turn_ship_spawn */
 

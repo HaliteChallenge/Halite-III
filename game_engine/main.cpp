@@ -182,6 +182,8 @@ int main(int argc, char *argv[]) {
     static constexpr size_t MAX_DATE_STRING_LENGTH = 25;
     char time_string[MAX_DATE_STRING_LENGTH];
     std::strftime(time_string, MAX_DATE_STRING_LENGTH, "%Y%m%d-%H%M%S%z", localtime);
+	
+    game_statistics.execution_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - engine_start).count();
 
     if (!no_replay_switch.getValue()) {
         // Output gamefile. First try the replays folder; if that fails, just use the straight filename.
@@ -253,7 +255,7 @@ int main(int argc, char *argv[]) {
         }
     }
 	
-    results["execution_time"] = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - engine_start).count();
+    results["execution_time"] = game_statistics.execution_time;
     results["map_width"] = map_width;
     results["map_height"] = map_height;
     results["map_total_halite"] = game_statistics.map_total_halite;
