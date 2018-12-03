@@ -300,30 +300,32 @@ void SpawnTransaction::commit() {
             auto &player = store.get_player(player_id);
             player.energy -= cost;
             auto &cell = map.at(player.factory);
+            auto &entity = store.new_entity(0, player.id);
+            player.add_entity(entity.id, player.factory);
+            entity_updated(entity.id);
+            event_generated<SpawnEvent>(player.factory, 0, player.id, entity.id);
             if (cell.entity == Entity::None) {
-                auto &entity = store.new_entity(0, player.id);
-                player.add_entity(entity.id, player.factory);
                 cell.entity = entity.id;
-                entity_updated(entity.id);
-                event_generated<SpawnEvent>(player.factory, 0, player.id, entity.id);
             } else {
-                // There is a collision, destroy the existing.
-                auto &entity = store.get_entity(cell.entity);
-                auto &player = store.get_player(entity.owner);
+                // There is a collision, collide with the existing.
+                auto &existing_entity = store.get_entity(cell.entity);
+                auto &existing_player = store.get_player(existing_entity.owner);
                 auto &owner = store.get_player(cell.owner);
 
-                if (entity.owner == cell.owner) {
+                if (existing_entity.owner == cell.owner) {
                     error_generated<SelfCollisionError<SpawnCommand>>(player_id, spawn, ErrorContext(), player.factory,
-                                                                      std::vector<Entity::id_type>{cell.entity},
+                                                                      std::vector<Entity::id_type>{cell.entity, entity.id},
                                                                       !Constants::get().STRICT_ERRORS);
                 }
-                event_generated<CollisionEvent>(owner.factory, std::vector<Entity::id_type>{cell.entity});
+                event_generated<CollisionEvent>(owner.factory, std::vector<Entity::id_type>{cell.entity, entity.id});
 
                 // Use dump_energy in case the collision was from a
                 // different player.
-                dump_energy(store, entity, owner.factory, cell, entity.energy);
-                player.remove_entity(cell.entity);
+                dump_energy(store, existing_entity, owner.factory, cell, existing_entity.energy);
+                existing_player.remove_entity(cell.entity);
                 store.delete_entity(cell.entity);
+                player.remove_entity(entity.id);
+                store.delete_entity(entity.id);
                 cell.entity = Entity::None;
             }
         }
