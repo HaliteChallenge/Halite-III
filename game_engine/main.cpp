@@ -150,11 +150,11 @@ int main(int argc, char *argv[]) {
     hlt::Replay replay{game_statistics, map_parameters.num_players, map_parameters.seed, map};
     Logging::log("Map seed is " + std::to_string(map_parameters.seed));
 
-	for (const auto &row : map.grid) {
-		for (const auto &cell : row) {
-			game_statistics.map_total_halite += cell.energy;
-		}
-	}
+    for (const auto &row : map.grid) {
+        for (const auto &cell : row) {
+            game_statistics.map_total_halite += cell.energy;
+        }
+    }
 
     hlt::Halite game(map, networking_config, game_statistics, replay);
     game.run_game(bot_commands, snapshot);

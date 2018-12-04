@@ -501,8 +501,8 @@ void HaliteImpl::update_player_stats() {
         if (!player.terminated && player.can_play) {
             if (player_can_play(player)) { // Player may have died during this turn, in which case do not update final turn
                 player_stats.last_turn_alive = game.turn_number;
-
-				// Calculate carried_at_end
+                
+                // Calculate carried_at_end
                 player_stats.carried_at_end = 0;
                 for (const auto &[_entity_id, location] : player.entities) {
                     player_stats.carried_at_end += game.store.get_entity(_entity_id).energy;
