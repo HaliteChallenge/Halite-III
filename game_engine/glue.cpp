@@ -71,6 +71,7 @@ EMSCRIPTEN_BINDINGS(libhaliteweb) {
         .function("process_turn_from_input", &HaliteImpl::process_turn_from_input)
         .function("set_turn_number", &HaliteImpl::set_turn_number)
         .function("max_turns", &HaliteImpl::max_turns)
+        .function("kill_player", &HaliteImpl::kill_player)
         ;
 
     class_<Halite>("Halite")
