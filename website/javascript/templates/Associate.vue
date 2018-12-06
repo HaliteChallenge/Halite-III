@@ -85,6 +85,19 @@
                         </v-select>
                     </div>
 
+                    <h2 id="section_submit" class="form-heading">Choose Your Language</h2>
+
+                    <!-- country -->
+                    <div class="form-group">
+                        <label for="bot-language">What language will your first bot be in?</label>
+                        <v-select
+                            label="bot-language"
+                            v-model="bot_language"
+                            :options="bot_language_options">
+                        </v-select>
+                        <p style="margin-top: 10px;">You can submit a new bot in any language at any time, but we'll get you started with a bot right away.</p>
+                    </div>
+
                     <div class="form-group has-error" v-if="error">
                         <span id="error-help" class="help-block">{{ error }}</span>
                     </div>
@@ -146,6 +159,8 @@ export default {
         return {
           countries: countries,
           country_options: new_countries,
+          bot_language_options: ['Python3', 'JavaScript', 'Java', 'C++', 'Other'],
+          bot_language: 'Python3',
           data: iso3166.data,
           email: '',
           country_code: '',
@@ -157,6 +172,7 @@ export default {
           selected_highSchool: null,
           error: null,
           success_message: '',
+          user_id: null,
           username: '',
           username_error: {
             valid: false,
@@ -257,15 +273,48 @@ export default {
               message += ' ' + response.message;
             Alert.show(message, 'success', true)
             this.gaData('account', 'new-account-success', 'account-flow')
-            setTimeout(() => {
-            window.location.replace('/')
-            }, 3000)
+            if (this.bot_language !== 'Other') {
+              return Promise.resolve(api.create_editor_file_space(this.user_id, this.bot_language))
+                        .then(() => true, () => true)
+                        .then(() => {
+                          const url = `/assets/downloads/Halite3_${this.bot_language}_None.zip`;
+                          const has_bot_promise = api.me().then((user) => {
+                            return api.list_bots(user.user_id)
+                          }).then((bots) => {
+                            if (bots.length > 0) {
+                              return bots[0].bot_id
+                            }
+                            return null
+                          })
+                          console.log(`Downloading ${url}`)
+
+                          return Promise.all([
+                            window.fetch(url).then((r) => r.blob()),
+                            has_bot_promise
+                          ]);
+                        })
+                        .then(([ starterKit, botId ]) => {
+                          return Promise.resolve(api.update_bot(this.user_id, botId, starterKit, (progress) => {})).then(() => true, () => true)
+                        })
+            }
+            return Promise.resolve(true);
           }, (error) => {
             const errorMessage = error.responseJSON
               ? error.responseJSON.message
               : "Sorry, we couldn't update your profile. Please try again later."
             Alert.show(errorMessage, 'error')
             this.gaData('account', 'new-account-error', 'account-flow')
+            return Promise.resolve(false);
+          }).then((success) => {
+            if (!success) return;
+            setTimeout(() => {
+              if (this.bot_language !== 'Other') {
+                window.location.replace('/learn-programming-challenge/tutorials/code-tutorial')
+              }
+              else {
+                window.location.replace('/learn-programming-challenge/game-overview')
+              }
+            }, 3000);
           })
         },
         gaData: function (category, action, label) {
@@ -277,6 +326,7 @@ export default {
           if (me && !me.is_new_user) {
             window.location.replace('/user?me')
           } else {
+            this.user_id = me.user_id
             // Pre-fill username if Github
             if (me.oauth_provider === "github") {
               this.username = me.username
