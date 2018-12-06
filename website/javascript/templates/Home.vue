@@ -151,7 +151,12 @@
      methods: {
        submit_bot() {
          api.submitNewUserBot(this.user.user_id, this.bot_language).then((created) => {
-           window.location = '/editor'
+           if (created) {
+             window.location = '/editor'
+           }
+           else {
+             window.location = '/learn-programming-challenge/downloads'
+           }
          });
        },
        invite: function () {
