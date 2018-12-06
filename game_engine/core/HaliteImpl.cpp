@@ -141,6 +141,8 @@ void HaliteImpl::run_game() {
     for (game.turn_number = 1; game.turn_number <= constants.MAX_TURNS; game.turn_number++) {
         Logging::set_turn_number(game.turn_number);
         game.logs.set_turn_number(game.turn_number);
+        // Used to track the current turn number inside Event::update_stats
+        game.game_statistics.turn_number = game.turn_number;
         Logging::log([turn_number = game.turn_number]() {
             return "Starting turn " + std::to_string(turn_number);
         }, Logging::Level::Debug);
@@ -499,10 +501,17 @@ void HaliteImpl::update_player_stats() {
         if (!player.terminated && player.can_play) {
             if (player_can_play(player)) { // Player may have died during this turn, in which case do not update final turn
                 player_stats.last_turn_alive = game.turn_number;
+                
+                // Calculate carried_at_end
+                player_stats.carried_at_end = 0;
+                for (const auto &[_entity_id, location] : player.entities) {
+                    player_stats.carried_at_end += game.store.get_entity(_entity_id).energy;
+                }
             }
             player_stats.turn_productions.push_back(player.energy);
             player_stats.turn_deposited.push_back(player.total_energy_deposited);
             player_stats.number_dropoffs = player.dropoffs.size();
+            player_stats.ships_peak = std::max(player_stats.ships_peak, (long)player.entities.size());
             for (const auto &[_entity_id, location] : player.entities) {
                 const dimension_type entity_distance = game.map.distance(location, player.factory);
                 if (entity_distance > player_stats.max_entity_distance)
