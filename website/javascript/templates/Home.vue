@@ -19,7 +19,15 @@
                     Build a bot and get on the leaderboard.<br/>
                     Check out our documentation and interactive tutorials.
                 </div>
-                <a class="btn btn-primary btn-sm" href="/learn-programming-challenge/">Play now</a>
+                <div class="submit-bot">
+                  <v-select
+                    placeholder="Choose bot language"
+                    v-model="bot_language"
+                    :options="['Python3', 'JavaScript', 'Java', 'C++', 'Other']">
+                  </v-select>
+
+                  <a class="btn btn-primary btn-sm" @click="submit_bot">Submit Your Bot</a>
+                </div>
             </div>
             <div class="right-container">
                 <div class="data-item">
@@ -112,32 +120,40 @@
   import * as api from '../api'
   import * as utils from '../utils'
   import ChallengeModal from './ChallengeModal.vue'
+  import vSelect from 'vue-select'
 
   export default {
      name: 'home',
      props: ['baseUrl'],
-     components: {ChallengeModal},
+     components: {ChallengeModal,vSelect},
      data: function () {
         const me = api.me_cached()
         let me_in = false
         if (me) {
-            return {
-                me_in: true,
-                modalOpen: false,
-                user: null,
-                organization_rank: null
-            }
-        }
-        return {
-            me_in,
+          return {
+            me_in: true,
             modalOpen: false,
-            organization_rank: null
+            user: null,
+            organization_rank: null,
+            bot_language: 'Python3',
+          }
         }
+       return {
+         me_in,
+         modalOpen: false,
+         organization_rank: null,
+         bot_language: null,
+       }
     },
     mounted() {
       this.fetchUserInfo()
     },
      methods: {
+       submit_bot() {
+         api.submitNewUserBot(this.user.user_id, this.bot_language).then((created) => {
+           window.location = '/editor'
+         });
+       },
        invite: function () {
          this.gaData('invite', 'click-to-invite', 'home')
          if (!document.getElementById('intmpid').checkValidity()) {
@@ -198,5 +214,14 @@
     }
 
 
+    .submit-bot {
+      display: flex;
+      width: 100%;
+      align-items: baseline;
 
+      .dropdown {
+        flex: 1;
+        min-width: 10em;
+      }
+    }
 </style>
