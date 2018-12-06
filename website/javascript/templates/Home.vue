@@ -19,7 +19,11 @@
                     Build a bot and get on the leaderboard.<br/>
                     Check out our documentation and interactive tutorials.
                 </div>
-                <div class="submit-bot">
+                <a
+                  v-if="has_bots"
+                  class="btn btn-primary btn-sm"
+                  href="/learn-programming-challenge/">Play now</a>
+                <div v-else class="submit-bot">
                   <v-select
                     placeholder="Choose bot language"
                     v-model="bot_language"
@@ -136,6 +140,7 @@
             user: null,
             organization_rank: null,
             bot_language: 'Python3',
+            has_bots: true,
           }
         }
        return {
@@ -143,6 +148,7 @@
          modalOpen: false,
          organization_rank: null,
          bot_language: null,
+         has_bots: true,
        }
     },
     mounted() {
@@ -188,6 +194,10 @@
          api.me().then((user) => {
            if (user) {
              this.user = user
+
+             api.list_bots(user.user_id).then((bots) => {
+               this.has_bots = bots.length > 0;
+             });
 
              if (user.organization_id === null) {
                this.organization_rank = null
