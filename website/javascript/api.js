@@ -592,3 +592,29 @@ export function fallbackAvatar(username) {
   const identicon = window.encodeURIComponent(jdenticon.toSvg(md5(username), 100))
   return `data:image/svg+xml;utf8,${identicon}`
 }
+
+export function submitNewUserBot (userId, botLanguage) {
+  if (botLanguage !== 'Other') {
+    return Promise.resolve(create_editor_file_space(userId, botLanguage).fail(() => false))
+      .then(() => true, () => true)
+      .then(() => {
+        const url = `/assets/downloads/Halite3_${botLanguage}_None.zip`;
+        const has_bot_promise = me().then((user) => list_bots(user.user_id)).then((bots) => {
+          if (bots.length > 0) {
+            return bots[0].bot_id
+          }
+          return null
+        });
+        console.log(`Downloading ${url}`);
+
+        return Promise.all([
+          window.fetch(url).then((r) => r.blob()),
+          has_bot_promise,
+        ]);
+      })
+      .then(([ starterKit, botId ]) => {
+        return Promise.resolve(update_bot(userId, botId, starterKit, (progress) => {})).then(() => true, () => true);
+      });
+  }
+  return Promise.resolve(false);
+}
