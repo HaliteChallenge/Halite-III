@@ -16,8 +16,8 @@
                 <div class="top-bg"></div>
                 <div class="title">Hi, {{ user.username }}! </div>
                 <div class="text-tips">
-                    Build a bot and get on the leaderboard.<br/>
-                    Check out our documentation and interactive tutorials.
+                    Submit your first bot to get on the leaderboard.<br/>
+                    Choose your language to start building:
                 </div>
                 <a
                   v-if="has_bots"
@@ -30,7 +30,7 @@
                     :options="['Python3', 'JavaScript', 'Java', 'C++', 'Other']">
                   </v-select>
 
-                  <a class="btn btn-primary btn-sm" @click="submit_bot">Submit Your Bot</a>
+                  <a class="btn btn-primary btn-sm" @click="submit_bot">Submit Bot</a>
                 </div>
             </div>
             <div class="right-container">
