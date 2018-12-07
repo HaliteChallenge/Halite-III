@@ -58,3 +58,9 @@ def load_constants(constants):
 
     """An inspired ship instead spends 1/X% halite to move."""
     INSPIRED_MOVE_COST_RATIO = constants['INSPIRED_MOVE_COST_RATIO']
+
+
+def set_dimensions(width, height):
+    global WIDTH, HEIGHT
+    WIDTH = width
+    HEIGHT = height
