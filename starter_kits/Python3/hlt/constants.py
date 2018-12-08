@@ -60,6 +60,7 @@ def load_constants(constants):
     INSPIRED_MOVE_COST_RATIO = constants['INSPIRED_MOVE_COST_RATIO']
 
 
+# TODO remove once width/height are sent by server (#78)
 def set_dimensions(width, height):
     global WIDTH, HEIGHT
     WIDTH = width
