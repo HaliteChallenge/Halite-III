@@ -2,7 +2,7 @@
   <div class="finals-status">
     <div v-if="submissions_open" style="text-align: center; padding: 1em;">
         <p>Finals will start on January 22nd at 11:59:59PM EST.<br>
-          You can see a countdown clock <a href="https://www.timeanddate.com/countdown/generic?iso=20180122T235959&p0=179">here</a>.
+          You can see a countdown clock <a href="https://www.timeanddate.com/countdown/generic?iso=20190122T235959&p0=179&msg=Halite+3+Finals+Begin&font=sanserif&csz=1">here</a>.
         </p>
         <p>We will then take some time to reset all bots, during which no matches will be made.
         </p>
@@ -33,6 +33,7 @@
       </p>
     </div>
     -->
+    <!-- Uncomment the following once a finals schedule has been put in place.
     <table style="width:100%; table-layout:fixed; padding:1em;">
         <tbody>
             <tr>
@@ -101,6 +102,7 @@
         </tbody>
       </table>
       <p v-if="finals_pairing">* Note that the highlighted group is the next group to be removed from the competition</p>
+      -->
     </div>
   </div>
 </template>
