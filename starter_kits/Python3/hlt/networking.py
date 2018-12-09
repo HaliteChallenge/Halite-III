@@ -36,6 +36,9 @@ class Game:
         self.me = self.players[self.my_id]
         self.game_map = GameMap._generate()
 
+        # TODO remove once width/height are sent by server (#78)
+        constants.set_dimensions(self.game_map.width, self.game_map.height)
+
     def ready(self, name):
         """
         Indicate that your bot is ready to play.
