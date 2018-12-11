@@ -13,6 +13,12 @@ def load_constants(constants):
     global EXTRACT_RATIO, MOVE_COST_RATIO
     global INSPIRATION_ENABLED, INSPIRATION_RADIUS, INSPIRATION_SHIP_COUNT
     global INSPIRED_EXTRACT_RATIO, INSPIRED_BONUS_MULTIPLIER, INSPIRED_MOVE_COST_RATIO
+    global WIDTH, HEIGHT
+
+    if 'map_width' in constants:
+        WIDTH = constants['map_width']
+    if 'map_height' in constants:
+        HEIGHT = constants['map_height']
 
     """The cost to build a single ship."""
     SHIP_COST = constants['NEW_ENTITY_ENERGY_COST']
