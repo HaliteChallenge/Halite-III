@@ -161,6 +161,7 @@ void HaliteImpl::run_game() {
         game.replay.full_frames.back().add_end_state(game.store);
 
         if (game_ended()) {
+            game.turn_number++;
             break;
         }
     }
