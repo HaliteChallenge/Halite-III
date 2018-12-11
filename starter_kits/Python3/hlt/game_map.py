@@ -175,7 +175,8 @@ class GameMap:
         for y_position in range(map_height):
             cells = read_input().split()
             for x_position in range(map_width):
-                game_map[y_position][x_position] = MapCell(Position(x_position, y_position),
+                game_map[y_position][x_position] = MapCell(Position(x_position, y_position,
+                                                                    normalize=False),
                                                            int(cells[x_position]))
         return GameMap(game_map, map_width, map_height)
 

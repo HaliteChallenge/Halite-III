@@ -61,7 +61,7 @@ class Player:
         :return: The player object
         """
         player, shipyard_x, shipyard_y = map(int, read_input().split())
-        return Player(player, Shipyard(player, -1, Position(shipyard_x, shipyard_y)))
+        return Player(player, Shipyard(player, -1, Position(shipyard_x, shipyard_y, normalize=False)))
 
     def _update(self, num_ships, num_dropoffs, halite):
         """
