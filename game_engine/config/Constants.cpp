@@ -23,6 +23,8 @@ void to_json(nlohmann::json &json, const Constants &constants) {
 
             FIELD_TO_JSON(DEFAULT_MAP_WIDTH),
             FIELD_TO_JSON(DEFAULT_MAP_HEIGHT),
+            FIELD_TO_JSON(MAP_WIDTH),
+            FIELD_TO_JSON(MAP_HEIGHT),
             FIELD_TO_JSON(MAX_CELL_PRODUCTION),
             FIELD_TO_JSON(MIN_CELL_PRODUCTION),
 
@@ -70,6 +72,8 @@ void from_json(const nlohmann::json &json, Constants &constants) {
 
                  FIELD_FROM_JSON(DEFAULT_MAP_WIDTH),
                  FIELD_FROM_JSON(DEFAULT_MAP_HEIGHT),
+                 FIELD_FROM_JSON(MAP_WIDTH),
+                 FIELD_FROM_JSON(MAP_HEIGHT),
                  FIELD_FROM_JSON(MAX_CELL_PRODUCTION),
                  FIELD_FROM_JSON(MIN_CELL_PRODUCTION),
 

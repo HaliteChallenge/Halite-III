@@ -95,7 +95,9 @@ int main(int argc, char *argv[]) {
 
     // Get the map parameters
     auto map_width = width_arg.isSet() ? width_arg.getValue() : constants.DEFAULT_MAP_WIDTH;
+    constants.MAP_WIDTH = map_width;
     auto map_height = height_arg.isSet() ? height_arg.getValue() : constants.DEFAULT_MAP_HEIGHT;
+    constants.MAP_HEIGHT = map_height;
     auto n_players = players_arg.getValue();
 
     auto verbosity = verbosity_arg.getValue();

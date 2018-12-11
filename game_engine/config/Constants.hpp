@@ -23,6 +23,8 @@ struct Constants {
     unsigned long MAX_PLAYERS = 16;             /**< The maximum number of players. */
     dimension_type DEFAULT_MAP_WIDTH = 48;      /**< The default width of generated maps. */
     dimension_type DEFAULT_MAP_HEIGHT = 48;     /**< The default height of generated maps. */
+    dimension_type MAP_WIDTH = DEFAULT_MAP_WIDTH;  /**< The generated map width */
+    dimension_type MAP_HEIGHT = DEFAULT_MAP_HEIGHT; /**< The generated map height */
 
     energy_type MAX_CELL_PRODUCTION = 1000;     /**< The maximum maximum amount of production on a cell. */
     energy_type MIN_CELL_PRODUCTION = 900;      /**< The minimum maximum amount of production on a cell. */
