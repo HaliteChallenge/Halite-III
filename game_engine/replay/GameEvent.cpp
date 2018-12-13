@@ -69,13 +69,15 @@ void CollisionEvent::update_stats(const Store &store, const Map &map,
     for (const auto &ship_id : ships) {
         const auto &entity = store.get_entity(ship_id);
         auto &player_stats = stats.player_statistics.at(entity.owner.value);
-        
+
         ships_involved[entity.owner]++;
         player_stats.all_collisions++;
-        player_stats.total_dropped += entity.energy;
-        
+
         if (map.at(location).owner == entity.owner) { // There is a friendly dropoff
             player_stats.dropoff_collisions++;
+        } else {
+            // it only counts as dropped if it's not going into a friendly dropoff
+            player_stats.total_dropped += entity.energy;
         }
     }
     for (const auto &[player_id, num_ships] : ships_involved) {
