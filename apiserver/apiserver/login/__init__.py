@@ -201,6 +201,7 @@ def generic_login_callback(email, oauth_provider, oauth_id, default_username=Non
                 )).inserted_primary_key
                 flask.session[config.SESSION_SECRET] = session_secret
                 flask.session[config.SESSION_COOKIE] = new_user_id[0]
+                flask.session.permanent = True
             except sqlalchemy.exc.IntegrityError:
                 raise util.APIError(400, message="User already exists with this email. If you would like to change your login method, reach out to halite@halite.io with this token: " + str(oauth_id))
 
@@ -226,6 +227,7 @@ def generic_login_callback(email, oauth_provider, oauth_id, default_username=Non
 
         flask.session[config.SESSION_COOKIE] = user["id"]
         flask.session[config.SESSION_SECRET] = session_secret
+        flask.session.permanent = True
 
         if "redirectURL" in flask.request.args:
             return flask.redirect(flask.request.args["redirectURL"])
