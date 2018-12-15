@@ -135,7 +135,7 @@ class GameMap:
         source = self.normalize(source)
         destination = self.normalize(destination)
         possible_moves = []
-        distance = abs(destination - source)
+        distance = Position(abs(destination.x-source.x),abs(destination.y-source.y))
         y_cardinality, x_cardinality = self._get_target_direction(source, destination)
 
         if distance.x != 0:
