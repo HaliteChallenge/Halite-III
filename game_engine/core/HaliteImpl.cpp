@@ -590,6 +590,7 @@ void HaliteImpl::kill_player(const Player::id_type &player_id) {
     Logging::log("Killing player", Logging::Level::Warning, player_id);
     auto &player = game.store.get_player(player_id);
     player.terminated = true;
+    player.can_play = false;
     game.networking.kill_player(player);
 
     auto &entities = player.entities;
