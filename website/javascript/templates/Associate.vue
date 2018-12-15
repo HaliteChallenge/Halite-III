@@ -273,7 +273,7 @@ export default {
               message += ' ' + response.message;
             Alert.show(message, 'success', true)
             this.gaData('account', 'new-account-success', 'account-flow')
-            return api.submitNewUserBot(this.user_id, this.bot_langauge);
+            return api.submitNewUserBot(this.user_id, this.bot_language);
           }, (error) => {
             const errorMessage = error.responseJSON
               ? error.responseJSON.message
