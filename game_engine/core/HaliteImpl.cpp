@@ -471,7 +471,7 @@ bool HaliteImpl::game_ended() const {
     long num_alive_players = 0;
     for (auto &&[player_id, player] : game.store.players) {
         bool can_play = player_can_play(player);
-        if (player.can_play && !can_play) {
+        if (!player.terminated && player.can_play && !can_play) {
             Logging::log("player has insufficient resources to continue", Logging::Level::Info, player.id);
             player.can_play = false;
             // Update 'last turn alive' one last time (liveness lasts
