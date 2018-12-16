@@ -1,0 +1,65 @@
+---
+---
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Blockly Bot Editor | Halite AI Challenge</title>
+        <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,600,700,700i|Fira+Mono:400,700" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="./glitch.css" />
+    </head>
+    <body>
+        <header id="title">
+            <h1><a href="https://halite.io"><img alt="Halite" src="{{ site.url }}{{ site.baseurl }}/assets/images/full_logo.svg" /></a></h1>
+            <section id="controls">
+                <button id="run-game">Run Game</button>
+                <div class="expander"></div>
+                <a id="manual" href="{{ site.url }}{{ site.baseurl }}/learn-programming-challenge/game-overview" target="_blank" class="button">Game Rules</a>
+                <a href="https://forums.halite.io/t/halite-blockly-create-a-halite-bot-with-blocks/1132" target="_blank" class="button">Help</a>
+                <div class="expander"></div>
+                <button id="submit-bot">Submit Bot</button>
+                <button id="export-bot">Download Bot</button>
+                <a href="https://forums.halite.io/" target="_blank" class="button">Feedback/Forums</a>
+                <span id="saved">Bot saved.</span>
+            </section>
+        </header>
+        <section id="banner">
+            Bot uploaded!
+        </section>
+        <main>
+            <section id="left">
+                <section id="visualizer">
+                </section>
+                <section id="console"></section>
+            </section>
+            <section id="editor">
+            </section>
+        </main>
+        <section id="login-dialog" class="dialog">
+            <div class="dialog-body">
+                <p>
+                    You must be logged in to Halite to submit your bot
+                    to the competition. (You can download your bot at anytime.)
+                </p>
+
+                <p>
+                    <a class="button" target="_blank" href="https://halite.io/login" onclick="document.querySelector('#login-dialog').classList.remove('shown')">Log In</a> and try again.
+                </p>
+            </div>
+        </section>
+        <script src="https://cdn.jsdelivr.net/npm/jszip@3.1.5/dist/jszip.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.0/dist/FileSaver.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/prettier@1.14.3/standalone.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/prettier@1.14.3/parser-babylon.js"></script>
+        <script src="./google-blockly-42172ba/blockly_uncompressed.js"></script>
+        <script src="./google-blockly-42172ba/javascript_compressed.js"></script>
+        <script src="./google-blockly-42172ba/blocks_compressed.js"></script>
+        <script src="./google-blockly-42172ba/msg/js/en.js"></script>
+        <script src="./ansi_up.js"></script>
+        <script src="./halite_web/halite_web.js"></script>
+        <script src="./custom_blocks.js"></script>
+        <script src="./template.js"></script>
+        <script src="./console.js"></script>
+        <script src="/assets/js/bundle-blockly.js"></script>
+    </body>
+</html>

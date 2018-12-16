@@ -500,6 +500,7 @@ tools/standalone_visualizer/release-builds/*
 gcloud_config.json
 
 *.bundle.js
+bundle-*.js
 
 # Xcode things to ignore
 ## Various settings

@@ -1,0 +1,8 @@
+*~
+.cache
+.DS_Store
+dist/
+closure-library/
+google-blockly-*/
+node_modules/
+*.zip

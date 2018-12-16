@@ -1,0 +1,247 @@
+<xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+  <category name="Shipyard" colour="#141EA0">
+    <block type="my_halite"></block>
+    <block type="nothing_on_top"></block>
+    <block type="spawn_ship"></block>
+  </category>
+  <category name="Ship Actions" colour="#FFBE00">
+    <block type="move_towards"></block>
+    <block type="move_unsafe"></block>
+    <block type="do_nothing"></block>
+    <block type="construct_dropoff"></block>
+  </category>
+  <category name="Ship Status" colour="#141EA0">
+    <block type="this_ship_halite"></block>
+    <sep gap="8"></sep>
+    <block type="halite_under_me"></block>
+    <block type="at_dropoff"></block>
+    <block type="ship_state"></block>
+    <block type="set_ship_state">
+      <value name="STATUS">
+        <shadow type="text">
+            <field name="TEXT">going home</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="controls_if">
+        <mutation elseif="1" else="1"></mutation>
+        <value name="IF0">
+            <block type="logic_compare">
+                <value name="A">
+                    <block type="ship_state">
+                    </block>
+                </value>
+            </block>
+        </value>
+        <value name="IF1">
+            <block type="logic_compare">
+                <value name="A">
+                    <block type="ship_state">
+                    </block>
+                </value>
+            </block>
+        </value>
+    </block>
+    <block type="text">
+        <field name="TEXT">going home</field>
+    </block>
+    <sep gap="8"></sep>
+    <block type="text">
+        <field name="TEXT">mining</field>
+    </block>
+  </category>
+  <category name="Distance and Directions" colour="#141EA0">
+    <block type="distance_to"></block>
+    <block type="nearest_shipyard_or_dropoff"></block>
+    <sep gap="8"></sep>
+    <block type="nearest_patch_of_halite"></block>
+    <block type="direction">
+      <field name="DIRECTION">NORTH</field>
+    </block>
+    <sep gap="8"></sep>
+    <block type="direction">
+      <field name="DIRECTION">SOUTH</field>
+    </block>
+    <sep gap="8"></sep>
+    <block type="direction">
+      <field name="DIRECTION">EAST</field>
+    </block>
+    <sep gap="8"></sep>
+    <block type="direction">
+      <field name="DIRECTION">WEST</field>
+    </block>
+    <sep gap="8"></sep>
+    <block type="random_direction"></block>
+  </category>
+  <category name="Game Constants" colour="#5C68A6">
+    <block type="ship_cost"></block>
+    <block type="dropoff_cost"></block>
+    <block type="map_width"></block>
+    <block type="map_height"></block>
+  </category>
+  <category name="Logging" colour="#5CA68D">
+    <block type="text_print">
+      <value name="TEXT">
+        <shadow type="text">
+          <field name="TEXT">abc</field>
+        </shadow>
+      </value>
+    </block>
+  </category>
+  <sep></sep>
+  <category name="Logic" colour="#5C81A6">
+    <block type="controls_if"></block>
+    <block type="logic_compare">
+      <field name="OP">EQ</field>
+    </block>
+    <block type="logic_operation">
+      <field name="OP">AND</field>
+    </block>
+    <block type="logic_negate"></block>
+    <block type="logic_boolean">
+      <field name="BOOL">TRUE</field>
+    </block>
+    <block type="logic_null"></block>
+    <block type="logic_ternary"></block>
+  </category>
+  <category name="Loops" colour="#5CA65C">
+    <block type="controls_repeat_ext">
+      <value name="TIMES">
+        <shadow type="math_number">
+          <field name="NUM">10</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="controls_whileUntil">
+      <field name="MODE">WHILE</field>
+    </block>
+    <block type="controls_for">
+      <field name="VAR" id="-dA[CTXC47Phd*c4qu%]" variabletype="">i</field>
+      <value name="FROM">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="TO">
+        <shadow type="math_number">
+          <field name="NUM">10</field>
+        </shadow>
+      </value>
+      <value name="BY">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="controls_forEach">
+      <field name="VAR" id=";5ZsCTDxPh7zFFr6r;!:" variabletype="">j</field>
+    </block>
+    <block type="controls_flow_statements">
+      <field name="FLOW">BREAK</field>
+    </block>
+  </category>
+  <category name="Math" colour="#5C68A6">
+    <block type="math_number">
+      <field name="NUM">0</field>
+    </block>
+    <block type="math_arithmetic">
+      <field name="OP">ADD</field>
+      <value name="A">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="B">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="math_single">
+      <field name="OP">ROOT</field>
+      <value name="NUM">
+        <shadow type="math_number">
+          <field name="NUM">9</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="math_trig">
+      <field name="OP">SIN</field>
+      <value name="NUM">
+        <shadow type="math_number">
+          <field name="NUM">45</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="math_constant">
+      <field name="CONSTANT">PI</field>
+    </block>
+    <block type="math_number_property">
+      <mutation divisor_input="false"></mutation>
+      <field name="PROPERTY">EVEN</field>
+      <value name="NUMBER_TO_CHECK">
+        <shadow type="math_number">
+          <field name="NUM">0</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="math_round">
+      <field name="OP">ROUND</field>
+      <value name="NUM">
+        <shadow type="math_number">
+          <field name="NUM">3.1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="math_on_list">
+      <mutation op="SUM"></mutation>
+      <field name="OP">SUM</field>
+    </block>
+    <block type="math_modulo">
+      <value name="DIVIDEND">
+        <shadow type="math_number">
+          <field name="NUM">64</field>
+        </shadow>
+      </value>
+      <value name="DIVISOR">
+        <shadow type="math_number">
+          <field name="NUM">10</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="math_constrain">
+      <value name="VALUE">
+        <shadow type="math_number">
+          <field name="NUM">50</field>
+        </shadow>
+      </value>
+      <value name="LOW">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="HIGH">
+        <shadow type="math_number">
+          <field name="NUM">100</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="math_random_int">
+      <value name="FROM">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="TO">
+        <shadow type="math_number">
+          <field name="NUM">100</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="math_random_float"></block>
+  </category>
+  <sep></sep>
+  <category name="Variables" colour="#A65C81" custom="VARIABLE">
+  </category>
+  <category name="Functions" colour="#9A5CA6" custom="PROCEDURE"></category>
+</xml>
