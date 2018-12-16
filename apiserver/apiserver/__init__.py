@@ -1,3 +1,4 @@
+import datetime
 import logging
 import logging.handlers
 
@@ -8,6 +9,7 @@ from . import config, util
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = config.MAX_BOT_UPLOAD_SIZE
+app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(days=31)
 app.secret_key = config.FLASK_SECRET_KEY
 app.errorhandler(util.APIError)(util.handle_api_error)
 
