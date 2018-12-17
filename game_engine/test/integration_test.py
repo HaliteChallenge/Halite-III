@@ -137,6 +137,23 @@ class RankingTest(unittest.TestCase):
             rankings = list(sorted(raw_rankings, key=lambda bot: raw_rankings[bot]['rank']))
             self.assertEqual(rankings, ['BotD', 'BotC', 'BotA', 'BotB'])
 
+    def test_game_ended_no_bailout(self):
+        """Test that all players are terminated in end-of-turn check.
+
+        The engine originally bailed out early, meaning some players
+        would not be marked as unable to play until the next turn.
+
+        This is a regression test.
+        """
+        results, raw_rankings = self._run_game([
+            ('BotA', 'g,m #0 e,c #0, '),
+            ('BotB', 'g,g, , '),
+            ('BotC', 'g,g,g, '),
+            ('BotD', 'g,m #0 e,c #0, '),
+        ])
+        self.assertEqual(3, results['game_statistics']['player_statistics'][0]['last_turn_alive'])
+        self.assertEqual(3, results['game_statistics']['player_statistics'][3]['last_turn_alive'])
+
 
 if __name__ == '__main__':
     unittest.main()
