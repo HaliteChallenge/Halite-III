@@ -1,0 +1,165 @@
+body {
+    margin: 0;
+    padding: 0;
+
+    font-family: 'Nunito Sans', sans-serif;
+    background-color: #091B53;
+    background-image: linear-gradient(0deg, rgba(0,45,119,0) 4%, #003A99 100%), url(https://halite.io/assets/images/bg-pattern.png);
+    background-position: top;
+    background-repeat: no-repeat;
+}
+
+header#title {
+    display: flex;
+    height: 3em;
+}
+
+#title h1 {
+    margin: 0 1em 0 0;
+    flex: 0 0;
+}
+
+#title h1 img {
+    margin-top: 0.7rem;
+    margin-left: 1rem;
+    height: 2rem;
+}
+
+#title #controls {
+    display: flex;
+    flex: 1;
+    height: 100%;
+}
+
+#controls > * {
+    margin-right: 0.5em;
+}
+
+#controls button, #controls a.button {
+    height: 100%;
+}
+
+#controls .expander {
+    flex: 1;
+}
+
+main {
+    position: absolute;
+    top: 3em;
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    display: flex;
+}
+
+#banner {
+    z-index: 9990;
+    background: green;
+    color: #FFF;
+    position: absolute;
+    height: 3rem;
+    top: 3rem;
+    left: 0;
+    right: 0;
+    line-height: 3rem;
+    text-align: center;
+    font-size: 1.25em;
+    font-weight: 600;
+    display: none;
+}
+
+#banner.shown {
+    display: block;
+}
+
+#left {
+    flex: 0 0 450px;
+    display: flex;
+    flex-direction: column;
+}
+
+#visualizer {
+    width: 100%;
+    background: #000;
+    color: #FFF;
+}
+
+#console {
+    width: 450px;
+    height: 100%;
+    overflow: auto;
+    white-space: pre;
+    font-family: 'Fira Mono', monospace;
+    color: #FFF;
+    background: #000;
+}
+
+#editor {
+    flex: 1 0 20em;
+    height: 100%;
+}
+
+.blocklyText, .blocklyTreeLabel {
+    font-family: inherit !important;
+}
+
+button, a.button {
+    border: 0;
+    font: inherit;
+    font-weight: 600;
+    font-size: 18px;
+    color: #FFF;
+    background: linear-gradient(0deg, rgb(0, 115, 219) 0%, rgb(0, 68, 164) 100%);
+    padding: 0.5em 0.5em;
+    border-radius: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    box-sizing: border-box;
+    margin: 0;
+    line-height: 30px;
+}
+
+button:hover, a.button:hover {
+    background: linear-gradient(180deg, rgba(117,182,219,0) 0%, rgba(151, 221, 255, 0.2) 100%);
+}
+
+#submit-bot, #run-game {
+    background: linear-gradient(-180deg, #fad961 0%, #f76b1c 100%);
+}
+
+#saved {
+    color: #FFF;
+    line-height: 3em;
+    transition: opacity 0.2s ease-out;
+}
+
+.dialog {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    opacity: 0;
+    display: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.dialog.shown {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
+    display: block;
+}
+
+.dialog-body {
+    background: #FFF;
+    width: 60vw;
+    min-width: 50em;
+    min-height: 5em;
+    padding: 1em;
+    margin: 10vh auto 0;
+}

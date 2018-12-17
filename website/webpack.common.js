@@ -5,11 +5,14 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 // https://github.com/vuejs-templates/webpack-simple
 module.exports = {
-    entry: ['babel-polyfill', './javascript/main.js'],
+    entry: {
+        main: ['babel-polyfill', './javascript/main.js'],
+        blockly: ['babel-polyfill', './learn-programming-challenge/blockly/glitch.js'],
+    },
     output: {
         publicPath: "/assets/js/",
         path: path.resolve(__dirname, "assets/js/"),
-        filename: "bundle.js",
+        filename: "bundle-[name].js",
     },
     module: {
         noParse: /libzstd/,
