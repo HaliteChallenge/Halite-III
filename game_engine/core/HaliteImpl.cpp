@@ -472,20 +472,21 @@ bool HaliteImpl::game_ended() const {
     long num_alive_players = 0;
     for (auto &&[player_id, player] : game.store.players) {
         bool can_play = player_can_play(player);
-        if (player.can_play && !can_play) {
+        if (!player.terminated && player.can_play && !can_play) {
             Logging::log("player has insufficient resources to continue", Logging::Level::Info, player.id);
             player.can_play = false;
             // Update 'last turn alive' one last time (liveness lasts
-            // to the end of a turn)
+            // to the end of a turn in which player makes a valid move)
             auto& stats = game.game_statistics.player_statistics[player_id.value];
             stats.last_turn_alive = game.turn_number;
         }
         if (!player.terminated && can_play) {
             num_alive_players++;
         }
-        if (num_alive_players > 1) {
-            return false;
-        }
+    }
+
+    if (num_alive_players > 1) {
+        return false;
     }
     // If there is only one player in the game, then let them keep playing.
     return !(game.store.players.size() == 1 && num_alive_players == 1);
@@ -591,6 +592,7 @@ void HaliteImpl::kill_player(const Player::id_type &player_id) {
     Logging::log("Killing player", Logging::Level::Warning, player_id);
     auto &player = game.store.get_player(player_id);
     player.terminated = true;
+    player.can_play = false;
     game.networking.kill_player(player);
 
     auto &entities = player.entities;
