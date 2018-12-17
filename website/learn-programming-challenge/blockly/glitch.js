@@ -76,7 +76,7 @@ at https://halite.io, then drag-and-drop this zip file into the Play page.
 async function generateZip(workspace) {
     const { ships, shipyard } = generateBotMain(workspace);
     const main = generateStandardBot(ships, shipyard);
-    const req = await window.fetch('jskit.zip');
+    const req = await window.fetch('/assets/downloads/Halite3_JavaScript_None.zip');
     const blob = await req.blob();
     const zipFile = await JSZip.loadAsync(blob);
     zipFile.file("MyBot.js", main);
