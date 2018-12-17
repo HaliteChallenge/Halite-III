@@ -482,9 +482,10 @@ bool HaliteImpl::game_ended() const {
         if (!player.terminated && can_play) {
             num_alive_players++;
         }
-        if (num_alive_players > 1) {
-            return false;
-        }
+    }
+
+    if (num_alive_players > 1) {
+        return false;
     }
     // If there is only one player in the game, then let them keep playing.
     return !(game.store.players.size() == 1 && num_alive_players == 1);
