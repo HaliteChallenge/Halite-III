@@ -475,7 +475,7 @@ bool HaliteImpl::game_ended() const {
             Logging::log("player has insufficient resources to continue", Logging::Level::Info, player.id);
             player.can_play = false;
             // Update 'last turn alive' one last time (liveness lasts
-            // to the end of a turn)
+            // to the end of a turn in which player makes a valid move)
             auto& stats = game.game_statistics.player_statistics[player_id.value];
             stats.last_turn_alive = game.turn_number;
         }
