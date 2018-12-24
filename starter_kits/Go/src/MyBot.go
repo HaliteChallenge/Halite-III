@@ -32,7 +32,7 @@ func main() {
 	args := os.Args
 	var seed = time.Now().UnixNano() % int64(os.Getpid())
 	if len(args) > 1 {
-		seed, _ = strconv.ParseInt(args[0], 10, 64)
+		seed, _ = strconv.ParseInt(args[1], 10, 64)
 	}
 	rand.Seed(seed)
 
