@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Set the random seed
-    auto seed = seed_arg.isSet() ? seed_arg.getValue() : static_cast<unsigned int>(time(nullptr));
+    auto seed = seed_arg.isSet() ? seed_arg.getValue() : static_cast<unsigned int>(engine_start.time_since_epoch().count());
 
     // Use the seed to determine default map size
     std::mt19937 rng(seed);
