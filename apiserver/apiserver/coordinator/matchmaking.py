@@ -494,7 +494,7 @@ def find_seed_player(conn, ranked_users, seed_filter):
             model.bots.c.compile_status == model.CompileStatus.SUCCESSFUL.value
         ).order_by(model.bots.c.games_played.asc()
         ).limit(20).alias("least_played").select().order_by(
-            sqlalchemy.sql.func.rand()
+            sqlalchemy.sql.func.random()
         ).limit(1)
 
         return conn.execute(least_played).first()
