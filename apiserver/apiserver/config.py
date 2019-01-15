@@ -10,15 +10,15 @@ LAST_OPEN_GAME = None
 # In each entry the first value is number of games to start the cutoff and
 # second value is the rank cutoff to use.
 FINALS_CUTOFF_SCHEDULE = [ # For 6000 bots
-    (0, 6500),      # Everyone starts
-    (84000, 5200),  # When everyone has ~40 games
-    (102000, 4000), # 50 games
-    (116000, 2700), # 60 games, starter bots end
-    (172000, 1500), # 120 games
-    (214000, 1000), # 200 games
-    (282000, 500),  # 400 games
-    (384000, 250), # 1000 games
-    (469000, 125), # 2000 games
+    (0, 4500),      # Everyone starts
+    (55200, 3800),  # When everyone has ~40 games
+    (105900, 3000), # 80 games
+    (146100, 2100), # 120 games, starter bots end
+    (188400, 1500), # 180 games
+    (223700, 1000), # 250 games
+    (257300, 500),  # 350 games
+    (299300, 250), # 600 games
+    (349900, 150), # 1200 games
 ]
 
 # Max number of games a bot version can error out in before being

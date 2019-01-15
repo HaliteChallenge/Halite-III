@@ -33,7 +33,6 @@
       </p>
     </div>
     -->
-    <!-- Uncomment the following once a finals schedule has been put in place.
     <table style="width:100%; table-layout:fixed; padding:1em;">
         <tbody>
             <tr>
@@ -68,7 +67,7 @@
                       {{games_to_next}} games.
                     </p>
                     <p v-else>Ranks 1-{{current_cutoff}} will continue playing to the end of the finals.</p>
-                    <p>The end of finals will be on January 29th, 9:00:00AM EST.</p>
+                    <p>The end of finals will be on January 29th, 12:00:00PM EST.</p>
                 </td>
             </tr>
         </tbody>
@@ -102,7 +101,6 @@
         </tbody>
       </table>
       <p v-if="finals_pairing">* Note that the highlighted group is the next group to be removed from the competition</p>
-      -->
     </div>
   </div>
 </template>
