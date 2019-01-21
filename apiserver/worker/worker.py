@@ -248,6 +248,22 @@ def setupParticipant(user_index, user, temp_dir):
     # group
     give_ownership(bot_dir, bot_group, 0o2770)
 
+    # For Julia bots, they -must- be precompiled before each game, as
+    # Julia's cache file stores absolute paths to source directories.
+    with open(os.path.join(bot_dir, "run.sh")) as lang_file:
+        lang = lang_file.readline().strip().lower()
+        if lang == "#julia":
+            for command in compiler.comp_args["Julia"]:
+                cmd = COMPILE_COMMAND.format(
+                    cgroup=bot_cgroup,
+                    bot_dir=bot_dir,
+                    bot_group=bot_group,
+                    bot_user=bot_user,
+                    command="JULIA_DEPOT_PATH=\$(pwd) julia --project -e 'try using Halite3 catch end'",
+                )
+                print("Precompiling Julia:", cmd)
+                subprocess.run(cmd, cwd=bot_dir, shell=True)
+
     bot_command = BOT_COMMAND.format(
         cgroup=bot_cgroup,
         bot_dir=bot_dir,
