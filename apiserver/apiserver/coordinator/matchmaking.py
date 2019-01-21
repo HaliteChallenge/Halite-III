@@ -474,6 +474,7 @@ def find_seed_player(conn, ranked_users, seed_filter):
             model.ranked_bots_users.c.mu,
             model.ranked_bots_users.c.num_submissions.label("version_number"),
             model.teams.c.name.label("team_name"),
+            model.bots.c.games_played,
         ]).select_from(
             model.ranked_bots_users.join(
                 # This join should have no effect on the result but it makes
@@ -493,8 +494,36 @@ def find_seed_player(conn, ranked_users, seed_filter):
         ).where(
             model.bots.c.compile_status == model.CompileStatus.SUCCESSFUL.value
         ).order_by(model.bots.c.games_played.asc()
-        ).limit(20).alias("least_played").select().order_by(
-            sqlalchemy.sql.func.random()
-        ).limit(1)
+        ).limit(20)
 
-        return conn.execute(least_played).first()
+        candidates = conn.execute(least_played).fetchall()
+        num_candidates = len(candidates)
+        if num_candidates == 0:
+            # should only happen if there are no bots eligible to play on the
+            # requesting worker
+            raise Exception("Did not find any candidate bots for seed.")
+        elif num_candidates == 1:
+            # Not just an obvious shortcut but also used to guard against
+            # division by zero below
+            return candidates[0]
+
+        max_games = max(c["games_played"] for c in candidates)
+        min_games = min(c["games_played"] for c in candidates)
+        # Weight candidates by number of games played but only allow a bot
+        # a 2 / (n+1) chance to be chosen in the limit.
+        # e.g. 9.5% with 20 candidates and 66.7% with 2
+        max_share = 2 / (num_candidates + 1)
+        min_weight = (1 - max_share) / (num_candidates - 1)
+        game_weight = (max_share - min_weight) / ((max_games + 1) - min_games)
+        weights = [min_weight + ((max_games - c["games_played"]) * game_weight)
+                    for c in candidates]
+        stop = random.uniform(0, sum(weights))
+        sub = 0
+        for ix, weight in enumerate(weights):
+            sub += weight
+            if sub >= stop:
+                return candidates[ix]
+
+        # Should never reach this point
+        raise Exception("Did not find seed with finals seeding method.")
+
