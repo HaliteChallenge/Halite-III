@@ -85,6 +85,6 @@ You can replay games with the exact same map to debug or tweak bot behavior. To 
 
 </div>
 
-<div class="build-a-bot text-center">
+<!-- <div class="build-a-bot text-center">
   <a href="/editor" class="btn btn-primary">Build a bot</a>
-</div>
+</div> -->

@@ -52,6 +52,6 @@ The Two Sigma and Halite team reserves the right to make changes on game rules d
 
 </div>
 
-<div class="build-a-bot text-center">
+<!-- <div class="build-a-bot text-center">
   <a href="/learn-programming-challenge/tutorials" class="btn btn-primary">Build a bot</a>
-</div>
+</div> -->
