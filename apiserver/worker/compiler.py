@@ -375,7 +375,7 @@ comp_args = {
         ["jar", "cfe", BOT + ".jar", BOT],
     ],
     "Julia": [
-        ["JULIA_DEPOT_PATH=\$(pwd) julia -e 'using Pkg; Pkg.activate(\\\".\\\"); Pkg.instantiate(); Pkg.API.precompile(); try using Halite3 catch end'"],
+        ["JULIA_DEPOT_PATH=\$(pwd) julia --project -e 'using Pkg; Pkg.activate(\\\".\\\"); Pkg.instantiate(); Pkg.API.precompile(); try using Halite3 catch end'"],
     ],
     "Kotlin": [
         ["kotlinc", "-include-runtime", "-d", BOT + ".jar"],
