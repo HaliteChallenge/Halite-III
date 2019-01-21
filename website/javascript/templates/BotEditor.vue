@@ -1,7 +1,10 @@
 <template>
   <div v-if="needs_login" class="body needs-login">
-    <p>You must be logged in to use the editor.</p>
-    <a :href="login_url">Log In</a>
+    <br>
+    <p>With the end of the Halite III regular season, the code editor and tutorials are no longer available.</p>
+    <p>If you'd like to play Halite III, please head to <a href="/learn-programming-challenge/downloads">Downloads</a> to download offline Halite tools.</p>
+ <!-- <p>You must be logged in to use the editor.</p>
+    <a :href="login_url">Log In</a> -->
   </div>
   <div class="body" v-else>
     <div class="container-fluid h-100 page_container">
