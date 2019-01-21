@@ -1,22 +1,18 @@
 <template>
   <div class="play-container">
-    <div class="container-fluid" v-if="currentView == 'upload'">
-    <!--  <h1 class="page-heading">Play Halite III</h1> -->
-      <div class="doc-section doc-section-play text-center">
+    <div class="container-fluid"> <!-- v-if="currentView == 'upload'"> -->
+   <!--   <div class="doc-section doc-section-play text-center">
         <p><img src="/assets/images/icon-flag.svg" width="30" alt="flag"></p>
         <h2 class="mt3">PLAY HALITE III</h2>
         <p>Halite III bots can be developed locally or in a web-based editor. Submit your bot via one of the below options to participate in Halite III.</p>
         <br>
         <div class="col-sm-6">
-        <!--  <div class="doc-section doc-section-play text-center"> -->
             <h4 class="mt3">WEB-BASED DEVELOPMENT</h4>
             <p>Create, replay, and submit a Python, Java, or C++ bot via the web-based editor.</p>
             <br>
             <a class="btn btn-primary" href="/editor">Go to Editor</a>
-          <!-- </div> -->
         </div>
         <div class="col-sm-6">
-          <!--<div class="doc-section doc-section-play text-center"> -->
             <h4 class="mt3">LOCAL DEVELOPMENT</h4>
             <p>Or, <a href="/learn-programming-challenge/downloads">download</a> the game environment and starter kit bundle for your platform and language of choice.</p>
             <p>To submit your local Halite bot to the competition, upload a .zip file here. In general, the root of your zip should contain a <i>MyBot.{extension}</i> file and the <i>hlt</i> folder from the starter kit, which is sufficient for Python and Java. Some languages may require additional files, such as <i>CMakeLists.txt</i> for C++ and <i>Cargo.toml</i> for Rust. A single top level directory in the archive that contains all the above is supported as well.</p>
@@ -30,9 +26,8 @@
               :progress="uploadProgress"
               :message="uploadMessage">
               </halite-upload-zone>
-         <!-- </div> -->
         </div>
-      </div>
+      </div> -->
       <div class="doc-section doc-section-play" style="text-align:left" id="competition-rules">
         <h2 class="mt3" style="text-align: center">COMPETITION RULES</h2>
         <p>
@@ -73,10 +68,10 @@
         <br/>
       </div>
     </div>
-    <div id="halite-uploaded-bot" v-if="currentView=='botUpload'">
+    <!-- <div id="halite-uploaded-bot" v-if="currentView=='botUpload'">
       <bot-upload ref="botUploadComponent" :user="user" :bot-file="botFile" :bots-list="botsList"  v-if="currentView='botUpload'"
       :showMessage="showMessage"></bot-upload>
-    </div>
+    </div> -->
 
   </div>
 </template>
