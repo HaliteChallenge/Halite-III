@@ -57,6 +57,14 @@ RUNFILE = "run.sh"
 # not overwrite files. The worker image has a built-in iptables rule denying
 # network access to this user as well.
 BOT_COMMAND = "cgexec -g cpu,memory,devices,cpuset:{cgroup} sudo -Hiu {bot_user} bash -c 'cd \"{bot_dir}\" && ./{runfile}'"
+# Commands for Julia precompilation (see below)
+COMPILE_COMMAND = "cgexec -g cpu,memory,devices,cpuset:{cgroup} sudo -Hiu {bot_user} bash -c \"cd \\\"{bot_dir}\\\" && {command}\""
+JULIA_PRECOMPILE_COMMANDS = [
+    # Must remove this if it exists, Julia doesn't expect us to change
+    # permissions on it
+    "rm -f {bot_dir}/logs/manifest_usage.toml",
+    "JULIA_DEPOT_PATH=\$(pwd) julia --project -e 'using Pkg; eval(:(using \\$(Symbol(Pkg.API.Context().env.project[\\\"name\\\"]))))'",
+]
 
 
 COMPILE_ERROR_MESSAGE = """
@@ -247,6 +255,22 @@ def setupParticipant(user_index, user, temp_dir):
     # is equivalent to g+s which forces new files to be owned by the
     # group
     give_ownership(bot_dir, bot_group, 0o2770)
+
+    # For Julia bots, they -must- be precompiled before each game, as
+    # Julia's cache file stores absolute paths to source directories.
+    with open(os.path.join(bot_dir, "run.sh")) as lang_file:
+        lang = lang_file.readline().strip().lower()
+        if lang == "#julia":
+            for command in JULIA_PRECOMPILE_COMMANDS:
+                cmd = COMPILE_COMMAND.format(
+                    cgroup=bot_cgroup,
+                    bot_dir=bot_dir,
+                    bot_group=bot_group,
+                    bot_user=bot_user,
+                    command=command.format(bot_dir=bot_dir),
+                )
+                print("Precompiling Julia:", cmd)
+                subprocess.run(cmd, cwd=bot_dir, shell=True)
 
     bot_command = BOT_COMMAND.format(
         cgroup=bot_cgroup,
