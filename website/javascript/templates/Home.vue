@@ -82,10 +82,9 @@
         </div>
         <div class="row section-overview">
             <div class="col-md-12" style="width:66.66%;margin:auto;text-align:center;">
-                <h2>How to Play</h2>
-                <p>The Halite III challenge runs through January 22, 2019.</p>
-                <p>You can build a bot in your preferred programming language, via our online code editor or locally. Create your own bot or play on a team to join in the challenge. Your bot will play thousands of games on the Halite servers against bots from around the world.</p>
-                <p>Last year, over 6,000 participants from over 100 countries built Halite II bots in 20+ programming languages.</p>
+                <h2>Finals run through January 29</h2>
+                <p>The Halite III challenge submission period has closed. Thank you to the thousands of participants from over 100 countries who built a Halite bot in one of more than 20 programming languages. The Halite servers ran more than 4 million games over the course of the regular season.</p>
+                <p>The finals period runs through January 29, 2019. Stay tuned for the results!</p>
                 <br>
                 <a class="btn btn-primary btn-sm" href="/play-programming-challenge" style="color:#fff;background-image:linear-gradient(0deg, #0073DB 0%, #0044A4 100%);">Learn more</a>
             </div>

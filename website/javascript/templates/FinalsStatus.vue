@@ -1,29 +1,35 @@
 <template>
   <div class="finals-status">
     <div v-if="submissions_open" style="text-align: center; padding: 1em;">
-        <p>Finals will start on January 22nd at 11:59:59PM EST.<br>
-          You can see a countdown clock <a href="https://www.timeanddate.com/countdown/generic?iso=20190122T235959&p0=179&msg=Halite+3+Finals+Begin&font=sanserif&csz=1">here</a>.
+        <h2>FINALS SCHEDULE</h2>
+        <br>
+        <p>Halite finals run for just under one week, from January 22, 11:59:59PM ("midnight") EST to January 29, 11:59:59AM ("noon") EST. The games played during the finals period will determine the final rankings, and thus the winner, of the Halite III competition.
         </p>
-        <p>We will then take some time to reset all bots, during which no matches will be made.
+        <p>Bot submission is closed during the finals period. Shortly after finals begin, all matchmaking will be paused and all bot ranks reset.
         </p>
-        <p>Once all is ready, we will reinstitute matchmaking for all bots in the competition,<br>
-          and then systematically remove the lowest ranking bots in groups until only the top {{cutoff_schedule[0].end_rank}} are left.<br>
-          The top {{cutoff_schedule[0].end_rank}} bots will play for the most games to determine high quality ratings and will play to the end.
+        <p>
+        Once bot ranks have been reset, finals matchmaking for all bots in the competition will begin. Over the course of the finals period, the lowest ranking bots will be systematically removed, according to the below games schedule.
         </p>
+        <p>The final {{cutoff_schedule[0].end_rank}} remaining bots will play until the close of the finals period, to determine high-confidence final rankings.
+        </p>
+        <br>
     </div>
     <div v-else style="text-align: center; padding: 1em;">
-        <p>Finals began on January 22nd, 11:59:59PM EST.</p>
+        <h2>FINALS STATUS</h2>
         <template v-if="!finals_pairing">
-          <p> We are resetting all bots' rankings to zero, during which time no matches will be made.
+          <p> We are resetting all bot rankings to zero, during which time no matches will be made.
           </p>
-          <p>Once all is ready, we will reinstitute matchmaking for all bots in the competition,<br>
-            and then systematically remove the lowest ranking bots in groups until only the top {{cutoff_schedule[0].end_rank}} are left.<br>
-            The top {{cutoff_schedule[0].end_rank}} bots will play for the most games to determine high quality ratings and will play to the end.
+          <p>Once bot ranks have been reset, finals matchmaking for all bots in the competition will begin. Over the course of the finals period, the lowest ranking bots will be systematically removed, according to the below games schedule.
+        </p>
+        <p>The final {{cutoff_schedule[0].end_rank}} remaining bots will play until the close of the finals period, to determine high-confidence final rankings.
+        </p>
           </p>
         </template>
         <template v-else>
-          <p>Currently, bots are playing games and we are systematically removing the lowest ranking bots in groups until only the top {{cutoff_schedule[0].end_rank}} are left.<br>
-            The top {{cutoff_schedule[0].end_rank}} bots will play for the most games to determine high quality ratings and will play to the end.
+          <h2>Finals run through January 29, noon EST</h2>
+        </p>
+          <p>Currently, bots are playing finals games. Over the course of the finals period, the lowest ranking bots will be systematically removed from play, according to the below games schedule.<br>
+          The final {{cutoff_schedule[0].end_rank}} remaining bots will play until the close of the finals period, to determine high-confidence final rankings.
           </p>
         </template>
     </div>
@@ -67,30 +73,32 @@
                       {{games_to_next}} games.
                     </p>
                     <p v-else>Ranks 1-{{current_cutoff}} will continue playing to the end of the finals.</p>
-                    <p>The end of finals will be on January 29th, 12:00:00PM EST.</p>
+                    <p>Finals end January 29th, 11:59:59AM EST.</p>
                 </td>
             </tr>
         </tbody>
     </table>
 
     <div v-if="cutoff_schedule">
-      <h2>Cutoff Schedule</h2>
-      <table class="table table-leader">
+      <br>
+      <br>
+      <h2 style="text-align:center;">CUTOFF SCHEDULE</h2>
+      <table class="table" style="width:60%;margin-left:auto; margin-right:auto;">
         <thead>
           <tr>
-            <th>Is Playing Currently?</th>
             <th>Rank Range</th>
+            <th>Playing Currently?</th>
             <th>Number of Games Before Cutoff</th>
             <th v-if="last_open_game">Last Eligible Game ID</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for='cutoff in cutoff_schedule' :key="cutoff" v-bind:class="{'hl': finals_pairing && cutoff.end_rank == current_cutoff}">
+            <td>{{cutoff.start_rank}}-{{cutoff.end_rank}}</td>
             <td>
               <template v-if="cutoff.end_rank <= current_cutoff">Yes</template>
               <template v-else>No</template>
             </td>
-            <td>{{cutoff.start_rank}}-{{cutoff.end_rank}}</td>
             <td>{{cutoff.end_game || "Plays to end"}}</td>
             <td v-if="last_open_game">
               <template v-if="cutoff.end_game">
@@ -180,3 +188,65 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .finals-status {
+    padding: 40px 15px 15px 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    background-image: url("/assets/images/doc-bg.png");
+    background-position: top center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    color: #52678D;
+    .sub-title{
+      font-size: 20px;
+      font-weight: 600;
+      color: #414141;
+    }
+    h2{
+      font-size: 24px;
+      font-weight: 600;
+      color: #033C89;
+    }
+    h3{
+      font-size: 20px;
+      font-weight: 600;
+      color: #292929;
+      text-transform: none;
+      line-height: 1.3em;
+    }
+  }
+
+.table {
+  > thead{
+    > tr{
+      background: #f1f3f7;
+      > th, >td{
+        padding: 12px 7px;
+        font-size: 12px;
+        color: #343434;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+    }
+  }
+  > tbody{
+    > tr{
+      > td{
+        border-bottom: 1px solid #DBDDDF;
+        padding: 12px 7px;
+        font-size: 14px;
+        a{
+          font-weight: 600;
+          color: #033C89;
+        }
+      }
+    }
+  }
+}
+
+
+</style>
