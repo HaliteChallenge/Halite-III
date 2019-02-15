@@ -9,7 +9,6 @@ import UserProfile from './templates/UserProfile.vue'
 import VisualizerContainer from './templates/VisualizerContainer.vue'
 import Home from './templates/Home.vue'
 import Play from './templates/Play.vue'
-import Settings from './templates/Settings.vue'
 import View404 from './templates/404.vue'
 import ProfileImage from './templates/ProfileImage.vue'
 
@@ -76,29 +75,12 @@ window.views = {
       render: (h) => h(Play, { props: { baseUrl: _global.baseUrl } })
     })
   },
-  Settings: function () {
-    new Vue({
-      el: '#settings-container',
-      render: (h) => h(Settings, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
   View404: function () {
     new Vue({
       el: '#view404-container',
       render: (h) => h(View404, { props: { baseUrl: _global.baseUrl } })
     })
   },
-  CodeTutorial: function () {
-    new Vue({
-      el: '#code-tutorial-container',
-      render: (h) => h(CodeTutorial, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-  NextTutorial: function () {
-    new Vue({
-      el: '#code-tutorial-container',
-      render: (h) => h(NextTutorial, { props: { baseUrl: _global.baseUrl } })
-    })
   },
 }
 
