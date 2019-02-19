@@ -81,8 +81,7 @@ window.views = {
       render: (h) => h(View404, { props: { baseUrl: _global.baseUrl } })
     })
   },
-  },
-}
+};
 
 window.mobileAndTabletcheck = function() {
   var check = false;
