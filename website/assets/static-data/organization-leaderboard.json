@@ -1,0 +1,4602 @@
+[
+  {
+    "num_players": 56, 
+    "organization_id": 1, 
+    "organization_kind": "Company", 
+    "organization_name": "Two Sigma", 
+    "organization_rank": 1, 
+    "tier": "Diamond", 
+    "weekly_games_played": 1449967, 
+    "weekly_games_won": 546677
+  }, 
+  {
+    "num_players": 39, 
+    "organization_id": 9899, 
+    "organization_kind": "High School", 
+    "organization_name": "The Westminster Schools", 
+    "organization_rank": 2, 
+    "tier": "Diamond", 
+    "weekly_games_played": 211606, 
+    "weekly_games_won": 75944
+  }, 
+  {
+    "num_players": 72, 
+    "organization_id": 9546, 
+    "organization_kind": "High School", 
+    "organization_name": "Math and Science Academy", 
+    "organization_rank": 3, 
+    "tier": "Diamond", 
+    "weekly_games_played": 226580, 
+    "weekly_games_won": 75196
+  }, 
+  {
+    "num_players": 46, 
+    "organization_id": 2143, 
+    "organization_kind": "University", 
+    "organization_name": "University of Waterloo", 
+    "organization_rank": 4, 
+    "tier": "Diamond", 
+    "weekly_games_played": 175245, 
+    "weekly_games_won": 56805
+  }, 
+  {
+    "num_players": 13, 
+    "organization_id": 9321, 
+    "organization_kind": "Company", 
+    "organization_name": "Citi", 
+    "organization_rank": 5, 
+    "tier": "Diamond", 
+    "weekly_games_played": 154357, 
+    "weekly_games_won": 52377
+  }, 
+  {
+    "num_players": 16, 
+    "organization_id": 9310, 
+    "organization_kind": "Company", 
+    "organization_name": "Allstate", 
+    "organization_rank": 6, 
+    "tier": "Platinum", 
+    "weekly_games_played": 132348, 
+    "weekly_games_won": 46500
+  }, 
+  {
+    "num_players": 25, 
+    "organization_id": 9348, 
+    "organization_kind": "Company", 
+    "organization_name": "Canopy", 
+    "organization_rank": 7, 
+    "tier": "Platinum", 
+    "weekly_games_played": 95648, 
+    "weekly_games_won": 30823
+  }, 
+  {
+    "num_players": 30, 
+    "organization_id": 931, 
+    "organization_kind": "University", 
+    "organization_name": "University of Chicago", 
+    "organization_rank": 8, 
+    "tier": "Platinum", 
+    "weekly_games_played": 76702, 
+    "weekly_games_won": 26516
+  }, 
+  {
+    "num_players": 15, 
+    "organization_id": 9349, 
+    "organization_kind": "Company", 
+    "organization_name": "Google", 
+    "organization_rank": 9, 
+    "tier": "Platinum", 
+    "weekly_games_played": 75308, 
+    "weekly_games_won": 25610
+  }, 
+  {
+    "num_players": 48, 
+    "organization_id": 376, 
+    "organization_kind": "University", 
+    "organization_name": "Georgia Institute of Technology", 
+    "organization_rank": 10, 
+    "tier": "Platinum", 
+    "weekly_games_played": 74031, 
+    "weekly_games_won": 23510
+  }, 
+  {
+    "num_players": 23, 
+    "organization_id": 538, 
+    "organization_kind": "University", 
+    "organization_name": "Massachusetts Institute of Technology", 
+    "organization_rank": 11, 
+    "tier": "Platinum", 
+    "weekly_games_played": 57619, 
+    "weekly_games_won": 22797
+  }, 
+  {
+    "num_players": 14, 
+    "organization_id": 9363, 
+    "organization_kind": "Company", 
+    "organization_name": "John Deere", 
+    "organization_rank": 12, 
+    "tier": "Platinum", 
+    "weekly_games_played": 65942, 
+    "weekly_games_won": 22129
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9401, 
+    "organization_kind": "Company", 
+    "organization_name": "Ubisoft", 
+    "organization_rank": 13, 
+    "tier": "Platinum", 
+    "weekly_games_played": 49349, 
+    "weekly_games_won": 21956
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9406, 
+    "organization_kind": "Company", 
+    "organization_name": "Wartsila", 
+    "organization_rank": 14, 
+    "tier": "Platinum", 
+    "weekly_games_played": 56017, 
+    "weekly_games_won": 19944
+  }, 
+  {
+    "num_players": 24, 
+    "organization_id": 281, 
+    "organization_kind": "University", 
+    "organization_name": "Cornell University", 
+    "organization_rank": 15, 
+    "tier": "Platinum", 
+    "weekly_games_played": 57795, 
+    "weekly_games_won": 19306
+  }, 
+  {
+    "num_players": 24, 
+    "organization_id": 716, 
+    "organization_kind": "University", 
+    "organization_name": "Rice University", 
+    "organization_rank": 16, 
+    "tier": "Platinum", 
+    "weekly_games_played": 55751, 
+    "weekly_games_won": 18639
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 9701, 
+    "organization_kind": "High School", 
+    "organization_name": "Instituto Industrial Luis A. Huergo", 
+    "organization_rank": 17, 
+    "tier": "Platinum", 
+    "weekly_games_played": 56297, 
+    "weekly_games_won": 18014
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 9391, 
+    "organization_kind": "Company", 
+    "organization_name": "Goldman Sachs", 
+    "organization_rank": 18, 
+    "tier": "Platinum", 
+    "weekly_games_played": 53295, 
+    "weekly_games_won": 16756
+  }, 
+  {
+    "num_players": 37, 
+    "organization_id": 9324, 
+    "organization_kind": "High School", 
+    "organization_name": "Brooklyn Technical High School", 
+    "organization_rank": 19, 
+    "tier": "Platinum", 
+    "weekly_games_played": 46494, 
+    "weekly_games_won": 16431
+  }, 
+  {
+    "num_players": 50, 
+    "organization_id": 8160, 
+    "organization_kind": "University", 
+    "organization_name": "University of Oxford", 
+    "organization_rank": 20, 
+    "tier": "Platinum", 
+    "weekly_games_played": 43647, 
+    "weekly_games_won": 16255
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9361, 
+    "organization_kind": "Company", 
+    "organization_name": "NASA", 
+    "organization_rank": 21, 
+    "tier": "Platinum", 
+    "weekly_games_played": 47447, 
+    "weekly_games_won": 15898
+  }, 
+  {
+    "num_players": 23, 
+    "organization_id": 9623, 
+    "organization_kind": "High School", 
+    "organization_name": "Maggie L. Walker Governor's School", 
+    "organization_rank": 22, 
+    "tier": "Platinum", 
+    "weekly_games_played": 49794, 
+    "weekly_games_won": 15578
+  }, 
+  {
+    "num_players": 13, 
+    "organization_id": 9895, 
+    "organization_kind": "Company", 
+    "organization_name": "IAV GmbH", 
+    "organization_rank": 23, 
+    "tier": "Platinum", 
+    "weekly_games_played": 49047, 
+    "weekly_games_won": 15421
+  }, 
+  {
+    "num_players": 15, 
+    "organization_id": 9425, 
+    "organization_kind": "Company", 
+    "organization_name": "Pillar Technology", 
+    "organization_rank": 24, 
+    "tier": "Platinum", 
+    "weekly_games_played": 42814, 
+    "weekly_games_won": 14659
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9575, 
+    "organization_kind": "Company", 
+    "organization_name": "PythonProgramming.net", 
+    "organization_rank": 25, 
+    "tier": "Platinum", 
+    "weekly_games_played": 42955, 
+    "weekly_games_won": 14289
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 1392, 
+    "organization_kind": "University", 
+    "organization_name": "Australian National University", 
+    "organization_rank": 26, 
+    "tier": "Platinum", 
+    "weekly_games_played": 43426, 
+    "weekly_games_won": 13894
+  }, 
+  {
+    "num_players": 21, 
+    "organization_id": 6056, 
+    "organization_kind": "University", 
+    "organization_name": "Eindhoven University of Technology", 
+    "organization_rank": 27, 
+    "tier": "Platinum", 
+    "weekly_games_played": 40870, 
+    "weekly_games_won": 13702
+  }, 
+  {
+    "num_players": 11, 
+    "organization_id": 9916, 
+    "organization_kind": "University", 
+    "organization_name": "L'\u00e9cole 19", 
+    "organization_rank": 28, 
+    "tier": "Platinum", 
+    "weekly_games_played": 39043, 
+    "weekly_games_won": 13478
+  }, 
+  {
+    "num_players": 13, 
+    "organization_id": 407, 
+    "organization_kind": "University", 
+    "organization_name": "Harvey Mudd College", 
+    "organization_rank": 29, 
+    "tier": "Gold", 
+    "weekly_games_played": 42099, 
+    "weekly_games_won": 13336
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 7303, 
+    "organization_kind": "University", 
+    "organization_name": "National University of Singapore", 
+    "organization_rank": 30, 
+    "tier": "Gold", 
+    "weekly_games_played": 37313, 
+    "weekly_games_won": 13258
+  }, 
+  {
+    "num_players": 26, 
+    "organization_id": 270, 
+    "organization_kind": "University", 
+    "organization_name": "Columbia University", 
+    "organization_rank": 31, 
+    "tier": "Gold", 
+    "weekly_games_played": 37621, 
+    "weekly_games_won": 12887
+  }, 
+  {
+    "num_players": 28, 
+    "organization_id": 391, 
+    "organization_kind": "University", 
+    "organization_name": "Grand Valley State University", 
+    "organization_rank": 32, 
+    "tier": "Gold", 
+    "weekly_games_played": 34219, 
+    "weekly_games_won": 12671
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 4587, 
+    "organization_kind": "University", 
+    "organization_name": "Ben-Gurion University of the Negev", 
+    "organization_rank": 33, 
+    "tier": "Gold", 
+    "weekly_games_played": 35006, 
+    "weekly_games_won": 12631
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9742, 
+    "organization_kind": "Company", 
+    "organization_name": "Green Frontiers", 
+    "organization_rank": 34, 
+    "tier": "Gold", 
+    "weekly_games_played": 38218, 
+    "weekly_games_won": 12496
+  }, 
+  {
+    "num_players": 9, 
+    "organization_id": 1022, 
+    "organization_kind": "University", 
+    "organization_name": "University of Pennsylvania", 
+    "organization_rank": 35, 
+    "tier": "Gold", 
+    "weekly_games_played": 37031, 
+    "weekly_games_won": 12325
+  }, 
+  {
+    "num_players": 10, 
+    "organization_id": 6227, 
+    "organization_kind": "University", 
+    "organization_name": "Norwegian University of Science and Technology", 
+    "organization_rank": 36, 
+    "tier": "Gold", 
+    "weekly_games_played": 38819, 
+    "weekly_games_won": 12234
+  }, 
+  {
+    "num_players": 25, 
+    "organization_id": 9865, 
+    "organization_kind": "High School", 
+    "organization_name": "John Fraser Secondary School", 
+    "organization_rank": 37, 
+    "tier": "Gold", 
+    "weekly_games_played": 37931, 
+    "weekly_games_won": 12188
+  }, 
+  {
+    "num_players": 14, 
+    "organization_id": 9547, 
+    "organization_kind": "High School", 
+    "organization_name": "Reading School, U.K", 
+    "organization_rank": 38, 
+    "tier": "Gold", 
+    "weekly_games_played": 37056, 
+    "weekly_games_won": 12131
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9847, 
+    "organization_kind": "Company", 
+    "organization_name": "Granicus", 
+    "organization_rank": 39, 
+    "tier": "Gold", 
+    "weekly_games_played": 34372, 
+    "weekly_games_won": 11698
+  }, 
+  {
+    "num_players": 12, 
+    "organization_id": 6833, 
+    "organization_kind": "University", 
+    "organization_name": "University Politehnica of Bucharest", 
+    "organization_rank": 40, 
+    "tier": "Gold", 
+    "weekly_games_played": 34023, 
+    "weekly_games_won": 11596
+  }, 
+  {
+    "num_players": 11, 
+    "organization_id": 9881, 
+    "organization_kind": "Company", 
+    "organization_name": "Imagination Technologies", 
+    "organization_rank": 41, 
+    "tier": "Gold", 
+    "weekly_games_played": 34401, 
+    "weekly_games_won": 11433
+  }, 
+  {
+    "num_players": 13, 
+    "organization_id": 203, 
+    "organization_kind": "University", 
+    "organization_name": "Carnegie Mellon University", 
+    "organization_rank": 42, 
+    "tier": "Gold", 
+    "weekly_games_played": 33416, 
+    "weekly_games_won": 11169
+  }, 
+  {
+    "num_players": 19, 
+    "organization_id": 406, 
+    "organization_kind": "University", 
+    "organization_name": "Harvard University", 
+    "organization_rank": 43, 
+    "tier": "Gold", 
+    "weekly_games_played": 32177, 
+    "weekly_games_won": 10966
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9465, 
+    "organization_kind": "Company", 
+    "organization_name": "Oshkosh", 
+    "organization_rank": 44, 
+    "tier": "Gold", 
+    "weekly_games_played": 31303, 
+    "weekly_games_won": 10518
+  }, 
+  {
+    "num_players": 9, 
+    "organization_id": 9368, 
+    "organization_kind": "Company", 
+    "organization_name": "Workiva", 
+    "organization_rank": 45, 
+    "tier": "Gold", 
+    "weekly_games_played": 33142, 
+    "weekly_games_won": 10502
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9805, 
+    "organization_kind": "Company", 
+    "organization_name": "Cyclica", 
+    "organization_rank": 46, 
+    "tier": "Gold", 
+    "weekly_games_played": 30121, 
+    "weekly_games_won": 10490
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 264, 
+    "organization_kind": "University", 
+    "organization_name": "Colorado State University", 
+    "organization_rank": 47, 
+    "tier": "Gold", 
+    "weekly_games_played": 31237, 
+    "weekly_games_won": 10458
+  }, 
+  {
+    "num_players": 26, 
+    "organization_id": 957, 
+    "organization_kind": "University", 
+    "organization_name": "University of Illinois at UC", 
+    "organization_rank": 48, 
+    "tier": "Gold", 
+    "weekly_games_played": 32180, 
+    "weekly_games_won": 10286
+  }, 
+  {
+    "num_players": 9, 
+    "organization_id": 1128, 
+    "organization_kind": "University", 
+    "organization_name": "Washington University, Saint Louis", 
+    "organization_rank": 49, 
+    "tier": "Gold", 
+    "weekly_games_played": 28939, 
+    "weekly_games_won": 9503
+  }, 
+  {
+    "num_players": 11, 
+    "organization_id": 820, 
+    "organization_kind": "University", 
+    "organization_name": "State University of New York at Stony Brook", 
+    "organization_rank": 50, 
+    "tier": "Gold", 
+    "weekly_games_played": 30511, 
+    "weekly_games_won": 9421
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9495, 
+    "organization_kind": "Company", 
+    "organization_name": "CWI", 
+    "organization_rank": 51, 
+    "tier": "Gold", 
+    "weekly_games_played": 27585, 
+    "weekly_games_won": 9412
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9343, 
+    "organization_kind": "Company", 
+    "organization_name": "Cape", 
+    "organization_rank": 52, 
+    "tier": "Gold", 
+    "weekly_games_played": 28159, 
+    "weekly_games_won": 9348
+  }, 
+  {
+    "num_players": 9, 
+    "organization_id": 9578, 
+    "organization_kind": "High School", 
+    "organization_name": "Scarsdale High School", 
+    "organization_rank": 53, 
+    "tier": "Gold", 
+    "weekly_games_played": 25401, 
+    "weekly_games_won": 9264
+  }, 
+  {
+    "num_players": 8, 
+    "organization_id": 861, 
+    "organization_kind": "University", 
+    "organization_name": "Texas A&M University - College Station", 
+    "organization_rank": 54, 
+    "tier": "Gold", 
+    "weekly_games_played": 26770, 
+    "weekly_games_won": 8994
+  }, 
+  {
+    "num_players": 8, 
+    "organization_id": 2841, 
+    "organization_kind": "University", 
+    "organization_name": "IT University of Copenhagen", 
+    "organization_rank": 55, 
+    "tier": "Gold", 
+    "weekly_games_played": 24227, 
+    "weekly_games_won": 8614
+  }, 
+  {
+    "num_players": 12, 
+    "organization_id": 2110, 
+    "organization_kind": "University", 
+    "organization_name": "Universit\u00e9 Laval", 
+    "organization_rank": 56, 
+    "tier": "Gold", 
+    "weekly_games_played": 24862, 
+    "weekly_games_won": 8573
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 9516, 
+    "organization_kind": "Company", 
+    "organization_name": "IBM", 
+    "organization_rank": 57, 
+    "tier": "Gold", 
+    "weekly_games_played": 24873, 
+    "weekly_games_won": 8484
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9626, 
+    "organization_kind": "High School", 
+    "organization_name": "Burnaby North Secondary", 
+    "organization_rank": 58, 
+    "tier": "Gold", 
+    "weekly_games_played": 25469, 
+    "weekly_games_won": 8337
+  }, 
+  {
+    "num_players": 17, 
+    "organization_id": 917, 
+    "organization_kind": "University", 
+    "organization_name": "University of California, Berkeley", 
+    "organization_rank": 59, 
+    "tier": "Gold", 
+    "weekly_games_played": 24286, 
+    "weekly_games_won": 8095
+  }, 
+  {
+    "num_players": 8, 
+    "organization_id": 1074, 
+    "organization_kind": "University", 
+    "organization_name": "University of Virginia, Charlottesville", 
+    "organization_rank": 60, 
+    "tier": "Gold", 
+    "weekly_games_played": 24568, 
+    "weekly_games_won": 8087
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 4663, 
+    "organization_kind": "University", 
+    "organization_name": "University of Naples Federico II", 
+    "organization_rank": 61, 
+    "tier": "Gold", 
+    "weekly_games_played": 25113, 
+    "weekly_games_won": 8050
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9890, 
+    "organization_kind": "Company", 
+    "organization_name": "Paradox Interactive", 
+    "organization_rank": 62, 
+    "tier": "Gold", 
+    "weekly_games_played": 21661, 
+    "weekly_games_won": 8040
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 8087, 
+    "organization_kind": "University", 
+    "organization_name": "University of Cambridge", 
+    "organization_rank": 63, 
+    "tier": "Gold", 
+    "weekly_games_played": 24900, 
+    "weekly_games_won": 7927
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 6060, 
+    "organization_kind": "University", 
+    "organization_name": "Utrecht University", 
+    "organization_rank": 64, 
+    "tier": "Gold", 
+    "weekly_games_played": 23585, 
+    "weekly_games_won": 7781
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9586, 
+    "organization_kind": "Company", 
+    "organization_name": "Warner Brothers Games", 
+    "organization_rank": 65, 
+    "tier": "Gold", 
+    "weekly_games_played": 22208, 
+    "weekly_games_won": 7718
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 713, 
+    "organization_kind": "University", 
+    "organization_name": "Rensselaer Polytechnic Institute", 
+    "organization_rank": 66, 
+    "tier": "Gold", 
+    "weekly_games_played": 23138, 
+    "weekly_games_won": 7685
+  }, 
+  {
+    "num_players": 13, 
+    "organization_id": 9908, 
+    "organization_kind": "High School", 
+    "organization_name": "", 
+    "organization_rank": 67, 
+    "tier": "Gold", 
+    "weekly_games_played": 21213, 
+    "weekly_games_won": 7520
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 3270, 
+    "organization_kind": "University", 
+    "organization_name": "Universit\u00e9 de Nantes", 
+    "organization_rank": 68, 
+    "tier": "Gold", 
+    "weekly_games_played": 22247, 
+    "weekly_games_won": 7314
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2802, 
+    "organization_kind": "University", 
+    "organization_name": "Masaryk University", 
+    "organization_rank": 69, 
+    "tier": "Gold", 
+    "weekly_games_played": 21694, 
+    "weekly_games_won": 7301
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9917, 
+    "organization_kind": "High School", 
+    "organization_name": "Gymnasium Bad Essen", 
+    "organization_rank": 70, 
+    "tier": "Gold", 
+    "weekly_games_played": 20366, 
+    "weekly_games_won": 7288
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 9946, 
+    "organization_kind": "Company", 
+    "organization_name": "DisplayLink", 
+    "organization_rank": 71, 
+    "tier": "Gold", 
+    "weekly_games_played": 19267, 
+    "weekly_games_won": 7261
+  }, 
+  {
+    "num_players": 9, 
+    "organization_id": 1111, 
+    "organization_kind": "University", 
+    "organization_name": "Virginia Polytechnic Institute and State University", 
+    "organization_rank": 72, 
+    "tier": "Gold", 
+    "weekly_games_played": 22620, 
+    "weekly_games_won": 7195
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9490, 
+    "organization_kind": "Company", 
+    "organization_name": "RedGuava", 
+    "organization_rank": 73, 
+    "tier": "Gold", 
+    "weekly_games_played": 22766, 
+    "weekly_games_won": 7174
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 9392, 
+    "organization_kind": "Company", 
+    "organization_name": "Optum", 
+    "organization_rank": 74, 
+    "tier": "Gold", 
+    "weekly_games_played": 23155, 
+    "weekly_games_won": 7096
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 4277, 
+    "organization_kind": "University", 
+    "organization_name": "Universitas Sebelas Maret", 
+    "organization_rank": 75, 
+    "tier": "Silver", 
+    "weekly_games_played": 22524, 
+    "weekly_games_won": 7027
+  }, 
+  {
+    "num_players": 10, 
+    "organization_id": 9725, 
+    "organization_kind": "High School", 
+    "organization_name": "Brisbane Boys College", 
+    "organization_rank": 76, 
+    "tier": "Silver", 
+    "weekly_games_played": 21960, 
+    "weekly_games_won": 6739
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 815, 
+    "organization_kind": "University", 
+    "organization_name": "State University of New York at Buffalo", 
+    "organization_rank": 77, 
+    "tier": "Silver", 
+    "weekly_games_played": 19236, 
+    "weekly_games_won": 6613
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 3591, 
+    "organization_kind": "University", 
+    "organization_name": "Bayerische Julius-Maximilians-Universit\u00e4t W\u00fcrzburg", 
+    "organization_rank": 78, 
+    "tier": "Silver", 
+    "weekly_games_played": 20542, 
+    "weekly_games_won": 6608
+  }, 
+  {
+    "num_players": 24, 
+    "organization_id": 933, 
+    "organization_kind": "University", 
+    "organization_name": "University of Colorado at Boulder", 
+    "organization_rank": 79, 
+    "tier": "Silver", 
+    "weekly_games_played": 20990, 
+    "weekly_games_won": 6599
+  }, 
+  {
+    "num_players": 16, 
+    "organization_id": 2141, 
+    "organization_kind": "University", 
+    "organization_name": "University of Toronto", 
+    "organization_rank": 80, 
+    "tier": "Silver", 
+    "weekly_games_played": 19369, 
+    "weekly_games_won": 6495
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9374, 
+    "organization_kind": "Company", 
+    "organization_name": "Deep Blue", 
+    "organization_rank": 81, 
+    "tier": "Silver", 
+    "weekly_games_played": 17783, 
+    "weekly_games_won": 6461
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9841, 
+    "organization_kind": "Company", 
+    "organization_name": "OpenAI", 
+    "organization_rank": 82, 
+    "tier": "Silver", 
+    "weekly_games_played": 19968, 
+    "weekly_games_won": 6314
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9311, 
+    "organization_kind": "Company", 
+    "organization_name": "Dreamix", 
+    "organization_rank": 83, 
+    "tier": "Silver", 
+    "weekly_games_played": 18471, 
+    "weekly_games_won": 6219
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 9657, 
+    "organization_kind": "High School", 
+    "organization_name": "Thomas Jefferson School of Science and Technology", 
+    "organization_rank": 84, 
+    "tier": "Silver", 
+    "weekly_games_played": 17984, 
+    "weekly_games_won": 6107
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 313, 
+    "organization_kind": "University", 
+    "organization_name": "Duke University", 
+    "organization_rank": 85, 
+    "tier": "Silver", 
+    "weekly_games_played": 15266, 
+    "weekly_games_won": 6092
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 1412, 
+    "organization_kind": "University", 
+    "organization_name": "Monash University", 
+    "organization_rank": 86, 
+    "tier": "Silver", 
+    "weekly_games_played": 19188, 
+    "weekly_games_won": 6071
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 9897, 
+    "organization_kind": "University", 
+    "organization_name": "Ghent University", 
+    "organization_rank": 87, 
+    "tier": "Silver", 
+    "weekly_games_played": 18973, 
+    "weekly_games_won": 6061
+  }, 
+  {
+    "num_players": 11, 
+    "organization_id": 7722, 
+    "organization_kind": "University", 
+    "organization_name": "Tamkang University", 
+    "organization_rank": 88, 
+    "tier": "Silver", 
+    "weekly_games_played": 16513, 
+    "weekly_games_won": 5874
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 3530, 
+    "organization_kind": "University", 
+    "organization_name": "Technische Universit\u00e4t M\u00fcnchen", 
+    "organization_rank": 89, 
+    "tier": "Silver", 
+    "weekly_games_played": 16422, 
+    "weekly_games_won": 5812
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9945, 
+    "organization_kind": "Company", 
+    "organization_name": "Facebook", 
+    "organization_rank": 90, 
+    "tier": "Silver", 
+    "weekly_games_played": 16118, 
+    "weekly_games_won": 5790
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9886, 
+    "organization_kind": "High School", 
+    "organization_name": "HTL Wels", 
+    "organization_rank": 91, 
+    "tier": "Silver", 
+    "weekly_games_played": 17882, 
+    "weekly_games_won": 5703
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 8226, 
+    "organization_kind": "University", 
+    "organization_name": "University of York", 
+    "organization_rank": 92, 
+    "tier": "Silver", 
+    "weekly_games_played": 16006, 
+    "weekly_games_won": 5573
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9458, 
+    "organization_kind": "Company", 
+    "organization_name": "Amazon", 
+    "organization_rank": 93, 
+    "tier": "Silver", 
+    "weekly_games_played": 16568, 
+    "weekly_games_won": 5541
+  }, 
+  {
+    "num_players": 9, 
+    "organization_id": 630, 
+    "organization_kind": "University", 
+    "organization_name": "Northeastern University", 
+    "organization_rank": 94, 
+    "tier": "Silver", 
+    "weekly_games_played": 15642, 
+    "weekly_games_won": 5489
+  }, 
+  {
+    "num_players": 14, 
+    "organization_id": 9326, 
+    "organization_kind": "High School", 
+    "organization_name": "Stuyvesant High School", 
+    "organization_rank": 95, 
+    "tier": "Silver", 
+    "weekly_games_played": 16748, 
+    "weekly_games_won": 5478
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9923, 
+    "organization_kind": "Company", 
+    "organization_name": "Petrobras", 
+    "organization_rank": 96, 
+    "tier": "Silver", 
+    "weekly_games_played": 16379, 
+    "weekly_games_won": 5432
+  }, 
+  {
+    "num_players": 8, 
+    "organization_id": 224, 
+    "organization_kind": "University", 
+    "organization_name": "Cheyney University", 
+    "organization_rank": 97, 
+    "tier": "Silver", 
+    "weekly_games_played": 15633, 
+    "weekly_games_won": 5370
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9668, 
+    "organization_kind": "University", 
+    "organization_name": "Politechnika Wroclawska", 
+    "organization_rank": 98, 
+    "tier": "Silver", 
+    "weekly_games_played": 14168, 
+    "weekly_games_won": 5140
+  }, 
+  {
+    "num_players": 13, 
+    "organization_id": 616, 
+    "organization_kind": "University", 
+    "organization_name": "New York University", 
+    "organization_rank": 99, 
+    "tier": "Silver", 
+    "weekly_games_played": 16828, 
+    "weekly_games_won": 5077
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 3121, 
+    "organization_kind": "University", 
+    "organization_name": "Ecole Normale Sup\u00e9rieure de Cachan", 
+    "organization_rank": 100, 
+    "tier": "Silver", 
+    "weekly_games_played": 15354, 
+    "weekly_games_won": 5069
+  }, 
+  {
+    "num_players": 8, 
+    "organization_id": 2027, 
+    "organization_kind": "University", 
+    "organization_name": "Carleton University", 
+    "organization_rank": 101, 
+    "tier": "Silver", 
+    "weekly_games_played": 14335, 
+    "weekly_games_won": 4876
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9936, 
+    "organization_kind": "High School", 
+    "organization_name": "Schulzentrum SII Utbremen", 
+    "organization_rank": 102, 
+    "tier": "Silver", 
+    "weekly_games_played": 15558, 
+    "weekly_games_won": 4855
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9448, 
+    "organization_kind": "Company", 
+    "organization_name": "Wenco", 
+    "organization_rank": 103, 
+    "tier": "Silver", 
+    "weekly_games_played": 16836, 
+    "weekly_games_won": 4827
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 3108, 
+    "organization_kind": "University", 
+    "organization_name": "Ecole Nationale de l'Aviation Civile", 
+    "organization_rank": 104, 
+    "tier": "Silver", 
+    "weekly_games_played": 13525, 
+    "weekly_games_won": 4638
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 1010, 
+    "organization_kind": "University", 
+    "organization_name": "University of North Carolina at Charlotte", 
+    "organization_rank": 105, 
+    "tier": "Silver", 
+    "weekly_games_played": 13876, 
+    "weekly_games_won": 4602
+  }, 
+  {
+    "num_players": 17, 
+    "organization_id": 925, 
+    "organization_kind": "University", 
+    "organization_name": "University of California, Santa Barbara", 
+    "organization_rank": 106, 
+    "tier": "Silver", 
+    "weekly_games_played": 12479, 
+    "weekly_games_won": 4586
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 3509, 
+    "organization_kind": "University", 
+    "organization_name": "Rheinisch Westf\u00e4lische Technische Hochschule Aachen", 
+    "organization_rank": 107, 
+    "tier": "Silver", 
+    "weekly_games_played": 12332, 
+    "weekly_games_won": 4404
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9369, 
+    "organization_kind": "University", 
+    "organization_name": "Aix-Marseille University", 
+    "organization_rank": 108, 
+    "tier": "Silver", 
+    "weekly_games_played": 13536, 
+    "weekly_games_won": 4389
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9524, 
+    "organization_kind": "High School", 
+    "organization_name": "Pocatello High School", 
+    "organization_rank": 109, 
+    "tier": "Silver", 
+    "weekly_games_played": 15140, 
+    "weekly_games_won": 4354
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 9796, 
+    "organization_kind": "Company", 
+    "organization_name": "Home Depot", 
+    "organization_rank": 110, 
+    "tier": "Silver", 
+    "weekly_games_played": 13198, 
+    "weekly_games_won": 4229
+  }, 
+  {
+    "num_players": 9, 
+    "organization_id": 9929, 
+    "organization_kind": "High School", 
+    "organization_name": "Wildern School", 
+    "organization_rank": 111, 
+    "tier": "Silver", 
+    "weekly_games_played": 12809, 
+    "weekly_games_won": 4204
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9783, 
+    "organization_kind": "Company", 
+    "organization_name": "Societe Generale", 
+    "organization_rank": 112, 
+    "tier": "Silver", 
+    "weekly_games_played": 11877, 
+    "weekly_games_won": 4195
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9824, 
+    "organization_kind": "Company", 
+    "organization_name": "Suncorp", 
+    "organization_rank": 113, 
+    "tier": "Silver", 
+    "weekly_games_played": 12104, 
+    "weekly_games_won": 4181
+  }, 
+  {
+    "num_players": 8, 
+    "organization_id": 733, 
+    "organization_kind": "University", 
+    "organization_name": "Rutgers University", 
+    "organization_rank": 114, 
+    "tier": "Silver", 
+    "weekly_games_played": 13473, 
+    "weekly_games_won": 4113
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 3543, 
+    "organization_kind": "University", 
+    "organization_name": "Friedrich-Alexander Universit\u00e4t EN", 
+    "organization_rank": 115, 
+    "tier": "Silver", 
+    "weekly_games_played": 12479, 
+    "weekly_games_won": 4064
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9809, 
+    "organization_kind": "Company", 
+    "organization_name": "Proservice Machine LTD", 
+    "organization_rank": 116, 
+    "tier": "Silver", 
+    "weekly_games_played": 11746, 
+    "weekly_games_won": 4061
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9861, 
+    "organization_kind": "High School", 
+    "organization_name": "International School of Beijing", 
+    "organization_rank": 117, 
+    "tier": "Silver", 
+    "weekly_games_played": 11840, 
+    "weekly_games_won": 4043
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9378, 
+    "organization_kind": "Company", 
+    "organization_name": "Innovatrics", 
+    "organization_rank": 118, 
+    "tier": "Silver", 
+    "weekly_games_played": 13686, 
+    "weekly_games_won": 3974
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 8122, 
+    "organization_kind": "University", 
+    "organization_name": "Imperial College London", 
+    "organization_rank": 119, 
+    "tier": "Silver", 
+    "weekly_games_played": 12395, 
+    "weekly_games_won": 3948
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 624, 
+    "organization_kind": "University", 
+    "organization_name": "North Carolina State University", 
+    "organization_rank": 120, 
+    "tier": "Silver", 
+    "weekly_games_played": 12574, 
+    "weekly_games_won": 3901
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9598, 
+    "organization_kind": "Company", 
+    "organization_name": "Arus Defence", 
+    "organization_rank": 121, 
+    "tier": "Silver", 
+    "weekly_games_played": 10793, 
+    "weekly_games_won": 3880
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9340, 
+    "organization_kind": "High School", 
+    "organization_name": "Winchester High School", 
+    "organization_rank": 122, 
+    "tier": "Silver", 
+    "weekly_games_played": 10427, 
+    "weekly_games_won": 3782
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9569, 
+    "organization_kind": "Company", 
+    "organization_name": "Edgewise", 
+    "organization_rank": 123, 
+    "tier": "Silver", 
+    "weekly_games_played": 10900, 
+    "weekly_games_won": 3755
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 1110, 
+    "organization_kind": "University", 
+    "organization_name": "Virginia Military Institute", 
+    "organization_rank": 124, 
+    "tier": "Silver", 
+    "weekly_games_played": 11065, 
+    "weekly_games_won": 3724
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9891, 
+    "organization_kind": "High School", 
+    "organization_name": "Sharnbrook Academy", 
+    "organization_rank": 125, 
+    "tier": "Silver", 
+    "weekly_games_played": 10838, 
+    "weekly_games_won": 3685
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 444, 
+    "organization_kind": "University", 
+    "organization_name": "Indiana University/Purdue University at Indianapolis", 
+    "organization_rank": 126, 
+    "tier": "Silver", 
+    "weekly_games_played": 12181, 
+    "weekly_games_won": 3663
+  }, 
+  {
+    "num_players": 14, 
+    "organization_id": 231, 
+    "organization_kind": "University", 
+    "organization_name": "City University of New York", 
+    "organization_rank": 127, 
+    "tier": "Silver", 
+    "weekly_games_played": 10681, 
+    "weekly_games_won": 3643
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 1075, 
+    "organization_kind": "University", 
+    "organization_name": "University of Washington", 
+    "organization_rank": 128, 
+    "tier": "Silver", 
+    "weekly_games_played": 12370, 
+    "weekly_games_won": 3627
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9942, 
+    "organization_kind": "Company", 
+    "organization_name": "DevExpress", 
+    "organization_rank": 129, 
+    "tier": "Silver", 
+    "weekly_games_played": 9068, 
+    "weekly_games_won": 3575
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9914, 
+    "organization_kind": "Company", 
+    "organization_name": "iTelaSoft", 
+    "organization_rank": 130, 
+    "tier": "Silver", 
+    "weekly_games_played": 11650, 
+    "weekly_games_won": 3572
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 5745, 
+    "organization_kind": "University", 
+    "organization_name": "Sunway University College", 
+    "organization_rank": 131, 
+    "tier": "Silver", 
+    "weekly_games_played": 10266, 
+    "weekly_games_won": 3519
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 919, 
+    "organization_kind": "University", 
+    "organization_name": "University of California, Irvine", 
+    "organization_rank": 132, 
+    "tier": "Silver", 
+    "weekly_games_played": 9483, 
+    "weekly_games_won": 3510
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 6788, 
+    "organization_kind": "University", 
+    "organization_name": "Universidade do Porto", 
+    "organization_rank": 133, 
+    "tier": "Silver", 
+    "weekly_games_played": 12035, 
+    "weekly_games_won": 3507
+  }, 
+  {
+    "num_players": 8, 
+    "organization_id": 678, 
+    "organization_kind": "University", 
+    "organization_name": "Pennsylvania State University", 
+    "organization_rank": 134, 
+    "tier": "Silver", 
+    "weekly_games_played": 10343, 
+    "weekly_games_won": 3486
+  }, 
+  {
+    "num_players": 11, 
+    "organization_id": 701, 
+    "organization_kind": "University", 
+    "organization_name": "Purdue University", 
+    "organization_rank": 135, 
+    "tier": "Silver", 
+    "weekly_games_played": 11518, 
+    "weekly_games_won": 3471
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9717, 
+    "organization_kind": "University", 
+    "organization_name": "CentraleSup\u00e9lec", 
+    "organization_rank": 136, 
+    "tier": "Silver", 
+    "weekly_games_played": 10150, 
+    "weekly_games_won": 3458
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 9344, 
+    "organization_kind": "High School", 
+    "organization_name": "St Pauls", 
+    "organization_rank": 137, 
+    "tier": "Silver", 
+    "weekly_games_played": 10554, 
+    "weekly_games_won": 3456
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 3301, 
+    "organization_kind": "University", 
+    "organization_name": "Universit\u00e9 de Technologie de Belfort Montb\u00e9liard", 
+    "organization_rank": 138, 
+    "tier": "Silver", 
+    "weekly_games_played": 9782, 
+    "weekly_games_won": 3411
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 9867, 
+    "organization_kind": "High School", 
+    "organization_name": "HTL Wiener Neustadt", 
+    "organization_rank": 139, 
+    "tier": "Silver", 
+    "weekly_games_played": 10091, 
+    "weekly_games_won": 3330
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 4686, 
+    "organization_kind": "University", 
+    "organization_name": "University of Trento", 
+    "organization_rank": 140, 
+    "tier": "Silver", 
+    "weekly_games_played": 9969, 
+    "weekly_games_won": 3319
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 2826, 
+    "organization_kind": "University", 
+    "organization_name": "Aarhus University", 
+    "organization_rank": 141, 
+    "tier": "Silver", 
+    "weekly_games_played": 11023, 
+    "weekly_games_won": 3303
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9511, 
+    "organization_kind": "Company", 
+    "organization_name": "DotX", 
+    "organization_rank": 142, 
+    "tier": "Silver", 
+    "weekly_games_played": 10565, 
+    "weekly_games_won": 3292
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 7592, 
+    "organization_kind": "University", 
+    "organization_name": "EPFL - EPF Lausanne", 
+    "organization_rank": 143, 
+    "tier": "Silver", 
+    "weekly_games_played": 9346, 
+    "weekly_games_won": 3281
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 723, 
+    "organization_kind": "University", 
+    "organization_name": "Rochester Institute of Technology", 
+    "organization_rank": 144, 
+    "tier": "Silver", 
+    "weekly_games_played": 9255, 
+    "weekly_games_won": 3180
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 2103, 
+    "organization_kind": "University", 
+    "organization_name": "University of British Columbia", 
+    "organization_rank": 145, 
+    "tier": "Silver", 
+    "weekly_games_played": 10699, 
+    "weekly_games_won": 3177
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 9642, 
+    "organization_kind": "High School", 
+    "organization_name": "Omaha Central High School", 
+    "organization_rank": 146, 
+    "tier": "Silver", 
+    "weekly_games_played": 8931, 
+    "weekly_games_won": 3163
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 8121, 
+    "organization_kind": "University", 
+    "organization_name": "Heriot-Watt University", 
+    "organization_rank": 147, 
+    "tier": "Silver", 
+    "weekly_games_played": 9177, 
+    "weekly_games_won": 3159
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 2121, 
+    "organization_kind": "University", 
+    "organization_name": "University of Ottawa", 
+    "organization_rank": 148, 
+    "tier": "Silver", 
+    "weekly_games_played": 9071, 
+    "weekly_games_won": 3148
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9898, 
+    "organization_kind": "Company", 
+    "organization_name": "Culture Amp", 
+    "organization_rank": 149, 
+    "tier": "Silver", 
+    "weekly_games_played": 9431, 
+    "weekly_games_won": 3139
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9469, 
+    "organization_kind": "Company", 
+    "organization_name": "Softwire", 
+    "organization_rank": 150, 
+    "tier": "Silver", 
+    "weekly_games_played": 8806, 
+    "weekly_games_won": 3080
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 9451, 
+    "organization_kind": "Company", 
+    "organization_name": "KMS", 
+    "organization_rank": 151, 
+    "tier": "Silver", 
+    "weekly_games_played": 9391, 
+    "weekly_games_won": 3073
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 3520, 
+    "organization_kind": "University", 
+    "organization_name": "Technische Universit\u00e4t Berlin", 
+    "organization_rank": 152, 
+    "tier": "Silver", 
+    "weekly_games_played": 8988, 
+    "weekly_games_won": 3009
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9940, 
+    "organization_kind": "High School", 
+    "organization_name": "Modbury High School", 
+    "organization_rank": 153, 
+    "tier": "Silver", 
+    "weekly_games_played": 8061, 
+    "weekly_games_won": 2998
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9877, 
+    "organization_kind": "High School", 
+    "organization_name": "Lancaster Royal Grammar School", 
+    "organization_rank": 154, 
+    "tier": "Silver", 
+    "weekly_games_played": 9896, 
+    "weekly_games_won": 2975
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 699, 
+    "organization_kind": "University", 
+    "organization_name": "Princeton University", 
+    "organization_rank": 155, 
+    "tier": "Silver", 
+    "weekly_games_played": 8195, 
+    "weekly_games_won": 2885
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 545, 
+    "organization_kind": "University", 
+    "organization_name": "Mercer University", 
+    "organization_rank": 156, 
+    "tier": "Silver", 
+    "weekly_games_played": 9522, 
+    "weekly_games_won": 2844
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 9666, 
+    "organization_kind": "University", 
+    "organization_name": "Karlsruhe Institute of Technology", 
+    "organization_rank": 156, 
+    "tier": "Silver", 
+    "weekly_games_played": 8936, 
+    "weekly_games_won": 2844
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9652, 
+    "organization_kind": "High School", 
+    "organization_name": "Mathematisch- Naturwissenschaftliches Gymnasium Raemibuehl", 
+    "organization_rank": 158, 
+    "tier": "Silver", 
+    "weekly_games_played": 9161, 
+    "weekly_games_won": 2809
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 974, 
+    "organization_kind": "University", 
+    "organization_name": "University of Maryland, Baltimore", 
+    "organization_rank": 159, 
+    "tier": "Silver", 
+    "weekly_games_played": 8479, 
+    "weekly_games_won": 2732
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 2090, 
+    "organization_kind": "University", 
+    "organization_name": "Simon Fraser University", 
+    "organization_rank": 160, 
+    "tier": "Silver", 
+    "weekly_games_played": 8358, 
+    "weekly_games_won": 2674
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 3900, 
+    "organization_kind": "University", 
+    "organization_name": "Indian Institute of Technology, Indore", 
+    "organization_rank": 161, 
+    "tier": "Silver", 
+    "weekly_games_played": 7781, 
+    "weekly_games_won": 2652
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 652, 
+    "organization_kind": "University", 
+    "organization_name": "Ohio State University, Columbus", 
+    "organization_rank": 162, 
+    "tier": "Silver", 
+    "weekly_games_played": 8421, 
+    "weekly_games_won": 2629
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9932, 
+    "organization_kind": "Company", 
+    "organization_name": "EFS GmbH", 
+    "organization_rank": 163, 
+    "tier": "Silver", 
+    "weekly_games_played": 8376, 
+    "weekly_games_won": 2607
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9880, 
+    "organization_kind": "High School", 
+    "organization_name": "NPTC Group of Colleges", 
+    "organization_rank": 163, 
+    "tier": "Silver", 
+    "weekly_games_played": 7050, 
+    "weekly_games_won": 2607
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 1191, 
+    "organization_kind": "University", 
+    "organization_name": "Yale University", 
+    "organization_rank": 165, 
+    "tier": "Silver", 
+    "weekly_games_played": 8079, 
+    "weekly_games_won": 2602
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 9689, 
+    "organization_kind": "Company", 
+    "organization_name": "Microsoft", 
+    "organization_rank": 166, 
+    "tier": "Silver", 
+    "weekly_games_played": 7646, 
+    "weekly_games_won": 2601
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9943, 
+    "organization_kind": "University", 
+    "organization_name": "Wakefield College", 
+    "organization_rank": 167, 
+    "tier": "Silver", 
+    "weekly_games_played": 6844, 
+    "weekly_games_won": 2556
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9402, 
+    "organization_kind": "Company", 
+    "organization_name": "Intel", 
+    "organization_rank": 168, 
+    "tier": "Silver", 
+    "weekly_games_played": 8133, 
+    "weekly_games_won": 2553
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 2060, 
+    "organization_kind": "University", 
+    "organization_name": "McGill University", 
+    "organization_rank": 169, 
+    "tier": "Silver", 
+    "weekly_games_played": 7657, 
+    "weekly_games_won": 2542
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 1058, 
+    "organization_kind": "University", 
+    "organization_name": "University of Texas at Dallas", 
+    "organization_rank": 170, 
+    "tier": "Silver", 
+    "weekly_games_played": 7263, 
+    "weekly_games_won": 2533
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 9931, 
+    "organization_kind": "High School", 
+    "organization_name": "Columbus Academy", 
+    "organization_rank": 171, 
+    "tier": "Silver", 
+    "weekly_games_played": 7140, 
+    "weekly_games_won": 2528
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 983, 
+    "organization_kind": "University", 
+    "organization_name": "University of Miami", 
+    "organization_rank": 172, 
+    "tier": "Silver", 
+    "weekly_games_played": 7234, 
+    "weekly_games_won": 2465
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 2083, 
+    "organization_kind": "University", 
+    "organization_name": "Ryerson Polytechnic University", 
+    "organization_rank": 173, 
+    "tier": "Silver", 
+    "weekly_games_played": 7845, 
+    "weekly_games_won": 2418
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3005, 
+    "organization_kind": "University", 
+    "organization_name": "University of Tartu", 
+    "organization_rank": 174, 
+    "tier": "Silver", 
+    "weekly_games_played": 7949, 
+    "weekly_games_won": 2411
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 4074, 
+    "organization_kind": "University", 
+    "organization_name": "SRM Institute Of Science & Technology ( Deemed University)", 
+    "organization_rank": 175, 
+    "tier": "Silver", 
+    "weekly_games_played": 7437, 
+    "weekly_games_won": 2401
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 641, 
+    "organization_kind": "University", 
+    "organization_name": "Northwestern University", 
+    "organization_rank": 176, 
+    "tier": "Silver", 
+    "weekly_games_played": 7150, 
+    "weekly_games_won": 2358
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 9913, 
+    "organization_kind": "Company", 
+    "organization_name": "Sclable", 
+    "organization_rank": 177, 
+    "tier": "Silver", 
+    "weekly_games_played": 5827, 
+    "weekly_games_won": 2333
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 553, 
+    "organization_kind": "University", 
+    "organization_name": "Metropolitan State College of Denver", 
+    "organization_rank": 178, 
+    "tier": "Silver", 
+    "weekly_games_played": 7796, 
+    "weekly_games_won": 2332
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 5244, 
+    "organization_kind": "University", 
+    "organization_name": "Tokyo University", 
+    "organization_rank": 179, 
+    "tier": "Silver", 
+    "weekly_games_played": 6913, 
+    "weekly_games_won": 2305
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 6055, 
+    "organization_kind": "University", 
+    "organization_name": "Delft University of Technology", 
+    "organization_rank": 180, 
+    "tier": "Silver", 
+    "weekly_games_played": 6409, 
+    "weekly_games_won": 2291
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 7706, 
+    "organization_kind": "University", 
+    "organization_name": "National Taiwan University", 
+    "organization_rank": 181, 
+    "tier": "Silver", 
+    "weekly_games_played": 6071, 
+    "weekly_games_won": 2272
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 923, 
+    "organization_kind": "University", 
+    "organization_name": "University of California, San Diego", 
+    "organization_rank": 182, 
+    "tier": "Silver", 
+    "weekly_games_played": 6385, 
+    "weekly_games_won": 2263
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 1388, 
+    "organization_kind": "University", 
+    "organization_name": "University of Adelaide", 
+    "organization_rank": 183, 
+    "tier": "Silver", 
+    "weekly_games_played": 6871, 
+    "weekly_games_won": 2213
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 1024, 
+    "organization_kind": "University", 
+    "organization_name": "University of Pittsburgh", 
+    "organization_rank": 184, 
+    "tier": "Silver", 
+    "weekly_games_played": 7009, 
+    "weekly_games_won": 2182
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9928, 
+    "organization_kind": "High School", 
+    "organization_name": "Lakeland High School", 
+    "organization_rank": 185, 
+    "tier": "Silver", 
+    "weekly_games_played": 6241, 
+    "weekly_games_won": 2180
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9889, 
+    "organization_kind": "Company", 
+    "organization_name": "Oracle", 
+    "organization_rank": 186, 
+    "tier": "Silver", 
+    "weekly_games_played": 5677, 
+    "weekly_games_won": 2154
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 9584, 
+    "organization_kind": "Company", 
+    "organization_name": "Carsforsale", 
+    "organization_rank": 187, 
+    "tier": "Silver", 
+    "weekly_games_played": 6602, 
+    "weekly_games_won": 2104
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 7817, 
+    "organization_kind": "University", 
+    "organization_name": "University of the Thai Chamber of Commerce", 
+    "organization_rank": 188, 
+    "tier": "Silver", 
+    "weekly_games_played": 5497, 
+    "weekly_games_won": 2055
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9313, 
+    "organization_kind": "Company", 
+    "organization_name": "Green Brick Labs", 
+    "organization_rank": 189, 
+    "tier": "Silver", 
+    "weekly_games_played": 7533, 
+    "weekly_games_won": 2054
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9376, 
+    "organization_kind": "Company", 
+    "organization_name": "Accenture", 
+    "organization_rank": 190, 
+    "tier": "Bronze", 
+    "weekly_games_played": 6087, 
+    "weekly_games_won": 2031
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 1670, 
+    "organization_kind": "University", 
+    "organization_name": "Universit\u00e9 Libre de Bruxelles", 
+    "organization_rank": 191, 
+    "tier": "Bronze", 
+    "weekly_games_played": 6183, 
+    "weekly_games_won": 2026
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9772, 
+    "organization_kind": "University", 
+    "organization_name": "Universitat de Girona", 
+    "organization_rank": 192, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5952, 
+    "weekly_games_won": 2024
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 834, 
+    "organization_kind": "University", 
+    "organization_name": "Stevens Institute of Technology", 
+    "organization_rank": 193, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5721, 
+    "weekly_games_won": 2020
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 96, 
+    "organization_kind": "University", 
+    "organization_name": "Arizona State University", 
+    "organization_rank": 194, 
+    "tier": "Bronze", 
+    "weekly_games_played": 6502, 
+    "weekly_games_won": 1998
+  }, 
+  {
+    "num_players": 8, 
+    "organization_id": 984, 
+    "organization_kind": "University", 
+    "organization_name": "University of Michigan - Ann Arbor", 
+    "organization_rank": 195, 
+    "tier": "Bronze", 
+    "weekly_games_played": 6039, 
+    "weekly_games_won": 1972
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 8589, 
+    "organization_kind": "University", 
+    "organization_name": "Sacramento City College", 
+    "organization_rank": 196, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5395, 
+    "weekly_games_won": 1934
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9362, 
+    "organization_kind": "Company", 
+    "organization_name": "EPAM", 
+    "organization_rank": 197, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4750, 
+    "weekly_games_won": 1933
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 8102, 
+    "organization_kind": "University", 
+    "organization_name": "University of Edinburgh", 
+    "organization_rank": 198, 
+    "tier": "Bronze", 
+    "weekly_games_played": 6137, 
+    "weekly_games_won": 1932
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9892, 
+    "organization_kind": "High School", 
+    "organization_name": "Winston Churchill High School", 
+    "organization_rank": 199, 
+    "tier": "Bronze", 
+    "weekly_games_played": 6142, 
+    "weekly_games_won": 1902
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 150, 
+    "organization_kind": "University", 
+    "organization_name": "Boston University", 
+    "organization_rank": 200, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4808, 
+    "weekly_games_won": 1875
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9493, 
+    "organization_kind": "Company", 
+    "organization_name": "Anooserve", 
+    "organization_rank": 201, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5725, 
+    "weekly_games_won": 1833
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9504, 
+    "organization_kind": "High School", 
+    "organization_name": "Sir John A Macdonald", 
+    "organization_rank": 202, 
+    "tier": "Bronze", 
+    "weekly_games_played": 6663, 
+    "weekly_games_won": 1796
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9459, 
+    "organization_kind": "Company", 
+    "organization_name": "Rent the Runway", 
+    "organization_rank": 203, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5094, 
+    "weekly_games_won": 1792
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7305, 
+    "organization_kind": "University", 
+    "organization_name": "yale-NUS", 
+    "organization_rank": 204, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4523, 
+    "weekly_games_won": 1783
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 1827, 
+    "organization_kind": "University", 
+    "organization_name": "Universidade Federal de Santa Catarina", 
+    "organization_rank": 204, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5177, 
+    "weekly_games_won": 1783
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 8128, 
+    "organization_kind": "University", 
+    "organization_name": "King's College London, University of London", 
+    "organization_rank": 206, 
+    "tier": "Bronze", 
+    "weekly_games_played": 6040, 
+    "weekly_games_won": 1779
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9577, 
+    "organization_kind": "High School", 
+    "organization_name": "Dwight Englewood School.", 
+    "organization_rank": 207, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4879, 
+    "weekly_games_won": 1762
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 8068, 
+    "organization_kind": "University", 
+    "organization_name": "Aston University", 
+    "organization_rank": 208, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3891, 
+    "weekly_games_won": 1753
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9638, 
+    "organization_kind": "Company", 
+    "organization_name": "Esterline", 
+    "organization_rank": 209, 
+    "tier": "Bronze", 
+    "weekly_games_played": 6146, 
+    "weekly_games_won": 1748
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 9400, 
+    "organization_kind": "Company", 
+    "organization_name": "Bloomberg", 
+    "organization_rank": 210, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5250, 
+    "weekly_games_won": 1743
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9358, 
+    "organization_kind": "Company", 
+    "organization_name": "O'Reilly Media", 
+    "organization_rank": 211, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5632, 
+    "weekly_games_won": 1742
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9887, 
+    "organization_kind": "Company", 
+    "organization_name": "Intuit", 
+    "organization_rank": 212, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5547, 
+    "weekly_games_won": 1731
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 1409, 
+    "organization_kind": "University", 
+    "organization_name": "James Cook University of North Queensland", 
+    "organization_rank": 213, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5391, 
+    "weekly_games_won": 1717
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 999, 
+    "organization_kind": "University", 
+    "organization_name": "University of Nebraska, Lincoln", 
+    "organization_rank": 214, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4981, 
+    "weekly_games_won": 1698
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9411, 
+    "organization_kind": "Company", 
+    "organization_name": "Mark & Trace", 
+    "organization_rank": 215, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5696, 
+    "weekly_games_won": 1683
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 1044, 
+    "organization_kind": "University", 
+    "organization_name": "University of Southern California", 
+    "organization_rank": 216, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5839, 
+    "weekly_games_won": 1679
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 9298, 
+    "organization_kind": "High School", 
+    "organization_name": "Academy for Science and Design", 
+    "organization_rank": 217, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5186, 
+    "weekly_games_won": 1677
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 9921, 
+    "organization_kind": "High School", 
+    "organization_name": "Hood River Valley High School", 
+    "organization_rank": 218, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5561, 
+    "weekly_games_won": 1676
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 3719, 
+    "organization_kind": "University", 
+    "organization_name": "University of Hong Kong", 
+    "organization_rank": 219, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4477, 
+    "weekly_games_won": 1670
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 1825, 
+    "organization_kind": "University", 
+    "organization_name": "Universidade Federal de Sergipe", 
+    "organization_rank": 220, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4489, 
+    "weekly_games_won": 1659
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9732, 
+    "organization_kind": "University", 
+    "organization_name": "Avans Hogeschool", 
+    "organization_rank": 221, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5807, 
+    "weekly_games_won": 1657
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 785, 
+    "organization_kind": "University", 
+    "organization_name": "South Dakota State University", 
+    "organization_rank": 222, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4037, 
+    "weekly_games_won": 1635
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 4625, 
+    "organization_kind": "University", 
+    "organization_name": "Polytechnic Institute of Milan", 
+    "organization_rank": 223, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4794, 
+    "weekly_games_won": 1631
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9934, 
+    "organization_kind": "Company", 
+    "organization_name": "Momentum Technologies", 
+    "organization_rank": 224, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4949, 
+    "weekly_games_won": 1622
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9450, 
+    "organization_kind": "Company", 
+    "organization_name": "Dropbox", 
+    "organization_rank": 225, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5321, 
+    "weekly_games_won": 1610
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9930, 
+    "organization_kind": "High School", 
+    "organization_name": "Highland Secondary School", 
+    "organization_rank": 226, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3873, 
+    "weekly_games_won": 1603
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7601, 
+    "organization_kind": "University", 
+    "organization_name": "Universit\u00e4t St. Gallen", 
+    "organization_rank": 227, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5031, 
+    "weekly_games_won": 1600
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 1307, 
+    "organization_kind": "University", 
+    "organization_name": "Universidad de Buenos Aires", 
+    "organization_rank": 228, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5059, 
+    "weekly_games_won": 1589
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 473, 
+    "organization_kind": "University", 
+    "organization_name": "Kennesaw State University", 
+    "organization_rank": 229, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4454, 
+    "weekly_games_won": 1588
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 6230, 
+    "organization_kind": "University", 
+    "organization_name": "University of Oslo", 
+    "organization_rank": 230, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4898, 
+    "weekly_games_won": 1585
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3660, 
+    "organization_kind": "University", 
+    "organization_name": "University of Piraeus", 
+    "organization_rank": 231, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4056, 
+    "weekly_games_won": 1581
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1107, 
+    "organization_kind": "University", 
+    "organization_name": "Virginia Commonwealth University", 
+    "organization_rank": 232, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4166, 
+    "weekly_games_won": 1580
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 7364, 
+    "organization_kind": "University", 
+    "organization_name": "University of Cape Town", 
+    "organization_rank": 233, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4938, 
+    "weekly_games_won": 1548
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3052, 
+    "organization_kind": "University", 
+    "organization_name": "Lappeenranta University of Technology", 
+    "organization_rank": 234, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4183, 
+    "weekly_games_won": 1537
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 2119, 
+    "organization_kind": "University", 
+    "organization_name": "University of Guelph", 
+    "organization_rank": 235, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4710, 
+    "weekly_games_won": 1530
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3536, 
+    "organization_kind": "University", 
+    "organization_name": "Universit\u00e4t Bremen", 
+    "organization_rank": 236, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3837, 
+    "weekly_games_won": 1514
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 986, 
+    "organization_kind": "University", 
+    "organization_name": "University of Minnesota", 
+    "organization_rank": 237, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4597, 
+    "weekly_games_won": 1506
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2076, 
+    "organization_kind": "University", 
+    "organization_name": "\u00c9cole Polytechnique de Montr\u00e9al, Universit\u00e9 de Montr\u00e9al", 
+    "organization_rank": 238, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3993, 
+    "weekly_games_won": 1505
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9299, 
+    "organization_kind": "High School", 
+    "organization_name": "Horace Mann School", 
+    "organization_rank": 239, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5424, 
+    "weekly_games_won": 1504
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 334, 
+    "organization_kind": "University", 
+    "organization_name": "Embry-Riddle Aeronautical University", 
+    "organization_rank": 240, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5100, 
+    "weekly_games_won": 1502
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 1055, 
+    "organization_kind": "University", 
+    "organization_name": "University of Texas at Austin", 
+    "organization_rank": 241, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3744, 
+    "weekly_games_won": 1501
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9655, 
+    "organization_kind": "High School", 
+    "organization_name": "Atlanta International School", 
+    "organization_rank": 242, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4606, 
+    "weekly_games_won": 1495
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 3812, 
+    "organization_kind": "University", 
+    "organization_name": "Birla Institute of Technology and Science", 
+    "organization_rank": 243, 
+    "tier": "Bronze", 
+    "weekly_games_played": 5353, 
+    "weekly_games_won": 1486
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 7543, 
+    "organization_kind": "University", 
+    "organization_name": "Link\u00f6ping University", 
+    "organization_rank": 244, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4016, 
+    "weekly_games_won": 1467
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 437, 
+    "organization_kind": "University", 
+    "organization_name": "Indiana University", 
+    "organization_rank": 245, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4857, 
+    "weekly_games_won": 1458
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9382, 
+    "organization_kind": "Company", 
+    "organization_name": "Active Data Technologies", 
+    "organization_rank": 246, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4933, 
+    "weekly_games_won": 1449
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9849, 
+    "organization_kind": "Company", 
+    "organization_name": "Hewlett Packard Enterprise", 
+    "organization_rank": 247, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4600, 
+    "weekly_games_won": 1431
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 7975, 
+    "organization_kind": "University", 
+    "organization_name": "National Technical University (Kiev Politechnical Institute)", 
+    "organization_rank": 247, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3980, 
+    "weekly_games_won": 1431
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 3892, 
+    "organization_kind": "University", 
+    "organization_name": "Indian Institute of Technology, Delhi", 
+    "organization_rank": 249, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4042, 
+    "weekly_games_won": 1420
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9297, 
+    "organization_kind": "University", 
+    "organization_name": "Tecnico Lisboa", 
+    "organization_rank": 250, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4316, 
+    "weekly_games_won": 1413
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3571, 
+    "organization_kind": "University", 
+    "organization_name": "Ludwig-Maximilians-Universit\u00e4t M\u00fcnchen", 
+    "organization_rank": 251, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4601, 
+    "weekly_games_won": 1405
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 6063, 
+    "organization_kind": "University", 
+    "organization_name": "Vrije Universiteit Amsterdam", 
+    "organization_rank": 252, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4426, 
+    "weekly_games_won": 1399
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 9910, 
+    "organization_kind": "High School", 
+    "organization_name": "Western Academy of Beijing", 
+    "organization_rank": 253, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4382, 
+    "weekly_games_won": 1385
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 6076, 
+    "organization_kind": "University", 
+    "organization_name": "University of Otago", 
+    "organization_rank": 253, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3793, 
+    "weekly_games_won": 1385
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9741, 
+    "organization_kind": "Company", 
+    "organization_name": "Workday", 
+    "organization_rank": 255, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3942, 
+    "weekly_games_won": 1376
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 1060, 
+    "organization_kind": "University", 
+    "organization_name": "University of Texas at San Antonio", 
+    "organization_rank": 256, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4348, 
+    "weekly_games_won": 1372
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1783, 
+    "organization_kind": "University", 
+    "organization_name": "Universidade do Estado de Santa Catarina", 
+    "organization_rank": 257, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3921, 
+    "weekly_games_won": 1369
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 381, 
+    "organization_kind": "University", 
+    "organization_name": "Gettysburg College", 
+    "organization_rank": 258, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4837, 
+    "weekly_games_won": 1364
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 7407, 
+    "organization_kind": "University", 
+    "organization_name": "Universidad de Castilla La Mancha", 
+    "organization_rank": 259, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4026, 
+    "weekly_games_won": 1361
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7554, 
+    "organization_kind": "University", 
+    "organization_name": "Stockholm University", 
+    "organization_rank": 260, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3704, 
+    "weekly_games_won": 1357
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 6050, 
+    "organization_kind": "University", 
+    "organization_name": "University of Groningen", 
+    "organization_rank": 261, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4442, 
+    "weekly_games_won": 1351
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 1052, 
+    "organization_kind": "University", 
+    "organization_name": "University of Tennessee, Knoxville", 
+    "organization_rank": 262, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4678, 
+    "weekly_games_won": 1350
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3098, 
+    "organization_kind": "University", 
+    "organization_name": "Ecole Centrale de Nantes", 
+    "organization_rank": 263, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3955, 
+    "weekly_games_won": 1323
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9925, 
+    "organization_kind": "University", 
+    "organization_name": "Universidade Anhembi Morumbi", 
+    "organization_rank": 264, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3913, 
+    "weekly_games_won": 1321
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9874, 
+    "organization_kind": "High School", 
+    "organization_name": "Erindale Secondary School", 
+    "organization_rank": 265, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3490, 
+    "weekly_games_won": 1316
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9485, 
+    "organization_kind": "University", 
+    "organization_name": "HACC", 
+    "organization_rank": 266, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3817, 
+    "weekly_games_won": 1296
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9540, 
+    "organization_kind": "University", 
+    "organization_name": "VIT", 
+    "organization_rank": 267, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4069, 
+    "weekly_games_won": 1294
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 795, 
+    "organization_kind": "University", 
+    "organization_name": "Southern New Hampshire University", 
+    "organization_rank": 268, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3479, 
+    "weekly_games_won": 1288
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2811, 
+    "organization_kind": "University", 
+    "organization_name": "Palacky University", 
+    "organization_rank": 269, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3804, 
+    "weekly_games_won": 1286
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 6065, 
+    "organization_kind": "University", 
+    "organization_name": "Christelijke Hogeschool Windesheim", 
+    "organization_rank": 270, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3187, 
+    "weekly_games_won": 1283
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 8108, 
+    "organization_kind": "University", 
+    "organization_name": "University of Glasgow", 
+    "organization_rank": 271, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3594, 
+    "weekly_games_won": 1266
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 6254, 
+    "organization_kind": "University", 
+    "organization_name": "Air University", 
+    "organization_rank": 272, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4062, 
+    "weekly_games_won": 1265
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 8185, 
+    "organization_kind": "University", 
+    "organization_name": "Sheffield Hallam University", 
+    "organization_rank": 273, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3920, 
+    "weekly_games_won": 1249
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 6041, 
+    "organization_kind": "University", 
+    "organization_name": "Hogeschool van Amsterdam", 
+    "organization_rank": 274, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3997, 
+    "weekly_games_won": 1244
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9293, 
+    "organization_kind": "High School", 
+    "organization_name": "Punahou", 
+    "organization_rank": 275, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4101, 
+    "weekly_games_won": 1242
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 299, 
+    "organization_kind": "University", 
+    "organization_name": "Denison University", 
+    "organization_rank": 276, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3863, 
+    "weekly_games_won": 1237
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9912, 
+    "organization_kind": "High School", 
+    "organization_name": "Masconomet Regional High School", 
+    "organization_rank": 277, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2942, 
+    "weekly_games_won": 1230
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9745, 
+    "organization_kind": "Company", 
+    "organization_name": "Booking.com", 
+    "organization_rank": 278, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3543, 
+    "weekly_games_won": 1208
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3259, 
+    "organization_kind": "University", 
+    "organization_name": "Universit\u00e9 Claude Bernard (Lyon I)", 
+    "organization_rank": 279, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3364, 
+    "weekly_games_won": 1199
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9894, 
+    "organization_kind": "High School", 
+    "organization_name": "Cranbrook Kingswood High School", 
+    "organization_rank": 280, 
+    "tier": "Bronze", 
+    "weekly_games_played": 4116, 
+    "weekly_games_won": 1197
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9878, 
+    "organization_kind": "High School", 
+    "organization_name": "Malvern College", 
+    "organization_rank": 281, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3588, 
+    "weekly_games_won": 1189
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 1839, 
+    "organization_kind": "University", 
+    "organization_name": "Universidade Estadual Paulista", 
+    "organization_rank": 282, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3956, 
+    "weekly_games_won": 1184
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9629, 
+    "organization_kind": "Company", 
+    "organization_name": "SINTEF", 
+    "organization_rank": 283, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3599, 
+    "weekly_games_won": 1177
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9525, 
+    "organization_kind": "High School", 
+    "organization_name": "Rock Ridge High School", 
+    "organization_rank": 284, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3900, 
+    "weekly_games_won": 1171
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 238, 
+    "organization_kind": "University", 
+    "organization_name": "Clayton State College", 
+    "organization_rank": 285, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3872, 
+    "weekly_games_won": 1164
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 174, 
+    "organization_kind": "University", 
+    "organization_name": "California Polytechnic State University, San Luis Obispo", 
+    "organization_rank": 286, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3376, 
+    "weekly_games_won": 1154
+  }, 
+  {
+    "num_players": 7, 
+    "organization_id": 9915, 
+    "organization_kind": "High School", 
+    "organization_name": "Newark Academy", 
+    "organization_rank": 287, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3174, 
+    "weekly_games_won": 1131
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2600, 
+    "organization_kind": "University", 
+    "organization_name": "Zhejiang University", 
+    "organization_rank": 288, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2896, 
+    "weekly_games_won": 1125
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3559, 
+    "organization_kind": "University", 
+    "organization_name": "Christian-Albrechts-Universit\u00e4t Kiel", 
+    "organization_rank": 289, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3959, 
+    "weekly_games_won": 1113
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9442, 
+    "organization_kind": "University", 
+    "organization_name": "IIT Kharagpur", 
+    "organization_rank": 290, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3734, 
+    "weekly_games_won": 1112
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 3457, 
+    "organization_kind": "University", 
+    "organization_name": "Hochschule Coburg", 
+    "organization_rank": 291, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3904, 
+    "weekly_games_won": 1097
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 7471, 
+    "organization_kind": "University", 
+    "organization_name": "Open University of Sri Lanka", 
+    "organization_rank": 292, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3456, 
+    "weekly_games_won": 1091
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 812, 
+    "organization_kind": "University", 
+    "organization_name": "Stanford University", 
+    "organization_rank": 293, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3279, 
+    "weekly_games_won": 1085
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9441, 
+    "organization_kind": "Company", 
+    "organization_name": "TD Securities", 
+    "organization_rank": 294, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3541, 
+    "weekly_games_won": 1081
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 120, 
+    "organization_kind": "University", 
+    "organization_name": "Ball State University", 
+    "organization_rank": 295, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3373, 
+    "weekly_games_won": 1074
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9334, 
+    "organization_kind": "High School", 
+    "organization_name": "California Academy of Math and Science", 
+    "organization_rank": 296, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3449, 
+    "weekly_games_won": 1073
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 7544, 
+    "organization_kind": "University", 
+    "organization_name": "Lund University", 
+    "organization_rank": 297, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3374, 
+    "weekly_games_won": 1060
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9405, 
+    "organization_kind": "Company", 
+    "organization_name": "Adobe", 
+    "organization_rank": 298, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3079, 
+    "weekly_games_won": 1051
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7013, 
+    "organization_kind": "University", 
+    "organization_name": "Moscow State Institute of Steel and Alloys", 
+    "organization_rank": 299, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3501, 
+    "weekly_games_won": 1042
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9355, 
+    "organization_kind": "Company", 
+    "organization_name": "Canada Revenue Agency", 
+    "organization_rank": 300, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3242, 
+    "weekly_games_won": 1040
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 9304, 
+    "organization_kind": "Company", 
+    "organization_name": "HCM", 
+    "organization_rank": 301, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3550, 
+    "weekly_games_won": 1037
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9659, 
+    "organization_kind": "High School", 
+    "organization_name": "BBG Academy", 
+    "organization_rank": 302, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2496, 
+    "weekly_games_won": 1026
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3405, 
+    "organization_kind": "University", 
+    "organization_name": "Fachhochschule M\u00fcnster", 
+    "organization_rank": 303, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3569, 
+    "weekly_games_won": 1025
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 3724, 
+    "organization_kind": "University", 
+    "organization_name": "Hong Kong University of Science and Technology", 
+    "organization_rank": 304, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3279, 
+    "weekly_games_won": 1016
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9384, 
+    "organization_kind": "Company", 
+    "organization_name": "BBVA", 
+    "organization_rank": 305, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2740, 
+    "weekly_games_won": 1009
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 3196, 
+    "organization_kind": "University", 
+    "organization_name": "Institut National des Sciences Appliqu\u00e9es de Rouen", 
+    "organization_rank": 306, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2983, 
+    "weekly_games_won": 1000
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9820, 
+    "organization_kind": "Company", 
+    "organization_name": "Andela", 
+    "organization_rank": 307, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2678, 
+    "weekly_games_won": 997
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2439, 
+    "organization_kind": "University", 
+    "organization_name": "Peking University", 
+    "organization_rank": 308, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2969, 
+    "weekly_games_won": 994
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 7523, 
+    "organization_kind": "University", 
+    "organization_name": "Chalmers University of Technology", 
+    "organization_rank": 309, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3333, 
+    "weekly_games_won": 987
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9559, 
+    "organization_kind": "Company", 
+    "organization_name": "Gambit Group", 
+    "organization_rank": 310, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2794, 
+    "weekly_games_won": 985
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 1009, 
+    "organization_kind": "University", 
+    "organization_name": "University of North Carolina at Chapel Hill", 
+    "organization_rank": 311, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3107, 
+    "weekly_games_won": 984
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1041, 
+    "organization_kind": "University", 
+    "organization_name": "University of South Carolina", 
+    "organization_rank": 312, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3320, 
+    "weekly_games_won": 981
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 63, 
+    "organization_kind": "University", 
+    "organization_name": "Baker College", 
+    "organization_rank": 313, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2907, 
+    "weekly_games_won": 980
+  }, 
+  {
+    "num_players": 6, 
+    "organization_id": 1032, 
+    "organization_kind": "University", 
+    "organization_name": "University of Rochester", 
+    "organization_rank": 314, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3019, 
+    "weekly_games_won": 968
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9647, 
+    "organization_kind": "High School", 
+    "organization_name": "WIZO Nahalal School", 
+    "organization_rank": 315, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2490, 
+    "weekly_games_won": 967
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3551, 
+    "organization_kind": "University", 
+    "organization_name": "Universit\u00e4t Hamburg", 
+    "organization_rank": 316, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2660, 
+    "weekly_games_won": 963
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9924, 
+    "organization_kind": "Company", 
+    "organization_name": "Core Creative", 
+    "organization_rank": 317, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3192, 
+    "weekly_games_won": 956
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7777, 
+    "organization_kind": "University", 
+    "organization_name": "King Mongkut's University of Technology Ladkrabang", 
+    "organization_rank": 318, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3544, 
+    "weekly_games_won": 948
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 6467, 
+    "organization_kind": "University", 
+    "organization_name": "Universidad Nacional de San Agustin", 
+    "organization_rank": 319, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2989, 
+    "weekly_games_won": 945
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 1434, 
+    "organization_kind": "University", 
+    "organization_name": "University of Western Australia", 
+    "organization_rank": 320, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2491, 
+    "weekly_games_won": 938
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9907, 
+    "organization_kind": "High School", 
+    "organization_name": "Northview High School", 
+    "organization_rank": 321, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2974, 
+    "weekly_games_won": 925
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 3897, 
+    "organization_kind": "University", 
+    "organization_name": "Indian Institute of Technology, Madras", 
+    "organization_rank": 322, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3240, 
+    "weekly_games_won": 915
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9502, 
+    "organization_kind": "University", 
+    "organization_name": "Technische Universit\u00e4t Braunschweig", 
+    "organization_rank": 323, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2907, 
+    "weekly_games_won": 914
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3751, 
+    "organization_kind": "University", 
+    "organization_name": "University of Pecs", 
+    "organization_rank": 324, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2853, 
+    "weekly_games_won": 913
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3526, 
+    "organization_kind": "University", 
+    "organization_name": "Technische Universit\u00e4t Dresden", 
+    "organization_rank": 325, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2916, 
+    "weekly_games_won": 904
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9290, 
+    "organization_kind": "University", 
+    "organization_name": "Ecole Polytechnique", 
+    "organization_rank": 325, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2938, 
+    "weekly_games_won": 904
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9375, 
+    "organization_kind": "Company", 
+    "organization_name": "Soliton", 
+    "organization_rank": 327, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2617, 
+    "weekly_games_won": 900
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 9905, 
+    "organization_kind": "High School", 
+    "organization_name": "Home School", 
+    "organization_rank": 328, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2648, 
+    "weekly_games_won": 898
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 147, 
+    "organization_kind": "University", 
+    "organization_name": "Boise State University", 
+    "organization_rank": 328, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2932, 
+    "weekly_games_won": 898
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9938, 
+    "organization_kind": "High School", 
+    "organization_name": "Evangelische Schule Neuruppin", 
+    "organization_rank": 330, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2807, 
+    "weekly_games_won": 895
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 455, 
+    "organization_kind": "University", 
+    "organization_name": "James Madison University", 
+    "organization_rank": 331, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2633, 
+    "weekly_games_won": 885
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 1054, 
+    "organization_kind": "University", 
+    "organization_name": "University of Texas at Arlington", 
+    "organization_rank": 332, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2938, 
+    "weekly_games_won": 880
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1102, 
+    "organization_kind": "University", 
+    "organization_name": "Vanderbilt University", 
+    "organization_rank": 333, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2908, 
+    "weekly_games_won": 870
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9876, 
+    "organization_kind": "High School", 
+    "organization_name": "Barrow Hall College", 
+    "organization_rank": 334, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2615, 
+    "weekly_games_won": 858
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9853, 
+    "organization_kind": "Company", 
+    "organization_name": "Bank Of America", 
+    "organization_rank": 335, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2670, 
+    "weekly_games_won": 856
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1087, 
+    "organization_kind": "University", 
+    "organization_name": "University of Wisconsin - River Falls", 
+    "organization_rank": 336, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2555, 
+    "weekly_games_won": 844
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 762, 
+    "organization_kind": "University", 
+    "organization_name": "San Francisco State University", 
+    "organization_rank": 337, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2856, 
+    "weekly_games_won": 836
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9305, 
+    "organization_kind": "University", 
+    "organization_name": "Paderborn University", 
+    "organization_rank": 338, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2881, 
+    "weekly_games_won": 835
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3553, 
+    "organization_kind": "University", 
+    "organization_name": "Ruprecht-Karls-Universit\u00e4t Heidelberg", 
+    "organization_rank": 338, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2917, 
+    "weekly_games_won": 835
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3883, 
+    "organization_kind": "University", 
+    "organization_name": "International Institute of Information Technology, Bhubaneswar", 
+    "organization_rank": 340, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3491, 
+    "weekly_games_won": 830
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 979, 
+    "organization_kind": "University", 
+    "organization_name": "University of Massachusetts at Amherst", 
+    "organization_rank": 341, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2536, 
+    "weekly_games_won": 829
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9645, 
+    "organization_kind": "High School", 
+    "organization_name": "Plano ISD Academy High School", 
+    "organization_rank": 342, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3107, 
+    "weekly_games_won": 802
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2844, 
+    "organization_kind": "University", 
+    "organization_name": "Copenhagen University", 
+    "organization_rank": 342, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2631, 
+    "weekly_games_won": 802
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3072, 
+    "organization_kind": "University", 
+    "organization_name": "42 FR", 
+    "organization_rank": 344, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2006, 
+    "weekly_games_won": 799
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9312, 
+    "organization_kind": "University", 
+    "organization_name": "KU Leuven", 
+    "organization_rank": 345, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2870, 
+    "weekly_games_won": 798
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 4659, 
+    "organization_kind": "University", 
+    "organization_name": "University of Milan - Bicocca", 
+    "organization_rank": 346, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2430, 
+    "weekly_games_won": 788
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7382, 
+    "organization_kind": "University", 
+    "organization_name": "Barcelona Graduate School of Economics", 
+    "organization_rank": 347, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2081, 
+    "weekly_games_won": 779
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 6675, 
+    "organization_kind": "University", 
+    "organization_name": "Technical University of Poznan", 
+    "organization_rank": 348, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2228, 
+    "weekly_games_won": 772
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 41, 
+    "organization_kind": "University", 
+    "organization_name": "Utica College", 
+    "organization_rank": 349, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2882, 
+    "weekly_games_won": 770
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9412, 
+    "organization_kind": "Company", 
+    "organization_name": "ANSTO", 
+    "organization_rank": 349, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2320, 
+    "weekly_games_won": 770
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9927, 
+    "organization_kind": "Company", 
+    "organization_name": "onepoint", 
+    "organization_rank": 351, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1928, 
+    "weekly_games_won": 761
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 4130, 
+    "organization_kind": "University", 
+    "organization_name": "Vellore Institute of Technology", 
+    "organization_rank": 352, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3182, 
+    "weekly_games_won": 760
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9879, 
+    "organization_kind": "High School", 
+    "organization_name": "Holy Ghost Preparatory School", 
+    "organization_rank": 353, 
+    "tier": "Bronze", 
+    "weekly_games_played": 3094, 
+    "weekly_games_won": 733
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3583, 
+    "organization_kind": "University", 
+    "organization_name": "Universit\u00e4t Stuttgart", 
+    "organization_rank": 354, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2108, 
+    "weekly_games_won": 724
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 653, 
+    "organization_kind": "University", 
+    "organization_name": "Ohio University", 
+    "organization_rank": 355, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2258, 
+    "weekly_games_won": 722
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1401, 
+    "organization_kind": "University", 
+    "organization_name": "Deakin University", 
+    "organization_rank": 356, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2908, 
+    "weekly_games_won": 717
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 7336, 
+    "organization_kind": "University", 
+    "organization_name": "University of Ljubljana", 
+    "organization_rank": 357, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2218, 
+    "weekly_games_won": 716
+  }, 
+  {
+    "num_players": 4, 
+    "organization_id": 7593, 
+    "organization_kind": "University", 
+    "organization_name": "ETHZ - ETH Zurich", 
+    "organization_rank": 358, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2266, 
+    "weekly_games_won": 715
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1072, 
+    "organization_kind": "University", 
+    "organization_name": "University of Utah", 
+    "organization_rank": 358, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1957, 
+    "weekly_games_won": 715
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9707, 
+    "organization_kind": "University", 
+    "organization_name": "Kalinga Institute of Industrial Technology", 
+    "organization_rank": 360, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2327, 
+    "weekly_games_won": 711
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7606, 
+    "organization_kind": "University", 
+    "organization_name": "FHNW - Fachhochschule Nordwestschweiz", 
+    "organization_rank": 361, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2154, 
+    "weekly_games_won": 708
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 8220, 
+    "organization_kind": "University", 
+    "organization_name": "University of Warwick", 
+    "organization_rank": 362, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2713, 
+    "weekly_games_won": 707
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 5794, 
+    "organization_kind": "University", 
+    "organization_name": "Universidad An\u00e1huac", 
+    "organization_rank": 363, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2210, 
+    "weekly_games_won": 701
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 8887, 
+    "organization_kind": "University", 
+    "organization_name": "Mississippi Gulf Coast Community College", 
+    "organization_rank": 363, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2978, 
+    "weekly_games_won": 701
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9325, 
+    "organization_kind": "High School", 
+    "organization_name": "The Bronx High School of Science", 
+    "organization_rank": 365, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1988, 
+    "weekly_games_won": 682
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9903, 
+    "organization_kind": "High School", 
+    "organization_name": "Maggie L. Walker Governor's School", 
+    "organization_rank": 366, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2195, 
+    "weekly_games_won": 680
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9332, 
+    "organization_kind": "High School", 
+    "organization_name": "Livingston High School", 
+    "organization_rank": 367, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2212, 
+    "weekly_games_won": 679
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9939, 
+    "organization_kind": "High School", 
+    "organization_name": "The Noble Academy", 
+    "organization_rank": 367, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1887, 
+    "weekly_games_won": 679
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 6061, 
+    "organization_kind": "University", 
+    "organization_name": "University of Amsterdam", 
+    "organization_rank": 369, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1937, 
+    "weekly_games_won": 662
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9664, 
+    "organization_kind": "High School", 
+    "organization_name": "Brunswick School, Greenwich", 
+    "organization_rank": 370, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2060, 
+    "weekly_games_won": 660
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 7443, 
+    "organization_kind": "University", 
+    "organization_name": "Universidad Polit\u00e9cnica de Cataluna", 
+    "organization_rank": 371, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1914, 
+    "weekly_games_won": 655
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 1807, 
+    "organization_kind": "University", 
+    "organization_name": "Universidade Federal de Juiz de Fora", 
+    "organization_rank": 372, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1618, 
+    "weekly_games_won": 652
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9545, 
+    "organization_kind": "University", 
+    "organization_name": "NHL Hogeschool", 
+    "organization_rank": 373, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1570, 
+    "weekly_games_won": 649
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9302, 
+    "organization_kind": "Company", 
+    "organization_name": "Seznam", 
+    "organization_rank": 374, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2178, 
+    "weekly_games_won": 648
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9251, 
+    "organization_kind": "University", 
+    "organization_name": "Tacoma Community College", 
+    "organization_rank": 375, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2396, 
+    "weekly_games_won": 642
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 955, 
+    "organization_kind": "University", 
+    "organization_name": "University of Illinois at Chicago", 
+    "organization_rank": 376, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1974, 
+    "weekly_games_won": 637
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 6774, 
+    "organization_kind": "University", 
+    "organization_name": "Universidade de Evora", 
+    "organization_rank": 377, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1988, 
+    "weekly_games_won": 632
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1254, 
+    "organization_kind": "University", 
+    "organization_name": "Universit\u00e9 d'Alger", 
+    "organization_rank": 378, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2106, 
+    "weekly_games_won": 628
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9599, 
+    "organization_kind": "High School", 
+    "organization_name": "Chantilly High Schoo", 
+    "organization_rank": 379, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2260, 
+    "weekly_games_won": 621
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 1428, 
+    "organization_kind": "University", 
+    "organization_name": "University of Queensland", 
+    "organization_rank": 380, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1923, 
+    "weekly_games_won": 619
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 3587, 
+    "organization_kind": "University", 
+    "organization_name": "Universit\u00e4t Ulm", 
+    "organization_rank": 381, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1926, 
+    "weekly_games_won": 618
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1469, 
+    "organization_kind": "University", 
+    "organization_name": "Technische Universit\u00e4t Graz", 
+    "organization_rank": 381, 
+    "tier": "Bronze", 
+    "weekly_games_played": 2057, 
+    "weekly_games_won": 618
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 8115, 
+    "organization_kind": "University", 
+    "organization_name": "University of Hertfordshire", 
+    "organization_rank": 383, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1805, 
+    "weekly_games_won": 600
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 2102, 
+    "organization_kind": "University", 
+    "organization_name": "University of Alberta", 
+    "organization_rank": 384, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1933, 
+    "weekly_games_won": 595
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7595, 
+    "organization_kind": "University", 
+    "organization_name": "University of Basel", 
+    "organization_rank": 385, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1574, 
+    "weekly_games_won": 590
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1030, 
+    "organization_kind": "University", 
+    "organization_name": "University of Rhode Island", 
+    "organization_rank": 385, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1846, 
+    "weekly_games_won": 590
+  }, 
+  {
+    "num_players": 5, 
+    "organization_id": 7541, 
+    "organization_kind": "University", 
+    "organization_name": "Royal lnstitute of Technology", 
+    "organization_rank": 387, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1698, 
+    "weekly_games_won": 588
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 135, 
+    "organization_kind": "University", 
+    "organization_name": "Berea College", 
+    "organization_rank": 388, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1983, 
+    "weekly_games_won": 584
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2022, 
+    "organization_kind": "University", 
+    "organization_name": "Brock University", 
+    "organization_rank": 389, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1759, 
+    "weekly_games_won": 583
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 355, 
+    "organization_kind": "University", 
+    "organization_name": "Fordham University", 
+    "organization_rank": 389, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1872, 
+    "weekly_games_won": 583
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2232, 
+    "organization_kind": "University", 
+    "organization_name": "Beijing Institute of Technology", 
+    "organization_rank": 391, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1761, 
+    "weekly_games_won": 578
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9456, 
+    "organization_kind": "Company", 
+    "organization_name": "Audible", 
+    "organization_rank": 392, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1390, 
+    "weekly_games_won": 564
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 3222, 
+    "organization_kind": "University", 
+    "organization_name": "Institut d'Etudes Politiques de Paris (Sciences Po)", 
+    "organization_rank": 393, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1700, 
+    "weekly_games_won": 562
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 555, 
+    "organization_kind": "University", 
+    "organization_name": "Miami University of Ohio", 
+    "organization_rank": 394, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1758, 
+    "weekly_games_won": 559
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 9113, 
+    "organization_kind": "University", 
+    "organization_name": "Montgomery County Community College", 
+    "organization_rank": 395, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1468, 
+    "weekly_games_won": 555
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1934, 
+    "organization_kind": "University", 
+    "organization_name": "Sofia University \"St. Kliment Ohridski\"", 
+    "organization_rank": 396, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1700, 
+    "weekly_games_won": 543
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9900, 
+    "organization_kind": "High School", 
+    "organization_name": "V Gymnasium", 
+    "organization_rank": 397, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1695, 
+    "weekly_games_won": 539
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2140, 
+    "organization_kind": "University", 
+    "organization_name": "University of Toronto", 
+    "organization_rank": 397, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1493, 
+    "weekly_games_won": 539
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2618, 
+    "organization_kind": "University", 
+    "organization_name": "Universidad EAFIT", 
+    "organization_rank": 399, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1621, 
+    "weekly_games_won": 528
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7764, 
+    "organization_kind": "University", 
+    "organization_name": "Chulalongkorn University", 
+    "organization_rank": 399, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1599, 
+    "weekly_games_won": 528
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 372, 
+    "organization_kind": "University", 
+    "organization_name": "George Mason University", 
+    "organization_rank": 401, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1633, 
+    "weekly_games_won": 523
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9901, 
+    "organization_kind": "High School", 
+    "organization_name": "The Queens School of Inquiry", 
+    "organization_rank": 402, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1633, 
+    "weekly_games_won": 516
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 449, 
+    "organization_kind": "University", 
+    "organization_name": "Iowa State University", 
+    "organization_rank": 403, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1517, 
+    "weekly_games_won": 511
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 1820, 
+    "organization_kind": "University", 
+    "organization_name": "Universidade Federal do Rio Grande do Sul", 
+    "organization_rank": 404, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1465, 
+    "weekly_games_won": 508
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1070, 
+    "organization_kind": "University", 
+    "organization_name": "University of Toledo", 
+    "organization_rank": 405, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1499, 
+    "weekly_games_won": 506
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 468, 
+    "organization_kind": "University", 
+    "organization_name": "Kansas State University", 
+    "organization_rank": 406, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1372, 
+    "weekly_games_won": 505
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1470, 
+    "organization_kind": "University", 
+    "organization_name": "Technische Universit\u00e4t Wien", 
+    "organization_rank": 407, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1582, 
+    "weekly_games_won": 482
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9661, 
+    "organization_kind": "High School", 
+    "organization_name": "Instisuto Tecnologico Philips Argentina", 
+    "organization_rank": 408, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1167, 
+    "weekly_games_won": 481
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9834, 
+    "organization_kind": "Company", 
+    "organization_name": "Airro", 
+    "organization_rank": 409, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1530, 
+    "weekly_games_won": 473
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1008, 
+    "organization_kind": "University", 
+    "organization_name": "University of North Carolina at Asheville", 
+    "organization_rank": 410, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1382, 
+    "weekly_games_won": 471
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 928, 
+    "organization_kind": "University", 
+    "organization_name": "University of Central Florida", 
+    "organization_rank": 411, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1477, 
+    "weekly_games_won": 468
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 459, 
+    "organization_kind": "University", 
+    "organization_name": "Johns Hopkins University", 
+    "organization_rank": 412, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1465, 
+    "weekly_games_won": 467
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9329, 
+    "organization_kind": "High School", 
+    "organization_name": "Leland High School", 
+    "organization_rank": 413, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1323, 
+    "weekly_games_won": 458
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9788, 
+    "organization_kind": "Company", 
+    "organization_name": "Ericsson", 
+    "organization_rank": 414, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1328, 
+    "weekly_games_won": 454
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 337, 
+    "organization_kind": "University", 
+    "organization_name": "Emory University", 
+    "organization_rank": 415, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1507, 
+    "weekly_games_won": 452
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3938, 
+    "organization_kind": "University", 
+    "organization_name": "Karunya Institute Of Technology ( Deemed University)", 
+    "organization_rank": 416, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1360, 
+    "weekly_games_won": 451
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9731, 
+    "organization_kind": "University", 
+    "organization_name": "St. Petersburg National Research University", 
+    "organization_rank": 417, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1356, 
+    "weekly_games_won": 443
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 189, 
+    "organization_kind": "University", 
+    "organization_name": "California State University, San Marcos", 
+    "organization_rank": 418, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1344, 
+    "weekly_games_won": 442
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 170, 
+    "organization_kind": "University", 
+    "organization_name": "California Institute of Technology", 
+    "organization_rank": 419, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1249, 
+    "weekly_games_won": 432
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9483, 
+    "organization_kind": "Company", 
+    "organization_name": "Cerner", 
+    "organization_rank": 420, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1364, 
+    "weekly_games_won": 431
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3950, 
+    "organization_kind": "University", 
+    "organization_name": "Kumaraguru College of Technology", 
+    "organization_rank": 421, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1255, 
+    "weekly_games_won": 427
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1019, 
+    "organization_kind": "University", 
+    "organization_name": "University of Notre Dame", 
+    "organization_rank": 422, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1355, 
+    "weekly_games_won": 423
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3714, 
+    "organization_kind": "University", 
+    "organization_name": "City University of Hong Kong", 
+    "organization_rank": 422, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1248, 
+    "weekly_games_won": 423
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 8141, 
+    "organization_kind": "University", 
+    "organization_name": "University of Lincoln", 
+    "organization_rank": 424, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1305, 
+    "weekly_games_won": 421
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 953, 
+    "organization_kind": "University", 
+    "organization_name": "University of Houston", 
+    "organization_rank": 425, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1072, 
+    "weekly_games_won": 418
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2132, 
+    "organization_kind": "University", 
+    "organization_name": "University of Saskatchewan", 
+    "organization_rank": 426, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1240, 
+    "weekly_games_won": 411
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9364, 
+    "organization_kind": "Company", 
+    "organization_name": "Jet", 
+    "organization_rank": 427, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1216, 
+    "weekly_games_won": 410
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3529, 
+    "organization_kind": "University", 
+    "organization_name": "Technische Universit\u00e4t Ilmenau", 
+    "organization_rank": 428, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1095, 
+    "weekly_games_won": 409
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9541, 
+    "organization_kind": "Company", 
+    "organization_name": "Inmobi", 
+    "organization_rank": 429, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1062, 
+    "weekly_games_won": 386
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 292, 
+    "organization_kind": "University", 
+    "organization_name": "Dartmouth College", 
+    "organization_rank": 430, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1158, 
+    "weekly_games_won": 382
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2077, 
+    "organization_kind": "University", 
+    "organization_name": "Queen's University", 
+    "organization_rank": 431, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1128, 
+    "weekly_games_won": 378
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 8445, 
+    "organization_kind": "University", 
+    "organization_name": "Uskudar University", 
+    "organization_rank": 432, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1072, 
+    "weekly_games_won": 369
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1002, 
+    "organization_kind": "University", 
+    "organization_name": "University of Nevada, Reno", 
+    "organization_rank": 433, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1095, 
+    "weekly_games_won": 367
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 322, 
+    "organization_kind": "University", 
+    "organization_name": "Eastern Michigan University", 
+    "organization_rank": 434, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1177, 
+    "weekly_games_won": 360
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 163, 
+    "organization_kind": "University", 
+    "organization_name": "Brown University", 
+    "organization_rank": 435, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1084, 
+    "weekly_games_won": 357
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 53, 
+    "organization_kind": "University", 
+    "organization_name": "Full Sail University", 
+    "organization_rank": 436, 
+    "tier": "Bronze", 
+    "weekly_games_played": 866, 
+    "weekly_games_won": 352
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 1295, 
+    "organization_kind": "University", 
+    "organization_name": "Instituto Tecnol\u00f3gico de Buenos Aires", 
+    "organization_rank": 437, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1021, 
+    "weekly_games_won": 351
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 993, 
+    "organization_kind": "University", 
+    "organization_name": "University of Missouri - Columbia", 
+    "organization_rank": 438, 
+    "tier": "Bronze", 
+    "weekly_games_played": 993, 
+    "weekly_games_won": 343
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 8391, 
+    "organization_kind": "University", 
+    "organization_name": "Gebze Tecnical University", 
+    "organization_rank": 439, 
+    "tier": "Bronze", 
+    "weekly_games_played": 986, 
+    "weekly_games_won": 339
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 2152, 
+    "organization_kind": "University", 
+    "organization_name": "York University", 
+    "organization_rank": 440, 
+    "tier": "Bronze", 
+    "weekly_games_played": 873, 
+    "weekly_games_won": 336
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7866, 
+    "organization_kind": "University", 
+    "organization_name": "Canakkale (18th March) University", 
+    "organization_rank": 440, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1027, 
+    "weekly_games_won": 336
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 9937, 
+    "organization_kind": "High School", 
+    "organization_name": "Vandegrift High School", 
+    "organization_rank": 442, 
+    "tier": "Bronze", 
+    "weekly_games_played": 1041, 
+    "weekly_games_won": 335
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 311, 
+    "organization_kind": "University", 
+    "organization_name": "Drexel University", 
+    "organization_rank": 443, 
+    "tier": "Bronze", 
+    "weekly_games_played": 902, 
+    "weekly_games_won": 331
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 784, 
+    "organization_kind": "University", 
+    "organization_name": "South Dakota School of Mines and Technology", 
+    "organization_rank": 444, 
+    "tier": "Bronze", 
+    "weekly_games_played": 949, 
+    "weekly_games_won": 327
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 7010, 
+    "organization_kind": "University", 
+    "organization_name": "Moscow Institute of Physics and Technology", 
+    "organization_rank": 445, 
+    "tier": "Bronze", 
+    "weekly_games_played": 891, 
+    "weekly_games_won": 314
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 2105, 
+    "organization_kind": "University", 
+    "organization_name": "University of Calgary", 
+    "organization_rank": 446, 
+    "tier": "Bronze", 
+    "weekly_games_played": 774, 
+    "weekly_games_won": 291
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 2655, 
+    "organization_kind": "University", 
+    "organization_name": "Universidad de Antioquia", 
+    "organization_rank": 447, 
+    "tier": "Bronze", 
+    "weekly_games_played": 774, 
+    "weekly_games_won": 290
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7389, 
+    "organization_kind": "University", 
+    "organization_name": "IE University", 
+    "organization_rank": 448, 
+    "tier": "Bronze", 
+    "weekly_games_played": 803, 
+    "weekly_games_won": 289
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7326, 
+    "organization_kind": "University", 
+    "organization_name": "Comenius University in Bratislava", 
+    "organization_rank": 449, 
+    "tier": "Bronze", 
+    "weekly_games_played": 871, 
+    "weekly_games_won": 288
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 2133, 
+    "organization_kind": "University", 
+    "organization_name": "Universit\u00e9 de Sherbrooke", 
+    "organization_rank": 450, 
+    "tier": "Bronze", 
+    "weekly_games_played": 841, 
+    "weekly_games_won": 282
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1768, 
+    "organization_kind": "University", 
+    "organization_name": "Pontif\u00edcia Universidade Cat\u00f3lica do Rio de Janeiro", 
+    "organization_rank": 451, 
+    "tier": "Bronze", 
+    "weekly_games_played": 769, 
+    "weekly_games_won": 278
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1431, 
+    "organization_kind": "University", 
+    "organization_name": "University of Sydney", 
+    "organization_rank": 452, 
+    "tier": "Bronze", 
+    "weekly_games_played": 872, 
+    "weekly_games_won": 270
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 8134, 
+    "organization_kind": "University", 
+    "organization_name": "Loughborough University", 
+    "organization_rank": 453, 
+    "tier": "Bronze", 
+    "weekly_games_played": 758, 
+    "weekly_games_won": 259
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1566, 
+    "organization_kind": "University", 
+    "organization_name": "Khulna University of Engineering And Technology", 
+    "organization_rank": 454, 
+    "tier": "Bronze", 
+    "weekly_games_played": 751, 
+    "weekly_games_won": 252
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9922, 
+    "organization_kind": "High School", 
+    "organization_name": "Kirksville High School", 
+    "organization_rank": 455, 
+    "tier": "Bronze", 
+    "weekly_games_played": 736, 
+    "weekly_games_won": 249
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 1021, 
+    "organization_kind": "University", 
+    "organization_name": "University of Oregon", 
+    "organization_rank": 456, 
+    "tier": "Bronze", 
+    "weekly_games_played": 674, 
+    "weekly_games_won": 243
+  }, 
+  {
+    "num_players": 2, 
+    "organization_id": 9829, 
+    "organization_kind": "Company", 
+    "organization_name": "Salesforce", 
+    "organization_rank": 457, 
+    "tier": "Bronze", 
+    "weekly_games_played": 610, 
+    "weekly_games_won": 200
+  }, 
+  {
+    "num_players": 3, 
+    "organization_id": 715, 
+    "organization_kind": "University", 
+    "organization_name": "Rhodes College", 
+    "organization_rank": 458, 
+    "tier": "Bronze", 
+    "weekly_games_played": 527, 
+    "weekly_games_won": 194
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 7673, 
+    "organization_kind": "University", 
+    "organization_name": "National Chengchi University", 
+    "organization_rank": 459, 
+    "tier": "Bronze", 
+    "weekly_games_played": 525, 
+    "weekly_games_won": 188
+  }, 
+  {
+    "num_players": 1, 
+    "organization_id": 3045, 
+    "organization_kind": "University", 
+    "organization_name": "University of Helsinki", 
+    "organization_rank": 460, 
+    "tier": "Bronze", 
+    "weekly_games_played": 497, 
+    "weekly_games_won": 171
+  }
+]

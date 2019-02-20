@@ -155,33 +155,6 @@
         </div>
       </div>
       <div role="tabpanel" class="tab-pane organizations" id="organizations">
-        <div class="panel panel-stats">
-          <div class="panel-heading" role="tab">
-            <a data-toggle="collapse" id="toggle_filter" aria-controls="panel_filter">
-              <h4 class="title-h4">Filters</h4>
-            </a>
-            <div class="filter-handler" v-if="filter_handle_view==='normal'">
-              <a href="#" class="handler-item" @click="clearFilter(2)">
-                <span class="handler-item-img icon-remove"></span>
-                <span class="handler-item-text">Clear all</span>
-              </a>
-            </div>
-          </div>
-          <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="panel_filter">
-            <form class="leaderboard-filter-form" v-on:submit="on_update_filter">
-              <div class="form-header">
-              </div>
-              <div class="filter-group">
-                <div class="input-group">
-                  <v-select multiple placeholder="Organization" v-model="org_name_filter" :options="filter_org_options.name_options">
-                  </v-select>
-                  <v-select multiple placeholder="Level" v-model="org_level_filter" :options="filter_org_options.level_options">
-                  </v-select>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
         <div v-if="filter_org_list.length">
           <div class="table-container">
             <table class="table">
@@ -189,7 +162,7 @@
                 <tr>
                   <th class="text-center">RANK</th>
                   <th>ORGANIZATION</th>
-                  <th>Games WON (Past 7 days)</th>
+                  <th>Games Won (during finals)</th>
                   <th>LEVEL</th>
                 </tr>
               </thead>
@@ -206,9 +179,6 @@
                 </tr>
               </tbody>
             </table>
-          </div>
-          <div class="leaderboard-page" v-if="isDefaultOrgLimit">
-            <HalitePagination :page="this.org_page" :lastPage="this.org_last_page" :baseUrl="this.baseUrl" :changePage="this.changeOrgPage" />
           </div>
         </div>
         <div v-else class="zero-state-pane">
@@ -344,7 +314,7 @@ export default {
     this.calculate_filters();
 
     // Get all organizational data
-    this.fetchOrgList();
+    this.update_org_filter();
 
     // determine if the filter should be collapsed or not
     // this.setupCollapseFilter()  // issue #409
@@ -800,38 +770,12 @@ export default {
       updatePageNumber = false,
       defaultFilter = false
     ) {
-      const filters = this.build_filter(2);
-      if (updatePageNumber) {
-        if (this.organizations && defaultFilter) {
-          this.org_last_page = Math.ceil(
-            this.organizations.length / this.org_limit
-          );
-        } else {
-          api.organizationLeaderboard(filters).then(org => {
-            if (org && org instanceof Array) {
-              this.org_last_page = Math.ceil(org.length / this.org_limit);
-            }
-          });
+      api.organizationLeaderboard().then(org => {
+        if (org && org instanceof Array) {
+          this.organizations = org;
+          this.filter_org_list = org;
         }
-      }
-      if (this.organizations && defaultFilter) {
-        this.filter_org_list = this.organizations.slice(
-          (this.org_page - 1) * this.org_limit,
-          this.org_page * this.org_limit
-        );
-      } else {
-        api
-          .organizationLeaderboard(
-            filters,
-            (this.org_page - 1) * this.org_limit,
-            this.org_limit
-          )
-          .then(org => {
-            if (org && org instanceof Array) {
-              this.filter_org_list = org;
-            }
-          });
-      }
+      });
     },
     update_filter: function(updatePageNumber = false, defaultFilter = false) {
       const filters = this.build_filter(1);
@@ -892,10 +836,6 @@ export default {
       this.page = page;
       this.update_filter();
     },
-    changeOrgPage: function(page) {
-      this.org_page = page;
-      this.update_org_filter();
-    },
     getCountryName: function(name) {
       var countries = require("i18n-iso-countries");
       return countries.getName(name, "en");
@@ -908,10 +848,6 @@ export default {
         this.organization_filter = [];
         this.tier_filter = [];
         this.update_filter();
-      } else {
-        this.org_name_filter = [];
-        this.org_level_filter = [];
-        this.update_org_filter();
       }
     },
     getCountry: function(name) {
@@ -940,14 +876,6 @@ export default {
     refreshStickyTable: function() {
       window.refreshStickyTable();
     },
-    // Get all organizational data
-    fetchOrgList: function() {
-      api.organizationLeaderboard().then(org => {
-        if (org && org.length > 0) this.organizations = org;
-        this.build_filters_from_url();
-        this.update_org_filter(true, true);
-      });
-    }
   }
 };
 </script>
