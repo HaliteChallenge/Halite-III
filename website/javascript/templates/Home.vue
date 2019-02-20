@@ -82,9 +82,9 @@
         </div>
         <div class="row section-overview">
             <div class="col-md-12" style="width:66.66%;margin:auto;text-align:center;">
-                <h2>Finals run through January 29</h2>
-                <p>The Halite III challenge submission period has closed. Thank you to the thousands of participants from over 100 countries who built a Halite bot in one of more than 20 programming languages. The Halite servers ran more than 4 million games over the course of the regular season.</p>
-                <p>The finals period runs through January 29, 2019. Stay tuned for the results!</p>
+                <h2>The Halite III Season has ended</h2>
+                <p>Congratulations to the Halite III winners, and thank you to the thousands of participants from around the world who built a bot this season.</p>
+                <p>Check out the Halite leaderboard <a href="/programming-competition-leaderboard">here</a>.</p>
                 <br>
                 <a class="btn btn-primary btn-sm" href="/play-programming-challenge" style="color:#fff;background-image:linear-gradient(0deg, #0073DB 0%, #0044A4 100%);">Learn more</a>
             </div>
