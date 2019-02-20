@@ -450,20 +450,13 @@ export function leaderboard (filters, offset = null, limit = null) {
   })
 }
 
+let __organizationLeaderboard = null;
+
 export function organizationLeaderboard(filters, offset=null, limit=null) {
-  let url = `${API_SERVER_URL}/leaderboard/organization`
-  const querystring = []
-  if (offset !== null && limit !== null) {
-    querystring.push(`offset=${offset}&limit=${limit}`)
+  if (__organizationLeaderboard === null) {
+    __organizationLeaderboard = window.fetch('/assets/static-data/organization-leaderboard.json').then(r => r.json());
   }
-  if (filters && filters.length > 0) {
-    filters = filters.map(window.encodeURIComponent);
-    querystring.push(`filter=${filters.join('&filter=')}`)
-  }
-  if (querystring.length > 0) {
-    url += `?${querystring.join('&')}`
-  }
-  return window.fetch(url).then(r => r.json())
+  return __organizationLeaderboard;
 }
 
 export function reset_api_key () {
