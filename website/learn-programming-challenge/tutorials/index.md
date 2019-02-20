@@ -20,7 +20,7 @@ build your first bot, engage with advanced strategies, and more.
 <div class="doc-section" markdown="1">
 
 
-<div class="column-container">
+<!-- <div class="column-container">
   <div class="col" markdown="1">
 <br>
 ## Getting Started
@@ -44,28 +44,11 @@ Improve your movement and player interaction strategies in this tutorial.
 
   </div>
   <div class="col" markdown="1"></div>
-</div>
+</div> 
 
-<!--
-<div class="column-container">
-  <div class="col" markdown="1">
-
-### Tutorial 2
-
-Improve the Starter bot and make your first competition submission
-
-  </div>
-  <div class="col" markdown="1">
-
-### Tutorial 2
-
-Add a new strategy to your bot and learn a new technique. Climb up the leaderboard
-
-  </div>
-</div> -->
 
 ---
-<br>
+<br> -->
 ## Advanced
 <br>
 <div class="column-container">
