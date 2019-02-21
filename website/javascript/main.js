@@ -4,6 +4,7 @@
 import Vue from 'vue'
 import 'url-search-params-polyfill'
 import FinalsStatus from './templates/FinalsStatus.vue'
+import HaliteTV from './templates/HaliteTV.vue'
 import LeaderboardContainer from './templates/LeaderboardContainer.vue'
 import UserProfile from './templates/UserProfile.vue'
 import VisualizerContainer from './templates/VisualizerContainer.vue'
@@ -36,6 +37,12 @@ window.views = {
     new Vue({
       el: '#finals-status',
       render: (h) => h(FinalsStatus, { props: { baseUrl: _global.baseUrl } })
+    })
+  },
+  HaliteTV: function () {
+    new Vue({
+      el: '#watch-container',
+      render: (h) => h(HaliteTV, { props: { baseUrl: _global.baseUrl } })
     })
   },
   LeaderboardContainer: function () {
