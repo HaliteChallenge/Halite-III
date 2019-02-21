@@ -1066,30 +1066,25 @@
           })
         },
         fetchHalite1Stats: function () {
-          api.get_season1_stats(this.user.user_id).then(userDetails => {
-            this.season1stats = userDetails;
-          })
-          api.get_season2_stats(this.user.user_id).then(userDetails => {
-            this.season2stats = userDetails;
-          })
+          this.season1stats = this.user.season1
+          this.season2stats = this.user.season2
         },
         fetchhistory: function () {
-          api.get_user_history(this.user.user_id).then(history => {
-            if (history && history instanceof Array) {
-              history.sort(function (a, b) { return parseInt(b.bot_version) - parseInt(a.bot_version) })
-              this.userHistory = history
-              if (this.user.num_submissions > 0) {
-                this.userHistory.unshift({bot_version: 'Current (' + this.user.num_submissions + ')', last_score: this.user.score, last_rank: this.user.rank, last_games_played: this.user.num_games, when_retired: 'Still playing' })
-              }
-              if (history.length <= 0) {
-                return
-              }
-              this.highestRank = history.reduce((min, p) => p.last_rank < min ? p.last_rank : min, history[0].last_rank)
-              if (this.highestRank > this.user.rank) {
-                this.highestRank = this.user.rank
-              }
+          const history = this.user.history
+          if (history && history instanceof Array) {
+            history.sort(function (a, b) { return parseInt(b.bot_version) - parseInt(a.bot_version) })
+            this.userHistory = history
+            if (this.user.num_submissions > 0) {
+              this.userHistory.unshift({bot_version: 'Current (' + this.user.num_submissions + ')', last_score: this.user.score, last_rank: this.user.rank, last_games_played: this.user.num_games, when_retired: 'Still playing' })
             }
-          })
+            if (history.length <= 0) {
+              return
+            }
+            this.highestRank = history.reduce((min, p) => p.last_rank < min ? p.last_rank : min, history[0].last_rank)
+            if (this.highestRank > this.user.rank) {
+              this.highestRank = this.user.rank
+            }
+          }
         },
         fetchErrorGames: function () {
           let query = `order_by=desc,time_played&offset=0&limit=50&filter=timed_out,=,${this.user.user_id}`
