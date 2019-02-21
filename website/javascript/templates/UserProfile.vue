@@ -102,7 +102,6 @@
                           </div>
                         </div>
                     </div>
-                    <!-- <h2><span :class="tierClass(user.tier || 'Bronze')"></span> {{ user.rank ? `rank ${user.rank}` : "No Rank" }}, {{ user.tier || "Bronze" }} tier</h2> -->
                     <div class="user-profile-rank-stats">
                         <div class="stats-item">
                             <div class="title">Rating</div>
@@ -409,18 +408,9 @@
                                 <h2>
                                     Challenges
                                 </h2>
-                                <div class="challenge-modal" v-if="!is_my_page">
-                                    <button class="btn challenge-btn" v-if="challengeGames.length" :class="{ 'right-btn': challengeGames.length }" @click="openChallengeModal">
-                                        <span>Challenge {{user.team_name||user.username}}</span>
-                                    </button>
-                                    <ChallengeModal :baseUrl="baseUrl" :isOn="isChallengeModalOpen" :close="closeChallengeModal" :username="user.username"></ChallengeModal>
-                                </div>
                                 <div v-if="!challengeGames.length" class="section-empty">
                                     <img :src="`${baseUrl}/assets/images/no_challenges.png`" class="icon-"></img>
                                     <h2>No Challenges yet</h2>
-                                    <button v-if="!is_my_page" class="btn challenge-btn" @click="openChallengeModal">
-                                        <span>Challenge {{user.team_name||user.username}}</span>
-                                    </button>
                                 </div>
                                 <div v-if="challengeGames.length > 0">
                                     <div class="table-sticky-container">
@@ -645,12 +635,10 @@
     import moment from 'moment'
     import numeral from 'numeral'
     import dateformat from 'dateformat'
-    import ChallengeModal from './ChallengeModal.vue'
 
     export default {
       name: 'UserProfile',
       props: ['baseUrl'],
-      components: {ChallengeModal},
       data: function () {
         return {
           tierClass: tierClass,
@@ -689,7 +677,6 @@
           },
           participants: {},
           isLastPage: false,
-          isChallengeModalOpen: false,
           efficiency: {
             min: 0,
             percentile25: 0,
@@ -1222,12 +1209,6 @@
           if (e) e.preventDefault()
           this.$refs.shareInput.select()
           document.execCommand('copy')
-        },
-        openChallengeModal: function(e) {
-          this.isChallengeModalOpen = true;
-        },
-        closeChallengeModal: function(e) {
-            this.isChallengeModalOpen = false;
         },
         // Get the location of the data by percentage --- issue #397
         getLeftLen(data) {

@@ -58,7 +58,6 @@
                   <th>Player</th>
                   <th>Rating</th>
                   <th class="text-center">Tier</th>
-                  <th class="text-center">Challenge</th>
                   <th>Level</th>
                   <th class="text-center">Country</th>
                   <th>Organization</th>
@@ -109,9 +108,6 @@
                   <td class="text-center tier-td">
                     <TierPopover :tier="tierClass(player.tier || player.local_tier)" />
                   </td>
-                  <td class="text-center">
-                    <a @click="openChallengeModal(player.username)" class="toggle-challenge"><img :src="`${baseUrl}/assets/images/icon-challenge.svg`"></a>
-                  </td>
                   <td>{{ player.level }}</td>
                   <td class="text-center">
                     <div v-if="player.user_id === player.team_leader_id && player.team_members.length > 0">
@@ -146,7 +142,6 @@
           <div class="leaderboard-page" v-if="isDefaultLimit">
             <HalitePagination :page="this.page" :lastPage="this.lastPage" :baseUrl="this.baseUrl" :changePage="this.changePage" />
           </div>
-          <ChallengeModal :baseUrl="baseUrl" :isOn="isChallengeModalOpen" :close="closeChallengeModal" :username="challengeUsername"></ChallengeModal>
         </div>
         <div v-else class="zero-state-pane">
           <img src="/assets/images/leaderboard-zero-icon.png" alt="" />
@@ -201,7 +196,6 @@ import vSelect from "vue-select";
 import _ from "lodash";
 import moment from "moment";
 import dateformat from "dateformat";
-import ChallengeModal from "./ChallengeModal.vue";
 
 const DEFAULT_LIMIT = 25;
 
@@ -212,7 +206,6 @@ export default {
     HalitePagination,
     vSelect,
     TierPopover,
-    ChallengeModal
   },
   data: function() {
     const countries = countries_data;
@@ -305,8 +298,6 @@ export default {
       filter_name: "",
       selected_filter: null,
       build_params_count: 0,
-      isChallengeModalOpen: false,
-      challengeUsername: ""
     };
   },
   mounted: function() {
@@ -866,13 +857,6 @@ export default {
     getFormattedDate: function(date) {
       return moment(date).fromNow();
     },
-    openChallengeModal: function(username) {
-      this.challengeUsername = username;
-      this.isChallengeModalOpen = true;
-    },
-    closeChallengeModal: function(e) {
-      this.isChallengeModalOpen = false;
-    },
     refreshStickyTable: function() {
       window.refreshStickyTable();
     },
@@ -885,12 +869,6 @@ export default {
   &::before,
   &::after {
     display: none;
-  }
-}
-.toggle-challenge {
-  img {
-    width: 15px;
-    height: 15px;
   }
 }
 .table-container {

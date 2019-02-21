@@ -178,18 +178,6 @@ export function get_user_history (userId) {
   })
 }
 
-export function challenge(user_id, opponents) {
-  return $.post({
-    url: `${API_SERVER_URL}/user/` + user_id + `/challenge`,
-    method: 'POST',
-    data: JSON.stringify({opponents: opponents}),
-    contentType: 'application/json',
-    xhrFields: {
-      withCredentials: true
-    }
-  })
-}
-
 /**
  * @returns {Promise} A Promise that resolves to a list of team
  * objects, each of which has an 'id', 'created', and 'name' field.
