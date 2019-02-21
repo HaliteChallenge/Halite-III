@@ -7,7 +7,6 @@ import FinalsStatus from './templates/FinalsStatus.vue'
 import LeaderboardContainer from './templates/LeaderboardContainer.vue'
 import UserProfile from './templates/UserProfile.vue'
 import VisualizerContainer from './templates/VisualizerContainer.vue'
-import Home from './templates/Home.vue'
 import Play from './templates/Play.vue'
 import View404 from './templates/404.vue'
 import ProfileImage from './templates/ProfileImage.vue'
@@ -61,12 +60,6 @@ window.views = {
     new Vue({
       el: '#halitetv-container',
       render: (h) => h(VisualizerContainer, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-  Home: function () {
-    new Vue({
-      el: '#home-container',
-      render: (h) => h(Home, { props: { baseUrl: _global.baseUrl } })
     })
   },
   Play: function () {
