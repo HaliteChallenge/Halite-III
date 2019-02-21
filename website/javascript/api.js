@@ -139,25 +139,45 @@ export function get_expired_replay (replay_class, replay_name) {
   })
 }
 
-export function leaderboard (filters, offset = null, limit = null) {
-  let url = `${API_SERVER_URL}/leaderboard`
-  let fields = {}
+let __leaderboard = null;
 
-  const querystring = []
-  if (offset !== null && limit !== null) {
-    querystring.push(`offset=${offset}&limit=${limit}`)
+export function leaderboard (filters, offset = null, limit = null) {
+  if (!__leaderboard) {
+    __leaderboard = window.fetch('/assets/static-data/leaderboard.json')
+      .then(r => r.json());
   }
-  if (filters && filters.length > 0) {
-    filters = filters.map(window.encodeURIComponent);
-    querystring.push(`filter=${filters.join('&filter=')}`)
-  }
-  if (querystring.length > 0) {
-    url += `?${querystring.join('&')}`
-  }
-  return $.get({
-    url: url,
-    xhrFields: fields
-  })
+
+  return __leaderboard.then((data) => {
+    if (filters && filters.length > 0) {
+      const conditions = [];
+      for (const filter of filters) {
+        let [ field, _, value ] = filter.split(/,/g);
+        if (field === "organization_id") {
+          value = parseInt(value, 10);
+        }
+        if (field === "country_code") {
+          field = "country";
+        }
+        conditions.push([ field, value ]);
+      }
+      data = data.filter(player => {
+        for (const [ field, value ] of conditions) {
+          if (player[field] !== value) {
+            return false;
+          }
+        }
+        return true;
+      });
+    }
+
+    if (offset) {
+      data = data.slice(offset);
+    }
+    if (limit) {
+      data = data.slice(0, limit);
+    }
+    return data;
+  });
 }
 
 let __organizationLeaderboard = null;

@@ -197,7 +197,7 @@ import _ from "lodash";
 import moment from "moment";
 import dateformat from "dateformat";
 
-const DEFAULT_LIMIT = 25;
+const DEFAULT_LIMIT = 100;
 
 export default {
   name: "leaderboard",
@@ -214,6 +214,7 @@ export default {
       country_options.push({ value: item["alpha-3"], label: item.name });
     });
     return {
+      show_user: null,
       contry_data: countries_data,
       countries: country_options,
       leaderboard: [],
