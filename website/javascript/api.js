@@ -13,19 +13,23 @@ export function me () {
   return Promise.resolve(null)
 }
 
+let __users = {};
+
 export function get_user (user_id) {
-  return $.get({
-    url: `${API_SERVER_URL}/user/${user_id}`,
-    xhrFields: {
-      withCredentials: true
-    }
-  })
+  const idx = user_id - (user_id % 1000);
+  if (!__users[idx]) {
+    __users[idx] = window.fetch(`/assets/static-data/users-${idx}.json`).then(r => r.json());
+  }
+  return __users[idx].then((users) => users[user_id]);
 }
 
+let __teams = null;
+
 export function get_team(team_id) {
-  return window.fetch(`${API_SERVER_URL}/team/${team_id}`, {
-    credentials: 'include',
-  }).then(r => r.json())
+  if (!__teams) {
+    __teams = window.fetch(`/assets/static-data/teams.json`).then(r => r.json());
+  }
+  return __teams.then((teams) => teams[team_id]);
 }
 
 export function list_bots (user_id) {
@@ -196,16 +200,6 @@ export function get_user_history (userId) {
       withCredentials: true
     }
   })
-}
-
-/**
- * @returns {Promise} A Promise that resolves to a list of team
- * objects, each of which has an 'id', 'created', and 'name' field.
- */
-export function list_teams() {
-  return window.fetch(`${API_SERVER_URL}/team`, {
-    method: 'GET',
-  }).then(r => r.json())
 }
 
 export function fallbackAvatar(username) {
