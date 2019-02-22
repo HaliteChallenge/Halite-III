@@ -77,11 +77,6 @@ export function get_team(team_id) {
   return __teams.then((teams) => teams[team_id]);
 }
 
-export function makeRequest () {
-  const xhr = new XMLHttpRequest()
-  return xhr
-}
-
 export function get_replay (game_id, progress_callback) {
   let game_data_promise = get_match(game_id);
   return game_data_promise.then((game) => {
