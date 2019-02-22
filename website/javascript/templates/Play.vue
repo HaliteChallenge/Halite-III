@@ -109,7 +109,6 @@
         botFile: {name: ''},
         loggedIn: false,
         user: null,
-        botsList: [],
         displayMessage: false,
         message: '',
         is_downloading: false,
@@ -124,18 +123,7 @@
       }
     },
     mounted: function () {
-      // logged in
-      api.me().then((me) => {
-        if (me !== null) {
-          this.loggedIn = true
-          this.user = me
-          api.list_bots(me.user_id).then((bots) => {
-            this.botsList = bots
-          })
-        }
-      })
-
-      // handle whole page drag and drop
+     // handle whole page drag and drop
       const ins = this
       $('body').on('drop dragdrop', (e) => {
         // verify if the dropzone is not the bot uploader zone

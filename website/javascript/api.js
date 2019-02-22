@@ -14,13 +14,40 @@ export function me () {
 }
 
 let __users = {};
+let __user_matches = null;
+let __matches = null;
 
 export function get_user (user_id) {
   const idx = user_id - (user_id % 1000);
   if (!__users[idx]) {
-    __users[idx] = window.fetch(`/assets/static-data/users-${idx}.json`).then(r => r.json());
+    __users[idx] = window.fetch(`/assets/static-data/users-${idx}.json`)
+      .then(r => r.json())
+      .then((users) => {
+        return users;
+      });
   }
   return __users[idx].then((users) => users[user_id]);
+}
+
+export function get_user_matches(user_id) {
+  if (!__user_matches) {
+    __user_matches = window.fetch(`/assets/static-data/user-matches.json`).then(r => r.json());
+    __matches = window.fetch(`/assets/static-data/matches.json`).then(r => r.json());
+  }
+
+  return Promise.all([__user_matches, __matches, get_user(1)]).then(([user_matches, matches]) => {
+    return Promise.all(user_matches[user_id].map(match_id => {
+      const match = matches[match_id];
+      const promises = [];
+      for (const playerId of Object.keys(match.players)) {
+        promises.push(get_user(playerId).then((user) => {
+          match.players[playerId].username = user.username;
+          match.players[playerId].profile_image_key = user.profile_image_key;
+        }));
+      }
+      return Promise.all(promises).then(() => match);
+    }));
+  });
 }
 
 let __teams = null;
@@ -32,38 +59,9 @@ export function get_team(team_id) {
   return __teams.then((teams) => teams[team_id]);
 }
 
-export function list_bots (user_id) {
-  return $.get({
-    url: `${API_SERVER_URL}/user/${user_id}/bot`
-  })
-}
-
 export function makeRequest () {
   const xhr = new XMLHttpRequest()
   return xhr
-}
-
-export function list_organizations (user_id) {
-  return $.get({
-    url: `${API_SERVER_URL}/organization`
-  })
-}
-
-export function get_season1_stats (userId) {
-  return $.get({
-    url: `${API_SERVER_URL}/user/${userId}/season1`,
-    xhrFields: {
-      withCredentials: true
-    }
-  })
-}
-export function get_season2_stats (userId) {
-  return $.get({
-    url: `${API_SERVER_URL}/user/${userId}/season2`,
-    xhrFields: {
-      withCredentials: true
-    }
-  })
 }
 
 export function get_replay (game_id, progress_callback) {
@@ -191,15 +189,6 @@ export function organizationLeaderboard(filters, offset=null, limit=null) {
     __organizationLeaderboard = window.fetch('/assets/static-data/organization-leaderboard.json').then(r => r.json());
   }
   return __organizationLeaderboard;
-}
-
-export function get_user_history (userId) {
-  return $.get({
-    url: `${API_SERVER_URL}/user/${userId}/history`,
-    xhrFields: {
-      withCredentials: true
-    }
-  })
 }
 
 export function fallbackAvatar(username) {
