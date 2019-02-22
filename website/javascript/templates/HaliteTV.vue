@@ -124,8 +124,7 @@ const showGame = (game) => {
         botFile: {name: ''},
         loggedIn: false,
         user: null,
-        botsList: [],
-        displayMessage: false,
+        isplayMessage: false,
         message: '',
         is_downloading: false,
         uploadProgress: null,
@@ -139,16 +138,6 @@ const showGame = (game) => {
       }
     },
     mounted: function () {
-      // logged in
-      api.me().then((me) => {
-        if (me !== null) {
-          this.loggedIn = true
-          this.user = me
-          api.list_bots(me.user_id).then((bots) => {
-            this.botsList = bots
-          })
-        }
-      })
       // handle whole page drag and drop
       const ins = this
       $('body').on('drop dragdrop', (e) => {
