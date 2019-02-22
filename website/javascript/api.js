@@ -35,7 +35,7 @@ export function get_user_matches(user_id) {
     __matches = window.fetch(`/assets/static-data/matches.json`).then(r => r.json());
   }
 
-  return Promise.all([__user_matches, __matches, get_user(1)]).then(([user_matches, matches]) => {
+  return Promise.all([__user_matches, __matches]).then(([user_matches, matches]) => {
     return Promise.all(user_matches[user_id].map(match_id => {
       const match = matches[match_id];
       const promises = [];
@@ -47,6 +47,24 @@ export function get_user_matches(user_id) {
       }
       return Promise.all(promises).then(() => match);
     }));
+  });
+}
+
+export function get_match(match_id) {
+  if (!__user_matches) {
+    __user_matches = window.fetch(`/assets/static-data/user-matches.json`).then(r => r.json());
+    __matches = window.fetch(`/assets/static-data/matches.json`).then(r => r.json());
+  }
+  return Promise.all([__user_matches, __matches]).then(([user_matches, matches]) => {
+    const match = matches[match_id];
+    const promises = [];
+    for (const playerId of Object.keys(match.players)) {
+      promises.push(get_user(playerId).then((user) => {
+        match.players[playerId].username = user.username;
+        match.players[playerId].profile_image_key = user.profile_image_key;
+      }));
+    }
+    return Promise.all(promises).then(() => match);
   });
 }
 
@@ -65,80 +83,18 @@ export function makeRequest () {
 }
 
 export function get_replay (game_id, progress_callback) {
-  let game_data_promise = Promise.resolve($.get(`${API_SERVER_URL}/user/0/match/${game_id}`))
-  let replay_promise = new Promise((resolve, reject) => {
-    const xhr = makeRequest()
-    xhr.withCredentials = true
-    xhr.open('GET', `${API_SERVER_URL}/user/0/match/${game_id}/replay`, true)
-    xhr.responseType = 'arraybuffer'
-
-    if (progress_callback) {
-      xhr.onprogress = function (e) {
-        progress_callback(e.loaded, e.total)
-      }
-    }
-
-    xhr.onload = function (e) {
-      if (this.status === 200) {
-        const blob = this.response
-        resolve(blob)
-      } else {
-        reject()
-      }
-    }
-
-    xhr.onerror = function () {
-      reject()
-    }
-
-    xhr.onreadystatechange = function (e) {
-      if (xhr.readyState === 4) {
-        if (xhr.status !== 200) {
-          reject()
-        }
-      }
-    }
-
-    xhr.send()
-  })
-  return Promise.all([game_data_promise, replay_promise]).then(([game, replay]) => {
-    return {
-      game: game,
-      replay: replay
-    }
-  })
+  let game_data_promise = get_match(game_id);
+  return game_data_promise.then((game) => {
+    return window.fetch(`${game.replay_class === 1 ? "https://storage.googleapis.com/ts2018-halite-3-gold-replays" : "https://storage.googleapis.com/ts2018-halite-3-replays"}/${game.replay}`).then(r => r.arrayBuffer()).then(replay => ({
+      game,
+      replay,
+    }));
+  });
 }
 
 export function get_expired_replay (replay_class, replay_name) {
-  return new Promise((resolve, reject) => {
-    const xhr = makeRequest()
-    xhr.withCredentials = true
-    xhr.open('GET', `${API_SERVER_URL}/replay/class/${replay_class}/name/${replay_name}`, true)
-    xhr.responseType = 'arraybuffer'
-
-    xhr.onload = function (e) {
-      if (this.status === 200) {
-        const blob = this.response
-        resolve(blob)
-      } else {
-        reject()
-      }
-    }
-
-    xhr.onerror = function () {
-      reject()
-    }
-
-    xhr.onreadystatechange = function (e) {
-      if (xhr.readyState === 4) {
-        if (xhr.status !== 200) {
-          reject()
-        }
-      }
-    }
-
-    xhr.send()
-  })
+  replay_class = parseInt(replay_class, 10);
+  return window.fetch(`${replay_class === 1 ? "https://storage.googleapis.com/ts2018-halite-3-gold-replays" : "https://storage.googleapis.com/ts2018-halite-3-replays"}/${replay_name}`).then(r => r.arrayBuffer());
 }
 
 let __leaderboard = null;
