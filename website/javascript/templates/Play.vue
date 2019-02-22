@@ -1,33 +1,6 @@
 <template>
   <div class="play-container">
-    <div class="container-fluid"> <!-- v-if="currentView == 'upload'"> -->
-   <!--   <div class="doc-section doc-section-play text-center">
-        <p><img src="/assets/images/icon-flag.svg" width="30" alt="flag"></p>
-        <h2 class="mt3">PLAY HALITE III</h2>
-        <p>Halite III bots can be developed locally or in a web-based editor. Submit your bot via one of the below options to participate in Halite III.</p>
-        <br>
-        <div class="col-sm-6">
-            <h4 class="mt3">WEB-BASED DEVELOPMENT</h4>
-            <p>Create, replay, and submit a Python, Java, or C++ bot via the web-based editor.</p>
-            <br>
-            <a class="btn btn-primary" href="/editor">Go to Editor</a>
-        </div>
-        <div class="col-sm-6">
-            <h4 class="mt3">LOCAL DEVELOPMENT</h4>
-            <p>Or, <a href="/learn-programming-challenge/downloads">download</a> the game environment and starter kit bundle for your platform and language of choice.</p>
-            <p>To submit your local Halite bot to the competition, upload a .zip file here. In general, the root of your zip should contain a <i>MyBot.{extension}</i> file and the <i>hlt</i> folder from the starter kit, which is sufficient for Python and Java. Some languages may require additional files, such as <i>CMakeLists.txt</i> for C++ and <i>Cargo.toml</i> for Rust. A single top level directory in the archive that contains all the above is supported as well.</p>
-            <br>
-            <halite-upload-zone
-              description="Select or drop .zip file to upload your bot"
-              buttonText = "Select File"
-              :icon="`/assets/images/icon-upload.svg`"
-              v-on:change="upload_bot"
-              :progressBar="is_downloading"
-              :progress="uploadProgress"
-              :message="uploadMessage">
-              </halite-upload-zone>
-        </div>
-      </div> -->
+    <div class="container-fluid">
       <div class="doc-section doc-section-play" style="text-align:left" id="competition-rules">
         <h2 class="mt3" style="text-align: center">COMPETITION RULES</h2>
         <p>
@@ -68,11 +41,6 @@
         <br/>
       </div>
     </div>
-    <!-- <div id="halite-uploaded-bot" v-if="currentView=='botUpload'">
-      <bot-upload ref="botUploadComponent" :user="user" :bot-file="botFile" :bots-list="botsList"  v-if="currentView='botUpload'"
-      :showMessage="showMessage"></bot-upload>
-    </div> -->
-
   </div>
 </template>
 <script>
@@ -80,7 +48,6 @@
   import Vue from 'vue'
   import HaliteBreadcrumb from './Breadcrumb.vue'
   import VisualizerContainer from './VisualizerContainer.vue'
-  import BotUpload from './BotUpload.vue'
   import Message from './Message.vue'
   import {Alert} from '../utils.js'
   import UploadZone from './UploadZone.vue'
@@ -131,7 +98,6 @@
     name: 'uploader',
     props: ['baseUrl'],
     components: {
-      'bot-upload': BotUpload,
       'visualizer-container': VisualizerContainer,
       'halite-upload-zone': UploadZone,
       HaliteBreadcrumb
@@ -143,7 +109,6 @@
         botFile: {name: ''},
         loggedIn: false,
         user: null,
-        botsList: [],
         displayMessage: false,
         message: '',
         is_downloading: false,
@@ -158,18 +123,7 @@
       }
     },
     mounted: function () {
-      // logged in
-      api.me().then((me) => {
-        if (me !== null) {
-          this.loggedIn = true
-          this.user = me
-          api.list_bots(me.user_id).then((bots) => {
-            this.botsList = bots
-          })
-        }
-      })
-
-      // handle whole page drag and drop
+     // handle whole page drag and drop
       const ins = this
       $('body').on('drop dragdrop', (e) => {
         // verify if the dropzone is not the bot uploader zone
@@ -239,16 +193,6 @@
       },
       gaData: function (category, action, label) {
         utils.gaEvent(category, action, label)
-      },
-      upload_bot(files) {
-        window.scrollTo(0, 0)
-        this.zipTypes = ["application/zip", "application/octet-stream", "application/x-zip-compressed", "multipart/x-zip"]
-        if (files.length && this.zipTypes.includes(files[0].type)) {
-          this.botFile = files[0]
-          this.currentView = 'botUpload'
-        } else {
-          Alert.show('You must upload a .zip file.', 'error')
-        }
       },
     }
   }
