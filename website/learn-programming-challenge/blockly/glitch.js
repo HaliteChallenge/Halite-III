@@ -157,8 +157,6 @@ window.fetch('/learn-programming-challenge/blockly/toolbox.xml').then(r => r.tex
     const hltConsole = new Console(document.querySelector('#console'));
     hltConsole.writeLine('Build a Halite bot with blocks!');
     hltConsole.writeLine('Run Halite games with your bot, and iterate.');
-    hltConsole.writeLine('When you’re ready, submit to enter it into');
-    hltConsole.writeLine('the global competition.');
     hltConsole.writeLine('You can learn more about block functionality');
     hltConsole.writeLine('by hovering over each block.');
     hltConsole.writeLine('To learn more about the Halite game,');
@@ -190,7 +188,6 @@ window.fetch('/learn-programming-challenge/blockly/toolbox.xml').then(r => r.tex
     libhaliteviz.setAssetRoot('').then(() => {
         document.querySelector('#run-game').addEventListener('click', () => runGame());
         document.querySelector('#export-bot').addEventListener('click', () => exportBot(workspace));
-        document.querySelector('#submit-bot').addEventListener('click', () => submitBot(workspace));
     });
 
     function runGame() {

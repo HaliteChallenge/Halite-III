@@ -3,26 +3,13 @@
 
 import Vue from 'vue'
 import 'url-search-params-polyfill'
-import Associate from './templates/Associate.vue'
-import BotEditorPage from './templates/BotEditorPage.vue'
 import FinalsStatus from './templates/FinalsStatus.vue'
-import GameFeed from './templates/GameFeed.vue'
+import HaliteTV from './templates/HaliteTV.vue'
 import LeaderboardContainer from './templates/LeaderboardContainer.vue'
 import UserProfile from './templates/UserProfile.vue'
-// import UserProfileBar from './templates/UserProfileBar.vue'
-import EditUserProfile from './templates/EditUserProfile.vue'
-import VerifyEmail from './templates/VerifyEmail.vue'
 import VisualizerContainer from './templates/VisualizerContainer.vue'
-import HaliteTV from './templates/HaliteTV.vue'
-import Home from './templates/Home.vue'
-import Onboarding from './templates/Onboarding.vue'
 import Play from './templates/Play.vue'
-import Settings from './templates/Settings.vue'
 import View404 from './templates/404.vue'
-import CodeTutorial from './templates/CodeTutorial.vue'
-import NextTutorial from './templates/NextTutorial.vue'
-import WalkthroughSubsteps from './templates/WalkthroughSubsteps.vue'
-import WalkthroughSubstep from './templates/WalkthroughSubstep.vue'
 import ProfileImage from './templates/ProfileImage.vue'
 
 // Include bootstrap.js - do not remove
@@ -35,8 +22,6 @@ window.api = api
 
 Vue.use(require('vue-moment'))
 Vue.use(require('vue-cookie'))
-Vue.component('walkthrough-substeps', WalkthroughSubsteps)
-Vue.component('walkthrough-substep', WalkthroughSubstep)
 Vue.component('profile-image', ProfileImage)
 
 Vue.mixin({
@@ -48,28 +33,16 @@ Vue.mixin({
 })
 
 window.views = {
-  Associate: function () {
-    new Vue({
-      el: '#associate-container',
-      render: (h) => h(Associate)
-    })
-  },
-  BotEditorPage: function () {
-    new Vue({
-      el: '#bot-editor-container',
-      render: (h) => h(BotEditorPage, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
   FinalsStatus: function () {
     new Vue({
       el: '#finals-status',
       render: (h) => h(FinalsStatus, { props: { baseUrl: _global.baseUrl } })
     })
   },
-  GameFeed: function () {
+  HaliteTV: function () {
     new Vue({
-      el: '#game-feed',
-      render: (h) => h(GameFeed, { props: { baseUrl: _global.baseUrl } })
+      el: '#watch-container',
+      render: (h) => h(HaliteTV, { props: { baseUrl: _global.baseUrl } })
     })
   },
   LeaderboardContainer: function () {
@@ -84,19 +57,7 @@ window.views = {
       render: (h) => h(UserProfile, { props: { baseUrl: _global.baseUrl } })
     })
   },
-  EditUserProfile: function () {
-    new Vue({
-      el: '#edit-user-profile-container',
-      render: (h) => h(EditUserProfile, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-  VerifyEmail: function () {
-    new Vue({
-      el: '#verify-email-container',
-      render: (h) => h(VerifyEmail)
-    })
-  },
-  Visualizer: function () {
+  visualizer: function () {
     new Vue({
       el: '#visualizer-container',
       render: (h) => h(VisualizerContainer, { props: { baseUrl: _global.baseUrl } })
@@ -108,34 +69,10 @@ window.views = {
       render: (h) => h(VisualizerContainer, { props: { baseUrl: _global.baseUrl } })
     })
   },
-  HaliteTV: function () {
-    new Vue({
-      el: '#watch-container',
-      render: (h) => h(HaliteTV, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-  Home: function () {
-    new Vue({
-      el: '#home-container',
-      render: (h) => h(Home, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
   Play: function () {
     new Vue({
       el: '#play-container',
       render: (h) => h(Play, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-  Onboarding: function () {
-    new Vue({
-      el: '#onboarding-container',
-      render: (h) => h(Onboarding, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-  Settings: function () {
-    new Vue({
-      el: '#settings-container',
-      render: (h) => h(Settings, { props: { baseUrl: _global.baseUrl } })
     })
   },
   View404: function () {
@@ -144,19 +81,7 @@ window.views = {
       render: (h) => h(View404, { props: { baseUrl: _global.baseUrl } })
     })
   },
-  CodeTutorial: function () {
-    new Vue({
-      el: '#code-tutorial-container',
-      render: (h) => h(CodeTutorial, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-  NextTutorial: function () {
-    new Vue({
-      el: '#code-tutorial-container',
-      render: (h) => h(NextTutorial, { props: { baseUrl: _global.baseUrl } })
-    })
-  },
-}
+};
 
 window.mobileAndTabletcheck = function() {
   var check = false;
@@ -164,10 +89,6 @@ window.mobileAndTabletcheck = function() {
   return check;
 };
 
-
-if ($('#user-profile-bar-container').length) {
-  utils.initUserProfileNav();
-}
 
 window.refreshStickyTable = function () {
   const calcCol = () => {

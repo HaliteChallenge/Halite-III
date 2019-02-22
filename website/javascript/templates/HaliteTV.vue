@@ -13,16 +13,7 @@
 
     <div class="play-body" v-if="currentView == 'upload'">
       <div class="row play-upload-section">
-        <div class="col-sm-6">
-          <div class="doc-section doc-section-play text-center">
-            <h2>GAME FEED</h2>
-            <p>Watch recent games played.</p>
-            <br>
-            <game-feed>
-            </game-feed>
-          </div>
-        </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12">
           <div class="upload-container">
             <div class="doc-section doc-section-play text-center">
               <h2>REPLAY A FILE</h2>
@@ -77,12 +68,10 @@
   import Vue from 'vue'
   import HaliteBreadcrumb from './Breadcrumb.vue'
   import VisualizerContainer from './VisualizerContainer.vue'
-  import BotUpload from './BotUpload.vue'
   import Message from './Message.vue'
   import {Alert} from '../utils.js'
   import UploadZone from './UploadZone.vue'
   import Visualizer from './Visualizer.vue'
-  import GameFeed from './GameFeed.vue'
   import * as utils from '../utils'
   // showing game
   let visualizer = null
@@ -124,10 +113,8 @@ const showGame = (game) => {
     name: 'uploader',
     props: ['baseUrl'],
     components: {
-      'bot-upload': BotUpload,
       'visualizer-container': VisualizerContainer,
       'halite-upload-zone': UploadZone,
-      'game-feed': GameFeed,
       HaliteBreadcrumb
     },
     data: function () {
@@ -137,8 +124,7 @@ const showGame = (game) => {
         botFile: {name: ''},
         loggedIn: false,
         user: null,
-        botsList: [],
-        displayMessage: false,
+        isplayMessage: false,
         message: '',
         is_downloading: false,
         uploadProgress: null,
@@ -152,16 +138,6 @@ const showGame = (game) => {
       }
     },
     mounted: function () {
-      // logged in
-      api.me().then((me) => {
-        if (me !== null) {
-          this.loggedIn = true
-          this.user = me
-          api.list_bots(me.user_id).then((bots) => {
-            this.botsList = bots
-          })
-        }
-      })
       // handle whole page drag and drop
       const ins = this
       $('body').on('drop dragdrop', (e) => {
