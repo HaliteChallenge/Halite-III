@@ -51,7 +51,7 @@ description: An AI programming challenge for all levels | Users code bots to com
                         </div>
                     </div>
                     <br>
-                    <p>Two Sigma is an investment manager applying technology and data science to discover value in the world’s data. Each Halite season, Two Sigma looks forward to meeting participants with creative and successful Halite bots.</p>
+                    <p>Two Sigma applies technology and data to discover value in the world’s data. Each Halite season, Two Sigma looks forward to meeting participants with creative and successful Halite bots.</p>
                     <p> Learn more about careers at Two Sigma <a href="https://www.twosigma.com/careers" onclick="javascript:handleOutboundLinkClicks('click-external', 'click-ts','careers');return true;">here</a>.</p>
                 </div>
             </div>

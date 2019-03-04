@@ -33,7 +33,7 @@ The strategic depth and immersive, interactive nature of Halite make it a unique
 
 ## About Two Sigma
 
-Two Sigma is an investment manager applying innovative technology and data science to discover value in the world’s data. Two Sigma employs more than 1,400 people and has offices in New York, Hong Kong, Tokyo, Houston, and London. Visit [Two Sigma Careers](https://www.twosigma.com/careers/) for more information.
+Two Sigma applies technology and data to discover value in the world’s data. Two Sigma employs more than 1,400 people and has offices in New York, Hong Kong, Tokyo, Houston, and London. Visit [Two Sigma Careers](https://www.twosigma.com/careers/) for more information.
 
 
 </div>
