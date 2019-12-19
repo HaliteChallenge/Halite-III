@@ -156,7 +156,7 @@ For requests to know and requests to delete, we will confirm receipt of the requ
 
 _How do I Submit a Consumer Request?_
 
-If you wish to exercise any of your rights under this section, you may submit your request through any of these methods: (i) email us at [CCPA@twosigma.com](mailto:CCPA@twosigma.com); (ii) call us at the toll-free telephone number [1-844-820-6577](tel:+1-844-820-6577); or (iii) submit a webform request here.
+If you wish to exercise any of your rights under this section, you may submit your request through any of these methods: (i) email us at [CCPA@twosigma.com](mailto:CCPA@twosigma.com); (ii) call us at the toll-free telephone number [1-844-820-6577](tel:+1-844-820-6577); or (iii) submit a webform request [here](https://www.twosigma.com/legal-disclosure/privacy-policy/privacy-contact-request-form/).
 
 **Shine the Light Inquiry**
 
