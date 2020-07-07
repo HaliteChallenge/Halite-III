@@ -12,7 +12,7 @@
         "babel-plugin-transform-async-generator-functions": "^6.24.1",
         "babel-preset-env": "^1.7.0",
         "css-loader": "^1.0.0",
-        "electron": "^2.0.7",
+        "electron": "^9.1.0",
         "electron-builder": "^20.27.1",
         "file-loader": "^1.1.11",
         "front-matter-loader": "^0.2.0",
