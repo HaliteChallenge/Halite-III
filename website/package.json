@@ -27,7 +27,7 @@
     "text-encoding": "^0.6.4",
     "vue": "^2.5.2",
     "vue-cookie": "^1.1.4",
-    "vue-moment": "^2.1.0",
+    "vue-moment": "^4.1.0",
     "vue-select": "2.5.1",
     "vue-slider-component": "^2.4.3",
     "webpack-cli": "^3.0.8"
