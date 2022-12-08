@@ -1,5 +1,5 @@
 altgraph==0.16.1
-certifi==2018.8.13
+certifi==2022.12.7
 chardet==3.0.4
 idna==2.7
 macholib==1.10
