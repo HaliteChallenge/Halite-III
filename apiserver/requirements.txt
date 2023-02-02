@@ -52,6 +52,6 @@ tld==0.7.9
 trueskill==0.4.4
 uritemplate==3.0.0
 urllib3==1.26.5
-Werkzeug==0.15.3
+Werkzeug==0.15.5
 wordfilter==0.2.6.2
 zstandard==0.8.1
