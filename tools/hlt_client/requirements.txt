@@ -5,5 +5,5 @@ idna==2.7
 requests==2.31.0
 six==1.11.0
 trueskill==0.4.4
-urllib3==1.26.5
+urllib3==1.26.17
 zstd==1.5.4.0
