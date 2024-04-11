@@ -1,7 +1,7 @@
 altgraph==0.16.1
 certifi==2023.7.22
 chardet==3.0.4
-idna==2.7
+idna==3.7
 macholib==1.10
 modulegraph==0.17
 py2app==0.15
