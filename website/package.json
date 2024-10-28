@@ -25,7 +25,7 @@
     "md5": "^2.2.1",
     "numeral": "^2.0.6",
     "text-encoding": "^0.6.4",
-    "vue": "^2.5.2",
+    "vue": "^3.0.0",
     "vue-cookie": "^1.1.4",
     "vue-moment": "^4.1.0",
     "vue-select": "2.5.1",
