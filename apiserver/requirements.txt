@@ -20,7 +20,7 @@ google-cloud-storage==1.10.0
 google-resumable-media==0.3.1
 googleapis-common-protos==1.5.3
 grpcio==1.53.0
-gunicorn==19.9.0
+gunicorn==23.0.0
 httplib2==0.19.0
 idna==3.7
 itsdangerous==0.24
