@@ -2,7 +2,7 @@ appdirs==1.4.3
 certifi==2024.7.4
 chardet==3.0.4
 idna==3.7
-requests==2.31.0
+requests==2.32.4
 six==1.11.0
 trueskill==0.4.4
 urllib3==1.26.19
