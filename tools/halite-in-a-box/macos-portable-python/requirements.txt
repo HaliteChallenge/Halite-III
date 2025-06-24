@@ -1,10 +1,10 @@
 altgraph==0.16.1
-certifi==2023.7.22
+certifi==2024.7.4
 chardet==3.0.4
-idna==2.7
+idna==3.7
 macholib==1.10
 modulegraph==0.17
 py2app==0.15
-requests==2.31.0
-urllib3==1.26.18
+requests==2.32.2
+urllib3==1.26.19
 zstd==1.5.4.0
