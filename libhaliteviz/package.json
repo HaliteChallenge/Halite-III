@@ -28,7 +28,7 @@
     "file-loader": "^1.1.11",
     "spritesheet-js": "^1.2.6",
     "text-encoding": "^0.6.4",
-    "webpack": "^5.94.0",
+    "webpack": "^5.104.1",
     "webpack-cli": "^3.0.8",
     "worker-loader": "^2.0.0"
   }
