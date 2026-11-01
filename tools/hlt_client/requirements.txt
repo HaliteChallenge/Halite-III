@@ -1,5 +1,5 @@
 appdirs==1.4.3
-certifi==2024.7.4
+certifi==2026.10.18
 chardet==3.0.4
 idna==3.15
 requests==2.32.4
